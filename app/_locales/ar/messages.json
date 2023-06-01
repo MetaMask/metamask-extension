@@ -158,9 +158,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "ربط محفظة الأجهزة"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
@@ -196,9 +193,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAccount": {
-    "message": "إنشاء حساب"
   },
   "createPassword": {
     "message": "إنشاء كلمة مرور"
@@ -809,10 +803,6 @@
   },
   "transferFrom": {
     "message": "التحويل من"
-  },
-  "troubleTokenBalances": {
-    "message": "واجهتنا مشكلة في تحميل أرصدتك من العملات الرمزية. يمكنك الاطلاع عليها",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "إعادة المحاولة"

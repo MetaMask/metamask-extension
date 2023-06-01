@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -11,7 +14,13 @@ import {
   getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getMetaMaskAccountsOrdered,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
@@ -72,6 +81,12 @@ export const AccountListItemMenu = ({
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const isCustodial = /Custody/u.test(keyring.type);
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
+
   return (
     <Menu
       anchorElement={anchorElement}
@@ -113,6 +128,7 @@ export const AccountListItemMenu = ({
           closeMenu?.();
         }}
         iconName={IconName.ScanBarcode}
+        data-testid="account-list-menu-details"
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -136,12 +152,45 @@ export const AccountListItemMenu = ({
               },
             });
             onClose();
+            closeMenu?.();
           }}
           iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        isCustodial ? (
+          <MenuItem
+            data-testid="account-options-menu__remove-jwt"
+            onClick={async () => {
+              const token = await dispatch(mmiActions.getCustodianToken());
+              const custodyAccountDetails = await dispatch(
+                mmiActions.getAllCustodianAccountsWithToken(
+                  keyring.type.split(' - ')[1],
+                  token,
+                ),
+              );
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_JWT',
+                  token,
+                  custodyAccountDetails,
+                  accounts,
+                  selectedAddress: toChecksumHexAddress(identity.address),
+                }),
+              );
+              onClose();
+              closeMenu?.();
+            }}
+            iconName={IconName.Trash}
+          >
+            <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
+          </MenuItem>
+        ) : null
+        ///: END:ONLY_INCLUDE_IN
+      }
     </Menu>
   );
 };

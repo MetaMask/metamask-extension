@@ -87,9 +87,6 @@
   "create": {
     "message": "สร้าง"
   },
-  "createAccount": {
-    "message": "สร้างบัญชี"
-  },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },
@@ -400,10 +397,6 @@
   },
   "transferBetweenAccounts": {
     "message": "โอนระหว่างบัญชีของฉัน"
-  },
-  "troubleTokenBalances": {
-    "message": "เรามีปัญหาในการโหลดยอดโทเค็นคงเหลือของคุณ คุณสามารถดูได้ที่นี่",
-    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "พิมพ์รหัสผ่านของคุณ"

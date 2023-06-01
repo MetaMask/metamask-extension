@@ -85,19 +85,25 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // check to see that there is one notification
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         const notificationResult = await driver.findElement(
-          '.account-menu__icon__notification-count',
+          '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
+        await driver.clickElement('.menu__background');
 
         // try to click on the account menu icon (via xpath)
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
           text: 'Notifications',
-          tag: 'div',
+          tag: 'span',
         });
         await driver.delay(500);
 

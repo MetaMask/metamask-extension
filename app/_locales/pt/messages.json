@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
   },
-  "importTokens": {
-    "message": "importar tokens"
-  },
   "importTokensCamelCase": {
     "message": "Importar tokens"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "missingToken": {
-    "message": "Não está vendo seu token?"
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Não há gás suficiente"
-  },
-  "notifications": {
-    "message": "Notificações"
   },
   "notifications10ActionText": {
     "message": "Visite nas configurações",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Conectado"
   },
   "statusNotConnected": {
     "message": "Não conectado"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "Ativar/desativar solicitações eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "A MetaMask teve problemas para iniciar. Esse erro pode ser intermitente, por isso tente reiniciar a extensão."
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"

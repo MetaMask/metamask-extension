@@ -3,99 +3,76 @@
 exports[`Token Cell should match snapshot 1`] = `
 <div>
   <div
-    class="list-item asset-list-item token-cell list-item--single-content-row list-item-border"
-    role="button"
-    tabindex="0"
+    class="box multichain-token-list-item box--display-flex box--gap-4 box--flex-direction-column"
+    data-testid="multichain-token-list-item"
   >
-    <div
-      class="list-item__icon"
+    <a
+      class="box multichain-token-list-item__container-cell box--padding-4 box--display-flex box--flex-direction-row"
+      data-testid="multichain-token-list-button"
+      href="#"
     >
       <div
-        class=""
+        class="box mm-badge-wrapper box--margin-right-3 box--display-inline-block box--flex-direction-row"
       >
         <div
-          class="identicon token-cell__icon"
-          style="height: 32px; width: 32px; border-radius: 16px;"
+          class="box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-border-default box--border-style-solid box--border-width-1"
+        >
+          T
+        </div>
+        <div
+          class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
         >
           <div
-            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(1, 119, 142);"
+            class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-border-muted box--border-style-solid box--border-width-1"
           >
-            <svg
-              height="32"
-              width="32"
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="#234CE1"
-                height="32"
-                transform="translate(-6.755009921344284 0.22970804166999115) rotate(257.8 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#03445E"
-                height="32"
-                transform="translate(-16.888022167332927 0.15842627027688103) rotate(219.9 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-              <rect
-                fill="#F96001"
-                height="32"
-                transform="translate(-7.464671435864012 -28.483778328962412) rotate(303.1 16 16)"
-                width="32"
-                x="0"
-                y="0"
-              />
-            </svg>
+            <img
+              alt="TEST logo"
+              class="mm-avatar-network__network-image"
+              src="./images/eth_logo.png"
+            />
           </div>
         </div>
       </div>
-    </div>
-    <div
-      class="list-item__heading"
-    >
-      <button
-        class="asset-list-item__token-button"
-        data-testid="token-button"
-        title="5.000 TEST"
-      >
-        <h2>
-          <span
-            class="asset-list-item__token-value"
-          >
-            5.000
-          </span>
-          <span
-            class="asset-list-item__token-symbol"
-          >
-            TEST
-          </span>
-        </h2>
-      </button>
-    </div>
-    <div
-      class="list-item__right-content"
-    >
       <div
-        class="box box--flex-direction-row"
+        class="box multichain-token-list-item__container-cell--text-container box--display-flex box--flex-direction-column box--width-full"
+        style="flex-grow: 1; overflow: hidden;"
       >
-        <span
-          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
-          style="mask-image: url('./images/icons/arrow-right.svg'); vertical-align: middle;"
-        />
-        <a
-          class="button btn-link asset-list-item__send-token-button"
-          role="button"
-          tabindex="0"
+        <div
+          class="box box--display-flex box--gap-1 box--flex-direction-row box--justify-content-space-between"
         >
-          Send TEST
-        </a>
+          <div
+            class="box box--flex-direction-row box--width-1/3"
+          >
+            <div>
+              <div
+                class=""
+                style="display: inline;"
+                tabindex="0"
+                title=""
+              >
+                <p
+                  class="box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                >
+                  TEST
+                </p>
+              </div>
+            </div>
+          </div>
+          <p
+            class="box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end box--flex-direction-row box--color-text-default"
+          />
+        </div>
+        <p
+          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+          data-testid="multichain-token-list-item-value"
+        >
+          5.000
+           
+          TEST
+           
+        </p>
       </div>
-    </div>
+    </a>
   </div>
 </div>
 `;

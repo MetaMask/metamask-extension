@@ -151,9 +151,6 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"
@@ -784,10 +778,6 @@
   },
   "transferFrom": {
     "message": "Transferir Des de"
-  },
-  "troubleTokenBalances": {
-    "message": "Hem tingut problemes en carregar el teu saldo de fitxes. Els pots veure",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Torna-ho a provar"
