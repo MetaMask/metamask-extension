@@ -158,6 +158,7 @@ function defaultFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        snapsInstallPrivacyWarningShown: true,
       },
       CachedBalancesController: {
         cachedBalances: {

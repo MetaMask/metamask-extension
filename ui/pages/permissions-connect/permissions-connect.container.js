@@ -9,6 +9,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
+  getSnapsInstallPrivacyWarningShown,
   ///: END:ONLY_INCLUDE_IN
   getRequestType,
   getTargetSubjectMetadata,
@@ -24,6 +25,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   resolvePendingApproval,
   rejectPendingApproval,
+  setSnapsInstallPrivacyWarningShownStatus,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import {
@@ -133,6 +135,7 @@ const mapStateToProps = (state, ownProps) => {
     snapResultPath,
     requestState,
     isSnap,
+    snapsInstallPrivacyWarningShown: getSnapsInstallPrivacyWarningShown(state),
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
@@ -162,6 +165,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resolvePendingApproval(id, value)),
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
+    setSnapsInstallPrivacyWarningShownStatus: (shown) => {
+      dispatch(setSnapsInstallPrivacyWarningShownStatus(shown));
+    },
     ///: END:ONLY_INCLUDE_IN
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(
