@@ -3884,6 +3884,12 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
 
+        handleRevokePermissions:
+          this.permissionController.revokeAllPermissions.bind(
+            this.permissionController,
+            origin,
+          ),
+
         getCurrentChainId: () =>
           this.networkController.store.getState().providerConfig.chainId,
         getCurrentRpcUrl: () =>

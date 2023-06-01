@@ -50,6 +50,11 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
   ///: END:ONLY_INCLUDE_IN
+
+  // BEGIN:EXPERIMENTAL_RPC_METHODS
+  WALLET_REVOKE_PERMISSIONS: 'wallet_revokePermissions',
+  // END:EXPERIMENTAL_RPC_METHODS
+
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
   MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
