@@ -77,7 +77,9 @@ const proxyPermissions = proxyquire('./controllers/permissions', {
   './snaps/snap-permissions': proxyquire(
     './controllers/permissions/snaps/snap-permissions',
     {
+      // eslint-disable-next-line node/global-require
       '@metamask/snaps-controllers': require('@metamask/snaps-controllers-flask'),
+      // eslint-disable-next-line node/global-require
       '@metamask/rpc-methods': require('@metamask/rpc-methods-flask'),
     },
   ),
