@@ -379,7 +379,6 @@ export default class PermissionConnect extends Component {
               render={() => (
                 <SnapsConnect
                   request={permissionsRequest || {}}
-                  requestState={requestState || {}}
                   approveConnection={(...args) => {
                     approvePermissionsRequest(...args);
                     this.redirect(true);
