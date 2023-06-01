@@ -154,9 +154,6 @@
   "connect": {
     "message": "Sambung"
   },
-  "connectHardwareWallet": {
-    "message": "Sambungkan Dompet Perkakasan"
-  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAccount": {
-    "message": "Cipta Akaun"
   },
   "createPassword": {
     "message": "Cipta Kata Laluan"
@@ -789,10 +783,6 @@
   },
   "transferFrom": {
     "message": "Pindah Daripada"
-  },
-  "troubleTokenBalances": {
-    "message": "Kami menghadapi masalah memuatkan baki token anda. Anda boleh melihatnya",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Cuba lagi"

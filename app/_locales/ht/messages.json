@@ -96,9 +96,6 @@
   "connect": {
     "message": "Konekte"
   },
-  "connectHardwareWallet": {
-    "message": "Konekte Materyèl Wallet"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
   },
@@ -119,9 +116,6 @@
   },
   "create": {
     "message": "Kreye"
-  },
-  "createAccount": {
-    "message": "Kreye Kont"
   },
   "currentLanguage": {
     "message": "Lang Aktyèl"
@@ -562,10 +556,6 @@
   },
   "transfer": {
     "message": "Transfè"
-  },
-  "troubleTokenBalances": {
-    "message": "Nou te gen pwoblèm chaje balans token ou. Ou ka wè yo ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Eseye anko"

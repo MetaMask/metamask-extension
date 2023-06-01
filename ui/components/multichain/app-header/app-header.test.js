@@ -29,6 +29,7 @@ describe('App Header', () => {
         preferences: {
           showTestNetworks: true,
         },
+        selectedAddress: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
         cachedBalances: {},
         subjects: {
           'https://remix.ethereum.org': {

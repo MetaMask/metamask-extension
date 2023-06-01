@@ -389,9 +389,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -498,9 +495,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -1091,9 +1085,6 @@
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
   },
-  "importTokens": {
-    "message": "importar tokens"
-  },
   "importTokensCamelCase": {
     "message": "Importar tokens"
   },
@@ -1350,9 +1341,6 @@
   },
   "missingNFT": {
     "message": "Não está vendo o seu NFT?"
-  },
-  "missingToken": {
-    "message": "Não está vendo o seu token?"
   },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
@@ -2064,9 +2052,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
   },
@@ -2167,9 +2152,6 @@
   },
   "stateLogsDescription": {
     "message": "Os registros de estado contêm os endereços da sua conta pública e as transações enviadas."
-  },
-  "statusConnected": {
-    "message": "Conectado"
   },
   "statusNotConnected": {
     "message": "Não conectado"
@@ -2549,10 +2531,6 @@
     "message": "Para: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -2691,10 +2669,6 @@
   "troubleConnectingToWallet": {
     "message": "Tivemos dificuldade para conectar-nos à sua $1. Revise $2 e tente novamente.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos dificuldade para carregar os saldos do seu token. Você pode vê-los ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"

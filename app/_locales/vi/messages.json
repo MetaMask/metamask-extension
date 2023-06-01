@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
   },
-  "connectHardwareWallet": {
-    "message": "Kết nối với ví cứng"
-  },
   "connectManually": {
     "message": "Kết nối thủ công với trang web hiện tại"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Tạo"
-  },
-  "createAccount": {
-    "message": "Tạo tài khoản"
   },
   "createNewWallet": {
     "message": "Tạo ví mới"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
   },
-  "importTokens": {
-    "message": "nhập token"
-  },
   "importTokensCamelCase": {
     "message": "Nhập token"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
   },
-  "missingToken": {
-    "message": "Không thấy token của mình?"
-  },
   "moreComingSoon": {
     "message": "Sắp có thêm..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Không đủ gas"
-  },
-  "notifications": {
-    "message": "Thông báo"
   },
   "notifications10ActionText": {
     "message": "Xem trong phần Cài đặt",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Chọn tùy chọn này để hiển thị trường dữ liệu thập lục phân trên màn hình gửi"
   },
-  "showHide": {
-    "message": "Hiển thị/ẩn"
-  },
   "showIncomingTransactions": {
     "message": "Hiển thị các giao dịch đến"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Trạng thái"
-  },
-  "statusConnected": {
-    "message": "Đã kết nối"
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "Bật/tắt yêu cầu eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 mạng thử nghiệm",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask đã gặp sự cố khi khởi động. Lỗi này có thể xảy ra không liên tục, vì vậy hãy thử khởi động lại tiện ích."
-  },
-  "troubleTokenBalances": {
-    "message": "Chúng tôi đã gặp phải vấn đề khi tải số dư token của bạn. Bạn có thể xem số dư ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Bằng cách cấp quyền, bạn cho phép $1 sau đây truy cập vào các khoản tiền của mình"
