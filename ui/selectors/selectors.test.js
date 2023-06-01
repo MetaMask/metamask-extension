@@ -469,4 +469,18 @@ describe('Selectors', () => {
     )(mockState);
     expect(isFantomTokenSupported).toBeFalsy();
   });
+
+  it('returns proper values for snaps privacy warning shown status', () => {
+    mockState.metamask.snapsInstallPrivacyWarningShown = false;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = true;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(true);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = undefined;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = null;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+  });
 });

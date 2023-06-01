@@ -511,6 +511,24 @@ const TEST_SEED_PHRASE =
 const TEST_SEED_PHRASE_TWO =
   'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
+const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  const balanceElement = await driver.findElement(
+    '[data-testid="eth-overview__primary-currency"]',
+  );
+  assert.equal(`${balance}\nETH`, await balanceElement.getText());
+};
+
+// Usually happens after txn is made
+const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  await driver.waitForSelector({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance} ETH`,
+  });
+};
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -537,4 +555,6 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 };

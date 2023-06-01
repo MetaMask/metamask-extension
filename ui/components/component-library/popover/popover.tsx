@@ -7,7 +7,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -112,7 +112,7 @@ export const Popover = ({
           borderColor={BorderColor.borderMuted}
           className={classnames('mm-popover__arrow')}
           ref={setArrowElement}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           style={styles.arrow}

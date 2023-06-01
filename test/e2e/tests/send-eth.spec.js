@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
@@ -20,10 +25,12 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
