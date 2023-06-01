@@ -481,10 +481,60 @@ const defaultGanacheOptions = {
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
 
+const sendTransaction = async (driver, recipientAddress, quantity) => {
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.findElement('.transaction-list-item');
+};
+
+const findAnotherAccountFromAccountList = async (
+  driver,
+  itemNumber,
+  accountName,
+) => {
+  await driver.clickElement('.account-menu__icon');
+  const accountMenuItemSelector = `.account-menu__account:nth-child(${itemNumber})`;
+  const fourthAccountName = await driver.findElement(
+    `${accountMenuItemSelector} .account-menu__name`,
+  );
+  assert.equal(await fourthAccountName.getText(), accountName);
+  return accountMenuItemSelector;
+};
+
+const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+
+const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
+const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  const balanceElement = await driver.findElement(
+    '[data-testid="eth-overview__primary-currency"]',
+  );
+  assert.equal(`${balance}\nETH`, await balanceElement.getText());
+};
+
+// Usually happens after txn is made
+const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  await driver.waitForSelector({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance} ETH`,
+  });
+};
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
   SERVICE_WORKER_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -503,4 +553,8 @@ module.exports = {
   mockPhishingDetection,
   setupPhishingDetectionMocks,
   defaultGanacheOptions,
+  sendTransaction,
+  findAnotherAccountFromAccountList,
+  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
 };
