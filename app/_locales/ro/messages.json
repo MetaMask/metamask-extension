@@ -154,9 +154,6 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectHardwareWallet": {
-    "message": "Conectare portofel hardware"
-  },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Creați"
-  },
-  "createAccount": {
-    "message": "Creați cont"
   },
   "createPassword": {
     "message": "Creare parolă"
@@ -793,10 +787,6 @@
   },
   "transferFrom": {
     "message": "Transferați de la"
-  },
-  "troubleTokenBalances": {
-    "message": "Am avut dificultăți cu încărcarea soldurilor dvs. de tokenuri. Le puteți vizualiza",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Încearcă din nou"

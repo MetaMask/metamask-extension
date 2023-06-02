@@ -4,6 +4,7 @@ const path = require('path');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
+  TEST_SEED_PHRASE_TWO,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
@@ -20,9 +21,6 @@ describe('MetaMask', function () {
   let driver;
   let dappServer;
   let tokenAddress;
-
-  const testSeedPhrase =
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
   this.bail(true);
 
@@ -130,13 +128,13 @@ describe('MetaMask', function () {
 
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
 
       const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
+        '[data-testid="global-menu-lock"]',
       );
-      assert.equal(await lockButton.getText(), 'Lock');
+      assert.equal(await lockButton.getText(), 'Lock MetaMask');
       await lockButton.click();
       await driver.delay(regularDelayMs);
     });
@@ -151,7 +149,7 @@ describe('MetaMask', function () {
 
       await driver.pasteIntoField(
         '[data-testid="import-srp__srp-word-0"]',
-        testSeedPhrase,
+        TEST_SEED_PHRASE_TWO,
       );
 
       await driver.fill('#password', 'correct horse battery staple');
@@ -165,7 +163,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       await driver.waitForSelector({
-        css: '[data-testid="wallet-balance"] .list-item__heading',
+        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
         text: '1000',
       });
       await driver.delay(regularDelayMs);
@@ -248,7 +246,7 @@ describe('MetaMask', function () {
 
     it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'import tokens', tag: 'a' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -435,7 +433,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.asset-list-item__token-button',
+        css: '[data-testid="multichain-token-list-item-value"]',
         text: '7.5 TST',
       });
 

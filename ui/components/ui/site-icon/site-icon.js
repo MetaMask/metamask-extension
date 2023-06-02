@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import IconBorder from '../icon-border';
 import IconWithFallback from '../icon-with-fallback';
 
+/**
+ * @deprecated `<SiteIcon />` has been deprecated in favor of the new `<AvatarFavicon>` component from the component-library.
+ * Please update your code to use the new <AvatarFavicon> component instead, which can be found at ./ui/components/component-library/avatar-favicon.js.
+ * You can find documentation for the new AvatarFavicon component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/story/components-componentlibrary-avatarfavicon--default-story}
+ * Help to replace `SiteIcon` with `AvatarFavicon` by submitting a PR
+ */
+
 export default function SiteIcon({ icon = null, name = '', size, className }) {
   const iconSize = Math.floor(size * 0.75);
   return (
