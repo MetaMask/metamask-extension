@@ -9,10 +9,25 @@ export enum QuizStage {
 }
 
 export interface IQuizInformationProps {
+  /**
+   * The icon to display in the modal should use <Icon /> component
+   */
   icon?: any;
-  image?: string; // was ImageSourcePropType
+  /**
+   * The image to display in the modal
+   */
+  image?: string;
+  /**
+   * The text content to go inside of the <Text /> component
+   */
   content: string;
+  /**
+   * More text content to go inside of the <Text /> component
+   */
   moreContent?: string;
+  /**
+   * Array of <Button /> component props
+   */
   buttons: {
     onClick: () => void;
     label: string;

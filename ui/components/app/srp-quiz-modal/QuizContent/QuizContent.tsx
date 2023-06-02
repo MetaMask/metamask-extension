@@ -36,11 +36,16 @@ export default function QuizContent({
       )}
       {image && (
         <Box display={Display.Flex} margin="auto" textAlign={TextAlign.Center}>
-          <img src={image} alt={t('srpSecurityQuizImgAlt')} />
+          <img
+            src={image}
+            alt={t('srpSecurityQuizImgAlt')}
+            width="300"
+            style={{ maxWidth: '100%' }} // should probably be in a className instead
+          />
         </Box>
       )}
       <Text
-        variant={TextVariant.headingMd}
+        variant={TextVariant.bodyLgMedium}
         textAlign={TextAlign.Center}
         color={icon?.props.color} // Inherit this text color from the icon's color
       >
