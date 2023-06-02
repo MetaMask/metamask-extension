@@ -15,6 +15,7 @@ import {
   getTotalUnapprovedSignatureRequestCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
+  getAccountType,
   ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -69,6 +70,7 @@ const ConfirmTxScreen = ({ match }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
+  const accountType = useSelector(getAccountType);
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
