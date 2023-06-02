@@ -173,9 +173,7 @@ describe('NetworkController', () => {
           {
             "networkConfigurations": {},
             "networkDetails": {
-              "EIPS": {
-                "1559": undefined,
-              },
+              "EIPS": {},
             },
             "networkId": null,
             "networkStatus": "unknown",
@@ -2805,9 +2803,7 @@ describe('NetworkController', () => {
                       expect(
                         controller.store.getState().networkDetails,
                       ).toStrictEqual({
-                        EIPS: {
-                          1559: undefined,
-                        },
+                        EIPS: {},
                       });
                     },
                   });
@@ -3521,9 +3517,7 @@ describe('NetworkController', () => {
                     expect(
                       controller.store.getState().networkDetails,
                     ).toStrictEqual({
-                      EIPS: {
-                        1559: undefined,
-                      },
+                      EIPS: {},
                     });
                   },
                 });
@@ -4790,9 +4784,7 @@ function refreshNetworkTests({
         });
 
         expect(controller.store.getState().networkDetails).toStrictEqual({
-          EIPS: {
-            1559: undefined,
-          },
+          EIPS: {},
         });
       },
     );

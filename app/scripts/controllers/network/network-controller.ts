@@ -361,9 +361,7 @@ function buildDefaultNetworkStatusState(): NetworkStatus {
  */
 function buildDefaultNetworkDetailsState(): NetworkDetails {
   return {
-    EIPS: {
-      1559: undefined,
-    },
+    EIPS: {},
   };
 }
 
