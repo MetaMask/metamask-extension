@@ -47,12 +47,14 @@ jobs:
               run_id: runId
             })
             const artifact = artifacts.data.artifacts.find(a => a.name === 'next-semver-version')
-            return artifact.archive_download_url
+            return artifact?.archive_download_url
 
       - name: Download artifact # the artifact is created by the workflow used to create the release branch when a new release is cut
         run: |
-          curl -L -o artifact.zip -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ steps.get-artifact-url.outputs.result }}
-          unzip artifact.zip
+          if [ -n "${{ steps.get-artifact-url.outputs.result }}" ]; then
+            curl -L -o artifact.zip -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" ${{ steps.get-artifact-url.outputs.result }}
+            unzip artifact.zip
+          fi
 
       - name: Load next semver version
         id: load_var
