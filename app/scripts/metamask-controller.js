@@ -890,6 +890,8 @@ export default class MetamaskController extends EventEmitter {
         `${this.approvalController.name}:addRequest`,
         `${this.approvalController.name}:updateRequestState`,
         `${this.approvalController.name}:setFlowLoadingText`,
+        `${this.approvalController.name}:showSuccess`,
+        `${this.approvalController.name}:showError`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
         'ExecutionService:executeSnap',
@@ -3975,16 +3977,18 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
-        startApprovalFlow: this.approvalController.startFlow.bind(
-          this.approvalController,
+        startApprovalFlow: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'ApprovalController:startFlow',
         ),
-        endApprovalFlow: this.approvalController.endFlow.bind(
-          this.approvalController,
+        endApprovalFlow: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'ApprovalController:endFlow',
         ),
-        setApprovalFlowLoadingText:
-          this.approvalController.setFlowLoadingText.bind(
-            this.approvalController,
-          ),
+        setApprovalFlowLoadingText: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'ApprovalController:setFlowLoadingText',
+        ),
       }),
     );
     ///: END:ONLY_INCLUDE_IN

@@ -1,0 +1,219 @@
+diff --git a/dist/permitted/handlers.d.ts b/dist/permitted/handlers.d.ts
+index 4ec376c..08b04e0 100644
+--- a/dist/permitted/handlers.d.ts
++++ b/dist/permitted/handlers.d.ts
+@@ -3,4 +3,4 @@ export declare const methodHandlers: {
+     wallet_requestSnaps: import("@metamask/types").PermittedHandlerExport<import("./requestSnaps").RequestSnapsHooks, import("@metamask/permission-controller").RequestedPermissions, import("@metamask/snaps-utils").InstallSnapsResult>;
+     wallet_invokeSnap: import("@metamask/types").PermittedHandlerExport<void, import("@metamask/types").JsonRpcRequest<unknown>, unknown>;
+ };
+-export declare const handlers: (import("@metamask/types").PermittedHandlerExport<import("./getSnaps").GetSnapsHooks, void, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<import("./requestSnaps").RequestSnapsHooks, import("@metamask/permission-controller").RequestedPermissions, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<void, import("@metamask/types").JsonRpcRequest<unknown>, unknown>)[];
++export declare const handlers: (import("@metamask/types").PermittedHandlerExport<import("./requestSnaps").RequestSnapsHooks, import("@metamask/permission-controller").RequestedPermissions, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<import("./getSnaps").GetSnapsHooks, void, import("@metamask/snaps-utils").InstallSnapsResult> | import("@metamask/types").PermittedHandlerExport<void, import("@metamask/types").JsonRpcRequest<unknown>, unknown>)[];
+diff --git a/dist/permitted/requestSnaps.d.ts b/dist/permitted/requestSnaps.d.ts
+index a0c8b62..9c41aa6 100644
+--- a/dist/permitted/requestSnaps.d.ts
++++ b/dist/permitted/requestSnaps.d.ts
+@@ -1,3 +1,4 @@
++import { ApprovalFlowOptions, ApprovalFlowStartResult } from '@metamask/approval-controller';
+ import { PermissionConstraint, RequestedPermissions } from '@metamask/permission-controller';
+ import { SnapsPermissionRequest } from '@metamask/snaps-utils';
+ import { PermittedHandlerExport } from '@metamask/types';
+@@ -30,6 +31,9 @@ export declare type RequestSnapsHooks = {
+      * @returns The current permissions of the requesting origin.
+      */
+     getPermissions: () => Promise<Record<string, PermissionConstraint> | undefined>;
++    startApprovalFlow: (opts?: ApprovalFlowOptions) => ApprovalFlowStartResult;
++    endApprovalFlow: (id: string) => void;
++    setApprovalFlowLoadingText: (loadingText: string | null) => void;
+ };
+ /**
+  * Checks whether an origin has existing `wallet_snap` permission and
+diff --git a/dist/permitted/requestSnaps.js b/dist/permitted/requestSnaps.js
+index e5dbef9..e5d8433 100644
+--- a/dist/permitted/requestSnaps.js
++++ b/dist/permitted/requestSnaps.js
+@@ -10,6 +10,9 @@ const hookNames = {
+     installSnaps: true,
+     requestPermissions: true,
+     getPermissions: true,
++    startApprovalFlow: true,
++    endApprovalFlow: true,
++    setApprovalFlowLoadingText: true,
+ };
+ /**
+  * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.
+@@ -79,17 +82,20 @@ exports.getSnapPermissionsRequest = getSnapPermissionsRequest;
+  * @param hooks.requestPermissions - A function that requests permissions on
+  * behalf of a subject.
+  * @param hooks.getPermissions - A function that gets the current permissions.
++ * @param hooks.startApprovalFlow
+  * @returns A promise that resolves once the JSON-RPC response has been modified.
+  * @throws If the params are invalid.
+  */
+-async function requestSnapsImplementation(req, res, _next, end, { installSnaps, requestPermissions, getPermissions }) {
++async function requestSnapsImplementation(req, res, _next, end, { installSnaps, requestPermissions, getPermissions, startApprovalFlow, endApprovalFlow, setApprovalFlowLoadingText, }) {
+     const requestedSnaps = req.params;
+     if (!(0, utils_1.isObject)(requestedSnaps)) {
+         return end(eth_rpc_errors_1.ethErrors.rpc.invalidParams({
+             message: '"params" must be an object.',
+         }));
+     }
++    const { id: approvalFlowId } = startApprovalFlow();
+     try {
++        setApprovalFlowLoadingText('Loading Snap');
+         if (!Object.keys(requestedSnaps).length) {
+             throw new Error('Request must have at least one requested snap.');
+         }
+@@ -115,6 +121,9 @@ async function requestSnapsImplementation(req, res, _next, end, { installSnaps,
+     catch (error) {
+         res.error = error;
+     }
++    finally {
++        endApprovalFlow(approvalFlowId);
++    }
+     return end();
+ }
+ //# sourceMappingURL=requestSnaps.js.map
+\ No newline at end of file
+diff --git a/dist/permitted/requestSnaps.js.map b/dist/permitted/requestSnaps.js.map
+index 55a1d84..1665fb6 100644
+--- a/dist/permitted/requestSnaps.js.map
++++ b/dist/permitted/requestSnaps.js.map
+@@ -1 +1 @@
+-{"version":3,"file":"requestSnaps.js","sourceRoot":"","sources":["../../src/permitted/requestSnaps.ts"],"names":[],"mappings":";;;AAKA,uDAI+B;AAO/B,2CAA8D;AAC9D,mDAA2C;AAE3C,yDAAsE;AAEtE,gEAImC;AAEnC,MAAM,SAAS,GAAyC;IACtD,YAAY,EAAE,IAAI;IAClB,kBAAkB,EAAE,IAAI;IACxB,cAAc,EAAE,IAAI;CACrB,CAAC;AAEF;;GAEG;AACU,QAAA,mBAAmB,GAI5B;IACF,WAAW,EAAE,CAAC,qBAAqB,CAAC;IACpC,cAAc,EAAE,0BAA0B;IAC1C,SAAS;CACV,CAAC;AAgCF;;;;;;;GAOG;AACH,SAAgB,iBAAiB,CAC/B,mBAAyD,EACzD,cAAuC;IAEvC,MAAM,YAAY,GAAG,mBAAmB,CACtC,uCAA0B,CAC3B,EAAE,OAAO,EAAE,IAAI,CACd,CAAC,MAA4B,EAAE,EAAE,CAAC,MAAM,CAAC,IAAI,KAAK,4BAAc,CAAC,OAAO,CACzE,CAAC;IAEF,MAAM,cAAc,GAAG,YAAY,EAAE,KAAK,CAAC;IAC3C,IAAI,IAAA,gBAAQ,EAAC,cAAc,CAAC,EAAE;QAC5B,OAAO,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC,KAAK,CAAC,CAAC,aAAa,EAAE,EAAE,CACzD,IAAA,mBAAW,EAAC,cAAc,EAAE,aAAa,CAAC,CAC3C,CAAC;KACH;IACD,OAAO,KAAK,CAAC;AACf,CAAC;AAjBD,8CAiBC;AAED;;;;;;;GAOG;AACH,SAAgB,yBAAyB,CACvC,mBAAyD,EACzD,oBAA6B;IAE7B,IAAA,4CAA8B,EAAC,oBAAoB,CAAC,CAAC;IAErD,IAAI,CAAC,mBAAmB,CAAC,uCAA0B,CAAC,EAAE;QACpD,OAAO,oBAAoB,CAAC;KAC7B;IAED,MAAM,YAAY,GAAG,mBAAmB,CACtC,uCAA0B,CAC3B,CAAC,OAAO,EAAE,IAAI,CACb,CAAC,MAA4B,EAAE,EAAE,CAAC,MAAM,CAAC,IAAI,KAAK,4BAAc,CAAC,OAAO,CACzE,CAAC;IAEF,MAAM,cAAc,GAAI,YAAY,EAAE,KAA8B,IAAI,EAAE,CAAC;IAE3E,MAAM,cAAc,GAClB,oBAAoB,CAAC,uCAA0B,CAAC,CAAC,OAAO,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC;IAEpE,MAAM,SAAS,GAAG,IAAI,GAAG,CAAC;QACxB,GAAG,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC;QAC9B,GAAG,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC;KAC/B,CAAC,CAAC;IAEH,MAAM,iBAAiB,GAAG,CAAC,GAAG,SAAS,CAAC,CAAC,MAAM,CAC7C,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;QAClB,OAAO,CAAC,MAAM,CAAC,GAAG,cAAc,CAAC,MAAM,CAAC,IAAI,cAAc,CAAC,MAAM,CAAC,CAAC;QACnE,OAAO,OAAO,CAAC;IACjB,CAAC,EACD,EAAE,CACH,CAAC;IAEF,oBAAoB,CAAC,uCAA0B,CAAC,CAAC,OAAO,CAAC,CAAC,CAAC,CAAC,KAAK;QAC/D,iBAAiB,CAAC;IAEpB,OAAO,oBAAoB,CAAC;AAC9B,CAAC;AAtCD,8DAsCC;AAED;;;;;;;;;;;;;;;;GAgBG;AACH,KAAK,UAAU,0BAA0B,CACvC,GAAyC,EACzC,GAA+C,EAC/C,KAAc,EACd,GAA6B,EAC7B,EAAE,YAAY,EAAE,kBAAkB,EAAE,cAAc,EAAqB;IAEvE,MAAM,cAAc,GAAG,GAAG,CAAC,MAAM,CAAC;IAClC,IAAI,CAAC,IAAA,gBAAQ,EAAC,cAAc,CAAC,EAAE;QAC7B,OAAO,GAAG,CACR,0BAAS,CAAC,GAAG,CAAC,aAAa,CAAC;YAC1B,OAAO,EAAE,6BAA6B;SACvC,CAAC,CACH,CAAC;KACH;IAED,IAAI;QACF,IAAI,CAAC,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC,MAAM,EAAE;YACvC,MAAM,IAAI,KAAK,CAAC,gDAAgD,CAAC,CAAC;SACnE;QAED,MAAM,oBAAoB,GAAG;YAC3B,CAAC,uCAA0B,CAAC,EAAE;gBAC5B,OAAO,EAAE,CAAC,EAAE,IAAI,EAAE,4BAAc,CAAC,OAAO,EAAE,KAAK,EAAE,cAAc,EAAE,CAAC;aACnE;SACsB,CAAC;QAC1B,MAAM,mBAAmB,GAAG,MAAM,cAAc,EAAE,CAAC;QAEnD,IAAI,CAAC,mBAAmB,EAAE;YACxB,MAAM,CAAC,EAAE,QAAQ,CAAC,GAAG,MAAM,kBAAkB,CAAC,oBAAoB,CAAC,CAAC;YACpE,GAAG,CAAC,MAAM,GAAG,QAAQ,CAAC,IAAI,CACxB,uCAA0B,CACL,CAAC;SACzB;aAAM,IAAI,iBAAiB,CAAC,mBAAmB,EAAE,cAAc,CAAC,EAAE;YACjE,GAAG,CAAC,MAAM,GAAG,MAAM,IAAA,qCAAkB,EAAC,cAAc,EAAE,YAAY,CAAC,CAAC;SACrE;aAAM;YACL,MAAM,wBAAwB,GAAG,yBAAyB,CACxD,mBAAmB,EACnB,oBAAoB,CACrB,CAAC;YAEF,MAAM,CAAC,EAAE,QAAQ,CAAC,GAAG,MAAM,kBAAkB,CAAC,wBAAwB,CAAC,CAAC;YACxE,GAAG,CAAC,MAAM,GAAG,QAAQ,CAAC,IAAI,CACxB,uCAA0B,CACL,CAAC;SACzB;KACF;IAAC,OAAO,KAAK,EAAE;QACd,GAAG,CAAC,KAAK,GAAG,KAAK,CAAC;KACnB;IAED,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import {\n  PermissionConstraint,\n  RequestedPermissions,\n  Caveat,\n} from '@metamask/permission-controller';\nimport {\n  SnapCaveatType,\n  SnapsPermissionRequest,\n  verifyRequestedSnapPermissions,\n} from '@metamask/snaps-utils';\nimport {\n  PermittedHandlerExport,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n  JsonRpcEngineEndCallback,\n} from '@metamask/types';\nimport { hasProperty, isObject, Json } from '@metamask/utils';\nimport { ethErrors } from 'eth-rpc-errors';\n\nimport { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';\nimport { MethodHooksObject } from '../utils';\nimport {\n  handleInstallSnaps,\n  InstallSnapsHook,\n  InstallSnapsResult,\n} from './common/snapInstallation';\n\nconst hookNames: MethodHooksObject<RequestSnapsHooks> = {\n  installSnaps: true,\n  requestPermissions: true,\n  getPermissions: true,\n};\n\n/**\n * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.\n */\nexport const requestSnapsHandler: PermittedHandlerExport<\n  RequestSnapsHooks,\n  RequestedPermissions,\n  InstallSnapsResult\n> = {\n  methodNames: ['wallet_requestSnaps'],\n  implementation: requestSnapsImplementation,\n  hookNames,\n};\n\nexport type RequestSnapsHooks = {\n  /**\n   * Installs the requested snaps if they are permitted.\n   */\n  installSnaps: InstallSnapsHook;\n\n  /**\n   * Initiates a permission request for the requesting origin.\n   *\n   * @returns The result of the permissions request.\n   */\n  requestPermissions: (\n    permissions: RequestedPermissions,\n  ) => Promise<\n    [\n      Record<string, PermissionConstraint>,\n      { data: Record<string, unknown>; id: string; origin: string },\n    ]\n  >;\n\n  /**\n   * Gets the current permissions for the requesting origin.\n   *\n   * @returns The current permissions of the requesting origin.\n   */\n  getPermissions: () => Promise<\n    Record<string, PermissionConstraint> | undefined\n  >;\n};\n\n/**\n * Checks whether an origin has existing `wallet_snap` permission and\n * whether or not it has the requested snapIds caveat.\n *\n * @param existingPermissions - The existing permissions for the origin.\n * @param requestedSnaps - The requested snaps.\n * @returns True if the existing permissions satisfy the requested snaps, otherwise false.\n */\nexport function hasRequestedSnaps(\n  existingPermissions: Record<string, PermissionConstraint>,\n  requestedSnaps: Record<string, unknown>,\n): boolean {\n  const snapIdCaveat = existingPermissions[\n    WALLET_SNAP_PERMISSION_KEY\n  ]?.caveats?.find(\n    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,\n  );\n\n  const permittedSnaps = snapIdCaveat?.value;\n  if (isObject(permittedSnaps)) {\n    return Object.keys(requestedSnaps).every((requestedSnap) =>\n      hasProperty(permittedSnaps, requestedSnap),\n    );\n  }\n  return false;\n}\n\n/**\n * Constructs a valid permission request with merged caveats based on existing permissions\n * and the requested snaps.\n *\n * @param existingPermissions - The existing permissions for the origin.\n * @param requestedPermissions - The permission request passed into `requestPermissions`.\n * @returns `requestedPermissions`.\n */\nexport function getSnapPermissionsRequest(\n  existingPermissions: Record<string, PermissionConstraint>,\n  requestedPermissions: unknown,\n): SnapsPermissionRequest {\n  verifyRequestedSnapPermissions(requestedPermissions);\n\n  if (!existingPermissions[WALLET_SNAP_PERMISSION_KEY]) {\n    return requestedPermissions;\n  }\n\n  const snapIdCaveat = existingPermissions[\n    WALLET_SNAP_PERMISSION_KEY\n  ].caveats?.find(\n    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,\n  );\n\n  const permittedSnaps = (snapIdCaveat?.value as Record<string, Json>) ?? {};\n\n  const requestedSnaps =\n    requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;\n\n  const snapIdSet = new Set([\n    ...Object.keys(permittedSnaps),\n    ...Object.keys(requestedSnaps),\n  ]);\n\n  const mergedCaveatValue = [...snapIdSet].reduce<Record<string, Json>>(\n    (request, snapId) => {\n      request[snapId] = requestedSnaps[snapId] ?? permittedSnaps[snapId];\n      return request;\n    },\n    {},\n  );\n\n  requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value =\n    mergedCaveatValue;\n\n  return requestedPermissions;\n}\n\n/**\n * The `wallet_requestSnaps` method implementation.\n * Tries to install the requested snaps and adds them to the JSON-RPC response.\n *\n * @param req - The JSON-RPC request object.\n * @param res - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.installSnaps - A function that tries to install a given snap, prompting the user if necessary.\n * @param hooks.requestPermissions - A function that requests permissions on\n * behalf of a subject.\n * @param hooks.getPermissions - A function that gets the current permissions.\n * @returns A promise that resolves once the JSON-RPC response has been modified.\n * @throws If the params are invalid.\n */\nasync function requestSnapsImplementation(\n  req: JsonRpcRequest<RequestedPermissions>,\n  res: PendingJsonRpcResponse<InstallSnapsResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  { installSnaps, requestPermissions, getPermissions }: RequestSnapsHooks,\n): Promise<void> {\n  const requestedSnaps = req.params;\n  if (!isObject(requestedSnaps)) {\n    return end(\n      ethErrors.rpc.invalidParams({\n        message: '\"params\" must be an object.',\n      }),\n    );\n  }\n\n  try {\n    if (!Object.keys(requestedSnaps).length) {\n      throw new Error('Request must have at least one requested snap.');\n    }\n\n    const requestedPermissions = {\n      [WALLET_SNAP_PERMISSION_KEY]: {\n        caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],\n      },\n    } as RequestedPermissions;\n    const existingPermissions = await getPermissions();\n\n    if (!existingPermissions) {\n      const [, metadata] = await requestPermissions(requestedPermissions);\n      res.result = metadata.data[\n        WALLET_SNAP_PERMISSION_KEY\n      ] as InstallSnapsResult;\n    } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {\n      res.result = await handleInstallSnaps(requestedSnaps, installSnaps);\n    } else {\n      const mergedPermissionsRequest = getSnapPermissionsRequest(\n        existingPermissions,\n        requestedPermissions,\n      );\n\n      const [, metadata] = await requestPermissions(mergedPermissionsRequest);\n      res.result = metadata.data[\n        WALLET_SNAP_PERMISSION_KEY\n      ] as InstallSnapsResult;\n    }\n  } catch (error) {\n    res.error = error;\n  }\n\n  return end();\n}\n"]}
+\ No newline at end of file
++{"version":3,"file":"requestSnaps.js","sourceRoot":"","sources":["../../src/permitted/requestSnaps.ts"],"names":[],"mappings":";;;AASA,uDAI+B;AAO/B,2CAA8D;AAC9D,mDAA2C;AAE3C,yDAAsE;AAEtE,gEAImC;AAEnC,MAAM,SAAS,GAAyC;IACtD,YAAY,EAAE,IAAI;IAClB,kBAAkB,EAAE,IAAI;IACxB,cAAc,EAAE,IAAI;IACpB,iBAAiB,EAAE,IAAI;IACvB,eAAe,EAAE,IAAI;IACrB,0BAA0B,EAAE,IAAI;CACjC,CAAC;AAEF;;GAEG;AACU,QAAA,mBAAmB,GAI5B;IACF,WAAW,EAAE,CAAC,qBAAqB,CAAC;IACpC,cAAc,EAAE,0BAA0B;IAC1C,SAAS;CACV,CAAC;AAsCF;;;;;;;GAOG;AACH,SAAgB,iBAAiB,CAC/B,mBAAyD,EACzD,cAAuC;IAEvC,MAAM,YAAY,GAAG,mBAAmB,CACtC,uCAA0B,CAC3B,EAAE,OAAO,EAAE,IAAI,CACd,CAAC,MAA4B,EAAE,EAAE,CAAC,MAAM,CAAC,IAAI,KAAK,4BAAc,CAAC,OAAO,CACzE,CAAC;IAEF,MAAM,cAAc,GAAG,YAAY,EAAE,KAAK,CAAC;IAC3C,IAAI,IAAA,gBAAQ,EAAC,cAAc,CAAC,EAAE;QAC5B,OAAO,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC,KAAK,CAAC,CAAC,aAAa,EAAE,EAAE,CACzD,IAAA,mBAAW,EAAC,cAAc,EAAE,aAAa,CAAC,CAC3C,CAAC;KACH;IACD,OAAO,KAAK,CAAC;AACf,CAAC;AAjBD,8CAiBC;AAED;;;;;;;GAOG;AACH,SAAgB,yBAAyB,CACvC,mBAAyD,EACzD,oBAA6B;IAE7B,IAAA,4CAA8B,EAAC,oBAAoB,CAAC,CAAC;IAErD,IAAI,CAAC,mBAAmB,CAAC,uCAA0B,CAAC,EAAE;QACpD,OAAO,oBAAoB,CAAC;KAC7B;IAED,MAAM,YAAY,GAAG,mBAAmB,CACtC,uCAA0B,CAC3B,CAAC,OAAO,EAAE,IAAI,CACb,CAAC,MAA4B,EAAE,EAAE,CAAC,MAAM,CAAC,IAAI,KAAK,4BAAc,CAAC,OAAO,CACzE,CAAC;IAEF,MAAM,cAAc,GAAI,YAAY,EAAE,KAA8B,IAAI,EAAE,CAAC;IAE3E,MAAM,cAAc,GAClB,oBAAoB,CAAC,uCAA0B,CAAC,CAAC,OAAO,CAAC,CAAC,CAAC,CAAC,KAAK,CAAC;IAEpE,MAAM,SAAS,GAAG,IAAI,GAAG,CAAC;QACxB,GAAG,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC;QAC9B,GAAG,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC;KAC/B,CAAC,CAAC;IAEH,MAAM,iBAAiB,GAAG,CAAC,GAAG,SAAS,CAAC,CAAC,MAAM,CAC7C,CAAC,OAAO,EAAE,MAAM,EAAE,EAAE;QAClB,OAAO,CAAC,MAAM,CAAC,GAAG,cAAc,CAAC,MAAM,CAAC,IAAI,cAAc,CAAC,MAAM,CAAC,CAAC;QACnE,OAAO,OAAO,CAAC;IACjB,CAAC,EACD,EAAE,CACH,CAAC;IAEF,oBAAoB,CAAC,uCAA0B,CAAC,CAAC,OAAO,CAAC,CAAC,CAAC,CAAC,KAAK;QAC/D,iBAAiB,CAAC;IAEpB,OAAO,oBAAoB,CAAC;AAC9B,CAAC;AAtCD,8DAsCC;AAED;;;;;;;;;;;;;;;;;GAiBG;AACH,KAAK,UAAU,0BAA0B,CACvC,GAAyC,EACzC,GAA+C,EAC/C,KAAc,EACd,GAA6B,EAC7B,EACE,YAAY,EACZ,kBAAkB,EAClB,cAAc,EACd,iBAAiB,EACjB,eAAe,EACf,0BAA0B,GACR;IAEpB,MAAM,cAAc,GAAG,GAAG,CAAC,MAAM,CAAC;IAClC,IAAI,CAAC,IAAA,gBAAQ,EAAC,cAAc,CAAC,EAAE;QAC7B,OAAO,GAAG,CACR,0BAAS,CAAC,GAAG,CAAC,aAAa,CAAC;YAC1B,OAAO,EAAE,6BAA6B;SACvC,CAAC,CACH,CAAC;KACH;IAED,MAAM,EAAE,EAAE,EAAE,cAAc,EAAE,GAAG,iBAAiB,EAAE,CAAC;IAEnD,IAAI;QACF,0BAA0B,CAAC,cAAc,CAAC,CAAC;QAE3C,IAAI,CAAC,MAAM,CAAC,IAAI,CAAC,cAAc,CAAC,CAAC,MAAM,EAAE;YACvC,MAAM,IAAI,KAAK,CAAC,gDAAgD,CAAC,CAAC;SACnE;QAED,MAAM,oBAAoB,GAAG;YAC3B,CAAC,uCAA0B,CAAC,EAAE;gBAC5B,OAAO,EAAE,CAAC,EAAE,IAAI,EAAE,4BAAc,CAAC,OAAO,EAAE,KAAK,EAAE,cAAc,EAAE,CAAC;aACnE;SACsB,CAAC;QAC1B,MAAM,mBAAmB,GAAG,MAAM,cAAc,EAAE,CAAC;QAEnD,IAAI,CAAC,mBAAmB,EAAE;YACxB,MAAM,CAAC,EAAE,QAAQ,CAAC,GAAG,MAAM,kBAAkB,CAAC,oBAAoB,CAAC,CAAC;YACpE,GAAG,CAAC,MAAM,GAAG,QAAQ,CAAC,IAAI,CACxB,uCAA0B,CACL,CAAC;SACzB;aAAM,IAAI,iBAAiB,CAAC,mBAAmB,EAAE,cAAc,CAAC,EAAE;YACjE,GAAG,CAAC,MAAM,GAAG,MAAM,IAAA,qCAAkB,EAAC,cAAc,EAAE,YAAY,CAAC,CAAC;SACrE;aAAM;YACL,MAAM,wBAAwB,GAAG,yBAAyB,CACxD,mBAAmB,EACnB,oBAAoB,CACrB,CAAC;YAEF,MAAM,CAAC,EAAE,QAAQ,CAAC,GAAG,MAAM,kBAAkB,CAAC,wBAAwB,CAAC,CAAC;YACxE,GAAG,CAAC,MAAM,GAAG,QAAQ,CAAC,IAAI,CACxB,uCAA0B,CACL,CAAC;SACzB;KACF;IAAC,OAAO,KAAK,EAAE;QACd,GAAG,CAAC,KAAK,GAAG,KAAK,CAAC;KACnB;YAAS;QACR,eAAe,CAAC,cAAc,CAAC,CAAC;KACjC;IAED,OAAO,GAAG,EAAE,CAAC;AACf,CAAC","sourcesContent":["import {\n  ApprovalFlowOptions,\n  ApprovalFlowStartResult,\n} from '@metamask/approval-controller';\nimport {\n  PermissionConstraint,\n  RequestedPermissions,\n  Caveat,\n} from '@metamask/permission-controller';\nimport {\n  SnapCaveatType,\n  SnapsPermissionRequest,\n  verifyRequestedSnapPermissions,\n} from '@metamask/snaps-utils';\nimport {\n  PermittedHandlerExport,\n  JsonRpcRequest,\n  PendingJsonRpcResponse,\n  JsonRpcEngineEndCallback,\n} from '@metamask/types';\nimport { hasProperty, isObject, Json } from '@metamask/utils';\nimport { ethErrors } from 'eth-rpc-errors';\n\nimport { WALLET_SNAP_PERMISSION_KEY } from '../restricted/invokeSnap';\nimport { MethodHooksObject } from '../utils';\nimport {\n  handleInstallSnaps,\n  InstallSnapsHook,\n  InstallSnapsResult,\n} from './common/snapInstallation';\n\nconst hookNames: MethodHooksObject<RequestSnapsHooks> = {\n  installSnaps: true,\n  requestPermissions: true,\n  getPermissions: true,\n  startApprovalFlow: true,\n  endApprovalFlow: true,\n  setApprovalFlowLoadingText: true,\n};\n\n/**\n * `wallet_requestSnaps` installs the requested Snaps and requests permission to use them if necessary.\n */\nexport const requestSnapsHandler: PermittedHandlerExport<\n  RequestSnapsHooks,\n  RequestedPermissions,\n  InstallSnapsResult\n> = {\n  methodNames: ['wallet_requestSnaps'],\n  implementation: requestSnapsImplementation,\n  hookNames,\n};\n\nexport type RequestSnapsHooks = {\n  /**\n   * Installs the requested snaps if they are permitted.\n   */\n  installSnaps: InstallSnapsHook;\n\n  /**\n   * Initiates a permission request for the requesting origin.\n   *\n   * @returns The result of the permissions request.\n   */\n  requestPermissions: (\n    permissions: RequestedPermissions,\n  ) => Promise<\n    [\n      Record<string, PermissionConstraint>,\n      { data: Record<string, unknown>; id: string; origin: string },\n    ]\n  >;\n\n  /**\n   * Gets the current permissions for the requesting origin.\n   *\n   * @returns The current permissions of the requesting origin.\n   */\n  getPermissions: () => Promise<\n    Record<string, PermissionConstraint> | undefined\n  >;\n\n  startApprovalFlow: (opts?: ApprovalFlowOptions) => ApprovalFlowStartResult;\n\n  endApprovalFlow: (id: string) => void;\n\n  setApprovalFlowLoadingText: (loadingText: string | null) => void;\n};\n\n/**\n * Checks whether an origin has existing `wallet_snap` permission and\n * whether or not it has the requested snapIds caveat.\n *\n * @param existingPermissions - The existing permissions for the origin.\n * @param requestedSnaps - The requested snaps.\n * @returns True if the existing permissions satisfy the requested snaps, otherwise false.\n */\nexport function hasRequestedSnaps(\n  existingPermissions: Record<string, PermissionConstraint>,\n  requestedSnaps: Record<string, unknown>,\n): boolean {\n  const snapIdCaveat = existingPermissions[\n    WALLET_SNAP_PERMISSION_KEY\n  ]?.caveats?.find(\n    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,\n  );\n\n  const permittedSnaps = snapIdCaveat?.value;\n  if (isObject(permittedSnaps)) {\n    return Object.keys(requestedSnaps).every((requestedSnap) =>\n      hasProperty(permittedSnaps, requestedSnap),\n    );\n  }\n  return false;\n}\n\n/**\n * Constructs a valid permission request with merged caveats based on existing permissions\n * and the requested snaps.\n *\n * @param existingPermissions - The existing permissions for the origin.\n * @param requestedPermissions - The permission request passed into `requestPermissions`.\n * @returns `requestedPermissions`.\n */\nexport function getSnapPermissionsRequest(\n  existingPermissions: Record<string, PermissionConstraint>,\n  requestedPermissions: unknown,\n): SnapsPermissionRequest {\n  verifyRequestedSnapPermissions(requestedPermissions);\n\n  if (!existingPermissions[WALLET_SNAP_PERMISSION_KEY]) {\n    return requestedPermissions;\n  }\n\n  const snapIdCaveat = existingPermissions[\n    WALLET_SNAP_PERMISSION_KEY\n  ].caveats?.find(\n    (caveat: Caveat<string, Json>) => caveat.type === SnapCaveatType.SnapIds,\n  );\n\n  const permittedSnaps = (snapIdCaveat?.value as Record<string, Json>) ?? {};\n\n  const requestedSnaps =\n    requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value;\n\n  const snapIdSet = new Set([\n    ...Object.keys(permittedSnaps),\n    ...Object.keys(requestedSnaps),\n  ]);\n\n  const mergedCaveatValue = [...snapIdSet].reduce<Record<string, Json>>(\n    (request, snapId) => {\n      request[snapId] = requestedSnaps[snapId] ?? permittedSnaps[snapId];\n      return request;\n    },\n    {},\n  );\n\n  requestedPermissions[WALLET_SNAP_PERMISSION_KEY].caveats[0].value =\n    mergedCaveatValue;\n\n  return requestedPermissions;\n}\n\n/**\n * The `wallet_requestSnaps` method implementation.\n * Tries to install the requested snaps and adds them to the JSON-RPC response.\n *\n * @param req - The JSON-RPC request object.\n * @param res - The JSON-RPC response object.\n * @param _next - The `json-rpc-engine` \"next\" callback. Not used by this\n * function.\n * @param end - The `json-rpc-engine` \"end\" callback.\n * @param hooks - The RPC method hooks.\n * @param hooks.installSnaps - A function that tries to install a given snap, prompting the user if necessary.\n * @param hooks.requestPermissions - A function that requests permissions on\n * behalf of a subject.\n * @param hooks.getPermissions - A function that gets the current permissions.\n * @param hooks.startApprovalFlow\n * @returns A promise that resolves once the JSON-RPC response has been modified.\n * @throws If the params are invalid.\n */\nasync function requestSnapsImplementation(\n  req: JsonRpcRequest<RequestedPermissions>,\n  res: PendingJsonRpcResponse<InstallSnapsResult>,\n  _next: unknown,\n  end: JsonRpcEngineEndCallback,\n  {\n    installSnaps,\n    requestPermissions,\n    getPermissions,\n    startApprovalFlow,\n    endApprovalFlow,\n    setApprovalFlowLoadingText,\n  }: RequestSnapsHooks,\n): Promise<void> {\n  const requestedSnaps = req.params;\n  if (!isObject(requestedSnaps)) {\n    return end(\n      ethErrors.rpc.invalidParams({\n        message: '\"params\" must be an object.',\n      }),\n    );\n  }\n\n  const { id: approvalFlowId } = startApprovalFlow();\n\n  try {\n    setApprovalFlowLoadingText('Loading Snap');\n\n    if (!Object.keys(requestedSnaps).length) {\n      throw new Error('Request must have at least one requested snap.');\n    }\n\n    const requestedPermissions = {\n      [WALLET_SNAP_PERMISSION_KEY]: {\n        caveats: [{ type: SnapCaveatType.SnapIds, value: requestedSnaps }],\n      },\n    } as RequestedPermissions;\n    const existingPermissions = await getPermissions();\n\n    if (!existingPermissions) {\n      const [, metadata] = await requestPermissions(requestedPermissions);\n      res.result = metadata.data[\n        WALLET_SNAP_PERMISSION_KEY\n      ] as InstallSnapsResult;\n    } else if (hasRequestedSnaps(existingPermissions, requestedSnaps)) {\n      res.result = await handleInstallSnaps(requestedSnaps, installSnaps);\n    } else {\n      const mergedPermissionsRequest = getSnapPermissionsRequest(\n        existingPermissions,\n        requestedPermissions,\n      );\n\n      const [, metadata] = await requestPermissions(mergedPermissionsRequest);\n      res.result = metadata.data[\n        WALLET_SNAP_PERMISSION_KEY\n      ] as InstallSnapsResult;\n    }\n  } catch (error) {\n    res.error = error;\n  } finally {\n    endApprovalFlow(approvalFlowId);\n  }\n\n  return end();\n}\n"]}
+\ No newline at end of file
+diff --git a/dist/restricted/dialog.d.ts b/dist/restricted/dialog.d.ts
+index ccf97f9..a060632 100644
+--- a/dist/restricted/dialog.d.ts
++++ b/dist/restricted/dialog.d.ts
+@@ -37,7 +37,7 @@ export declare const dialogBuilder: Readonly<{
+ }>;
+ declare const DialogParametersStruct: Struct<{
+     type: "alert";
+-    content: import("@metamask/snaps-ui").Panel | {
++    content: {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Copyable;
+     } | {
+@@ -45,7 +45,7 @@ declare const DialogParametersStruct: Struct<{
+     } | {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Heading;
+-    } | {
++    } | import("@metamask/snaps-ui").Panel | {
+         type: import("@metamask/snaps-ui").NodeType.Spinner;
+     } | {
+         value: string;
+@@ -53,7 +53,7 @@ declare const DialogParametersStruct: Struct<{
+     };
+ } | {
+     type: "confirmation";
+-    content: import("@metamask/snaps-ui").Panel | {
++    content: {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Copyable;
+     } | {
+@@ -61,7 +61,7 @@ declare const DialogParametersStruct: Struct<{
+     } | {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Heading;
+-    } | {
++    } | import("@metamask/snaps-ui").Panel | {
+         type: import("@metamask/snaps-ui").NodeType.Spinner;
+     } | {
+         value: string;
+@@ -69,7 +69,7 @@ declare const DialogParametersStruct: Struct<{
+     };
+ } | {
+     type: "prompt";
+-    content: import("@metamask/snaps-ui").Panel | {
++    content: {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Copyable;
+     } | {
+@@ -77,7 +77,7 @@ declare const DialogParametersStruct: Struct<{
+     } | {
+         value: string;
+         type: import("@metamask/snaps-ui").NodeType.Heading;
+-    } | {
++    } | import("@metamask/snaps-ui").Panel | {
+         type: import("@metamask/snaps-ui").NodeType.Spinner;
+     } | {
+         value: string;
+diff --git a/dist/restricted/index.d.ts b/dist/restricted/index.d.ts
+index 950f5df..5ec51d4 100644
+--- a/dist/restricted/index.d.ts
++++ b/dist/restricted/index.d.ts
+@@ -23,7 +23,7 @@ export declare const restrictedMethodPermissionBuilders: {
+             targetKey: "snap_dialog";
+             methodImplementation: (args: import("@metamask/permission-controller").RestrictedMethodOptions<{
+                 type: "alert";
+-                content: import("@metamask/snaps-ui").Panel | {
++                content: {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Copyable;
+                 } | {
+@@ -31,7 +31,7 @@ export declare const restrictedMethodPermissionBuilders: {
+                 } | {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Heading;
+-                } | {
++                } | import("@metamask/snaps-ui").Panel | {
+                     type: import("@metamask/snaps-ui").NodeType.Spinner;
+                 } | {
+                     value: string;
+@@ -39,7 +39,7 @@ export declare const restrictedMethodPermissionBuilders: {
+                 };
+             } | {
+                 type: "confirmation";
+-                content: import("@metamask/snaps-ui").Panel | {
++                content: {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Copyable;
+                 } | {
+@@ -47,7 +47,7 @@ export declare const restrictedMethodPermissionBuilders: {
+                 } | {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Heading;
+-                } | {
++                } | import("@metamask/snaps-ui").Panel | {
+                     type: import("@metamask/snaps-ui").NodeType.Spinner;
+                 } | {
+                     value: string;
+@@ -55,7 +55,7 @@ export declare const restrictedMethodPermissionBuilders: {
+                 };
+             } | {
+                 type: "prompt";
+-                content: import("@metamask/snaps-ui").Panel | {
++                content: {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Copyable;
+                 } | {
+@@ -63,7 +63,7 @@ export declare const restrictedMethodPermissionBuilders: {
+                 } | {
+                     value: string;
+                     type: import("@metamask/snaps-ui").NodeType.Heading;
+-                } | {
++                } | import("@metamask/snaps-ui").Panel | {
+                     type: import("@metamask/snaps-ui").NodeType.Spinner;
+                 } | {
+                     value: string;
+@@ -84,7 +84,7 @@ export declare const restrictedMethodPermissionBuilders: {
+             targetKey: "snap_getBip32Entropy";
+             methodImplementation: (args: import("@metamask/permission-controller").RestrictedMethodOptions<{
+                 path: string[];
+-                curve: "ed25519" | "secp256k1";
++                curve: "secp256k1" | "ed25519";
+             }>) => Promise<import("@metamask/key-tree").JsonSLIP10Node>;
+             allowedCaveats: readonly [string, ...string[]] | null;
+             validator: import("@metamask/permission-controller").PermissionValidatorConstraint;
+@@ -100,7 +100,7 @@ export declare const restrictedMethodPermissionBuilders: {
+             targetKey: "snap_getBip32PublicKey";
+             methodImplementation: (args: import("@metamask/permission-controller").RestrictedMethodOptions<{
+                 path: ["m", ...(`${number}` | `${number}'`)[]];
+-                curve: "ed25519" | "secp256k1";
++                curve: "secp256k1" | "ed25519";
+                 compressed?: boolean | undefined;
+             }>) => Promise<string>;
+             allowedCaveats: readonly [string, ...string[]] | null;
