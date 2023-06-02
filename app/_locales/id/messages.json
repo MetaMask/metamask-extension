@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Hubungkan akun atau buat baru"
   },
-  "connectHardwareWallet": {
-    "message": "Hubungkan dompet perangkat keras"
-  },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Buat"
-  },
-  "createAccount": {
-    "message": "Buat akun"
   },
   "createNewWallet": {
     "message": "Buat dompet baru"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko ditanggung sendiri!"
   },
-  "importTokens": {
-    "message": "impor token"
-  },
   "importTokensCamelCase": {
     "message": "Impor token"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "missingToken": {
-    "message": "Tidak melihat token Anda?"
-  },
   "moreComingSoon": {
     "message": "Selanjutnya akan segera hadir..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "notifications": {
-    "message": "Notifikasi"
   },
   "notifications10ActionText": {
     "message": "Lihat di Pengaturan",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Pilih ini untuk menampilkan bidang data hex di layar kirim"
   },
-  "showHide": {
-    "message": "Tampil/Sembunyi"
-  },
   "showIncomingTransactions": {
     "message": "Tampilkan transaksi masuk"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Terhubung"
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "Alihkan permintaan eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 jaringan pengujian",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
-  },
-  "troubleTokenBalances": {
-    "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Dengan memberikan izin, Anda mengizinkan $1 berikut untuk mengakses dana Anda"

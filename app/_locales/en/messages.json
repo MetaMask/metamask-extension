@@ -654,6 +654,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "click": {
+    "message": "Click"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -741,9 +744,6 @@
   },
   "connectCustodialAccountTitle": {
     "message": "Custodial Accounts"
-  },
-  "connectHardwareWallet": {
-    "message": "Connect hardware wallet"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -891,9 +891,6 @@
   },
   "create": {
     "message": "Create"
-  },
-  "createAccount": {
-    "message": "Create account"
   },
   "createNewWallet": {
     "message": "Create a new wallet"
@@ -1562,6 +1559,10 @@
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
+  "forMoreDetails": {
+    "message": "for more details.",
+    "description": "Click for more details message in popup modal displayed when installing a snap for the first time."
+  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
@@ -1791,7 +1792,9 @@
     "message": "full access to your wallet and funds.",
     "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
   },
-  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked" },
+  "holdToRevealLockedLabel": {
+    "message": "hold to reveal circle locked"
+  },
   "holdToRevealPrivateKey": {
     "message": "Hold to reveal Private Key"
   },
@@ -1804,7 +1807,9 @@
   "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
   },
-  "holdToRevealUnlockedLabel": { "message": "hold to reveal circle unlocked" },
+  "holdToRevealUnlockedLabel": {
+    "message": "hold to reveal circle unlocked"
+  },
   "id": {
     "message": "Id"
   },
@@ -1871,9 +1876,6 @@
   },
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
-  },
-  "importTokens": {
-    "message": "import tokens"
   },
   "importTokensCamelCase": {
     "message": "Import tokens"
@@ -2254,9 +2256,6 @@
   },
   "missingSettingRequest": {
     "message": "Request here"
-  },
-  "missingToken": {
-    "message": "Don't see your token?"
   },
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
@@ -3708,9 +3707,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showHide": {
-    "message": "Show/hide"
-  },
   "showIncomingTransactions": {
     "message": "Show incoming transactions"
   },
@@ -3843,8 +3839,28 @@
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "Installing a snap retrieves data from third parties. They may collect your personal information.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "MetaMask has no access to this information.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
+  },
+  "snapsThirdPartyNoticeReadMorePartOne": {
+    "message": "Any information you share with third-party-developed snaps will be collected directly by those snaps in accordance with their privacy policies. ",
+    "description": "First part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsThirdPartyNoticeReadMorePartThree": {
+    "message": "MetaMask has no access to information you share with these third parties.",
+    "description": "Third part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsThirdPartyNoticeReadMorePartTwo": {
+    "message": "During the installation of a snap, npmjs (npmjs.com) and AWS (aws.amazon.com) may collect your IP address. Please refer to their privacy policies for more information.",
+    "description": "Second part of a tooltip content in popup modal displayed when installing a snap for the first time."
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -3956,9 +3972,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Connected"
   },
   "statusNotConnected": {
     "message": "Not connected"
@@ -4466,6 +4479,10 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thirdPartySoftware": {
+    "message": "Third party software",
+    "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
   "thisCollection": {
     "message": "this collection"
   },
@@ -4524,10 +4541,6 @@
   },
   "toggleEthSignOn": {
     "message": "ON (Not recommended)"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 test networks",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -4738,10 +4751,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
-  },
-  "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "By granting permission, you are allowing the following $1 to access your funds"

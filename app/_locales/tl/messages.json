@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Ikonekta ang account o gumawa ng bago"
   },
-  "connectHardwareWallet": {
-    "message": "Ikonekta ang hardware wallet"
-  },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng account"
   },
   "createNewWallet": {
     "message": "Gumawa ng bagong wallet"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Sinumang ay maaaring lumikha ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
   },
-  "importTokens": {
-    "message": "magdagdag ng mga token"
-  },
   "importTokensCamelCase": {
     "message": "Mag-import ng mga Token"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Hilingin dito"
   },
-  "missingToken": {
-    "message": "Hindi mo ba nakikita ang iyong mga token?"
-  },
   "moreComingSoon": {
     "message": "Marami pang parating..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
-  },
-  "notifications": {
-    "message": "Mga Abiso"
   },
   "notifications10ActionText": {
     "message": "Bisitahin sa mga setting",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showHide": {
-    "message": "Ipakita/itago"
-  },
   "showIncomingTransactions": {
     "message": "Ipakita ang Mga Papasok na Transaksyon"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Istado"
-  },
-  "statusConnected": {
-    "message": "Nakakonekta"
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "I-toggle ang mga kahilingan sa eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 na test network",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
-  },
-  "troubleTokenBalances": {
-    "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Sa pamamagitan ng pagbibigay ng pahintulot, pinapayagan mo ang sumusunod na $1 para ma-access ang pondo mo"
