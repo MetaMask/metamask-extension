@@ -119,6 +119,23 @@ async function setupPhishingDetectionMocks(
 }
 
 /**
+ * Mocks the request made from the phishing warning page to check eth-phishing-detect
+ *
+ * @param {*} mockServer
+ * @param {*} metamaskPhishingConfigResponse
+ */
+async function mockConfigLookupOnWarningPage(
+  mockServer,
+  metamaskPhishingConfigResponse,
+) {
+  await mockServer
+    .forGet(
+      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
+    )
+    .thenCallback(() => metamaskPhishingConfigResponse);
+}
+
+/**
  * Setup fallback mocks for default behaviour of the phishing detection feature.
  *
  * This sets up default mocks for a mockttp server when included in test/e2e/mock-e2e.js
@@ -166,4 +183,5 @@ module.exports = {
   METAMASK_STALELIST_URL,
   mockEmptyStalelistAndHotlist,
   BlockProvider,
+  mockConfigLookupOnWarningPage,
 };
