@@ -1,0 +1,15 @@
+diff --git a/dist/SignatureController.js b/dist/SignatureController.js
+index 59dc5974218e8d073b65969154f35ada3fd9e8ab..5b16d09dcacf49caa15d11c9db7c34569eb36412 100644
+--- a/dist/SignatureController.js
++++ b/dist/SignatureController.js
+@@ -302,9 +302,9 @@ _SignatureController_keyringController = new WeakMap(), _SignatureController_isE
+         const messageId = msgParams.metamaskId;
+         try {
+             const cleanMessageParams = yield messageManager.approveMessage(msgParams);
++            __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_acceptApproval).call(this, messageId);
+             const signature = yield getSignature(cleanMessageParams);
+             messageManager.setMessageStatusSigned(messageId, signature);
+-            __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_acceptApproval).call(this, messageId);
+             return __classPrivateFieldGet(this, _SignatureController_getAllState, "f").call(this);
+         }
+         catch (error) {
