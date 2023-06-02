@@ -20,12 +20,12 @@ import {
   getNetworkNameFromProviderType,
 } from '../../../helpers/utils/util';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 
-const SignatureRequestsCommonHeader = ({ txData }) => {
+const SignatureRequestHeader = ({ txData }) => {
   const t = useI18nContext();
   const {
     msgParams: { from },
@@ -38,16 +38,16 @@ const SignatureRequestsCommonHeader = ({ txData }) => {
 
   const providerConfig = useSelector(getProviderConfig);
   const networkName = getNetworkNameFromProviderType(providerConfig.type);
-  const currentNetwork =
-    networkName === ''
-      ? providerConfig.nickname || t('unknownNetwork')
-      : t(networkName);
-
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const conversionRateFromSelector = useSelector(conversionRateSelector);
   const conversionRate = useNativeCurrencyAsPrimaryCurrency
     ? null
     : conversionRateFromSelector;
+
+  const currentNetwork =
+    networkName === ''
+      ? providerConfig.nickname || t('unknownNetwork')
+      : t(networkName);
 
   const balanceInBaseAsset = conversionRate
     ? formatCurrency(
@@ -81,11 +81,11 @@ const SignatureRequestsCommonHeader = ({ txData }) => {
   );
 };
 
-SignatureRequestsCommonHeader.propTypes = {
+SignatureRequestHeader.propTypes = {
   /**
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
 };
 
-export default SignatureRequestsCommonHeader;
+export default SignatureRequestHeader;

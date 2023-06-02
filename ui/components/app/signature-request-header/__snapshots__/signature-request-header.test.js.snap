@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SignatureRequestsCommonHeader should match snapshot 1`] = `
+exports[`SignatureRequestHeader should match snapshot 1`] = `
 <div>
   <div
     class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"

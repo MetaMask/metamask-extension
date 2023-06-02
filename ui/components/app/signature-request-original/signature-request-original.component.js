@@ -36,7 +36,7 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banne
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
-import SignatureRequestsCommonHeader from '../signature-requests-common-header';
+import SignatureRequestHeader from '../signature-request-header';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -58,13 +58,9 @@ export default class SignatureRequestOriginal extends Component {
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
-    // nativeCurrency: PropTypes.string.isRequired,
-    // currentCurrency: PropTypes.string.isRequired,
-    // conversionRate: PropTypes.number,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
-    // providerConfig: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
@@ -325,7 +321,7 @@ export default class SignatureRequestOriginal extends Component {
           <ConfirmPageContainerNavigation />
         </div>
         <div className="request-signature__account">
-          <SignatureRequestsCommonHeader txData={txData} />
+          <SignatureRequestHeader txData={txData} />
         </div>
         {this.renderBody()}
         {this.props.isLedgerWallet ? (

@@ -25,7 +25,7 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import LedgerInstructionField from '../ledger-instruction-field';
 
-import SignatureRequestsCommonHeader from '../signature-requests-common-header';
+import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -92,7 +92,7 @@ export default function SignatureRequestSIWE({
 
   return (
     <div className="signature-request-siwe">
-      <SignatureRequestsCommonHeader txData={txData} />
+      <SignatureRequestHeader txData={txData} />
       <Header
         fromAccount={fromAccount}
         domain={origin}

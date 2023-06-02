@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
-import SignatureRequestsCommonHeader from '.';
+import SignatureRequestHeader from '.';
 
 const props = {
   txData: {
@@ -13,12 +13,12 @@ const props = {
   },
 };
 
-describe('SignatureRequestsCommonHeader', () => {
+describe('SignatureRequestHeader', () => {
   const store = configureMockStore()(mockState);
 
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
-      <SignatureRequestsCommonHeader {...props} />,
+      <SignatureRequestHeader {...props} />,
       store,
     );
 

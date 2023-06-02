@@ -1,8 +1,8 @@
 import React from 'react';
-import SignatureRequestsCommonHeader from './signature-requests-common-header';
+import SignatureRequestHeader from './signature-request-header';
 
 export default {
-  title: 'Components/App/SignatureRequestsCommonHeader',
+  title: 'Components/App/SignatureRequestHeader',
   argTypes: {
     txData: { control: 'object' },
   },
@@ -48,7 +48,7 @@ export default {
 };
 
 export const DefaultStory = (args) => {
-  return <SignatureRequestsCommonHeader {...args} />;
+  return <SignatureRequestHeader {...args} />;
 };
 
 DefaultStory.storyName = 'Default';
