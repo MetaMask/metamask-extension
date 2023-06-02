@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Подключите счет или создайте новый"
   },
-  "connectHardwareWallet": {
-    "message": "Подключить аппаратный кошелек"
-  },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Создать"
-  },
-  "createAccount": {
-    "message": "Создать счет"
   },
   "createNewWallet": {
     "message": "Создать новый кошелек"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
   },
-  "importTokens": {
-    "message": "импорт токенов"
-  },
   "importTokensCamelCase": {
     "message": "Импорт токенов"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Запросите здесь"
   },
-  "missingToken": {
-    "message": "Не видите свой токен?"
-  },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notifications": {
-    "message": "Уведомления"
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
   },
-  "showHide": {
-    "message": "Показать/скрыть"
-  },
   "showIncomingTransactions": {
     "message": "Показать входящие транзакции"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "Статус"
-  },
-  "statusConnected": {
-    "message": "Подключено"
   },
   "statusNotConnected": {
     "message": "Не подключено"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "Переключить запросы eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 тестовые сети",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Токен"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
-  },
-  "troubleTokenBalances": {
-    "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Давая разрешение, вы предоставляете следующему $1 доступ к вашим средствам."

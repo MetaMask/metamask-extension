@@ -154,9 +154,6 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"
@@ -802,10 +796,6 @@
   },
   "transferFrom": {
     "message": "Átvezetés innen: "
-  },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Újra"

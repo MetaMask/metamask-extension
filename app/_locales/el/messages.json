@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Σύνδεση λογαριασμού ή δημιουργία νέου"
   },
-  "connectHardwareWallet": {
-    "message": "Σύνδεση Πορτοφολιού Υλικού"
-  },
   "connectManually": {
     "message": "Χειροκίνητη σύνδεση στον τρέχοντα ιστότοπο"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Δημιουργία"
-  },
-  "createAccount": {
-    "message": "Δημιουργία Λογαριασμού"
   },
   "createNewWallet": {
     "message": "Δημιουργήστε ένα νέο πορτοφόλι"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Ο καθένας μπορεί να δημιουργήσει ένα token με οποιοδήποτε όνομα, συμπεριλαμβανομένων ψεύτικων εκδόσεων των υφιστάμενων νομισμάτων. Προσθέστε και ανταλλάξτε με δική σας ευθύνη!"
   },
-  "importTokens": {
-    "message": "εισαγωγή token"
-  },
   "importTokensCamelCase": {
     "message": "Εισαγωγή Token"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Υποβάλετε αίτημα εδώ"
   },
-  "missingToken": {
-    "message": "Δεν βλέπετε το token σας;"
-  },
   "moreComingSoon": {
     "message": "Περισσότερα έρχονται σύντομα..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Δεν Υπάρχει Αρκετό τέλος συναλλαγής"
-  },
-  "notifications": {
-    "message": "Ειδοποιήσεις"
   },
   "notifications10ActionText": {
     "message": "Μετάβαση στις Ρυθμίσεις",
@@ -3211,9 +3196,6 @@
   "showHexDataDescription": {
     "message": "Επιλέξτε αυτό για να εμφανίσετε το πεδίο hex δεδομένων στην οθόνη αποστολής"
   },
-  "showHide": {
-    "message": "Εμφάνιση/απόκρυψη"
-  },
   "showIncomingTransactions": {
     "message": "Εμφάνιση Εισερχομένων Συναλλαγών"
   },
@@ -3412,9 +3394,6 @@
   },
   "status": {
     "message": "Κατάσταση"
-  },
-  "statusConnected": {
-    "message": "Συνδεδεμένο"
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
@@ -3920,10 +3899,6 @@
   "toggleEthSignField": {
     "message": "Εναλλαγή αιτημάτων eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 δοκιμαστικά δίκτυα",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Διακριτικό"
   },
@@ -4102,10 +4077,6 @@
   },
   "troubleStarting": {
     "message": "Το MetaMask αντιμετώπισε πρόβλημα κατά την εκκίνηση. Αυτό το σφάλμα μπορεί να είναι τυχαίο, γι' αυτό προσπαθήστε να επανεκκινήσετε την επέκταση."
-  },
-  "troubleTokenBalances": {
-    "message": "Είχαμε πρόβλημα να φορτώσουμε τα υπόλοιπα του διακριτικού σας. Μπορείτε να τα δείτε ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Χορηγώντας άδεια, επιτρέπετε στα ακόλουθα $1 να έχουν πρόσβαση στα χρήματά σας"

@@ -496,12 +496,12 @@ const findAnotherAccountFromAccountList = async (
   itemNumber,
   accountName,
 ) => {
-  await driver.clickElement('.account-menu__icon');
-  const accountMenuItemSelector = `.account-menu__account:nth-child(${itemNumber})`;
-  const fourthAccountName = await driver.findElement(
-    `${accountMenuItemSelector} .account-menu__name`,
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
+  const acctName = await driver.findElement(
+    `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
   );
-  assert.equal(await fourthAccountName.getText(), accountName);
+  assert.equal(await acctName.getText(), accountName);
   return accountMenuItemSelector;
 };
 
