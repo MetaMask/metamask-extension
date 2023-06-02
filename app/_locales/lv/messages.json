@@ -154,9 +154,6 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectHardwareWallet": {
-    "message": "Pieslēgt aparatūras maku"
-  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Izveidot"
-  },
-  "createAccount": {
-    "message": "Izveidot kontu"
   },
   "createPassword": {
     "message": "Izveidot paroli"
@@ -808,10 +802,6 @@
   },
   "transferFrom": {
     "message": "Nosūtīt no"
-  },
-  "troubleTokenBalances": {
-    "message": "Mums neizdevās ielādēt marķieru bilanci. Varat tos skatīt",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"

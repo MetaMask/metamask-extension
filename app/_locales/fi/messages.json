@@ -154,9 +154,6 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectHardwareWallet": {
-    "message": "Yhdistä laitteistokukkaro"
-  },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Luo"
-  },
-  "createAccount": {
-    "message": "Luo tili"
   },
   "createPassword": {
     "message": "Luo salasana"
@@ -809,10 +803,6 @@
   },
   "transferFrom": {
     "message": "Siirto kohteesta"
-  },
-  "troubleTokenBalances": {
-    "message": "Kohtasimme ongelmia ladatessamme tietuesaldojasi. Voit katsella niitä kohteessa",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Yritä uudelleen"

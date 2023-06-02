@@ -485,9 +485,6 @@
   "connectAccountOrCreate": {
     "message": "Connetti un account o creane uno nuovo"
   },
-  "connectHardwareWallet": {
-    "message": "Connetti Portafoglio Hardware"
-  },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
   },
@@ -615,9 +612,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea Account"
   },
   "createNewWallet": {
     "message": "Crea un nuovo portafoglio"
@@ -1540,9 +1534,6 @@
   "stateLogsDescription": {
     "message": "I log di stato contengono i tuoi indirizzi pubblici e le transazioni effettuate."
   },
-  "statusConnected": {
-    "message": "Connesso"
-  },
   "statusNotConnected": {
     "message": "Non connesso"
   },
@@ -1842,10 +1833,6 @@
   "troubleConnectingToWallet": {
     "message": "Abbiamo riscontrato un errore nella connessione a $1, guarda la documentazione $2 e prova di nuovo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prova di nuovo"
