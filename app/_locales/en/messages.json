@@ -186,12 +186,6 @@
   "addAlias": {
     "message": "Add alias"
   },
-  "addNfts": {
-    "message": "Add NFTs"
-  },
-  "addNft": {
-    "message": "Add NFT"
-  },
   "addBlockExplorer": {
     "message": "Add a block explorer"
   },
@@ -274,6 +268,12 @@
   },
   "addNewToken": {
     "message": "Add new token"
+  },
+  "addNft": {
+    "message": "Add NFT"
+  },
+  "addNfts": {
+    "message": "Add NFTs"
   },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"
