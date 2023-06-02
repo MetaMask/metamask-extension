@@ -6,14 +6,13 @@ const revokePermissions = {
   implementation: revokePermissionsHandler,
   hookNames: {
     handleRevokePermissions: true,
-    getPermissionsForOrigin: true,
   },
 };
 export default revokePermissions;
 
 /**
  * @typedef {object} revokePermissionsOptions
- * @property {Function} handleRevokePermissionsRequest - The wallet_revokePermissions method implementation.
+ * @property {Function} handleRevokePermissions - The wallet_revokePermissions method implementation.
  */
 
 /**
@@ -38,13 +37,7 @@ async function revokePermissionsHandler(
 ) {
   try {
     const { permissions } = req.params;
-    console.log(
-      '🚀 ~ file: revoke-permissions.js:40 ~ permissions:',
-      permissions,
-    );
-
-    await handleRevokePermissions();
-    res.result = true;
+    res.result = await handleRevokePermissions();
 
     return end();
   } catch (error) {

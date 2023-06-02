@@ -3317,6 +3317,35 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Revoke all permissions for the provided origin. Returns an empty
+   * array if no accounts are permitted.
+   *
+   * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @returns {Promise<Any>} The origin's permitted accounts, or an empty
+   * array.
+   */
+  async revokePermissions(origin) {
+    try {
+      if (this.permissionController.hasPermissions(origin)) {
+        this.permissionController.revokeAllPermissions(origin);
+      }
+
+      const permissionsAfterRevoke = this.permissionController.hasPermissions(
+        origin,
+      )
+        ? this.permissionController.getPermissions(origin)
+        : [];
+
+      return permissionsAfterRevoke;
+    } catch (error) {
+      if (error.code === rpcErrorCodes.provider.unauthorized) {
+        return [];
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Stops exposing the account with the specified address to all third parties.
    * Exposed accounts are stored in caveats of the eth_accounts permission. This
    * method uses `PermissionController.updatePermissionsByCaveat` to
@@ -3884,11 +3913,7 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
 
-        handleRevokePermissions:
-          this.permissionController.revokeAllPermissions.bind(
-            this.permissionController,
-            origin,
-          ),
+        handleRevokePermissions: this.revokePermissions.bind(this, origin),
 
         getCurrentChainId: () =>
           this.networkController.store.getState().providerConfig.chainId,
