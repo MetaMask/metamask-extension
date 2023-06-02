@@ -3912,14 +3912,14 @@ __metadata:
 
 "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::locator=metamask-crx%40workspace%3A.":
   version: 3.1.0
-  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::version=3.1.0&hash=874240&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::version=3.1.0&hash=90d493&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 784ae2a324afad6304608f8c0b1624cc7f765890959291793d0c5e49c15e895f91b2a380a04cf328fc73fa4301c059ce2fad57c7a927db99b63676ad5270cf7b
+  checksum: 5adf6a309b9b7398872320f8601e44add037c9229b53b922bfc09c814b93ec15765d7aee12d52bb0215669ef8919349b25ad1469fb9f095eb95aacfa4db100cd
   languageName: node
   linkType: hard
 
@@ -4670,7 +4670,7 @@ __metadata:
 
 "@metamask/snaps-controllers-flask@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::locator=metamask-crx%40workspace%3A.":
   version: 0.33.1-flask.1
-  resolution: "@metamask/snaps-controllers-flask@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::version=0.33.1-flask.1&hash=766878&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-controllers-flask@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::version=0.33.1-flask.1&hash=7bc58a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^2.0.0
     "@metamask/base-controller": ^2.0.0
@@ -4694,7 +4694,7 @@ __metadata:
     pump: ^3.0.0
     readable-web-to-node-stream: ^3.0.2
     tar-stream: ^2.2.0
-  checksum: 142f672365763549f4cc550a1b18d8cb6cd69989a279d79b014ce934c002db5d66fbecdaa4ee7e4da93aec73461a271f5d8e66c79a89ee1d52ec071986a9fba3
+  checksum: 922673d0ea0774a33debe5b2d00e41d58552838ff805f79901886b0ea354179b12c30c85ae94854b3bc465fd961896d434286c9a1a81f9d13975c9340756cf3f
   languageName: node
   linkType: hard
 
@@ -4730,7 +4730,7 @@ __metadata:
 
 "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::locator=metamask-crx%40workspace%3A.":
   version: 0.33.1-flask.1
-  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::version=0.33.1-flask.1&hash=766878&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch::version=0.33.1-flask.1&hash=7bc58a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^2.0.0
     "@metamask/base-controller": ^2.0.0
@@ -4754,7 +4754,7 @@ __metadata:
     pump: ^3.0.0
     readable-web-to-node-stream: ^3.0.2
     tar-stream: ^2.2.0
-  checksum: 712ed60e1c14a25a3cb9b8a805d51a904f2c74c26f8e7641b4b296dc0c9e8fdbe695a13886b772cd8483e684215a15b1cf81bebeb900f20f39ba93d41f2cf74e
+  checksum: dd14d75aaf9bdd56d833bf53e3280b2f4d89e143c26397acf2cd26e1e398da0b4776f681433fe2ab8bd293616bb000ebae6efc309a72918723f7d3eae92fc896
   languageName: node
   linkType: hard
 

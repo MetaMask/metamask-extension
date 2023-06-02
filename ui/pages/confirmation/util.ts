@@ -1,18 +1,41 @@
 import { UIComponent } from '@metamask/approval-controller';
 
+export function processError(
+  input: undefined | string | UIComponent | UIComponent[],
+  fallback: string,
+): UIComponent | (string | UIComponent)[] {
+  let currentInput = input;
+
+  if (!currentInput) {
+    currentInput = fallback;
+  }
+
+  if (!(typeof currentInput === 'string')) {
+    return currentInput;
+  }
+
+  return {
+    key: 'error',
+    element: 'ActionableMessage',
+    props: { type: 'danger', message: currentInput },
+  };
+}
+
 export function processString(
   input: undefined | string | UIComponent | UIComponent[],
   fallback: string,
 ): string | UIComponent | (string | UIComponent)[] {
-  if (!input) {
-    return fallback;
+  let currentInput = input;
+
+  if (!currentInput) {
+    currentInput = fallback;
   }
 
-  if (!(typeof input === 'string')) {
-    return input;
+  if (!(typeof currentInput === 'string')) {
+    return currentInput;
   }
 
-  return applyBold(input);
+  return applyBold(currentInput);
 }
 
 export function applyBold(message: string): (string | UIComponent)[] {

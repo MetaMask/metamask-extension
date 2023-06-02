@@ -7,43 +7,57 @@ import {
   JustifyContent,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import { processString } from '../util';
+import { processError } from '../util';
 
 function getValues(pendingApproval, t, actions, _history) {
   return {
     content: [
       {
-        key: 'container',
+        key: 'header',
         element: 'Box',
         props: {
           flexDirection: FlexDirection.Column,
           alignItems: AlignItems.center,
-          justifyContent: JustifyContent.center,
           height: BlockSize.Full,
-          paddingTop: 2,
-          paddingBottom: 2,
+          padding: 4,
         },
         children: [
+          ...(pendingApproval.requestData.header || []),
           {
-            key: 'heading',
-            element: 'Typography',
+            key: 'content',
+            element: 'Box',
             props: {
-              variant: TypographyVariant.H3,
-              fontWeight: FontWeight.Bold,
+              flexDirection: FlexDirection.Column,
+              alignItems: AlignItems.center,
+              justifyContent: JustifyContent.center,
+              height: BlockSize.Full,
+              paddingTop: 2,
               paddingBottom: 2,
             },
-            children: 'Error',
-          },
-          {
-            key: 'message',
-            element: 'Typography',
-            props: {
-              textAlign: TextAlign.Center,
-            },
-            children: processString(
-              pendingApproval.requestData.error,
-              'The operation failed.',
-            ),
+            children: [
+              {
+                key: 'heading',
+                element: 'Typography',
+                props: {
+                  variant: TypographyVariant.H3,
+                  fontWeight: FontWeight.Bold,
+                  paddingBottom: 2,
+                },
+                children: 'Error',
+              },
+              {
+                key: 'message',
+                element: 'Box',
+                props: {
+                  alignItems: AlignItems.Center,
+                  textAlign: TextAlign.Center,
+                },
+                children: processError(
+                  pendingApproval.requestData.error,
+                  'The operation failed.',
+                ),
+              },
+            ],
           },
         ],
       },

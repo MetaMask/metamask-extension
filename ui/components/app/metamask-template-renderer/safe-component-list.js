@@ -12,11 +12,13 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
+import SnapAuthorship from '../snaps/snap-authorship';
 ///: END:ONLY_INCLUDE_IN
 
 export const safeComponentList = {
@@ -40,11 +42,13 @@ export const safeComponentList = {
   TruncatedDefinitionList,
   Typography,
   UrlIcon,
+  ActionableMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SnapDelineator,
   Copyable,
   Spinner,
   hr: 'hr',
   SnapUIMarkdown,
+  SnapAuthorship,
   ///: END:ONLY_INCLUDE_IN
 };
