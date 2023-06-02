@@ -33,7 +33,7 @@ describe('View NFT details', function () {
 
         // Click to open the NFT details page and check title
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('.nfts-items__item-image');
+        await driver.clickElement('.nft-item__item-image');
 
         const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
         assert.equal(
@@ -53,7 +53,7 @@ describe('View NFT details', function () {
           'Test Dapp Collectibles for testing.',
         );
 
-        const nftImage = await driver.findElement('.nft-details__image');
+        const nftImage = await driver.findElement('.nft-item__item-image');
         assert.equal(await nftImage.isDisplayed(), true);
 
         const nftImageSource = await driver.findElement(
