@@ -154,9 +154,6 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectHardwareWallet": {
-    "message": "Forbind Hardwarepung"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Opret"
-  },
-  "createAccount": {
-    "message": "Opret konto"
   },
   "createPassword": {
     "message": "Opret adgangskode"
@@ -781,10 +775,6 @@
   },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi havde problemer med at indlæse dine tokenbalancer. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igen"

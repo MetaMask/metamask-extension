@@ -43,8 +43,10 @@ describe('Dapp interactions', function () {
 
         // Lock Account
         await driver.switchToWindow(extension);
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Lock', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Lock', tag: 'div' });
 
         // Trigger Notification
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -88,8 +90,10 @@ describe('Dapp interactions', function () {
 
         // Lock Account
         await driver.switchToWindow(extension);
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Lock', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Lock', tag: 'div' });
 
         // Connect to Dapp1
         await openDapp(driver, null, DAPP_ONE_URL);

@@ -15,7 +15,6 @@ import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
-import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
@@ -769,7 +768,6 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
-            {process.env.MULTICHAIN ? null : <MenuBar />}
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -815,21 +813,13 @@ export default class Home extends PureComponent {
                 name={this.context.t('tokens')}
                 tabKey="tokens"
               >
-                {process.env.MULTICHAIN ? (
-                  <Box marginTop={2}>
-                    <AssetList
-                      onClickAsset={(asset) =>
-                        history.push(`${ASSET_ROUTE}/${asset}`)
-                      }
-                    />
-                  </Box>
-                ) : (
+                <Box marginTop={2}>
                   <AssetList
                     onClickAsset={(asset) =>
                       history.push(`${ASSET_ROUTE}/${asset}`)
                     }
                   />
-                )}
+                </Box>
               </Tab>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)

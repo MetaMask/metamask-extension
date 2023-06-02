@@ -148,9 +148,6 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectHardwareWallet": {
-    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "ፍጠር"
-  },
-  "createAccount": {
-    "message": "መለያ ፍጠር"
   },
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
@@ -797,10 +791,6 @@
   },
   "transferFrom": {
     "message": "የማዛወሪያ ቅጽ"
-  },
-  "troubleTokenBalances": {
-    "message": "የተለዋጭ ስም ቀሪ ሂሳብዎን ስንጭን ችግር አጋጥሞናል። ማየት ይችላሉ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "እንደገና ሞክር"
