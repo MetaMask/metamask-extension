@@ -188,6 +188,7 @@ export default function ConfirmTokenTransactionBase({
 
   return (
     <ConfirmTransactionBase
+      assetStandard={assetStandard}
       toAddress={toAddress}
       image={assetImage}
       onEdit={onEdit}

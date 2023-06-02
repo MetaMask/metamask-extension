@@ -40,7 +40,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     class="box nft-details box--flex-direction-row"
   >
     <div
-      class="nft-details__top-section"
+      class="box nft-details__top-section box--gap-6 box--flex-direction-row"
     >
       <div
         class="box nft-details__card box--flex-direction-row box--justify-content-center box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1 box--display-flex"

@@ -118,10 +118,12 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -135,9 +137,13 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
           '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
         );
 
+        await driver.findClickableElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        await driver.clickElement({ text: '0xc42...cd28' });
+        await driver.findClickableElement(
+          '[data-testid="sender-to-recipient__name"]',
+        );
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
         const recipientAddress = await driver.findElements({
           text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
@@ -312,7 +318,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         },
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -350,11 +356,13 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           text: '0.04503836 ETH',
         });
 
+        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
         // finds the transaction in the transactions list
+        await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
@@ -392,6 +400,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
       },
     ],
   };
+
   it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
@@ -400,7 +409,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, contractRegistry }) => {
+      async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
@@ -419,22 +428,24 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         await inputAmount.fill('1');
 
         // Continue to next screen
+        await driver.findClickableElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
+        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
+        // Go back to home screen to check txn
+        await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
-          );
-          return confirmedTxes.length === 1;
-        }, 10000);
+        const txn = await driver.isElementPresent(
+          '.transaction-list__completed-transactions .transaction-list-item',
+        );
 
-        const failedTx = await driver.isElementPresent(
+        assert.equal(txn, true);
+
+        await driver.assertElementNotPresent(
           '.transaction-status-label--failed',
         );
-        assert.equal(failedTx, false, 'Transaction failed');
       },
     );
   });
