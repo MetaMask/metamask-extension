@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
-import Card from '../../ui/card';
 import {
   Color,
   TypographyVariant,
@@ -22,6 +21,7 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedAddress,
+  getCurrentNetwork,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -32,6 +32,8 @@ import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Icon, IconName } from '../../component-library';
 import NftDefaultImage from '../nft-default-image';
+import Card from '../../ui/card/card';
+import { NftItem } from '../../multichain/nft-item';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -50,6 +52,7 @@ export default function NftsItems({
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
+  const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
 
   useEffect(() => {
@@ -173,7 +176,6 @@ export default function NftsItems({
               const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-
               return (
                 <Box
                   data-testid="nft-wrapper"
@@ -181,34 +183,49 @@ export default function NftsItems({
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
-                  <Card
-                    padding={0}
-                    justifyContent={JustifyContent.center}
-                    className="nfts-items__item-wrapper__card"
-                  >
-                    {nftImage ? (
-                      <button
-                        className="nfts-items__item"
-                        style={{
-                          backgroundColor,
-                        }}
-                        onClick={handleImageClick}
-                      >
-                        <img
-                          className="nfts-items__item-image"
-                          data-testid="nft-image"
-                          src={nftImage}
-                          alt={nftImageAlt}
+                  {process.env.MULTICHAIN ? (
+                    <NftItem
+                      src={nftImage}
+                      alt={nftImageAlt}
+                      name={name}
+                      tokenId={tokenId}
+                      networkName={currentChain.nickname}
+                      networkSrc={currentChain.rpcPrefs?.imageUrl}
+                      onClick={handleImageClick}
+                      clickable
+                    />
+                  ) : (
+                    <Card
+                      className="nfts-items__item-wrapper__card"
+                      padding={0}
+                      justifyContent={JustifyContent.center}
+                    >
+                      {nftImage ? (
+                        <button
+                          className="nfts-items__item"
+                          style={{
+                            backgroundColor,
+                            borderRadius: 4,
+                          }}
+                          onClick={handleImageClick}
+                        >
+                          <img
+                            className="nfts-items__item-image"
+                            data-testid="nft-image"
+                            src={nftImage}
+                            alt={nftImageAlt}
+                          />
+                        </button>
+                      ) : (
+                        <NftDefaultImage
+                          name={name}
+                          tokenId={tokenId}
+                          handleImageClick={handleImageClick}
+                          clickable
                         />
-                      </button>
-                    ) : (
-                      <NftDefaultImage
-                        name={name}
-                        tokenId={tokenId}
-                        handleImageClick={handleImageClick}
-                      />
-                    )}
-                  </Card>
+                      )}
+                    </Card>
+                  )}
                 </Box>
               );
             })}
