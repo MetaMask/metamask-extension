@@ -12,16 +12,12 @@ export default function ListItem({
   rightContent,
   midContent,
   className,
-  showBorder,
   'data-testid': dataTestId,
 }) {
   const primaryClassName = classnames(
     'list-item',
     className,
     subtitle || children ? '' : 'list-item--single-content-row',
-    {
-      'list-item-border': !showBorder,
-    },
   );
 
   return (
@@ -72,6 +68,5 @@ ListItem.propTypes = {
   midContent: PropTypes.node,
   className: PropTypes.string,
   onClick: PropTypes.func,
-  showBorder: PropTypes.bool,
   'data-testid': PropTypes.string,
 };

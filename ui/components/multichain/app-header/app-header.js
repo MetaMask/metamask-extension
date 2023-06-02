@@ -33,7 +33,9 @@ import {
   IconSize,
   PickerNetwork,
 } from '../../component-library';
-
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -41,6 +43,9 @@ import {
   getOriginOfCurrentTab,
   getSelectedIdentity,
   getShowProductTour,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAddress,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
@@ -69,6 +74,13 @@ export const AppHeader = ({ location }) => {
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const selectedAddress = useSelector(getSelectedAddress);
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, selectedAddress),
+  );
+  ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
@@ -146,6 +158,10 @@ export const AppHeader = ({ location }) => {
           <MetafoxLogo
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodyImgSrc={custodianIcon}
+            isUnlocked={isUnlocked}
+            ///: END:ONLY_INCLUDE_IN
           />
         </Box>
       ) : null}
@@ -188,7 +204,11 @@ export const AppHeader = ({ location }) => {
                       name={currentNetwork?.nickname}
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       size={Size.SM}
-                      onClick={networkOpenCallback}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        networkOpenCallback();
+                      }}
                       display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
                       disabled={disableNetworkPicker}
                     />
@@ -200,10 +220,15 @@ export const AppHeader = ({ location }) => {
                     margin={2}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
-                    onClick={networkOpenCallback}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      networkOpenCallback();
+                    }}
                     display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
                     disabled={disableNetworkPicker}
+                    data-testid="network-display"
                   />
                 </div>
               )}
@@ -262,6 +287,24 @@ export const AppHeader = ({ location }) => {
                       />
                     </Box>
                   ) : null}{' '}
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                    custodianIcon && (
+                      <Box
+                        display={DISPLAY.FLEX}
+                        alignItems={AlignItems.center}
+                        className="custody-logo"
+                        data-testid="custody-logo"
+                      >
+                        <img
+                          src={custodianIcon}
+                          className="custody-logo--icon"
+                          alt=""
+                        />
+                      </Box>
+                    )
+                    ///: END:ONLY_INCLUDE_IN
+                  }
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"
@@ -362,8 +405,13 @@ export const AppHeader = ({ location }) => {
                 <PickerNetwork
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
-                  onClick={() => dispatch(toggleNetworkMenu())}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    networkOpenCallback();
+                  }}
                   className="multichain-app-header__contents__network-picker"
+                  data-testid="network-display"
                 />
               </div>
               <MetafoxLogo

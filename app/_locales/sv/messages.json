@@ -148,9 +148,6 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectHardwareWallet": {
-    "message": "Anslut hårdvaruplånbok"
-  },
   "connectingTo": {
     "message": "Ansluter till $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Skapa"
-  },
-  "createAccount": {
-    "message": "Skapa konto"
   },
   "createPassword": {
     "message": "Skapa lösenord"
@@ -787,10 +781,6 @@
   },
   "transferFrom": {
     "message": "Överför från"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi hade problem med att ladda dina token-saldon. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Försök igen"
