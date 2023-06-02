@@ -1,5 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {
+  useContext,
+  useState,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IN
+  useSelector,
+} from 'react-redux';
 import PropTypes from 'prop-types';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
@@ -51,6 +62,7 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banne
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -74,14 +86,15 @@ import {
   IconName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-import Box from '../../ui/box/box';
 
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
 const SignatureRequest = ({ txData, sign, cancel }) => {
   const trackEvent = useContext(MetaMetricsContext);
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const dispatch = useDispatch();
+  ///: END:ONLY_INCLUDE_IN
   const t = useI18nContext();
 
   const [hasScrolledMessage, setHasScrolledMessage] = useState(false);
