@@ -25,6 +25,7 @@ import {
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
+  getCurrentNetwork,
   getIpfsGateway,
   getSelectedIdentity,
 } from '../../../selectors';
@@ -55,6 +56,7 @@ import NftDefaultImage from '../nft-default-image';
 import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
+import { NftItem } from '../../multichain/nft-item';
 
 export default function NftDetails({ nft }) {
   const {
@@ -75,6 +77,8 @@ export default function NftDetails({ nft }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
+  const currentChain = useSelector(getCurrentNetwork);
+
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
@@ -178,22 +182,35 @@ export default function NftDetails({ nft }) {
         }
       />
       <Box className="nft-details">
-        <div className="nft-details__top-section">
-          <Card
-            padding={0}
-            justifyContent={JustifyContent.center}
-            className="nft-details__card"
-          >
-            {image ? (
-              <img
-                className="nft-details__image"
-                src={nftImageURL}
-                alt={nftImageAlt}
+        <Box className="nft-details__top-section" gap={6}>
+          {process.env.MULTICHAIN ? (
+            <Box className="nft-details__nft-item">
+              <NftItem
+                src={image ? nftImageURL : ''}
+                alt={image ? nftImageAlt : ''}
+                name={name}
+                tokenId={tokenId}
+                networkName={currentChain.nickname}
+                networkSrc={currentChain.rpcPrefs?.imageUrl}
               />
-            ) : (
-              <NftDefaultImage name={name} tokenId={tokenId} />
-            )}
-          </Card>
+            </Box>
+          ) : (
+            <Card
+              padding={0}
+              justifyContent={JustifyContent.center}
+              className="nft-details__card"
+            >
+              {image ? (
+                <img
+                  className="nft-details__image"
+                  src={nftImageURL}
+                  alt={nftImageAlt}
+                />
+              ) : (
+                <NftDefaultImage name={name} tokenId={tokenId} />
+              )}
+            </Card>
+          )}
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
             className="nft-details__info"
@@ -243,7 +260,7 @@ export default function NftDetails({ nft }) {
             ) : null}
             {inPopUp ? null : renderSendButton()}
           </Box>
-        </div>
+        </Box>
         <Box marginBottom={2}>
           {lastSale ? (
             <>
