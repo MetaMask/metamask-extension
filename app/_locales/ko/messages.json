@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "승인 및 설치"
   },
-  "approveAndUpdate": {
-    "message": "승인 및 업데이트"
-  },
   "approveButtonText": {
     "message": "승인"
   },

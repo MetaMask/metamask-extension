@@ -401,9 +401,6 @@
   "approveAndInstall": {
     "message": "Approve & install"
   },
-  "approveAndUpdate": {
-    "message": "Approve & update"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
