@@ -8,8 +8,22 @@ type ApprovalsMetaMaskState = {
     unapprovedTxs: {
       [transactionId: string]: TransactionMeta;
     };
+    approvalFlows: ApprovalControllerState['approvalFlows'];
+    approvalFlowLoadingText: ApprovalControllerState['approvalFlowLoadingText'];
   };
 };
+
+export const getApprovalFlows = (state: ApprovalsMetaMaskState) => {
+  return state.metamask.approvalFlows || [];
+};
+
+export const hasApprovalFlow = (state: ApprovalsMetaMaskState) => {
+  return getApprovalFlows(state).length > 0;
+};
+
+export function getApprovalFlowLoadingText(state: ApprovalsMetaMaskState) {
+  return state.metamask.approvalFlowLoadingText;
+}
 
 export const getApprovalRequestsByType = (
   state: ApprovalsMetaMaskState,

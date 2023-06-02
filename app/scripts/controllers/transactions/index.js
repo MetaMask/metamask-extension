@@ -347,6 +347,8 @@ export default class TransactionController extends EventEmitter {
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
     );
 
+    this.messagingSystem.call('ApprovalController:startFlow', {});
+
     const initialTxMeta = await this.addUnapprovedTransaction(
       opts.method,
       txParams,
@@ -363,6 +365,13 @@ export default class TransactionController extends EventEmitter {
         (finishedTxMeta) => {
           switch (finishedTxMeta.status) {
             case TransactionStatus.submitted:
+              this.messagingSystem
+                .call('ApprovalController:showSuccess', {
+                  message: 'Transaction submitted successfully',
+                  endFlow: true,
+                })
+                .catch(() => undefined);
+
               return resolve(finishedTxMeta.hash);
             case TransactionStatus.rejected:
               return reject(
@@ -373,12 +382,28 @@ export default class TransactionController extends EventEmitter {
                 ),
               );
             case TransactionStatus.failed:
+              this.messagingSystem
+                .call('ApprovalController:showError', {
+                  error: finishedTxMeta.err.message,
+                  endFlow: true,
+                })
+                .catch(() => undefined);
+
               return reject(
                 cleanErrorStack(
                   ethErrors.rpc.internal(finishedTxMeta.err.message),
                 ),
               );
             default:
+              this.messagingSystem
+                .call('ApprovalController:showError', {
+                  error: `Unknown problem: ${JSON.stringify(
+                    finishedTxMeta.txParams,
+                  )}`,
+                  endFlow: true,
+                })
+                .catch(() => undefined);
+
               return reject(
                 cleanErrorStack(
                   ethErrors.rpc.internal(

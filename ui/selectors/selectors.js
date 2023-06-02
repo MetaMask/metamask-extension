@@ -117,10 +117,6 @@ export function getFirstPermissionRequestId(state) {
   return firstPermissionsRequestId;
 }
 
-export function getApprovalFlowLoadingText(state) {
-  return state.metamask.approvalFlowLoadingText;
-}
-
 export function hasPendingConfirmation(state) {
   return (
     state.metamask.suggestedAssets.length > 0 ||
@@ -589,10 +585,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
-}
-
-export function getApprovalFlows(state) {
-  return state.metamask.approvalFlows;
 }
 
 function getSuggestedAssetCount(state) {
