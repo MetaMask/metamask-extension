@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
-import Card from '../../ui/card';
 import {
   TextColor,
   IconColor,
@@ -52,7 +51,6 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import NftDefaultImage from '../nft-default-image';
 import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
@@ -183,34 +181,16 @@ export default function NftDetails({ nft }) {
       />
       <Box className="nft-details">
         <Box className="nft-details__top-section" gap={6}>
-          {process.env.MULTICHAIN ? (
-            <Box className="nft-details__nft-item">
-              <NftItem
-                src={image ? nftImageURL : ''}
-                alt={image ? nftImageAlt : ''}
-                name={name}
-                tokenId={tokenId}
-                networkName={currentChain.nickname}
-                networkSrc={currentChain.rpcPrefs?.imageUrl}
-              />
-            </Box>
-          ) : (
-            <Card
-              padding={0}
-              justifyContent={JustifyContent.center}
-              className="nft-details__card"
-            >
-              {image ? (
-                <img
-                  className="nft-details__image"
-                  src={nftImageURL}
-                  alt={nftImageAlt}
-                />
-              ) : (
-                <NftDefaultImage name={name} tokenId={tokenId} />
-              )}
-            </Card>
-          )}
+          <Box className="nft-details__nft-item">
+            <NftItem
+              src={image ? nftImageURL : ''}
+              alt={image ? nftImageAlt : ''}
+              name={name}
+              tokenId={tokenId}
+              networkName={currentChain.nickname}
+              networkSrc={currentChain.rpcPrefs?.imageUrl}
+            />
+          </Box>
           <Box
             flexDirection={FLEX_DIRECTION.COLUMN}
             className="nft-details__info"
