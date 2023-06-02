@@ -181,6 +181,10 @@ export type ProviderConfiguration = {
   rpcPrefs?: {
     blockExplorerUrl?: string;
   };
+  /**
+   * The ID of the network configuration used to build this provider config.
+   */
+  id?: NetworkConfigurationId;
 };
 
 /**
@@ -727,6 +731,7 @@ export class NetworkController extends EventEmitter {
       ticker: 'ticker' in network ? network.ticker : 'ETH',
       nickname: undefined,
       rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
+      id: undefined,
     });
   }
 
