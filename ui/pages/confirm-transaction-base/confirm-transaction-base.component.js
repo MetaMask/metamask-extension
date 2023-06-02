@@ -140,6 +140,7 @@ export default class ConfirmTransactionBase extends Component {
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
     useCurrencyRateCheck: PropTypes.bool,
+    displayAccountBalanceHeader: PropTypes.bool,
   };
 
   state = {
@@ -735,13 +736,15 @@ export default class ConfirmTransactionBase extends Component {
   }
 
   renderSubtitleComponent() {
-    const { subtitleComponent, hexTransactionAmount, txData } = this.props;
+    const { assetStandard, subtitleComponent, hexTransactionAmount, txData } =
+      this.props;
 
     return (
       <ConfirmSubTitle
         hexTransactionAmount={hexTransactionAmount}
         subtitleComponent={subtitleComponent}
         txData={txData}
+        assetStandard={assetStandard}
       />
     );
   }
@@ -837,6 +840,7 @@ export default class ConfirmTransactionBase extends Component {
       image,
       isApprovalOrRejection,
       assetStandard,
+      displayAccountBalanceHeader,
       title,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       isNoteToTraderSupported,
@@ -952,6 +956,7 @@ export default class ConfirmTransactionBase extends Component {
           isApprovalOrRejection={isApprovalOrRejection}
           assetStandard={assetStandard}
           txData={txData}
+          displayAccountBalanceHeader={displayAccountBalanceHeader}
         />
       </TransactionModalContextProvider>
     );
