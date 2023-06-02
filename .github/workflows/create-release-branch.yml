@@ -1,10 +1,10 @@
-name: Create Release Pull Request
+name: Create Release Branch
 
 on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: 'The base branch, tag, or SHA for git operations and the pull request.'
+        description: 'The base branch, tag, or SHA for git operations.'
         required: true
       semver-version:
         description: 'A semantic version. eg: x.x.x'
@@ -14,7 +14,7 @@ on:
         required: true
 
 jobs:
-  create-release-pr:
+  create-release-branch:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -34,13 +34,13 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
-      - name: Create Release PR
-        id: create-release-pr
+      - name: Create Release Branch
+        id: create-release-branch
         shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ./development/create-release-pr.sh ${{ github.event.inputs.semver-version }}
+          ./development/create-release-branch.sh ${{ github.event.inputs.semver-version }}
       - name: Save next release version number in a text file
         run: echo "${{ github.event.inputs.next-semver-version }}" > next-semver-version.txt
       - name: Upload text file as artifact
