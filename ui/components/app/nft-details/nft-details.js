@@ -10,10 +10,10 @@ import {
   TextVariant,
   FontWeight,
   JustifyContent,
-  FLEX_DIRECTION,
   OverflowWrap,
-  DISPLAY,
-  BLOCK_SIZES,
+  FlexDirection,
+  Display,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -142,8 +142,8 @@ export default function NftDetails({ nft }) {
     }
     return (
       <Box
-        display={DISPLAY.FLEX}
-        width={inPopUp ? BLOCK_SIZES.FULL : BLOCK_SIZES.HALF}
+        display={Display.Flex}
+        width={inPopUp ? BlockSize.Full : BlockSize.Half}
         margin={inPopUp ? [4, 0] : null}
       >
         <Button
@@ -180,7 +180,11 @@ export default function NftDetails({ nft }) {
         }
       />
       <Box className="nft-details">
-        <Box className="nft-details__top-section" gap={6}>
+        <Box
+          className="nft-details__top-section"
+          gap={6}
+          flexDirection={FlexDirection.Column}
+        >
           <Box className="nft-details__nft-item">
             <NftItem
               src={image ? nftImageURL : ''}
@@ -192,7 +196,7 @@ export default function NftDetails({ nft }) {
             />
           </Box>
           <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            flexDirection={FlexDirection.Column}
             className="nft-details__info"
             justifyContent={JustifyContent.spaceBetween}
           >
@@ -244,7 +248,7 @@ export default function NftDetails({ nft }) {
         <Box marginBottom={2}>
           {lastSale ? (
             <>
-              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
                 <Text
                   color={TextColor.textDefault}
                   variant={TextVariant.bodySmBold}
@@ -256,8 +260,8 @@ export default function NftDetails({ nft }) {
                   {t('lastSold')}
                 </Text>
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.ROW}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
                   className="nft-details__contract-wrapper"
                 >
                   <Text
@@ -271,7 +275,7 @@ export default function NftDetails({ nft }) {
                   </Text>
                 </Box>
               </Box>
-              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
                 <Text
                   color={TextColor.textDefault}
                   variant={TextVariant.bodySmBold}
@@ -283,8 +287,8 @@ export default function NftDetails({ nft }) {
                   {t('lastPriceSold')}
                 </Text>
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.ROW}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
                   className="nft-details__contract-wrapper"
                 >
                   <Text
@@ -302,7 +306,7 @@ export default function NftDetails({ nft }) {
               </Box>
             </>
           ) : null}
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
             <Text
               color={TextColor.textDefault}
               variant={TextVariant.bodySmBold}
@@ -337,7 +341,7 @@ export default function NftDetails({ nft }) {
             </Text>
           </Box>
           {imageThumbnail ? (
-            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+            <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
               <Text
                 color={TextColor.textDefault}
                 variant={TextVariant.bodySmBold}
@@ -368,7 +372,7 @@ export default function NftDetails({ nft }) {
               </Text>
             </Box>
           ) : null}
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
             <Text
               color={TextColor.textDefault}
               variant={TextVariant.bodySmBold}
@@ -380,8 +384,8 @@ export default function NftDetails({ nft }) {
               {t('contractAddress')}
             </Text>
             <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               className="nft-details__contract-wrapper"
             >
               <Text
