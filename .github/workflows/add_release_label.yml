@@ -25,7 +25,7 @@ jobs:
               owner,
               repo
             })
-            const workflow = workflows.data.workflows.find(w => w.name === 'NAME_OF_WORKFLOW_USED_TO_CREATE_NEW_RELEASE_BRANCH')
+            const workflow = workflows.data.workflows.find(w => w.name === 'Create Release Pull Request')
             return workflow.id
 
       - name: Get the artifact download URL
