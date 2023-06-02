@@ -64,6 +64,7 @@ export default function QuizContent({
           label={btn.label}
           variant={btn.variant}
           width={BlockSize.Full}
+          data-testid={btn['data-testid']}
         >
           {btn.label}
         </Button>

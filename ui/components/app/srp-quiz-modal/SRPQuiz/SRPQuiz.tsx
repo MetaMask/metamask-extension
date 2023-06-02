@@ -9,10 +9,10 @@ import {
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   BlockSize,
-  IconColor,
-  TextAlign,
   Display,
   FlexDirection,
+  IconColor,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { REVEAL_SEED_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
@@ -83,11 +83,13 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.questionOne),
             variant: BUTTON_VARIANT.PRIMARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-get-started',
           },
           {
             label: t('learnMoreUpperCase'),
             onClick: openSupportArticle,
             variant: BUTTON_VARIANT.LINK,
+            'data-testid': 'srp-quiz-learn-more',
           },
         ]}
       />
@@ -105,12 +107,14 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.wrongAnswerQuestionOne),
             variant: BUTTON_VARIANT.SECONDARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-wrong-answer',
           },
           {
             label: t('srpSecurityQuizQuestionOneRightAnswer'),
             onClick: () => setStage(QuizStage.rightAnswerQuestionOne),
             variant: BUTTON_VARIANT.SECONDARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-right-answer',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -135,6 +139,7 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.questionTwo),
             variant: BUTTON_VARIANT.PRIMARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-continue',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -159,6 +164,7 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.questionOne),
             variant: BUTTON_VARIANT.PRIMARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-try-again',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -181,12 +187,14 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.rightAnswerQuestionTwo),
             variant: BUTTON_VARIANT.SECONDARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-right-answer',
           },
           {
             label: t('srpSecurityQuizQuestionTwoWrongAnswer'),
             onClick: () => setStage(QuizStage.wrongAnswerQuestionTwo),
             variant: BUTTON_VARIANT.SECONDARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-wrong-answer',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -211,6 +219,7 @@ export default function SRPQuiz(props: any) {
             onClick: () => history.push(REVEAL_SEED_ROUTE),
             variant: BUTTON_VARIANT.PRIMARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-continue',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -235,6 +244,7 @@ export default function SRPQuiz(props: any) {
             onClick: () => setStage(QuizStage.questionTwo),
             variant: BUTTON_VARIANT.PRIMARY,
             size: BUTTON_SIZES.LG,
+            'data-testid': 'srp-quiz-try-again',
           },
           {
             label: t('learnMoreUpperCase'),
@@ -280,6 +290,7 @@ export default function SRPQuiz(props: any) {
         <ModalHeader onClose={props.onClose} data-testid="srp-quiz-header">
           {title}
         </ModalHeader>
+        <span data-testid={`srp_stage_${stage}`} />
         {quizContent}
       </ModalContent>
     </Modal>

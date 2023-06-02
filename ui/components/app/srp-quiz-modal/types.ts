@@ -33,6 +33,7 @@ export interface IQuizInformationProps {
     label: string;
     variant: string;
     size?: string;
+    'data-testid'?: string;
   }[];
 }
 
