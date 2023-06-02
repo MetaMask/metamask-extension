@@ -1,11 +1,10 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import messages from '../../../../../app/_locales/en/messages.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { getMessage } from '../../../../helpers/utils/i18n-helper';
 import configureStore from '../../../../store/store';
+import { QuizStage } from '../types';
 import SRPQuiz from './SRPQuiz';
 
 const store = configureStore({
@@ -26,18 +25,14 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-async function waitForText(text) {
+async function waitForStage(stage) {
   return await waitFor(() => {
-    expect(screen.getByText(text)).toBeInTheDocument();
+    expect(screen.getByTestId(`srp_stage_${stage}`)).toBeInTheDocument();
   });
 }
 
-function clickButton(text) {
-  fireEvent.click(screen.getByText(text));
-}
-
-function t(key) {
-  return getMessage('en', messages, key);
+function clickButton(id) {
+  fireEvent.click(screen.getByTestId(id));
 }
 
 describe('srp-reveal-quiz', () => {
@@ -49,15 +44,13 @@ describe('srp-reveal-quiz', () => {
   it('should go through the full sequence of steps', async () => {
     renderWithProvider(<SRPQuiz isOpen />, store);
 
-    expect(
-      screen.queryByText(t('srpSecurityQuizGetStarted')),
-    ).toBeInTheDocument();
+    expect(screen.queryByTestId('srp-quiz-get-started')).toBeInTheDocument();
 
     expect(
-      screen.queryByText(t('srpSecurityQuizQuestionOneQuestion')),
+      screen.queryByTestId('srp-quiz-right-answer'),
     ).not.toBeInTheDocument();
 
-    clickButton(t('learnMoreUpperCase'));
+    clickButton('srp-quiz-learn-more');
 
     await waitFor(() =>
       expect(openTabSpy).toHaveBeenCalledWith({
@@ -65,38 +58,38 @@ describe('srp-reveal-quiz', () => {
       }),
     );
 
-    clickButton(t('srpSecurityQuizGetStarted'));
+    clickButton('srp-quiz-get-started');
 
-    await waitForText(t('srpSecurityQuizQuestionOneQuestion'));
+    await waitForStage(QuizStage.questionOne);
 
-    clickButton(t('srpSecurityQuizQuestionOneWrongAnswer'));
+    clickButton('srp-quiz-wrong-answer');
 
-    await waitForText(t('srpSecurityQuizQuestionOneWrongAnswerTitle'));
+    await waitForStage(QuizStage.wrongAnswerQuestionOne);
 
-    clickButton(t('tryAgain'));
+    clickButton('srp-quiz-try-again');
 
-    await waitForText(t('srpSecurityQuizQuestionOneQuestion'));
+    await waitForStage(QuizStage.questionOne);
 
-    clickButton(t('srpSecurityQuizQuestionOneRightAnswer'));
+    clickButton('srp-quiz-right-answer');
 
-    await waitForText(t('srpSecurityQuizQuestionOneRightAnswerTitle'));
+    await waitForStage(QuizStage.rightAnswerQuestionOne);
 
-    clickButton(t('continue'));
+    clickButton('srp-quiz-continue');
 
-    await waitForText(t('srpSecurityQuizQuestionTwoQuestion'));
+    await waitForStage(QuizStage.questionTwo);
 
-    clickButton(t('srpSecurityQuizQuestionTwoWrongAnswer'));
+    clickButton('srp-quiz-wrong-answer');
 
-    await waitForText(t('srpSecurityQuizQuestionTwoWrongAnswerTitle'));
+    await waitForStage(QuizStage.wrongAnswerQuestionTwo);
 
-    clickButton(t('tryAgain'));
+    clickButton('srp-quiz-try-again');
 
-    await waitForText(t('srpSecurityQuizQuestionTwoQuestion'));
+    await waitForStage(QuizStage.questionTwo);
 
-    clickButton(t('srpSecurityQuizQuestionTwoRightAnswer'));
+    clickButton('srp-quiz-right-answer');
 
-    await waitForText(t('srpSecurityQuizQuestionTwoRightAnswerTitle'));
+    await waitForStage(QuizStage.rightAnswerQuestionTwo);
 
-    clickButton(t('continue'));
+    clickButton('srp-quiz-continue');
   });
 });
