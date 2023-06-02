@@ -5,6 +5,7 @@ import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
+import { KeyringController } from '@metamask/eth-keyring-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -82,6 +83,7 @@ const TEST_SEED =
 const TEST_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const TEST_ADDRESS_2 = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
+const TEST_ADDRESS_4 = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
@@ -111,6 +113,7 @@ const POLYGON_CHAIN_ID = '0x89';
 const MAINNET_CHAIN_ID = '0x1';
 
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
+const BIP_44_PATH = `m/44/0'/0'`;
 
 const UNKNOWN_DEVICE_ERROR_MESSAGE =
   'MetamaskController:getKeyringForDevice - Unknown device';
@@ -195,20 +198,18 @@ describe('MetaMaskController', function () {
     };
 
     jest.spyOn(MetaMaskController.prototype, 'resetStates').mockClear();
+    jest
+      .spyOn(KeyringController.prototype, 'createNewVaultAndKeychain')
+      .mockClear();
+    jest
+      .spyOn(KeyringController.prototype, 'createNewVaultAndRestore')
+      .mockClear();
 
     metamaskController = new MetaMaskController(
       metamaskControllerArgumentConstructor({
         isFirstMetaMaskControllerSetup: true,
       }),
     );
-
-    // add jest method spies
-    jest
-      .spyOn(metamaskController.keyringController, 'createNewVaultAndKeychain')
-      .mockClear();
-    jest
-      .spyOn(metamaskController.keyringController, 'createNewVaultAndRestore')
-      .mockClear();
   });
 
   afterEach(function () {
@@ -240,7 +241,6 @@ describe('MetaMaskController', function () {
       ]);
     });
 
-    const E18_ADDRESS = '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc';
     it('adds private key to keyrings in KeyringController', async function () {
       const simpleKeyrings =
         metamaskController.keyringController.getKeyringsByType(
@@ -252,13 +252,13 @@ describe('MetaMaskController', function () {
       );
 
       expect(privKeyHex).toStrictEqual(importPrivkey);
-      expect(pubAddressHexArr[0]).toStrictEqual(E18_ADDRESS);
+      expect(pubAddressHexArr[0]).toStrictEqual(TEST_ADDRESS_4);
     });
 
     it('adds 1 account', async function () {
       const keyringAccounts =
         await metamaskController.keyringController.getAccounts();
-      expect(last(keyringAccounts)).toStrictEqual(E18_ADDRESS);
+      expect(last(keyringAccounts)).toStrictEqual(TEST_ADDRESS_4);
     });
   });
 
@@ -289,8 +289,6 @@ describe('MetaMaskController', function () {
 
   describe('#createNewVaultAndKeychain', function () {
     it('can only create new vault on keyringController once', async function () {
-      const selectStub = jest.spyOn(metamaskController, 'selectFirstIdentity');
-
       const password = 'a-fake-password';
 
       await metamaskController.createNewVaultAndKeychain(password);
@@ -299,8 +297,6 @@ describe('MetaMaskController', function () {
       expect(
         metamaskController.keyringController.createNewVaultAndKeychain,
       ).toHaveBeenCalledTimes(1);
-
-      selectStub.mockReset();
     });
   });
 
@@ -425,9 +421,9 @@ describe('MetaMaskController', function () {
 
   describe('#getBalance', function () {
     it('should return the balance known by accountTracker', async function () {
-      const accounts = {};
-
-      accounts[TEST_ADDRESS] = { balance: TEST_HEX_BALANCE };
+      const accounts = {
+        [TEST_ADDRESS]: { balance: TEST_HEX_BALANCE },
+      };
 
       metamaskController.accountTracker.store.putState({ accounts });
 
@@ -471,9 +467,9 @@ describe('MetaMaskController', function () {
     let identities, address;
 
     beforeEach(function () {
-      address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      address = TEST_ADDRESS;
       identities = {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+        [TEST_ADDRESS]: {
           address,
           name: 'Account 1',
         },
@@ -506,7 +502,7 @@ describe('MetaMaskController', function () {
         metamaskController.connectHardware(
           'Some random device name',
           0,
-          `m/44/0'/0'`,
+          BIP_44_PATH,
         ),
       ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
@@ -577,7 +573,7 @@ describe('MetaMaskController', function () {
       await expect(
         metamaskController.checkHardwareStatus(
           'Some random device name',
-          `m/44/0'/0'`,
+          BIP_44_PATH,
         ),
       ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
@@ -594,35 +590,27 @@ describe('MetaMaskController', function () {
   });
 
   describe('isDeviceAccessible', function () {
-    let unlock;
-    let mockKeyrings = [];
+    const unlock = jest.fn();
+    const mockKeyrings = [
+      {
+        type: HardwareKeyringType.ledger,
+        unlock,
+      },
+    ];
+    const keyringsByType = jest
+      .spyOn(KeyringController.prototype, 'getKeyringsByType')
+      .mockImplementation(() => mockKeyrings);
 
-    beforeEach(async function () {
-      unlock = jest.fn();
-      mockKeyrings = [
-        {
-          type: HardwareKeyringType.ledger,
-          unlock,
-        },
-      ];
-      jest
-        .spyOn(metamaskController.keyringController, 'getKeyringsByType')
-        .mockClear()
-        .mockImplementation(() => mockKeyrings);
-    });
-
-    afterEach(function () {
-      metamaskController.keyringController.getKeyringsByType.mockRestore();
-      unlock.mockReset();
-      // jest.clearAllMocks();
+    beforeEach(function () {
+      unlock.mockClear();
+      keyringsByType.mockClear();
     });
 
     it('should call underlying keyring for ledger device and return false if inaccessible', async function () {
-      unlock.rejects();
       // checking accessibility should invoke unlock
       const status = await metamaskController.isDeviceAccessible(
         HardwareDeviceNames.ledger,
-        `m/44/0'/0'`,
+        BIP_44_PATH,
       );
 
       // unlock should have been called on the mock device
@@ -631,28 +619,28 @@ describe('MetaMaskController', function () {
     });
 
     it('should call underlying keyring for ledger device and return true if accessible', async function () {
-      unlock.mockResolvedValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+      unlock.mockResolvedValue(TEST_ADDRESS);
       // checking accessibility should invoke unlock
       const status = await metamaskController.isDeviceAccessible(
         HardwareDeviceNames.ledger,
-        `m/44/0'/0'`,
+        BIP_44_PATH,
       );
       expect(unlock).toHaveBeenCalledTimes(1);
       expect(status).toStrictEqual(true);
     });
 
     it('should not call underlying device for other devices', async function () {
-      mockKeyrings = [
+      keyringsByType.mockImplementationOnce(() => [
         {
           type: HardwareKeyringType.trezor,
           unlock,
           getModel: () => 'mock trezor',
           isUnlocked: () => false,
         },
-      ];
+      ]);
       const status = await metamaskController.isDeviceAccessible(
         HardwareDeviceNames.trezor,
-        `m/44'/1'/0'/0`,
+        TREZOR_TESTNET_PATH,
       );
       expect(unlock).not.toHaveBeenCalled();
       expect(status).toStrictEqual(false);
