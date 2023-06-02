@@ -104,7 +104,7 @@ describe('PrepareSwapPage', () => {
       <PrepareSwapPage {...props} />,
       store,
     );
-    fireEvent.click(getByTestId('prepare-swap-page__switch-tokens'));
+    fireEvent.click(getByTestId('prepare-swap-page-switch-tokens'));
     expect(setSwapsFromToken).toHaveBeenCalledWith(mockStore.swaps.toToken);
     expect(setSwapToToken).toHaveBeenCalled();
   });

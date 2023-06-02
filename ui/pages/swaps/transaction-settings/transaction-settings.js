@@ -294,7 +294,7 @@ export default function TransactionSettings({
                             )}
                           >
                             <input
-                              data-testid="transaction-settings__custom-slippage"
+                              data-testid="transaction-settings-custom-slippage"
                               onChange={(event) => {
                                 const { value } = event.target;
                                 const isValueNumeric = !isNaN(Number(value));
@@ -339,7 +339,7 @@ export default function TransactionSettings({
                 >
                   <Typography
                     variant={TypographyVariant.H6}
-                    testId="mm-banner-alert__notification-text"
+                    testId="mm-banner-alert-notification-text"
                   >
                     {notificationText}
                   </Typography>
@@ -355,6 +355,7 @@ export default function TransactionSettings({
               }}
               block
               disabled={!didFormChange}
+              data-testid="update-transaction-settings-button"
             >
               {t('update')}
             </ButtonPrimary>

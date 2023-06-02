@@ -82,14 +82,14 @@ exports[`MainQuoteSummary renders the component with initial props 4`] = `
   >
     <div
       class="box exchange-rate-display__quote-rate box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
-      data-testid="exchange-rate-display__quote-rate"
+      data-testid="exchange-rate-display-quote-rate"
     >
       <span>
         1
       </span>
       <span
         class=""
-        data-testid="exchange-rate-display__base-symbol"
+        data-testid="exchange-rate-display-base-symbol"
       >
         ETH
       </span>
@@ -107,7 +107,7 @@ exports[`MainQuoteSummary renders the component with initial props 4`] = `
     </div>
     <span
       class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
-      data-testid="exchange-rate-display__switch"
+      data-testid="exchange-rate-display-switch"
       style="mask-image: url('./images/icons/swap-horizontal.svg'); cursor: pointer;"
       title="Switch"
     />

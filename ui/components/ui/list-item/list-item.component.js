@@ -38,7 +38,7 @@ export default function ListItem({
         {React.isValidElement(title) ? (
           title
         ) : (
-          <h2 className="list-item__title" data-testid="list-item__title">
+          <h2 className="list-item__title" data-testid="list-item-title">
             {title}
           </h2>
         )}
@@ -56,7 +56,7 @@ export default function ListItem({
       {rightContent ? (
         <div
           className="list-item__right-content"
-          data-testid="list-item__right-content"
+          data-testid="list-item-right-content"
         >
           {rightContent}
         </div>

@@ -23,6 +23,7 @@ jest.mock('react-redux', () => {
 const createProps = (customProps = {}) => {
   return {
     onSelect: jest.fn(),
+    onModalClose: jest.fn(),
     maxAllowedSlippage: 15,
     currentSlippage: Slippage.high,
     smartTransactionsEnabled: false,
@@ -58,9 +59,9 @@ describe('TransactionSettings', () => {
     );
   });
 
-  it('renders the component with the smart transaction opt-in button available, opt into STX', () => {
+  it('renders the component with the smart transaction opt-in button available, opt into STX', async () => {
     const setSmartTransactionsOptInStatus = jest.fn();
-    const { getByText } = renderWithProvider(
+    const { getByText, getByTestId } = renderWithProvider(
       <TransactionSettings
         {...createProps({
           smartTransactionsEnabled: true,
@@ -80,8 +81,9 @@ describe('TransactionSettings', () => {
     ).toMatchSnapshot();
     expect(getByText('Smart transaction')).toBeInTheDocument();
     expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
-    fireEvent.click(document.querySelector('.toggle-button'));
-    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true, false);
+    await fireEvent.click(document.querySelector('.toggle-button'));
+    await fireEvent.click(getByTestId('update-transaction-settings-button'));
+    expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true);
   });
 
   it('renders slippage with a custom value', () => {
@@ -130,7 +132,7 @@ describe('TransactionSettings', () => {
       'aria-checked',
       'true',
     );
-    const input = getByTestId('transaction-settings__custom-slippage');
+    const input = getByTestId('transaction-settings-custom-slippage');
     fireEvent.change(input, { target: { value: 5 } });
     fireEvent.click(document);
     expect(input).toHaveAttribute('value', '5');

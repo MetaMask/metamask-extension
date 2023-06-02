@@ -74,7 +74,7 @@ export default class TransactionBreakdown extends PureComponent {
         >
           <span
             className="transaction-breakdown__value transaction-breakdown__value--amount"
-            data-testid="transaction-breakdown__value--amount"
+            data-testid="transaction-breakdown-value-amount"
           >
             {primaryCurrency}
           </span>

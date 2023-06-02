@@ -9,10 +9,10 @@ describe('BackgroundAnimation', () => {
       <BackgroundAnimation />,
     );
     expect(
-      getByTestId('loading-swaps-quotes__background-1'),
+      getByTestId('loading-swaps-quotes-background-1'),
     ).toBeInTheDocument();
     expect(
-      getByTestId('loading-swaps-quotes__background-2'),
+      getByTestId('loading-swaps-quotes-background-2'),
     ).toBeInTheDocument();
     expect(container.firstChild.firstChild.nodeName).toBe('svg');
   });

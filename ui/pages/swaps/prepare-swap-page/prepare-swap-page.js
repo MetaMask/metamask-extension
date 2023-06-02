@@ -845,7 +845,7 @@ export default function PrepareSwapPage({
               onClick={onSwapFromOpen}
               onClose={onSwapFromClose}
               selectedToken={selectedFromToken}
-              testId="prepare-swap-page__swap-from"
+              testId="prepare-swap-page-swap-from"
             />
             <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
               <TextField
@@ -857,7 +857,7 @@ export default function PrepareSwapPage({
                 onChange={onTextFieldChange}
                 value={fromTokenInputValue}
                 truncate={false}
-                testId="prepare-swap-page__from-token-amount"
+                testId="prepare-swap-page-from-token-amount"
               />
             </Box>
           </Box>
@@ -871,7 +871,7 @@ export default function PrepareSwapPage({
               {showMaxBalanceLink && (
                 <div
                   className="prepare-swap-page__max-balance"
-                  data-testid="prepare-swap-page__max-balance"
+                  data-testid="prepare-swap-page-max-balance"
                   onClick={() =>
                     onInputChange(fromTokenBalance || '0', fromTokenBalance)
                   }
@@ -940,7 +940,7 @@ export default function PrepareSwapPage({
                 'prepare-swap-page__switch-tokens--disabled':
                   showQuotesLoadingAnimation,
               })}
-              data-testid="prepare-swap-page__switch-tokens"
+              data-testid="prepare-swap-page-switch-tokens"
               onClick={() => {
                 // If quotes are being loaded, disable the switch button.
                 if (!showQuotesLoadingAnimation) {
@@ -965,7 +965,7 @@ export default function PrepareSwapPage({
               onClick={onSwapToOpen}
               onClose={onSwapToClose}
               selectedToken={selectedToToken}
-              testId="prepare-swap-page__swap-to"
+              testId="prepare-swap-page-swap-to"
             />
             <Box
               display={DISPLAY.FLEX}
@@ -975,7 +975,7 @@ export default function PrepareSwapPage({
             >
               <Text
                 as="h6"
-                data-testid="prepare-swap-page__receive-amount"
+                data-testid="prepare-swap-page-receive-amount"
                 className={classnames('prepare-swap-page__receive-amount', {
                   [receiveToAmountClassName]: receiveToAmountClassName,
                 })}
@@ -1002,7 +1002,7 @@ export default function PrepareSwapPage({
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h6"
-                  data-testid="mm-banner-alert__notification-text"
+                  data-testid="mm-banner-alert-notification-text"
                 >
                   {tokenVerifiedOn1Source
                     ? t('swapTokenVerifiedOn1SourceDescription', [

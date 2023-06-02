@@ -32,11 +32,11 @@ describe('ExchangeRateDisplay', () => {
     const { getByTestId } = renderWithProvider(
       <ExchangeRateDisplay {...props} />,
     );
-    expect(getByTestId('exchange-rate-display__base-symbol')).toHaveTextContent(
+    expect(getByTestId('exchange-rate-display-base-symbol')).toHaveTextContent(
       'ETH',
     );
-    fireEvent.click(getByTestId('exchange-rate-display__switch'));
-    expect(getByTestId('exchange-rate-display__base-symbol')).toHaveTextContent(
+    fireEvent.click(getByTestId('exchange-rate-display-switch'));
+    expect(getByTestId('exchange-rate-display-base-symbol')).toHaveTextContent(
       'BAT',
     );
   });

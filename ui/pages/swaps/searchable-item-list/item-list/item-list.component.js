@@ -59,7 +59,7 @@ export default function ItemList({
           listContainerClassName,
         )}
         ref={containerRef}
-        data-testid="searchable-item-list__list-container"
+        data-testid="searchable-item-list-list-container"
       >
         {results.slice(0, maxListItems).map((result, i) => {
           if (hideItemIf?.(result)) {
@@ -110,7 +110,7 @@ export default function ItemList({
                   {primaryLabel ? (
                     <span
                       className="searchable-item-list__primary-label"
-                      data-testid="searchable-item-list__primary-label"
+                      data-testid="searchable-item-list-primary-label"
                     >
                       {primaryLabel}
                     </span>
@@ -141,7 +141,7 @@ export default function ItemList({
                 <Button
                   type="primary"
                   onClick={onClick}
-                  data-testid="searchable-item-list_import-button"
+                  data-testid="searchable-item-list-import-button"
                 >
                   {t('import')}
                 </Button>

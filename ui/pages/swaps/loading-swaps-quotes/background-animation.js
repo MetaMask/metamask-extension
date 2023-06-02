@@ -5,7 +5,7 @@ export default function BackgroundAnimation() {
     <>
       <div
         className="loading-swaps-quotes__background-1"
-        data-testid="loading-swaps-quotes__background-1"
+        data-testid="loading-swaps-quotes-background-1"
       >
         <svg
           width="193"
@@ -148,7 +148,7 @@ export default function BackgroundAnimation() {
       </div>
       <div
         className="loading-swaps-quotes__background-2"
-        data-testid="loading-swaps-quotes__background-2"
+        data-testid="loading-swaps-quotes-background-2"
       >
         <svg
           width="195"

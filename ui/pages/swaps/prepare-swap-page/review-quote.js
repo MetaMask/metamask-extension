@@ -1036,7 +1036,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                   <Text
                     variant={TextVariant.bodyMd}
                     as="h6"
-                    data-testid="mm-banner-alert__notification-text"
+                    data-testid="mm-banner-alert-notification-text"
                   >
                     {actionableBalanceErrorMessage}
                   </Text>
@@ -1187,7 +1187,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 variant={TextVariant.bodyMdBold}
                 as="h6"
                 color={TextColor.textAlternative}
-                data-testid="review-quote__gas-fee-in-fiat"
+                data-testid="review-quote-gas-fee-in-fiat"
                 width={FRACTIONS.FOUR_TWELFTHS}
                 textAlign={TEXT_ALIGN.RIGHT}
               >

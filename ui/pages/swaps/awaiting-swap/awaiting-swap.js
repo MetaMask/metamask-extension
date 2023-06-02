@@ -230,7 +230,7 @@ export default function AwaitingSwap({
       <span
         key="swapOnceTransactionHasProcess-1"
         className="awaiting-swap__amount-and-symbol"
-        data-testid="awaiting-swap__amount-and-symbol"
+        data-testid="awaiting-swap-amount-and-symbol"
       >
         {swapMetaData?.token_to}
       </span>,
@@ -281,13 +281,13 @@ export default function AwaitingSwap({
         <div className="awaiting-swap__status-image">{statusImage}</div>
         <div
           className="awaiting-swap__header"
-          data-testid="awaiting-swap__header"
+          data-testid="awaiting-swap-header"
         >
           {headerText}
         </div>
         <div
           className="awaiting-swap__main-description"
-          data-testid="awaiting-swap__main-description"
+          data-testid="awaiting-swap-main-description"
         >
           {descriptionText}
         </div>

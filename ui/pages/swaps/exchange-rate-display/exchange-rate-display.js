@@ -79,12 +79,12 @@ export default function ExchangeRateDisplay({
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
         className="exchange-rate-display__quote-rate"
-        data-testid="exchange-rate-display__quote-rate"
+        data-testid="exchange-rate-display-quote-rate"
       >
         <span>1</span>
         <span
           className={classnames({ 'exchange-rate-display__bold': boldSymbols })}
-          data-testid="exchange-rate-display__base-symbol"
+          data-testid="exchange-rate-display-base-symbol"
         >
           {baseSymbol}
         </span>
@@ -105,7 +105,7 @@ export default function ExchangeRateDisplay({
           color={IconColor.iconAlternative}
           style={{ cursor: 'pointer' }}
           title={t('switch')}
-          data-testid="exchange-rate-display__switch"
+          data-testid="exchange-rate-display-switch"
         />
       )}
     </div>

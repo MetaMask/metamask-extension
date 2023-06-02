@@ -10,7 +10,7 @@ export default function MascotBackgroundAnimation() {
     <div className="mascot-background-animation__animation">
       <div
         className="mascot-background-animation__background-1"
-        data-testid="mascot-background-animation__background-1"
+        data-testid="mascot-background-animation-background-1"
       >
         <svg
           width="193"
@@ -153,7 +153,7 @@ export default function MascotBackgroundAnimation() {
       </div>
       <div
         className="mascot-background-animation__background-2"
-        data-testid="mascot-background-animation__background-2"
+        data-testid="mascot-background-animation-background-2"
       >
         <svg
           width="195"
@@ -215,7 +215,7 @@ export default function MascotBackgroundAnimation() {
       </div>
       <div
         className="mascot-background-animation__mascot-container"
-        data-testid="mascot-background-animation__mascot-container"
+        data-testid="mascot-background-animation-mascot-container"
       >
         <Mascot
           animationEventEmitter={animationEventEmitter.current}

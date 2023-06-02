@@ -72,7 +72,7 @@ export default function ViewQuotePriceDifference(props) {
           <Text
             variant={TextVariant.bodyMd}
             as="h6"
-            data-testid="mm-banner-alert__notification-text"
+            data-testid="mm-banner-alert-notification-text"
           >
             {priceDifferenceMessage}
           </Text>

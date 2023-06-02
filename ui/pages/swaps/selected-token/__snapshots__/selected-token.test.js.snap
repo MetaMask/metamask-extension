@@ -5,6 +5,7 @@ exports[`SelectedToken renders the component with initial props 1`] = `
   <div
     class="dropdown-search-list dropdown-search-list__selector-closed-container dropdown-input-pair__selector--closed"
     data-testid="dropdown-search-list"
+    tabindex="0"
   >
     <div
       class="dropdown-search-list__selector-closed"
@@ -45,6 +46,7 @@ exports[`SelectedToken renders the component with no token selected 1`] = `
   <div
     class="dropdown-search-list dropdown-search-list__selector-closed-container dropdown-input-pair__selector--closed"
     data-testid="dropdown-search-list"
+    tabindex="0"
   >
     <div
       class="dropdown-search-list__selector-closed"
