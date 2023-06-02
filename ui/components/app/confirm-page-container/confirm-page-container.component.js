@@ -41,7 +41,6 @@ import {
   getIsBuyableChain,
   getMetadataContractName,
   getMetaMaskIdentities,
-  getMetaMetricsId,
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
@@ -121,8 +120,6 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
-
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   // TODO: Move useRamps hook to the confirm-transaction-base parent component.
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
@@ -206,7 +203,6 @@ const ConfirmPageContainer = (props) => {
         )}
         {contentComponent || (
           <ConfirmPageContainerContent
-            metaMetricsId={metaMetricsId}
             action={action}
             title={title}
             image={image}
@@ -240,6 +236,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             noteComponent={noteComponent}
