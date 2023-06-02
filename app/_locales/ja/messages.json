@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "アカウントを接続するか、または新規に作成します"
   },
-  "connectHardwareWallet": {
-    "message": "ハードウェアウォレットの接続"
-  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAccount": {
-    "message": "アカウントを作成"
   },
   "createNewWallet": {
     "message": "新規ウォレットを作成"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります!"
   },
-  "importTokens": {
-    "message": "トークンをインポート"
-  },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "missingToken": {
-    "message": "トークンが見当たりませんか？"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
   },
-  "showHide": {
-    "message": "表示・非表示"
-  },
   "showIncomingTransactions": {
     "message": "受信トランザクションを表示"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "ステータス"
-  },
-  "statusConnected": {
-    "message": "接続済み"
   },
   "statusNotConnected": {
     "message": "未接続"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 要求の設定"
   },
-  "toggleTestNetworks": {
-    "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "トークン"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
-  },
-  "troubleTokenBalances": {
-    "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "パーミッションを付与することで、次の$1による資金へのアクセスが許可されます"

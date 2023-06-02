@@ -154,9 +154,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "اتصال کیف سخت افزار"
-  },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "ایجاد"
-  },
-  "createAccount": {
-    "message": "ایجاد حساب"
   },
   "createPassword": {
     "message": "ایجاد رمز عبور"
@@ -812,10 +806,6 @@
   },
   "transferFrom": {
     "message": "انتقال از"
-  },
-  "troubleTokenBalances": {
-    "message": "ما در بارگیری صورت حساب های رمزیاب تان دچار مشکل شدیم. شما میتوانید آنها را مشاهده کنید",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "امتحان مجدد"

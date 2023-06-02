@@ -146,6 +146,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 padding={[0, 1, 0, 1]}
                 variant={TextVariant.bodyXs}
                 textAlign={TextAlign.Center}
+                data-testid="global-menu-notification-count"
                 style={{
                   borderRadius: '16px',
                   minWidth: '24px',

@@ -154,9 +154,6 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectHardwareWallet": {
-    "message": "Ühendage riistvara rahakott"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Loo"
-  },
-  "createAccount": {
-    "message": "Loo konto"
   },
   "createPassword": {
     "message": "Loo parool"
@@ -802,10 +796,6 @@
   },
   "transferFrom": {
     "message": "Ülekandmine asukohast"
-  },
-  "troubleTokenBalances": {
-    "message": "Teie loasaldode laadimisega oli probleem. Saate neid vaadata",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Proovi uuesti"

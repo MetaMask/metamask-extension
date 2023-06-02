@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "连接账户或创建新账户"
   },
-  "connectHardwareWallet": {
-    "message": "连接硬件钱包"
-  },
   "connectManually": {
     "message": "手动连接到当前站点"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "创建"
-  },
-  "createAccount": {
-    "message": "创建账户"
   },
   "createNewWallet": {
     "message": "创建新钱包"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
   },
-  "importTokens": {
-    "message": "添加资产"
-  },
   "importTokensCamelCase": {
     "message": "添加代币"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "在这里请求"
   },
-  "missingToken": {
-    "message": "没有看到您的代币？"
-  },
   "moreComingSoon": {
     "message": "更多即将到来……"
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "在设置中访问",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "选择此项以在发送屏幕上显示十六进制数据字段"
   },
-  "showHide": {
-    "message": "显示/隐藏"
-  },
   "showIncomingTransactions": {
     "message": "显示传入的交易"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "状态"
-  },
-  "statusConnected": {
-    "message": "已连接"
   },
   "statusNotConnected": {
     "message": "未连接"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "切换eth_sign请求"
   },
-  "toggleTestNetworks": {
-    "message": "$1 测试网络",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "代币"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
-  },
-  "troubleTokenBalances": {
-    "message": "我们在加载您的代币余额时遇到问题。您可以查看它们 ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "通过授予权限，您允许以下 $1 访问您的资金"
