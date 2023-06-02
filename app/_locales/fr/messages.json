@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "Connecter un compte ou en créer un nouveau"
   },
-  "connectHardwareWallet": {
-    "message": "Connecter un portefeuille matériel"
-  },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "Créer"
-  },
-  "createAccount": {
-    "message": "Créer un compte"
   },
   "createNewWallet": {
     "message": "Créer un nouveau portefeuille"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "Tout un chacun peut créer un jeton avec n’importe quel nom, y compris de fausses versions de jetons existants. Ajoutez et échangez avec prudence !"
   },
-  "importTokens": {
-    "message": "importer des jetons"
-  },
   "importTokensCamelCase": {
     "message": "Importer des jetons"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "Demandez ici"
   },
-  "missingToken": {
-    "message": "Vous ne voyez pas votre jeton ?"
-  },
   "moreComingSoon": {
     "message": "D’autres à venir..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "notifications": {
-    "message": "Notifications"
   },
   "notifications10ActionText": {
     "message": "Ouvrir les paramètres",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
   },
-  "showHide": {
-    "message": "Afficher/masquer"
-  },
   "showIncomingTransactions": {
     "message": "Afficher les transactions entrantes"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "État"
-  },
-  "statusConnected": {
-    "message": "Connecté"
   },
   "statusNotConnected": {
     "message": "Non connecté"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "Activer/Désactiver les requêtes eth-sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 réseaux de test",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Jeton"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
-  },
-  "troubleTokenBalances": {
-    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "En accordant cette autorisation, vous permettez au(x) $1 suivant(s) d’accéder à vos fonds"

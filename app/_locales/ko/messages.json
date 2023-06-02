@@ -642,9 +642,6 @@
   "connectAccountOrCreate": {
     "message": "계정 연결 또는 새 계정 만들기"
   },
-  "connectHardwareWallet": {
-    "message": "하드웨어 지갑 연결"
-  },
   "connectManually": {
     "message": "현재 사이트에 수동으로 연결"
   },
@@ -788,9 +785,6 @@
   },
   "create": {
     "message": "생성"
-  },
-  "createAccount": {
-    "message": "계정 생성"
   },
   "createNewWallet": {
     "message": "새 지갑 생성"
@@ -1636,9 +1630,6 @@
   "importTokenWarning": {
     "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 거래는 사용자의 책임입니다."
   },
-  "importTokens": {
-    "message": "토큰 가져오기"
-  },
   "importTokensCamelCase": {
     "message": "토큰 가져오기"
   },
@@ -1990,9 +1981,6 @@
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
   },
-  "missingToken": {
-    "message": "토큰이 보이지 않나요?"
-  },
   "moreComingSoon": {
     "message": "더 추가 예정..."
   },
@@ -2234,9 +2222,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "notifications": {
-    "message": "알림"
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",
@@ -3214,9 +3199,6 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
-  "showHide": {
-    "message": "보기/숨기기"
-  },
   "showIncomingTransactions": {
     "message": "수신 거래 표시"
   },
@@ -3415,9 +3397,6 @@
   },
   "status": {
     "message": "상태"
-  },
-  "statusConnected": {
-    "message": "연결됨"
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
@@ -3923,10 +3902,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 요청 토글"
   },
-  "toggleTestNetworks": {
-    "message": "$1 테스트 네트워크",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "토큰"
   },
@@ -4105,10 +4080,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
-  },
-  "troubleTokenBalances": {
-    "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "권한을 부여하면 다음 $1이(가) 귀하의 자금에 액세스할 수 있습니다."
