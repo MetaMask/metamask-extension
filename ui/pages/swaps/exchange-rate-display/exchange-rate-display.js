@@ -10,6 +10,7 @@ import {
   DISPLAY,
   AlignItems,
   IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
@@ -78,6 +79,7 @@ export default function ExchangeRateDisplay({
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
+        color={TextColor.primaryDefault}
         className="exchange-rate-display__quote-rate"
         data-testid="exchange-rate-display-quote-rate"
       >
