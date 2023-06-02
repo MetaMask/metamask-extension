@@ -7,6 +7,7 @@ const {
   METAMASK_HOTLIST_DIFF_URL,
   METAMASK_STALELIST_URL,
   BlockProvider,
+  mockConfigLookupOnWarningPage,
 } = require('./helpers');
 
 describe('Phishing Detection', function () {
@@ -151,14 +152,18 @@ describe('Phishing Detection', function () {
     );
   });
 
-  it.skip('should navigate the user to eth-phishing-detect to dispute a block if the phishing warning page fails to identify the source', async function () {
+  it('should navigate the user to eth-phishing-detect to dispute a block if the phishing warning page fails to identify the source', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: (mockServer) => {
-          setupPhishingDetectionMocks(mockServer, { statusCode: 500 });
+          setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            blocklist: ['127.0.0.1'],
+          });
+          mockConfigLookupOnWarningPage(mockServer, { statusCode: 500 });
         },
         dapp: true,
         failOnConsoleError: false,
