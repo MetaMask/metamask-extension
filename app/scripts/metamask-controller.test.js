@@ -23,6 +23,7 @@ import {
   MockEthContract,
 } from '../../test/helpers/metamask-controller';
 import { deferredPromise } from './lib/util';
+import PreferencesController from './controllers/preferences';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -277,13 +278,10 @@ describe('MetaMaskController', function () {
       const addresses =
         await metamaskController.keyringController.getAccounts();
 
-      identities.forEach((identity) => {
-        expect(addresses).toContain(identity);
-      });
-
-      addresses.forEach((address) => {
-        expect(identities).toContain(address);
-      });
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(addresses).toEqual(expect.arrayContaining(identities));
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(identities).toEqual(expect.arrayContaining(addresses));
     });
   });
 
@@ -650,7 +648,7 @@ describe('MetaMaskController', function () {
   describe('forgetDevice', function () {
     it('should throw if it receives an unknown device name', async function () {
       await expect(
-        await metamaskController.forgetDevice('Some random device name'),
+        metamaskController.forgetDevice('Some random device name'),
       ).rejects.toThrow(UNKNOWN_DEVICE_ERROR_MESSAGE);
     });
 
@@ -671,64 +669,38 @@ describe('MetaMaskController', function () {
   });
 
   describe('unlockHardwareWalletAccount', function () {
-    let accountToUnlock;
-    let windowOpenStub;
-    let addNewAccountStub;
-    let getAccountsStub;
+    const accountToUnlock = 10;
+    const windowOpenStub = jest.spyOn(window, 'open').mockReturnValue(noop);
+    const addNewAccountStub = jest
+      .spyOn(KeyringController.prototype, 'addNewAccount')
+      .mockReturnValue({});
+    const getAccountsStub = jest
+      .spyOn(KeyringController.prototype, 'getAccounts')
+      .mockResolvedValueOnce(['0x1'])
+      .mockResolvedValueOnce(['0x2'])
+      .mockResolvedValueOnce(['0x3'])
+      .mockResolvedValueOnce(['0x4']);
+    const setAddressesStub = jest.spyOn(
+      PreferencesController.prototype,
+      'setAddresses',
+    );
+    const setSelectedAddressStub = jest.spyOn(
+      PreferencesController.prototype,
+      'setSelectedAddress',
+    );
+    const setAccountLabelStub = jest.spyOn(
+      PreferencesController.prototype,
+      'setAccountLabel',
+    );
+
     beforeEach(async function () {
-      accountToUnlock = 10;
-      windowOpenStub = jest
-        .spyOn(window, 'open')
-        .mockClear()
-        .mockReturnValue(noop);
+      windowOpenStub.mockClear();
+      addNewAccountStub.mockClear();
+      getAccountsStub.mockClear();
+      setAddressesStub.mockClear();
+      setSelectedAddressStub.mockClear();
+      setAccountLabelStub.mockClear();
 
-      addNewAccountStub = jest
-        .spyOn(metamaskController.keyringController, 'addNewAccount')
-        .mockClear()
-        .mockReturnValue({});
-
-      getAccountsStub = jest
-        .spyOn(metamaskController.keyringController, 'getAccounts')
-        .mockClear()
-        .mockImplementation(() => {
-          // Need to return different address to mock the behavior of
-          // adding a new account from the keyring
-          if (getAccountsStub.mock.calls.length === 0) {
-            return Promise.resolve(['0x1']);
-          }
-
-          return Promise.reject(new Error('Account not found'));
-        });
-      getAccountsStub.mockImplementation(() => {
-        if (getAccountsStub.mock.calls.length === 1) {
-          return Promise.resolve(['0x2']);
-        }
-
-        return Promise.reject(new Error('Account not found'));
-      });
-      getAccountsStub.mockImplementation(() => {
-        if (getAccountsStub.mock.calls.length === 2) {
-          return Promise.resolve(['0x3']);
-        }
-
-        return Promise.reject(new Error('Account not found'));
-      });
-      getAccountsStub.mockImplementation(() => {
-        if (getAccountsStub.mock.calls.length === 3) {
-          return Promise.resolve(['0x4']);
-        }
-
-        return Promise.reject(new Error('Account not found'));
-      });
-      jest
-        .spyOn(metamaskController.preferencesController, 'setAddresses')
-        .mockClear();
-      jest
-        .spyOn(metamaskController.preferencesController, 'setSelectedAddress')
-        .mockClear();
-      jest
-        .spyOn(metamaskController.preferencesController, 'setAccountLabel')
-        .mockClear();
       await metamaskController
         .connectHardware(HardwareDeviceNames.trezor, 0, TREZOR_TESTNET_PATH)
         .catch(() => null);
@@ -742,10 +714,10 @@ describe('MetaMaskController', function () {
     afterEach(function () {
       windowOpenStub.mockRestore();
       addNewAccountStub.mockRestore();
-      metamaskController.keyringController.getAccounts.mockRestore();
-      metamaskController.preferencesController.setAddresses.mockRestore();
-      metamaskController.preferencesController.setSelectedAddress.mockRestore();
-      metamaskController.preferencesController.setAccountLabel.mockRestore();
+      getAccountsStub.mockRestore();
+      setAddressesStub.mockRestore();
+      setSelectedAddressStub.mockRestore();
+      setAccountLabelStub.mockRestore();
     });
 
     it('should set unlockedAccount in the keyring', async function () {
@@ -765,27 +737,21 @@ describe('MetaMaskController', function () {
     });
 
     it('should call preferencesController.setAddresses', async function () {
-      expect(
-        metamaskController.preferencesController.setAddresses,
-      ).toHaveBeenCalledTimes(1);
+      expect(setAddressesStub).toHaveBeenCalledTimes(1);
     });
 
     it('should call preferencesController.setSelectedAddress', async function () {
-      expect(
-        metamaskController.preferencesController.setSelectedAddress,
-      ).toHaveBeenCalledTimes(1);
+      expect(setSelectedAddressStub).toHaveBeenCalledTimes(1);
     });
 
     it('should call preferencesController.setAccountLabel', async function () {
-      expect(
-        metamaskController.preferencesController.setAccountLabel,
-      ).toHaveBeenCalledTimes(1);
+      expect(setAccountLabelStub).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('#addNewAccount', function () {
     it('errors when an primary keyring is does not exist', async function () {
-      await expect(await metamaskController.addNewAccount()).rejects.toThrow(
+      await expect(metamaskController.addNewAccount()).rejects.toThrow(
         NO_HD_KEY_ERROR_MESSAGE,
       );
     });
@@ -793,7 +759,7 @@ describe('MetaMaskController', function () {
 
   describe('#verifyseedPhrase', function () {
     it('errors when no keying is provided', async function () {
-      await expect(await metamaskController.verifySeedPhrase()).rejects.toThrow(
+      await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
         NO_HD_KEY_ERROR_MESSAGE,
       );
     });
