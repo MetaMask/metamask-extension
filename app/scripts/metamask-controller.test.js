@@ -251,7 +251,7 @@ describe('MetaMaskController', function () {
       );
     });
   });
-  
+
   describe('MetaMaskController Behaviour', function () {
     let metamaskController;
 
