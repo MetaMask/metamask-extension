@@ -77,18 +77,20 @@ describe('Security Tab', () => {
   it('toggles SRP Quiz', async () => {
     renderWithProvider(<SecurityTab />, mockStore);
 
-    expect(screen.queryByText('Get started')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByText('Reveal Secret Recovery Phrase'));
+    fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(screen.queryByText('Get started')).toBeInTheDocument();
+    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
 
     const container = screen.getByTestId('srp-quiz-header');
     const checkbox = queryByRole(container, 'button');
     fireEvent.click(checkbox);
 
-    await waitFor(() => {
-      expect(screen.queryByText('Get started')).not.toBeInTheDocument();
-    });
+    expect(
+      screen.queryByTestId(`srp_stage_introduction`),
+    ).not.toBeInTheDocument();
   });
 });

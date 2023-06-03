@@ -11,19 +11,32 @@ exports[`Security Tab should match snapshot 1`] = `
       Security
     </span>
     <div
+      class="settings-page__security-tab-sub-header"
+    >
+      Secret Recovery Phrase
+    </div>
+    <div
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-item-col"
+        class="settings-page__content-item"
       >
-        <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
-          data-testid="reveal-seed-words"
-          type="danger"
-        >
+        <span>
           Reveal Secret Recovery Phrase
-        </button>
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          To keep your wallet safe, we'll ask a couple questions before revealing your Secret Recovery Phrase.
+        </div>
       </div>
+      <button
+        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        data-testid="reveal-seed-words"
+        type="danger"
+      >
+        Get started
+      </button>
     </div>
     <span
       class="settings-page__security-tab-sub-header__bold"

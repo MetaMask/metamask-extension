@@ -3587,6 +3587,9 @@
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
+  "seedPhraseSettingsDescription": {
+    "message": "To keep your wallet safe, we'll ask a couple questions before revealing your Secret Recovery Phrase."
+  },
   "seedPhraseWriteDownDetails": {
     "message": "Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access."
   },
