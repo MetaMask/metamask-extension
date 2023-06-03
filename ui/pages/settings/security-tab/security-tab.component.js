@@ -102,41 +102,52 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <div className="settings-page__content-item-col">
-        <Button
-          data-testid="reveal-seed-words"
-          type="danger"
-          size={BUTTON_SIZES.LG}
-          onClick={(event) => {
-            event.preventDefault();
-            this.context.trackEvent({
-              category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.KeyExportSelected,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Srp,
-                location: 'Settings',
-              },
-            });
-            this.context.trackEvent({
-              category: MetaMetricsEventCategory.Settings,
-              event: MetaMetricsEventName.SrpRevealClicked,
-              properties: {
-                key_type: MetaMetricsEventKeyType.Srp,
-                location: 'Settings',
-              },
-            });
-            this.setState({ srpQuizPopoverVisible: true });
-          }}
-        >
-          {t('revealSeedWords')}
-        </Button>
-        {this.state.srpQuizPopoverVisible && (
-          <SRPQuiz
-            isOpen={this.state.srpQuizPopoverVisible}
-            onClose={() => this.setState({ srpQuizPopoverVisible: false })}
-          />
-        )}
-      </div>
+      <>
+        <div className="settings-page__security-tab-sub-header">
+          {t('secretRecoveryPhrase')}
+        </div>
+        <div className="settings-page__content-padded">
+          <div className="settings-page__content-item">
+            <span>{t('revealSeedWords')}</span>
+            <div className="settings-page__content-description">
+              {t('seedPhraseSettingsDescription')}
+            </div>
+          </div>
+          <Button
+            data-testid="reveal-seed-words"
+            type="danger"
+            size={BUTTON_SIZES.LG}
+            onClick={(event) => {
+              event.preventDefault();
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.KeyExportSelected,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                  location: 'Settings',
+                },
+              });
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.SrpRevealClicked,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                  location: 'Settings',
+                },
+              });
+              this.setState({ srpQuizPopoverVisible: true });
+            }}
+          >
+            {t('srpSecurityQuizGetStarted')}
+          </Button>
+          {this.state.srpQuizPopoverVisible && (
+            <SRPQuiz
+              isOpen={this.state.srpQuizPopoverVisible}
+              onClose={() => this.setState({ srpQuizPopoverVisible: false })}
+            />
+          )}
+        </div>
+      </>
     );
   }
 
@@ -514,9 +525,7 @@ export default class SecurityTab extends PureComponent {
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
-        <div className="settings-page__content-padded">
-          {this.renderSeedWords()}
-        </div>
+        {this.renderSeedWords()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
