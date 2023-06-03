@@ -462,22 +462,18 @@ describe('MetaMaskController', function () {
   });
 
   describe('#selectFirstIdentity', function () {
-    let identities, address;
-
     beforeEach(function () {
-      address = TEST_ADDRESS;
-      identities = {
-        [TEST_ADDRESS]: {
-          address,
-          name: 'Account 1',
-        },
-        '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-          address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          name: 'Account 2',
-        },
-      };
       metamaskController.preferencesController.store.updateState({
-        identities,
+        identities: {
+          [TEST_ADDRESS]: {
+            address: TEST_ADDRESS,
+            name: 'Account 1',
+          },
+          [TEST_ADDRESS_ALT]: {
+            address: TEST_ADDRESS_ALT,
+            name: 'Account 2',
+          },
+        },
       });
       metamaskController.selectFirstIdentity();
     });
@@ -485,12 +481,14 @@ describe('MetaMaskController', function () {
     it('changes preferences controller select address', function () {
       const preferenceControllerState =
         metamaskController.preferencesController.store.getState();
-      expect(preferenceControllerState.selectedAddress).toStrictEqual(address);
+      expect(preferenceControllerState.selectedAddress).toStrictEqual(
+        TEST_ADDRESS,
+      );
     });
 
     it('changes metamask controller selected address', function () {
       const metamaskState = metamaskController.getState();
-      expect(metamaskState.selectedAddress).toStrictEqual(address);
+      expect(metamaskState.selectedAddress).toStrictEqual(TEST_ADDRESS);
     });
   });
 
