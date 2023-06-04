@@ -13,10 +13,8 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
-  TypographyVariant,
   FontWeight,
   TextAlign,
   TextColor,
@@ -324,26 +322,26 @@ export default class SignatureRequest extends PureComponent {
             />
           </div>
 
-          <Typography
+          <Text
             className="signature-request__content__title"
-            variant={TypographyVariant.H3}
+            variant={TextVariant.headingMd}
+            as="h3"
             fontWeight={FontWeight.Bold}
-            boxProps={{
-              marginTop: 4,
-            }}
+            marginTop={4}
           >
             {this.context.t('sigRequest')}
-          </Typography>
-          <Typography
+          </Text>
+          <Text
             className="request-signature__content__subtitle"
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
             align={TextAlign.Center}
             margin={12}
             marginTop={3}
           >
             {this.context.t('signatureRequestGuidance')}
-          </Typography>
+          </Text>
           {verifyingContract ? (
             <div>
               <Button
@@ -352,12 +350,13 @@ export default class SignatureRequest extends PureComponent {
                 className="signature-request-content__verify-contract-details"
                 data-testid="verify-contract-details"
               >
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.primaryDefault}
                 >
                   {this.context.t('verifyContractDetails')}
-                </Typography>
+                </Text>
               </Button>
             </div>
           ) : null}
