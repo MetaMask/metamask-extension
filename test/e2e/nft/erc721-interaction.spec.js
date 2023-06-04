@@ -50,7 +50,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
 
         // Confirm transfer
         await driver.waitForSelector({
-          css: '.confirm-page-container-summary__title',
+          css: '.mm-text--heading-md',
           text: 'TestDappCollectibles',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

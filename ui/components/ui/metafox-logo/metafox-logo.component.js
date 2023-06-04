@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import Box from '../box/box';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import MetaFoxHorizontalLogo from './horizontal-logo';
 
 export default class MetaFoxLogo extends PureComponent {
@@ -88,13 +90,15 @@ export default class MetaFoxLogo extends PureComponent {
     ///: END:ONLY_INCLUDE_IN
 
     return (
-      <div
+      <Box
+        as="button"
         onClick={onClick}
         className={classnames({
           'app-header__logo-container': !isOnboarding,
           'onboarding-app-header__logo-container': isOnboarding,
           'app-header__logo-container--clickable': Boolean(onClick),
         })}
+        backgroundColor={BackgroundColor.transparent}
         data-testid="app-header-logo"
       >
         {renderHorizontalLogo()}
@@ -115,7 +119,7 @@ export default class MetaFoxLogo extends PureComponent {
             this.renderCustodyIcon(iconProps, custodyImgSrc)
           ///: END:ONLY_INCLUDE_IN
         }
-      </div>
+      </Box>
     );
   }
 }
