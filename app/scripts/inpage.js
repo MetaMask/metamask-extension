@@ -54,7 +54,9 @@ if (shouldInjectProvider()) {
     target: METAMASK_CONTENTSCRIPT,
   });
 
-  metamaskStream._setLogger(logPostMessages(METAMASK_INPAGE, METAMASK_CONTENTSCRIPT));
+  metamaskStream._setLogger(
+    logPostMessages(METAMASK_INPAGE, METAMASK_CONTENTSCRIPT),
+  );
 
   initializeProvider({
     connectionStream: metamaskStream,

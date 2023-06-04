@@ -1,4 +1,4 @@
-import  { createProjectLogger, createModuleLogger }  from '@metamask/utils';
+import { createProjectLogger, createModuleLogger } from '@metamask/utils';
 
 import {
   METAMASK_BACKGROUND,
@@ -18,21 +18,24 @@ const colors = {
   [METAMASK_EXTERNAL]: 'grey',
 };
 
-const logger = createProjectLogger('message-stream');
-const logPortMessage = createModuleLogger(logger, 'port');
-const logPostMessage = createModuleLogger(logger, 'post');
-logPortMessage.enabled = logPostMessage.enabled = !!process.env.METAMASK_DEBUG;
+const enabled = Boolean(process.env.METAMASK_DEBUG);
+
+const projectLogger = createProjectLogger('message-stream');
+const logPortMessage = createModuleLogger(projectLogger, 'port');
+const logPostMessage = createModuleLogger(projectLogger, 'post');
+logPortMessage.enabled = enabled;
+logPostMessage.enabled = enabled;
 
 export function logPortMessages(from, to) {
-  return function(data, out) {
+  return function (data, out) {
     logMessage(logPortMessage, from, to, data, out);
-  }
+  };
 }
 
 export function logPostMessages(from, to) {
-  return function(data, out) {
+  return function (data, out) {
     logMessage(logPostMessage, from, to, data, out);
-  }
+  };
 }
 
 function logMessage(logger, from, to, data, out) {
@@ -43,10 +46,10 @@ function logMessage(logger, from, to, data, out) {
   logger(
     `%c(` +
       `%c${id}` +
-    `%c): ` +
-    `%c${from.split('metamask-')[1] || from}%c` +
-    ` ${out ? '►►►' : '◄◄◄'} ` +
-    `%c${to.split('metamask-')[1] || to}`,
+      `%c): ` +
+      `%c${from.split('metamask-')[1] || from}%c` +
+      ` ${out ? '►►►' : '◄◄◄'} ` +
+      `%c${to.split('metamask-')[1] || to}`,
     `color: grey;`,
     `color: goldenrod;`,
     `color: grey;`,
