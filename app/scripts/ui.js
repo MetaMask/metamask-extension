@@ -116,11 +116,7 @@ async function start() {
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });
   let connectionStream = new PortStream(extensionPort);
-  connectionStream._setLogger(
-    METAMASK_UI,
-    METAMASK_BACKGROUND,
-    logPortMessages,
-  );
+  connectionStream._setLogger(logPortMessages(METAMASK_UI, METAMASK_BACKGROUND));
 
   const activeTab = await queryCurrentActiveTab(windowType);
 
@@ -254,11 +250,7 @@ async function start() {
 
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
-      connectionStream._setLogger(
-        METAMASK_UI,
-        METAMASK_BACKGROUND,
-        logPortMessages,
-      );
+      connectionStream._setLogger(logPortMessages(METAMASK_UI, METAMASK_BACKGROUND));
       extensionPort.onMessage.addListener(messageListener);
       extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
     };

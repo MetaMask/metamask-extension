@@ -573,7 +573,7 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(METAMASK_BACKGROUND, METAMASK_UI, logPortMessages);
+      portStream._setLogger(logPortMessages(METAMASK_BACKGROUND, METAMASK_UI));
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -637,7 +637,7 @@ export function setupController(
     ) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-      portStream._setLogger(METAMASK_BACKGROUND, METAMASK_UI, logPortMessages);
+      portStream._setLogger(logPortMessages(METAMASK_BACKGROUND, METAMASK_UI));
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -671,7 +671,7 @@ export function setupController(
 
     const portStream =
       overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-    portStream._setLogger(METAMASK_BACKGROUND, to, logPortMessages);
+    portStream._setLogger(logPortMessages(METAMASK_BACKGROUND, to));
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,

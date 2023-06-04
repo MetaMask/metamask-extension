@@ -161,11 +161,7 @@ function setupPhishingPageStreams() {
     target: METAMASK_PHISHING_WARNING_PAGE,
   });
 
-  phishingPageStream._setLogger(
-    METAMASK_CONTENTSCRIPT,
-    METAMASK_PHISHING_WARNING_PAGE,
-    logPostMessages,
-  );
+  phishingPageStream._setLogger(logPostMessages(METAMASK_CONTENTSCRIPT, METAMASK_PHISHING_WARNING_PAGE));
 
   if (isManifestV3) {
     runWorkerKeepAliveInterval();
@@ -188,11 +184,7 @@ const setupPhishingExtStreams = () => {
     name: METAMASK_CONTENTSCRIPT,
   });
   phishingExtStream = new PortStream(phishingExtPort);
-  phishingExtStream._setLogger(
-    METAMASK_CONTENTSCRIPT,
-    METAMASK_BACKGROUND,
-    logPortMessages,
-  );
+  phishingExtStream._setLogger(logPortMessages(METAMASK_CONTENTSCRIPT, METAMASK_BACKGROUND));
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -312,11 +304,7 @@ const setupPageStreams = () => {
     target: METAMASK_INPAGE,
   });
 
-  pageStream._setLogger(
-    METAMASK_CONTENTSCRIPT,
-    METAMASK_INPAGE,
-    logPostMessages,
-  );
+  pageStream._setLogger(logPostMessages(METAMASK_CONTENTSCRIPT, METAMASK_INPAGE));
 
   if (isManifestV3) {
     pageStream.on('data', ({ data: { method } }) => {
@@ -345,11 +333,7 @@ const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: METAMASK_CONTENTSCRIPT });
   extensionStream = new PortStream(extensionPort);
-  extensionStream._setLogger(
-    METAMASK_CONTENTSCRIPT,
-    METAMASK_BACKGROUND,
-    logPortMessages,
-  );
+  extensionStream._setLogger(logPortMessages(METAMASK_CONTENTSCRIPT, METAMASK_BACKGROUND));
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -405,11 +389,7 @@ const setupLegacyPageStreams = () => {
     target: LEGACY_INPAGE,
   });
 
-  legacyPageStream._setLogger(
-    LEGACY_CONTENT_SCRIPT,
-    LEGACY_INPAGE,
-    logPostMessages,
-  );
+  legacyPageStream._setLogger(logPostMessages(LEGACY_CONTENT_SCRIPT, LEGACY_INPAGE));
 
   if (isManifestV3) {
     legacyPageStream.on('data', ({ data: { method } }) => {
