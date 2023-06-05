@@ -6,6 +6,7 @@ import SnapInstallWarning from '../../../../components/app/snaps/snap-install-wa
 import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
+  BackgroundColor,
   BLOCK_SIZES,
   BorderStyle,
   FLEX_DIRECTION,
@@ -18,10 +19,16 @@ import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { Text, ValidTag } from '../../../../components/component-library';
+import {
+  AvatarIcon,
+  IconName,
+  Text,
+  ValidTag
+} from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 
 export default function SnapInstall({
   request,
@@ -34,6 +41,9 @@ export default function SnapInstall({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
+
+  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+    useScrollRequired([requestState]);
 
   const onCancel = useCallback(
     () => rejectSnapInstall(request.metadata.id),
@@ -79,6 +89,8 @@ export default function SnapInstall({
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
+        ref={ref}
+        onScroll={onScroll}
         className="snap-install__content"
         style={{
           overflowY: 'scroll',
@@ -130,6 +142,16 @@ export default function SnapInstall({
               permissions={requestState.permissions || {}}
               targetSubjectMetadata={targetSubjectMetadata}
             />
+            {isScrollable && !isScrolledToBottom ? (
+              <AvatarIcon
+                className="snap-install__scroll-button"
+                iconName={IconName.Arrow2Down}
+                backgroundColor={BackgroundColor.infoDefault}
+                color={BackgroundColor.backgroundDefault}
+                onClick={scrollToBottom}
+                style={{ cursor: 'pointer' }}
+              />
+            ) : null}
           </>
         )}
       </Box>
@@ -144,7 +166,9 @@ export default function SnapInstall({
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={hasError}
-          disabled={isLoading}
+          disabled={
+            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+          }
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}

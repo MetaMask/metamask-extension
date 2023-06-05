@@ -7,6 +7,12 @@
     }
   }
 
+  &__scroll-button {
+    position: absolute;
+    right: 160px;
+    bottom: 90px;
+  }
+
   .page-container__footer {
     width: 100%;
     border-top: 0;
