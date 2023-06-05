@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -12,7 +12,7 @@ import {
   setProviderType,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, LINEA_MAINNET_RPC_URL, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getAllEnabledNetworks,
@@ -38,6 +38,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { shouldShowLineaMainnet } from '../../../../shared/modules/network.utils';
 
 const UNREMOVABLE_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
@@ -62,7 +63,19 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
+  const [lineaMainnetReleased, setLineaMainnetReleased] = useState(false);
+
   useEffect(() => {
+    async function shouldShowLineaMainnetNetwork() {
+      const showLineaMainnet = await shouldShowLineaMainnet(
+        LINEA_MAINNET_RPC_URL,
+      );
+      if (showLineaMainnet) {
+        setLineaMainnetReleased(true);
+      }
+    }
+    shouldShowLineaMainnetNetwork();
+
     if (showTestNetworks && !showTestNetworksRef.current) {
       // Scroll to the bottom of the list
       networkListRef.current.lastChild.scrollIntoView();
@@ -80,6 +93,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
           {networks.map((network, index) => {
+            if (
+              !lineaMainnetReleased &&
+              network.providerType === 'linea-mainnet'
+            ) {
+              return null;
+            }
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
