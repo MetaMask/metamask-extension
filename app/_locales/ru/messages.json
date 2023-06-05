@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
-  "addCustomToken": {
-    "message": "Добавить пользовательский токен"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать эту сеть в MetaMask."
   },
@@ -2982,9 +2979,6 @@
   },
   "searchResults": {
     "message": "Результаты поиска"
-  },
-  "searchTokens": {
-    "message": "Поиск токенов"
   },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"

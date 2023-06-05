@@ -2,7 +2,7 @@ import React from 'react';
 import TokenListPlaceholder from './token-list-placeholder.component';
 
 export default {
-  title: 'Pages/ImportToken/TokenList/TokenListPlaceholder',
+  title: 'Components/App/TokenList/TokenListPlaceholder',
 };
 
 export const DefaultStory = () => {

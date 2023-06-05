@@ -501,6 +501,7 @@ export default class SecurityTab extends PureComponent {
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
+        id="advanced-settings-autodetect-tokens"
       >
         <div className="settings-page__content-item">
           <span>{t('autoDetectTokens')}</span>
