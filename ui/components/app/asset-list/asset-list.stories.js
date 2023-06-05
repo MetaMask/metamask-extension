@@ -10,7 +10,7 @@ export default {
     },
   },
   args: {
-    onClickAsset: () => console.log('onClickAsset fired')
+    onClickAsset: () => console.log('onClickAsset fired'),
   },
 };
 
