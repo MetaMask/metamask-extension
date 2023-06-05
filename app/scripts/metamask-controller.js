@@ -3335,7 +3335,7 @@ export default class MetamaskController extends EventEmitter {
     try {
       // revokePermissions will revoke specific accounts
       if (this.permissionController.hasPermissions(origin)) {
-        if (accounts && Array.isArray(accounts)) {
+        if (accounts && Array.isArray(accounts) && accounts.length > 0) {
           accounts.forEach((account) => {
             // Map each account in the array here
             // Perform any required operations on each account
