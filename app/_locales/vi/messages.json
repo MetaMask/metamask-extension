@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Chấp nhận và cài đặt"
   },
-  "approveAndUpdate": {
-    "message": "Phê duyệt và cập nhật"
-  },
   "approveButtonText": {
     "message": "Phê duyệt"
   },

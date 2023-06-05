@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Onayla ve Yükle"
   },
-  "approveAndUpdate": {
-    "message": "Onayla ve güncelle"
-  },
   "approveButtonText": {
     "message": "Onayla"
   },

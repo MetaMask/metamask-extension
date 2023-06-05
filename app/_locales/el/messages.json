@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Έγκριση και Εγκατάσταση"
   },
-  "approveAndUpdate": {
-    "message": "Έγκριση και ενημέρωση"
-  },
   "approveButtonText": {
     "message": "Έγκριση"
   },
