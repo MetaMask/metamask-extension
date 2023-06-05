@@ -1,14 +1,6 @@
 .snap-result {
   box-shadow: none;
 
-  &__header {
-    flex: 1;
-
-    &__loader-container {
-      height: 100%;
-    }
-  }
-
   .page-container__footer {
     width: 100%;
     border-top: 0;

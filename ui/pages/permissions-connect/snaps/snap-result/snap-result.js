@@ -147,7 +147,9 @@ export default function SnapResult({
         paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
-        style={{ overflowY: 'scroll' }}
+        style={{
+          overflowY: 'scroll',
+        }}
       >
         {isLoading && (
           <Box

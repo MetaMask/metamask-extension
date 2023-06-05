@@ -83,7 +83,8 @@ export default function SnapUpdate({
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box className="snap-update__content" style={{
-        overflowY: 'scroll'
+        overflowY: 'scroll',
+        flex: !isLoading && '1'
       }}>
         {!isLoading && !hasError && (
           <Text

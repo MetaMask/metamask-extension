@@ -78,19 +78,11 @@ export default function SnapInstall({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
-      <Box className="snap-install__content" style={{
-        overflowY: 'scroll'
-      }}>
-        {!isLoading && !hasError && (
-          <Text
-            variant={TextVariant.headingLg}
-            paddingTop={4}
-            paddingBottom={2}
-            textAlign="center"
-          >
-            {t('snapInstall')}
-          </Text>
-        )}
+      <Box className="snap-install__content"
+        style={{
+          overflowY: 'scroll',
+          flex: !isLoading && '1'
+        }}>
         {isLoading && (
           <Box
             className="snap-install__content__loader-container"
@@ -106,6 +98,14 @@ export default function SnapInstall({
         )}
         {!hasError && !isLoading && (
           <>
+            <Text
+              variant={TextVariant.headingLg}
+              paddingTop={4}
+              paddingBottom={2}
+              textAlign="center"
+            >
+              {t('snapInstall')}
+            </Text>
             <Text
               className="snap-install__content__permission-description"
               paddingBottom={4}
