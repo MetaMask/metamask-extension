@@ -294,5 +294,15 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    21: {
+      ...UI_NOTIFICATIONS[21],
+      title: t('notifications21Title'),
+      description: [t('notifications21Description')],
+      date: UI_NOTIFICATIONS[21].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[21].date),
+          )
+        : '',
+    },
   };
 };
