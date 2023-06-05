@@ -346,4 +346,23 @@ describe('AppStateController', () => {
       );
     });
   });
+
+  describe('setSnapsInstallPrivacyWarningShownStatus', () => {
+    it('updates the status of snaps install privacy warning', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setSnapsInstallPrivacyWarningShownStatus(true);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        snapsInstallPrivacyWarningShown: true,
+      });
+
+      updateStateSpy.mockRestore();
+    });
+  });
 });

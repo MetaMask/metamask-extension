@@ -154,9 +154,6 @@
   "connect": {
     "message": "Під’єднатися"
   },
-  "connectHardwareWallet": {
-    "message": "Приєднайте апаратний гаманець"
-  },
   "connectingTo": {
     "message": "Під'єднуємось до $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Створити"
-  },
-  "createAccount": {
-    "message": "Створити обліковий запис"
   },
   "createPassword": {
     "message": "Створити пароль"
@@ -812,10 +806,6 @@
   },
   "transferFrom": {
     "message": "Передати від"
-  },
-  "troubleTokenBalances": {
-    "message": "В нас виникли складнощі при завантаженні ваших залишків токенів. Ви можете переглянути їх",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Повторити"

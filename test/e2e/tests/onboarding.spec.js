@@ -9,6 +9,7 @@ const {
   importSRPOnboardingFlow,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
+  assertAccountBalanceForDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -270,8 +271,9 @@ describe('MetaMask onboarding', function () {
 
         // Add custome network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+        await driver.clickElement('.mm-picker-network');
         await driver.clickElement({
-          text: 'Add custom network',
+          text: 'Add network',
           tag: 'button',
         });
 
@@ -300,15 +302,11 @@ describe('MetaMask onboarding', function () {
 
         // Check localhost 8546 is selected and its balance value is correct
         const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"]',
+          '[data-testid="network-display"] p',
         );
         assert.equal(await networkDisplay.getText(), networkName);
 
-        const balance = await secondaryGanacheServer.getBalance();
-        const balanceElement = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.equal(`${balance}\nETH`, await balanceElement.getText());
+        await assertAccountBalanceForDOM(driver, secondaryGanacheServer);
       },
     );
   });

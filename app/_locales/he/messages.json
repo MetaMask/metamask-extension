@@ -154,9 +154,6 @@
   "connect": {
     "message": "התחברות"
   },
-  "connectHardwareWallet": {
-    "message": "חבר ארנק חומרה"
-  },
   "connectingTo": {
     "message": "מתחבר ל- $1 "
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "צור"
-  },
-  "createAccount": {
-    "message": "פתיחת חשבון"
   },
   "createPassword": {
     "message": "יצירת ססמה"
@@ -809,10 +803,6 @@
   },
   "transferFrom": {
     "message": "העברה מ-"
-  },
-  "troubleTokenBalances": {
-    "message": "לא הצלחנו לטעון את יתרות הטוקנים שלך. באפשרותך להציג אותן",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "ניסיון חוזר"

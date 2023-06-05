@@ -103,10 +103,10 @@ describe('Test Snap update', function () {
           windowHandles,
         );
 
-        await driver.waitForSelector({ text: 'Approve & update' });
+        await driver.waitForSelector({ text: 'Update' });
 
         await driver.clickElement({
-          text: 'Approve & update',
+          text: 'Update',
           tag: 'button',
         });
 

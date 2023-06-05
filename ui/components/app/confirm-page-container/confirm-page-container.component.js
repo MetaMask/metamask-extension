@@ -41,7 +41,6 @@ import {
   getIsBuyableChain,
   getMetadataContractName,
   getMetaMaskIdentities,
-  getMetaMetricsId,
   getNetworkIdentifier,
   getSwapsDefaultToken,
 } from '../../../selectors';
@@ -99,6 +98,7 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    displayAccountBalanceHeader,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     noteComponent,
     ///: END:ONLY_INCLUDE_IN
@@ -121,8 +121,6 @@ const ConfirmPageContainer = (props) => {
   const toMetadataName = useSelector((state) =>
     getMetadataContractName(state, toAddress),
   );
-
-  const metaMetricsId = useSelector(getMetaMetricsId);
 
   // TODO: Move useRamps hook to the confirm-transaction-base parent component.
   // TODO: openBuyCryptoInPdapp should be passed to this component as a custom prop.
@@ -172,9 +170,7 @@ const ConfirmPageContainer = (props) => {
     <GasFeeContextProvider transaction={currentTransaction}>
       <div className="page-container" data-testid="page-container">
         <ConfirmPageContainerNavigation />
-        {assetStandard === TokenStandard.ERC20 ||
-        assetStandard === TokenStandard.ERC721 ||
-        assetStandard === TokenStandard.ERC1155 ? (
+        {displayAccountBalanceHeader ? (
           <NetworkAccountBalanceHeader
             accountName={fromName}
             accountBalance={accountBalance}
@@ -206,7 +202,6 @@ const ConfirmPageContainer = (props) => {
         )}
         {contentComponent || (
           <ConfirmPageContainerContent
-            metaMetricsId={metaMetricsId}
             action={action}
             title={title}
             image={image}
@@ -240,6 +235,7 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             noteComponent={noteComponent}
@@ -404,6 +400,7 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  displayAccountBalanceHeader: PropTypes.bool,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   noteComponent: PropTypes.node,
   ///: END:ONLY_INCLUDE_IN
