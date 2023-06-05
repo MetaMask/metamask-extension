@@ -14,8 +14,8 @@ describe('EndowmentPermissions', () => {
       [
         'endowment:long-running',
         ...Object.keys(endowmentPermissionBuilders).filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapEndowments).includes(targetKey),
+          (targetName) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetName),
         ),
       ].sort(),
     );
@@ -28,8 +28,8 @@ describe('RestrictedMethods', () => {
       [
         'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapPermissions).includes(targetKey),
+          (targetName) =>
+            !Object.keys(ExcludedSnapPermissions).includes(targetName),
         ),
       ].sort(),
     );

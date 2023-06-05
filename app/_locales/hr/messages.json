@@ -154,9 +154,6 @@
   "connect": {
     "message": "Povežite se"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži hardverski novčanik"
-  },
   "connectingTo": {
     "message": "Povezivanje na $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Stvori"
-  },
-  "createAccount": {
-    "message": "Stvori račun"
   },
   "createPassword": {
     "message": "Stvori lozinku"
@@ -802,10 +796,6 @@
   },
   "transferFrom": {
     "message": "Prenesi od"
-  },
-  "troubleTokenBalances": {
-    "message": "Imamo problema s učitavanjem raspoloživog stanja vaših tokena. Možete ih vidjeti",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Pokušaj ponovo"
