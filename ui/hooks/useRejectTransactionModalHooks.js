@@ -4,16 +4,19 @@ import { valuesFor } from '../helpers/utils/util';
 import { cancelMsgs, showModal } from '../store/actions';
 import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../ducks/history/history';
+import {
+  getTotalUnapprovedMessagesCount,
+  unconfirmedMessagesHashSelector,
+} from '../selectors';
 
-export function useRejectTransactionModalHooks(
-  unconfirmedMessagesList,
-  unapprovedMessagesCount,
-) {
+export function useRejectTransactionModalHooks() {
   const dispatch = useDispatch();
   const history = useHistory();
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
+  const unconfirmedMessagesList = useSelector(unconfirmedMessagesHashSelector);
 
-  return () =>
+  const handleCancelAll = () => {
     dispatch(
       showModal({
         name: 'REJECT_TRANSACTIONS',
@@ -26,4 +29,7 @@ export function useRejectTransactionModalHooks(
         isRequestType: true,
       }),
     );
+  };
+
+  return { handleCancelAll };
 }

@@ -23,7 +23,6 @@ import {
   getPreferences,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
-  unconfirmedMessagesHashSelector,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
@@ -131,11 +130,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
-  const unconfirmedMessagesList = useSelector(unconfirmedMessagesHashSelector);
-  const useRejectTransactionHooks = useRejectTransactionModalHooks(
-    unconfirmedMessagesList,
-    unapprovedMessagesCount,
-  );
+  const { handleCancelAll } = useRejectTransactionModalHooks();
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   // Used to show a warning if the signing account is not the selected account
@@ -382,7 +377,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
           type="link"
           className="signature-request__reject-all-button"
           data-testid="signature-request-reject-all"
-          onClick={useRejectTransactionHooks()}
+          onClick={handleCancelAll}
         >
           {rejectNText}
         </Button>

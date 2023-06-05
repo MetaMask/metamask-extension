@@ -71,6 +71,7 @@ const ConfirmTxScreen = ({ match }) => {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
   const accountType = useSelector(getAccountType);
+  const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
