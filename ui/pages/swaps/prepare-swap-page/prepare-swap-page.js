@@ -888,7 +888,6 @@ export default function PrepareSwapPage({
               >
                 <Text
                   variant={TextVariant.bodySm}
-                  as="h7"
                   color={TextColor.textAlternative}
                 >
                   {swapFromFiatValue}
@@ -903,7 +902,6 @@ export default function PrepareSwapPage({
             >
               <Text
                 variant={TextVariant.bodySmBold}
-                as="h7"
                 color={TextColor.textAlternative}
                 marginTop={0}
               >
@@ -918,7 +916,6 @@ export default function PrepareSwapPage({
             >
               <Text
                 variant={TextVariant.bodySmBold}
-                as="h7"
                 color={TextColor.textAlternative}
                 marginTop={0}
               >

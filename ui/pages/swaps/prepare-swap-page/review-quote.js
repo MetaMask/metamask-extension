@@ -1205,7 +1205,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               >
                 <Text
                   variant={TextVariant.bodySm}
-                  as="h7"
                   color={TextColor.textAlternative}
                   width={FRACTIONS.EIGHT_TWELFTHS}
                   paddingRight={1}
@@ -1215,7 +1214,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  as="h7"
                   color={TextColor.textAlternative}
                   width={FRACTIONS.FOUR_TWELFTHS}
                   textAlign={TEXT_ALIGN.RIGHT}
