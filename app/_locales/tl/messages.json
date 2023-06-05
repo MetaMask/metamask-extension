@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Aprubahan at I-install"
   },
-  "approveAndUpdate": {
-    "message": "Aprubahan at i-update"
-  },
   "approveButtonText": {
     "message": "Aprubahan"
   },
