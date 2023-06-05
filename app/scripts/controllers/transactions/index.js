@@ -347,7 +347,10 @@ export default class TransactionController extends EventEmitter {
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
     );
 
-    this.messagingSystem.call('ApprovalController:startFlow', {});
+    const { id: approvalFlowId } = this.messagingSystem.call(
+      'ApprovalController:startFlow',
+      {},
+    );
 
     const initialTxMeta = await this.addUnapprovedTransaction(
       opts.method,
@@ -368,7 +371,7 @@ export default class TransactionController extends EventEmitter {
               this.messagingSystem
                 .call('ApprovalController:showSuccess', {
                   message: 'Transaction submitted successfully',
-                  endFlow: true,
+                  endFlow: approvalFlowId,
                 })
                 .catch(() => undefined);
 
@@ -385,7 +388,7 @@ export default class TransactionController extends EventEmitter {
               this.messagingSystem
                 .call('ApprovalController:showError', {
                   error: finishedTxMeta.err.message,
-                  endFlow: true,
+                  endFlow: approvalFlowId,
                 })
                 .catch(() => undefined);
 
@@ -400,7 +403,7 @@ export default class TransactionController extends EventEmitter {
                   error: `Unknown problem: ${JSON.stringify(
                     finishedTxMeta.txParams,
                   )}`,
-                  endFlow: true,
+                  endFlow: approvalFlowId,
                 })
                 .catch(() => undefined);
 
