@@ -48,6 +48,7 @@ export default class PermissionConnect extends Component {
     rejectPendingApproval: PropTypes.func.isRequired,
     setSnapsInstallPrivacyWarningShownStatus: PropTypes.func.isRequired,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
+    hideTopBar: PropTypes.bool,
     ///: END:ONLY_INCLUDE_IN
     totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
@@ -304,6 +305,7 @@ export default class PermissionConnect extends Component {
       approvePendingApproval,
       rejectPendingApproval,
       setSnapsInstallPrivacyWarningShownStatus,
+      hideTopBar
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
@@ -318,7 +320,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        {this.renderTopBar()}
+        {!hideTopBar ? this.renderTopBar() : null}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
