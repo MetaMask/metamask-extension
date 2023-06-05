@@ -76,6 +76,38 @@ jest.mock('ethjs-contract', () => MockEthContract);
 
 const MetaMaskController = require('./metamask-controller').default;
 
+// Temporarily replace the snaps packages with the Flask versions.
+const proxyPermissions = proxyquire('./controllers/permissions', {
+  './snaps/snap-permissions': proxyquire(
+    './controllers/permissions/snaps/snap-permissions',
+    {
+      // eslint-disable-next-line node/global-require
+      '@metamask/snaps-controllers': require('@metamask/snaps-controllers-flask'),
+      // eslint-disable-next-line node/global-require
+      '@metamask/rpc-methods': require('@metamask/rpc-methods-flask'),
+    },
+  ),
+});
+
+// TODO, Feb 24, 2023:
+// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
+// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
+// us set up the test infrastructure for a mocked provider. Github ticket for that is:
+// https://github.com/MetaMask/metamask-extension/issues/17890
+const MetaMaskController = proxyquire('./metamask-controller', {
+  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
+  'ethjs-contract': MockEthContract,
+  // Temporarily replace the snaps packages with the Flask versions.
+  './controllers/permissions': proxyPermissions,
+}).default;
+
+const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
+  '../../shared/modules/mv3.utils': { isManifestV3: true },
+  // Temporarily replace the snaps packages with the Flask versions.
+  './controllers/permissions': proxyPermissions,
+}).default;
+
+
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
 const DEFAULT_LABEL = 'Account 1';
