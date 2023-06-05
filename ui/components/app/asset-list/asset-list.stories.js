@@ -3,7 +3,6 @@ import AssetList from '.';
 
 export default {
   title: 'Components/App/AssetList',
-
   argTypes: {
     onClickAsset: {
       control: 'onClickAsset',
