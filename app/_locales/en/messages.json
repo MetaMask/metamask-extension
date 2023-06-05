@@ -3837,7 +3837,7 @@
     "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
-    "message": "Update complete "
+    "message": "Update complete"
   },
   "snaps": {
     "message": "Snaps"
