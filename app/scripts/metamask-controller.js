@@ -3321,13 +3321,24 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
+   * @param {string[]} accounts - Array of optional account addresses to be revoked
    * @returns {Promise<Any>} The origin's permitted accounts, or an empty
    * array.
    */
-  async revokePermissions(origin) {
+  async revokePermissions(origin, accounts) {
     try {
+      // revokePermissions will revoke specific accounts
       if (this.permissionController.hasPermissions(origin)) {
-        this.permissionController.revokeAllPermissions(origin);
+        if (accounts && Array.isArray(accounts)) {
+          accounts.forEach((account) => {
+            // Map each account in the array here
+            // Perform any required operations on each account
+            this.removeAllAccountPermissions(account);
+          });
+        } else {
+          // revokePermissions will revoke accounts connected to the provided origin
+          this.permissionController.revokeAllPermissions(origin);
+        }
       }
 
       const permissionsAfterRevoke = this.permissionController.hasPermissions(
