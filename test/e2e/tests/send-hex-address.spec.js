@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -133,15 +137,13 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        const balanceAfterDeployment = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balanceAfterDeployment} ETH`,
-        });
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
-        await driver.clickElement('.token-cell');
+        await driver.clickElement(
+          '[data-testid="multichain-token-list-button"]',
+        );
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Paste address without hex prefix
@@ -155,14 +157,14 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008455 ETH',
+          text: '0.000042 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: '0 TST',
+          text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
@@ -198,15 +200,14 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-        const balanceAfterDeployment = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balanceAfterDeployment} ETH`,
-        });
+
+        await assertAccountBalanceForDOM(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
-        await driver.clickElement('.token-cell');
+        await driver.clickElement(
+          '[data-testid="multichain-token-list-button"]',
+        );
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Type address without hex prefix
@@ -220,14 +221,14 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item',
-          text: '0.00008455 ETH',
+          text: '0.000042 ETH',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Confirm transaction
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__title',
-          text: '0 TST',
+          text: '0',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
