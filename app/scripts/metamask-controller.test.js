@@ -1,5 +1,6 @@
 import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
+import proxyquire from 'proxyquire';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
@@ -74,8 +75,6 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 jest.mock('ethjs-contract', () => MockEthContract);
 
-const MetaMaskController = require('./metamask-controller').default;
-
 // Temporarily replace the snaps packages with the Flask versions.
 const proxyPermissions = proxyquire('./controllers/permissions', {
   './snaps/snap-permissions': proxyquire(
@@ -101,12 +100,11 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   './controllers/permissions': proxyPermissions,
 }).default;
 
-const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
-  '../../shared/modules/mv3.utils': { isManifestV3: true },
-  // Temporarily replace the snaps packages with the Flask versions.
-  './controllers/permissions': proxyPermissions,
-}).default;
-
+// const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
+//   '../../shared/modules/mv3.utils': { isManifestV3: true },
+//   // Temporarily replace the snaps packages with the Flask versions.
+//   './controllers/permissions': proxyPermissions,
+// }).default;
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
