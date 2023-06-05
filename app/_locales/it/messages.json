@@ -293,9 +293,6 @@
   "approveAndInstall": {
     "message": "Approva & installa"
   },
-  "approveAndUpdate": {
-    "message": "Approva & aggiorna"
-  },
   "approveButtonText": {
     "message": "Approva"
   },

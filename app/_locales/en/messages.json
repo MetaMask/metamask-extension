@@ -401,9 +401,6 @@
   "approveAndInstall": {
     "message": "Approve & install"
   },
-  "approveAndUpdate": {
-    "message": "Approve & update"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -3820,12 +3817,8 @@
     "message": "Update snap"
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
-  },
-  "snapUpdateRequestsPermission": {
-    "message": "$1 wants to update $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snaps": {
     "message": "Snaps"

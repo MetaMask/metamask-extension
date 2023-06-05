@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Одобрить и установить"
   },
-  "approveAndUpdate": {
-    "message": "Утвердить и обновить"
-  },
   "approveButtonText": {
     "message": "Одобрить"
   },

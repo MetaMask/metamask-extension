@@ -48,18 +48,10 @@ export default function SnapUpdate({
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};
   const newPermissions = requestState.newPermissions ?? {};
+  const { newVersion } = requestState;
 
   const isLoading = requestState.loading;
   const hasError = !isLoading && requestState.error;
-
-  const hasPermissions =
-    !hasError &&
-    Object.keys(approvedPermissions).length +
-      Object.keys(revokedPermissions).length +
-      Object.keys(newPermissions).length >
-      0;
-
-  const isEmpty = !isLoading && !hasError && !hasPermissions;
 
   const warnings = getSnapInstallWarnings(
     newPermissions,
@@ -121,7 +113,7 @@ export default function SnapUpdate({
         {hasError && (
           <InstallError error={requestState.error} title={t('requestFailed')} />
         )}
-        {hasPermissions && (
+        {!hasError && !isLoading && (
           <>
             <Text
               className="snap-update__content__permission-description"
@@ -130,9 +122,10 @@ export default function SnapUpdate({
               paddingRight={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
-              {t('snapUpdateRequestsPermission', [
+              {t('snapUpdateRequest', [
                 <b key="1">{originMetadata?.hostname}</b>,
                 <b key="2">{snapName}</b>,
+                <b key="3">v{newVersion}</b>,
               ])}
             </Text>
             <UpdateSnapPermissionList
@@ -142,21 +135,6 @@ export default function SnapUpdate({
               targetSubjectMetadata={targetSubjectMetadata}
             />
           </>
-        )}
-        {isEmpty && (
-          <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            height={BLOCK_SIZES.FULL}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            <Text textAlign={TEXT_ALIGN.CENTER}>
-              {t('snapUpdateRequest', [
-                <b key="1">{originMetadata?.hostname}</b>,
-                <b key="2">{snapName}</b>,
-              ])}
-            </Text>
-          </Box>
         )}
       </Box>
       <Box
@@ -171,10 +149,7 @@ export default function SnapUpdate({
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(
-            // eslint-disable-next-line no-nested-ternary
-            hasError ? 'ok' : hasPermissions ? 'approveAndUpdate' : 'update',
-          )}
+          submitText={t(hasError ? 'ok' : 'update')}
         />
       </Box>
       {isShowingWarning && (

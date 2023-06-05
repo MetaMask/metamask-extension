@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Setujui & instal"
   },
-  "approveAndUpdate": {
-    "message": "Setujui dan perbarui"
-  },
   "approveButtonText": {
     "message": "Setujui"
   },
