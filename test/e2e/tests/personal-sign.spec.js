@@ -66,4 +66,83 @@ describe('Personal sign', function () {
       },
     );
   });
+  it('can queue multiple personal signs and confirm', async function () {
+    const ganacheOptions = {
+      accounts: [
+        {
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: convertToHexValue(25000000000000000000),
+        },
+      ],
+    };
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        await openDapp(driver);
+        // Create personal sign
+        await driver.clickElement('#personalSign');
+
+        await driver.waitUntilXWindowHandles(3);
+        let windowHandles = await driver.getAllWindowHandles();
+
+        // Switch to Dapp
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        // Create second personal sign
+        await driver.clickElement('#personalSign');
+
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        await driver.waitForSelector({
+          text: 'Reject 2 requests',
+          tag: 'a',
+        });
+
+        const personalMessageRow = await driver.findElement(
+          '.request-signature__row-value',
+        );
+        const personalMessage = await personalMessageRow.getText();
+        assert.equal(personalMessage, 'Example `personal_sign` message');
+
+        // Confirm first personal sign
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+        // Confirm second personal sign
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        // Switch to the Dapp
+        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        // Verify last confirmed personal sign
+        await driver.clickElement('#personalSignVerify');
+        const verifySigUtil = await driver.findElement(
+          '#personalSignVerifySigUtilResult',
+        );
+        const verifyECRecover = await driver.waitForSelector({
+          css: '#personalSignVerifyECRecoverResult',
+          text: publicAddress,
+        });
+        assert.equal(await verifySigUtil.getText(), publicAddress);
+        assert.equal(await verifyECRecover.getText(), publicAddress);
+      },
+    );
+  });
 });
