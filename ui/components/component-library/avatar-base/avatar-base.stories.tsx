@@ -1,4 +1,4 @@
-import { ComponentMeta } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import React from 'react';
 import {
   AlignItems,
@@ -92,7 +92,7 @@ export default {
     borderColor: BorderColor.borderDefault,
     children: 'B',
   },
-} as ComponentMeta<typeof AvatarBase>;
+} as Meta<typeof AvatarBase>;
 
 export const DefaultStory = (args: AvatarBaseProps) => <AvatarBase {...args} />;
 
