@@ -202,7 +202,7 @@ export default class TransactionController extends EventEmitter {
         const approved = this.txStateManager.getApprovedTransactions();
         return [...pending, ...approved];
       },
-      approveTransaction: this.approveTransaction.bind(this),
+      approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
@@ -357,7 +357,7 @@ export default class TransactionController extends EventEmitter {
     );
 
     const txId = initialTxMeta.id;
-    const isCompleted = initialTxMeta.status !== TransactionStatus.unapproved;
+    const isCompleted = this._isTransactionCompleted(initialTxMeta);
 
     const finishedPromise = isCompleted
       ? Promise.resolve(initialTxMeta)
@@ -398,20 +398,16 @@ export default class TransactionController extends EventEmitter {
 
   /**
    * Creates approvals for all unapproved transactions in the txStateManager.
-   *
-   * @returns {Promise<void>}
    */
-  async initApprovals() {
+  initApprovals() {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
 
-    Object.values(unapprovedTxs).forEach(async (txMeta) => {
-      try {
-        await this._requestTransactionApproval(txMeta, {
-          shouldShowRequest: false,
-        });
-      } catch (error) {
+    Object.values(unapprovedTxs).forEach((txMeta) => {
+      this._requestTransactionApproval(txMeta, {
+        shouldShowRequest: false,
+      }).catch((error) => {
         log.error('Error during persisted transaction approval', error);
-      }
+      });
     });
   }
 
@@ -740,9 +736,11 @@ export default class TransactionController extends EventEmitter {
       options,
     );
     if (isExisting) {
-      return txMeta.status === TransactionStatus.unapproved
-        ? await this._waitForTransactionFinished(txMeta.id)
-        : txMeta;
+      const isCompleted = this._isTransactionCompleted(txMeta);
+
+      return isCompleted
+        ? txMeta
+        : await this._waitForTransactionFinished(txMeta.id);
     }
 
     if (options?.requireApproval === false) {
@@ -1120,7 +1118,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId, {
+    await this._approveTransaction(newTxMeta.id, actionId, {
       hasApprovalRequest: false,
     });
     return newTxMeta;
@@ -1180,7 +1178,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId);
+    await this._approveTransaction(newTxMeta.id, actionId);
     return newTxMeta;
   }
 
@@ -1194,94 +1192,6 @@ export default class TransactionController extends EventEmitter {
       txMeta,
       'confTx: user updated transaction',
     );
-  }
-
-  /**
-   * sets the tx status to approved
-   * auto fills the nonce
-   * signs the transaction
-   * publishes the transaction
-   * if any of these steps fails the tx status will be set to failed
-   *
-   * @param {number} txId - the tx's Id
-   * @param {string} actionId - actionId passed from UI
-   */
-  async approveTransaction(txId, actionId) {
-    // TODO: Move this safety out of this function.
-    // Since this transaction is async,
-    // we need to keep track of what is currently being signed,
-    // So that we do not increment nonce + resubmit something
-    // that is already being incremented & signed.
-    const txMeta = this.txStateManager.getTransaction(txId);
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    // MMI does not broadcast transactions, as that is the responsibility of the custodian
-    if (txMeta.custodyStatus) {
-      this.inProcessOfSigning.delete(txId);
-      await this.signTransaction(txId);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    if (this.inProcessOfSigning.has(txId)) {
-      return;
-    }
-    this.inProcessOfSigning.add(txId);
-    let nonceLock;
-    try {
-      // approve
-      this.txStateManager.setTxStatusApproved(txId);
-      // get next nonce
-      const fromAddress = txMeta.txParams.from;
-      // wait for a nonce
-      let { customNonceValue } = txMeta;
-      customNonceValue = Number(customNonceValue);
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
-      // add nonce to txParams
-      // if txMeta has previousGasParams then it is a retry at same nonce with
-      // higher gas settings and therefor the nonce should not be recalculated
-      const nonce = txMeta.previousGasParams
-        ? txMeta.txParams.nonce
-        : nonceLock.nextNonce;
-      const customOrNonce =
-        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
-
-      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
-      this.txStateManager.updateTransaction(
-        txMeta,
-        'transactions#approveTransaction',
-      );
-      // sign transaction
-      const rawTx = await this.signTransaction(txId);
-      await this.publishTransaction(txId, rawTx, actionId);
-      this._trackTransactionMetricsEvent(
-        txMeta,
-        TransactionMetaMetricsEvent.approved,
-        actionId,
-      );
-      // must set transaction to submitted/failed before releasing lock
-      nonceLock.releaseLock();
-    } catch (err) {
-      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
-      try {
-        this._failTransaction(txId, err, actionId);
-      } catch (err2) {
-        log.error(err2);
-      }
-      // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) {
-        nonceLock.releaseLock();
-      }
-      // continue with error chain
-      throw err;
-    } finally {
-      this.inProcessOfSigning.delete(txId);
-    }
   }
 
   async approveTransactionsWithSameNonce(listOfTxParams = []) {
@@ -1657,6 +1567,16 @@ export default class TransactionController extends EventEmitter {
   //           PRIVATE METHODS
   //
 
+  _isTransactionCompleted(txMeta) {
+    return [
+      TransactionStatus.submitted,
+      TransactionStatus.rejected,
+      TransactionStatus.failed,
+      TransactionStatus.dropped,
+      TransactionStatus.confirmed,
+    ].includes(txMeta.status);
+  }
+
   async _waitForTransactionFinished(txId) {
     return new Promise((resolve) => {
       this.txStateManager.once(`${txId}:finished`, (txMeta) => {
@@ -1688,7 +1608,6 @@ export default class TransactionController extends EventEmitter {
       let existingTxMeta =
         this.txStateManager.getTransactionWithActionId(actionId);
       if (existingTxMeta) {
-        this.emit('newUnapprovedTx', existingTxMeta);
         existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
         return { txMeta: existingTxMeta, isExisting: true };
       }
@@ -1760,10 +1679,25 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(txMeta);
-    this.emit('newUnapprovedTx', txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
 
+    if (
+      [TransactionType.swap, TransactionType.swapApproval].includes(
+        transactionType,
+      )
+    ) {
+      txMeta = await this._createSwapsTransaction(
+        options?.swaps,
+        transactionType,
+        txMeta,
+      );
+    }
+
+    return { txMeta, isExisting: false };
+  }
+
+  async _createSwapsTransaction(swapOptions, transactionType, txMeta) {
     // The simulationFails property is added if the estimateGas call fails. In cases
     // when no swaps approval tx is required, this indicates that the swap will likely
     // fail. There was an earlier estimateGas call made by the swaps controller,
@@ -1774,26 +1708,30 @@ export default class TransactionController extends EventEmitter {
     // waste the user's funds on gas.
     if (
       transactionType === TransactionType.swap &&
-      options?.swaps?.hasApproveTx === false &&
+      swapOptions?.hasApproveTx === false &&
       txMeta.simulationFails
     ) {
       await this._cancelTransaction(txMeta.id);
       throw new Error('Simulation failed');
     }
 
-    const swapsMeta = options?.swaps?.meta;
+    const swapsMeta = swapOptions?.meta;
 
-    if (swapsMeta) {
-      if (transactionType === TransactionType.swapApproval) {
-        this.emit('newSwapApproval', txMeta);
-        txMeta = this._updateSwapApprovalTransaction(txMeta.id, swapsMeta);
-      } else if (transactionType === TransactionType.swap) {
-        this.emit('newSwap', txMeta);
-        txMeta = this._updateSwapTransaction(txMeta.id, swapsMeta);
-      }
+    if (!swapsMeta) {
+      return txMeta;
     }
 
-    return { txMeta, isExisting: false };
+    if (transactionType === TransactionType.swapApproval) {
+      this.emit('newSwapApproval', txMeta);
+      return this._updateSwapApprovalTransaction(txMeta.id, swapsMeta);
+    }
+
+    if (transactionType === TransactionType.swap) {
+      this.emit('newSwap', txMeta);
+      return this._updateSwapTransaction(txMeta.id, swapsMeta);
+    }
+
+    return txMeta;
   }
 
   /**
@@ -1882,7 +1820,95 @@ export default class TransactionController extends EventEmitter {
       txMeta,
       'confTx: user approved transaction',
     );
-    await this.approveTransaction(txMeta.id, actionId);
+    await this._approveTransaction(txMeta.id, actionId);
+  }
+
+  /**
+   * sets the tx status to approved
+   * auto fills the nonce
+   * signs the transaction
+   * publishes the transaction
+   * if any of these steps fails the tx status will be set to failed
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
+   */
+  async _approveTransaction(txId, actionId) {
+    // TODO: Move this safety out of this function.
+    // Since this transaction is async,
+    // we need to keep track of what is currently being signed,
+    // So that we do not increment nonce + resubmit something
+    // that is already being incremented & signed.
+    const txMeta = this.txStateManager.getTransaction(txId);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta.custodyStatus) {
+      this.inProcessOfSigning.delete(txId);
+      await this.signTransaction(txId);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    if (this.inProcessOfSigning.has(txId)) {
+      return;
+    }
+    this.inProcessOfSigning.add(txId);
+    let nonceLock;
+    try {
+      // approve
+      this.txStateManager.setTxStatusApproved(txId);
+      // get next nonce
+      const fromAddress = txMeta.txParams.from;
+      // wait for a nonce
+      let { customNonceValue } = txMeta;
+      customNonceValue = Number(customNonceValue);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      // add nonce to txParams
+      // if txMeta has previousGasParams then it is a retry at same nonce with
+      // higher gas settings and therefor the nonce should not be recalculated
+      const nonce = txMeta.previousGasParams
+        ? txMeta.txParams.nonce
+        : nonceLock.nextNonce;
+      const customOrNonce =
+        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
+
+      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails;
+      if (customNonceValue) {
+        txMeta.nonceDetails.customNonceValue = customNonceValue;
+      }
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#approveTransaction',
+      );
+      // sign transaction
+      const rawTx = await this.signTransaction(txId);
+      await this.publishTransaction(txId, rawTx, actionId);
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.approved,
+        actionId,
+      );
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock();
+    } catch (err) {
+      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
+      try {
+        this._failTransaction(txId, err, actionId);
+      } catch (err2) {
+        log.error(err2);
+      }
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      this.inProcessOfSigning.delete(txId);
+    }
   }
 
   /**
@@ -1990,7 +2016,7 @@ export default class TransactionController extends EventEmitter {
 
           // Line below will try to publish transaction which is in
           // APPROVED state at the time of controller bootup
-          this.approveTransaction(txMeta.id);
+          this._approveTransaction(txMeta.id);
 
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
@@ -2765,7 +2791,7 @@ export default class TransactionController extends EventEmitter {
         if (error.code === errorCodes.provider.userRejectedRequest) {
           await this._cancelTransaction(txId, actionId);
         } else {
-          await this._failTransaction(txId, error, actionId);
+          this._failTransaction(txId, error, actionId);
         }
       }
 

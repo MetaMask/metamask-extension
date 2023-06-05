@@ -1103,16 +1103,21 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * @param method
  * @param txParams - the transaction parameters
  * @param type - The type of the transaction being added.
- * @param options
- * @param options.requireApproval
- * @param options.extraMeta
+ * @param options - Additional options for the transaction.
+ * @param options.requireApproval - Whether the transaction requires approval.
+ * @param options.swaps - Options specific to swaps transactions.
+ * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
+ * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @returns
  */
 export async function addUnapprovedTransaction(
   method: string,
   txParams: TxParams,
   type: TransactionType,
-  options?: { requireApproval?: boolean; extraMeta: Record<string, unknown> },
+  options?: {
+    requireApproval?: boolean;
+    swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
+  },
 ): Promise<TransactionMeta> {
   log.debug('background.addUnapprovedTransaction');
   const actionId = generateActionId();

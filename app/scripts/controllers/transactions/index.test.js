@@ -26,7 +26,6 @@ import {
   TokenStandard,
 } from '../../../../shared/constants/transaction';
 
-import { SECOND } from '../../../../shared/constants/time';
 import {
   GasEstimateTypes,
   GasRecommendations,
@@ -63,7 +62,7 @@ describe('Transaction Controller', function () {
     getCurrentChainId,
     messengerMock,
     resultCallbacksMock,
-    updatedTxMeta;
+    updateSpy;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -96,12 +95,7 @@ describe('Transaction Controller', function () {
     };
 
     messengerMock = {
-      call: sinon.stub().callsFake((_) =>
-        Promise.resolve({
-          value: { txMeta: updatedTxMeta },
-          resultCallbacks: resultCallbacksMock,
-        }),
-      ),
+      call: sinon.stub(),
     };
 
     txController = new TransactionController({
@@ -141,10 +135,19 @@ describe('Transaction Controller', function () {
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
 
-    txController.on('newUnapprovedTx', (txMeta) => {
-      updatedTxMeta = txMeta;
-    });
+    updateSpy = sinon.spy(txController.txStateManager, 'updateTransaction');
+
+    messengerMock.call.callsFake((_) =>
+      Promise.resolve({
+        value: { txMeta: getLastTxMeta() },
+        resultCallbacks: resultCallbacksMock,
+      }),
+    );
   });
+
+  function getLastTxMeta() {
+    return updateSpy.lastCall.args[0];
+  }
 
   describe('#getState', function () {
     it('should return a state object with the right keys and data types', function () {
@@ -380,13 +383,15 @@ describe('Transaction Controller', function () {
     it('creates an approval request', async function () {
       await txController.newUnapprovedTransaction(txParams);
 
+      const txId = getLastTxMeta().id;
+
       assert.equal(messengerMock.call.callCount, 1);
       assert.deepEqual(messengerMock.call.getCall(0).args, [
         'ApprovalController:addRequest',
         {
-          id: String(updatedTxMeta.id),
+          id: String(txId),
           origin: undefined,
-          requestData: { txId: updatedTxMeta.id },
+          requestData: { txId },
           type: ApprovalType.Transaction,
           expectsResult: true,
         },
@@ -399,13 +404,15 @@ describe('Transaction Controller', function () {
         await txController.newUnapprovedTransaction(txParams, { id: '12345' });
         await txController.newUnapprovedTransaction(txParams, { id: '12345' });
 
+        const txId = getLastTxMeta().id;
+
         assert.equal(messengerMock.call.callCount, 1);
         assert.deepEqual(messengerMock.call.getCall(0).args, [
           'ApprovalController:addRequest',
           {
-            id: String(updatedTxMeta.id),
+            id: String(txId),
             origin: undefined,
-            requestData: { txId: updatedTxMeta.id },
+            requestData: { txId },
             type: ApprovalType.Transaction,
             expectsResult: true,
           },
@@ -443,7 +450,7 @@ describe('Transaction Controller', function () {
         assert.equal(firstTransactionCompleted, false);
         assert.equal(secondTransactionCompleted, false);
 
-        firstTransactionResolve({ value: { txMeta: updatedTxMeta } });
+        firstTransactionResolve({ value: { txMeta: getLastTxMeta() } });
 
         await flushPromises();
 
@@ -559,20 +566,6 @@ describe('Transaction Controller', function () {
       assert.equal(transactionCount1 + 1, transactionCount2);
     });
 
-    it('should emit newUnapprovedTx event and pass txMeta as the first argument', function (done) {
-      providerResultStub.eth_gasPrice = '4a817c800';
-      txController.once('newUnapprovedTx', (txMetaFromEmit) => {
-        assert.ok(txMetaFromEmit, 'txMeta is falsy');
-        done();
-      });
-      txController
-        .addUnapprovedTransaction(undefined, {
-          from: selectedAddress,
-          to: recipientAddress,
-        })
-        .catch(done);
-    });
-
     it("should fail if the from address isn't the selected address", async function () {
       await assert.rejects(() =>
         txController.addUnapprovedTransaction({
@@ -632,7 +625,7 @@ describe('Transaction Controller', function () {
       );
 
       const transaction = txController.getTransactions({
-        searchCriteria: { id: updatedTxMeta.id },
+        searchCriteria: { id: getLastTxMeta().id },
       })[0];
 
       assert.equal(transaction.type, 'swapApproval');
@@ -665,7 +658,7 @@ describe('Transaction Controller', function () {
       );
 
       const transaction = txController.getTransactions({
-        searchCriteria: { id: updatedTxMeta.id },
+        searchCriteria: { id: getLastTxMeta().id },
       })[0];
 
       assert.equal(transaction.sourceTokenSymbol, 'BTCX');
@@ -740,12 +733,12 @@ describe('Transaction Controller', function () {
           // Expected error
         }
 
-        assert.equal(listener.callCount, 1);
+        assert.equal(listener.callCount, 1, listener.args);
 
         const [txId, status] = listener.args[0];
 
         assert.equal(status, TransactionStatus.rejected);
-        assert.equal(txId, updatedTxMeta.id);
+        assert.equal(txId, getLastTxMeta().id);
       });
     });
 
@@ -839,7 +832,7 @@ describe('Transaction Controller', function () {
         assert.equal(firstTransactionCompleted, false);
         assert.equal(secondTransactionCompleted, false);
 
-        firstTransactionResolve({ value: { txMeta: updatedTxMeta } });
+        firstTransactionResolve({ value: { txMeta: getLastTxMeta() } });
 
         await flushPromises();
 
@@ -863,7 +856,7 @@ describe('Transaction Controller', function () {
         );
 
         const transaction = txController.getTransactions({
-          searchCriteria: { id: updatedTxMeta.id },
+          searchCriteria: { id: getLastTxMeta().id },
         })[0];
 
         assert.equal(transaction.status, TransactionStatus.submitted);
@@ -886,12 +879,14 @@ describe('Transaction Controller', function () {
           '12345',
         );
 
+        const txId = getLastTxMeta().id;
+
         assert.equal(listener.callCount, 3);
-        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][0], txId);
         assert.equal(listener.args[0][1], TransactionStatus.approved);
-        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][0], txId);
         assert.equal(listener.args[1][1], TransactionStatus.signed);
-        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][0], txId);
         assert.equal(listener.args[2][1], TransactionStatus.submitted);
       });
 
@@ -909,6 +904,57 @@ describe('Transaction Controller', function () {
         );
 
         assert.equal(resultCallbacksMock.success.callCount, 1);
+      });
+
+      it('does not overwrite set values', async function () {
+        const originalValue = '0x01';
+        const wrongValue = '0x05';
+
+        providerResultStub.eth_gasPrice = wrongValue;
+        providerResultStub.eth_estimateGas = '0x5209';
+
+        const signStub = sinon
+          .stub(txController, 'signTransaction')
+          .callsFake(() => Promise.resolve());
+
+        const pubStub = sinon
+          .stub(txController, 'publishTransaction')
+          .callsFake(() => {
+            const txId = getLastTxMeta().id;
+            txController.setTxHash(txId, originalValue);
+            txController.txStateManager.setTxStatusSubmitted(txId);
+          });
+
+        await txController.addUnapprovedTransaction(
+          undefined,
+          {
+            from: selectedAddress,
+            to: recipientAddress,
+            nonce: originalValue,
+            gas: originalValue,
+            gasPrice: originalValue,
+          },
+          ORIGIN_METAMASK,
+          undefined,
+          undefined,
+          '12345',
+        );
+
+        const txId = getLastTxMeta().id;
+        const result = txController.txStateManager.getTransaction(txId);
+        const params = result.txParams;
+
+        assert.equal(params.gas, originalValue, 'gas unmodified');
+        assert.equal(params.gasPrice, originalValue, 'gas price unmodified');
+        assert.equal(result.hash, originalValue);
+        assert.equal(
+          result.status,
+          TransactionStatus.submitted,
+          'should have reached the submitted status.',
+        );
+
+        signStub.restore();
+        pubStub.restore();
       });
     });
 
@@ -962,7 +1008,7 @@ describe('Transaction Controller', function () {
         const [txId, status] = listener.args[0];
 
         assert.equal(status, TransactionStatus.rejected);
-        assert.equal(txId, updatedTxMeta.id);
+        assert.equal(txId, getLastTxMeta().id);
       });
     });
 
@@ -996,7 +1042,7 @@ describe('Transaction Controller', function () {
         }
 
         const transaction = txController.getTransactions({
-          searchCriteria: { id: updatedTxMeta.id },
+          searchCriteria: { id: getLastTxMeta().id },
         })[0];
 
         assert.equal(transaction.status, TransactionStatus.failed);
@@ -1040,10 +1086,12 @@ describe('Transaction Controller', function () {
           // Expected error
         }
 
+        const txId = getLastTxMeta().id;
+
         assert.equal(listener.callCount, 2);
-        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][0], txId);
         assert.equal(listener.args[0][1], TransactionStatus.approved);
-        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][0], txId);
         assert.equal(listener.args[1][1], TransactionStatus.failed);
       });
 
@@ -1106,7 +1154,7 @@ describe('Transaction Controller', function () {
         }
 
         const transaction = txController.getTransactions({
-          searchCriteria: { id: updatedTxMeta.id },
+          searchCriteria: { id: getLastTxMeta().id },
         })[0];
 
         assert.equal(transaction.status, TransactionStatus.failed);
@@ -1150,12 +1198,14 @@ describe('Transaction Controller', function () {
           // Expected error
         }
 
+        const txId = getLastTxMeta().id;
+
         assert.equal(listener.callCount, 3);
-        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][0], txId);
         assert.equal(listener.args[0][1], TransactionStatus.approved);
-        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][0], txId);
         assert.equal(listener.args[1][1], TransactionStatus.signed);
-        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][0], txId);
         assert.equal(listener.args[2][1], TransactionStatus.failed);
       });
 
@@ -1205,7 +1255,7 @@ describe('Transaction Controller', function () {
         );
 
         const transaction = txController.getTransactions({
-          searchCriteria: { id: updatedTxMeta.id },
+          searchCriteria: { id: getLastTxMeta().id },
         })[0];
 
         assert.equal(transaction.status, TransactionStatus.submitted);
@@ -1229,12 +1279,14 @@ describe('Transaction Controller', function () {
           { requireApproval: false },
         );
 
+        const txId = getLastTxMeta().id;
+
         assert.equal(listener.callCount, 3);
-        assert.equal(listener.args[0][0], updatedTxMeta.id);
+        assert.equal(listener.args[0][0], txId);
         assert.equal(listener.args[0][1], TransactionStatus.approved);
-        assert.equal(listener.args[1][0], updatedTxMeta.id);
+        assert.equal(listener.args[1][0], txId);
         assert.equal(listener.args[1][1], TransactionStatus.signed);
-        assert.equal(listener.args[2][0], updatedTxMeta.id);
+        assert.equal(listener.args[2][0], txId);
         assert.equal(listener.args[2][1], TransactionStatus.submitted);
       });
     });
@@ -1297,7 +1349,6 @@ describe('Transaction Controller', function () {
         from: selectedAddress,
         to: recipientAddress,
       });
-      await txController.approveTransaction(txMeta.id);
       await txController.createCancelTransaction(
         txMeta.id,
         {},
@@ -1744,58 +1795,6 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('#approveTransaction', function () {
-    it('does not overwrite set values', async function () {
-      const originalValue = '0x01';
-      const txMeta = {
-        id: '1',
-        status: TransactionStatus.unapproved,
-        metamaskNetworkId: currentNetworkId,
-        txParams: {
-          to: VALID_ADDRESS_TWO,
-          from: VALID_ADDRESS,
-          nonce: originalValue,
-          gas: originalValue,
-          gasPrice: originalValue,
-        },
-      };
-      // eslint-disable-next-line @babel/no-invalid-this
-      this.timeout(SECOND * 15);
-      const wrongValue = '0x05';
-
-      txController.addTransaction(txMeta);
-      providerResultStub.eth_gasPrice = wrongValue;
-      providerResultStub.eth_estimateGas = '0x5209';
-
-      const signStub = sinon
-        .stub(txController, 'signTransaction')
-        .callsFake(() => Promise.resolve());
-
-      const pubStub = sinon
-        .stub(txController, 'publishTransaction')
-        .callsFake(() => {
-          txController.setTxHash('1', originalValue);
-          txController.txStateManager.setTxStatusSubmitted('1');
-        });
-
-      await txController.approveTransaction(txMeta.id);
-      const result = txController.txStateManager.getTransaction(txMeta.id);
-      const params = result.txParams;
-
-      assert.equal(params.gas, originalValue, 'gas unmodified');
-      assert.equal(params.gasPrice, originalValue, 'gas price unmodified');
-      assert.equal(result.hash, originalValue);
-      assert.equal(
-        result.status,
-        TransactionStatus.submitted,
-        'should have reached the submitted status.',
-      );
-
-      signStub.restore();
-      pubStub.restore();
-    });
-  });
-
   describe('#sign replay-protected tx', function () {
     it('prepares a tx with the chainId set', async function () {
       txController.addTransaction(
@@ -1849,7 +1848,7 @@ describe('Transaction Controller', function () {
 
     beforeEach(function () {
       addTransactionSpy = sinon.spy(txController, 'addTransaction');
-      approveTransactionSpy = sinon.spy(txController, 'approveTransaction');
+      approveTransactionSpy = sinon.spy(txController, '_approveTransaction');
 
       const hash =
         '0x2a5523c6fa98b47b7d9b6c8320179785150b42a16bcff36b398c5062b65657e8';
@@ -1967,7 +1966,6 @@ describe('Transaction Controller', function () {
         from: selectedAddress,
         to: recipientAddress,
       });
-      await txController.approveTransaction(txMeta.id);
       await txController.createSpeedUpTransaction(
         txMeta.id,
         {},
@@ -3519,6 +3517,39 @@ describe('Transaction Controller', function () {
         },
         false,
       ]);
+    });
+  });
+
+  describe('#updateTransactionSendFlowHistory', function () {
+    it('returns same result after two sequential calls with same history', async function () {
+      const txId = 1;
+
+      const txMeta = {
+        id: txId,
+        origin: ORIGIN_METAMASK,
+        status: TransactionStatus.unapproved,
+        metamaskNetworkId: currentNetworkId,
+        txParams: {
+          to: VALID_ADDRESS,
+          from: VALID_ADDRESS_TWO,
+        },
+      };
+
+      txController.addTransaction(txMeta);
+
+      const transaction1 = txController.updateTransactionSendFlowHistory(
+        txId,
+        2,
+        ['foo1', 'foo2'],
+      );
+
+      const transaction2 = txController.updateTransactionSendFlowHistory(
+        txId,
+        2,
+        ['foo1', 'foo2'],
+      );
+
+      assert.deepEqual(transaction1, transaction2);
     });
   });
 });

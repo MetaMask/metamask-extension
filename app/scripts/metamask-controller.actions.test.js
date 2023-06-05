@@ -5,7 +5,6 @@ import proxyquire from 'proxyquire';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -219,45 +218,6 @@ describe('MetaMaskController', function () {
         metamaskController.getApi().addToken(address, symbol, decimals),
       ]);
       assert.deepEqual(token1, token2);
-    });
-  });
-
-  describe('#updateTransactionSendFlowHistory', function () {
-    it('two sequential calls with same history give same result', async function () {
-      const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const accounts = await metamaskController.keyringController.getAccounts();
-
-      const txMeta = await new Promise((resolve) => {
-        metamaskController.txController.once('newUnapprovedTx', (_txMeta) =>
-          resolve(_txMeta),
-        );
-
-        metamaskController.getApi().addUnapprovedTransaction(
-          undefined,
-          {
-            from: accounts[0],
-            to: recipientAddress,
-          },
-          ORIGIN_METAMASK,
-          undefined,
-          undefined,
-          undefined,
-        );
-      });
-
-      const [transaction1, transaction2] = await Promise.all([
-        metamaskController
-          .getApi()
-          .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
-        Promise.resolve(1).then(() =>
-          metamaskController
-            .getApi()
-            .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
-        ),
-      ]);
-      assert.deepEqual(transaction1, transaction2);
     });
   });
 
