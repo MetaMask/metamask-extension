@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "Approuver et installer"
   },
-  "approveAndUpdate": {
-    "message": "Approuver et mettre à jour"
-  },
   "approveButtonText": {
     "message": "Approuver"
   },

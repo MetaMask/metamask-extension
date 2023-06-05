@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "批准并安装"
   },
-  "approveAndUpdate": {
-    "message": "批准并更新"
-  },
   "approveButtonText": {
     "message": "批准"
   },
