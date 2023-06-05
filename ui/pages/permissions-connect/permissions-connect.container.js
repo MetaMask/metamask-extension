@@ -82,7 +82,7 @@ const mapStateToProps = (state, ownProps) => {
 
   if (
     permissionsRequest &&
-    permissionsRequest.permissions[WALLET_SNAP_PERMISSION_KEY]
+    permissionsRequest.permissions?.[WALLET_SNAP_PERMISSION_KEY]
   ) {
     requestType = 'wallet_connectSnaps';
   }
@@ -124,6 +124,7 @@ const mapStateToProps = (state, ownProps) => {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   } else if (
+    pathname === snapsConnectPath ||
     pathname === snapInstallPath ||
     pathname === snapUpdatePath ||
     pathname === snapResultPath

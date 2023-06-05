@@ -748,6 +748,10 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
+  },
   "connectTo": {
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
@@ -3783,8 +3787,8 @@
     "message": "Smart transaction"
   },
   "snapConnectionWarning": {
-    "message": "Connection to $1 is requested by $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the snap and $2 is the dapp requesting connection to the snap."
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
   "snapContent": {
     "message": "This content is coming from $1",

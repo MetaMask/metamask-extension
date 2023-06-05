@@ -20,9 +20,11 @@ import {
   TextVariant,
   JustifyContent,
   AlignItems,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapsConnect({
   request,
@@ -36,7 +38,7 @@ export default function SnapsConnect({
   const [isLoading, setIsLoading] = useState(false);
 
   const currentPermissions = useSelector((state) =>
-    getPermissions(state, request.metadata.origin),
+    getPermissions(state, request?.metadata?.origin),
   );
 
   const onCancel = () => {
@@ -55,14 +57,14 @@ export default function SnapsConnect({
   };
 
   const getDedupedSnaps = () => {
-    const permission = request.permissions[WALLET_SNAP_PERMISSION_KEY];
-    const requestedSnaps = permission?.caveats[0].value;
+    const permission = request.permissions?.[WALLET_SNAP_PERMISSION_KEY];
+    const requestedSnaps = permission?.caveats?.[0].value;
 
     const currentSnaps =
-      currentPermissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+      currentPermissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats?.[0].value;
 
-    if (!isObject(currentSnaps)) {
-      return permission;
+    if (!isObject(currentSnaps) && requestedSnaps) {
+      return Object.keys(requestedSnaps);
     }
 
     const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
@@ -76,20 +78,28 @@ export default function SnapsConnect({
 
   const SnapsConnectContent = () => {
     const snaps = getDedupedSnaps();
-    if (snaps.length > 1) {
+    if (snaps?.length > 1) {
       return (
         <Box
           className="snaps-connect__content"
           flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
         >
           <Text variant={TextVariant.bodyMdBold}>{t('connectionRequest')}</Text>
           <Text>
-            {t('multipleSnapConnectionWarning', [origin, snaps.length])}
+            {t('multipleSnapConnectionWarning', [origin, snaps?.length])}
           </Text>
-          <Box className="snaps-connect__content__snaps-list">
+          <Box
+            className="snaps-connect__content__snaps-list"
+            flexDirection={FlexDirection.Column}
+          >
             {snaps.map((snap) => (
               // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
-              <SnapConnectCell key={`snaps-connect-${snap}`} snapId={snap} />
+              <SnapConnectCell
+                key={`snaps-connect-${snap}`}
+                snapId={snap}
+                origin={origin}
+              />
             ))}
           </Box>
         </Box>
@@ -99,30 +109,45 @@ export default function SnapsConnect({
       <Box
         className="snaps-connect__content"
         flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
       >
-        <Box className="snaps-connect__content__icons">
+        <Box
+          className="snaps-connect__content__icons"
+          flexDirection={FlexDirection.Row}
+        >
           <IconWithFallback
             className="snaps-connect__content__icons__site-icon"
             icon={iconUrl}
             name={name}
-            size={24}
+            size={32}
           />
           <hr className="snaps-connect__content__icons__connection-line" />
           <Icon
             className="snaps-connect__content__icons__question"
             name={IconName.Question}
-            size={IconSize.Md}
-            color={IconColor.iconDefault}
+            size={IconSize.Xl}
+            color={IconColor.infoInverse}
           />
+          <hr className="snaps-connect__content__icons__connection-line" />
           <Icon
             className="snaps-connect__content__icons__snap"
             name={IconName.Snaps}
-            size={IconSize.Md}
-            color={IconColor.infoInverse}
+            size={IconSize.Xl}
+            color={IconColor.primaryDefault}
           />
         </Box>
-        <Text variant={TextVariant.bodyMdBold}>{t('connectionRequest')}</Text>
-        <Text>{t('snapConnectionWarning', [snaps[0], origin])}</Text>
+        <Text variant={TextVariant.headingLg}>{t('connectionRequest')}</Text>
+        <Text
+          variant={TextVariant.bodyMd}
+          textAlign={TextAlign.Center}
+          padding={[0, 4]}
+        >
+          {t('snapConnectionWarning', [
+            <b key="0">{origin}</b>,
+            <b key="1">{getSnapName(snaps?.[0])}</b>,
+          ])}
+        </Text>
       </Box>
     );
   };
@@ -134,20 +159,20 @@ export default function SnapsConnect({
           className="snaps-connect__error__site-icon"
           icon={iconUrl}
           name={name}
-          size={24}
+          size={32}
         />
         <hr className="snaps-connect__error__connection-line" />
         <Icon
           className="snaps-connect__error__question"
           name={IconName.CircleX}
-          size={IconSize.Md}
+          size={IconSize.Xl}
           color={IconColor.errorDefault}
         />
         <Icon
-          className="snaps-connect__content__icons__snap"
+          className="snaps-connect__error__snap"
           name={IconName.Snaps}
-          size={IconSize.Md}
-          color={IconColor.infoInverse}
+          size={IconSize.Xl}
+          color={IconColor.primaryDefault}
         />
       </Box>
     );

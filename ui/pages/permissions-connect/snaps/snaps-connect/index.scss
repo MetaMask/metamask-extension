@@ -1,13 +1,17 @@
 .snaps-connect {
-  &__icon-container {
+  &__content {
+    &__icons {
+      &__connection-line {
+        border: 1.11667px dashed var(--brand-colors-grey-grey200);
+        width: auto;
+      }
+    }
+  }
+
+  &__error {
     &__connection-line {
       border: 1.11667px dashed var(--brand-colors-grey-grey200);
       width: auto;
-    }
-
-    &__question {
-      z-index: 10;
-      position: relative;
     }
   }
 }

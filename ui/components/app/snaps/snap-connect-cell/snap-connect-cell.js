@@ -24,8 +24,8 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default function SnapConnectCell({ iconUrl = '', snapId }) {
-  const t = useI18nContext()
+export default function SnapConnectCell({ origin, iconUrl = '', snapId }) {
+  const t = useI18nContext();
   const friendlyName = getSnapName(snapId);
   const SnapConnectAvatar = () => {
     return (
@@ -63,13 +63,30 @@ export default function SnapConnectCell({ iconUrl = '', snapId }) {
   };
 
   return (
-    <Box>
+    <Box
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.flexStart}
+      marginLeft={4}
+      marginRight={4}
+      paddingTop={2}
+      paddingBottom={2}
+    >
       <SnapConnectAvatar />
       <Box width="full">
-        <Text>{`${t('connect')} ${friendlyName}`}</Text>
+        <Text>{t('connect', [friendlyName])}</Text>
       </Box>
       <Box>
-        <Tooltip html={<div>{snapId}</div>} position="bottom">
+        <Tooltip
+          html={
+            <div>
+              {t('snapConnectionWarning', [
+                <b key="0">{origin}</b>,
+                <b key="1">{friendlyName}</b>,
+              ])}
+            </div>
+          }
+          position="bottom"
+        >
           <Icon
             color={IconColor.iconMuted}
             name={IconName.Info}
@@ -83,5 +100,6 @@ export default function SnapConnectCell({ iconUrl = '', snapId }) {
 
 SnapConnectCell.propTypes = {
   iconUrl: PropTypes.string,
+  origin: PropTypes.string.isRequired,
   snapId: PropTypes.string.isRequired,
 };
