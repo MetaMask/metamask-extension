@@ -43,7 +43,7 @@ export default class SecurityTab extends PureComponent {
     history: PropTypes.object,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
-    showIncomingTransactions: PropTypes.bool.isRequired,
+    showIncomingTransactions: PropTypes.bool,
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
@@ -309,41 +309,31 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
-
-    const handleIpfsGatewaySave = (gateway) => {
-      const url = new URL(addUrlProtocolPrefix(gateway));
-      const { host } = url;
-
-      this.props.setIpfsGateway(host);
-    };
+    let ipfsError = '';
 
     const handleIpfsGatewayChange = (url) => {
-      this.setState(() => {
-        let ipfsError = '';
-
+      if (url.length > 0) {
         try {
           const urlObj = new URL(addUrlProtocolPrefix(url));
-          if (!urlObj.host) {
-            throw new Error();
-          }
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            throw new Error('Forbidden gateway');
+            ipfsError = t('forbiddenIpfsGateway');
+          }
+
+          if (ipfsError.length === 0) {
+            this.props.setIpfsGateway(urlObj.host);
           }
         } catch (error) {
-          ipfsError =
-            error.message === 'Forbidden gateway'
-              ? t('forbiddenIpfsGateway')
-              : t('invalidIpfsGateway');
+          ipfsError = t('invalidIpfsGateway');
         }
+      } else {
+        ipfsError = t('invalidIpfsGateway');
+      }
 
-        handleIpfsGatewaySave(url);
-        return {
-          ipfsGateway: url,
-          ipfsGatewayError: ipfsError,
-        };
+      this.setState({
+        ipfsGateway: url,
+        ipfsGatewayError: ipfsError,
       });
     };
 
@@ -365,7 +355,7 @@ export default class SecurityTab extends PureComponent {
               type="text"
               value={this.state.ipfsGateway}
               onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-              error={ipfsGatewayError}
+              error={this.state.ipfsGatewayError}
               fullWidth
               margin="dense"
             />
@@ -521,7 +511,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>

@@ -1,33 +1,30 @@
-import {
-  fireEvent,
-  queryByRole,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, queryByRole, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider, tEn } from '../../../../test/lib/render-helpers';
 import SecurityTab from './security-tab.container';
 
-const mockSetFeatureFlag = jest.fn();
-const mockSetParticipateInMetaMetrics = jest.fn();
-const mockSetUsePhishDetect = jest.fn();
-const mockSetUseCurrencyRateCheck = jest.fn();
+jest.mock('../../../../app/scripts/lib/util', () => {
+  const originalModule = jest.requireActual('../../../../app/scripts/lib/util');
 
-jest.mock('../../../store/actions.ts', () => {
   return {
-    setFeatureFlag: () => mockSetFeatureFlag,
-    setParticipateInMetaMetrics: () => mockSetParticipateInMetaMetrics,
-    setUsePhishDetect: () => mockSetUsePhishDetect,
-    setUseCurrencyRateCheck: () => mockSetUseCurrencyRateCheck,
+    ...originalModule,
+    getEnvironmentType: jest.fn(),
   };
 });
 
 describe('Security Tab', () => {
-  const mockStore = configureMockStore()(mockState);
+  delete mockState.metamask.featureFlags; // Unset featureFlags in order to test the default value
+  mockState.appState.warning = 'warning'; // This tests an otherwise untested render branch
 
-  function testToggleCheckbox(testId, initialState) {
+  const mockStore = configureMockStore([thunk])(mockState);
+
+  function toggleCheckbox(testId, initialState) {
     renderWithProvider(<SecurityTab />, mockStore);
 
     const container = screen.getByTestId(testId);
@@ -35,13 +32,15 @@ describe('Security Tab', () => {
 
     expect(checkbox).toHaveAttribute('value', initialState ? 'true' : 'false');
 
-    // TODO: This actually doesn't fire the onToggle method of the ToggleButton, and it never has in this test suite.
-    //       Implementing it properly requires a lot of mocks.
+    fireEvent.click(checkbox); // This fires the onToggle method of the ToggleButton, but it doesn't change the value of the checkbox
+
     fireEvent.change(checkbox, {
-      target: { value: !initialState },
+      target: { value: !initialState }, // This changes the value of the checkbox
     });
 
     expect(checkbox).toHaveAttribute('value', initialState ? 'false' : 'true');
+
+    return true;
   }
 
   it('should match snapshot', () => {
@@ -50,28 +49,30 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('toggles phishing detection', () => {
-    testToggleCheckbox('usePhishingDetection', true);
+  it('toggles phishing detection', async () => {
+    expect(await toggleCheckbox('usePhishingDetection', true)).toBe(true);
   });
 
-  it('toggles balance and token price checker', () => {
-    testToggleCheckbox('currencyRateCheckToggle', true);
+  it('toggles balance and token price checker', async () => {
+    expect(await toggleCheckbox('currencyRateCheckToggle', true)).toBe(true);
   });
 
-  it('toggles incoming txs', () => {
-    testToggleCheckbox('showIncomingTransactions', true);
+  it('toggles incoming txs', async () => {
+    expect(await toggleCheckbox('showIncomingTransactions', false)).toBe(true);
   });
 
-  it('should toggle token detection', () => {
-    testToggleCheckbox('autoDetectTokens', true);
+  it('should toggle token detection', async () => {
+    expect(await toggleCheckbox('autoDetectTokens', true)).toBe(true);
   });
 
-  it('toggles batch balance checks', () => {
-    testToggleCheckbox('useMultiAccountBalanceChecker', false);
+  it('toggles batch balance checks', async () => {
+    expect(await toggleCheckbox('useMultiAccountBalanceChecker', false)).toBe(
+      true,
+    );
   });
 
-  it('toggles metaMetrics', () => {
-    testToggleCheckbox('participateInMetaMetrics', false);
+  it('toggles metaMetrics', async () => {
+    expect(await toggleCheckbox('participateInMetaMetrics', false)).toBe(true);
   });
 
   it('toggles SRP Quiz', async () => {
@@ -92,5 +93,66 @@ describe('Security Tab', () => {
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
     ).not.toBeInTheDocument();
+  });
+
+  it('sets IPFS gateway', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<SecurityTab />, mockStore);
+
+    const ipfsField = screen.getByDisplayValue(mockState.metamask.ipfsGateway);
+
+    await user.click(ipfsField);
+
+    await userEvent.clear(ipfsField);
+
+    expect(ipfsField).toHaveValue('');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.type(ipfsField, 'https://');
+
+    expect(ipfsField).toHaveValue('https://');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.type(ipfsField, '//');
+
+    expect(ipfsField).toHaveValue('https:////');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.clear(ipfsField);
+
+    await userEvent.type(ipfsField, 'gateway.ipfs.io');
+
+    expect(ipfsField).toHaveValue('gateway.ipfs.io');
+    expect(
+      screen.queryByText(tEn('invalidIpfsGateway')),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(tEn('forbiddenIpfsGateway'))).toBeInTheDocument();
+  });
+
+  it('clicks "Add Custom Network"', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<SecurityTab />, mockStore);
+
+    // Test the default path where `getEnvironmentType() === undefined`
+    await user.click(screen.getByText(tEn('addCustomNetwork')));
+
+    // Now force it down the path where `getEnvironmentType() === ENVIRONMENT_TYPE_POPUP`
+    jest
+      .mocked(getEnvironmentType)
+      .mockImplementationOnce(() => ENVIRONMENT_TYPE_POPUP);
+
+    global.platform = { openExtensionInBrowser: jest.fn() };
+
+    await user.click(screen.getByText(tEn('addCustomNetwork')));
+    expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
   });
 });
