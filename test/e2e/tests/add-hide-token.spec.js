@@ -181,13 +181,8 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
 
         await driver.waitForSelector({
-          css: '.asset-list-item__token-value',
-          text: '0',
-        });
-
-        await driver.waitForSelector({
-          css: '.asset-list-item__token-symbol',
-          text: 'TST',
+          css: '[data-testid="multichain-token-list-item-value"]',
+          text: '0 TST',
         });
       },
     );
@@ -239,7 +234,7 @@ describe('Add token using wallet_watchAsset', function () {
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
 
         const assetListItems = await driver.findElements(
-          '.list-item--single-content-row',
+          '.multichain-token-list-item',
         );
 
         assert.strictEqual(assetListItems.length, 1);
