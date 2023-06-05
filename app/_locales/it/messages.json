@@ -290,9 +290,6 @@
     "message": "Consenti l'accesso e il trasferimento di tutti i tuoi $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Approva & installa"
-  },
   "approveButtonText": {
     "message": "Approva"
   },

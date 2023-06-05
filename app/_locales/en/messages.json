@@ -398,9 +398,6 @@
     "message": "Allow access to and transfer all of your NFTs from $1?",
     "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "approveAndInstall": {
-    "message": "Approve & install"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
