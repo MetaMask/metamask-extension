@@ -35,23 +35,28 @@ export default function NewAccountImportForm({ onActionComplete }) {
 
   const [type, setType] = useState(menuItems[0]);
 
-  function importAccount(strategy, importArgs) {
+  async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
 
-    dispatch(actions.importNewAccount(strategy, importArgs, loadingMessage))
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          trackImportEvent(strategy, true);
-          dispatch(actions.hideWarning());
-          onActionComplete();
-        } else {
-          dispatch(actions.displayWarning(t('importAccountError')));
-        }
-      })
-      .catch((error) => {
-        trackImportEvent(strategy, error.message);
-        translateWarning(error.message);
-      });
+    try {
+      const { selectedAddress } = dispatch(
+        actions.importNewAccount(strategy, importArgs, loadingMessage),
+      );
+      if (selectedAddress) {
+        trackImportEvent(strategy, true);
+        dispatch(actions.hideWarning());
+        onActionComplete();
+      } else {
+        dispatch(actions.displayWarning(t('importAccountError')));
+        return false;
+      }
+    } catch (error) {
+      trackImportEvent(strategy, error.message);
+      translateWarning(error.message);
+      return false;
+    }
+
+    return true;
   }
 
   function trackImportEvent(strategy, wasSuccessful) {

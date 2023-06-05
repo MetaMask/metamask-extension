@@ -38,9 +38,15 @@ export default function BottomButtons({
         {t('cancel')}
       </ButtonSecondary>
       <ButtonPrimary
-        onClick={() => {
-          importAccountFunc();
-          onActionComplete(true);
+        onClick={async () => {
+          try {
+            const result = await importAccountFunc();
+            if (result) {
+              onActionComplete(true);
+            }
+          } catch (e) {
+            // Take no action
+          }
         }}
         disabled={isPrimaryDisabled}
         size={BUTTON_SECONDARY_SIZES.LG}
