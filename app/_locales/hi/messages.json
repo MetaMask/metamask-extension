@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "स्वीकृत और इंस्टॉल करें"
   },
-  "approveAndUpdate": {
-    "message": "स्वीकृत और अपडेट करें"
-  },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },

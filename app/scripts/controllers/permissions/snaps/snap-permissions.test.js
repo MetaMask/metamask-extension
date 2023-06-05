@@ -8,6 +8,14 @@ import {
   buildSnapRestrictedMethodSpecifications,
 } from './snap-permissions';
 
+// Temporarily replace the snaps packages with the Flask versions.
+jest.mock('@metamask/snaps-controllers', () =>
+  jest.requireActual('@metamask/snaps-controllers-flask'),
+);
+jest.mock('@metamask/rpc-methods', () =>
+  jest.requireActual('@metamask/rpc-methods-flask'),
+);
+
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
     const hooks = {
@@ -29,7 +37,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
 
     Object.values(specifications).forEach((specification) => {
       expect(specification).toMatchObject({
-        targetKey: expect.stringMatching(/^(snap_|wallet_)/u),
+        targetName: expect.stringMatching(/^(snap_|wallet_)/u),
         methodImplementation: expect.any(Function),
       });
     });
@@ -43,8 +51,8 @@ describe('buildSnapEndowmentSpecifications', () => {
     ).toStrictEqual(
       Object.keys(EndowmentPermissions)
         .filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapEndowments).includes(targetKey),
+          (targetName) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetName),
         )
         .sort(),
     );
