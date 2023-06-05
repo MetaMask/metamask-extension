@@ -151,9 +151,6 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectHardwareWallet": {
-    "message": "Koble til maskinvarelommebok"
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Opprett"
-  },
-  "createAccount": {
-    "message": "Opprett konto"
   },
   "createPassword": {
     "message": "Opprett passord "
@@ -787,10 +781,6 @@
   },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi hadde problemer med å laste inn sjetongsaldoen din. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igjen"
