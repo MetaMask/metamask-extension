@@ -1,11 +1,18 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+
 import SnapInstall from '.';
+import configureStore from '../../../../store/store';
+import mockState from '../../../../../test/data/mock-state.json';
+
+const store = configureStore(mockState);
 
 export default {
   title: 'Pages/Snaps/SnapInstall',
 
   component: SnapInstall,
   argTypes: {},
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
 export const DefaultStory = (args) => <SnapInstall {...args} />;

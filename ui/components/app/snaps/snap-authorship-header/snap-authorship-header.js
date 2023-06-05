@@ -57,8 +57,8 @@ const SnapAuthorshipHeader = ({ snapId, className }) => {
         <SnapAvatar snapId={snapId} />
       </Box>
       <Box
-        marginLeft={2}
-        marginRight={2}
+        marginLeft={4}
+        marginRight={4}
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.COLUMN}
         style={{ overflow: 'hidden' }}
