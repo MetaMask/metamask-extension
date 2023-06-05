@@ -50,7 +50,7 @@ const SnapAuthorshipHeader = ({ snapId, className }) => {
       display={DISPLAY.FLEX}
       padding={4}
       style={{
-        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)'
+        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
       }}
     >
       <Box>

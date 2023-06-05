@@ -5,8 +5,7 @@ export default {
   title: 'Pages/Snaps/SnapResult',
 
   component: SnapResult,
-  argTypes: {
-  },
+  argTypes: {},
 };
 
 export const DefaultStory = (args) => <SnapResult {...args} />;
@@ -17,14 +16,14 @@ DefaultStory.args = {
   request: {
     metadata: {
       id: 'foo',
-    }
+    },
   },
   requestState: {
-    loading: false
+    loading: false,
   },
   targetSubjectMetadata: {
-    origin: 'npm:@metamask/test-snap-bip44'
-  }
+    origin: 'npm:@metamask/test-snap-bip44',
+  },
 };
 
 export const LoadingStory = (args) => <SnapResult {...args} />;
@@ -35,14 +34,14 @@ LoadingStory.args = {
   request: {
     metadata: {
       id: 'foo',
-    }
+    },
   },
   requestState: {
-    loading: true
+    loading: true,
   },
   targetSubjectMetadata: {
-    origin: 'npm:@metamask/test-snap-bip44'
-  }
+    origin: 'npm:@metamask/test-snap-bip44',
+  },
 };
 
 export const ErrorStory = (args) => <SnapResult {...args} />;
@@ -53,14 +52,13 @@ ErrorStory.args = {
   request: {
     metadata: {
       id: 'foo',
-    }
+    },
   },
   requestState: {
     loading: false,
-    error: 'foo'
+    error: 'foo',
   },
   targetSubjectMetadata: {
-    origin: 'npm:@metamask/test-snap-bip44'
-  }
+    origin: 'npm:@metamask/test-snap-bip44',
+  },
 };
-

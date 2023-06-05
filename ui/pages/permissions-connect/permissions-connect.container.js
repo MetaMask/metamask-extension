@@ -99,7 +99,8 @@ const mapStateToProps = (state, ownProps) => {
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
-  const isSnapInstallOrUpdateOrResult = pathname === snapInstallPath ||
+  const isSnapInstallOrUpdateOrResult =
+    pathname === snapInstallPath ||
     pathname === snapUpdatePath ||
     pathname === snapResultPath;
   ///: END:ONLY_INCLUDE_IN
@@ -116,9 +117,7 @@ const mapStateToProps = (state, ownProps) => {
   } else if (pathname === confirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  } else if (
-    isSnapInstallOrUpdateOrResult
-  ) {
+  } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {

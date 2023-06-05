@@ -82,10 +82,13 @@ export default function SnapUpdate({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
-      <Box className="snap-update__content" style={{
-        overflowY: 'scroll',
-        flex: !isLoading && '1'
-      }}>
+      <Box
+        className="snap-update__content"
+        style={{
+          overflowY: 'scroll',
+          flex: !isLoading && '1',
+        }}
+      >
         {!isLoading && !hasError && (
           <Text
             paddingBottom={4}
@@ -138,7 +141,7 @@ export default function SnapUpdate({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
         style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)'
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
         <PageContainerFooter

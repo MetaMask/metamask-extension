@@ -171,7 +171,7 @@ export default function SnapResult({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
         style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)'
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
         <PageContainerFooter

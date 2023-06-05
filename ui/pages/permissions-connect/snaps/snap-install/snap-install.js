@@ -78,11 +78,13 @@ export default function SnapInstall({
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
-      <Box className="snap-install__content"
+      <Box
+        className="snap-install__content"
         style={{
           overflowY: 'scroll',
-          flex: !isLoading && '1'
-        }}>
+          flex: !isLoading && '1',
+        }}
+      >
         {isLoading && (
           <Box
             className="snap-install__content__loader-container"
@@ -136,7 +138,7 @@ export default function SnapInstall({
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
         style={{
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)'
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
         <PageContainerFooter
@@ -146,9 +148,7 @@ export default function SnapInstall({
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(
-            hasError ? 'ok' : 'install',
-          )}
+          submitText={t(hasError ? 'ok' : 'install')}
         />
       </Box>
       {isShowingWarning && (
