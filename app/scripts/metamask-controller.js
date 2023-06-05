@@ -358,19 +358,14 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.tokensController = new TokensController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: () =>
+        this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
       config: { provider: this.provider },
       state: initState.TokensController,
       messenger: this.controllerMessenger.getRestricted({
@@ -387,6 +382,7 @@ export default class MetamaskController extends EventEmitter {
       {
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         // This handler is misnamed, and is a known issue that will be resolved
         // by planned refactors. It should be onNetworkDidChange which happens
         // AFTER the provider in the network controller is updated to reflect
@@ -395,20 +391,9 @@ export default class MetamaskController extends EventEmitter {
         // that is what the handler name implies, but this triggers too soon
         // causing the provider of the AssetsContractController to trail the
         // network provider by one update.
-        onNetworkStateChange: (cb) =>
-          networkControllerMessenger.subscribe(
-            'NetworkController:networkDidChange',
-            () => {
-              const networkState = this.networkController.store.getState();
-              const modifiedNetworkState = {
-                ...networkState,
-                providerConfig: {
-                  ...networkState.providerConfig,
-                  chainId: hexToDecimal(networkState.providerConfig.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
-            },
+        onNetworkStateChange: () =>
+          this.networkController.store.subscribe.bind(
+            this.networkController.store,
           ),
       },
       {
@@ -419,21 +404,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.nftController = new NftController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
+        onNetworkStateChange: () =>
+          this.networkController.store.subscribe.bind(
+            this.networkController.store,
+          ),
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -479,21 +458,15 @@ export default class MetamaskController extends EventEmitter {
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
     this.nftDetectionController = new NftDetectionController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-              chainId: hexToDecimal(networkState.providerConfig.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: () =>
+        this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -624,6 +597,7 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -631,17 +605,10 @@ export default class MetamaskController extends EventEmitter {
             `${this.currencyRateController.name}:stateChange`,
             listener,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
+        onNetworkStateChange: () =>
+          this.networkController.store.subscribe.bind(
+            this.networkController.store,
+          ),
       },
       {
         disabled:
