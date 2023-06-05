@@ -362,9 +362,6 @@
   "approveAndInstall": {
     "message": "承認してインストール"
   },
-  "approveAndUpdate": {
-    "message": "承認して更新"
-  },
   "approveButtonText": {
     "message": "承認"
   },

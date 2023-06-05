@@ -909,9 +909,7 @@ export class NetworkController extends EventEmitter {
       }
       this.#configureStandardProvider(rpcUrl, chainId);
     } else {
-      throw new Error(
-        `NetworkController - #configureProvider - unknown type "${type}"`,
-      );
+      throw new Error(`Unrecognized network type: '${type}'`);
     }
   }
 
