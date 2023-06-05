@@ -18,7 +18,7 @@ import UpdateSnapPermissionList from '../../../../components/app/snaps/update-sn
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import { Text } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -81,25 +81,20 @@ export default function SnapUpdate({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
-      <Box
-        className="snap-update__header"
-        paddingLeft={4}
-        paddingRight={4}
-        alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-      >
-        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
+      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      <Box className="snap-update__content" style={{
+        overflowY: 'scroll'
+      }}>
         {!isLoading && !hasError && (
           <Text
             paddingBottom={4}
             paddingTop={4}
             variant={TextVariant.headingLg}
+            textAlign="center"
           >
             {t('snapUpdate')}
           </Text>
         )}
-      </Box>
-      <Box className="snap-update__content">
         {isLoading && (
           <Box
             className="snap-update__content__loader-container"
@@ -141,6 +136,9 @@ export default function SnapUpdate({
         className="snap-update__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)'
+        }}
       >
         <PageContainerFooter
           cancelButtonType="default"

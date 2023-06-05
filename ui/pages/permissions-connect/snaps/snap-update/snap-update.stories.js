@@ -1,15 +1,15 @@
 import React from 'react';
-import SnapInstall from '.';
+import SnapUpdate from '.';
 
 export default {
-  title: 'Pages/Snaps/SnapInstall',
+  title: 'Pages/Snaps/SnapUpdate',
 
-  component: SnapInstall,
+  component: SnapUpdate,
   argTypes: {
   },
 };
 
-export const DefaultStory = (args) => <SnapInstall {...args} />;
+export const DefaultStory = (args) => <SnapUpdate {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -21,7 +21,7 @@ DefaultStory.args = {
   },
   requestState: {
     loading: false,
-    permissions: {
+    approvedPermissions: {
       "endowment:rpc": {
         "caveats": [
           {
@@ -53,7 +53,7 @@ DefaultStory.args = {
   }
 };
 
-export const LoadingStory = (args) => <SnapInstall {...args} />;
+export const LoadingStory = (args) => <SnapUpdate {...args} />;
 
 LoadingStory.storyName = 'Loading';
 
@@ -71,7 +71,7 @@ LoadingStory.args = {
   }
 };
 
-export const ScrollingStory = (args) => <SnapInstall {...args} />;
+export const ScrollingStory = (args) => <SnapUpdate {...args} />;
 
 ScrollingStory.storyName = 'Scrolling';
 
@@ -83,7 +83,7 @@ ScrollingStory.args = {
   },
   requestState: {
     loading: false,
-    permissions: {
+    approvedPermissions: {
       "endowment:rpc": {
         "caveats": [
           {
