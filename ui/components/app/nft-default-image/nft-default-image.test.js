@@ -1,5 +1,4 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import NftDefaultImage from '.';
 
@@ -14,7 +13,7 @@ describe('NFT Default Image', () => {
     const props = {
       name: 'NFT Name',
       tokenId: '123',
-      handleImageClick: jest.fn(),
+      clickable: true,
     };
 
     const { container } = renderWithProvider(<NftDefaultImage {...props} />);
@@ -22,7 +21,7 @@ describe('NFT Default Image', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot with missing image click handler', () => {
+  it('should match snapshot with missing clickable prop', () => {
     const props = {
       name: 'NFT Name',
       tokenId: '123',
@@ -58,18 +57,17 @@ describe('NFT Default Image', () => {
     expect(nftElement).toBeInTheDocument();
   });
 
-  it('should handle image click', () => {
-    const props = {
-      handleImageClick: jest.fn(),
-    };
-
-    const { queryByTestId } = renderWithProvider(
-      <NftDefaultImage {...props} />,
+  it('does not render component with clickable class when clickable is false', () => {
+    const { container } = renderWithProvider(
+      <NftDefaultImage name="NFT Name" tokenId="123" clickable={false} />,
     );
+    expect(container.firstChild).not.toHaveClass('nft-default--clickable');
+  });
 
-    const nftImageElement = queryByTestId('nft-default-image');
-    fireEvent.click(nftImageElement);
-
-    expect(props.handleImageClick).toHaveBeenCalled();
+  it('renders component with clickable class when clickable is true', () => {
+    const { container } = renderWithProvider(
+      <NftDefaultImage name="NFT Name" tokenId="123" clickable />,
+    );
+    expect(container.firstChild).toHaveClass('nft-default--clickable');
   });
 });
