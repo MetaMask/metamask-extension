@@ -10,6 +10,7 @@ import {
   getProviderConfig,
 } from '../../../ducks/metamask/metamask';
 import {
+  accountsWithSendEtherInfoSelector,
   conversionRateSelector,
   getCurrentCurrency,
   getMemoizedAddressBook,
@@ -96,6 +97,9 @@ const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getMemoizedAddressBook) {
     return [];
   }
+  if (selector === accountsWithSendEtherInfoSelector) {
+    return Object.values(opts.metamask.accounts);
+  }
 
   return undefined;
 };
@@ -166,6 +170,7 @@ describe('Signature Request Component', () => {
         }),
       );
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -185,6 +190,7 @@ describe('Signature Request Component', () => {
 
     it('should match snapshot when we are using eth', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -204,6 +210,7 @@ describe('Signature Request Component', () => {
 
     it('should render navigation', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -227,6 +234,7 @@ describe('Signature Request Component', () => {
         do_not_display: 'two',
       };
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -258,6 +266,7 @@ describe('Signature Request Component', () => {
         }),
       );
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -279,6 +288,7 @@ describe('Signature Request Component', () => {
 
     it('should render a reject multiple requests link if there is multiple requests (greater than 1)', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -300,6 +310,7 @@ describe('Signature Request Component', () => {
 
     it('should call reject all button when button is clicked', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -323,6 +334,7 @@ describe('Signature Request Component', () => {
 
     it('should render text of reject all button', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -342,6 +354,7 @@ describe('Signature Request Component', () => {
 
     it('should render SecurityProviderBannerMessage component properly', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -373,6 +386,7 @@ describe('Signature Request Component', () => {
 
     it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -403,19 +417,33 @@ describe('Signature Request Component', () => {
 
     it('should render a warning when the selected account is not the one being used to sign', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
 
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accounts: {
+              ...mockStore.metamask.accounts,
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                balance: '0x0',
+                name: 'Account 1',
+              },
+            },
+          },
+        }),
+      );
+
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
-          selectedAccount={{
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            balance: '0x0',
-            name: 'Account 1',
-          }}
           txData={{
             msgParams,
             securityProviderResponse: {

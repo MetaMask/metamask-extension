@@ -85,9 +85,49 @@ exports[`Signature Request Component render should match snapshot when we are us
             class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
             <div
-              class="identicon__image-border"
-              style="height: 32px; width: 32px; border-radius: 16px;"
-            />
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#FA7900"
+                      height="32"
+                      transform="translate(-0.4291965340260923 -4.589212785086649) rotate(266.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2A202"
+                      height="32"
+                      transform="translate(2.4067447047270143 13.767950912205709) rotate(242.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#C8144A"
+                      height="32"
+                      transform="translate(-19.808734531871874 -18.328897166120687) rotate(396.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
             >
@@ -108,7 +148,9 @@ exports[`Signature Request Component render should match snapshot when we are us
             </h6>
             <h6
               class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
-            />
+            >
+              John Doe
+            </h6>
           </div>
         </div>
         <div
@@ -133,19 +175,6 @@ exports[`Signature Request Component render should match snapshot when we are us
     <div
       class="signature-request-content"
     >
-      <div
-        class="box request-signature__mismatch-info box--margin-bottom-4 box--padding-4 box--display-flex box--flex-direction-row box--width-full box--background-color-primary-muted"
-      >
-        <span
-          class="box mm-icon mm-icon--size-md box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-info-default"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-        <h6
-          class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
-        >
-          Your selected account (0xd8f...9aa5) is different than the account trying to sign ()
-        </h6>
-      </div>
       <div
         class="signature-request__origin"
       >
@@ -832,9 +861,49 @@ exports[`Signature Request Component render should match snapshot when we want t
             class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
             <div
-              class="identicon__image-border"
-              style="height: 32px; width: 32px; border-radius: 16px;"
-            />
+              class=""
+            >
+              <div
+                class="identicon"
+                style="height: 32px; width: 32px; border-radius: 16px;"
+              >
+                <div
+                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 151, 242);"
+                >
+                  <svg
+                    height="32"
+                    width="32"
+                    x="0"
+                    y="0"
+                  >
+                    <rect
+                      fill="#FA7900"
+                      height="32"
+                      transform="translate(-0.4291965340260923 -4.589212785086649) rotate(266.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#F2A202"
+                      height="32"
+                      transform="translate(2.4067447047270143 13.767950912205709) rotate(242.5 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                    <rect
+                      fill="#C8144A"
+                      height="32"
+                      transform="translate(-19.808734531871874 -18.328897166120687) rotate(396.2 16 16)"
+                      width="32"
+                      x="0"
+                      y="0"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
             <div
               class="network-account-balance-header__network-account__ident-icon-ethereum--gray"
             >
@@ -855,7 +924,9 @@ exports[`Signature Request Component render should match snapshot when we want t
             </h6>
             <h6
               class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
-            />
+            >
+              John Doe
+            </h6>
           </div>
         </div>
         <div
@@ -880,19 +951,6 @@ exports[`Signature Request Component render should match snapshot when we want t
     <div
       class="signature-request-content"
     >
-      <div
-        class="box request-signature__mismatch-info box--margin-bottom-4 box--padding-4 box--display-flex box--flex-direction-row box--width-full box--background-color-primary-muted"
-      >
-        <span
-          class="box mm-icon mm-icon--size-md box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-info-default"
-          style="mask-image: url('./images/icons/info.svg');"
-        />
-        <h6
-          class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
-        >
-          Your selected account (0xd8f...9aa5) is different than the account trying to sign ()
-        </h6>
-      </div>
       <div
         class="signature-request__origin"
       >
