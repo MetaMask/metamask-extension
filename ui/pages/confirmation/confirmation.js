@@ -406,6 +406,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         style={
           isSnapDialog
             ? {
@@ -420,6 +421,7 @@ export default function ConfirmationPage({
               }
             : {}
         }
+        ///: END:ONLY_INCLUDE_IN
         onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
