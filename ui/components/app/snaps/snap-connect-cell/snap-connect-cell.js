@@ -24,7 +24,11 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default function SnapConnectCell({ origin, iconUrl = '', snapId }) {
+export default function SnapConnectCell({
+  origin = '',
+  iconUrl = '',
+  snapId = '',
+}) {
   const t = useI18nContext();
   const friendlyName = getSnapName(snapId);
   const SnapConnectAvatar = () => {
@@ -73,7 +77,7 @@ export default function SnapConnectCell({ origin, iconUrl = '', snapId }) {
     >
       <SnapConnectAvatar />
       <Box width="full">
-        <Text>{t('connect', [friendlyName])}</Text>
+        <Text>{t('connectSnap', [friendlyName])}</Text>
       </Box>
       <Box>
         <Tooltip

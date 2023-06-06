@@ -9,9 +9,11 @@
   }
 
   &__error {
-    &__connection-line {
-      border: 1.11667px dashed var(--brand-colors-grey-grey200);
-      width: auto;
+    &__icons {
+      &__connection-line {
+        border: 1.11667px dashed var(--brand-colors-grey-grey200);
+        width: auto;
+      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isObject } from '@metamask/utils';
 import { useSelector } from 'react-redux';
@@ -34,27 +34,27 @@ export default function SnapsConnect({
 }) {
   const t = useI18nContext();
   const { origin, iconUrl, name } = targetSubjectMetadata;
-  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const currentPermissions = useSelector((state) =>
     getPermissions(state, request?.metadata?.origin),
   );
 
-  const onCancel = () => {
+  const onCancel = useCallback(() => {
     rejectConnection(request.metadata.id);
-  };
+  }, [request, rejectConnection]);
 
-  const onConnect = () => {
+  const onConnect = useCallback(() => {
     try {
       setIsLoading(true);
       approveConnection(request);
-    } catch {
-      setHasError(true);
+    } catch (err) {
+      setError(err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [request, approveConnection]);
 
   const getDedupedSnaps = () => {
     const permission = request.permissions?.[WALLET_SNAP_PERMISSION_KEY];
@@ -63,7 +63,7 @@ export default function SnapsConnect({
     const currentSnaps =
       currentPermissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats?.[0].value;
 
-    if (!isObject(currentSnaps) && requestedSnaps) {
+    if (!isObject(currentSnaps) && isObject(requestedSnaps)) {
       return Object.keys(requestedSnaps);
     }
 
@@ -78,6 +78,7 @@ export default function SnapsConnect({
 
   const SnapsConnectContent = () => {
     const snaps = getDedupedSnaps();
+    console.log(snaps);
     if (snaps?.length > 1) {
       return (
         <Box
@@ -104,76 +105,98 @@ export default function SnapsConnect({
           </Box>
         </Box>
       );
+    } else if (snaps?.length === 1) {
+      return (
+        <Box
+          className="snaps-connect__content"
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+        >
+          <Box
+            className="snaps-connect__content__icons"
+            flexDirection={FlexDirection.Row}
+          >
+            <IconWithFallback
+              className="snaps-connect__content__icons__site-icon"
+              icon={iconUrl}
+              name={name}
+              size={32}
+            />
+            <hr className="snaps-connect__content__icons__connection-line" />
+            <Icon
+              className="snaps-connect__content__icons__question"
+              name={IconName.Question}
+              size={IconSize.Xl}
+              color={IconColor.infoInverse}
+            />
+            <hr className="snaps-connect__content__icons__connection-line" />
+            <Icon
+              className="snaps-connect__content__icons__snap"
+              name={IconName.Snaps}
+              size={IconSize.Xl}
+              color={IconColor.primaryDefault}
+            />
+          </Box>
+          <Text variant={TextVariant.headingLg}>{t('connectionRequest')}</Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            textAlign={TextAlign.Center}
+            padding={[0, 4]}
+          >
+            {t('snapConnectionWarning', [
+              <b key="0">{origin}</b>,
+              <b key="1">{getSnapName(snaps?.[0])}</b>,
+            ])}
+          </Text>
+        </Box>
+      );
+    }
+    return null;
+  };
+
+  const SnapsConnectError = () => {
+    const snaps = getDedupedSnaps();
+    let description = '';
+    if (snaps?.length === 1) {
+      description = t('connectionFailedDescription', [getSnapName(snaps?.[0])]);
+    } else if (snaps?.length > 1) {
+      description = t('connectionFailedDescriptionPlural');
     }
     return (
       <Box
-        className="snaps-connect__content"
+        className="snaps-connect__error"
         flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
       >
         <Box
-          className="snaps-connect__content__icons"
+          className="snaps-connect__error__icons"
           flexDirection={FlexDirection.Row}
         >
           <IconWithFallback
-            className="snaps-connect__content__icons__site-icon"
+            className="snaps-connect__error__icons__site-icon"
             icon={iconUrl}
             name={name}
             size={32}
           />
-          <hr className="snaps-connect__content__icons__connection-line" />
+          <hr className="snaps-connect__error__icons__connection-line" />
           <Icon
-            className="snaps-connect__content__icons__question"
-            name={IconName.Question}
+            className="snaps-connect__error__icons__question"
+            name={IconName.CircleX}
             size={IconSize.Xl}
-            color={IconColor.infoInverse}
+            color={IconColor.errorDefault}
           />
-          <hr className="snaps-connect__content__icons__connection-line" />
+          <hr className="snaps-connect__error__icons__connection-line" />
           <Icon
-            className="snaps-connect__content__icons__snap"
+            className="snaps-connect__error__icons__snap"
             name={IconName.Snaps}
             size={IconSize.Xl}
             color={IconColor.primaryDefault}
           />
         </Box>
-        <Text variant={TextVariant.headingLg}>{t('connectionRequest')}</Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          textAlign={TextAlign.Center}
-          padding={[0, 4]}
-        >
-          {t('snapConnectionWarning', [
-            <b key="0">{origin}</b>,
-            <b key="1">{getSnapName(snaps?.[0])}</b>,
-          ])}
-        </Text>
-      </Box>
-    );
-  };
-
-  const SnapsConnectError = () => {
-    return (
-      <Box className="snaps-connect__error">
-        <IconWithFallback
-          className="snaps-connect__error__site-icon"
-          icon={iconUrl}
-          name={name}
-          size={32}
-        />
-        <hr className="snaps-connect__error__connection-line" />
-        <Icon
-          className="snaps-connect__error__question"
-          name={IconName.CircleX}
-          size={IconSize.Xl}
-          color={IconColor.errorDefault}
-        />
-        <Icon
-          className="snaps-connect__error__snap"
-          name={IconName.Snaps}
-          size={IconSize.Xl}
-          color={IconColor.primaryDefault}
-        />
+        <Text variant={TextVariant.headingLg}>{t('connectionFailed')}</Text>
+        {description && (
+          <Text variant={TextVariant.headingLg}>{description}</Text>
+        )}
       </Box>
     );
   };
@@ -192,15 +215,15 @@ export default function SnapsConnect({
         iconSrc={iconUrl}
         name={name}
       />
-      {hasError ? <SnapsConnectError /> : <SnapsConnectContent />}
+      {error ? <SnapsConnectError /> : <SnapsConnectContent />}
       <PageContainerFooter
         cancelButtonType="default"
         hideCancel={false}
         disabled={isLoading}
         onCancel={onCancel}
         cancelText={t('cancel')}
-        onSubmit={hasError ? onCancel : onConnect}
-        submitText={t(hasError ? 'ok' : 'connect')}
+        onSubmit={error ? onCancel : onConnect}
+        submitText={t(error ? 'ok' : 'connect')}
       />
     </Box>
   );

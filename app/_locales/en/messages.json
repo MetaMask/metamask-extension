@@ -817,6 +817,16 @@
   "connectionError": {
     "message": "Connection error"
   },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionFailedDescriptionPlural": {
+    "message": "Fetching of the requested snaps failed. Check your network and try again."
+  },
   "connectionRequest": {
     "message": "Connection request"
   },
