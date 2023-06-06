@@ -10,7 +10,6 @@ import {
 } from '../../../../../shared/modules/hexstring-utils';
 import {
   ButtonIcon,
-  Icon,
   IconName,
   IconSize,
 } from '../../../../components/component-library';
