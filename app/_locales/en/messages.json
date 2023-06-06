@@ -469,9 +469,6 @@
   "back": {
     "message": "Back"
   },
-  "backToAll": {
-    "message": "Back to all"
-  },
   "backup": {
     "message": "Backup"
   },
@@ -3253,9 +3250,6 @@
   "receive": {
     "message": "Receive"
   },
-  "recents": {
-    "message": "Recents"
-  },
   "recipientAddressPlaceholder": {
     "message": "Enter public address (0x) or ENS name"
   },
@@ -4734,9 +4728,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer from"

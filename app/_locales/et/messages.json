@@ -93,9 +93,6 @@
   "back": {
     "message": "Tagasi"
   },
-  "backToAll": {
-    "message": "Tagasi kõigile"
-  },
   "backupApprovalInfo": {
     "message": "See salakood on vajalik teie rahakoti taastamiseks, kui kaotate oma seadme, unustate parooli, peate MetaMaski uuesti alla laadima, või kui soovite avada oma rahakoti mõnel teisel seadmel."
   },
@@ -565,9 +562,6 @@
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
-  "recents": {
-    "message": "Hiljutised"
-  },
   "recipientAddressPlaceholder": {
     "message": "Otsing, avalik aadress (0x) või ENS"
   },
@@ -790,9 +784,6 @@
   },
   "transfer": {
     "message": "Ülekandmine"
-  },
-  "transferBetweenAccounts": {
-    "message": "Ülekandmine minu kontode vahel"
   },
   "transferFrom": {
     "message": "Ülekandmine asukohast"
