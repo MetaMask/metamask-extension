@@ -17,10 +17,7 @@ import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
   doesAddressRequireLedgerHidConnection,
-  getCurrentCurrency,
-  getPreferences,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -28,7 +25,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
-  getNativeCurrency,
   getProviderConfig,
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
@@ -36,7 +32,6 @@ import {
   getAccountByAddress,
   getURLHostName,
   sanitizeMessage,
-  getNetworkNameFromProviderType,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
@@ -45,15 +40,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRejectTransactionModalHooks } from '../../../hooks/useRejectTransactionModalHooks';
 
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
-import NetworkAccountBalanceHeader from '../network-account-balance-header';
+import SignatureRequestHeader from '../signature-request-header/signature-request-header';
 import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -107,26 +98,11 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
 
   // not forwarded to component
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
-  const { address, balance, name } =
-    getAccountByAddress(allAccounts, from) || {};
-
-  const conversionRateSelected = useSelector(conversionRateSelector);
+  const { address } = getAccountByAddress(allAccounts, from) || {};
   const hardwareWalletRequiresConnection = useSelector((state) =>
     doesAddressRequireLedgerHidConnection(state, from),
   );
-  const currentCurrency = useSelector(getCurrentCurrency);
-  const nativeCurrency = useSelector(getNativeCurrency);
-  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
-  const conversionRate = useNativeCurrencyAsPrimaryCurrency
-    ? null
-    : conversionRateSelected;
-
-  const {
-    chainId,
-    type: providerName,
-    rpcPrefs,
-    nickname: providerNickName,
-  } = useSelector(getProviderConfig);
+  const { chainId, rpcPrefs } = useSelector(getProviderConfig);
   const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
@@ -152,24 +128,6 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   };
-
-  const balanceInBaseAsset = conversionRate
-    ? formatCurrency(
-        getValueFromWeiHex({
-          value: balance,
-          fromCurrency: nativeCurrency,
-          toCurrency: currentCurrency,
-          conversionRate,
-          numberOfDecimals: 6,
-          toDenomination: EtherDenomination.ETH,
-        }),
-        currentCurrency,
-      )
-    : new Numeric(balance, 16, EtherDenomination.WEI)
-        .toDenomination(EtherDenomination.ETH)
-        .round(6)
-        .toBase(10)
-        .toString();
 
   const onSign = (event) => {
     sign(event);
@@ -207,12 +165,6 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
 
   const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
 
-  const networkName = getNetworkNameFromProviderType(providerName);
-  const currentNetwork =
-    networkName === ''
-      ? providerNickName || t('unknownNetwork')
-      : t(networkName);
-
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   useEffect(() => {
     if (txData.custodyId) {
@@ -245,15 +197,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
         className="request-signature__account"
         data-testid="request-signature-account"
       >
-        <NetworkAccountBalanceHeader
-          networkName={currentNetwork}
-          accountName={name}
-          accountBalance={balanceInBaseAsset}
-          tokenName={
-            conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-          }
-          accountAddress={address}
-        />
+        <SignatureRequestHeader txData={txData} />
       </div>
       <div className="signature-request-content">
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
