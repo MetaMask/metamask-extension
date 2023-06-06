@@ -359,9 +359,6 @@
     "message": "Voulez-vous lui accorder l’autorisation d’accéder et de transférer tous vos $1 ?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Approuver et installer"
-  },
   "approveButtonText": {
     "message": "Approuver"
   },
