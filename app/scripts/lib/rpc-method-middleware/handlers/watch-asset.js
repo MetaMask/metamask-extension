@@ -1,4 +1,3 @@
-import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
 const watchAsset = {
@@ -37,14 +36,10 @@ async function watchAssetHandler(
 ) {
   try {
     const { options: asset, type } = req.params;
-    const handleWatchAssetResult = await handleWatchAssetRequest(asset, type);
-    await handleWatchAssetResult.result;
+    await handleWatchAssetRequest(asset, type);
     res.result = true;
     return end();
   } catch (error) {
-    if (error.message === 'User rejected to watch the asset.') {
-      return end(ethErrors.provider.userRejectedRequest());
-    }
     return end(error);
   }
 }

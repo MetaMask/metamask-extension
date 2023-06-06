@@ -72,10 +72,6 @@ export default class PreferencesController {
       ...opts.initState,
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    initState.useTokenDetection = Boolean(process.env.TOKEN_DETECTION_V2);
-    ///: END:ONLY_INCLUDE_IN
-
     this.network = opts.network;
     this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
     this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;

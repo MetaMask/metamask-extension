@@ -12,12 +12,13 @@ import {
   JustifyContent,
   TextVariant,
   TEXT_ALIGN,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
-import { Text } from '../../../../components/component-library';
+import { Text, ValidTag } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
@@ -125,8 +126,14 @@ export default function SnapInstall({
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapInstallRequestsPermission', [
-                <b key="1">{originMetadata?.hostname}</b>,
-                <b key="2">{snapName}</b>,
+                <Text
+                  as={ValidTag.Span}
+                  key="2"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {snapName}
+                </Text>,
               ])}
             </Text>
             <SnapPermissionsList
@@ -165,7 +172,7 @@ export default function SnapInstall({
           onSubmit={handleSubmit}
           submitText={t(
             // eslint-disable-next-line no-nested-ternary
-            hasError ? 'ok' : hasPermissions ? 'approveAndInstall' : 'install',
+            hasError ? 'ok' : 'install',
           )}
         />
       </Box>
