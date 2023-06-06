@@ -9,7 +9,10 @@
 
   &__scroll-button {
     position: absolute;
-    right: 160px;
+    margin-left: auto;
+    margin-right: auto;
+    right: 0;
+    left: 0;
     bottom: 90px;
   }
 
