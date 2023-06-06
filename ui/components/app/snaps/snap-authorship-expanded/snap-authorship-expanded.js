@@ -34,7 +34,7 @@ import { disableSnap, enableSnap } from '../../../../store/actions';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import SnapVersion from '../snap-version/snap-version';
 
-const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
+const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -55,7 +55,6 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
 
   const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
-  // Expanded data
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length
     ? versionHistory[versionHistory.length - 1]
@@ -72,28 +71,28 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
 
   return (
     <Box
-      className={classnames('snaps-authorship', className)}
+      className={classnames('snaps-authorship-expanded', className)}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
       width={BLOCK_SIZES.FULL}
-      borderRadius={expanded ? BorderRadius.LG : BorderRadius.pill}
+      borderRadius={BorderRadius.LG}
     >
       <Box
         alignItems={AlignItems.center}
         display={DISPLAY.FLEX}
         width={BLOCK_SIZES.FULL}
-        paddingLeft={expanded ? 4 : 2}
-        paddingRight={expanded ? 4 : 2}
-        paddingTop={expanded ? 3 : 1}
-        paddingBottom={expanded ? 3 : 1}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={3}
+        paddingBottom={3}
       >
         <Box>
           <SnapAvatar snapId={snapId} />
         </Box>
         <Box
-          marginLeft={2}
-          marginRight={expanded ? 0 : 2}
+          marginLeft={4}
+          marginRight={0}
           display={DISPLAY.FLEX}
           flexDirection={FLEX_DIRECTION.COLUMN}
           style={{ overflow: 'hidden' }}
@@ -107,13 +106,7 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
             {packageName}
           </Text>
         </Box>
-        {!expanded && (
-          <Box marginLeft="auto">
-            <SnapVersion version={subjectMetadata?.version} url={url} />
-          </Box>
-        )}
       </Box>
-      {expanded && (
         <Box flexDirection={FLEX_DIRECTION.COLUMN} width={BLOCK_SIZES.FULL}>
           <Box
             flexDirection={FLEX_DIRECTION.ROW}
@@ -175,12 +168,11 @@ const SnapAuthorship = ({ snapId, className, expanded = false, snap }) => {
             </Box>
           </Box>
         </Box>
-      )}
     </Box>
   );
 };
 
-SnapAuthorship.propTypes = {
+SnapAuthorshipExpanded.propTypes = {
   /**
    * The id of the snap
    */
@@ -190,13 +182,9 @@ SnapAuthorship.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * If the authorship component should be expanded
-   */
-  expanded: PropTypes.bool,
-  /**
-   * The snap object. Can be undefined if the component is not expanded
+   * The snap object.
    */
   snap: PropTypes.object,
 };
 
-export default SnapAuthorship;
+export default SnapAuthorshipExpanded;
