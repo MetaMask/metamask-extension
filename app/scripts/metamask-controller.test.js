@@ -1,6 +1,5 @@
 import { cloneDeep, last, noop } from 'lodash';
 import nock from 'nock';
-import proxyquire from 'proxyquire';
 import { obj as createThoughStream } from 'through2';
 import EthQuery from 'eth-query';
 import browser from 'webextension-polyfill';
@@ -30,10 +29,6 @@ import PreferencesController from './controllers/preferences';
 const Ganache = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
-
-const mnemonicToUint8Array = (mnemonic) => {
-  return Uint8Array.from(Object.values(mnemonic));
-};
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
@@ -70,6 +65,8 @@ jest.mock('@metamask/rpc-methods', () => {
   // eslint-disable-next-line node/global-require
   return require('@metamask/rpc-methods-flask');
 });
+
+const MetaMaskController = require('./metamask-controller').default;
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';

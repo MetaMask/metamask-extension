@@ -1,4 +1,7 @@
-import { browserPolyfillMock, metamaskControllerArgumentConstructor } from "../../test/helpers/metamask-controller";
+import {
+  browserPolyfillMock,
+  metamaskControllerArgumentConstructor,
+} from '../../test/helpers/metamask-controller';
 
 let loggerMiddlewareMock;
 
