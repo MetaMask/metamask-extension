@@ -320,7 +320,7 @@ export default class PermissionConnect extends Component {
 
     return (
       <div className="permissions-connect">
-        {hideTopBar ? null : this.renderTopBar()}
+        {!hideTopBar && this.renderTopBar()}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (

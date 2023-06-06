@@ -98,7 +98,7 @@ export default function SnapUpdate({
         onScroll={onScroll}
         className="snap-update__content"
         style={{
-          overflowY: 'scroll',
+          overflowY: 'auto',
           flex: !isLoading && '1',
         }}
       >

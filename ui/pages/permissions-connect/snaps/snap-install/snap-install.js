@@ -91,7 +91,7 @@ export default function SnapInstall({
         onScroll={onScroll}
         className="snap-install__content"
         style={{
-          overflowY: 'scroll',
+          overflowY: 'auto',
           flex: !isLoading && '1',
         }}
       >

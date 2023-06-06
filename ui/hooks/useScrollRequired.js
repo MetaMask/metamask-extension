@@ -1,7 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 
-export const useScrollRequired = (deps = []) => {
+/**
+ * Utility hook for requiring users to scroll through content.
+ * Returns an object containing state and helpers to accomplish this.
+ *
+ * The hook expects both the `ref` and the `onScroll` handler to be passed to the scrolling element.
+ *
+ * @param dependencies - Any optional hook dependencies for updating the scroll state.
+ * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
+ */
+export const useScrollRequired = (dependencies = []) => {
   const ref = useRef();
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
@@ -17,7 +26,7 @@ export const useScrollRequired = (deps = []) => {
     setIsScrolledToBottom(isScrolledToBottom);
   };
 
-  useEffect(update, [ref, ...deps]);
+  useEffect(update, [ref, ...dependencies]);
 
   const scrollToBottom = () => {
     if (ref.current) {
