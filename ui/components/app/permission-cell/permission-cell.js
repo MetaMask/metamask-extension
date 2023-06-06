@@ -95,9 +95,8 @@ const PermissionCell = ({
           {title}
         </Text>
         <Text
-          size={Size.XS}
           className="permission-cell__status"
-          variant={TextVariant.bodyXs}
+          variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
         >
           {!revoked &&
