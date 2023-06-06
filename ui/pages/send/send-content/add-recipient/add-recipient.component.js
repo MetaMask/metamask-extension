@@ -7,6 +7,12 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
+import { Text } from '../../../../components/component-library';
+import Box from '../../../../components/ui/box';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -121,14 +127,14 @@ export default class AddRecipient extends Component {
     }
 
     return (
-      <div className="send__select-recipient-wrapper">
+      <Box className="send__select-recipient-wrapper">
         {ownedAccounts &&
           ownedAccounts.length > 1 &&
           !userInput &&
           this.renderTransfer()}
         {this.renderDialogs()}
         {content || this.renderMain()}
-      </div>
+      </Box>
     );
   }
 
@@ -155,9 +161,9 @@ export default class AddRecipient extends Component {
   }
 
   renderTransfer() {
+    const { t } = this.context;
     let { ownedAccounts } = this.props;
     const { userInput } = this.props;
-    const { t } = this.context;
 
     if (userInput) {
       ownedAccounts = ownedAccounts.filter(
@@ -169,8 +175,15 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper__list">
+        <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('myAccounts')}
+          </Text>
+        </Box>
         <RecipientGroup
-          label={t('myAccounts')}
           items={ownedAccounts}
           onSelect={(address, name) =>
             this.selectRecipient(address, name, 'my accounts')
@@ -181,10 +194,19 @@ export default class AddRecipient extends Component {
   }
 
   renderMain() {
+    const { t } = this.context;
     const { addressBook } = this.props;
-
+    console.log(addressBook, 'ggg');
     return (
       <div className="send__select-recipient-wrapper__list">
+        <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            color={TextColor.textAlternative}
+          >
+            {t('contacts')}
+          </Text>
+        </Box>
         <ContactList
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}

@@ -110,7 +110,6 @@ export default class ContactListTab extends Component {
           'address-book-add-button__button--hidden':
             viewingContact || editingContact,
         })}
-        marginTop
         onClick={() => {
           history.push(CONTACT_ADD_ROUTE);
         }}
