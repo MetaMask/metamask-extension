@@ -3,7 +3,6 @@ import AccountMismatchWarning from './account-mismatch-warning.component';
 
 export default {
   title: 'Components/UI/AccountMismatchWarning',
-
   component: AccountMismatchWarning,
   argTypes: {
     address: {
