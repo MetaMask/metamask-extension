@@ -120,7 +120,7 @@ describe('Address Book', function () {
 
         const recipientUsername = await driver.findElement({
           text: 'Test Name Edit',
-          tag: 'div',
+          tag: 'p',
         });
         assert.equal(
           await recipientUsername.getText(),
