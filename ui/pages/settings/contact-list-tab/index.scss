@@ -125,6 +125,7 @@
         color: var(--color-text-alternative);
         margin-top: 0.75rem;
       }
+
       &__label--capitalized {
         text-transform: capitalize;
       }
@@ -213,7 +214,6 @@
 
 .address-book-add-button {
   &__button {
-
     @include screen-sm-max {
       &--hidden {
         display: none;
