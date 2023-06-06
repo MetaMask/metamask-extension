@@ -38,7 +38,7 @@ describe('ViewSnap', () => {
 
     // Snap name & Snap authorship component
     expect(getByText('BIP-44 Test Snap')).toBeDefined();
-    expect(container.getElementsByClassName('snaps-authorship')?.length).toBe(
+    expect(container.getElementsByClassName('snaps-authorship-expanded')?.length).toBe(
       1,
     );
     // Snap description
