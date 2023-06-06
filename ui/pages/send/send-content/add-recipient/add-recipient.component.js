@@ -6,9 +6,7 @@ import Dialog from '../../../../components/ui/dialog';
 import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
-import Button from '../../../../components/ui/button';
 import Confusable from '../../../../components/ui/confusable';
-import { Icon, IconName } from '../../../../components/component-library';
 
 export default class AddRecipient extends Component {
   static propTypes = {
@@ -23,9 +21,6 @@ export default class AddRecipient extends Component {
     contacts: PropTypes.array,
     nonContacts: PropTypes.array,
     addHistoryEntry: PropTypes.func,
-    useMyAccountsForRecipientSearch: PropTypes.func,
-    useContactListForRecipientSearch: PropTypes.func,
-    isUsingMyAccountsForRecipientSearch: PropTypes.bool,
     recipient: PropTypes.shape({
       address: PropTypes.string,
       nickname: PropTypes.string,
@@ -106,7 +101,7 @@ export default class AddRecipient extends Component {
       recipient,
       userInput,
       addressBookEntryName,
-      isUsingMyAccountsForRecipientSearch,
+      ownedAccounts = [],
     } = this.props;
 
     let content;
@@ -123,12 +118,14 @@ export default class AddRecipient extends Component {
         addressBookEntryName || userInput,
         'ENS resolution',
       );
-    } else if (isUsingMyAccountsForRecipientSearch) {
-      content = this.renderTransfer();
     }
 
     return (
       <div className="send__select-recipient-wrapper">
+        {ownedAccounts &&
+          ownedAccounts.length > 1 &&
+          !userInput &&
+          this.renderTransfer()}
         {this.renderDialogs()}
         {content || this.renderMain()}
       </div>
@@ -159,14 +156,10 @@ export default class AddRecipient extends Component {
 
   renderTransfer() {
     let { ownedAccounts } = this.props;
-    const {
-      userInput,
-      useContactListForRecipientSearch,
-      isUsingMyAccountsForRecipientSearch,
-    } = this.props;
+    const { userInput } = this.props;
     const { t } = this.context;
 
-    if (isUsingMyAccountsForRecipientSearch && userInput) {
+    if (userInput) {
       ownedAccounts = ownedAccounts.filter(
         (item) =>
           item.name.toLowerCase().indexOf(userInput.toLowerCase()) > -1 ||
@@ -176,14 +169,6 @@ export default class AddRecipient extends Component {
 
     return (
       <div className="send__select-recipient-wrapper__list">
-        <Button
-          type="link"
-          className="send__select-recipient-wrapper__list__link"
-          onClick={useContactListForRecipientSearch}
-        >
-          <Icon name={IconName.ArrowLeft} />
-          {t('backToAll')}
-        </Button>
         <RecipientGroup
           label={t('myAccounts')}
           items={ownedAccounts}
@@ -196,13 +181,7 @@ export default class AddRecipient extends Component {
   }
 
   renderMain() {
-    const { t } = this.context;
-    const {
-      userInput,
-      ownedAccounts = [],
-      addressBook,
-      useMyAccountsForRecipientSearch,
-    } = this.props;
+    const { addressBook } = this.props;
 
     return (
       <div className="send__select-recipient-wrapper__list">
@@ -217,17 +196,7 @@ export default class AddRecipient extends Component {
               `${name ? 'contact' : 'recent'} list`,
             );
           }}
-        >
-          {ownedAccounts && ownedAccounts.length > 1 && !userInput && (
-            <Button
-              type="link"
-              className="send__select-recipient-wrapper__list__link"
-              onClick={useMyAccountsForRecipientSearch}
-            >
-              {t('transferBetweenAccounts')}
-            </Button>
-          )}
-        </ContactList>
+        />
       </div>
     );
   }
