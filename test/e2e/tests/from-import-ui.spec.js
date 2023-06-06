@@ -200,10 +200,10 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
-        // enter private key',
-        await driver.delay(regularDelayMs);
+        // enter private key
+        await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey1);
-        await driver.delay(regularDelayMs);
+        await driver.findClickableElement({ text: 'Import', tag: 'button' });
         await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should show the correct account name
@@ -229,7 +229,9 @@ describe('MetaMask Import UI', function () {
         // choose Create account from the account menu
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         // enter private key
+        await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey2);
+        await driver.findClickableElement({ text: 'Import', tag: 'button' });
         await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should see new account in account menu
@@ -354,8 +356,10 @@ describe('MetaMask Import UI', function () {
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
-        // enter private key',
+        // enter private key
+        await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey);
+        await driver.findClickableElement({ text: 'Import', tag: 'button' });
         await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // error should occur
