@@ -46,38 +46,90 @@ export default function SnapResult({
   const isLoading = requestState.loading;
   const snapName = getSnapName(targetSubjectMetadata.origin);
 
-  // Success screen messages
-  let successScreenTitle = t('snapResultSuccess');
-  const successScreenDescription = t('snapResultSuccessDescription', [
-    <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
-      {snapName}
-    </Text>,
-  ]);
+  function getSuccessScreen(requestType, snapNameToRender) {
+    let successScreenTitle;
+    switch (requestType) {
+      case 'wallet_installSnap':
+        successScreenTitle = t('snapInstallSuccess');
+        break;
+      case 'wallet_updateSnap':
+        successScreenTitle = t('snapUpdateSuccess');
+        break;
+      default:
+        successScreenTitle = t('snapResultSuccess');
+    }
 
-  if (requestState.type === 'wallet_installSnap') {
-    successScreenTitle = t('snapInstallSuccess');
-  } else if (requestState.type === 'wallet_updateSnap') {
-    successScreenTitle = t('snapUpdateSuccess');
+    return (
+      <Box
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        height={BLOCK_SIZES.FULL}
+        paddingTop={2}
+        paddingBottom={2}
+      >
+        <AvatarIcon
+          className="snap-result__header__icon"
+          iconName={IconName.Confirmation}
+          size={IconSize.Xl}
+          iconProps={{
+            size: IconSize.Xl,
+          }}
+          color={IconColor.successDefault}
+          backgroundColor={BackgroundColor.successMuted}
+        />
+        <Text
+          fontWeight={FONT_WEIGHT.BOLD}
+          variant={TextVariant.headingLg}
+          paddingBottom={2}
+          marginTop={4}
+        >
+          {successScreenTitle}
+        </Text>
+        <Text textAlign={TextAlign.Center}>
+          {t('snapResultSuccessDescription', [
+            <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+              {snapNameToRender}
+            </Text>,
+          ])}
+        </Text>
+      </Box>
+    );
   }
 
-  // Failed screen messages
-  let failedScreenTitle = t('snapResultError');
-  let failedScreenDescription;
+  function getFailedScreen(requestType, snapNameToRender) {
+    let failedScreenTitle;
+    let failedScreenDescription;
 
-  if (requestState.type === 'wallet_installSnap') {
-    failedScreenTitle = t('snapInstallationErrorTitle');
-    failedScreenDescription = t('snapInstallationErrorDescription', [
-      <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
-        {snapName}
-      </Text>,
-    ]);
-  } else if (requestState.type === 'wallet_updateSnap') {
-    failedScreenTitle = t('snapUpdateErrorTitle');
-    failedScreenDescription = t('snapUpdateErrorDescription', [
-      <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
-        {snapName}
-      </Text>,
-    ]);
+    switch (requestType) {
+      case 'wallet_installSnap':
+        failedScreenTitle = t('snapInstallationErrorTitle');
+        failedScreenDescription = t('snapInstallationErrorDescription', [
+          <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+            {snapNameToRender}
+          </Text>,
+        ]);
+        break;
+      case 'wallet_updateSnap':
+        failedScreenTitle = t('snapUpdateErrorTitle');
+        failedScreenDescription = t('snapUpdateErrorDescription', [
+          <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+            {snapNameToRender}
+          </Text>,
+        ]);
+        break;
+      default:
+        failedScreenTitle = t('snapResultError');
+    }
+
+    return (
+      <InstallError
+        error={requestState.error}
+        title={failedScreenTitle}
+        description={failedScreenDescription}
+        iconName={IconName.Warning}
+      />
+    );
   }
 
   return (
@@ -106,44 +158,10 @@ export default function SnapResult({
             <PulseLoader />
           </Box>
         )}
-        {!isLoading && !hasError && (
-          <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            height={BLOCK_SIZES.FULL}
-            paddingTop={2}
-            paddingBottom={2}
-          >
-            <AvatarIcon
-              className="snap-result__header__icon"
-              iconName={IconName.Confirmation}
-              size={IconSize.Xl}
-              iconProps={{
-                size: IconSize.Xl,
-              }}
-              color={IconColor.successDefault}
-              backgroundColor={BackgroundColor.successMuted}
-            />
-            <Text
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TextVariant.headingLg}
-              paddingBottom={2}
-              marginTop={4}
-            >
-              {successScreenTitle}
-            </Text>
-            <Text textAlign={TextAlign.Center}>{successScreenDescription}</Text>
-          </Box>
-        )}
-        {hasError && (
-          <InstallError
-            error={requestState.error}
-            title={failedScreenTitle}
-            description={failedScreenDescription}
-            iconName={IconName.Warning}
-          />
-        )}
+        {!isLoading &&
+          !hasError &&
+          getSuccessScreen(requestState.type, snapName)}
+        {hasError && getFailedScreen(requestState.type, snapName)}
       </Box>
       <Box
         className="snap-result__footer"
