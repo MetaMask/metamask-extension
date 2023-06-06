@@ -171,28 +171,13 @@
         "console.warn": true
       },
       "packages": {
+        "@ethereumjs/tx>@chainsafe/ssz": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz": true,
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": true,
-        "browserify>buffer": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": {
-      "globals": {
-        "WeakRef": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/as-sha256": true,
-        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": {
@@ -201,15 +186,7 @@
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
-        "@metamask/key-tree>@noble/hashes": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@metamask/key-tree>@noble/hashes": true
       }
     },
@@ -237,13 +214,15 @@
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
-        "TextEncoder": true,
-        "crypto": true
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethersproject/abi": {
@@ -1692,14 +1671,35 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
         "deep-freeze-strict": true,
         "eth-rpc-errors": true,
         "immer": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -4467,34 +4467,6 @@
       },
       "packages": {
         "react": true
-      }
-    },
-    "react-transition-group": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-transition-group>chain-function": true,
-        "react-transition-group>dom-helpers": true,
-        "react-transition-group>warning": true
-      }
-    },
-    "react-transition-group>dom-helpers": {
-      "globals": {
-        "document": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
-    "react-transition-group>warning": {
-      "globals": {
-        "console": true
       }
     },
     "readable-stream": {
