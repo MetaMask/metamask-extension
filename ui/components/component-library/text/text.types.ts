@@ -23,6 +23,14 @@ export enum TextDirection {
  */
 export const InvisibleCharacter = '\u200B';
 
+/**
+ * @deprecated ValidTag enum is deprecated in favour of a union of strings.
+ * To change the root html element tag of the Text component, use the `as` prop and string value.
+ * e.g. `<Text as="h1">Hello World</Text>`
+ *
+ * Contribute to replacing the enum with a union of string by submitting a PR
+ */
+
 export enum ValidTag {
   Dd = 'dd',
   Div = 'div',
