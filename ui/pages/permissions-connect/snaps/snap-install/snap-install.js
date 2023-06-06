@@ -23,9 +23,8 @@ import {
   AvatarIcon,
   IconName,
   Text,
-  ValidTag
+  ValidTag,
 } from '../../../../components/component-library';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
@@ -40,7 +39,6 @@ export default function SnapInstall({
   const t = useI18nContext();
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
-  const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);

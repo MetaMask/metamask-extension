@@ -38,9 +38,9 @@ describe('ViewSnap', () => {
 
     // Snap name & Snap authorship component
     expect(getByText('BIP-44 Test Snap')).toBeDefined();
-    expect(container.getElementsByClassName('snaps-authorship-expanded')?.length).toBe(
-      1,
-    );
+    expect(
+      container.getElementsByClassName('snaps-authorship-expanded')?.length,
+    ).toBe(1);
     // Snap description
     expect(
       getByText('An example Snap that signs messages using BLS.'),
