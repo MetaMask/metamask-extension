@@ -4,6 +4,7 @@ const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
+const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
@@ -11,7 +12,6 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
-const { tEn } = require('../../test/lib/i18n-helpers');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
