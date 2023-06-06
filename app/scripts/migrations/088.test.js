@@ -1,10 +1,10 @@
-import { migrate, version } from './087';
+import { migrate, version } from './088';
 
-describe('migration #87', () => {
+describe('migration #88', () => {
   it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
-        version: 86,
+        version: 87,
       },
       data: {},
     };
@@ -27,7 +27,7 @@ describe('migration #87', () => {
     };
     const oldStorage = {
       meta: {
-        version: 86,
+        version: 87,
       },
       data: oldData,
     };
@@ -50,7 +50,7 @@ describe('migration #87', () => {
     };
     const oldStorage = {
       meta: {
-        version: 86,
+        version: 87,
       },
       data: oldData,
     };

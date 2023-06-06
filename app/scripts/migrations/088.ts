@@ -2,7 +2,7 @@ import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
-export const version = 87;
+export const version = 88;
 
 /**
  * Sets the default ledger transport method of Ledger U2F or Ledger Live on chrome to Webhid.
