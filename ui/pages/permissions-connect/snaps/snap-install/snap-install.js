@@ -125,7 +125,7 @@ export default function SnapInstall({
               paddingRight={4}
               textAlign={TEXT_ALIGN.CENTER}
             >
-              {t('snapInstallRequestsPermission', [
+              {t('snapInstallRequest', [
                 <Text
                   as={ValidTag.Span}
                   key="2"

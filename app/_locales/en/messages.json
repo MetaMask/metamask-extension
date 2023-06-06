@@ -3777,10 +3777,6 @@
     "message": "Install snap"
   },
   "snapInstallRequest": {
-    "message": "$1 wants to install $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
-  },
-  "snapInstallRequestsPermission": {
     "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
     "description": "$1 is the snap name."
   },
