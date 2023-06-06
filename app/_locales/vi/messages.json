@@ -359,9 +359,6 @@
     "message": "Cấp quyền truy cập vào và chuyển tất cả $1 của bạn?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Chấp nhận và cài đặt"
-  },
   "approveButtonText": {
     "message": "Phê duyệt"
   },

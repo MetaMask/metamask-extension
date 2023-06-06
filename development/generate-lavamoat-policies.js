@@ -6,11 +6,6 @@ const { loadBuildTypesConfig } = require('./lib/build-type');
 
 const buildTypesConfig = loadBuildTypesConfig();
 
-const stableBuildTypes = Object.keys(buildTypesConfig.buildTypes).filter(
-  // Skip generating policy for MMI until that build has stabilized
-  (buildType) => buildType !== 'mmi',
-);
-
 start().catch((error) => {
   console.error('Policy generation failed.', error);
   process.exitCode = 1;
@@ -27,7 +22,7 @@ async function start() {
         .option('build-types', {
           alias: ['t'],
           choices: Object.keys(buildTypesConfig.buildTypes),
-          default: stableBuildTypes,
+          default: Object.keys(buildTypesConfig.buildTypes),
           demandOption: true,
           description: 'The build type(s) to generate policy files for.',
         })

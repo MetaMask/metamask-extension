@@ -25,6 +25,8 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import LedgerInstructionField from '../ledger-instruction-field';
+
+import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -33,6 +35,8 @@ export default function SignatureRequestSIWE({
   cancelPersonalMessage,
   signPersonalMessage,
 }) {
+  const t = useContext(I18nContext);
+
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isHdWallet = useSelector(isHardwareWallet);
@@ -49,8 +53,6 @@ export default function SignatureRequestSIWE({
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
-
-  const t = useContext(I18nContext);
 
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
@@ -93,6 +95,7 @@ export default function SignatureRequestSIWE({
 
   return (
     <div className="signature-request-siwe">
+      <SignatureRequestHeader txData={txData} />
       <Header
         fromAccount={fromAccount}
         domain={origin}
