@@ -174,7 +174,7 @@ export default class AddRecipient extends Component {
     }
 
     return (
-      <div className="send__select-recipient-wrapper__list">
+      <>
         <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
           <Text
             variant={TextVariant.bodyLgMedium}
@@ -183,13 +183,15 @@ export default class AddRecipient extends Component {
             {t('myAccounts')}
           </Text>
         </Box>
-        <RecipientGroup
-          items={ownedAccounts}
-          onSelect={(address, name) =>
-            this.selectRecipient(address, name, 'my accounts')
-          }
-        />
-      </div>
+        <div className="send__select-recipient-wrapper__list">
+          <RecipientGroup
+            items={ownedAccounts}
+            onSelect={(address, name) =>
+              this.selectRecipient(address, name, 'my accounts')
+            }
+          />
+        </div>
+      </>
     );
   }
 
