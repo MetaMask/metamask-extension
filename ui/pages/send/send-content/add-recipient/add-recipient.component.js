@@ -198,7 +198,6 @@ export default class AddRecipient extends Component {
   renderMain() {
     const { t } = this.context;
     const { addressBook } = this.props;
-    console.log(addressBook, 'ggg');
     return (
       <div className="send__select-recipient-wrapper__list">
         <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
