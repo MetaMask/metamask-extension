@@ -50,6 +50,7 @@ export default function BottomButtons({
         }}
         disabled={isPrimaryDisabled}
         size={BUTTON_SECONDARY_SIZES.LG}
+        data-testid="import-account-confirm-button"
         block
       >
         {t('import')}

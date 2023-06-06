@@ -39,13 +39,13 @@ export default function NewAccountImportForm({ onActionComplete }) {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
-      const { selectedAddress } = dispatch(
+      const { selectedAddress } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
       if (selectedAddress) {
         trackImportEvent(strategy, true);
         dispatch(actions.hideWarning());
-        onActionComplete();
+        onActionComplete(true);
       } else {
         dispatch(actions.displayWarning(t('importAccountError')));
         return false;
@@ -115,26 +115,6 @@ export default function NewAccountImportForm({ onActionComplete }) {
     }
   }
 
-  function PrivateKeyOrJson() {
-    switch (type) {
-      case menuItems[0]:
-        return (
-          <PrivateKeyImportView
-            importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
-          />
-        );
-      case menuItems[1]:
-      default:
-        return (
-          <JsonImportView
-            importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
-          />
-        );
-    }
-  }
-
   return (
     <>
       <Text variant={TextVariant.bodySm} marginTop={2}>
@@ -164,7 +144,17 @@ export default function NewAccountImportForm({ onActionComplete }) {
             }}
           />
         </Label>
-        <PrivateKeyOrJson />
+        {type === menuItems[0] ? (
+          <PrivateKeyImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        ) : (
+          <JsonImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        )}
       </Box>
     </>
   );

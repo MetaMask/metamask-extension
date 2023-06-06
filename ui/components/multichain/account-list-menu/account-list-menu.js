@@ -209,6 +209,7 @@ export const AccountListMenu = ({ onClose }) => {
                   });
                   setActionMode('add');
                 }}
+                data-testid="multichain-account-menu-add-account"
               >
                 {t('addAccount')}
               </ButtonLink>
