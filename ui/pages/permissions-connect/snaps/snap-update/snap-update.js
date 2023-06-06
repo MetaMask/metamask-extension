@@ -170,7 +170,7 @@ export default function SnapUpdate({
             {isScrollable && !isScrolledToBottom ? (
               <AvatarIcon
                 className="snap-install__scroll-button"
-                data-testid="snap-install-scroll"
+                data-testid="snap-update-scroll"
                 iconName={IconName.Arrow2Down}
                 backgroundColor={BackgroundColor.infoDefault}
                 color={BackgroundColor.backgroundDefault}
