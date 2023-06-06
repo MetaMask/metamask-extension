@@ -11,6 +11,7 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { tEn } = require('../../test/lib/i18n-helpers');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -383,6 +384,56 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await driver.navigate();
+  await driver.fill('#password', 'correct horse battery staple');
+  await driver.press('#password', driver.Key.ENTER);
+
+  // navigate settings to reveal SRP
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement({ text: 'Settings', tag: 'div' });
+  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
+  await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const completeSRPRevealQuiz = async (driver) => {
+  // start quiz
+  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
+
+  // tap correct answer 1
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 1
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+
+  // tap correct answer 2
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 2
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+};
+
+const tapAndHoldToRevealSRP = async (driver) => {
+  await driver.holdMouseDownOnElement(
+    {
+      text: tEn('holdToRevealSRP'),
+      tag: 'span',
+    },
+    2000,
+  );
+};
+
+const closeSRPReveal = async (driver) => {
+  await driver.clickElement({
+    text: tEn('close'),
+    tag: 'button',
+  });
+  await driver.findVisibleElement({
+    text: tEn('tokens'),
+    tag: 'button',
+  });
+};
+
 const DAPP_URL = 'http://127.0.0.1:8080';
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
@@ -546,6 +597,10 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  passwordUnlockOpenSRPRevealQuiz,
+  completeSRPRevealQuiz,
+  closeSRPReveal,
+  tapAndHoldToRevealSRP,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
