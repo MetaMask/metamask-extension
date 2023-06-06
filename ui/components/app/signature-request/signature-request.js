@@ -16,11 +16,11 @@ import PropTypes from 'prop-types';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
-  accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  accountsWithSendEtherInfoSelector,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -29,10 +29,10 @@ import {
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import {
-  getAccountByAddress,
   getURLHostName,
   sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getAccountByAddress,
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
