@@ -13,7 +13,7 @@ export default function ConfirmationFooter({
   loading,
   submitAlerts,
   actionsStyle,
-  style
+  style,
 }) {
   return (
     <div className="confirmation-footer" style={style}>

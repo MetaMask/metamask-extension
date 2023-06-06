@@ -107,67 +107,65 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Text>
         </Box>
       </Box>
-        <Box flexDirection={FLEX_DIRECTION.COLUMN} width={BLOCK_SIZES.FULL}>
-          <Box
-            flexDirection={FLEX_DIRECTION.ROW}
-            justifyContent={JustifyContent.spaceBetween}
-            paddingLeft={4}
-            paddingTop={4}
-            paddingBottom={4}
-            borderColor={BorderColor.borderDefault}
-            width={BLOCK_SIZES.FULL}
-            style={{
-              borderLeft: BorderStyle.none,
-              borderRight: BorderStyle.none,
-            }}
-          >
-            <Text variant={TextVariant.bodyMdBold}>{t('enableSnap')}</Text>
-            <Box style={{ maxWidth: '52px' }}>
-              <Tooltip interactive position="left" html={t('snapsToggle')}>
-                <ToggleButton value={snap?.enabled} onToggle={onToggle} />
-              </Tooltip>
-            </Box>
+      <Box flexDirection={FLEX_DIRECTION.COLUMN} width={BLOCK_SIZES.FULL}>
+        <Box
+          flexDirection={FLEX_DIRECTION.ROW}
+          justifyContent={JustifyContent.spaceBetween}
+          paddingLeft={4}
+          paddingTop={4}
+          paddingBottom={4}
+          borderColor={BorderColor.borderDefault}
+          width={BLOCK_SIZES.FULL}
+          style={{
+            borderLeft: BorderStyle.none,
+            borderRight: BorderStyle.none,
+          }}
+        >
+          <Text variant={TextVariant.bodyMdBold}>{t('enableSnap')}</Text>
+          <Box style={{ maxWidth: '52px' }}>
+            <Tooltip interactive position="left" html={t('snapsToggle')}>
+              <ToggleButton value={snap?.enabled} onToggle={onToggle} />
+            </Tooltip>
           </Box>
-          <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            padding={4}
-            width={BLOCK_SIZES.FULL}
-          >
-            {installOrigin && installInfo && (
-              <Box
-                flexDirection={FLEX_DIRECTION.ROW}
-                justifyContent={JustifyContent.spaceBetween}
-                width={BLOCK_SIZES.FULL}
-              >
-                <Text variant={TextVariant.bodyMdBold}>
-                  {t('installOrigin')}
-                </Text>
-                <Box
-                  flexDirection={FLEX_DIRECTION.COLUMN}
-                  alignItems={AlignItems.flexEnd}
-                >
-                  <ButtonLink href={installOrigin.origin} target="_blank">
-                    {installOrigin.host}
-                  </ButtonLink>
-                  <Text color={Color.textMuted}>
-                    {t('installedOn', [
-                      formatDate(installInfo.date, 'dd MMM yyyy'),
-                    ])}
-                  </Text>
-                </Box>
-              </Box>
-            )}
+        </Box>
+        <Box
+          flexDirection={FLEX_DIRECTION.COLUMN}
+          padding={4}
+          width={BLOCK_SIZES.FULL}
+        >
+          {installOrigin && installInfo && (
             <Box
               flexDirection={FLEX_DIRECTION.ROW}
               justifyContent={JustifyContent.spaceBetween}
-              alignItems={AlignItems.center}
-              marginTop={4}
+              width={BLOCK_SIZES.FULL}
             >
-              <Text variant={TextVariant.bodyMdBold}>{t('version')}</Text>
-              <SnapVersion version={snap?.version} url={url} />
+              <Text variant={TextVariant.bodyMdBold}>{t('installOrigin')}</Text>
+              <Box
+                flexDirection={FLEX_DIRECTION.COLUMN}
+                alignItems={AlignItems.flexEnd}
+              >
+                <ButtonLink href={installOrigin.origin} target="_blank">
+                  {installOrigin.host}
+                </ButtonLink>
+                <Text color={Color.textMuted}>
+                  {t('installedOn', [
+                    formatDate(installInfo.date, 'dd MMM yyyy'),
+                  ])}
+                </Text>
+              </Box>
             </Box>
+          )}
+          <Box
+            flexDirection={FLEX_DIRECTION.ROW}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            marginTop={4}
+          >
+            <Text variant={TextVariant.bodyMdBold}>{t('version')}</Text>
+            <SnapVersion version={snap?.version} url={url} />
           </Box>
         </Box>
+      </Box>
     </Box>
   );
 };
