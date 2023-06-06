@@ -15,13 +15,12 @@ import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
-  FontWeight,
   TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
@@ -287,8 +286,8 @@ export default class SignatureRequest extends PureComponent {
             this.props.selectedAccount.address === address ? null : (
               <Box
                 className="request-signature__mismatch-info"
-                display={DISPLAY.FLEX}
-                width={BLOCK_SIZES.FULL}
+                display={Display.Flex}
+                width={BlockSize.Full}
                 padding={4}
                 marginBottom={4}
                 backgroundColor={BackgroundColor.primaryMuted}
@@ -301,7 +300,6 @@ export default class SignatureRequest extends PureComponent {
                 <Text
                   variant={TextVariant.bodyXs}
                   color={TextColor.textDefault}
-                  as="h7"
                 >
                   {this.context.t('mismatchAccount', [
                     shortenAddress(this.props.selectedAccount.address),
@@ -326,7 +324,6 @@ export default class SignatureRequest extends PureComponent {
             className="signature-request__content__title"
             variant={TextVariant.headingMd}
             as="h3"
-            fontWeight={FontWeight.Bold}
             marginTop={4}
           >
             {this.context.t('sigRequest')}
