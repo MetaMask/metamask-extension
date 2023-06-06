@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
