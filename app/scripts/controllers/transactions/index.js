@@ -2787,7 +2787,7 @@ export default class TransactionController extends EventEmitter {
     } catch (error) {
       const transaction = this.txStateManager.getTransaction(txId);
 
-      if (transaction && transaction.status === TransactionStatus.unapproved) {
+      if (transaction && !this._isTransactionCompleted(transaction)) {
         if (error.code === errorCodes.provider.userRejectedRequest) {
           await this._cancelTransaction(txId, actionId);
         } else {
