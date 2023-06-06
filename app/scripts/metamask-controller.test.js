@@ -20,7 +20,8 @@ import {
   KeyringType,
 } from '../../shared/constants/keyring';
 import {
-  FIRST_TIME_CONTROLLER_STATE,
+  browserPolyfillMock,
+  metamaskControllerArgumentConstructor,
   MockEthContract,
 } from '../../test/helpers/metamask-controller';
 import { deferredPromise } from './lib/util';
@@ -30,23 +31,8 @@ const Ganache = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
-const browserPolyfillMock = {
-  runtime: {
-    id: 'fake-extension-id',
-    onInstalled: {
-      addListener: () => undefined,
-    },
-    onMessageExternal: {
-      addListener: () => undefined,
-    },
-    getPlatformInfo: async () => 'mac',
-  },
-  storage: {
-    session: {
-      set: jest.fn(),
-      get: jest.fn(),
-    },
-  },
+const mnemonicToUint8Array = (mnemonic) => {
+  return Uint8Array.from(Object.values(mnemonic));
 };
 
 let loggerMiddlewareMock;
@@ -124,7 +110,6 @@ const TEST_DAI_ADDRESS = '0xAAA75474e89094c44da98b954eedeac495271d0f';
 const TEST_USER_ADDRESS = '0xf0d172594caedee459b89ad44c94098e474571b6';
 
 const SEND_TRANSACTION_METHOD = 'eth_sendTransaction';
-const INFURA_PROJECT_ID = 'foo';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -156,32 +141,6 @@ const PROVIDER_RESULT_STUB = {
     '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
 };
 
-function metamaskControllerArgumentConstructor({
-  isFirstMetaMaskControllerSetup = false,
-} = {}) {
-  return {
-    showUserConfirmation: noop,
-    encryptor: {
-      encrypt(_, object) {
-        this.object = object;
-        return Promise.resolve('mock-encrypted');
-      },
-      decrypt() {
-        return Promise.resolve(this.object);
-      },
-    },
-    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
-    initLangCode: 'en_US',
-    platform: {
-      showTransactionNotification: () => undefined,
-      getVersion: () => 'foo',
-    },
-    browser: browserPolyfillMock,
-    infuraProjectId: INFURA_PROJECT_ID,
-    isFirstMetaMaskControllerSetup,
-  };
-}
-
 describe('MetaMaskController', function () {
   let metamaskController;
 
@@ -190,13 +149,6 @@ describe('MetaMaskController', function () {
     .mockImplementation();
 
   beforeAll(async function () {
-    globalThis.isFirstTimeProfileLoaded = true;
-    await ganacheServer.start();
-  });
-
-  beforeEach(function () {
-    jest.resetModules();
-
     nock('https://min-api.cryptocompare.com')
       .persist()
       .get(/.*/u)
@@ -223,6 +175,13 @@ describe('MetaMaskController', function () {
         ]),
       );
 
+    globalThis.isFirstTimeProfileLoaded = true;
+    await ganacheServer.start();
+  });
+
+  beforeEach(function () {
+    jest.resetModules();
+
     browser.runtime = {
       ...browser.runtime,
       sendMessage: jest.fn().mockRejectedValue(),
@@ -244,12 +203,11 @@ describe('MetaMaskController', function () {
   });
 
   afterEach(function () {
-    nock.cleanAll();
-    // jest.mockRestore();
     jest.clearAllMocks();
   });
 
   afterAll(async function () {
+    nock.cleanAll();
     await ganacheServer.quit();
   });
 
@@ -261,14 +219,14 @@ describe('MetaMaskController', function () {
   });
 
   describe('#importAccountWithStrategy', function () {
-    const importPrivkey =
+    const importPrivKey =
       '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
 
     beforeEach(async function () {
       const password = 'a-fake-password';
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
       await metamaskController.importAccountWithStrategy('Private Key', [
-        importPrivkey,
+        importPrivKey,
       ]);
     });
 
@@ -282,8 +240,9 @@ describe('MetaMaskController', function () {
         pubAddressHexArr[0],
       );
 
-      expect(privKeyHex).toStrictEqual(importPrivkey);
-      expect(pubAddressHexArr[0]).toStrictEqual(TEST_ADDRESS_4);
+      expect(privKeyHex).toStrictEqual(importPrivKey);
+      // eslint-disable-next-line jest/prefer-strict-equal
+      expect(pubAddressHexArr[0]).toEqual(TEST_ADDRESS_4);
     });
 
     it('adds 1 account', async function () {
@@ -698,7 +657,7 @@ describe('MetaMaskController', function () {
 
   describe('unlockHardwareWalletAccount', function () {
     const accountToUnlock = 10;
-    const windowOpenStub = jest.spyOn(window, 'open').mockReturnValue(noop);
+    const windowOpenStub = jest.spyOn(window, 'open').mockImplementation(noop);
     const addNewAccountStub = jest
       .spyOn(KeyringController.prototype, 'addNewAccount')
       .mockReturnValue({});

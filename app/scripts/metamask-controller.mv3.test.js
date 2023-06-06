@@ -1,26 +1,4 @@
-import { cloneDeep, noop } from 'lodash';
-import { FIRST_TIME_CONTROLLER_STATE } from '../../test/helpers/metamask-controller';
-
-const INFURA_PROJECT_ID = 'foo';
-
-const browserPolyfillMock = {
-  runtime: {
-    id: 'fake-extension-id',
-    onInstalled: {
-      addListener: () => undefined,
-    },
-    onMessageExternal: {
-      addListener: () => undefined,
-    },
-    getPlatformInfo: async () => 'mac',
-  },
-  storage: {
-    session: {
-      set: jest.fn(),
-      get: jest.fn(),
-    },
-  },
-};
+import { browserPolyfillMock, metamaskControllerArgumentConstructor } from "../../test/helpers/metamask-controller";
 
 let loggerMiddlewareMock;
 
@@ -35,32 +13,6 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   }
   next();
 };
-
-function metamaskControllerArgumentConstructor({
-  isFirstMetaMaskControllerSetup = false,
-} = {}) {
-  return {
-    showUserConfirmation: noop,
-    encryptor: {
-      encrypt(_, object) {
-        this.object = object;
-        return Promise.resolve('mock-encrypted');
-      },
-      decrypt() {
-        return Promise.resolve(this.object);
-      },
-    },
-    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
-    initLangCode: 'en_US',
-    platform: {
-      showTransactionNotification: () => undefined,
-      getVersion: () => 'foo',
-    },
-    browser: browserPolyfillMock,
-    infuraProjectId: INFURA_PROJECT_ID,
-    isFirstMetaMaskControllerSetup,
-  };
-}
 
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 jest.mock('../../shared/modules/mv3.utils', () => ({

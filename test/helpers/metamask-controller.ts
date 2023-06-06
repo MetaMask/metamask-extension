@@ -1,4 +1,7 @@
+import { cloneDeep, noop } from 'lodash';
+
 import { NETWORK_TYPES } from '../../shared/constants/network';
+import mockEncryptor from '../lib/mock-encryptor';
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -77,6 +80,7 @@ export const FIRST_TIME_CONTROLLER_STATE = {
 };
 
 const MOCK_TOKEN_BALANCE = '888';
+const INFURA_PROJECT_ID = 'foo';
 
 export const MockEthContract = () => () => {
   return {
@@ -87,3 +91,40 @@ export const MockEthContract = () => () => {
     },
   };
 };
+
+export const browserPolyfillMock = {
+  runtime: {
+    id: 'fake-extension-id',
+    onInstalled: {
+      addListener: () => undefined,
+    },
+    onMessageExternal: {
+      addListener: () => undefined,
+    },
+    getPlatformInfo: async () => 'mac',
+  },
+  storage: {
+    session: {
+      set: jest.fn(),
+      get: jest.fn(),
+    },
+  },
+};
+
+export function metamaskControllerArgumentConstructor({
+  isFirstMetaMaskControllerSetup = false,
+} = {}) {
+  return {
+    showUserConfirmation: noop,
+    encryptor: mockEncryptor,
+    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
+    initLangCode: 'en_US',
+    platform: {
+      showTransactionNotification: () => undefined,
+      getVersion: () => 'foo',
+    },
+    browser: browserPolyfillMock,
+    infuraProjectId: INFURA_PROJECT_ID,
+    isFirstMetaMaskControllerSetup,
+  };
+}

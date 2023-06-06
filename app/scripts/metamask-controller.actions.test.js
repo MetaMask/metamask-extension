@@ -43,27 +43,18 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
-// Temporarily replace the snaps packages with the Flask versions.
-const proxyPermissions = proxyquire('./controllers/permissions', {
-  './snaps/snap-permissions': proxyquire(
-    './controllers/permissions/snaps/snap-permissions',
-    {
-      // eslint-disable-next-line node/global-require
-      '@metamask/snaps-controllers': require('@metamask/snaps-controllers-flask'),
-      // eslint-disable-next-line node/global-require
-      '@metamask/rpc-methods': require('@metamask/rpc-methods-flask'),
-    },
-  ),
+jest.mock('@metamask/snaps-controllers', () => {
+  // eslint-disable-next-line node/global-require
+  return require('@metamask/snaps-controllers-flask');
+});
+
+jest.mock('@metamask/rpc-methods', () => {
+  // eslint-disable-next-line node/global-require
+  return require('@metamask/rpc-methods-flask');
 });
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
-
-const MetaMaskController = proxyquire('./metamask-controller', {
-  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-  // Temporarily replace the snaps packages with the Flask versions.
-  './controllers/permissions': proxyPermissions,
-}).default;
 
 describe('MetaMaskController', function () {
   let metamaskController;
