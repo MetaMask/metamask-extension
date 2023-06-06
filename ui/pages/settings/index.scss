@@ -32,7 +32,7 @@
 
       @include screen-sm-max {
         grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 0.5fr 2fr 0.5fr;
         gap: 20px;
         grid-template-areas:
           'back title close'
