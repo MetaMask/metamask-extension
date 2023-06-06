@@ -171,7 +171,7 @@ const RevealSeedPage = () => {
                   key_type: MetaMetricsEventKeyType.Srp,
                 },
               });
-            } else if (tabName === 'qr-seed') {
+            } else if (tabName === 'qr-srp') {
               trackEvent({
                 category: MetaMetricsEventCategory.Keys,
                 event: MetaMetricsEventName.SrpViewsSrpQR,
@@ -215,13 +215,14 @@ const RevealSeedPage = () => {
             name={t('revealSeedWordsQR')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
-            tabKey="qr-seed"
+            tabKey="qr-srp"
           >
             <Box
               display={DISPLAY.FLEX}
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
               paddingTop={4}
+              data-testid="qr-srp"
             >
               <div
                 dangerouslySetInnerHTML={{
