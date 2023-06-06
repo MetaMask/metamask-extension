@@ -521,7 +521,7 @@ export default function PrepareSwapPage({
     fromTokenBalance,
   ]);
 
-  const trackBuildQuotePageLoadedEvent = useCallback(() => {
+  const trackPrepareSwapPageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'Prepare Swap Page Loaded',
       category: MetaMetricsEventCategory.Swaps,
@@ -545,8 +545,8 @@ export default function PrepareSwapPage({
   useEffect(() => {
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
-    trackBuildQuotePageLoadedEvent();
-  }, [dispatch, trackBuildQuotePageLoadedEvent]);
+    trackPrepareSwapPageLoadedEvent();
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
