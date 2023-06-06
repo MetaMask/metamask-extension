@@ -19,6 +19,7 @@ import {
   TextAlign,
   AlignItems,
 } from '../../../helpers/constants/design-system';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 const InteractiveReplacementTokenModal = () => {
   const t = useI18nContext();
@@ -119,8 +120,8 @@ const InteractiveReplacementTokenModal = () => {
     });
 
     trackEvent({
-      category: 'MMI',
-      event: 'User clicked refresh token link',
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.UserClickedRefreshTokenLink,
     });
   };
 

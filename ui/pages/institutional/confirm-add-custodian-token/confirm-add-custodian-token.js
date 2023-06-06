@@ -25,6 +25,7 @@ import {
   BUTTON_VARIANT,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -95,8 +96,8 @@ const ConfirmAddCustodianToken = () => {
   }
 
   trackEvent({
-    category: 'MMI',
-    event: 'Custodian onboarding',
+    category: MetaMetricsEventCategory.MMI,
+    event: MetaMetricsEventName.CustodianOnboarding,
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
@@ -194,8 +195,8 @@ const ConfirmAddCustodianToken = () => {
                 });
                 history.push(mostRecentOverviewPage);
                 trackEvent({
-                  category: 'MMI',
-                  event: 'Custodian onboarding',
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.CustodianOnboarding,
                   properties: {
                     actions: 'Custodian RPC cancel',
                     custodian: connectRequest.custodian,
@@ -242,8 +243,8 @@ const ConfirmAddCustodianToken = () => {
                     token: connectRequest.token,
                   });
                   trackEvent({
-                    category: 'MMI',
-                    event: 'Custodian onboarding',
+                    category: MetaMetricsEventCategory.MMI,
+                    event: MetaMetricsEventName.CustodianOnboarding,
                     properties: {
                       actions: 'Custodian RPC confirm',
                       custodian: connectRequest.custodian,

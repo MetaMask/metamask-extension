@@ -21,6 +21,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
 export default function ConfirmAddInstitutionalFeature({ history }) {
   const t = useI18nContext();
@@ -52,8 +53,8 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
 
   const sendEvent = ({ actions, service }) => {
     trackEvent({
-      category: 'MMI',
-      event: 'Institutional feature connection',
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.InstitutionalFeatureConnection,
       properties: {
         actions,
         service,

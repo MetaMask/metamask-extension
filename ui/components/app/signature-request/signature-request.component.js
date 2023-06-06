@@ -10,7 +10,7 @@ import {
   shortenAddress,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
@@ -122,8 +122,8 @@ export default class SignatureRequest extends PureComponent {
         onDeepLinkFetched: () => undefined,
         onDeepLinkShown: () => {
           this.context.trackEvent({
-            category: 'MMI',
-            event: 'Show deeplink for signature',
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.ShowDeeplinkForSignature
           });
         },
       });
