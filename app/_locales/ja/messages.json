@@ -359,9 +359,6 @@
     "message": "すべての $1 へのアクセスとその送金を許可しますか？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "承認してインストール"
-  },
   "approveButtonText": {
     "message": "承認"
   },

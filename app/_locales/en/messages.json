@@ -398,9 +398,6 @@
     "message": "Allow access to and transfer all of your NFTs from $1?",
     "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "approveAndInstall": {
-    "message": "Approve & install"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -3784,8 +3781,11 @@
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapInstallRequestsPermission": {
-    "message": "$1 wants to install $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
     "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
@@ -3804,6 +3804,14 @@
     "message": "Grant $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
+  "snapInstallationErrorDescription": {
+    "message": "$1 couldn’t be installed.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Installation failed",
+    "description": "Error title used when snap installation fails."
+  },
   "snapResultError": {
     "message": "Error"
   },
@@ -3811,14 +3819,25 @@
     "message": "Success"
   },
   "snapResultSuccessDescription": {
-    "message": "$1 is now available to use."
+    "message": "$1 is ready to use"
   },
   "snapUpdate": {
     "message": "Update snap"
   },
+  "snapUpdateErrorDescription": {
+    "message": "$1 couldn’t be updated.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Update failed",
+    "description": "Error title used when snap update fails."
+  },
   "snapUpdateRequest": {
     "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
     "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Update complete"
   },
   "snaps": {
     "message": "Snaps"

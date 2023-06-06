@@ -359,9 +359,6 @@
     "message": "Sahip olduğun tüm $1 için erişim ve transfer izni verilsin mi?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Onayla ve Yükle"
-  },
   "approveButtonText": {
     "message": "Onayla"
   },

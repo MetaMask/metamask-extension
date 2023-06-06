@@ -359,9 +359,6 @@
     "message": "내 모든 $1에 액세스 및 전송할 수 있는 권한을 부여할까요?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "승인 및 설치"
-  },
   "approveButtonText": {
     "message": "승인"
   },
