@@ -359,9 +359,6 @@
     "message": "Δίνετε άδεια για να αποκτήσετε πρόσβαση σε όλα σας τα $1;",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Έγκριση και Εγκατάσταση"
-  },
   "approveButtonText": {
     "message": "Έγκριση"
   },

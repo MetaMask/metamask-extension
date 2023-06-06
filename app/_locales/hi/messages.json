@@ -359,9 +359,6 @@
     "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "स्वीकृत और इंस्टॉल करें"
-  },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
