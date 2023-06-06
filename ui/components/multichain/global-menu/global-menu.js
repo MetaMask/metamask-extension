@@ -153,7 +153,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 }}
                 marginInlineStart={2}
               >
-                {unreadNotificationsCount}
+                {unreadNotificationsCount > 99
+                  ? '99+'
+                  : unreadNotificationsCount}
               </Text>
             )}
           </MenuItem>

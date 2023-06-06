@@ -5,7 +5,7 @@ import {
   BackgroundColor,
   BorderColor,
   TextColor,
-  DISPLAY,
+  Display,
   JustifyContent,
   AlignItems,
   BorderRadius,
@@ -48,7 +48,7 @@ export const AvatarBase = forwardRef(
         )}
         ref={ref}
         as={ValidTag.Div}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.full}
