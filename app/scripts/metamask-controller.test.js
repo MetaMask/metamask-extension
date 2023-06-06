@@ -61,36 +61,15 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 jest.mock('ethjs-contract', () => MockEthContract);
 
-// Temporarily replace the snaps packages with the Flask versions.
-const proxyPermissions = proxyquire('./controllers/permissions', {
-  './snaps/snap-permissions': proxyquire(
-    './controllers/permissions/snaps/snap-permissions',
-    {
-      // eslint-disable-next-line node/global-require
-      '@metamask/snaps-controllers': require('@metamask/snaps-controllers-flask'),
-      // eslint-disable-next-line node/global-require
-      '@metamask/rpc-methods': require('@metamask/rpc-methods-flask'),
-    },
-  ),
+jest.mock('@metamask/snaps-controllers', () => {
+  // eslint-disable-next-line node/global-require
+  return require('@metamask/snaps-controllers-flask');
 });
 
-// TODO, Feb 24, 2023:
-// ethjs-contract is being added to proxyquire, but we might want to discontinue proxyquire
-// this is for expediency as we resolve a bug for v10.26.0. The proper solution here would have
-// us set up the test infrastructure for a mocked provider. Github ticket for that is:
-// https://github.com/MetaMask/metamask-extension/issues/17890
-const MetaMaskController = proxyquire('./metamask-controller', {
-  './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-  'ethjs-contract': MockEthContract,
-  // Temporarily replace the snaps packages with the Flask versions.
-  './controllers/permissions': proxyPermissions,
-}).default;
-
-// const MetaMaskControllerMV3 = proxyquire('./metamask-controller', {
-//   '../../shared/modules/mv3.utils': { isManifestV3: true },
-//   // Temporarily replace the snaps packages with the Flask versions.
-//   './controllers/permissions': proxyPermissions,
-// }).default;
+jest.mock('@metamask/rpc-methods', () => {
+  // eslint-disable-next-line node/global-require
+  return require('@metamask/rpc-methods-flask');
+});
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
