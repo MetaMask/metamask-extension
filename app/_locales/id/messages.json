@@ -359,9 +359,6 @@
     "message": "Berikan izin untuk mengakses dan mentransfer seluruh $1 Anda?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Setujui & instal"
-  },
   "approveButtonText": {
     "message": "Setujui"
   },

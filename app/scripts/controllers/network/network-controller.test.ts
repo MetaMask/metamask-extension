@@ -2859,6 +2859,7 @@ describe('NetworkController', () => {
                 ticker,
                 nickname: undefined,
                 rpcPrefs: { blockExplorerUrl },
+                id: undefined,
               });
             },
           );
@@ -3763,6 +3764,7 @@ describe('NetworkController', () => {
               rpcPrefs: {
                 blockExplorerUrl: 'https://goerli.etherscan.io',
               },
+              id: undefined,
             });
 
             await waitForLookupNetworkToComplete({
