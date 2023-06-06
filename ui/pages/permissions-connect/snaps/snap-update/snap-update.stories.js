@@ -1,9 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import SnapUpdate from '.';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import SnapUpdate from '.';
 
 const store = configureStore(mockState);
 
@@ -27,7 +27,7 @@ DefaultStory.args = {
   },
   requestState: {
     loading: false,
-    newVersion: "2.0.0",
+    newVersion: '2.0.0',
     approvedPermissions: {
       'endowment:rpc': {
         caveats: [
@@ -89,7 +89,7 @@ ScrollingStory.args = {
   },
   requestState: {
     loading: false,
-    newVersion: "2.0.0",
+    newVersion: '2.0.0',
     approvedPermissions: {
       'endowment:rpc': {
         caveats: [

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import SnapInstall from '.';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
+import SnapInstall from '.';
 
 const store = configureStore(mockState);
 
