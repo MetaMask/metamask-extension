@@ -22,6 +22,9 @@ import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -57,6 +60,13 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
+  ///: END:ONLY_INCLUDE_IN
+
+  let supportText = t('support');
+  let supportLink = SUPPORT_LINK;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+  supportText = t('needHelpSubmitTicket');
+  supportLink = SUPPORT_REQUEST_LINK;
   ///: END:ONLY_INCLUDE_IN
 
   return (
@@ -165,13 +175,13 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: SUPPORT_LINK });
+          global.platform.openTab({ url: supportLink });
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
-                url: SUPPORT_LINK,
+                url: supportLink,
                 location: 'Global Menu',
               },
             },
@@ -185,7 +195,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         }}
         data-testid="global-menu-support"
       >
-        {t('support')}
+        {supportText}
       </MenuItem>
       <MenuItem
         iconName={IconName.Setting}
