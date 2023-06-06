@@ -25,7 +25,10 @@ import {
   BUTTON_VARIANT,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);

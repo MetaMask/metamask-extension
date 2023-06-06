@@ -21,7 +21,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { MetaMetricsEventCategory, MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export default function ConfirmAddInstitutionalFeature({ history }) {
   const t = useI18nContext();
