@@ -10,6 +10,7 @@ import {
   BLOCK_SIZES,
   BorderStyle,
   FLEX_DIRECTION,
+  FontWeight,
   JustifyContent,
   TextVariant,
   TEXT_ALIGN,
@@ -24,6 +25,7 @@ import {
   AvatarIcon,
   IconName,
   Text,
+  ValidTag,
 } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -133,9 +135,30 @@ export default function SnapUpdate({
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapUpdateRequest', [
-                <b key="1">{originMetadata?.hostname}</b>,
-                <b key="2">{snapName}</b>,
-                <b key="3">v{newVersion}</b>,
+                <Text
+                  as={ValidTag.Span}
+                  key="1"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {originMetadata?.hostname}
+                </Text>,
+                <Text
+                  as={ValidTag.Span}
+                  key="2"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {snapName}
+                </Text>,
+                <Text
+                  as={ValidTag.Span}
+                  key="3"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {newVersion}
+                </Text>,
               ])}
             </Text>
             <UpdateSnapPermissionList
