@@ -154,9 +154,6 @@
   "connect": {
     "message": "ಸಂಪರ್ಕಿಸು"
   },
-  "connectHardwareWallet": {
-    "message": "ಹಾರ್ಡ್‌ವೆರ್ ವ್ಯಾಲೆಟ್‌‌ಗೆ ಸಂಪರ್ಕಪಡಿಸಿ"
-  },
   "connectingTo": {
     "message": "$1 ಗೆ ಸಂಪರ್ಕಪಡಿಸಲಾಗುತ್ತಿದೆ"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "ರಚಿಸಿ"
-  },
-  "createAccount": {
-    "message": "ಖಾತೆಯನ್ನು ರಚಿಸಿ"
   },
   "createPassword": {
     "message": "ಪಾಸ್‌ವರ್ಡ್ ರಚಿಸಿ"
@@ -812,10 +806,6 @@
   },
   "transferFrom": {
     "message": "ಇದರಿಂದ ವರ್ಗಾಯಿಸಿ"
-  },
-  "troubleTokenBalances": {
-    "message": "ನಿಮ್ಮ ಟೋಕನ್ ಬ್ಯಾಲೆನ್ಸ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ನಮಗೆ ಸಮಸ್ಯೆಯಾಗಿದೆ. ನೀವು ಅವುಗಳನ್ನು ನೋಡಬಹುದು",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "ಪುನಃ ಪ್ರಯತ್ನಿಸಿ"

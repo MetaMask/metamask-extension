@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Provider } from 'react-redux';
-import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
+import { pendingAssetApprovals as mockPendingAssetApprovals } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
 
 import configureStore from '../../store/store';
 
@@ -12,7 +12,7 @@ import ConfirmAddSuggestedToken from '.';
 const store = configureStore({
   metamask: {
     ...mockState.metamask,
-    suggestedAssets: [...mockSuggestedAssets],
+    pendingApprovals: [...mockPendingAssetApprovals],
     tokens: [],
   },
 });
@@ -29,10 +29,10 @@ export const WithDuplicateAddress = () => <ConfirmAddSuggestedToken />;
 const WithDuplicateAddressStore = configureStore({
   metamask: {
     ...mockState.metamask,
-    suggestedAssets: [...mockSuggestedAssets],
+    pendingApprovals: [...mockPendingAssetApprovals],
     tokens: [
       {
-        ...mockSuggestedAssets[0].asset,
+        ...mockPendingAssetApprovals[0].requestData.asset,
       },
     ],
   },
@@ -47,10 +47,10 @@ export const WithDuplicateSymbolAndDifferentAddress = () => (
 const WithDuplicateSymbolAndDifferentAddressStore = configureStore({
   metamask: {
     ...mockState.metamask,
-    suggestedAssets: [...mockSuggestedAssets],
+    pendingApprovals: [...mockPendingAssetApprovals],
     tokens: [
       {
-        ...mockSuggestedAssets[0].asset,
+        ...mockPendingAssetApprovals[0].requestData.asset,
         address: '0xNonSuggestedAddress',
       },
     ],

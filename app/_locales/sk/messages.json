@@ -148,9 +148,6 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectHardwareWallet": {
-    "message": "Pripojiť hardvérovú peňaženku"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "createPassword": {
     "message": "Vytvoriť heslo"
@@ -778,10 +772,6 @@
   },
   "transferFrom": {
     "message": "Presun z"
-  },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Skúsiť znova"

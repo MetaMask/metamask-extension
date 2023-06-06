@@ -2121,10 +2121,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       addToken: tokensController.addToken.bind(tokensController),
-      rejectWatchAsset:
-        tokensController.rejectWatchAsset.bind(tokensController),
-      acceptWatchAsset:
-        tokensController.acceptWatchAsset.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
@@ -2207,6 +2203,12 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      setSnapsInstallPrivacyWarningShownStatus:
+        appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
+          appStateController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,

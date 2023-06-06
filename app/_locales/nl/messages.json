@@ -69,9 +69,6 @@
   "create": {
     "message": "creëren"
   },
-  "createAccount": {
-    "message": "Account aanmaken"
-  },
   "decimal": {
     "message": "Decimalen van precisie"
   },
@@ -312,10 +309,6 @@
   },
   "total": {
     "message": "Totaal"
-  },
-  "troubleTokenBalances": {
-    "message": "We hadden problemen bij het laden van uw tokenbalansen. Je kunt ze bekijken",
-    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "Typ uw wachtwoord"

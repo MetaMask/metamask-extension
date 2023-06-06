@@ -502,9 +502,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { pendingApprovalCount = 0 } = state.metamask;
-
-  return pendingApprovalCount + getSuggestedAssetCount(state);
+  return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -554,15 +552,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
-}
-
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
-}
-
-export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
 }
 
 export function getIsMainnet(state) {
@@ -1491,5 +1480,24 @@ export function getSnapsList(state) {
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
+}
+
+/**
+ * To get the state of snaps privacy warning popover.
+ *
+ * @param state - Redux state object.
+ * @returns True if popover has been shown, false otherwise.
+ */
+export function getSnapsInstallPrivacyWarningShown(state) {
+  const { snapsInstallPrivacyWarningShown } = state.metamask;
+
+  if (
+    snapsInstallPrivacyWarningShown === undefined ||
+    snapsInstallPrivacyWarningShown === null
+  ) {
+    return false;
+  }
+
+  return snapsInstallPrivacyWarningShown;
 }
 ///: END:ONLY_INCLUDE_IN
