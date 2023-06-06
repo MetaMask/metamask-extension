@@ -169,7 +169,6 @@ export function useGasFeeInputs(
   useEffect(() => {
     if (supportsEIP1559) {
       if (transaction?.userFeeLevel) {
-        setEstimateUsed(transaction?.userFeeLevel);
         setInternalEstimateToUse(transaction?.userFeeLevel);
       }
 
@@ -184,6 +183,8 @@ export function useGasFeeInputs(
 
       if (Number(fee) > Number(GAS_LIMIT_TOO_HIGH_IN_ETH)) {
         setEstimateUsed(PriorityLevels.dappSuggestedHigh);
+      } else if (transaction?.userFeeLevel) {
+        setEstimateUsed(transaction?.userFeeLevel);
       }
 
       setGasLimit(Number(hexToDecimal(transaction?.txParams?.gas ?? '0x0')));
