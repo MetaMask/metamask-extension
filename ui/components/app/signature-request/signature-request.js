@@ -97,8 +97,6 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   } = txData;
 
   // not forwarded to component
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
-  const { address } = getAccountByAddress(allAccounts, from) || {};
   const hardwareWalletRequiresConnection = useSelector((state) =>
     doesAddressRequireLedgerHidConnection(state, from),
   );
@@ -114,6 +112,8 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const selectedAccount = useSelector(getSelectedAccount);
   const mmiActions = mmiActionsFactory();
   const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const { address } = getAccountByAddress(allAccounts, from) || {};
   ///: END:ONLY_INCLUDE_IN
 
   const messageIsScrollable =
