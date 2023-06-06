@@ -12,7 +12,9 @@ import {
 } from '../../../helpers/utils/util';
 import {
   MetaMetricsEventCategory,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MetaMetricsEventName,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
