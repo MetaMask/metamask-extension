@@ -171,11 +171,8 @@
         "console.warn": true
       },
       "packages": {
+        "@ethereumjs/tx>@chainsafe/ssz": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-<<<<<<< HEAD
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz": true,
-=======
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
         "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
         "browserify>buffer": true,
@@ -183,43 +180,13 @@
         "browserify>insert-module-globals>is-buffer": true
       }
     },
-<<<<<<< HEAD
-    "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": true,
-        "browserify>buffer": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/persistent-merkle-tree": {
-      "globals": {
-        "WeakRef": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util>@chainsafe/ssz>@chainsafe/as-sha256": true,
-        "@metamask/key-tree>@noble/hashes": true
-      }
-    },
-=======
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
     "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true
       },
       "packages": {
-<<<<<<< HEAD
-        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
-        "@metamask/key-tree>@noble/hashes": true
-      }
-    },
-    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
-      "globals": {
-        "TextEncoder": true
-      },
-      "packages": {
-=======
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
         "@metamask/key-tree>@noble/hashes": true
       }
     },
@@ -247,24 +214,15 @@
         "crypto": true
       },
       "packages": {
-<<<<<<< HEAD
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
-=======
         "@metamask/key-tree>@noble/hashes": true
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
       "globals": {
-<<<<<<< HEAD
-        "TextEncoder": true,
-        "crypto": true
-=======
         "TextEncoder": true
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
       }
     },
     "@ethersproject/abi": {
@@ -816,7 +774,6 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.error": true,
         "console.info": true,
         "console.log": true,
         "setInterval": true,
@@ -1416,17 +1373,7 @@
         "crypto": true
       },
       "packages": {
-<<<<<<< HEAD
         "@metamask/key-tree>@noble/hashes": true
-=======
-        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
->>>>>>> 931b1268312a2935357452883c58c1295cac96f5
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": {
@@ -5161,34 +5108,6 @@
       },
       "packages": {
         "react": true
-      }
-    },
-    "react-transition-group": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-transition-group>chain-function": true,
-        "react-transition-group>dom-helpers": true,
-        "react-transition-group>warning": true
-      }
-    },
-    "react-transition-group>dom-helpers": {
-      "globals": {
-        "document": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
-    "react-transition-group>warning": {
-      "globals": {
-        "console": true
       }
     },
     "readable-stream": {
