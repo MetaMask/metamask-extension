@@ -107,12 +107,6 @@ export default class SecurityTab extends PureComponent {
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
-          <div className="settings-page__content-item">
-            <span>{t('revealSeedWords')}</span>
-            <div className="settings-page__content-description">
-              {t('seedPhraseSettingsDescription')}
-            </div>
-          </div>
           <Button
             data-testid="reveal-seed-words"
             type="danger"
@@ -138,7 +132,7 @@ export default class SecurityTab extends PureComponent {
               this.setState({ srpQuizPopoverVisible: true });
             }}
           >
-            {t('srpSecurityQuizGetStarted')}
+            {t('revealSeedWords')}
           </Button>
           {this.state.srpQuizPopoverVisible && (
             <SRPQuiz

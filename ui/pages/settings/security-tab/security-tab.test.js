@@ -6,7 +6,8 @@ import thunk from 'redux-thunk';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
-import { renderWithProvider, tEn } from '../../../../test/lib/render-helpers';
+import { tEn } from '../../../../test/lib/i18n-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SecurityTab from './security-tab.container';
 
 jest.mock('../../../../app/scripts/lib/util', () => {

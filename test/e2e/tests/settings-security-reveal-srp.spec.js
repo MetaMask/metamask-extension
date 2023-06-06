@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { tEn } = require('../../lib/i18n-helpers');
 
 describe('settingsSecurityAndPrivacy-RevealSRP', function () {
   it('completes quiz and reveals SRP text', async function () {
@@ -43,7 +44,10 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
 
         // tap and hold to reveal
         await driver.holdMouseDownOnElement(
-          'button.hold-to-reveal-button__button-hold',
+          {
+            text: tEn('holdToRevealSRP'),
+            tag: 'span',
+          },
           2000,
         );
 
@@ -60,6 +64,7 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
       },
     );
   });
+
   it('completes quiz and reveals SRP QR after wrong answers', async function () {
     await withFixtures(
       {
@@ -85,7 +90,7 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         // tap incorrect answer 1
         await driver.clickElement('[data-testid="srp-quiz-wrong-answer"]');
 
-        //try again
+        // try again
         await driver.clickElement('[data-testid="srp-quiz-try-again"]');
 
         // tap correct answer 1
@@ -97,7 +102,7 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         // tap incorrect answer 2
         await driver.clickElement('[data-testid="srp-quiz-wrong-answer"]');
 
-        //try again
+        // try again
         await driver.clickElement('[data-testid="srp-quiz-try-again"]');
 
         // tap correct answer 1
@@ -112,7 +117,10 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
 
         // tap and hold to reveal
         await driver.holdMouseDownOnElement(
-          'button.hold-to-reveal-button__button-hold',
+          {
+            text: tEn('holdToRevealSRP'),
+            tag: 'span',
+          },
           2000,
         );
 
@@ -121,9 +129,7 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
           text: 'QR',
           tag: 'button',
         });
-        const qrCode = await driver.findElement(
-          '.box--padding-top-4 > div:nth-child(1) > table:nth-child(1)',
-        );
+        const qrCode = await driver.findElement('[data-testid="qr-srp"]');
         assert.equal(await qrCode.isDisplayed(), true);
         await driver.clickElement({
           text: 'Close',
