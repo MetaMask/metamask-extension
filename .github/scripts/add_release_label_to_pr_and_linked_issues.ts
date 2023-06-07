@@ -31,8 +31,11 @@ async function main(): Promise<void> {
 
   const nextReleaseVersionNumber = process.env.NEXT_SEMVER_VERSION;
   if (!nextReleaseVersionNumber) {
-    // NEXT_SEMVER_VERSION is defined in section "Secrets and variables">"Actions">"Variables">"New repository variable" in the settings of this repo.
-    // NEXT_SEMVER_VERSION needs to be updated every time a new release is cut.
+    // NEXT_SEMVER_VERSION is automatically deduced as minor version bump on top of the latest version
+    // found, either in repo's list of branches, or in repo's list of tags or in repo's "package.json" version.
+    // For edge cases (e.g. major version bumps, etc.), where the value can not be deduced automatically,
+    // NEXT_SEMVER_VERSION can be defined manually set by defining FORCE_NEXT_SEMVER_VERSION variable in
+    // section "Secrets and variables">"Actions">"Variables">"New repository variable" in the settings of this repo.
     // Example value: 6.5.0
     core.setFailed('NEXT_SEMVER_VERSION not found');
     process.exit(1);
