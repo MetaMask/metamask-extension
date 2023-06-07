@@ -197,10 +197,10 @@ export default class AddRecipient extends Component {
 
   renderMain() {
     const { t } = this.context;
-    const { addressBook } = this.props;
+    const { addressBook, userInput } = this.props;
     return (
       <div className="send__select-recipient-wrapper__list">
-        {addressBook.length > 0 ? (
+        {addressBook.length && userInput > 0 ? (
           <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
             <Text
               variant={TextVariant.bodyLgMedium}
