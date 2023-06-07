@@ -12,6 +12,7 @@ import {
   AlignItems,
   DISPLAY,
   BLOCK_SIZES,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import {
   getSnapName,
@@ -63,7 +64,9 @@ const SnapAuthorshipHeader = ({ snapId, className }) => {
         flexDirection={FLEX_DIRECTION.COLUMN}
         style={{ overflow: 'hidden' }}
       >
-        <Text ellipsis>{friendlyName}</Text>
+        <Text ellipsis fontWeight={FontWeight.Medium}>
+          {friendlyName}
+        </Text>
         <Text
           ellipsis
           variant={TextVariant.bodySm}

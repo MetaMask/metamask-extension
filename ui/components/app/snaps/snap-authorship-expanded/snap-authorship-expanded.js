@@ -17,6 +17,7 @@ import {
   BorderStyle,
   Color,
   BorderRadius,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import {
   formatDate,
@@ -97,7 +98,9 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           flexDirection={FLEX_DIRECTION.COLUMN}
           style={{ overflow: 'hidden' }}
         >
-          <Text ellipsis>{friendlyName}</Text>
+          <Text ellipsis fontWeight={FontWeight.Medium}>
+            {friendlyName}
+          </Text>
           <Text
             ellipsis
             variant={TextVariant.bodySm}
@@ -121,7 +124,9 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             borderRight: BorderStyle.none,
           }}
         >
-          <Text variant={TextVariant.bodyMdBold}>{t('enableSnap')}</Text>
+          <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+            {t('enabled')}
+          </Text>
           <Box style={{ maxWidth: '52px' }}>
             <Tooltip interactive position="left" html={t('snapsToggle')}>
               <ToggleButton value={snap?.enabled} onToggle={onToggle} />
@@ -139,7 +144,9 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               justifyContent={JustifyContent.spaceBetween}
               width={BLOCK_SIZES.FULL}
             >
-              <Text variant={TextVariant.bodyMdBold}>{t('installOrigin')}</Text>
+              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+                {t('installOrigin')}
+              </Text>
               <Box
                 flexDirection={FLEX_DIRECTION.COLUMN}
                 alignItems={AlignItems.flexEnd}
@@ -161,7 +168,9 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             alignItems={AlignItems.center}
             marginTop={4}
           >
-            <Text variant={TextVariant.bodyMdBold}>{t('version')}</Text>
+            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+              {t('version')}
+            </Text>
             <SnapVersion version={snap?.version} url={url} />
           </Box>
         </Box>

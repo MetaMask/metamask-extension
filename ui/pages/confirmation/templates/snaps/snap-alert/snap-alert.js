@@ -30,7 +30,7 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    submitText: t('ok'),
+    submitText: t('ok').toUpperCase(),
     onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, null),
   };
 }
