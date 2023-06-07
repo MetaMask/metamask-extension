@@ -19,6 +19,8 @@ export const ModalBody: React.FC<ModalBodyProps> = ({
     className={classnames('mm-modal-body', className)}
     paddingLeft={4}
     paddingRight={4}
+    paddingBottom={2}
+    paddingTop={2}
     {...props}
   >
     {children}

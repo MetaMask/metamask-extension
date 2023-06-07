@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalFooter should match snapshot 1`] = `
+<div>
+  <div
+    aria-hidden="true"
+    class="box mm-modal-footer box--flex-direction-row box--width-full box--height-full box--background-color-overlay-default"
+  />
+</div>
+`;

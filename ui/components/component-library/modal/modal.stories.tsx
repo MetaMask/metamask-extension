@@ -11,6 +11,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Text,
   Button,
   ButtonLink,
@@ -144,6 +145,11 @@ const Template: StoryFn<typeof Modal> = (args) => {
               </>
             )}
           </ModalBody>
+          <ModalFooter
+            buttonPropsArray={[
+              { children: 'Confirm', onClick: () => alert('hello') },
+            ]}
+          />
         </ModalContent>
       </Modal>
       {showLoremIpsum && (
