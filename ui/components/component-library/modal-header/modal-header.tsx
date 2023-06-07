@@ -54,6 +54,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
           />
         ))
       }
+      padding={4}
       {...props}
     >
       {typeof children === 'string' ? (

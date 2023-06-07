@@ -4,8 +4,9 @@ import classnames from 'classnames';
 import {
   BackgroundColor,
   BorderRadius,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
+  FlexDirection,
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
@@ -72,11 +73,11 @@ export const ModalContent = forwardRef(
         <Box
           className={classnames('mm-modal-content', className)}
           ref={ref}
-          display={DISPLAY.FLEX}
-          width={BLOCK_SIZES.SCREEN}
-          height={BLOCK_SIZES.SCREEN}
+          display={Display.Flex}
+          width={BlockSize.Screen}
+          height={BlockSize.Screen}
           justifyContent={JustifyContent.center}
-          alignItems={AlignItems.flexStart}
+          alignItems={AlignItems.center}
           padding={4}
           {...props}
         >
@@ -88,12 +89,11 @@ export const ModalContent = forwardRef(
             as="section"
             role="dialog"
             aria-modal="true"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
-            width={BLOCK_SIZES.FULL}
-            marginTop={12}
-            marginBottom={12}
-            padding={4}
+            width={BlockSize.Full}
             ref={modalDialogRef}
             {...modalDialogProps}
           >

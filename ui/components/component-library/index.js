@@ -36,6 +36,7 @@ export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
 export { ModalFocus } from './modal-focus';
 export { Modal, useModalContext } from './modal';
+export { ModalBody } from './modal-body';
 
 // Molecules
 export { BannerBase } from './banner-base';
