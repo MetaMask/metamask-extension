@@ -1,9 +1,43 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const {
+  withFixtures,
+  passwordUnlockOpenSRPRevealQuiz,
+  completeSRPRevealQuiz,
+  tapAndHoldToRevealSRP,
+  closeSRPReveal,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { tEn } = require('../../lib/i18n-helpers');
 
 describe('settingsSecurityAndPrivacy-RevealSRP', function () {
+  const testPassword = 'correct horse battery staple';
+  const wrongTestPassword = 'test test test test';
+  const seedPhraseWords =
+    'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
+
+  it('should not reveal SRP text with incorrect password', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await passwordUnlockOpenSRPRevealQuiz(driver);
+        await completeSRPRevealQuiz(driver);
+        await driver.fill('#password-box', wrongTestPassword);
+        await driver.press('#password-box', driver.Key.ENTER);
+        await driver.isElementPresent(
+          {
+            css: '.mm-help-text',
+            text: 'Incorrect password',
+          },
+          true,
+        );
+      },
+    );
+  });
+
   it('completes quiz and reveals SRP text', async function () {
     await withFixtures(
       {
@@ -11,56 +45,33 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // navigate settings to reveal SRP
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-        await driver.clickElement('[data-testid="reveal-seed-words"]');
-
-        // start quiz
-        await driver.clickElement('[data-testid="srp-quiz-get-started"]');
-
-        // tap correct answer 1
-        await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-        // tap Continue 1
-        await driver.clickElement('[data-testid="srp-quiz-continue"]');
-
-        // tap correct answer 2
-        await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
-
-        // tap Continue 2
-        await driver.clickElement('[data-testid="srp-quiz-continue"]');
+        await passwordUnlockOpenSRPRevealQuiz(driver);
+        await completeSRPRevealQuiz(driver);
 
         // enter password
-        await driver.fill('#password-box', 'correct horse battery staple');
+        await driver.fill('#password-box', testPassword);
         await driver.press('#password-box', driver.Key.ENTER);
 
-        // tap and hold to reveal
-        await driver.holdMouseDownOnElement(
-          {
-            text: tEn('holdToRevealSRP'),
-            tag: 'span',
-          },
-          2000,
-        );
+        await tapAndHoldToRevealSRP(driver);
 
         // confirm SRP text matches expected
-        const displayedSRP = await driver.findVisibleElement('.notranslate');
-        assert.equal(
-          await displayedSRP.getText(),
-          'spread raise short crane omit tent fringe mandate neglect detail suspect cradle',
+        const displayedSRP = await driver.findVisibleElement(
+          '[data-testid="srp_text"]',
         );
+        assert.equal(await displayedSRP.getText(), seedPhraseWords);
+
+        // copy SRP text to clipboard
         await driver.clickElement({
-          text: 'Close',
+          text: tEn('copyToClipboard'),
           tag: 'button',
         });
+        await driver.findVisibleElement({
+          text: tEn('copiedExclamation'),
+          tag: 'button',
+        });
+
+        // confirm that CTA returns user to wallet view
+        await closeSRPReveal(driver);
       },
     );
   });
@@ -72,17 +83,7 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // navigate settings to reveal SRP
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
-        await driver.clickElement('[data-testid="reveal-seed-words"]');
+        await passwordUnlockOpenSRPRevealQuiz(driver);
 
         // start quiz
         await driver.clickElement('[data-testid="srp-quiz-get-started"]');
@@ -112,17 +113,11 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         await driver.clickElement('[data-testid="srp-quiz-continue"]');
 
         // enter password
-        await driver.fill('#password-box', 'correct horse battery staple');
+        await driver.fill('#password-box', testPassword);
         await driver.press('#password-box', driver.Key.ENTER);
 
         // tap and hold to reveal
-        await driver.holdMouseDownOnElement(
-          {
-            text: tEn('holdToRevealSRP'),
-            tag: 'span',
-          },
-          2000,
-        );
+        await tapAndHoldToRevealSRP(driver);
 
         // confirm SRP QR is displayed
         await driver.clickElement({
@@ -131,10 +126,9 @@ describe('settingsSecurityAndPrivacy-RevealSRP', function () {
         });
         const qrCode = await driver.findElement('[data-testid="qr-srp"]');
         assert.equal(await qrCode.isDisplayed(), true);
-        await driver.clickElement({
-          text: 'Close',
-          tag: 'button',
-        });
+
+        // confirm that CTA returns user to wallet view
+        await closeSRPReveal(driver);
       },
     );
   });
