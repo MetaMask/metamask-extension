@@ -24,12 +24,7 @@ import {
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  Color,
-  FontWeight,
-  IconColor,
-  TextVariant,
-} from '../constants/design-system';
+import { Color, FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -163,7 +158,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             key="1"
             color={Color.primaryDefault}
             fontWeight={FontWeight.Medium}
-            variant={TextVariant.bodySm}
             as="span"
           >
             {getSnapName(targetSubjectMetadata?.origin)}
@@ -245,7 +239,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           key="1"
           color={Color.primaryDefault}
           fontWeight={FontWeight.Medium}
-          variant={TextVariant.bodySm}
           as="span"
         >
           {getSnapName(targetSubjectMetadata?.origin)}
