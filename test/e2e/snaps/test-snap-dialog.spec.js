@@ -95,7 +95,7 @@ describe('Test Snap Dialog', function () {
 
         // click ok button
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
