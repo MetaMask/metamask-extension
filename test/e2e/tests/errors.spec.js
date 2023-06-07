@@ -3,9 +3,7 @@ const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Sentry errors', function () {
-  async function mockSegment(mockServer) {
-    mockServer.reset();
-    await mockServer.forAnyRequest().thenPassThrough();
+  async function mockSentry(mockServer) {
     return await mockServer
       .forPost('https://sentry.io/api/0000000/store/')
       .thenCallback(() => {
@@ -36,9 +34,9 @@ describe('Sentry errors', function () {
         ganacheOptions,
         title: this.test.title,
         failOnConsoleError: false,
+        testSpecificMock: mockSentry,
       },
-      async ({ driver, mockServer }) => {
-        const mockedEndpoint = await mockSegment(mockServer);
+      async ({ driver, mockedEndpoint }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);

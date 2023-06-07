@@ -209,7 +209,7 @@ export default class DetectTokensController {
   }
 
   getChainIdFromNetworkStore(network) {
-    return network?.store.getState().provider.chainId;
+    return network?.store.getState().providerConfig.chainId;
   }
 
   /* eslint-disable accessor-pairs */

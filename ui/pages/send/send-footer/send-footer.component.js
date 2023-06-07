@@ -8,6 +8,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SEND_STAGES } from '../../../ducks/send';
+import { INSUFFICIENT_FUNDS_ERROR } from '../send.constants';
 
 export default class SendFooter extends Component {
   static propTypes = {
@@ -92,12 +93,14 @@ export default class SendFooter extends Component {
 
   render() {
     const { t } = this.context;
-    const { sendStage } = this.props;
+    const { sendStage, sendErrors } = this.props;
     return (
       <PageContainerFooter
         onCancel={() => this.onCancel()}
         onSubmit={(e) => this.onSubmit(e)}
-        disabled={this.props.disabled}
+        disabled={
+          this.props.disabled && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR
+        }
         cancelText={sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
       />
     );

@@ -8,7 +8,7 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from './security-provider-banner
 describe('Security Provider Banner Message', () => {
   const store = configureMockStore()({});
 
-  const thisIsBasedOnText = 'This is based on information from';
+  const thisIsBasedOnText = 'OpenSea';
 
   it('should render SecurityProviderBannerMessage component properly when flagAsDangerous is malicious', () => {
     const securityProviderResponse = {

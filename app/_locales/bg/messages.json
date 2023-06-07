@@ -154,9 +154,6 @@
   "connect": {
     "message": "Свързване"
   },
-  "connectHardwareWallet": {
-    "message": "Свържете хардуерен портфейл"
-  },
   "connectingTo": {
     "message": "Свързване с $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Създаване"
-  },
-  "createAccount": {
-    "message": "Създай акаунт"
   },
   "createPassword": {
     "message": "Създаване на парола"
@@ -737,27 +731,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Символът трябва да е 11 символа или по-малко."
   },
-  "syncWithMobile": {
-    "message": "Синхронизиране с мобилни устройства"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Уверете се, че никой друг не гледа екрана ви, когато сканирате този код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Вашите данни са синхронизирани успешно. Насладете се на мобилното приложение MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Можете да синхронизирате вашите акаунти и информация с мобилното си устройство. Отворете мобилното приложение MetaMask, отидете на „Настройки“ и докоснете „Синхронизиране от разширението на браузъра“"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ако отворите приложението MetaMask Mobile за първи път, просто следвайте стъпките в телефона си."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Сканирайте този код с вашето мобилно приложение MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизиране с мобилни устройства"
-  },
   "terms": {
     "message": "Условия за ползване"
   },
@@ -829,10 +802,6 @@
   },
   "transferFrom": {
     "message": "Трансфер от"
-  },
-  "troubleTokenBalances": {
-    "message": "Имахме проблеми със зареждането на вашите символи. Можете да ги видите",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Нов опит"

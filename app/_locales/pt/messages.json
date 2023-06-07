@@ -359,12 +359,6 @@
     "message": "Permitir acesso a todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Aprovar e instalar"
-  },
-  "approveAndUpdate": {
-    "message": "Aprovar e atualizar"
-  },
   "approveButtonText": {
     "message": "Aprovar"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Opções do ativo"
-  },
-  "assets": {
-    "message": "Ativos"
   },
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -694,10 +682,6 @@
   "connectedSitesEmptyDescription": {
     "message": "$1 não está conectada a nenhum site.",
     "description": "$1 is the account name"
-  },
-  "connectedSnapSites": {
-    "message": "O snap $1 está conectado a estes sites. Eles têm acesso às permissões listadas acima.",
-    "description": "$1 represents the name of the snap"
   },
   "connecting": {
     "message": "Conectando..."
@@ -795,9 +779,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -1355,18 +1336,6 @@
     "message": "A importação de ficheiro não está a funcionar? Carregue aqui!",
     "description": "Helps user import their account from a JSON file"
   },
-  "flaskSnapSettingsCardButtonCta": {
-    "message": "Ver detalhes",
-    "description": "Call to action a user can take to see more information about the snap that is installed"
-  },
-  "flaskSnapSettingsCardDateAddedOn": {
-    "message": "Adicionado em",
-    "description": "Start of the sentence describing when and where snap was added"
-  },
-  "flaskSnapSettingsCardFrom": {
-    "message": "de",
-    "description": "Part of the sentence describing when and where snap was added"
-  },
   "flaskWelcomeUninstall": {
     "message": "você deve desinstalar essa extensão",
     "description": "This request is shown on the Flask Welcome screen. It is intended for non-developers, and will be bolded."
@@ -1431,9 +1400,6 @@
   "gasDisplayDappWarning": {
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
-  },
-  "gasFee": {
-    "message": "Taxa de gás"
   },
   "gasLimit": {
     "message": "Limite de gás"
@@ -1589,9 +1555,6 @@
   "history": {
     "message": "Histórico"
   },
-  "holdToReveal": {
-    "message": "Segure para revelar a FRS"
-  },
   "holdToRevealContent1": {
     "message": "Sua Frase de Recuperação Secreta concede $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1611,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "mas os phishers talvez solicitem.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Mantenha sua FRS em segurança"
   },
   "ignoreAll": {
     "message": "Ignorar tudo"
@@ -1663,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokens": {
-    "message": "importar tokens"
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
@@ -2018,12 +1975,6 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "missingToken": {
-    "message": "Não está vendo seu token?"
-  },
-  "mobileSyncWarning": {
-    "message": "A funcionalidade \"Sincronizar com a extensão\" está temporariamente desativada. Se você quer usar sua carteira de extensão na MetaMask mobile, então, no seu app mobile: volte às opções de configuração da carteira e selecione a opção \"Importar com frase de recuperação secreta\". Use a frase secreta da sua carteira de extensão para, então, importar a sua carteira no celular."
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
@@ -2265,9 +2216,6 @@
   },
   "notEnoughGas": {
     "message": "Não há gás suficiente"
-  },
-  "notifications": {
-    "message": "Notificações"
   },
   "notifications10ActionText": {
     "message": "Visite nas configurações",
@@ -2697,10 +2645,6 @@
     "message": "Agende e execute ações periódicas.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_customConfirmation": {
-    "message": "Exibir uma confirmação na MetaMask.",
-    "description": "The description for the `snap_confirm` permission"
-  },
   "permission_dialog": {
     "message": "Exibir janelas de diálogo na MetaMask.",
     "description": "The description for the `snap_dialog` permission"
@@ -3085,9 +3029,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchSettings": {
-    "message": "Buscar nas configurações"
-  },
   "searchTokens": {
     "message": "Buscar tokens"
   },
@@ -3237,10 +3178,6 @@
   "settingsSearchMatchingNotFound": {
     "message": "Nenhum resultado correspondente encontrado."
   },
-  "shorthandVersion": {
-    "message": "v$1",
-    "description": "$1 is replaced by a version string (e.g. 1.2.3)"
-  },
   "show": {
     "message": "Exibir"
   },
@@ -3255,9 +3192,6 @@
   },
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
-  },
-  "showHide": {
-    "message": "Mostrar/ocultar"
   },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
@@ -3314,14 +3248,6 @@
   "smartTransaction": {
     "message": "Transação inteligente"
   },
-  "snapAccess": {
-    "message": "Snap $1 tem acesso a:",
-    "description": "$1 represents the name of the snap"
-  },
-  "snapAdded": {
-    "message": "Adicionado em $1 a partir de $2",
-    "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
-  },
   "snapContent": {
     "message": "Esse conteúdo vem de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3357,9 +3283,6 @@
   },
   "snapsSettingsDescription": {
     "message": "Gerencie seus snaps"
-  },
-  "snapsStatus": {
-    "message": "O status do snap depende da atividade."
   },
   "snapsToggle": {
     "message": "O snap só será executado se estiver ativado"
@@ -3468,9 +3391,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Conectado"
   },
   "statusNotConnected": {
     "message": "Não conectado"
@@ -3625,10 +3545,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Você precisa de mais $1 $2 para concluir essa troca",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Melhores cotações de $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
@@ -3940,33 +3856,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "O símbolo deve ter 11 caracteres ou menos."
   },
-  "syncFailed": {
-    "message": "Falha na sincronização"
-  },
-  "syncInProgress": {
-    "message": "Sincronização em andamento"
-  },
-  "syncWithMobile": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Ao escanear esse código, verifique se não há mais ninguém olhando para a sua tela"
-  },
-  "syncWithMobileComplete": {
-    "message": "Seus dados foram sincronizados. Curta o app da MetaMask para dispositivos móveis!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Você pode sincronizar suas contas e informações com o seu dispositivo móvel. Abra o aplicativo da MetaMask para dispositivos móveis, acesse \"Configurações\" e toque em \"Sincronizar pela extensão do navegador\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Se você tiver acabado de abrir o app da MetaMask para dispositivos móveis pela primeira vez, basta seguir as etapas no seu telefone."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escaneie esse código com seu app da MetaMask para dispositivos móveis"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizar com dispositivo móvel"
-  },
   "tenPercentIncreased": {
     "message": "10% de aumento"
   },
@@ -3988,9 +3877,6 @@
   "thingsToKeep": {
     "message": "Informações importantes:"
   },
-  "thisIsBasedOn": {
-    "message": "Isso se baseia em informações de "
-  },
   "time": {
     "message": "Hora"
   },
@@ -4009,10 +3895,6 @@
   },
   "toggleEthSignField": {
     "message": "Ativar/desativar solicitações eth_sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -4192,10 +4074,6 @@
   },
   "troubleStarting": {
     "message": "A MetaMask teve problemas para iniciar. Esse erro pode ser intermitente, por isso tente reiniciar a extensão."
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"

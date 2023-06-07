@@ -5,17 +5,17 @@ import Identicon from '../../ui/identicon';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
+  FontWeight,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
-import Typography from '../../ui/typography';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { Text } from '../../component-library';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
@@ -64,22 +64,24 @@ export default function NetworkAccountBalanceHeader({
           alignItems={AlignItems.flexStart}
           flexDirection={FLEX_DIRECTION.COLUMN}
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
             marginBottom={0}
           >
             {networkName}
-          </Typography>
+          </Text>
 
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             marginTop={0}
           >
             {accountName}
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <Box
@@ -87,23 +89,25 @@ export default function NetworkAccountBalanceHeader({
         alignItems={AlignItems.flexEnd}
         flexDirection={FLEX_DIRECTION.COLUMN}
       >
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textAlternative}
           marginBottom={0}
         >
           {t('balance')}
-        </Typography>
+        </Text>
 
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textDefault}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
           marginTop={0}
-          align={TEXT_ALIGN.END}
+          align={TextAlign.End}
         >
           {accountBalance} {tokenName}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );

@@ -64,7 +64,7 @@ describe('Unconnected Account Alert', () => {
       accounts,
       cachedBalances,
       keyrings,
-      provider: {
+      providerConfig: {
         chainId: CHAIN_IDS,
       },
       permissionHistory: {

@@ -1,19 +1,20 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(main)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
+// eslint-disable-next-line import/no-duplicates
+import { MetaMetricsContextProp } from '../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  // eslint-disable-next-line import/no-duplicates
 } from '../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
 import AssetList from '../../components/app/asset-list';
 import NftsTab from '../../components/app/nfts-tab';
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
-import MenuBar from '../../components/app/menu-bar';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
 import Box from '../../components/ui/box';
@@ -22,6 +23,7 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -32,10 +34,11 @@ import {
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../components/component-library/icon/deprecated';
-import { ButtonIcon, Text } from '../../components/component-library';
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+} from '../../components/component-library';
 
 import {
   ASSET_ROUTE,
@@ -51,15 +54,20 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(main)
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(beta)
+///: BEGIN:ONLY_INCLUDE_IN(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 
@@ -67,12 +75,25 @@ function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   isSigningQRHardwareTransaction,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  waitForConfirmDeepLinkDialog,
+  institutionalConnectRequests,
+  ///: END:ONLY_INCLUDE_IN
 }) {
-  return (
+  let shouldCLose =
     isNotification &&
     totalUnapprovedCount === 0 &&
-    !isSigningQRHardwareTransaction
-  );
+    !isSigningQRHardwareTransaction;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shouldCLose &&=
+    // MMI User must be shown a deeplink
+    !waitForConfirmDeepLinkDialog &&
+    // MMI User is connecting to custodian or compliance
+    institutionalConnectRequests.length === 0;
+  ///: END:ONLY_INCLUDE_IN
+
+  return shouldCLose;
 }
 
 export default class Home extends PureComponent {
@@ -84,8 +105,8 @@ export default class Home extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
     forgottenPassword: PropTypes.bool,
-    suggestedAssets: PropTypes.array,
-    unconfirmedTransactionsCount: PropTypes.number,
+    hasWatchAssetPendingApprovals: PropTypes.bool,
+    hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     isNotification: PropTypes.bool.isRequired,
@@ -110,8 +131,9 @@ export default class Home extends PureComponent {
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
+    showTermsOfUsePopup: PropTypes.bool.isRequired,
     announcementsToShow: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     errorsToShow: PropTypes.object.isRequired,
     shouldShowErrors: PropTypes.bool.isRequired,
     removeSnapError: PropTypes.func.isRequired,
@@ -119,6 +141,7 @@ export default class Home extends PureComponent {
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
+    setTermsOfUseLastAgreed: PropTypes.func.isRequired,
     showOutdatedBrowserWarning: PropTypes.bool.isRequired,
     setOutdatedBrowserWarningLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: (props) => {
@@ -146,6 +169,14 @@ export default class Home extends PureComponent {
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
     onboardedInThisUISession: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
+    mmiPortfolioEnabled: PropTypes.bool,
+    mmiPortfolioUrl: PropTypes.string,
+    modalOpen: PropTypes.bool,
+    setWaitForConfirmDeepLinkDialog: PropTypes.func,
+    waitForConfirmDeepLinkDialog: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
@@ -163,9 +194,9 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       isNotification,
       showAwaitingSwapScreen,
-      suggestedAssets = [],
+      hasWatchAssetPendingApprovals,
       swapsFetchParams,
-      unconfirmedTransactionsCount,
+      hasTransactionPendingApprovals,
     } = this.props;
 
     if (shouldCloseNotificationPopup(props)) {
@@ -173,8 +204,8 @@ export default class Home extends PureComponent {
       closeNotificationPopup();
     } else if (
       firstPermissionsRequestId ||
-      unconfirmedTransactionsCount > 0 ||
-      suggestedAssets.length > 0 ||
+      hasTransactionPendingApprovals ||
+      hasWatchAssetPendingApprovals ||
       (!isNotification &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
@@ -182,18 +213,72 @@ export default class Home extends PureComponent {
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  checkInstitutionalConnectRequest() {
+    const { history, institutionalConnectRequests } = this.props;
+    if (
+      institutionalConnectRequests &&
+      institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests[0].feature === 'custodian'
+    ) {
+      if (
+        institutionalConnectRequests[0].method ===
+        'metamaskinstitutional_reauthenticate'
+      ) {
+        history.push(INTERACTIVE_REPLACEMENT_TOKEN_PAGE);
+      } else if (
+        institutionalConnectRequests[0].method ===
+        'metamaskinstitutional_authenticate'
+      ) {
+        history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
+      }
+    } else if (
+      institutionalConnectRequests &&
+      institutionalConnectRequests.length > 0 &&
+      institutionalConnectRequests[0].feature !== 'custodian'
+    ) {
+      history.push(CONFIRM_INSTITUTIONAL_FEATURE_CONNECT);
+    }
+  }
+
+  shouldCloseCurrentWindow() {
+    const {
+      isNotification,
+      modalOpen,
+      totalUnapprovedCount,
+      institutionalConnectRequests,
+      waitForConfirmDeepLinkDialog,
+    } = this.props;
+
+    if (
+      isNotification &&
+      totalUnapprovedCount === 0 &&
+      institutionalConnectRequests.length === 0 &&
+      !waitForConfirmDeepLinkDialog &&
+      !modalOpen
+    ) {
+      global.platform.closeCurrentWindow();
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   checkStatusAndNavigate() {
     const {
       firstPermissionsRequestId,
       history,
       isNotification,
-      suggestedAssets = [],
-      unconfirmedTransactionsCount,
+      hasWatchAssetPendingApprovals,
+      hasTransactionPendingApprovals,
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
     } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.shouldCloseCurrentWindow();
+    ///: END:ONLY_INCLUDE_IN
+
     if (!isNotification && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
     } else if (!isNotification && haveSwapsQuotes) {
@@ -202,17 +287,29 @@ export default class Home extends PureComponent {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
-    } else if (unconfirmedTransactionsCount > 0) {
+    } else if (hasTransactionPendingApprovals) {
       history.push(CONFIRM_TRANSACTION_ROUTE);
-    } else if (suggestedAssets.length > 0) {
+    } else if (hasWatchAssetPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (pendingConfirmations.length > 0) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.checkInstitutionalConnectRequest();
+    ///: END:ONLY_INCLUDE_IN
   }
 
   componentDidMount() {
     this.checkStatusAndNavigate();
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { setWaitForConfirmDeepLinkDialog } = this.props;
+
+    window.addEventListener('beforeunload', () => {
+      // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
+      setWaitForConfirmDeepLinkDialog(false);
+    });
+    ///: END:ONLY_INCLUDE_IN
   }
 
   static getDerivedStateFromProps(props) {
@@ -242,6 +339,18 @@ export default class Home extends PureComponent {
     setRecoveryPhraseReminderLastShown(new Date().getTime());
   };
 
+  onAcceptTermsOfUse = () => {
+    const { setTermsOfUseLastAgreed } = this.props;
+    setTermsOfUseLastAgreed(new Date().getTime());
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Onboarding,
+      event: MetaMetricsEventName.TermsOfUseAccepted,
+      properties: {
+        location: 'Terms Of Use Popover',
+      },
+    });
+  };
+
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
@@ -258,7 +367,7 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       removeSnapError,
       errorsToShow,
       shouldShowErrors,
@@ -287,7 +396,7 @@ export default class Home extends PureComponent {
     return (
       <MultipleNotifications>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           shouldShowErrors
             ? Object.entries(errorsToShow).map(([errorId, error]) => {
                 return (
@@ -336,9 +445,10 @@ export default class Home extends PureComponent {
                   {t('newNftAddedMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -358,8 +468,8 @@ export default class Home extends PureComponent {
                   {t('removeNftMessage')}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={onAutoHide}
                 />
@@ -378,8 +488,8 @@ export default class Home extends PureComponent {
                   {t('newNetworkAdded', [newNetworkAddedName])}
                 </Text>
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => clearNewNetworkAdded()}
                   className="home__new-network-notification-close"
@@ -413,8 +523,8 @@ export default class Home extends PureComponent {
                 </Box>
 
                 <ButtonIcon
-                  iconName={ICON_NAMES.CLOSE}
-                  size={ICON_SIZES.SM}
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"
@@ -599,12 +709,17 @@ export default class Home extends PureComponent {
       announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
+      showTermsOfUsePopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
       newNetworkAddedConfigurationId,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      mmiPortfolioEnabled,
+      mmiPortfolioUrl,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     if (forgottenPassword) {
@@ -620,6 +735,10 @@ export default class Home extends PureComponent {
       showWhatsNewPopup &&
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
+
+    const showTermsOfUse =
+      completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -629,6 +748,9 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          }
           {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
@@ -636,46 +758,86 @@ export default class Home extends PureComponent {
               onConfirm={this.onRecoveryPhraseReminderClose}
             />
           ) : null}
+          {showTermsOfUse ? (
+            <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
+          ) : null}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}
+          {
+            ///: END:ONLY_INCLUDE_IN
+          }
           <div className="home__main-view">
-            <MenuBar />
             <div className="home__balance-wrapper">
-              <EthOverview />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                <EthOverview />
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                <EthOverview
+                  mmiPortfolioEnabled={mmiPortfolioEnabled}
+                  mmiPortfolioUrl={mmiPortfolioUrl}
+                />
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
             <Tabs
               t={this.context.t}
               defaultActiveTabKey={defaultHomeActiveTabName}
-              onTabClick={onTabClick}
+              onTabClick={(tabName) => {
+                onTabClick(tabName);
+                let event;
+                switch (tabName) {
+                  case 'nfts':
+                    event = MetaMetricsEventName.NftScreenOpened;
+                    break;
+                  case 'activity':
+                    event = MetaMetricsEventName.ActivityScreenOpened;
+                    break;
+                  default:
+                    event = MetaMetricsEventName.TokenScreenOpened;
+                }
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Home,
+                  event,
+                });
+              }}
               tabsClassName="home__tabs"
             >
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
                 data-testid="home__asset-tab"
-                name={this.context.t('assets')}
-                tabKey="assets"
+                name={this.context.t('tokens')}
+                tabKey="tokens"
               >
-                <AssetList
-                  onClickAsset={(asset) =>
-                    history.push(`${ASSET_ROUTE}/${asset}`)
-                  }
-                />
+                <Box marginTop={2}>
+                  <AssetList
+                    onClickAsset={(asset) =>
+                      history.push(`${ASSET_ROUTE}/${asset}`)
+                    }
+                  />
+                </Box>
               </Tab>
-              <Tab
-                activeClassName="home__tab--active"
-                className="home__tab"
-                data-testid="home__nfts-tab"
-                name={this.context.t('nfts')}
-                tabKey="nfts"
-              >
-                <NftsTab
-                  onAddNFT={() => {
-                    history.push(ADD_NFT_ROUTE);
-                  }}
-                />
-              </Tab>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  <NftsTab
+                    onAddNFT={() => {
+                      history.push(ADD_NFT_ROUTE);
+                    }}
+                  />
+                </Tab>
+                ///: END:ONLY_INCLUDE_IN
+              }
               <Tab
                 activeClassName="home__tab--active"
                 className="home__tab"
@@ -688,7 +850,7 @@ export default class Home extends PureComponent {
             </Tabs>
             <div className="home__support">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
                 t('needHelp', [
                   <a
                     href={SUPPORT_LINK}
@@ -718,12 +880,12 @@ export default class Home extends PureComponent {
                 ///: END:ONLY_INCLUDE_IN
               }
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(beta)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
                 <BetaHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
                 <FlaskHomeFooter />
                 ///: END:ONLY_INCLUDE_IN
               }

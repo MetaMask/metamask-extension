@@ -4,7 +4,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   DISPLAY,
-  BorderColor,
   BLOCK_SIZES,
   FLEX_DIRECTION,
 } from '../../../helpers/constants/design-system';
@@ -79,7 +78,6 @@ const JwtUrlForm = (props) => {
             <textarea
               className="jwt-url-form__input-jwt"
               data-testid="jwt-input"
-              borderColor={BorderColor.borderDefault}
               id="jwt-box"
               onChange={(e) => {
                 props.onJwtChange(e.target.value);

@@ -154,9 +154,6 @@
   "connect": {
     "message": "Povežite se"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži hardverski novčanik"
-  },
   "connectingTo": {
     "message": "Povezivanje na $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Stvori"
-  },
-  "createAccount": {
-    "message": "Stvori račun"
   },
   "createPassword": {
     "message": "Stvori lozinku"
@@ -734,27 +728,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mora biti 11 znakova ili manje."
   },
-  "syncWithMobile": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pazite da nitko ne gleda u vaš zaslon dok skenirate ovaj kôd"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaši su podatci uspješno sinkronizirani. Uživajte u mobilnoj aplikaciji MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Možete sinkronizirati svoje račune i informacije s vašim mobilnim telefonom. Otvorite mobilnu aplikaciju MetaMask, idite u stavku „Postavke” i dodirnite „Sinkroniziraj iz dodatka preglednika”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Kad otvorite mobilnu aplikaciju MetaMask po prvi puta, pridržavajte se koraka koji se prikazuju na telefonu."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skenirajte ovaj kôd uporabom mobilne aplikacije MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sinkroniziraj s mobilnim telefonom"
-  },
   "terms": {
     "message": "Odredbe uporabe"
   },
@@ -823,10 +796,6 @@
   },
   "transferFrom": {
     "message": "Prenesi od"
-  },
-  "troubleTokenBalances": {
-    "message": "Imamo problema s učitavanjem raspoloživog stanja vaših tokena. Možete ih vidjeti",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Pokušaj ponovo"

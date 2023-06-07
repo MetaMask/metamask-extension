@@ -8,6 +8,7 @@ const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { DAPP_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -140,6 +141,8 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
@@ -155,6 +158,7 @@ function defaultFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        snapsInstallPrivacyWarningShown: true,
       },
       CachedBalancesController: {
         cachedBalances: {
@@ -195,7 +199,7 @@ function defaultFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -286,7 +290,6 @@ function defaultFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       TransactionController: {
@@ -327,7 +330,7 @@ function onboardingFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
@@ -390,7 +393,6 @@ function onboardingFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       config: {},
@@ -592,13 +594,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
-        'http://127.0.0.1:8080': {
-          origin: 'http://127.0.0.1:8080',
+        [DAPP_URL]: {
+          origin: DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
-              invoker: 'http://127.0.0.1:8080',
+              invoker: DAPP_URL,
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -736,7 +738,6 @@ class FixtureBuilder {
       },
       allIgnoredTokens: {},
       allDetectedTokens: {},
-      suggestedAssets: [],
     });
     return this;
   }

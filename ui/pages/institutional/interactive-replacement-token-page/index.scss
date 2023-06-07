@@ -1,0 +1,23 @@
+.interactive-replacement-token-page {
+  opacity: 0.8;
+
+  &__item {
+    border-bottom: 1px solid --color-border-default;
+
+    &-clipboard {
+      background-color: transparent;
+    }
+  }
+
+  &__item:first-child {
+    margin-top: 12px;
+  }
+
+  &__item:last-child {
+    border: 0;
+  }
+
+  &__item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+}

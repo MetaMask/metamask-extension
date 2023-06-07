@@ -32,6 +32,11 @@ async function setupMocking(server, testSpecificMock) {
       return {};
     },
   });
+
+  const mockedEndpoint = await testSpecificMock(server);
+
+  // Mocks below this line can be overridden by test-specific mocks
+
   await server
     .forPost(
       'https://arbitrum-mainnet.infura.io/v3/00000000000000000000000000000000',
@@ -369,10 +374,6 @@ async function setupMocking(server, testSpecificMock) {
       };
     });
 
-  testSpecificMock(server);
-
-  // Mocks below this line can be overridden by test-specific mocks
-
   await server.forGet(STALELIST_URL).thenCallback(() => {
     return {
       statusCode: 200,
@@ -399,6 +400,8 @@ async function setupMocking(server, testSpecificMock) {
         },
       };
     });
+
+  return mockedEndpoint;
 }
 
 module.exports = { setupMocking };

@@ -54,17 +54,17 @@ describe('Test Snap Management', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -73,15 +73,13 @@ describe('Test Snap Management', function () {
         await driver.switchToWindow(extensionPage);
         await driver.delay(1000);
 
-        // click on the account menu icon
-        await driver.clickElement('.account-menu__icon');
-        await driver.delay(1000);
+        // click on the global action menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
         // try to click on the notification item
-        await driver.clickElement({
-          text: 'Settings',
-          tag: 'div',
-        });
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.delay(1000);
 
         // try to click on the snaps item
@@ -92,6 +90,10 @@ describe('Test Snap Management', function () {
         await driver.delay(1000);
 
         // try to disable the snap
+        await driver.clickElement({
+          text: 'Notification Test Snap',
+          tag: 'p',
+        });
         await driver.clickElement('.toggle-button > div');
 
         // switch back to test-snaps window
@@ -125,17 +127,20 @@ describe('Test Snap Management', function () {
         // check to see that there is one notification
         await driver.switchToWindow(extensionPage);
         await driver.delay(1000);
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         const notificationResult = await driver.findElement(
-          '.account-menu__icon__notification-count',
+          '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
-
-        // click on see details
-        await driver.clickElement({ text: 'See details', tag: 'button' });
-        await driver.delay(1000);
+        await driver.clickElement('.menu__background');
 
         // try to remove snap
-        await driver.clickElement({ text: 'Remove snap', tag: 'button' });
+        await driver.clickElement({
+          text: 'Remove Notification Test Snap',
+          tag: 'p',
+        });
         await driver.delay(1000);
 
         // try to click remove on popover

@@ -148,9 +148,6 @@
   "connect": {
     "message": "Ansluta"
   },
-  "connectHardwareWallet": {
-    "message": "Anslut hårdvaruplånbok"
-  },
   "connectingTo": {
     "message": "Ansluter till $1"
   },
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Skapa"
-  },
-  "createAccount": {
-    "message": "Skapa konto"
   },
   "createPassword": {
     "message": "Skapa lösenord"
@@ -722,27 +716,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbolen måste vara 11 tecken eller färre."
   },
-  "syncWithMobile": {
-    "message": "Synka med mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Försäkra dig om att ingen tittar på din skärm när du skannar denna kod"
-  },
-  "syncWithMobileComplete": {
-    "message": "Din data har nu synkats. Ha det så kul med MetaMasks mobil-app!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan nu synka dina konton och din information med din mobil-enhet. Öppna MetaMasks mobil-app, gå till \"Inställningar\" och tryck på \"Synka från webbläsartillägg\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Om du öppnar MetaMask mobilapplikation för första gången behöver du bara följa stegen som visas i telefonen."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skanna den här koden med din MetaMask mobilapplikation"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synka med mobil"
-  },
   "terms": {
     "message": "Användarvillkor"
   },
@@ -808,10 +781,6 @@
   },
   "transferFrom": {
     "message": "Överför från"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi hade problem med att ladda dina token-saldon. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Försök igen"

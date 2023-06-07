@@ -4,14 +4,15 @@ const path = require('path');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
+  TEST_SEED_PHRASE_TWO,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
+  openDapp,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -20,9 +21,6 @@ describe('MetaMask', function () {
   let driver;
   let dappServer;
   let tokenAddress;
-
-  const testSeedPhrase =
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
   this.bail(true);
 
@@ -45,12 +43,6 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -84,6 +76,7 @@ describe('MetaMask', function () {
 
   describe('Going through the first time flow', function () {
     it('clicks the "Create New Wallet" button on the welcome screen', async function () {
+      await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
       await driver.clickElement('[data-testid="onboarding-create-wallet"]');
     });
 
@@ -135,13 +128,13 @@ describe('MetaMask', function () {
 
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
 
       const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
+        '[data-testid="global-menu-lock"]',
       );
-      assert.equal(await lockButton.getText(), 'Lock');
+      assert.equal(await lockButton.getText(), 'Lock MetaMask');
       await lockButton.click();
       await driver.delay(regularDelayMs);
     });
@@ -156,7 +149,7 @@ describe('MetaMask', function () {
 
       await driver.pasteIntoField(
         '[data-testid="import-srp__srp-word-0"]',
-        testSeedPhrase,
+        TEST_SEED_PHRASE_TWO,
       );
 
       await driver.fill('#password', 'correct horse battery staple');
@@ -170,7 +163,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       await driver.waitForSelector({
-        css: '[data-testid="wallet-balance"] .list-item__heading',
+        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
         text: '1000',
       });
       await driver.delay(regularDelayMs);
@@ -183,7 +176,7 @@ describe('MetaMask', function () {
     let popup;
     let dapp;
     it('connects the dapp', async function () {
-      await driver.openNewPage('http://127.0.0.1:8080/');
+      await openDapp(driver);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -253,7 +246,7 @@ describe('MetaMask', function () {
 
     it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'import tokens', tag: 'a' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -435,12 +428,12 @@ describe('MetaMask', function () {
 
     it('checks balance', async function () {
       await driver.clickElement({
-        text: 'Assets',
+        text: 'Tokens',
         tag: 'button',
       });
 
       await driver.waitForSelector({
-        css: '.asset-list-item__token-button',
+        css: '[data-testid="multichain-token-list-item-value"]',
         text: '7.5 TST',
       });
 

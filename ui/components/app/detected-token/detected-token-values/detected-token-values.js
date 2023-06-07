@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import CheckBox from '../../../ui/check-box';
 
 import {
   DISPLAY,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
+import { Text } from '../../../component-library';
 
 const DetectedTokenValues = ({
   token,
@@ -46,17 +46,18 @@ const DetectedTokenValues = ({
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
       <Box marginBottom={1}>
-        <Typography variant={TypographyVariant.H4}>
+        <Text variant={TextVariant.bodyLgMedium} as="h4">
           {`${balanceString || '0'} ${token.symbol}`}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H7}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textAlternative}
         >
           {useCurrencyRateCheck
             ? formattedFiatBalance || '$0' // since formattedFiatBalance will be when teh conversion rate is not obtained, should be replace the `$0` with `N/A`
             : formattedFiatBalance}
-        </Typography>
+        </Text>
       </Box>
       <Box className="detected-token-values__checkbox">
         <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} />

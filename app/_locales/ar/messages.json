@@ -158,9 +158,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "ربط محفظة الأجهزة"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
@@ -196,9 +193,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAccount": {
-    "message": "إنشاء حساب"
   },
   "createPassword": {
     "message": "إنشاء كلمة مرور"
@@ -738,27 +732,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
   },
-  "syncWithMobile": {
-    "message": "مزامنة مع الهاتف المحمول"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "تأكد من عدم قيام أي شخص آخر بالنظر إلى شاشتك عند مسح هذا الرمز"
-  },
-  "syncWithMobileComplete": {
-    "message": "تمت مزامنة بياناتك بنجاح. استمتع بتطبيق MetaMask للهاتف المحمول!"
-  },
-  "syncWithMobileDesc": {
-    "message": "يمكنك مزامنة حساباتك ومعلوماتك مع جهازك المحمول. افتح تطبيق MetaMask على الجهاز المحمول وانتقل إلى \"الإعدادات\" ثم انقر على \"المزامنة من إضافة المتصفح\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "إذا قمت للتوّ بفتح تطبيق MetaMask للهواتف المحمولة لأول مرة، فاتبع الخطوات الموجودة في هاتفك."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "امسح هذا الرمز ضوئياً باستخدام تطبيق MetaMask للهواتف المحمولة"
-  },
-  "syncWithMobileTitle": {
-    "message": "المزامنة مع الجهاز المحمول"
-  },
   "terms": {
     "message": "شروط الاستخدام"
   },
@@ -830,10 +803,6 @@
   },
   "transferFrom": {
     "message": "التحويل من"
-  },
-  "troubleTokenBalances": {
-    "message": "واجهتنا مشكلة في تحميل أرصدتك من العملات الرمزية. يمكنك الاطلاع عليها",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "إعادة المحاولة"

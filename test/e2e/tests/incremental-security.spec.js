@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Incremental Security', function () {
@@ -29,6 +29,8 @@ describe('Incremental Security', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        // agree to terms of use
+        await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
         // welcome
         await driver.clickElement('[data-testid="onboarding-create-wallet"]');
@@ -63,21 +65,21 @@ describe('Incremental Security', function () {
         await driver.clickElement('[data-testid="pin-extension-done"]');
 
         // open account menu
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__account-details"]',
-        );
+        await driver.clickElement('[data-testid="account-list-menu-details"');
 
         // gets the current accounts address
-        const address = await driver.findElement('.qr-code__address');
+        const address = await driver.findElement(
+          '.qr-code .multichain-address-copy-button',
+        );
         const publicAddress = await address.getText();
 
         // wait for account modal to be visible
-        const accountModal = await driver.findVisibleElement('span .modal');
-
-        await driver.clickElement('.account-modal__close');
+        const accountModal = await driver.findVisibleElement('.popover-bg');
+        await driver.clickElement('[data-testid="popover-close"]');
 
         // wait for account modal to be removed from DOM
         await accountModal.waitForElementState('hidden');
@@ -87,7 +89,7 @@ describe('Incremental Security', function () {
         const extension = windowHandles[0];
 
         // switched to Dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // sends eth to the current account
         await driver.fill('#address', publicAddress);

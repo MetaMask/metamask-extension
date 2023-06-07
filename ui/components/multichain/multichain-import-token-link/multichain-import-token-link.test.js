@@ -26,7 +26,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for goerli chainId', () => {
     const mockState = {
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: '0x5',
         },
       },
@@ -45,7 +45,7 @@ describe('Import Token Link', () => {
   it('should match snapshot for mainnet chainId', () => {
     const mockState = {
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: '0x1',
         },
       },
@@ -64,7 +64,7 @@ describe('Import Token Link', () => {
   it('should detectNewTokens when clicking refresh', () => {
     const mockState = {
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: '0x5',
         },
       },
@@ -83,7 +83,7 @@ describe('Import Token Link', () => {
   it('should push import token route', () => {
     const mockState = {
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: '0x5',
         },
       },

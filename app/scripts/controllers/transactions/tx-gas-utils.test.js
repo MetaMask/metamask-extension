@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { TransactionFactory } from '@ethereumjs/tx';
-import Common from '@ethereumjs/common';
+import { Common } from '@ethereumjs/common';
 import { hexToBn } from '../../lib/util';
 import { bnToHex } from '../../../../shared/modules/conversion.utils';
 import TxUtils from './tx-gas-utils';
@@ -37,7 +37,7 @@ describe('txUtils', function () {
         common: new Common({ chain: 'goerli' }),
       });
       assert.equal(
-        ethTx.common.chainIdBN().toNumber(),
+        Number(ethTx.common.chainId()),
         5,
         'chainId is set from tx params',
       );

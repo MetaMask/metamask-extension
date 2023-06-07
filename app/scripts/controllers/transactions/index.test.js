@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
+import { ApprovalType } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
 import {
@@ -52,7 +53,8 @@ describe('Transaction Controller', function () {
     fromAccount,
     fragmentExists,
     networkStatusStore,
-    getCurrentChainId;
+    getCurrentChainId,
+    messengerMock;
 
   beforeEach(function () {
     fragmentExists = false;
@@ -76,6 +78,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getLatestBlock = noop;
 
     getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+    messengerMock = { call: sinon.stub().returns(Promise.resolve()) };
 
     txController = new TransactionController({
       provider,
@@ -108,6 +111,7 @@ describe('Transaction Controller', function () {
       getAccountType: () => 'MetaMask',
       getDeviceModel: () => 'N/A',
       securityProviderRequest: () => undefined,
+      messenger: messengerMock,
     });
     txController.nonceTracker.getNonceLock = () =>
       Promise.resolve({ nextNonce: 0, releaseLock: noop });
@@ -489,6 +493,67 @@ describe('Transaction Controller', function () {
         { message: 'MetaMask is having trouble connecting to the network' },
       );
     });
+
+    it('should create an approval request', async function () {
+      const txMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+      );
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(txMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: txMeta.id },
+          type: ApprovalType.Transaction,
+        },
+        true, // Show popup
+      ]);
+    });
+
+    it('should still create an approval request when called twice with same actionId', async function () {
+      await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        ORIGIN_METAMASK,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      const secondTxMeta = await txController.addUnapprovedTransaction(
+        undefined,
+        {
+          from: selectedAddress,
+          to: recipientAddress,
+        },
+        undefined,
+        undefined,
+        undefined,
+        '12345',
+      );
+
+      assert.equal(messengerMock.call.callCount, 2);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: String(secondTxMeta.id),
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxMeta.id },
+          type: ApprovalType.Transaction,
+        },
+        true, // Show popup
+      ]);
+    });
   });
 
   describe('#createCancelTransaction', function () {
@@ -541,6 +606,8 @@ describe('Transaction Controller', function () {
         cancelTxMeta.id,
       );
       assert.deepEqual(cancelTxMeta, memTxMeta);
+      // One for the initial addUnapprovedTransaction, one for the approval
+      assert.equal(messengerMock.call.callCount, 2);
     });
 
     it('should add only 1 cancel transaction when called twice with same actionId', async function () {
@@ -997,9 +1064,11 @@ describe('Transaction Controller', function () {
   });
 
   describe('#approveTransaction', function () {
-    it('does not overwrite set values', async function () {
-      const originalValue = '0x01';
-      const txMeta = {
+    let originalValue, txMeta, signStub, pubStub;
+
+    beforeEach(function () {
+      originalValue = '0x01';
+      txMeta = {
         id: '1',
         status: TransactionStatus.unapproved,
         metamaskNetworkId: currentNetworkId,
@@ -1019,17 +1088,22 @@ describe('Transaction Controller', function () {
       providerResultStub.eth_gasPrice = wrongValue;
       providerResultStub.eth_estimateGas = '0x5209';
 
-      const signStub = sinon
+      signStub = sinon
         .stub(txController, 'signTransaction')
         .callsFake(() => Promise.resolve());
 
-      const pubStub = sinon
-        .stub(txController, 'publishTransaction')
-        .callsFake(() => {
-          txController.setTxHash('1', originalValue);
-          txController.txStateManager.setTxStatusSubmitted('1');
-        });
+      pubStub = sinon.stub(txController, 'publishTransaction').callsFake(() => {
+        txController.setTxHash('1', originalValue);
+        txController.txStateManager.setTxStatusSubmitted('1');
+      });
+    });
 
+    afterEach(function () {
+      signStub.restore();
+      pubStub.restore();
+    });
+
+    it('does not overwrite set values', async function () {
       await txController.approveTransaction(txMeta.id);
       const result = txController.txStateManager.getTransaction(txMeta.id);
       const params = result.txParams;
@@ -1042,8 +1116,21 @@ describe('Transaction Controller', function () {
         TransactionStatus.submitted,
         'should have reached the submitted status.',
       );
-      signStub.restore();
-      pubStub.restore();
+    });
+
+    it('should accept the approval request', async function () {
+      await txController.approveTransaction(txMeta.id);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:acceptRequest',
+        txMeta.id,
+      ]);
+    });
+
+    it('should not throw if accepting approval request throws', async function () {
+      messengerMock.call.throws();
+      await txController.approveTransaction(txMeta.id);
     });
   });
 
@@ -1063,7 +1150,7 @@ describe('Transaction Controller', function () {
       );
       const rawTx = await txController.signTransaction('1');
       const ethTx = TransactionFactory.fromSerializedData(toBuffer(rawTx));
-      assert.equal(ethTx.common.chainIdBN().toNumber(), 5);
+      assert.equal(Number(ethTx.common.chainId()), 5);
     });
   });
 
@@ -1108,7 +1195,7 @@ describe('Transaction Controller', function () {
   });
 
   describe('#cancelTransaction', function () {
-    it('should emit a status change to rejected', function (done) {
+    beforeEach(function () {
       txController.txStateManager._addTransactionsToState([
         {
           id: 0,
@@ -1181,7 +1268,9 @@ describe('Transaction Controller', function () {
           history: [{}],
         },
       ]);
+    });
 
+    it('should emit a status change to rejected', function (done) {
       txController.once('tx:status-update', (txId, status) => {
         try {
           assert.equal(
@@ -1196,6 +1285,22 @@ describe('Transaction Controller', function () {
         }
       });
 
+      txController.cancelTransaction(0);
+    });
+
+    it('should reject the approval request', function () {
+      txController.cancelTransaction(0);
+
+      assert.equal(messengerMock.call.callCount, 1);
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:rejectRequest',
+        '0',
+        new Error('Rejected'),
+      ]);
+    });
+
+    it('should not throw if rejecting approval request throws', async function () {
+      messengerMock.call.throws();
       txController.cancelTransaction(0);
     });
   });
@@ -1280,6 +1385,7 @@ describe('Transaction Controller', function () {
           type: TransactionType.retry,
         },
       );
+      assert.equal(messengerMock.call.callCount, 0);
     });
 
     it('should call this.approveTransaction with the id of the returned tx', async function () {
@@ -2884,6 +2990,60 @@ describe('Transaction Controller', function () {
       assert.equal(result.txParams.to, VALID_ADDRESS);
       assert.equal(result.txParams.gasPrice, '0x002');
       assert.equal(result.type, TransactionType.simpleSend);
+    });
+  });
+
+  describe('initApprovals', function () {
+    it('adds unapprovedTxs as approvals', async function () {
+      const firstTxId = '1';
+      txController.addTransaction(
+        {
+          id: firstTxId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      const secondTxId = '2';
+      txController.addTransaction(
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          status: TransactionStatus.unapproved,
+          metamaskNetworkId: currentNetworkId,
+          txParams: {
+            to: VALID_ADDRESS,
+            from: VALID_ADDRESS_TWO,
+          },
+        },
+        noop,
+      );
+      await txController.initApprovals();
+      assert.deepEqual(messengerMock.call.getCall(0).args, [
+        'ApprovalController:addRequest',
+        {
+          id: firstTxId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: firstTxId },
+          type: ApprovalType.Transaction,
+        },
+        false,
+      ]);
+      assert.deepEqual(messengerMock.call.getCall(1).args, [
+        'ApprovalController:addRequest',
+        {
+          id: secondTxId,
+          origin: ORIGIN_METAMASK,
+          requestData: { txId: secondTxId },
+          type: ApprovalType.Transaction,
+        },
+        false,
+      ]);
     });
   });
 });

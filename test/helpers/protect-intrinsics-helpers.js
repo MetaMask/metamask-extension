@@ -13,14 +13,10 @@ module.exports = {
 function getGlobalProperties() {
   const comp = new Compartment().globalThis;
 
-  // These are Agoric inventions, and we don't care about them.
   const ignoreList = new Set([
     'Compartment',
-    'HandledPromise',
-    'StaticModuleRecord',
     ...Object.getOwnPropertySymbols(comp),
   ]);
-
   const namedIntrinsics = Reflect.ownKeys(comp);
 
   return new Set(

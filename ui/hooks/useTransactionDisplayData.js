@@ -152,7 +152,7 @@ export function useTransactionDisplayData(transactionGroup) {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
         const assetDetails = await getAssetDetails(
-          recipientAddress,
+          to,
           senderAddress,
           initialTransaction?.txParams?.data,
           knownNfts,
@@ -168,6 +168,7 @@ export function useTransactionDisplayData(transactionGroup) {
     senderAddress,
     initialTransaction?.txParams?.data,
     knownNfts,
+    to,
   ]);
   if (currentAssetDetails) {
     token = {

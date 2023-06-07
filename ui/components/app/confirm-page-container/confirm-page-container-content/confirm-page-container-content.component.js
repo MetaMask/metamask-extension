@@ -17,6 +17,9 @@ import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -24,7 +27,7 @@ export default class ConfirmPageContainerContent extends Component {
     dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     insightComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
@@ -53,16 +56,28 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    openBuyCryptoInPdapp: PropTypes.func,
     txData: PropTypes.object,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   renderContent() {
     const { detailsComponent, dataComponent } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const { insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { noteComponent } = this.props;
+
+    if (noteComponent) {
       return this.renderTabs();
     }
     ///: END:ONLY_INCLUDE_IN
@@ -73,7 +88,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       detailsComponent ||
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent ||
       ///: END:ONLY_INCLUDE_IN
       dataComponent
@@ -86,8 +101,11 @@ export default class ConfirmPageContainerContent extends Component {
       detailsComponent,
       dataComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      noteComponent,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -100,6 +118,25 @@ export default class ConfirmPageContainerContent extends Component {
         >
           {detailsComponent}
         </Tab>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          noteComponent && (
+            <Tab
+              className="confirm-page-container-content__tab"
+              name={t('note')}
+              pillText={t('new')}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: 'Note to trader',
+                  event: 'Clicked on Notes tab on a transaction window',
+                });
+              }}
+            >
+              {noteComponent}
+            </Tab>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         {dataComponent && (
           <Tab
             className="confirm-page-container-content__tab"
@@ -120,7 +157,7 @@ export default class ConfirmPageContainerContent extends Component {
         )}
 
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           insightComponent
           ///: END:ONLY_INCLUDE_IN
         }
@@ -158,15 +195,14 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      openBuyCryptoInPdapp,
       txData,
     } = this.props;
 
     const { t } = this.context;
 
     const showInsuffienctFundsError =
-      supportsEIP1559 &&
-      (errorKey || errorMessage) &&
-      errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
+      (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
     return (
       <div
@@ -203,11 +239,13 @@ export default class ConfirmPageContainerContent extends Component {
           transactionType={transactionType}
         />
         {this.renderContent()}
-        {!supportsEIP1559 && (errorKey || errorMessage) && (
-          <div className="confirm-page-container-content__error-container">
-            <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-          </div>
-        )}
+        {!supportsEIP1559 &&
+          !showInsuffienctFundsError &&
+          (errorKey || errorMessage) && (
+            <div className="confirm-page-container-content__error-container">
+              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
+            </div>
+          )}
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <ActionableMessage
@@ -218,19 +256,16 @@ export default class ConfirmPageContainerContent extends Component {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => {
-                          const portfolioUrl = process.env.PORTFOLIO_URL;
-                          global.platform.openTab({
-                            url: `${portfolioUrl}/buy?metamaskEntry=ext_buy_button`,
-                          });
-                        }}
+                        onClick={openBuyCryptoInPdapp}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Typography>
                 ) : (

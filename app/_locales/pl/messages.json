@@ -154,9 +154,6 @@
   "connect": {
     "message": "Połącz"
   },
-  "connectHardwareWallet": {
-    "message": "Podłącz portfel sprzętowy"
-  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Utwórz"
-  },
-  "createAccount": {
-    "message": "Utwórz konto"
   },
   "createPassword": {
     "message": "Utwórz hasło"
@@ -732,27 +726,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musi mieć maksymalnie 11 znaków."
   },
-  "syncWithMobile": {
-    "message": "Synchronizuj z telefonem"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Upewnij się, że nikt inny nie patrzy na Twój ekran podczas skanowania tego kodu"
-  },
-  "syncWithMobileComplete": {
-    "message": "Twoje dane zostały zsynchronizowane. Miłego korzystania z aplikacji mobilnej MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Możesz synchronizować swoje konta i informacje z urządzeniem mobilnym. Otwórz aplikację mobilną MetaMask, przejdź do „Ustawień” i wybierz opcję „Synchronizuj z rozszerzeniem przeglądarki”."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jeśli po raz pierwszy otwierasz aplikację MetaMask Mobile, postępuj zgodnie z instrukcjami w telefonie."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Zeskanuj ten kod za pomocą aplikacji mobilnej MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synchronizuj z telefonem"
-  },
   "terms": {
     "message": "Regulamin"
   },
@@ -821,10 +794,6 @@
   },
   "transferFrom": {
     "message": "Przelew z"
-  },
-  "troubleTokenBalances": {
-    "message": "Wystąpił problem z załadowaniem informacji o Twoich tokenach. Można je zobaczyć ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Spróbuj ponownie"

@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-
+import { Text } from '../../component-library';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -19,7 +19,6 @@ import Box from '../../ui/box';
 import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
 import AppLoadingSpinner from '../app-loading-spinner';
 
 const CancelSpeedupPopover = () => {
@@ -97,9 +96,11 @@ const CancelSpeedupPopover = () => {
     >
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
-        <Typography
-          boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
-          variant={TypographyVariant.H6}
+        <Text
+          alignItems={AlignItems.center}
+          display={DISPLAY.FLEX}
+          variant={TextVariant.bodySm}
+          as="h6"
           marginTop={0}
           marginBottom={2}
         >
@@ -127,7 +128,7 @@ const CancelSpeedupPopover = () => {
               </Box>
             }
           />
-        </Typography>
+        </Text>
         <div className="cancel-speedup-popover__separator" />
         <Box
           display={DISPLAY.FLEX}

@@ -35,7 +35,7 @@ export default class SelectHardware extends Component {
   };
 
   shouldShowConnectButton() {
-    return !isManifestV3 || process.env.CONF?.HARDWARE_WALLETS_MV3;
+    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
   }
 
   connect = () => {
@@ -431,12 +431,12 @@ export default class SelectHardware extends Component {
               onClick={() => {
                 this.context.trackEvent({
                   category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Keystone Buy Now',
+                  event: 'Clicked Keystone Learn More',
                 });
                 openWindow(HardwareAffiliateLinks.keystone);
               }}
             >
-              {this.context.t('buyNow')}
+              {this.context.t('learnMoreKeystone')}
             </Button>
             <Button
               className="hw-connect__external-btn"

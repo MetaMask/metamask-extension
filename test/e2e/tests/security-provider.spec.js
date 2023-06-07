@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const OPENSEA_URL =
@@ -94,7 +94,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#personalSign');
@@ -134,7 +134,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#signTypedData');
@@ -174,7 +174,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#siwe');
@@ -214,7 +214,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#signTypedDataV4');

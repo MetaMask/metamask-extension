@@ -51,6 +51,9 @@ const props = {
     },
     type: MESSAGE_TYPE.ETH_SIGN,
   },
+  selectedAccount: {
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  },
 };
 
 const render = (txData = props.txData) => {
@@ -130,9 +133,7 @@ describe('SignatureRequestOriginal', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText('This is based on information from'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('OpenSea')).toBeInTheDocument();
   });
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
@@ -147,6 +148,6 @@ describe('SignatureRequestOriginal', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeNull();
-    expect(screen.queryByText('This is based on information from')).toBeNull();
+    expect(screen.queryByText('OpenSea')).toBeNull();
   });
 });

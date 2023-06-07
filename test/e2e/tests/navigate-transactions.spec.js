@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  locateAccountBalanceDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
@@ -130,7 +135,7 @@ describe('Navigate transactions', function () {
         );
 
         // add transaction
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -227,11 +232,7 @@ describe('Navigate transactions', function () {
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });
         await driver.clickElement({ text: 'Reject all', tag: 'button' });
-        const balance = await ganacheServer.getBalance();
-        const balanceElement = await driver.findElement(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
-        assert.equal(`${balance}\nETH`, await balanceElement.getText());
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

@@ -17,7 +17,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 describe('Compliance Feature, connect', function () {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       institutionalFeatures: {

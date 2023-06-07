@@ -4,18 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
-import Card from '../../ui/card';
-import Typography from '../../ui/typography/typography';
 import {
   TextColor,
   IconColor,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
+  FontWeight,
   JustifyContent,
-  FLEX_DIRECTION,
-  OVERFLOW_WRAP,
-  DISPLAY,
-  BLOCK_SIZES,
+  OverflowWrap,
+  FlexDirection,
+  Display,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,6 +24,7 @@ import {
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
   getCurrentChainId,
+  getCurrentNetwork,
   getIpfsGateway,
   getSelectedIdentity,
 } from '../../../selectors';
@@ -52,11 +51,10 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import NftDefaultImage from '../nft-default-image';
-import { ButtonIcon } from '../../component-library';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
+import { NftItem } from '../../multichain/nft-item';
 
 export default function NftDetails({ nft }) {
   const {
@@ -77,6 +75,8 @@ export default function NftDetails({ nft }) {
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftContracts = useSelector(getNftContracts);
   const currentNetwork = useSelector(getCurrentChainId);
+  const currentChain = useSelector(getCurrentNetwork);
+
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
@@ -142,8 +142,8 @@ export default function NftDetails({ nft }) {
     }
     return (
       <Box
-        display={DISPLAY.FLEX}
-        width={inPopUp ? BLOCK_SIZES.FULL : BLOCK_SIZES.HALF}
+        display={Display.Flex}
+        width={inPopUp ? BlockSize.Full : BlockSize.Half}
         margin={inPopUp ? [4, 0] : null}
       >
         <Button
@@ -180,154 +180,147 @@ export default function NftDetails({ nft }) {
         }
       />
       <Box className="nft-details">
-        <div className="nft-details__top-section">
-          <Card
-            padding={0}
-            justifyContent={JustifyContent.center}
-            className="nft-details__card"
-          >
-            {image ? (
-              <img
-                className="nft-details__image"
-                src={nftImageURL}
-                alt={nftImageAlt}
-              />
-            ) : (
-              <NftDefaultImage name={name} tokenId={tokenId} />
-            )}
-          </Card>
+        <Box
+          className="nft-details__top-section"
+          gap={6}
+          flexDirection={FlexDirection.Column}
+        >
+          <Box className="nft-details__nft-item">
+            <NftItem
+              src={image ? nftImageURL : ''}
+              alt={image ? nftImageAlt : ''}
+              name={name}
+              tokenId={tokenId}
+              networkName={currentChain.nickname}
+              networkSrc={currentChain.rpcPrefs?.imageUrl}
+            />
+          </Box>
           <Box
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            flexDirection={FlexDirection.Column}
             className="nft-details__info"
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>
-              <Typography
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H4}
-                fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{ margin: 0, marginBottom: 2 }}
+                variant={TextVariant.headingSm}
+                as="h4"
+                fontWeight={FontWeight.Bold}
+                marginBottom={2}
               >
                 {name}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
                 color={TextColor.textMuted}
-                variant={TypographyVariant.H5}
-                boxProps={{ margin: 0, marginBottom: 4 }}
-                overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+                variant={TextVariant.bodyMd}
+                as="h5"
+                marginBottom={4}
+                overflowWrap={OverflowWrap.BreakWord}
               >
                 #{tokenId}
-              </Typography>
+              </Text>
             </div>
             {description ? (
               <div>
-                <Typography
+                <Text
                   color={TextColor.textDefault}
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  marginBottom={2}
                   className="nft-details__description"
-                  boxProps={{ margin: 0, marginBottom: 2 }}
                 >
                   {t('description')}
-                </Typography>
-                <Typography
+                </Text>
+                <Text
                   color={TextColor.textAlternative}
-                  variant={TypographyVariant.H6}
-                  overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                  boxProps={{ margin: 0, marginBottom: 4 }}
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  overflowWrap={OverflowWrap.BreakWord}
+                  marginBottom={4}
                 >
                   {description}
-                </Typography>
+                </Text>
               </div>
             ) : null}
             {inPopUp ? null : renderSendButton()}
           </Box>
-        </div>
+        </Box>
         <Box marginBottom={2}>
           {lastSale ? (
             <>
-              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-                <Typography
+              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+                <Text
                   color={TextColor.textDefault}
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{
-                    margin: 0,
-                    marginBottom: 4,
-                    marginRight: 2,
-                  }}
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  marginBottom={4}
+                  marginRight={2}
                   className="nft-details__link-title"
                 >
                   {t('lastSold')}
-                </Typography>
+                </Text>
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.ROW}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
                   className="nft-details__contract-wrapper"
                 >
-                  <Typography
+                  <Text
                     color={TextColor.textAlternative}
-                    variant={TypographyVariant.H6}
-                    overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                    boxProps={{ margin: 0, marginBottom: 4 }}
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    overflowWrap={OverflowWrap.BreakWord}
+                    marginBottom={4}
                   >
                     {formattedTimestamp}
-                  </Typography>
+                  </Text>
                 </Box>
               </Box>
-              <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-                <Typography
+              <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+                <Text
                   color={TextColor.textDefault}
-                  variant={TypographyVariant.H6}
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  boxProps={{
-                    margin: 0,
-                    marginBottom: 4,
-                    marginRight: 2,
-                  }}
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  marginBottom={4}
+                  marginRight={2}
                   className="nft-details__link-title"
                 >
                   {t('lastPriceSold')}
-                </Typography>
+                </Text>
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.ROW}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
                   className="nft-details__contract-wrapper"
                 >
-                  <Typography
+                  <Text
                     color={TextColor.textAlternative}
-                    variant={TypographyVariant.H6}
-                    overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                    boxProps={{ margin: 0, marginBottom: 4 }}
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    overflowWrap={OverflowWrap.BreakWord}
+                    marginBottom={4}
                   >
                     {`${Number(decWEIToDecETH(lastSale.total_price))} ${
                       lastSale.payment_token.symbol
                     }`}
-                  </Typography>
+                  </Text>
                 </Box>
               </Box>
             </>
           ) : null}
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-            <Typography
+          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+            <Text
               color={TextColor.textDefault}
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
+              variant={TextVariant.bodySmBold}
+              as="h6"
+              marginBottom={4}
+              marginRight={2}
               className="nft-details__link-title"
             >
               {t('source')}
-            </Typography>
-            <Typography
-              variant={TypographyVariant.H6}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-              }}
+            </Text>
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              marginBottom={4}
               className="nft-details__image-source"
               color={
                 isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -345,29 +338,24 @@ export default function NftDetails({ nft }) {
                   {nftImageURL}
                 </a>
               )}
-            </Typography>
+            </Text>
           </Box>
           {imageThumbnail ? (
-            <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-              <Typography
+            <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+              <Text
                 color={TextColor.textDefault}
-                variant={TypographyVariant.H6}
-                fontWeight={FONT_WEIGHT.BOLD}
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                  marginRight: 2,
-                }}
+                variant={TextVariant.bodySmBold}
+                as="h6"
+                marginBottom={4}
+                marginRight={2}
                 className="nft-details__link-title"
               >
                 {t('link')}
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H6}
-                boxProps={{
-                  margin: 0,
-                  marginBottom: 4,
-                }}
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                marginBottom={4}
                 className="nft-details__image-source"
                 color={
                   isDataURI ? TextColor.textDefault : TextColor.primaryDefault
@@ -381,36 +369,34 @@ export default function NftDetails({ nft }) {
                 >
                   {imageThumbnail}
                 </a>
-              </Typography>
+              </Text>
             </Box>
           ) : null}
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
-            <Typography
+          <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+            <Text
               color={TextColor.textDefault}
-              variant={TypographyVariant.H6}
-              fontWeight={FONT_WEIGHT.BOLD}
-              boxProps={{
-                margin: 0,
-                marginBottom: 4,
-                marginRight: 2,
-              }}
+              variant={TextVariant.bodySmBold}
+              as="h6"
+              marginBottom={4}
+              marginRight={2}
               className="nft-details__link-title"
             >
               {t('contractAddress')}
-            </Typography>
+            </Text>
             <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               className="nft-details__contract-wrapper"
             >
-              <Typography
+              <Text
                 color={TextColor.textAlternative}
-                variant={TypographyVariant.H6}
-                overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
-                boxProps={{ margin: 0, marginBottom: 4 }}
+                variant={TextVariant.bodySm}
+                as="h6"
+                overflowWrap={OverflowWrap.BreakWord}
+                marginBottom={4}
               >
                 {shortenAddress(address)}
-              </Typography>
+              </Text>
               <Tooltip
                 wrapperClassName="nft-details__tooltip-wrapper"
                 position="bottom"
@@ -427,19 +413,20 @@ export default function NftDetails({ nft }) {
                     handleAddressCopy(address);
                   }}
                   iconName={
-                    addressCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                    addressCopied ? IconName.CopySuccess : IconName.Copy
                   }
                 />
               </Tooltip>
             </Box>
           </Box>
           {inPopUp ? renderSendButton() : null}
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
           >
             {t('nftDisclaimer')}
-          </Typography>
+          </Text>
         </Box>
       </Box>
     </>

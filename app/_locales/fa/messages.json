@@ -154,9 +154,6 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "اتصال کیف سخت افزار"
-  },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "ایجاد"
-  },
-  "createAccount": {
-    "message": "ایجاد حساب"
   },
   "createPassword": {
     "message": "ایجاد رمز عبور"
@@ -741,27 +735,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "نماد باید 11 کاراکتر یا کمتر باشد."
   },
-  "syncWithMobile": {
-    "message": "همگام سازی با موبایل"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "مطمئن شوید که هیچکس هنگامیکه این کود را سکن میکنید، به صفحه شما نمیبیند"
-  },
-  "syncWithMobileComplete": {
-    "message": "دیتای شما موفقانه همگام سازی شد. از اپلیکیشن موبایل MetaMask لذت ببرید!"
-  },
-  "syncWithMobileDesc": {
-    "message": "شما میتوانید حساب ها و معلومات خویش را با دستگاه موبایل تان همگام بسازید. اپلیکیشن MetaMask را باز نموده به \"Settings\" رفته و بالای \"Sync from Browser Extension\" کلیک کنید"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "در صورتیکه شما اپلیکیشن موبایل MetaMask را برای بار اول باز کرده اید، فقط گام ها را در موبایل تان دنبال نمایید."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "این کود را با اپلیکیشن موبایل MetaMask سکن نمایید"
-  },
-  "syncWithMobileTitle": {
-    "message": "همگام سازی با موبایل"
-  },
   "terms": {
     "message": "شرایط استفاده"
   },
@@ -833,10 +806,6 @@
   },
   "transferFrom": {
     "message": "انتقال از"
-  },
-  "troubleTokenBalances": {
-    "message": "ما در بارگیری صورت حساب های رمزیاب تان دچار مشکل شدیم. شما میتوانید آنها را مشاهده کنید",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "امتحان مجدد"

@@ -14,20 +14,40 @@ import {
 import { MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 
-export function showInteractiveReplacementTokenBanner(
-  url: string,
-  oldRefreshToken: string,
-) {
-  return () => {
-    callBackgroundMethod(
-      'showInteractiveReplacementTokenBanner',
-      [url, oldRefreshToken],
-      (err) => {
-        if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
-        }
-      },
-    );
+export function showInteractiveReplacementTokenBanner({
+  url,
+  oldRefreshToken,
+}: {
+  url: string;
+  oldRefreshToken: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch) => {
+    try {
+      await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
+        url,
+        oldRefreshToken,
+      ]);
+    } catch (err: any) {
+      if (err) {
+        dispatch(displayWarning(err.message));
+        throw new Error(err.message);
+      }
+    }
+  };
+}
+
+export function setTypedMessageInProgress(msgId: string) {
+  return async (dispatch: any) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
+    } catch (error: any) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -45,7 +65,7 @@ export function mmiActionsFactory() {
     loadingText?: string,
   ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
     log.debug(`background.${name}`);
-    return async (dispatch) => {
+    return async (dispatch: any) => {
       if (loadingText) {
         dispatch(showLoadingIndication(loadingText));
       }

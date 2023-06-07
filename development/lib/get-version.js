@@ -1,5 +1,5 @@
 const { version: manifestVersion } = require('../../package.json');
-const { BuildType } = require('./build-type');
+const { loadBuildTypesConfig } = require('./build-type');
 
 /**
  * Get the current version of the MetaMask extension. The base manifest version
@@ -8,14 +8,14 @@ const { BuildType } = require('./build-type');
  * The build version is needed because certain build types (such as beta) may
  * be released multiple times during the release process.
  *
- * @param {BuildType} buildType - The build type.
+ * @param {string} buildType - The build type.
  * @param {number} buildVersion - The build version.
  * @returns {string} The MetaMask extension version.
  */
 function getVersion(buildType, buildVersion) {
-  return buildType === BuildType.main || buildType === BuildType.beta
-    ? manifestVersion
-    : `${manifestVersion}-${buildType}.${buildVersion}`;
+  return loadBuildTypesConfig().buildTypes[buildType].isPrerelease === true
+    ? `${manifestVersion}-${buildType}.${buildVersion}`
+    : manifestVersion;
 }
 
 module.exports = { getVersion };

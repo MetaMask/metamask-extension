@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  DAPP_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Sign in with ethereum', function () {
@@ -36,7 +41,7 @@ describe('Sign in with ethereum', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Create a signin with ethereum request in test dapp
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement('#siwe');
 
         // Wait for signature request popup and check the message title
@@ -51,7 +56,7 @@ describe('Sign in with ethereum', function () {
         );
         const origin = await driver.findElement('.site-origin');
         assert.equal(await title.getText(), 'Sign-in request');
-        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await origin.getText(), DAPP_URL);
 
         const displayedMessageTitle = await driver.findElement(
           '.permissions-connect-header__subtitle',

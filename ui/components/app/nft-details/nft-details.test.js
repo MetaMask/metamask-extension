@@ -170,7 +170,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0x1',
           },
         },
@@ -200,8 +200,15 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0x89',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+            },
           },
         },
       };
@@ -230,7 +237,7 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0xaa36a7',
           },
         },
@@ -260,8 +267,15 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0x99',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x99',
+              nickname: 'Custom Mainnet RPC',
+            },
           },
         },
       };

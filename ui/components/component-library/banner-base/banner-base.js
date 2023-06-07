@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ButtonIcon, ButtonLink, Text } from '..';
-import { IconName } from '../icon';
-
-import Box from '../../ui/box';
 
 import {
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ButtonLink, Text, IconName, ButtonIcon } from '..';
 
 export const BannerBase = ({
   className,
@@ -32,7 +32,7 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       gap={2}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.SM}

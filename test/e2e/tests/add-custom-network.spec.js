@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -33,7 +38,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x1",
@@ -111,7 +116,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x123",
@@ -176,7 +181,7 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.executeScript(`
           var params = [{
             chainId: "0x123",
@@ -236,21 +241,23 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ tag: 'div', text: 'Settings' });
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
+
         await driver.clickElement({ tag: 'button', text: 'Add network' });
-
         await driver.clickElement({
           tag: 'button',
           text: 'Add',
         });
+
         // verify network details
         const title = await driver.findElement({
           tag: 'h6',
           text: 'Arbitrum One',
         });
+
         assert.equal(
           await title.getText(),
           'Arbitrum One',
@@ -298,7 +305,7 @@ describe('Custom network', function () {
         });
         // verify network switched
         const networkDisplayed = await driver.findElement({
-          tag: 'span',
+          tag: 'p',
           text: 'Arbitrum One',
         });
         assert.equal(
@@ -322,10 +329,10 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ tag: 'div', text: 'Settings' });
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ tag: 'button', text: 'Add network' });
 
         // had to put all Add elements in list since list is changing and networks are not always in same order
@@ -342,11 +349,13 @@ describe('Custom network', function () {
         });
 
         // verify if added network is in list of networks
-        const networkDisplay = await driver.findElement('.network-display');
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
         await networkDisplay.click();
 
         const arbitrumNetwork = await driver.findElements({
-          text: `Arbitrum One`,
+          text: 'Arbitrum One',
           tag: 'span',
         });
         assert.ok(arbitrumNetwork.length, 1);
@@ -378,12 +387,14 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Networks', tag: 'div' });
 
         const arbitrumNetwork = await driver.clickElement({
-          text: `Arbitrum One`,
+          text: 'Arbitrum One',
           tag: 'div',
         });
 
@@ -392,7 +403,9 @@ describe('Custom network', function () {
           text: 'Delete',
         });
 
-        await driver.findElement('.modal-container__footer');
+        await driver.waitForSelector('.modal-container__footer', {
+          timeout: 15000,
+        });
         // should be deleted from the modal shown again to complete  deletion custom network
         await driver.clickElement({
           tag: 'button',

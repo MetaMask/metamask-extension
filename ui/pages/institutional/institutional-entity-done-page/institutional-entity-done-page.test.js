@@ -19,7 +19,7 @@ const render = () => {
   const store = configureStore({
     ...mockState,
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },

@@ -28,11 +28,14 @@ export default class PermissionPageContainerContent extends PureComponent {
   };
 
   renderRequestedPermissions() {
-    const { selectedPermissions } = this.props;
+    const { selectedPermissions, subjectMetadata } = this.props;
 
     return (
       <div className="permission-approval-container__content__requested">
-        <PermissionsConnectPermissionList permissions={selectedPermissions} />
+        <PermissionsConnectPermissionList
+          permissions={selectedPermissions}
+          targetSubjectMetadata={subjectMetadata}
+        />
       </div>
     );
   }

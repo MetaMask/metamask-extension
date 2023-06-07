@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask', function () {
@@ -31,7 +31,7 @@ describe('MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         const networkDiv = await driver.waitForSelector({
           css: '#network',
           text: '1337',
@@ -46,7 +46,7 @@ describe('MetaMask', function () {
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindow(windowHandles[0]);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -83,7 +83,7 @@ describe('MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(
             await driver.executeAsyncScript(`

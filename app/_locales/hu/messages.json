@@ -154,9 +154,6 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
@@ -192,9 +189,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"
@@ -734,27 +728,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "A szimbólum 0 és 12 karakter között kell legyen."
   },
-  "syncWithMobile": {
-    "message": "Szinkronizálás telefonnal"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Győződjön meg arról, hogy senki nem látja a képernyőt, amikor beolvassa ezt a kódot"
-  },
-  "syncWithMobileComplete": {
-    "message": "Adatai szinkronizálása sikerült. Élvezze a MetaMask mobilalkalmazást!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Szinkronizálhatja fiókjait és adatait a mobilkészülékkel. Nyissa meg a MetaMask mobilalkalmazást, lépjen a \"Beállítások\" elemre, majd koppintson a \"Szinkronizálás a böngésző bővítményéből\" elemre."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ha most először nyitja meg a MetaMask mobilalkalmazást, kövesse a telefonon megadott lépéseket."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Olvasd be ezt a kódot MetaMask mobilalkalmazásoddal"
-  },
-  "syncWithMobileTitle": {
-    "message": "Szinkronizálás mobillal"
-  },
   "terms": {
     "message": "Használati feltételek"
   },
@@ -823,10 +796,6 @@
   },
   "transferFrom": {
     "message": "Átvezetés innen: "
-  },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Újra"

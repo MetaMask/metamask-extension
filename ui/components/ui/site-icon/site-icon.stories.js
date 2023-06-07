@@ -31,7 +31,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   name: 'eth',
-  icon: './images/eth_logo.svg',
+  icon: './images/eth_logo.png',
   size: 24,
 };
 

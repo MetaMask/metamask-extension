@@ -4,11 +4,10 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { ButtonLink } from '../../component-library';
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonLink, IconName } from '../../component-library';
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,11 +42,11 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
       className={classnames('multichain-import-token-link', className)}
       {...props}
     >
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
         <ButtonLink
           size={Size.MD}
           data-testid="import-token-button"
-          startIconName={ICON_NAMES.ADD}
+          startIconName={IconName.Add}
           onClick={() => {
             history.push(IMPORT_TOKEN_ROUTE);
             trackEvent({
@@ -66,13 +65,13 @@ export const MultichainImportTokenLink = ({ className, ...props }) => {
         </ButtonLink>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         paddingBottom={4}
         paddingTop={4}
       >
         <ButtonLink
-          startIconName={ICON_NAMES.REFRESH}
+          startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
           onClick={() => detectNewTokens()}
         >

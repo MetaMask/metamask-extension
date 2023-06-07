@@ -51,7 +51,7 @@ const ConfirmImportToken = () => {
           token_contract_address: pendingToken.address,
           token_decimal_precision: pendingToken.decimals,
           unlisted: pendingToken.unlisted,
-          source: pendingToken.isCustom
+          source_connection_method: pendingToken.isCustom
             ? MetaMetricsTokenEventSource.Custom
             : MetaMetricsTokenEventSource.List,
           token_standard: TokenStandard.ERC20,

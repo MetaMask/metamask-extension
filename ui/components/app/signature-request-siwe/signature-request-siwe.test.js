@@ -52,6 +52,15 @@ const mockProps = {
   },
 };
 
+jest.mock('../ledger-instruction-field', () => {
+  return {
+    __esModule: true,
+    default: () => {
+      return <div className="mock-ledger-instruction-field" />;
+    },
+  };
+});
+
 const render = (txData = mockProps.txData) => {
   const store = configureStore(mockStoreInitialState);
 
@@ -109,5 +118,22 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
 
     expect(bannerAlert).toBeTruthy();
     expect(bannerAlert).toHaveTextContent('Deceptive site request.');
+  });
+
+  it('should not show Ledger instructions if the address is not a Ledger address', () => {
+    const { container } = render();
+    expect(
+      container.querySelector('.mock-ledger-instruction-field'),
+    ).not.toBeTruthy();
+  });
+
+  it('should show Ledger instructions if the address is a Ledger address', () => {
+    const mockTxData = cloneDeep(mockProps.txData);
+    mockTxData.msgParams.from = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+    const { container } = render(mockTxData);
+
+    expect(
+      container.querySelector('.mock-ledger-instruction-field'),
+    ).toBeTruthy();
   });
 });

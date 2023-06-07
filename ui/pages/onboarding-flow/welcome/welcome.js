@@ -6,10 +6,13 @@ import { Carousel } from 'react-responsive-carousel';
 import Mascot from '../../../components/ui/mascot';
 import Button from '../../../components/ui/button';
 import { Text } from '../../../components/component-library';
+import CheckBox from '../../../components/ui/check-box';
+import Box from '../../../components/ui/box';
 import {
   FONT_WEIGHT,
   TEXT_ALIGN,
   TextVariant,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -17,7 +20,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { setFirstTimeFlowType } from '../../../store/actions';
+import {
+  setFirstTimeFlowType,
+  setTermsOfUseLastAgreed,
+} from '../../../store/actions';
 import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
@@ -33,6 +39,7 @@ export default function OnboardingWelcome() {
   const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+  const [termsChecked, setTermsChecked] = useState(false);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -56,8 +63,23 @@ export default function OnboardingWelcome() {
         account_type: 'metamask',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
+  const toggleTermsCheck = () => {
+    setTermsChecked((currentTermsChecked) => !currentTermsChecked);
+  };
+  const termsOfUse = t('agreeTermsOfUse', [
+    <a
+      className="create-new-vault__terms-link"
+      key="create-new-vault__link-text"
+      href="https://metamask.io/terms.html"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {t('terms')}
+    </a>,
+  ]);
 
   const onImportClick = () => {
     dispatch(setFirstTimeFlowType('import'));
@@ -68,6 +90,7 @@ export default function OnboardingWelcome() {
         account_type: 'imported',
       },
     });
+    dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
 
@@ -148,10 +171,34 @@ export default function OnboardingWelcome() {
       </Carousel>
       <ul className="onboarding-welcome__buttons">
         <li>
+          <Box
+            alignItems={AlignItems.center}
+            className="onboarding__terms-of-use"
+          >
+            <CheckBox
+              id="onboarding__terms-checkbox"
+              className="onboarding__terms-checkbox"
+              dataTestId="onboarding-terms-checkbox"
+              checked={termsChecked}
+              onClick={toggleTermsCheck}
+            />
+            <label
+              className="onboarding__terms-label"
+              htmlFor="onboarding__terms-checkbox"
+            >
+              <Text variant={TextVariant.bodyMd} marginLeft={2} as="span">
+                {termsOfUse}
+              </Text>
+            </label>
+          </Box>
+        </li>
+
+        <li>
           <Button
             data-testid="onboarding-create-wallet"
             type="primary"
             onClick={onCreateClick}
+            disabled={!termsChecked}
           >
             {t('onboardingCreateWallet')}
           </Button>
@@ -161,6 +208,7 @@ export default function OnboardingWelcome() {
             data-testid="onboarding-import-wallet"
             type="secondary"
             onClick={onImportClick}
+            disabled={!termsChecked}
           >
             {t('onboardingImportWallet')}
           </Button>

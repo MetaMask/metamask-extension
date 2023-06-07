@@ -19,33 +19,39 @@ import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
-export const AvatarIcon = ({
-  size = Size.MD,
-  color = TextColor.primaryDefault,
-  backgroundColor = BackgroundColor.primaryMuted,
-  className,
-  iconProps,
-  iconName,
-  ...props
-}) => (
-  <AvatarBase
-    size={size}
-    display={DISPLAY.FLEX}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
-    color={color}
-    backgroundColor={backgroundColor}
-    borderColor={BorderColor.transparent}
-    className={classnames('mm-avatar-icon', className)}
-    {...props}
-  >
-    <Icon
-      color={IconColor.inherit}
-      name={iconName}
+export const AvatarIcon = React.forwardRef(
+  (
+    {
+      size = Size.MD,
+      color = TextColor.primaryDefault,
+      backgroundColor = BackgroundColor.primaryMuted,
+      className,
+      iconProps,
+      iconName,
+      ...props
+    },
+    ref,
+  ) => (
+    <AvatarBase
+      ref={ref}
       size={size}
-      {...iconProps}
-    />
-  </AvatarBase>
+      display={DISPLAY.FLEX}
+      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.center}
+      color={color}
+      backgroundColor={backgroundColor}
+      borderColor={BorderColor.transparent}
+      className={classnames('mm-avatar-icon', className)}
+      {...props}
+    >
+      <Icon
+        color={IconColor.inherit}
+        name={iconName}
+        size={size}
+        {...iconProps}
+      />
+    </AvatarBase>
+  ),
 );
 
 AvatarIcon.propTypes = {
@@ -73,7 +79,10 @@ AvatarIcon.propTypes = {
    * The color of the text inside the AvatarIcon
    * Defaults to TextColor.primaryDefault
    */
-  color: PropTypes.oneOf(Object.values(TextColor)),
+  color: PropTypes.oneOf([
+    ...Object.values(TextColor),
+    ...Object.values(IconColor),
+  ]),
   /**
    * Additional classNames to be added to the AvatarIcon
    */
@@ -84,3 +93,5 @@ AvatarIcon.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarIcon.displayName = 'AvatarIcon';

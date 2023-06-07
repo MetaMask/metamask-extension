@@ -1,5 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  DAPP_URL,
+  DAPP_ONE_URL,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Dapp interactions', function () {
@@ -31,14 +37,16 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
         // Lock Account
         await driver.switchToWindow(extension);
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Lock', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Lock', tag: 'div' });
 
         // Trigger Notification
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -76,17 +84,19 @@ describe('Dapp interactions', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
         extension = windowHandles[0];
 
         // Lock Account
         await driver.switchToWindow(extension);
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Lock', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+        await driver.clickElement({ text: 'Lock', tag: 'div' });
 
         // Connect to Dapp1
-        await driver.openNewPage('http://127.0.0.1:8081/');
+        await openDapp(driver, null, DAPP_ONE_URL);
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(4);
         windowHandles = await driver.getAllWindowHandles();
@@ -111,11 +121,11 @@ describe('Dapp interactions', function () {
         );
         await driver.clickElement({ text: 'Connected sites', tag: 'div' });
         const connectedDapp1 = await driver.isElementPresent({
-          text: 'http://127.0.0.1:8080',
+          text: DAPP_URL,
           tag: 'bdi',
         });
         const connectedDapp2 = await driver.isElementPresent({
-          text: 'http://127.0.0.1:8081',
+          text: DAPP_ONE_URL,
           tag: 'bdi',
         });
 
