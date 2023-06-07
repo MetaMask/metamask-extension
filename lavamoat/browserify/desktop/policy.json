@@ -1687,6 +1687,7 @@
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
         "browserify>events": true,
+        "eth-rpc-errors": true,
         "eth-sig-util": true,
         "ethereumjs-util": true,
         "uuid": true
