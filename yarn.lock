@@ -4350,21 +4350,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@patch:@metamask/message-manager@npm%3A5.0.0#./.yarn/patches/@metamask-message-manager-npm-5.0.0-58c6447e25.patch::locator=metamask-crx%40workspace%3A.":
-  version: 5.0.0
-  resolution: "@metamask/message-manager@patch:@metamask/message-manager@npm%3A5.0.0#./.yarn/patches/@metamask-message-manager-npm-5.0.0-58c6447e25.patch::version=5.0.0&hash=1d64ac&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.4.0
-    "@types/uuid": ^8.3.0
-    eth-sig-util: ^3.0.0
-    ethereumjs-util: ^7.0.10
-    jsonschema: ^1.2.4
-    uuid: ^8.3.2
-  checksum: 57900d58eead74e98dd63a3e53820d3557ac5d83419b0edbef82094eb5eabc41561dab5ff4c6e99078a6a653e61d35edee74d1cdac5e2f7ecc83883fa585b555
-  languageName: node
-  linkType: hard
-
 "@metamask/metamask-eth-abis@npm:3.0.0, @metamask/metamask-eth-abis@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/metamask-eth-abis@npm:3.0.0"
@@ -4680,9 +4665,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/signature-controller@npm:3.0.0"
   dependencies:
     "@metamask/approval-controller": ^3.0.0
     "@metamask/base-controller": ^3.0.0
