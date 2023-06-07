@@ -1,9 +1,11 @@
 import React from 'react';
+import { Severity } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
+
 import IconBorder from './icon-border';
 
 export default {
   title: 'Components/UI/IconBorder',
-
   component: IconBorder,
   argTypes: {
     className: {
@@ -19,10 +21,20 @@ export default {
   args: {
     className: '',
     children: 'D',
-    size: 5,
+    size: 32,
   },
 };
 
-export const DefaultStory = (args) => <IconBorder {...args} />;
+export const DefaultStory = (args) => (
+  <>
+    <BannerAlert
+      severity={Severity.Warning}
+      title="Deprecated"
+      description="<IconBorder/> has been deprecated in favour of the <AvatarBase /> component"
+      marginBottom={4}
+    />
+    <IconBorder {...args} />
+  </>
+);
 
 DefaultStory.storyName = 'Default';
