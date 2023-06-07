@@ -105,8 +105,7 @@ export default class ContactListTab extends Component {
 
     return (
       <ButtonPrimary
-        className={classnames({
-          'address-book-add-button__button': true,
+        className={classnames('address-book-add-button__button', {
           'address-book-add-button__button--hidden':
             viewingContact || editingContact,
         })}

@@ -200,14 +200,16 @@ export default class AddRecipient extends Component {
     const { addressBook } = this.props;
     return (
       <div className="send__select-recipient-wrapper__list">
-        <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
-          <Text
-            variant={TextVariant.bodyLgMedium}
-            color={TextColor.textAlternative}
-          >
-            {t('contacts')}
-          </Text>
-        </Box>
+        {addressBook.length > 0 ? (
+          <Box marginLeft={4} marginRight={4} marginTop={2} marginBottom={2}>
+            <Text
+              variant={TextVariant.bodyLgMedium}
+              color={TextColor.textAlternative}
+            >
+              {t('contacts')}
+            </Text>
+          </Box>
+        ) : null}
         <ContactList
           addressBook={addressBook}
           searchForContacts={this.searchForContacts.bind(this)}
