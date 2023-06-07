@@ -78,6 +78,9 @@ export type StylePropValueType =
   | TextAlign
   | TextAlignArray
   | TextColor
+  | TextColorArray
+  | IconColor
+  | IconColorArray
   | undefined;
 
 export interface ClassNamesObject {
@@ -169,9 +172,25 @@ export type BackgroundColorArray = [
   BackgroundColor?,
 ];
 
+export type TextColorArray = [TextColor, TextColor?, TextColor?, TextColor?];
+
+export type IconColorArray = [IconColor, IconColor?, IconColor?, IconColor?];
+
+/**
+ * Polymorphic props based on Ohans Emmanuel's article below
+ * https://blog.logrocket.com/build-strongly-typed-polymorphic-components-react-typescript/#ensuring-as-prop-only-receives-valid-html-element-strings
+ */
+
+/**
+ * Uses generic type C to create polymorphic ref type
+ */
 export type PolymorphicRef<C extends React.ElementType> =
   React.ComponentPropsWithRef<C>['ref'];
 
+/**
+ * Uses generic type C to define the type for the polymorphic "as" prop
+ * "as" can be used to override the default HTML element
+ */
 type AsProp<C extends React.ElementType> = {
   /**
    * An override of the default HTML tag.
@@ -180,8 +199,14 @@ type AsProp<C extends React.ElementType> = {
   as?: C;
 };
 
+/**
+ * Omits the as prop and props from component definition
+ */
 type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
 
+/**
+ * Accepts 2 generic types: C which represents the as prop and the component props - Props
+ */
 type PolymorphicComponentProp<
   C extends React.ElementType,
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -195,11 +220,10 @@ export type PolymorphicComponentPropWithRef<
   Props = {},
 > = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> };
 
+/**
+ * Includes all style utility props. This should be used to extend the props of a component.
+ */
 export interface StyleUtilityProps {
-  /**
-   * The content of the Box component.
-   */
-  children?: React.ReactNode;
   /**
    * The flex direction of the Box component.
    * Use the FlexDirection enum from '../../../helpers/constants/design-system';
@@ -385,11 +409,19 @@ export interface StyleUtilityProps {
    * Use TextColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  color?: TextColor | IconColor;
+  color?: TextColor | TextColorArray | IconColor | IconColorArray;
 }
-
+/**
+ * Box component props.
+ */
 interface Props extends StyleUtilityProps {
-  children: React.ReactNode;
+  /**
+   * The content of the Box component.
+   */
+  children?: React.ReactNode;
+  /**
+   * Additional className to apply to the Box component.
+   */
   className?: string;
 }
 
