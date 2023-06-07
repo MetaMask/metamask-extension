@@ -751,7 +751,7 @@
     "message": "トークンコントラクト"
   },
   "convertTokenToNFTDescription": {
-    "message": "このアセットは NFT であることが検出されました。Metamask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
+    "message": "このアセットは NFT であることが検出されました。MetaMask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
   },
   "convertTokenToNFTExistDescription": {
     "message": "このアセットは NFT として追加されていることが検出されました。トークンリストから削除しますか？"
