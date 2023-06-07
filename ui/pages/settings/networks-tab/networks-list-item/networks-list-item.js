@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
@@ -100,7 +101,7 @@ const NetworksListItem = ({
           />
         )
       )}
-      {network.isATestNetwork && (
+      {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
         <UrlIcon
           name={label || labelKey}
           fallbackClassName={classnames(
