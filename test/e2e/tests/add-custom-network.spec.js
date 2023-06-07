@@ -101,14 +101,14 @@ describe('Custom network', function () {
       },
     );
   });
-  it("don't add bad rpc custom network", async function () {
+
+  it('don’t add bad rpc custom network', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -140,16 +140,23 @@ describe('Custom network', function () {
           'MetaMask Notification',
           windowHandles,
         );
+
+        const errMsg1 = 'verify the network details';
+        await driver.findElement({
+          tag: 'a',
+          text: errMsg1,
+        });
+
         await driver.clickElement({
           tag: 'button',
           text: 'Approve',
         });
 
-        const errMsg =
+        const errMsg2 =
           'Chain ID returned by the custom network does not match the submitted chain ID.';
         await driver.findElement({
           tag: 'span',
-          text: errMsg,
+          text: errMsg2,
         });
 
         const approveBtn = await driver.findElement({
@@ -166,7 +173,7 @@ describe('Custom network', function () {
     );
   });
 
-  it("don't add unreachable custom network", async function () {
+  it('don’t add unreachable custom network', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -363,7 +370,7 @@ describe('Custom network', function () {
     );
   });
 
-  it('Add a custom network and then delete that same network', async function () {
+  it('Delete the Arbitrum network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -398,21 +405,13 @@ describe('Custom network', function () {
           tag: 'div',
         });
 
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Delete',
-        });
+        // Click first Delete button
+        await driver.clickElement('button.btn-danger');
 
-        await driver.waitForSelector('.modal-container__footer', {
-          timeout: 15000,
-        });
-        // should be deleted from the modal shown again to complete  deletion custom network
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Delete',
-        });
+        // Click modal Delete button
+        await driver.clickElement('button.btn-danger-primary');
 
-        // it checks if custom network is delete
+        // Checks if Arbitrum is deleted
         const existNetwork = await driver.isElementPresent(arbitrumNetwork);
         assert.equal(existNetwork, false, 'Network is not deleted');
       },
