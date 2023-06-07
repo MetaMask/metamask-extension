@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box/box';
@@ -19,6 +19,7 @@ import {
   BackgroundColor,
   BLOCK_SIZES,
   DISPLAY,
+  FontWeight,
   IconColor,
   JustifyContent,
   TextVariant,
@@ -26,11 +27,6 @@ import {
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
   const t = useI18nContext();
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-
-  const handleReadMoreClick = () => {
-    setIsDescriptionOpen(true);
-  };
 
   return (
     <Popover className="snap-privacy-warning">
@@ -56,46 +52,33 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <Text variant={TextVariant.headingMd}>{t('thirdPartySoftware')}</Text>
+          <Text variant={TextVariant.headingMd} fontWeight={FontWeight.Bold}>
+            {t('thirdPartySoftware')}
+          </Text>
         </Box>
         <Box className="snap-privacy-warning__message">
           <Text variant={TextVariant.bodyMd}>
-            {t('snapsPrivacyWarningFirstMessage')}
-          </Text>
-          {!isDescriptionOpen && (
-            <>
-              <Text variant={TextVariant.bodyMd} paddingTop={6}>
-                {t('snapsPrivacyWarningSecondMessage')}
-              </Text>
-              <Text
-                variant={TextVariant.bodyMd}
-                className="snap-privacy-warning__more-details"
+            {t('snapsPrivacyWarningFirstMessage', [
+              <ButtonLink
+                key="privacyNoticeTermsOfUseLink"
+                size={BUTTON_LINK_SIZES.INHERIT}
+                href="https://consensys.net/"
+                target="_blank"
               >
-                {t('click')}
-                <ButtonLink
-                  size={BUTTON_LINK_SIZES.INHERIT}
-                  onClick={handleReadMoreClick}
-                  data-testid="snapsPrivacyPopup_readMoreButton"
-                >
-                  &nbsp;{t('here')}&nbsp;
-                </ButtonLink>
-                {t('forMoreDetails')}
-              </Text>
-            </>
-          )}
-          {isDescriptionOpen && (
-            <>
-              <Text variant={TextVariant.bodyMd} paddingTop={6}>
-                {t('snapsThirdPartyNoticeReadMorePartOne')}
-              </Text>
-              <Text variant={TextVariant.bodyMd} paddingTop={6}>
-                {t('snapsThirdPartyNoticeReadMorePartTwo')}
-              </Text>
-              <Text variant={TextVariant.bodyMd} paddingTop={6}>
-                {t('snapsThirdPartyNoticeReadMorePartThree')}
-              </Text>
-            </>
-          )}
+                &nbsp;{t('snapsTermsOfUse')}&nbsp;
+              </ButtonLink>,
+            ])}
+          </Text>
+          <Text variant={TextVariant.bodyMd} paddingTop={6}>
+            {t('snapsPrivacyWarningSecondMessage')}
+          </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Bold}
+            paddingTop={6}
+          >
+            {t('snapsPrivacyWarningThirdMessage')}
+          </Text>
         </Box>
         <Box
           className="snap-privacy-warning__ok-button"
