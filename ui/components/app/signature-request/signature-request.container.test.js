@@ -100,6 +100,7 @@ describe('Signature Request', () => {
     sign: sinon.stub().resolves(),
     cancelAllApprovals: sinon.stub().resolves(),
     resolvePendingApproval: sinon.stub().resolves(),
+    completedTx: sinon.stub().resolves(),
     txData: {
       msgParams: {
         id: 1,
