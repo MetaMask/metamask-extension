@@ -97,7 +97,7 @@ describe('Test Snap networkAccess', function () {
 
         // click ok button
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
       },

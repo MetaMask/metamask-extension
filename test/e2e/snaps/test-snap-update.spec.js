@@ -55,6 +55,8 @@ describe('Test Snap update', function () {
 
         await driver.waitForSelector({ text: 'Install' });
 
+        await driver.clickElement('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
@@ -104,6 +106,8 @@ describe('Test Snap update', function () {
         );
 
         await driver.waitForSelector({ text: 'Update' });
+
+        await driver.clickElement('[data-testid="snap-update-scroll"]');
 
         await driver.clickElement({
           text: 'Update',
