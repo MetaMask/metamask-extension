@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
@@ -43,6 +42,7 @@ import {
   showModal,
   resolvePendingApproval,
   rejectPendingApproval,
+  rejectAllMessages,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   goHome,
   ///: END:ONLY_INCLUDE_IN
@@ -166,17 +166,7 @@ mapDispatchToProps = function (dispatch) {
       );
     },
     cancelAllApprovals: (unconfirmedMessagesList) => {
-      return Promise.all(
-        unconfirmedMessagesList.map(
-          async ({ id }) =>
-            await dispatch(
-              rejectPendingApproval(
-                id,
-                serializeError(ethErrors.provider.userRejectedRequest()),
-              ),
-            ),
-        ),
-      );
+      dispatch(rejectAllMessages(unconfirmedMessagesList));
     },
   };
 };

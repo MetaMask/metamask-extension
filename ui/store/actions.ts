@@ -4,6 +4,7 @@ import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
 import {
   AssetsContractController,
@@ -3432,6 +3433,29 @@ export function rejectPendingApproval(
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
+  };
+}
+
+/**
+ * Rejects all approvals for the given messages
+ *
+ * @param messageList - The list of messages to reject
+ */
+export function rejectAllMessages(
+  messageList: TemporaryMessageDataType[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    return Promise.all(
+      messageList.map(
+        async ({ id }) =>
+          await dispatch(
+            rejectPendingApproval(
+              id,
+              serializeError(ethErrors.provider.userRejectedRequest()),
+            ),
+          ),
+      ),
+    );
   };
 }
 

@@ -1,13 +1,12 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { ethErrors, serializeError } from 'eth-rpc-errors';
-
 import {
   goHome,
   showModal,
   resolvePendingApproval,
   rejectPendingApproval,
+  rejectAllMessages,
 } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
@@ -76,17 +75,7 @@ function mapDispatchToProps(dispatch) {
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
     cancelAllApprovals: (messagesList) => {
-      return Promise.all(
-        messagesList.map(
-          async ({ id }) =>
-            await dispatch(
-              rejectPendingApproval(
-                id,
-                serializeError(ethErrors.provider.userRejectedRequest()),
-              ),
-            ),
-        ),
-      );
+      dispatch(rejectAllMessages(messagesList));
     },
   };
 }

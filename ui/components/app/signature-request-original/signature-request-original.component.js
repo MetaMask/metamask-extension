@@ -62,7 +62,6 @@ export default class SignatureRequestOriginal extends Component {
     cancelAllApprovals: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
-    providerConfig: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
