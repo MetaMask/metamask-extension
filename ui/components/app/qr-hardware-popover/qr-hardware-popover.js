@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { getCurrentQRHardwareState } from '../../../selectors';
 import Popover from '../../ui/popover';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -7,6 +8,7 @@ import {
   cancelSyncQRHardware as cancelSyncQRHardwareAction,
   cancelQRHardwareSignRequest as cancelQRHardwareSignRequestAction,
   cancelTx,
+  rejectPendingApproval,
 } from '../../../store/actions';
 import QRHardwareWalletImporter from './qr-hardware-wallet-importer';
 import QRHardwareSignRequest from './qr-hardware-sign-request';
@@ -39,6 +41,12 @@ const QRHardwarePopover = () => {
   );
 
   const signRequestCancel = useCallback(() => {
+    dispatch(
+      rejectPendingApproval(
+        _txData.id,
+        serializeError(ethErrors.provider.userRejectedRequest()),
+      ),
+    );
     dispatch(cancelTx(_txData));
     dispatch(cancelQRHardwareSignRequestAction());
   }, [dispatch, _txData]);
