@@ -165,7 +165,13 @@
       }
     },
     "frequentRpcListDetail": [],
-    "subjectMetadata": {},
+    "subjectMetadata": {
+      "npm:@metamask/test-snap-bip44": {
+        "name": "@metamask/test-snap-bip44",
+        "version": "1.2.3",
+        "subjectType": "snap"
+      }
+    },
     "notifications": {
       "test": {
         "id": "test",
