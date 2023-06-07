@@ -303,31 +303,41 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
-    let ipfsError = '';
+    const { ipfsGatewayError } = this.state;
+
+    const handleIpfsGatewaySave = (gateway) => {
+      const url = new URL(addUrlProtocolPrefix(gateway));
+      const { host } = url;
+
+      this.props.setIpfsGateway(host);
+    };
 
     const handleIpfsGatewayChange = (url) => {
-      if (url.length > 0) {
+      this.setState(() => {
+        let ipfsError = '';
+
         try {
           const urlObj = new URL(addUrlProtocolPrefix(url));
+          if (!urlObj.host) {
+            throw new Error();
+          }
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            ipfsError = t('forbiddenIpfsGateway');
-          }
-
-          if (ipfsError.length === 0) {
-            this.props.setIpfsGateway(urlObj.host);
+            throw new Error('Forbidden gateway');
           }
         } catch (error) {
-          ipfsError = t('invalidIpfsGateway');
+          ipfsError =
+            error.message === 'Forbidden gateway'
+              ? t('forbiddenIpfsGateway')
+              : t('invalidIpfsGateway');
         }
-      } else {
-        ipfsError = t('invalidIpfsGateway');
-      }
 
-      this.setState({
-        ipfsGateway: url,
-        ipfsGatewayError: ipfsError,
+        handleIpfsGatewaySave(url);
+        return {
+          ipfsGateway: url,
+          ipfsGatewayError: ipfsError,
+        };
       });
     };
 
@@ -349,7 +359,7 @@ export default class SecurityTab extends PureComponent {
               type="text"
               value={this.state.ipfsGateway}
               onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-              error={this.state.ipfsGatewayError}
+              error={ipfsGatewayError}
               fullWidth
               margin="dense"
             />

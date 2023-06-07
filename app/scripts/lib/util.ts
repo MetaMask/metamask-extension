@@ -235,13 +235,10 @@ export function previousValueComparator<A>(
 }
 
 export function addUrlProtocolPrefix(urlString: string) {
-  const trimmed = urlString.trim();
-
-  if (trimmed.length > 0 && !trimmed.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${trimmed}`;
+  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+    return `https://${urlString}`;
   }
-
-  return trimmed;
+  return urlString;
 }
 
 interface FormattedTransactionMeta {
