@@ -55,6 +55,8 @@ describe('Test Snap RPC', function () {
 
         await driver.waitForSelector({ text: 'Install' });
 
+        await driver.clickElement('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Install',
           tag: 'button',

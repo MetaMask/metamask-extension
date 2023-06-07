@@ -1371,6 +1371,9 @@
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
   },
+  "enabled": {
+    "message": "Enabled"
+  },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
     "description": "$1 is the web3 site name"
@@ -3777,10 +3780,6 @@
     "message": "Install snap"
   },
   "snapInstallRequest": {
-    "message": "$1 wants to install $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
-  },
-  "snapInstallRequestsPermission": {
     "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
     "description": "$1 is the snap name."
   },
