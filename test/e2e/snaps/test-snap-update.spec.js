@@ -53,10 +53,12 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElement('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
@@ -72,10 +74,10 @@ describe('Test Snap update', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -105,15 +107,17 @@ describe('Test Snap update', function () {
 
         await driver.waitForSelector({ text: 'Update' });
 
+        await driver.clickElement('[data-testid="snap-update-scroll"]');
+
         await driver.clickElement({
           text: 'Update',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
