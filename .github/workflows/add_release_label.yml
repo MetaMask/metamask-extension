@@ -46,6 +46,12 @@ jobs:
           # Increment the minor version of the highest version found
           NEXT_VERSION=$(echo $HIGHEST_VERSION | awk -F. -v OFS=. '{$2++; print}')
 
+          # Check if FORCE_NEXT_SEMVER_VERSION is defined and not empty
+          if [ ! -z "${{ vars.FORCE_NEXT_SEMVER_VERSION }}" ]
+          then
+            NEXT_VERSION=${{ vars.FORCE_NEXT_SEMVER_VERSION }}
+          fi
+
           echo "NEXT_SEMVER_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
 
       - name: Add release label to PR and linked issues
