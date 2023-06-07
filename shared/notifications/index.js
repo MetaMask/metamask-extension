@@ -106,6 +106,10 @@ export const UI_NOTIFICATIONS = {
     id: 20,
     date: null,
   },
+  21: {
+    id: 21,
+    date: null,
+  },
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
