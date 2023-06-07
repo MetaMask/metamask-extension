@@ -7,6 +7,7 @@ import {
   resolvePendingApproval,
   rejectPendingApproval,
   rejectAllMessages,
+  completedTx,
 } from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
@@ -69,6 +70,7 @@ function mapDispatchToProps(dispatch) {
         }),
       );
     },
+    completedTx: (txId) => dispatch(completedTx(txId)),
     resolvePendingApproval: (id) => {
       dispatch(resolvePendingApproval(id));
     },

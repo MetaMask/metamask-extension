@@ -43,6 +43,7 @@ import {
   resolvePendingApproval,
   rejectPendingApproval,
   rejectAllMessages,
+  completedTx,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   goHome,
   ///: END:ONLY_INCLUDE_IN
@@ -149,6 +150,7 @@ mapDispatchToProps = mmiMapDispatchToProps;
 mapDispatchToProps = function (dispatch) {
   return {
     resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    completedTx: (id) => dispatch(completedTx(id)),
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),

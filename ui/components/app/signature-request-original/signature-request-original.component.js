@@ -237,10 +237,12 @@ export default class SignatureRequestOriginal extends Component {
       history,
       mostRecentOverviewPage,
       resolvePendingApproval,
+      completedTx,
       txData: { id },
     } = this.props;
 
     await resolvePendingApproval(id);
+    completedTx(id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };

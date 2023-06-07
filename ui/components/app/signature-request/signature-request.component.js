@@ -186,6 +186,7 @@ export default class SignatureRequest extends PureComponent {
       unapprovedMessagesCount,
       resolvePendingApproval,
       rejectPendingApproval,
+      completedTx,
     } = this.props;
 
     const { t, trackEvent } = this.context;
@@ -221,6 +222,7 @@ export default class SignatureRequest extends PureComponent {
 
     const onSign = async () => {
       await resolvePendingApproval(id);
+      completedTx(id);
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       if (this.props.mmiOnSignCallback) {
         await this.props.mmiOnSignCallback(txData);

@@ -29,6 +29,7 @@ import {
 import {
   resolvePendingApproval,
   rejectPendingApproval,
+  completedTx,
 } from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
@@ -86,6 +87,7 @@ export default function SignatureRequestSIWE({ txData }) {
   const onSign = useCallback(async () => {
     try {
       await dispatch(resolvePendingApproval(id, null));
+      dispatch(completedTx(id));
     } catch (e) {
       log.error(e);
     }
