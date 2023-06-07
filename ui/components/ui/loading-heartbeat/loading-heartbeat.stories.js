@@ -1,5 +1,5 @@
 import React from 'react';
-import LoadingHeartBeat from './index';
+import LoadingHeartBeat from '.';
 
 export default {
   title: 'Components/UI/LoadingHeartBeat',
