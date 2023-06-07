@@ -90,7 +90,7 @@ describe('Test Snap Cronjob', function () {
 
         // try to click on the Ok button and pass test if it works
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
       },
