@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
+import SnapAuthorshipExpanded from '../../../../components/app/snaps/snap-authorship-expanded';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
@@ -124,7 +124,7 @@ function ViewSnap() {
       paddingLeft={4}
       paddingRight={4}
     >
-      <SnapAuthorship snapId={snap.id} snap={snap} expanded />
+      <SnapAuthorshipExpanded snapId={snap.id} snap={snap} />
       <Box className="view-snap__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <Box
