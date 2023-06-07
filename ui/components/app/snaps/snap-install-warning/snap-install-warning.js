@@ -12,6 +12,7 @@ import {
   TextAlign,
   Size,
   JustifyContent,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
@@ -99,8 +100,24 @@ export default function SnapInstallWarning({
       </Text>
       <Text paddingBottom={6} textAlign={TextAlign.Center}>
         {warnings.length > 1
-          ? t('snapInstallWarningCheckPlural', [snapName])
-          : t('snapInstallWarningCheck', [snapName])}
+          ? t('snapInstallWarningCheckPlural', [
+              <Text
+                key="snapNameInWarningDescription"
+                fontWeight={FontWeight.Medium}
+                as="span"
+              >
+                {snapName}
+              </Text>,
+            ])
+          : t('snapInstallWarningCheck', [
+              <Text
+                key="snapNameInWarningDescription"
+                fontWeight={FontWeight.Medium}
+                as="span"
+              >
+                {snapName}
+              </Text>,
+            ])}
       </Text>
       {warnings.map((warning, i) => (
         <div
