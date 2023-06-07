@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { fireEvent } from '@testing-library/react';
 
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../../test/jest';
@@ -233,6 +234,70 @@ describe('Confirm Transaction Base', () => {
       store,
     );
     expect(getByTestId('transaction-note')).toBeInTheDocument();
+  });
+
+  it('handleMainSubmit calls sendTransaction with correct arguments', async () => {
+    const newMockedStore = {
+      ...mockedStore,
+      appState: {
+        ...mockedStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      metamask: {
+        ...mockedStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        networkDetails: {
+          ...mockedStore.metamask.networkDetails,
+          EIPS: {
+            1559: true,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+      },
+      send: {
+        ...mockedStore.send,
+        gas: {
+          ...mockedStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+    const store = configureMockStore(middleware)(newMockedStore);
+    const sendTransaction = jest.fn().mockResolvedValue();
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase
+        actionKey="confirm"
+        sendTransaction={sendTransaction}
+        toAddress={mockPropsToAddress}
+        toAccounts={[{ address: mockPropsToAddress }]}
+      />,
+      store,
+    );
+    const confirmButton = getByTestId('page-container-footer-next');
+    fireEvent.click(confirmButton);
+    expect(sendTransaction).toHaveBeenCalled();
   });
 
   describe('when rendering the recipient value', () => {
