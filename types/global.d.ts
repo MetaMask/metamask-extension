@@ -7,6 +7,13 @@ declare class Platform {
 
   closeCurrentWindow: () => void;
 }
+
 export declare global {
   var platform: Platform;
+
+  namespace jest {
+    interface Matchers<R> {
+      toBeFulfilled(): Promise<R>;
+    }
+  }
 }
