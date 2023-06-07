@@ -20,6 +20,7 @@ import {
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+
 import {
   SEVERITIES,
   TextVariant,
@@ -31,6 +32,8 @@ import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-pa
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { showModal, cancelMsgs } from '../../../store/actions';
 import LedgerInstructionField from '../ledger-instruction-field';
+
+import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
@@ -41,6 +44,7 @@ export default function SignatureRequestSIWE({
 }) {
   const dispatch = useDispatch();
   const history = useHistory();
+  const t = useContext(I18nContext);
 
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
@@ -61,8 +65,6 @@ export default function SignatureRequestSIWE({
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
-
-  const t = useContext(I18nContext);
 
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
@@ -125,6 +127,7 @@ export default function SignatureRequestSIWE({
       <div className="request-signature__navigation">
         <ConfirmPageContainerNavigation />
       </div>
+      <SignatureRequestHeader txData={txData} />
       <Header
         fromAccount={fromAccount}
         domain={origin}

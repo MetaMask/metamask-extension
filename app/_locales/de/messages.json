@@ -359,12 +359,6 @@
     "message": "Erlauben Sie den Zugriff auf und die Übertragung von all Ihren $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Genehmigen und installieren"
-  },
-  "approveAndUpdate": {
-    "message": "Genehmigen & aktualisieren"
-  },
   "approveButtonText": {
     "message": "Genehmigen"
   },
@@ -642,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Konto verbinden oder Neues erstellen"
   },
-  "connectHardwareWallet": {
-    "message": "Hardware-Wallet verknüpfen"
-  },
   "connectManually": {
     "message": "Manuelle Verbindung zur aktuellen Site"
   },
@@ -788,9 +779,6 @@
   },
   "create": {
     "message": "Erstellen"
-  },
-  "createAccount": {
-    "message": "Konto erstellen"
   },
   "createNewWallet": {
     "message": "Eine neue Wallet erstellen"
@@ -1636,9 +1624,6 @@
   "importTokenWarning": {
     "message": "Jeder kann ein Token mit beliebigem Namen erstellen, einschließlich gefälschter Versionen bestehender Token. Hinzufügen und Handeln auf eigene Gefahr!"
   },
-  "importTokens": {
-    "message": "Token importieren"
-  },
   "importTokensCamelCase": {
     "message": "Token importieren"
   },
@@ -1990,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Hier anfragen"
   },
-  "missingToken": {
-    "message": "Sie sehen Ihren Token nicht?"
-  },
   "moreComingSoon": {
     "message": "Mehr in Kürze ..."
   },
@@ -2235,9 +2217,6 @@
   "notEnoughGas": {
     "message": "Nicht genügend Gas"
   },
-  "notifications": {
-    "message": "Benachrichtigungen"
-  },
   "notifications10ActionText": {
     "message": "Einstellungen ansehen",
     "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
@@ -2309,7 +2288,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
   },
   "notifications3Description": {
-    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen Metamask-Supports.",
+    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen MetaMask-Supports.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
   },
   "notifications3Title": {
@@ -3214,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Wählen Sie dies aus, um das Hexdatenfeld auf dem Senden-Bildschirm anzuzeigen"
   },
-  "showHide": {
-    "message": "Ein-/Ausblenden"
-  },
   "showIncomingTransactions": {
     "message": "Eingehende Transaktionen anzeigen"
   },
@@ -3415,9 +3391,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Verbinden"
   },
   "statusNotConnected": {
     "message": "Nicht verbunden"
@@ -3923,10 +3896,6 @@
   "toggleEthSignField": {
     "message": "eth_sign-Anfragen ein- oder ausschalten"
   },
-  "toggleTestNetworks": {
-    "message": "$1 Test-Netzwerke",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4105,10 +4074,6 @@
   },
   "troubleStarting": {
     "message": "Beim Starten von MetaMask ist ein Problem aufgetreten. Dies könnte ein vorübergehendes Problem sein. Versuchen Sie daher, die Erweiterung neu zu starten."
-  },
-  "troubleTokenBalances": {
-    "message": "Wir haben Schwierigkeiten dein Tokenguthaben zu laden. Du kannst es hier anzeigen lassen",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Durch Erteilung der Erlaubnis erlauben Sie den folgenden $1 Zugriff auf Ihr Guthaben"

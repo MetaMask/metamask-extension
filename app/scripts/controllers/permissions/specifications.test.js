@@ -144,7 +144,7 @@ describe('PermissionController specifications', () => {
       const permissionSpecifications = getPermissionSpecifications({});
       expect(Object.keys(permissionSpecifications)).toHaveLength(1);
       expect(
-        permissionSpecifications[RestrictedMethods.eth_accounts].targetKey,
+        permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
     });
 
