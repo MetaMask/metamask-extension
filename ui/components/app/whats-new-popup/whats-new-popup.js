@@ -15,6 +15,7 @@ import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import {
   BUILD_QUOTE_ROUTE,
+  PREPARE_SWAP_ROUTE,
   ADVANCED_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
@@ -84,6 +85,10 @@ function getActionFunctionById(id, history) {
       global.platform.openTab({
         url: ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE,
       });
+    },
+    21: () => {
+      updateViewedNotifications({ 21: true });
+      history.push(PREPARE_SWAP_ROUTE);
     },
   };
 
