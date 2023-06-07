@@ -1,18 +1,18 @@
 .snaps-connect {
-  &__content {
+  &__content, &__error {
     &__icons {
-      &__connection-line {
-        border: 1.11667px dashed var(--brand-colors-grey-grey200);
-        width: auto;
+      &__site-icon {
+        padding-right: 4px;
       }
-    }
-  }
 
-  &__error {
-    &__icons {
       &__connection-line {
         border: 1.11667px dashed var(--brand-colors-grey-grey200);
-        width: auto;
+        width: 51.66px;
+        height: 0px;
+      }
+
+      &__snap {
+         padding-left: 4px;
       }
     }
   }

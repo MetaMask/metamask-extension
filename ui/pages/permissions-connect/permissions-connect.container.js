@@ -87,7 +87,7 @@ const mapStateToProps = (state, ownProps) => {
     requestType = 'wallet_connectSnaps';
   }
 
-  const requestState = getRequestState(state, permissionsRequestId);
+  const requestState = getRequestState(state, permissionsRequestId) || {};
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);

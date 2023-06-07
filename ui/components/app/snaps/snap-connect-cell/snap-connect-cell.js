@@ -8,6 +8,7 @@ import {
   AlignItems,
   TextColor,
   DISPLAY,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
 import {
@@ -24,11 +25,7 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default function SnapConnectCell({
-  origin = '',
-  iconUrl = '',
-  snapId = '',
-}) {
+export default function SnapConnectCell({ origin, iconUrl, snapId }) {
   const t = useI18nContext();
   const friendlyName = getSnapName(snapId);
   const SnapConnectAvatar = () => {
@@ -68,15 +65,15 @@ export default function SnapConnectCell({
 
   return (
     <Box
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.flexStart}
+      alignItems={AlignItems.center}
       marginLeft={4}
       marginRight={4}
       paddingTop={2}
       paddingBottom={2}
+      display={Display.Flex}
     >
       <SnapConnectAvatar />
-      <Box width="full">
+      <Box width="full" marginLeft={4} marginRight={4}>
         <Text>{t('connectSnap', [friendlyName])}</Text>
       </Box>
       <Box>
