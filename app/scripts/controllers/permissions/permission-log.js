@@ -13,8 +13,6 @@ import {
   WALLET_PREFIX,
 } from './enums';
 
-
-
 export function metamaskControllerArgumentConstructor({
   isFirstMetaMaskControllerSetup = false,
   storageMock,
@@ -29,7 +27,7 @@ export function metamaskControllerArgumentConstructor({
       getVersion: () => 'foo',
     },
     browser: browserPolyfillMock({ storageMock }),
-    infuraProjectId: INFURA_PROJECT_ID,
+    infuraProjectId: process.env.INFURA_PROJECT_ID,
     isFirstMetaMaskControllerSetup,
   };
 }

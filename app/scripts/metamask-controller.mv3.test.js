@@ -1,4 +1,4 @@
-import { metamaskControllerArgumentConstructor } from "../../test/helpers/metamask-controller";
+import { metamaskControllerArgumentConstructor } from '../../test/helpers/metamask-controller';
 
 let loggerMiddlewareMock;
 

@@ -67,7 +67,7 @@ jest.mock('@metamask/rpc-methods', () => {
   return require('@metamask/rpc-methods-flask');
 });
 
-const MetaMaskController = require('./metamask-controller').default;
+// const MetaMaskController = require('./metamask-controller').default;
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
