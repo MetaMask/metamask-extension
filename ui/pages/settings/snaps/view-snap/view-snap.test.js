@@ -48,7 +48,7 @@ describe('ViewSnap', () => {
     // Snap version info
     expect(getByText('v5.1.2')).toBeDefined();
     // Enable Snap
-    expect(getByText('Enable')).toBeDefined();
+    expect(getByText('Enabled')).toBeDefined();
     expect(container.getElementsByClassName('toggle-button')?.length).toBe(1);
     // Permissions
     expect(getByText('Permissions')).toBeDefined();
