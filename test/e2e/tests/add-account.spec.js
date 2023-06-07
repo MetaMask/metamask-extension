@@ -208,7 +208,7 @@ describe('Add account', function () {
         );
         assert.equal(menuItems.length, 2);
 
-        // User cannot delete 2nd account
+        // User cannot delete 2nd account generated from the SRP imported in onboarding
         await driver.clickElement(
           '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
         );
@@ -229,7 +229,7 @@ describe('Add account', function () {
         );
         assert.equal(await thirdAccountCreated.getText(), 'Account 3');
 
-        // User can delete 3rd account
+        // User can delete 3rd account imported with a private key
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const importedMenuItems = await driver.findElements(
           '.multichain-account-list-item',
