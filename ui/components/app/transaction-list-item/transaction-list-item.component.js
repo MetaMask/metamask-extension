@@ -18,14 +18,17 @@ import {
   Display,
   IconColor,
   Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
+  ButtonPrimary,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
 
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
@@ -54,7 +57,7 @@ import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import SiteOrigin from '../../ui/site-origin';
+import Box from '../../ui/box/box';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -127,8 +130,6 @@ function TransactionListItemInner({
 
   const {
     title,
-    subtitle,
-    subtitleContainsOrigin,
     date,
     category,
     primaryCurrency,
@@ -189,13 +190,12 @@ function TransactionListItemInner({
     }
 
     return (
-      <Button
-        type="primary"
+      <ButtonPrimary
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
         style={hasCancelled ? { width: 'auto' } : null}
       >
         {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
-      </Button>
+      </ButtonPrimary>
     );
   }, [
     shouldShowSpeedUp,
@@ -241,7 +241,7 @@ function TransactionListItemInner({
         icon={
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isCustodian ? (
-            <div style={{ position: 'relative' }} data-testid="custody-icon">
+            <Box style={{ position: 'relative' }} data-testid="custody-icon">
               <TransactionIcon
                 category={category}
                 status={displayedStatusKey}
@@ -252,7 +252,7 @@ function TransactionListItemInner({
                 color={getTransactionColor(status)}
                 size={IconSize.Xs}
               />
-            </div>
+            </Box>
           ) : (
             ///: END:ONLY_INCLUDE_IN
             <BadgeWrapper
@@ -280,56 +280,52 @@ function TransactionListItemInner({
           )
           ///: END:ONLY_INCLUDE_IN
         }
+        topContent={date}
         subtitle={
-          <h3>
-            <TransactionStatusLabel
-              isPending={isPending}
-              isEarliestNonce={isEarliestNonce}
-              error={err}
-              date={date}
-              status={displayedStatusKey}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-              custodyStatusDisplayText={
-                transactionGroup.primaryTransaction.custodyStatusDisplayText
-              }
-              ///: END:ONLY_INCLUDE_IN
-            />
-            {subtitleContainsOrigin ? (
-              <SiteOrigin siteOrigin={subtitle} />
-            ) : (
-              <span className="transaction-list-item__address" title={subtitle}>
-                {subtitle}
-              </span>
-            )}
-          </h3>
+          <TransactionStatusLabel
+            statusOnly
+            isPending={isPending}
+            isEarliestNonce={isEarliestNonce}
+            error={err}
+            date={date}
+            status={displayedStatusKey}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+            custodyStatusDisplayText={
+              transactionGroup.primaryTransaction.custodyStatusDisplayText
+            }
+            ///: END:ONLY_INCLUDE_IN
+          />
         }
         rightContent={
           !isSignatureReq &&
           !isApproval && (
             <>
-              <h2
-                title={primaryCurrency}
+              <Text
+                variant={TextVariant.bodyLgMedium}
                 className="transaction-list-item__primary-currency"
               >
                 {primaryCurrency}
-              </h2>
-              <h3 className="transaction-list-item__secondary-currency">
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                className="transaction-list-item__secondary-currency"
+              >
                 {secondaryCurrency}
-              </h3>
+              </Text>
             </>
           )
         }
       >
-        <div className="transaction-list-item__pending-actions">
-          {speedUpButton}
+        <Box className="transaction-list-item__pending-actions">
           {showCancelButton && (
             <CancelButton
               transaction={transactionGroup.primaryTransaction}
               cancelTransaction={cancelTransaction}
             />
           )}
-        </div>
+          {speedUpButton}
+        </Box>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />

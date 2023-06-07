@@ -1,3 +1,4 @@
+//TODO: can move a lot of these to boxprops
 .transaction-list-item {
   border-top: none;
 
@@ -6,10 +7,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-
   &__secondary-currency {
-    @include H7;
-
     margin-top: 4px;
     color: var(--color-text-alternative);
   }
@@ -57,10 +55,6 @@
     text-overflow: initial;
   }
 
-  .transaction-status-label::after {
-    content: "·";
-    margin: 0 4px;
-  }
 
   &__address {
     overflow: hidden;

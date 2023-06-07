@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 export default function ListItem({
+  topContent,
   title,
   subtitle,
   onClick,
@@ -33,6 +34,9 @@ export default function ListItem({
         }
       }}
     >
+      {topContent ? (
+        <div className="list-item__top-content">{topContent}</div>
+      ) : null}
       {icon ? <div className="list-item__icon">{icon}</div> : null}
       <div className="list-item__heading">
         {React.isValidElement(title) ? (
@@ -59,6 +63,7 @@ export default function ListItem({
 }
 
 ListItem.propTypes = {
+  topContent: PropTypes.node,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   titleIcon: PropTypes.node,
   subtitle: PropTypes.node,

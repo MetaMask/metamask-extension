@@ -12,6 +12,7 @@
   display: grid;
   grid-template-columns: 0fr repeat(11, 1fr);
   grid-template-areas:
+    'top  top      top      top      top      top      top      top      top   top   top   top'
     'icon head     head     head     head     head     head     head     right right right right'
     'icon sub      sub      sub      sub      sub      sub      sub      right right right right'
     '.    actions  actions  actions  actions  actions  actions  actions  right right right right';
@@ -81,6 +82,14 @@
     }
   }
 
+  &__top-content{
+    @include H7;
+    grid-area: top;
+    color: var(--color-text-alternative);
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+
   &__mid-content {
     @include H7;
 
@@ -104,6 +113,7 @@
 
   @include screen-sm-min {
     grid-template-areas:
+      'top  top      top      top      top      top top top top top   top   top  '
       'icon head     head     head     head     mid mid mid mid right right right'
       'icon sub      sub      sub      sub      mid mid mid mid right right right'
       '.    actions  actions  actions  actions  mid mid mid mid right right right';
