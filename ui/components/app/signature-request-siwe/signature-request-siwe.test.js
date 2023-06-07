@@ -146,17 +146,27 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
     ).toBeTruthy();
   });
 
-  it('should not show multiple notifications header if there is only one unconfirmed tx', () => {
-    const store = configureStore(mockStoreInitialState);
-    const txData = cloneDeep(mockProps.txData);
+  describe('when there is only one unconfirmed tx', () => {
+    it('should not show multiple notifications header', () => {
+      const store = configureStore(mockStoreInitialState);
+      const txData = cloneDeep(mockProps.txData);
 
-    const { container } = renderWithProvider(
-      <SignatureRequestSIWE {...mockProps} txData={txData} />,
-      store,
-    );
-    expect(
-      container.querySelector('.confirm-page-container-navigation'),
-    ).toHaveStyle('display: none');
+      const { container } = renderWithProvider(
+        <SignatureRequestSIWE {...mockProps} txData={txData} />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.confirm-page-container-navigation'),
+      ).toHaveStyle('display: none');
+    });
+
+    it('should not show Reject request button', () => {
+      const { container } = render();
+      expect(
+        container.querySelector('.request-signature__container__reject'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('when there is more than one unconfirmed tx', () => {
@@ -167,6 +177,12 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
         ...mockStoreInitialState,
         metamask: {
           ...mockStoreInitialState.metamask,
+          unapprovedTxs: {
+            ...mockStoreInitialState.metamask.unapprovedTxs,
+            '0x12333': {
+              chainId: mockStoreInitialState.metamask.providerConfig.chainId,
+            },
+          },
           unapprovedMsgCount: 2,
         },
       });
@@ -182,10 +198,22 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
       renderResult = null;
     });
 
+    it('should show multiple notifications header', () => {
+      const { container } = renderResult;
+      expect(
+        container.getElementsByClassName('signature-request-siwe-header'),
+      ).toHaveLength(1);
+
+      expect(
+        container.querySelector('.confirm-page-container-navigation'),
+      ).toHaveStyle('display: flex');
+    });
+
     it('should show Reject request button', () => {
       const { getByText } = renderResult;
       const cancelAll = getByText('Reject 2 requests');
 
+      expect(cancelAll).toHaveClass('request-signature__container__reject');
       expect(cancelAll).toBeInTheDocument();
     });
 
@@ -195,13 +223,6 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
 
       fireEvent.click(cancelAll);
       expect(mockShowModal).toHaveBeenCalled();
-    });
-
-    it('should show multiple notifications header', () => {
-      const { container } = renderResult;
-      expect(
-        container.getElementsByClassName('signature-request-siwe-header'),
-      ).toHaveLength(1);
     });
   });
 });
