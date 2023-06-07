@@ -6,29 +6,11 @@ import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
+import { metamaskControllerArgumentConstructor } from '../../test/helpers/metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
-
-const browserPolyfillMock = {
-  runtime: {
-    id: 'fake-extension-id',
-    onInstalled: {
-      addListener: () => undefined,
-    },
-    onMessageExternal: {
-      addListener: () => undefined,
-    },
-    getPlatformInfo: async () => 'mac',
-  },
-  storage: {
-    local: {
-      get: sinon.stub().resolves({}),
-      set: sinon.stub().resolves(),
-    },
-  },
-};
 
 let loggerMiddlewareMock;
 const createLoggerMiddlewareMock = () => (req, res, next) => {
@@ -68,7 +50,13 @@ const MetaMaskController = proxyquire('./metamask-controller', {
 describe('MetaMaskController', function () {
   let metamaskController;
   const sandbox = sinon.createSandbox();
-  const noop = () => undefined;
+
+  const storageMock = {
+    local: {
+      get: sinon.stub().resolves({}),
+      set: sinon.stub().resolves(),
+    },
+  };
 
   before(async function () {
     await ganacheServer.start();
@@ -96,25 +84,13 @@ describe('MetaMaskController', function () {
           { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
         ]),
       );
-    metamaskController = new MetaMaskController({
-      showUserConfirmation: noop,
-      encryptor: {
-        encrypt(_, object) {
-          this.object = object;
-          return Promise.resolve('mock-encrypted');
-        },
-        decrypt() {
-          return Promise.resolve(this.object);
-        },
-      },
-      initLangCode: 'en_US',
-      platform: {
-        showTransactionNotification: () => undefined,
-        getVersion: () => 'foo',
-      },
-      browser: browserPolyfillMock,
-      infuraProjectId: 'foo',
-    });
+
+    metamaskController = new MetaMaskController(
+      metamaskControllerArgumentConstructor({
+        isFirstMetaMaskControllerSetup: true,
+        storageMock,
+      }),
+    );
   });
 
   afterEach(function () {

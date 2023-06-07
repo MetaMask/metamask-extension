@@ -1,7 +1,4 @@
-import {
-  browserPolyfillMock,
-  metamaskControllerArgumentConstructor,
-} from '../../test/helpers/metamask-controller';
+import { metamaskControllerArgumentConstructor } from "../../test/helpers/metamask-controller";
 
 let loggerMiddlewareMock;
 
@@ -17,6 +14,13 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+jest.mock('../../ui/store/actions', () => ({
+  createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  createNewVaultAndRestore: jest.fn(),
+  verifySeedPhrase: jest.fn(),
+}));
+
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 jest.mock('../../shared/modules/mv3.utils', () => ({
   isManifestV3: true,
@@ -25,11 +29,16 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
 const MetaMaskControllerMV3 = require('./metamask-controller').default;
 
 describe('MetaMaskController', function () {
-  const sessionSetSpy = jest
-    .spyOn(browserPolyfillMock.storage.session, 'set')
-    .mockImplementation(() => {
-      console.log('called');
-    });
+  const sessionSetSpy = jest.fn().mockImplementation(() => {
+    console.log('called');
+  });
+
+  const storageMock = {
+    session: {
+      set: sessionSetSpy,
+      get: jest.fn(),
+    },
+  };
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
@@ -52,6 +61,7 @@ describe('MetaMaskController', function () {
       const metamaskControllerMV3 = new MetaMaskControllerMV3(
         metamaskControllerArgumentConstructor({
           isFirstMetaMaskControllerSetup: true,
+          storageMock,
         }),
       );
 
@@ -63,7 +73,9 @@ describe('MetaMaskController', function () {
 
     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
       const metamaskControllerMV3 = new MetaMaskControllerMV3(
-        metamaskControllerArgumentConstructor(),
+        metamaskControllerArgumentConstructor({
+          storageMock,
+        }),
       );
       expect(metamaskControllerMV3.resetStates).not.toHaveBeenCalled();
       expect(sessionSetSpy).not.toHaveBeenCalled();

@@ -23,6 +23,7 @@ import {
   metamaskControllerArgumentConstructor,
   MockEthContract,
 } from '../../test/helpers/metamask-controller';
+import MetaMaskController from './metamask-controller';
 import { deferredPromise } from './lib/util';
 import PreferencesController from './controllers/preferences';
 
@@ -117,40 +118,51 @@ const PROVIDER_RESULT_STUB = {
     '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
 };
 
+jest.mock('../../ui/store/actions', () => ({
+  createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
+  createNewVaultAndRestore: jest.fn(),
+  verifySeedPhrase: jest.fn(),
+}));
+
+nock('https://min-api.cryptocompare.com')
+  .persist()
+  .get(/.*/u)
+  .reply(200, '{"JPY":12415.9}');
+nock('https://static.metafi.codefi.network')
+  .persist()
+  .get('/api/v1/lists/stalelist.json')
+  .reply(
+    200,
+    JSON.stringify({
+      version: 2,
+      tolerance: 2,
+      fuzzylist: [],
+      allowlist: [],
+      blocklist: ['127.0.0.1'],
+      lastUpdated: 0,
+    }),
+  )
+  .get('/api/v1/lists/hotlist.json')
+  .reply(
+    200,
+    JSON.stringify([
+      { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+    ]),
+  );
+
 describe('MetaMaskController', function () {
   let metamaskController;
 
-  const sessionSetSpy = jest
-    .spyOn(browserPolyfillMock.storage.session, 'set')
-    .mockImplementation();
+  const sessionSetSpy = jest.fn().mockImplementation();
+  const storageMock = {
+    session: {
+      set: sessionSetSpy,
+      get: jest.fn(),
+    }
+  }
 
   beforeAll(async function () {
-    nock('https://min-api.cryptocompare.com')
-      .persist()
-      .get(/.*/u)
-      .reply(200, '{"JPY":12415.9}');
-    nock('https://static.metafi.codefi.network')
-      .persist()
-      .get('/api/v1/lists/stalelist.json')
-      .reply(
-        200,
-        JSON.stringify({
-          version: 2,
-          tolerance: 2,
-          fuzzylist: [],
-          allowlist: [],
-          blocklist: ['127.0.0.1'],
-          lastUpdated: 0,
-        }),
-      )
-      .get('/api/v1/lists/hotlist.json')
-      .reply(
-        200,
-        JSON.stringify([
-          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
-        ]),
-      );
-
     globalThis.isFirstTimeProfileLoaded = true;
     await ganacheServer.start();
   });
@@ -174,17 +186,19 @@ describe('MetaMaskController', function () {
     metamaskController = new MetaMaskController(
       metamaskControllerArgumentConstructor({
         isFirstMetaMaskControllerSetup: true,
+        storageMock,
       }),
     );
   });
 
   afterEach(function () {
     jest.clearAllMocks();
+    jest.resetModules();
   });
 
   afterAll(async function () {
-    nock.cleanAll();
     await ganacheServer.quit();
+    nock.cleanAll();
   });
 
   describe('should reset states on first time profile load', function () {

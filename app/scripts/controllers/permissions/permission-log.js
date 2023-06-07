@@ -1,11 +1,38 @@
 import { ObservableStore } from '@metamask/obs-store';
+import { cloneDeep, noop } from 'lodash';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
+import mockEncryptor from '../../../../test/lib/mock-encryptor';
+import {
+  browserPolyfillMock,
+  FIRST_TIME_CONTROLLER_STATE,
+} from '../../../../test/helpers/metamask-controller';
 import {
   LOG_IGNORE_METHODS,
   LOG_LIMIT,
   LOG_METHOD_TYPES,
   WALLET_PREFIX,
 } from './enums';
+
+
+
+export function metamaskControllerArgumentConstructor({
+  isFirstMetaMaskControllerSetup = false,
+  storageMock,
+} = {}) {
+  return {
+    showUserConfirmation: noop,
+    encryptor: mockEncryptor,
+    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
+    initLangCode: 'en_US',
+    platform: {
+      showTransactionNotification: () => undefined,
+      getVersion: () => 'foo',
+    },
+    browser: browserPolyfillMock({ storageMock }),
+    infuraProjectId: INFURA_PROJECT_ID,
+    isFirstMetaMaskControllerSetup,
+  };
+}
 
 /**
  * Controller with middleware for logging requests and responses to restricted

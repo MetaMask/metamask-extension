@@ -96,35 +96,31 @@ export const browserPolyfillMock = {
   runtime: {
     id: 'fake-extension-id',
     onInstalled: {
-      addListener: () => undefined,
+      addListener: noop,
     },
     onMessageExternal: {
-      addListener: () => undefined,
+      addListener: noop,
     },
     getPlatformInfo: async () => 'mac',
   },
-  storage: {
-    session: {
-      set: jest.fn(),
-      get: jest.fn(),
-    },
-  },
 };
 
-export function metamaskControllerArgumentConstructor({
+export const metamaskControllerArgumentConstructor = ({
   isFirstMetaMaskControllerSetup = false,
-} = {}) {
-  return {
-    showUserConfirmation: noop,
-    encryptor: mockEncryptor,
-    initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
-    initLangCode: 'en_US',
-    platform: {
-      showTransactionNotification: () => undefined,
-      getVersion: () => 'foo',
-    },
-    browser: browserPolyfillMock,
-    infuraProjectId: INFURA_PROJECT_ID,
-    isFirstMetaMaskControllerSetup,
-  };
-}
+  storageMock = {},
+} = {}) => ({
+  showUserConfirmation: noop,
+  encryptor: mockEncryptor,
+  initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
+  initLangCode: 'en_US',
+  platform: {
+    showTransactionNotification: noop,
+    getVersion: () => 'foo',
+  },
+  browser: {
+    ...browserPolyfillMock,
+    storage: storageMock,
+  },
+  infuraProjectId: INFURA_PROJECT_ID,
+  isFirstMetaMaskControllerSetup,
+});
