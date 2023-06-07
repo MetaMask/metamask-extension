@@ -3260,10 +3260,12 @@
     "message": "安装Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。"
+    "message": "请勾选选项框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。"
+    "message": "请勾选所有方框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",

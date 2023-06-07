@@ -37,7 +37,12 @@ const checkboxStateReducer = produce((state, action) => {
   }
 });
 
-export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
+export default function SnapInstallWarning({
+  onCancel,
+  onSubmit,
+  warnings,
+  snapName,
+}) {
   const t = useI18nContext();
   const [checkboxState, dispatch] = useReducer(checkboxStateReducer, {});
 
@@ -81,21 +86,21 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
           iconName={IconName.Danger}
           backgroundColor={BackgroundColor.warningMuted}
           color={IconColor.warningDefault}
-          size={Size.LG}
+          size={Size.XL}
         />
       </Box>
       <Text
         paddingBottom={6}
         textAlign={TextAlign.Center}
-        variant={TextVariant.headingSm}
+        variant={TextVariant.headingMd}
         as="h2"
       >
         {t('snapInstallWarningHeading')}
       </Text>
       <Text paddingBottom={6} textAlign={TextAlign.Center}>
         {warnings.length > 1
-          ? t('snapInstallWarningCheckPlural')
-          : t('snapInstallWarningCheck')}
+          ? t('snapInstallWarningCheckPlural', [snapName])
+          : t('snapInstallWarningCheck', [snapName])}
       </Text>
       {warnings.map((warning, i) => (
         <div
@@ -110,7 +115,7 @@ export default function SnapInstallWarning({ onCancel, onSubmit, warnings }) {
             onClick={() => onCheckboxClicked(warning.id)}
           />
           <label htmlFor={warning.id}>
-            <Text variant={TextVariant.bodySm}>{warning.message}</Text>
+            <Text variant={TextVariant.bodyMd}>{warning.message}</Text>
           </label>
         </div>
       ))}
@@ -134,4 +139,8 @@ SnapInstallWarning.propTypes = {
     message: PropTypes.node,
     id: PropTypes.string,
   }),
+  /**
+   * Snap name
+   */
+  snapName: PropTypes.string.isRequired,
 };
