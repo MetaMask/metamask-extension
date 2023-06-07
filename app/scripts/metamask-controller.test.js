@@ -19,7 +19,6 @@ import {
   KeyringType,
 } from '../../shared/constants/keyring';
 import {
-  browserPolyfillMock,
   metamaskControllerArgumentConstructor,
   MockEthContract,
 } from '../../test/helpers/metamask-controller';
@@ -159,8 +158,8 @@ describe('MetaMaskController', function () {
     session: {
       set: sessionSetSpy,
       get: jest.fn(),
-    }
-  }
+    },
+  };
 
   beforeAll(async function () {
     globalThis.isFirstTimeProfileLoaded = true;
