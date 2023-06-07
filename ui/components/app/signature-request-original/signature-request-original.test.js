@@ -10,12 +10,14 @@ import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banne
 import {
   resolvePendingApproval,
   rejectPendingApproval,
+  completedTx,
 } from '../../../store/actions';
 import SignatureRequestOriginal from '.';
 
 jest.mock('../../../store/actions', () => ({
   resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
+  completedTx: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
 const MOCK_SIGN_DATA = JSON.stringify({
@@ -116,6 +118,7 @@ describe('SignatureRequestOriginal', () => {
       fireEvent.click(secondSignButton);
     });
     expect(resolvePendingApproval).toHaveBeenCalledTimes(1);
+    expect(completedTx).toHaveBeenCalledTimes(1);
   });
 
   it('should cancel approval when user reject signing', async () => {
