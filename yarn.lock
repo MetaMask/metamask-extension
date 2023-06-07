@@ -12006,6 +12006,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clean-css@npm:4.2.3":
+  version: 4.2.3
+  resolution: "clean-css@npm:4.2.3"
+  dependencies:
+    source-map: ~0.6.0
+  checksum: 613129973a038b8bb13e3975ad6b679feccb8c98f2a9d03e6bec9e60291ef1e6b5037ee8cb09a3470751adc52f43782b1dcb4cb049360230b48062d6e3314072
+  languageName: node
+  linkType: hard
+
 "clean-css@npm:^5.2.2":
   version: 5.3.2
   resolution: "clean-css@npm:5.3.2"
@@ -18408,6 +18417,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gulp-clean-css@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "gulp-clean-css@npm:4.3.0"
+  dependencies:
+    clean-css: 4.2.3
+    plugin-error: 1.0.1
+    through2: 3.0.1
+    vinyl-sourcemaps-apply: 0.2.1
+  checksum: df0ac03206f4001c7c14114bd80123eb69a3e163b82219035617369b6909446d99cdaa915311dbd5fe812f0ff67f5edf40b4d46d004bbc4bd0513d6b51940218
+  languageName: node
+  linkType: hard
+
 "gulp-cli@npm:^2.2.0":
   version: 2.3.0
   resolution: "gulp-cli@npm:2.3.0"
@@ -24209,6 +24230,7 @@ __metadata:
     globby: ^11.0.4
     gulp: ^4.0.2
     gulp-autoprefixer: ^8.0.0
+    gulp-clean-css: ^4.3.0
     gulp-livereload: 4.0.0
     gulp-rename: ^2.0.0
     gulp-rtlcss: ^1.4.0
@@ -32591,6 +32613,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"through2@npm:3.0.1, through2@npm:^3.0.0, through2@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "through2@npm:3.0.1"
+  dependencies:
+    readable-stream: 2 || 3
+  checksum: ffac3931c1906b5d3a375b71e3d692228432299ba63213e65d686f95ea3abe1bb5726fa335fb7eba9c6f5f010da17c071a6c1c531bd091b2ec7650bc38bcaf13
+  languageName: node
+  linkType: hard
+
 "through2@npm:^2.0.0, through2@npm:^2.0.1, through2@npm:^2.0.3, through2@npm:^2.0.5, through2@npm:~2.0.0, through2@npm:~2.0.3":
   version: 2.0.5
   resolution: "through2@npm:2.0.5"
@@ -32598,15 +32629,6 @@ __metadata:
     readable-stream: ~2.3.6
     xtend: ~4.0.1
   checksum: beb0f338aa2931e5660ec7bf3ad949e6d2e068c31f4737b9525e5201b824ac40cac6a337224856b56bd1ddd866334bbfb92a9f57cd6f66bc3f18d3d86fc0fe50
-  languageName: node
-  linkType: hard
-
-"through2@npm:^3.0.0, through2@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "through2@npm:3.0.1"
-  dependencies:
-    readable-stream: 2 || 3
-  checksum: ffac3931c1906b5d3a375b71e3d692228432299ba63213e65d686f95ea3abe1bb5726fa335fb7eba9c6f5f010da17c071a6c1c531bd091b2ec7650bc38bcaf13
   languageName: node
   linkType: hard
 
@@ -34254,7 +34276,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vinyl-sourcemaps-apply@npm:^0.2.1":
+"vinyl-sourcemaps-apply@npm:0.2.1, vinyl-sourcemaps-apply@npm:^0.2.1":
   version: 0.2.1
   resolution: "vinyl-sourcemaps-apply@npm:0.2.1"
   dependencies:

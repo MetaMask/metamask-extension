@@ -7,6 +7,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('gulp-rtlcss');
 const rename = require('gulp-rename');
 const pump = pify(require('pump'));
+const cleanCSS = require('gulp-clean-css');
 const { TASKS } = require('./constants');
 const { createTask } = require('./task');
 
@@ -81,6 +82,7 @@ async function buildScssPipeline(src, dest, devMode, rtl) {
       rtl && rtlcss(),
       rtl && rename({ suffix: '-rtl' }),
       devMode && sourcemaps.write(),
+      cleanCSS(),
       gulp.dest(dest),
     ].filter(Boolean),
   );
