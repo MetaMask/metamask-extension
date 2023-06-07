@@ -237,7 +237,6 @@ describe('Custom network', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        console.log('gets here -1');
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
