@@ -14,6 +14,7 @@ export declare global {
   namespace jest {
     interface Matchers<R> {
       toBeFulfilled(): Promise<R>;
+      toNeverResolve(): Promise<R>;
     }
   }
 }
