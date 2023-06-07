@@ -3,6 +3,7 @@ const path = require('path');
 
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
+const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   TEST_SEED_PHRASE_TWO,
   tinyDelayMs,
@@ -13,12 +14,14 @@ const {
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
+const FixtureServer = require('./fixture-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
 
 describe('MetaMask', function () {
   let driver;
+  let fixtureServer;
   let dappServer;
   let tokenAddress;
 
@@ -37,6 +40,37 @@ describe('MetaMask', function () {
       'test-dapp',
       'dist',
     );
+    fixtureServer = new FixtureServer();
+    fixtureServer.loadJsonState({
+      meta: {
+        version: 74,
+      },
+      data: {
+        NetworkController: {
+          networkId: '1337',
+          networkStatus: 'available',
+          providerConfig: {
+            chainId: CHAIN_IDS.LOCALHOST,
+            nickname: 'Localhost 8545',
+            rpcPrefs: {},
+            rpcUrl: 'http://localhost:8545',
+            ticker: 'ETH',
+            type: 'rpc',
+          },
+          networkConfigurations: {
+            networkConfigurationId: {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: 'Localhost 8545',
+              rpcPrefs: {},
+              rpcUrl: 'http://localhost:8545',
+              ticker: 'ETH',
+              networkConfigurationId: 'networkConfigurationId',
+            },
+          },
+        },
+      },
+    });
+    await fixtureServer.start();
     dappServer = createStaticServer(dappDirectory);
     dappServer.listen(dappPort);
     await new Promise((resolve, reject) => {
@@ -62,6 +96,7 @@ describe('MetaMask', function () {
     if (process.env.E2E_LEAVE_RUNNING === 'true' && failed) {
       return;
     }
+    await fixtureServer.stop();
     await ganacheServer.quit();
     await driver.quit();
     await new Promise((resolve, reject) => {
