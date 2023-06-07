@@ -249,67 +249,85 @@ async function addEthereumChainHandler(
 
   const { id: approvalFlowId } = await startApprovalFlow();
 
+  console.log('APPROVAL FLOW STARTED');
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  console.log('ISSUE ADD CHAIN');
+
   try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.AddEthereumChain,
-      requestData: {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        chainName: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-    });
+    try {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId: _chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          chainName: _chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+      });
 
-    networkConfigurationId = await upsertNetworkConfiguration(
-      {
-        chainId: _chainId,
-        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-        nickname: _chainName,
-        rpcUrl: firstValidRPCUrl,
-        ticker,
-      },
-      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
-    );
+      console.log('USER APPROVED NEW CHAIN');
 
-    // Once the network has been added, the requested is considered successful
-    res.result = null;
-  } catch (error) {
-    endApprovalFlow({ id: approvalFlowId });
-    return end(error);
-  }
+      networkConfigurationId = await upsertNetworkConfiguration(
+        {
+          chainId: _chainId,
+          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+          nickname: _chainName,
+          rpcUrl: firstValidRPCUrl,
+          ticker,
+        },
+        { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
+      );
 
-  // Ask the user to switch the network
-  try {
-    await requestUserApproval({
-      origin,
-      type: ApprovalType.SwitchEthereumChain,
-      requestData: {
-        rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
-        ticker,
-        networkConfigurationId,
-      },
-    });
-  } catch (error) {
-    // For the purposes of this method, it does not matter if the user
-    // declines to switch the selected network. However, other errors indicate
-    // that something is wrong.
-    return end(
-      error.code === errorCodes.provider.userRejectedRequest
-        ? undefined
-        : error,
-    );
+      // Once the network has been added, the requested is considered successful
+      res.result = null;
+    } catch (error) {
+      return end(error);
+    }
+
+    console.log('CHAIN ADDED');
+
+    // Simulate original race condition
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
+    console.log('ISSUE SWITCH CHAIN');
+
+    // Ask the user to switch the network
+    try {
+      await requestUserApproval({
+        origin,
+        type: ApprovalType.SwitchEthereumChain,
+        requestData: {
+          rpcUrl: firstValidRPCUrl,
+          chainId: _chainId,
+          nickname: _chainName,
+          ticker,
+          networkConfigurationId,
+        },
+      });
+
+      console.log('USER APPROVED SWITCHING CHAIN');
+
+      await setActiveNetwork(networkConfigurationId);
+    } catch (error) {
+      // For the purposes of this method, it does not matter if the user
+      // declines to switch the selected network. However, other errors indicate
+      // that something is wrong.
+      console.log(
+        'ERROR SWITCHING CHAIN',
+        error.code,
+        errorCodes.provider.userRejectedRequest,
+      );
+      if (error.code !== errorCodes.provider.userRejectedRequest) {
+        return end(error);
+      }
+    }
   } finally {
-    endApprovalFlow({ id: approvalFlowId });
-  }
-
-  try {
-    await setActiveNetwork(networkConfigurationId);
-  } catch (error) {
-    return end(error);
+    console.log('END APPROVAL FLOW');
+    endApprovalFlow(approvalFlowId);
   }
 
   return end();
