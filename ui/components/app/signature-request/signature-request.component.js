@@ -89,6 +89,7 @@ export default class SignatureRequest extends PureComponent {
     cancelAllApprovals: PropTypes.func.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: PropTypes.func,
     isNotification: PropTypes.bool,

@@ -3442,7 +3442,7 @@ export function rejectPendingApproval(
  * @param messageList - The list of messages to reject
  */
 export function rejectAllMessages(
-  messageList: TemporaryMessageDataType[],
+  messageList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     return Promise.all(
