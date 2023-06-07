@@ -656,15 +656,6 @@ export enum MetaMetricsEventKeyType {
   Srp = 'srp',
 }
 
-// NOTE: This doesn't seem to be used at all
-export enum MetaMetricsEventOnrampProviderType {
-  Coinbase = 'coinbase',
-  Moonpay = 'moonpay',
-  SelfDeposit = 'direct_deposit',
-  Transak = 'transak',
-  Wyre = 'wyre',
-}
-
 export enum MetaMetricsNetworkEventSource {
   CustomNetworkForm = 'custom_network_form',
   PopularNetworkList = 'popular_network_list',

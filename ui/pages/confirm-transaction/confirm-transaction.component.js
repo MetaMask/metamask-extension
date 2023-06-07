@@ -31,7 +31,6 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
 import {
-  getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../selectors';
@@ -56,23 +55,20 @@ const ConfirmTransaction = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
-  const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
-  const totalUnapproved = unconfirmedTxs.length || 0;
+  const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
+  const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
+
+  const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
     return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedMessages[paramsTransactionId] ||
-          unconfirmedTxs[0]
+      ? unconfirmedTxs[paramsTransactionId] || unconfirmedTxsSorted[0]
       : {};
   }, [
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
-    unconfirmedMessages,
     unconfirmedTxs,
+    unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
 
@@ -87,9 +83,8 @@ const ConfirmTransaction = () => {
     getTransaction,
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
-    unconfirmedMessages,
     unconfirmedTxs,
+    unconfirmedTxsSorted,
   ]);
 
   const { id, type } = transaction;

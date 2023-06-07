@@ -10,6 +10,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getSnapInstallOrUpdateRequests,
   getRequestState,
+  getSnapsInstallPrivacyWarningShown,
   ///: END:ONLY_INCLUDE_IN
   getRequestType,
   getTargetSubjectMetadata,
@@ -25,6 +26,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   resolvePendingApproval,
   rejectPendingApproval,
+  setSnapsInstallPrivacyWarningShownStatus,
   ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import {
@@ -78,10 +80,9 @@ const mapStateToProps = (state, ownProps) => {
   let requestType = getRequestType(state, permissionsRequestId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  const isSnap = targetSubjectMetadata.subjectType === SubjectType.Snap;
-
   if (
     permissionsRequest &&
+    Object.keys(permissionsRequest.permissions || {}) === 1 &&
     permissionsRequest.permissions?.[WALLET_SNAP_PERMISSION_KEY]
   ) {
     requestType = 'wallet_connectSnaps';
@@ -109,26 +110,28 @@ const mapStateToProps = (state, ownProps) => {
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
+  const isSnapInstallOrUpdateOrResult =
+    pathname === snapInstallPath ||
+    pathname === snapUpdatePath ||
+    pathname === snapResultPath;
   ///: END:ONLY_INCLUDE_IN
 
   let totalPages = 1 + isRequestingAccounts;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  totalPages += isSnap;
+  totalPages += isSnapInstallOrUpdateOrResult;
   ///: END:ONLY_INCLUDE_IN
   totalPages = totalPages.toString();
 
   let page = '';
   if (pathname === connectPath) {
     page = '1';
-  } else if (pathname === confirmPermissionPath) {
+  } else if (
+    pathname === confirmPermissionPath ||
+    pathname === snapsConnectPath
+  ) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  } else if (
-    pathname === snapsConnectPath ||
-    pathname === snapInstallPath ||
-    pathname === snapUpdatePath ||
-    pathname === snapResultPath
-  ) {
+  } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
     ///: END:ONLY_INCLUDE_IN
   } else {
@@ -144,7 +147,8 @@ const mapStateToProps = (state, ownProps) => {
     snapUpdatePath,
     snapResultPath,
     requestState,
-    isSnap,
+    hideTopBar: isSnapInstallOrUpdateOrResult,
+    snapsInstallPrivacyWarningShown: getSnapsInstallPrivacyWarningShown(state),
     ///: END:ONLY_INCLUDE_IN
     permissionsRequest,
     permissionsRequestId,
@@ -174,6 +178,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(resolvePendingApproval(id, value)),
     rejectPendingApproval: (id, error) =>
       dispatch(rejectPendingApproval(id, error)),
+    setSnapsInstallPrivacyWarningShownStatus: (shown) => {
+      dispatch(setSnapsInstallPrivacyWarningShownStatus(shown));
+    },
     ///: END:ONLY_INCLUDE_IN
     showNewAccountModal: ({ onCreateNewAccount, newAccountNumber }) => {
       return dispatch(

@@ -27,7 +27,7 @@ export default {
   args: {
     anchorElement: null,
     identity: {
-      address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
+      address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
       name: 'Account 1',
       balance: '0x152387ad22c3f0',
       tokenBalance: '32.09 ETH',

@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  TEST_SEED_PHRASE_TWO,
+  convertToHexValue,
+  withFixtures,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
@@ -67,7 +72,7 @@ describe('MetaMask Responsive UI', function () {
 
         // assert balance
         const balance = await driver.findElement(
-          '[data-testid="wallet-balance"]',
+          '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
@@ -76,8 +81,6 @@ describe('MetaMask Responsive UI', function () {
 
   it('Importing existing wallet from lock page', async function () {
     const driverOptions = { openDevToolsForTabs: true };
-    const testSeedPhrase =
-      'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
     await withFixtures(
       {
@@ -98,7 +101,7 @@ describe('MetaMask Responsive UI', function () {
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
-          testSeedPhrase,
+          TEST_SEED_PHRASE_TWO,
         );
 
         await driver.fill('#password', 'correct horse battery staple');
@@ -106,11 +109,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        const balance = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balance} ETH`,
-        });
+        await assertAccountBalanceForDOM(driver, ganacheServer);
       },
     );
   });
