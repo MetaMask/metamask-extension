@@ -3,78 +3,42 @@ import PropTypes from 'prop-types';
 import Box from '../../../ui/box';
 import {
   IconColor,
-  Size,
-  JustifyContent,
   AlignItems,
-  TextColor,
-  DISPLAY,
   Display,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
 import {
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  AvatarIcon,
-  AvatarFavicon,
-  AvatarBase,
   Icon,
   IconName,
   IconSize,
   Text,
+  ValidTag,
 } from '../../../component-library';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import SnapAvatar from '../snap-avatar/snap-avatar';
 
-export default function SnapConnectCell({ origin, iconUrl, snapId }) {
+export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();
   const friendlyName = getSnapName(snapId);
-  const SnapConnectAvatar = () => {
-    return (
-      <BadgeWrapper
-        className="snaps-connect-cell__avatar"
-        badge={
-          <AvatarIcon
-            iconName={IconName.Snaps}
-            size={IconSize.Xs}
-            backgroundColor={IconColor.infoDefault}
-            iconProps={{
-              size: IconSize.Xs,
-              color: IconColor.infoInverse,
-            }}
-          />
-        }
-        position={BadgeWrapperPosition.bottomRight}
-      >
-        {iconUrl ? (
-          <AvatarFavicon size={Size.MD} src={iconUrl} name={friendlyName} />
-        ) : (
-          <AvatarBase
-            size={Size.MD}
-            display={DISPLAY.FLEX}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            color={TextColor.textAlternative}
-            style={{ borderWidth: '0px' }}
-          >
-            {friendlyName}
-          </AvatarBase>
-        )}
-      </BadgeWrapper>
-    );
-  };
 
   return (
     <Box
       alignItems={AlignItems.center}
-      marginLeft={4}
-      marginRight={4}
       paddingTop={2}
       paddingBottom={2}
       display={Display.Flex}
     >
-      <SnapConnectAvatar />
+      <SnapAvatar snapId={snapId} />
       <Box width="full" marginLeft={4} marginRight={4}>
-        <Text>{t('connectSnap', [friendlyName])}</Text>
+        <Text>
+          {t('connectSnap', [
+            <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Bold}>
+              {friendlyName}
+            </Text>,
+          ])}
+        </Text>
       </Box>
       <Box>
         <Tooltip
@@ -100,7 +64,6 @@ export default function SnapConnectCell({ origin, iconUrl, snapId }) {
 }
 
 SnapConnectCell.propTypes = {
-  iconUrl: PropTypes.string,
   origin: PropTypes.string.isRequired,
   snapId: PropTypes.string.isRequired,
 };
