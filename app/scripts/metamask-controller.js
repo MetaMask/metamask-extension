@@ -3332,12 +3332,30 @@ export default class MetamaskController extends EventEmitter {
    * array.
    */
   async revokePermissions(origin, permission) {
-    const { target, caveatType, caveatValue } = permission || {};
-
     try {
-      // revokePermissions will revoke specific accounts
       if (this.permissionController.hasPermissions(origin)) {
+        const { target, caveatType, caveatValue } = permission || {};
+
+        //
+        // ***********************************************************************************************************
+        // FIRST CASE: revokePermissions called without params
+        // ***********************************************************************************************************
+        // ACTION: revoke permissions for all targets for the provided origin
+        //
+        if (!permission) {
+          this.permissionController.revokeAllPermissions(origin);
+        }
+
+        //
+        // ***********************************************************************************************************
+        // SECOND CASE: revokePermissions called with optional params (permission)
+        // ***********************************************************************************************************
+        // ACTION: update the caveat value for the provided target and caveat type
+        //
         if (
+          permission &&
+          target &&
+          caveatType &&
           caveatValue &&
           Array.isArray(caveatValue) &&
           caveatValue.length > 0
@@ -3355,7 +3373,9 @@ export default class MetamaskController extends EventEmitter {
             Array.isArray(caveatValueByType) &&
             !caveatValue.some((item) => caveatValueByType.includes(item))
           ) {
-            throw new Error('Some items in the provided accounts not exist');
+            throw new Error(
+              `Invalid caveatValue! ${caveatValue} was not found in permission object: ${permissionByTargetName?.id}`,
+            );
           }
 
           const updatedCaveatValue = caveatValueByType.filter(
@@ -3382,9 +3402,6 @@ export default class MetamaskController extends EventEmitter {
               updatedCaveatValue,
             );
           }
-        } else {
-          // revoke permissions for all targets for the provided origin
-          this.permissionController.revokeAllPermissions(origin);
         }
       }
 
