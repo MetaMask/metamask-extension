@@ -6,6 +6,7 @@ import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import IconWithFallback from '../../../../components/ui/icon-with-fallback/icon-with-fallback.component';
 import {
+  AvatarIcon,
   Icon,
   IconName,
   IconSize,
@@ -61,8 +62,9 @@ export default function SnapsConnect({
     return requestedSnaps ? Object.keys(requestedSnaps) : [];
   };
 
+  const snaps = getSnaps();
+
   const SnapsConnectContent = () => {
-    const snaps = getSnaps();
     if (isLoading) {
       return (
         <Box
@@ -115,8 +117,8 @@ export default function SnapsConnect({
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
             width="full"
-            height="full"
             marginTop={4}
+            style={{ overflowY: 'auto' }}
           >
             {snaps.map((snap) => (
               // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
@@ -160,11 +162,15 @@ export default function SnapsConnect({
               color={IconColor.infoInverse}
             />
             <hr className="snaps-connect__content__icons__connection-line" />
-            <Icon
+            <AvatarIcon
               className="snaps-connect__content__icons__snap"
-              name={IconName.Snaps}
+              iconName={IconName.Snaps}
               size={IconSize.Xl}
-              color={IconColor.primaryDefault}
+              backgroundColor={IconColor.infoDefault}
+              iconProps={{
+                size: IconSize.Xl,
+                color: IconColor.infoInverse,
+              }}
             />
           </Box>
           <Text paddingBottom={2} variant={TextVariant.headingLg}>
@@ -200,13 +206,12 @@ export default function SnapsConnect({
     return null;
   };
 
-  const snaps = getSnaps();
   const isMultiSnapConnect = snaps?.length > 1;
 
   // eslint-disable-next-line react/prop-types
-  const ScrollWrapper = ({ children }) =>
+  const ContentWrapper = ({ children }) =>
     isMultiSnapConnect ? (
-      <Box style={{ overflow: 'auto' }}>{children}</Box>
+      <Box>{children}</Box>
     ) : (
       <>{children}</>
     );
@@ -227,7 +232,7 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
-      <ScrollWrapper>
+      <ContentWrapper>
         <Box
           className="snaps-connect__header"
           flexDirection={FlexDirection.Column}
@@ -245,7 +250,7 @@ export default function SnapsConnect({
           />
         </Box>
         <SnapsConnectContent />
-      </ScrollWrapper>
+      </ContentWrapper>
       <Box
         className="snaps-connect__footer"
         style={{
