@@ -99,12 +99,10 @@ export const AccountListItemMenu = ({
   const lastItemRef = useRef(null);
 
   const handleKeyDown = (event) => {
-    console.log('this ran');
-    console.log(lastItemRef);
     if (event.key === 'Tab' && event.target === lastItemRef.current) {
       // If Tab is pressed at the last item, disable the focus lock
-      console.log('Tab pressed at last item');
       setIsDisabled(true);
+      onClose();
     }
   };
 
