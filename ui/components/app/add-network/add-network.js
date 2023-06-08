@@ -14,11 +14,10 @@ import {
   BackgroundColor,
   TextColor,
   IconColor,
+  Size,
 } from '../../../helpers/constants/design-system';
 import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
-import IconWithFallback from '../../ui/icon-with-fallback';
-import IconBorder from '../../ui/icon-border';
 import {
   getNetworkConfigurations,
   getUnapprovedConfirmations,
@@ -36,7 +35,13 @@ import { FEATURED_RPCS } from '../../../../shared/constants/network';
 import { ADD_NETWORK_ROUTE } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { Text, Icon, IconName, IconSize } from '../../component-library';
+import {
+  Text,
+  Icon,
+  IconName,
+  IconSize,
+  AvatarNetwork,
+} from '../../component-library';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
@@ -193,15 +198,11 @@ const AddNetwork = () => {
                 className="add-network__list-of-networks"
               >
                 <Box display={Display.Flex} alignItems={AlignItems.center}>
-                  <Box>
-                    <IconBorder size={24}>
-                      <IconWithFallback
-                        icon={item.rpcPrefs?.imageUrl}
-                        name={item.nickname}
-                        size={24}
-                      />
-                    </IconBorder>
-                  </Box>
+                  <AvatarNetwork
+                    size={Size.SM}
+                    src={item.rpcPrefs?.imageUrl}
+                    name={item.nickname}
+                  />
                   <Box marginLeft={2}>
                     <Text
                       variant={TextVariant.bodySmBold}
