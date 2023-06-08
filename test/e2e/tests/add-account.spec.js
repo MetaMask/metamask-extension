@@ -7,8 +7,9 @@ const {
   findAnotherAccountFromAccountList,
   waitForAccountRendered,
   convertToHexValue,
+  regularDelayMs,
 } = require('../helpers');
-const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+
 const FixtureBuilder = require('../fixture-builder');
 const { shortenAddress } = require('../../../ui/helpers/utils/util');
 
@@ -115,8 +116,10 @@ describe('Add account', function () {
           '[data-testid="account-options-menu-button"]',
         );
 
+        await driver.delay(regularDelayMs);
         await driver.waitForSelector('[data-testid="global-menu-lock"]');
         await driver.clickElement('[data-testid="global-menu-lock"]');
+        await driver.waitForSelector('[data-testid="unlock-page"]');
 
         // Recover via SRP in "forget password" option
         const restoreSeedLink = await driver.findClickableElement(
@@ -129,14 +132,11 @@ describe('Add account', function () {
         );
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
-        await driver.findClickableElement({
-          text: enLocaleMessages.restore.message,
-          tag: 'button',
-        });
-        await driver.clickElement({
-          text: enLocaleMessages.restore.message,
-          tag: 'button',
-        });
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="create-new-vault-submit-button"]',
+        );
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
