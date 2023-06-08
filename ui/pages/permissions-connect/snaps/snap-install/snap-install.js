@@ -21,7 +21,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
