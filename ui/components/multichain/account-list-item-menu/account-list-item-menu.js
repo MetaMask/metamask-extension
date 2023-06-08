@@ -106,6 +106,7 @@ export const AccountListItemMenu = ({
 
   return (
     <Popover
+      className="multichain-account-list-item-menu__popover"
       referenceElement={anchorElement}
       role={PopoverRole.Tooltip}
       position={PopoverPosition.Bottom}
@@ -114,7 +115,6 @@ export const AccountListItemMenu = ({
       isOpen={isOpen}
       isPortal
       preventOverflow
-      style={{ zIndex: 1051, overflow: 'hidden', minWidth: 225 }}
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown}>
