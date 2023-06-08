@@ -423,9 +423,6 @@
   "back": {
     "message": "Geri"
   },
-  "backToAll": {
-    "message": "Tümüne Geri Git"
-  },
   "backup": {
     "message": "Yedekle"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Al"
   },
-  "recents": {
-    "message": "Son Kullanılanlar"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ara, genel adres (0x) veya ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transfer et"
-  },
-  "transferBetweenAccounts": {
-    "message": "Hesaplarım arası transfer"
   },
   "transferFrom": {
     "message": "Transfer kaynağı:"

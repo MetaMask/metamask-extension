@@ -423,9 +423,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад ко всем"
-  },
   "backup": {
     "message": "Резервное копирование"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Получить"
   },
-  "recents": {
-    "message": "Недавние"
-  },
   "recipientAddressPlaceholder": {
     "message": "Поиск, открытый адрес (0x) или ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Перевести"
-  },
-  "transferBetweenAccounts": {
-    "message": "Перевод между моими счетами"
   },
   "transferFrom": {
     "message": "Перевести с"
