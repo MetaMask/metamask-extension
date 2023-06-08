@@ -151,6 +151,7 @@ export default function GasTiming({
         customEstimatedTime?.upperTimeBound === 'unknown'
       ) {
         text = t('editGasTooLow');
+        attitude = 'negative';
       } else {
         text = t('gasTimingNegative', [
           toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
@@ -162,6 +163,9 @@ export default function GasTiming({
       ]);
     }
   }
+
+  console.log('attitude', attitude);
+  console.log('estimateUsed', estimateUsed);
 
   return (
     <Typography
