@@ -1265,7 +1265,6 @@ export default class MetamaskController extends EventEmitter {
         name: 'SignatureController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:rejectRequest`,
         ],
       }),
       keyringController: this.keyringController,
