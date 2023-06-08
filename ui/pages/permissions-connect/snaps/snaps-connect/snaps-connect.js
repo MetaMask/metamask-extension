@@ -22,6 +22,7 @@ import {
   TextAlign,
   Display,
   FontWeight,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -86,8 +87,8 @@ export default function SnapsConnect({
           alignItems={AlignItems.center}
           paddingLeft={4}
           paddingRight={4}
-          height="full"
-          width="full"
+          paddingTop={8}
+          style={{ overflowY: 'hidden' }}
         >
           <Text paddingBottom={2} variant={TextVariant.headingLg}>
             {t('connectionRequest')}
@@ -116,9 +117,8 @@ export default function SnapsConnect({
             className="snaps-connect__content__snaps-list"
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
-            width="full"
             marginTop={4}
-            style={{ overflowY: 'auto' }}
+            style={{ overflowY: 'auto', flex: 1 }}
           >
             {snaps.map((snap) => (
               // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
@@ -138,6 +138,7 @@ export default function SnapsConnect({
           flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
+          height={BlockSize.Full}
           paddingLeft={4}
           paddingRight={4}
         >
@@ -206,17 +207,10 @@ export default function SnapsConnect({
     return null;
   };
 
-  const isMultiSnapConnect = snaps?.length > 1;
-
-  // eslint-disable-next-line react/prop-types
-  const ContentWrapper = ({ children }) =>
-    isMultiSnapConnect ? <Box>{children}</Box> : <>{children}</>;
-
   return (
     <Box
       className="page-container snaps-connect"
       flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
     >
       {isShowingSnapsPrivacyWarning && (
@@ -228,43 +222,32 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
-      <ContentWrapper>
-        <Box
-          className="snaps-connect__header"
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          paddingLeft={4}
-          paddingRight={4}
-          paddingBottom={8}
-        >
-          <SiteOrigin
-            chip
-            siteOrigin={origin}
-            title={origin}
-            iconSrc={iconUrl}
-            name={name}
-          />
-        </Box>
-        <SnapsConnectContent />
-      </ContentWrapper>
       <Box
-        className="snaps-connect__footer"
-        style={{
-          width: '100%',
-          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-        }}
+        className="snaps-connect__header"
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.center}
+        paddingLeft={4}
+        paddingRight={4}
       >
-        <PageContainerFooter
-          footerClassName="snaps-connect__footer"
-          cancelButtonType="default"
-          hideCancel={false}
-          disabled={isLoading}
-          onCancel={onCancel}
-          cancelText={t('cancel')}
-          onSubmit={onConnect}
-          submitText={t('connect')}
+        <SiteOrigin
+          chip
+          siteOrigin={origin}
+          title={origin}
+          iconSrc={iconUrl}
+          name={name}
         />
       </Box>
+      <SnapsConnectContent />
+      <PageContainerFooter
+        footerClassName="snaps-connect__footer"
+        cancelButtonType="default"
+        hideCancel={false}
+        disabled={isLoading}
+        onCancel={onCancel}
+        cancelText={t('cancel')}
+        onSubmit={onConnect}
+        submitText={t('connect')}
+      />
     </Box>
   );
 }
