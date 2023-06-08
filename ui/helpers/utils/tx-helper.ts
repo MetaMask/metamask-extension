@@ -24,11 +24,14 @@ export default function txHelper(
     chainId,
   });
 
-  const txValues = networkId
-    ? valuesFor(unapprovedTxs).filter((txMeta) =>
-        transactionMatchesNetwork(txMeta, chainId, networkId),
-      )
-    : valuesFor(unapprovedTxs);
+  const txValues =
+    // networkId
+    //   ? valuesFor(unapprovedTxs).filter((txMeta) =>
+    //       transactionMatchesNetwork(txMeta, chainId, networkId),
+    //     )
+    //   :
+    valuesFor(unapprovedTxs);
+  console.log('txValues', txValues);
 
   const msgValues = valuesFor(unapprovedMsgs);
   const personalValues = valuesFor(personalMsgs);

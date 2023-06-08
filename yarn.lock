@@ -3870,22 +3870,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^9.2.0":
-  version: 9.2.0
-  resolution: "@metamask/assets-controllers@npm:9.2.0"
+"@metamask/assets-controllers@npm:10.0.0-preview.6f82024":
+  version: 10.0.0-preview.6f82024
+  resolution: "@metamask/assets-controllers@npm:10.0.0-preview.6f82024::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fassets-controllers%2F10.0.0-preview.6f82024%2F4e7900eece19ca4b180bb1e8452907305fa8e489"
   dependencies:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/abi-utils": ^1.2.0
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/base-controller": ^3.0.0
+    "@metamask/approval-controller": 3.4.0-preview.6f82024
+    "@metamask/base-controller": 3.1.0-preview.6f82024
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^4.0.1
+    "@metamask/controller-utils": 4.1.0-preview.6f82024
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^10.2.0
-    "@metamask/preferences-controller": ^4.1.0
+    "@metamask/network-controller": 10.3.0-preview.6f82024
+    "@metamask/preferences-controller": 4.2.0-preview.6f82024
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
@@ -3899,10 +3899,10 @@ __metadata:
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/network-controller": ^10.2.0
-    "@metamask/preferences-controller": ^4.1.0
-  checksum: 020e86dfc3dfa5eea927ada0b2f5a00642495589edbf5ab54f160e65e5e904502682f11ebebe10d892a091d05eb10306cf92d403a2ac8434048cd3e1f3df3f89
+    "@metamask/approval-controller": ^3.4.0-preview.6f82024
+    "@metamask/network-controller": ^10.3.0-preview.6f82024
+    "@metamask/preferences-controller": ^4.2.0-preview.6f82024
+  checksum: 40ec8c0f79718a1d6d7b3a97a5f4e6fc417b0700dd9e3c015cf338d8636bc99801f167097da5a9969b752a094224af265e3b278bcf3d7311d7499bcbcdc6aec9
   languageName: node
   linkType: hard
 
@@ -3920,6 +3920,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:3.1.0-preview.6f82024":
+  version: 3.1.0-preview.6f82024
+  resolution: "@metamask/base-controller@npm:3.1.0-preview.6f82024::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fbase-controller%2F3.1.0-preview.6f82024%2Fc4ba10722d22b0d60596e2668924d638dae60a8e"
+  dependencies:
+    "@metamask/utils": ^5.0.2
+    immer: ^9.0.6
+  checksum: 08ca47bb66820e556f6fded564e82b6c5ccb6d7b78739e997d517efc7b1f1d988e44605b251aa6cacf2fd9fe4ec7fe0a6b81a4f9fca652134cb612419250d073
+  languageName: node
+  linkType: hard
+
 "@metamask/base-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/base-controller@npm:2.0.0"
@@ -3930,13 +3940,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.2.0":
   version: 3.2.0
   resolution: "@metamask/base-controller@npm:3.2.0"
   dependencies:
     "@metamask/utils": ^6.2.0
     immer: ^9.0.6
   checksum: 3be6f2594309c013e07f83c4bb8271e1e99f02b6ff829c18b5e7218fbab4e6a9e03bcb49056704ce47f84ae2f38b1bc1c10284ec538aad56ed7b554ef2d3e189
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/base-controller@npm:3.1.0"
+  dependencies:
+    "@metamask/utils": ^5.0.2
+    immer: ^9.0.6
+  checksum: fc1597a099e6d28bd089df936ca349d6c38c2e1b0f0737385cba30c34a5239241519eb172d77c70f8db2604f4dc5724f6893affe42bdd104cef98f9cfd6f1db8
   languageName: node
   linkType: hard
 
@@ -3951,6 +3971,23 @@ __metadata:
   version: 2.3.1
   resolution: "@metamask/contract-metadata@npm:2.3.1"
   checksum: 95dcc27f661a3e380c0cca8c6d90fb1777e31ab3fe16909fd5c67844125510e3f8e9eca05c9069fde34c77df3b66e56111c7a908a07623e88052ef147eff4315
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:4.1.0-preview.6f82024":
+  version: 4.1.0-preview.6f82024
+  resolution: "@metamask/controller-utils@npm:4.1.0-preview.6f82024::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fcontroller-utils%2F4.1.0-preview.6f82024%2F0f0ac54a46169b8aa2c4fa883ba0bf285c1ff317"
+  dependencies:
+    "@metamask/utils": ^5.0.2
+    "@spruceid/siwe-parser": 1.1.3
+    babel-runtime: ^6.26.0
+    eth-ens-namehash: ^2.0.8
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: 3d42ae53ecc0810d98bac130f50551de8bae4ba58b6ab28ce67a304291ac6b54f0b0c7d1045af977bad4085dbb35df12b6e1126dfd9103440aa8b24d85ef3d9a
   languageName: node
   linkType: hard
 
@@ -3969,7 +4006,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
   version: 4.2.0
   resolution: "@metamask/controller-utils@npm:4.2.0"
   dependencies:
@@ -4176,6 +4213,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-sig-util@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/eth-sig-util@npm:6.0.0"
+  dependencies:
+    "@ethereumjs/util": ^8.0.6
+    bn.js: ^4.12.0
+    ethereum-cryptography: ^2.0.0
+    ethjs-util: ^0.1.6
+    tweetnacl: ^1.0.3
+    tweetnacl-util: ^0.15.1
+  checksum: 76c173faed20d0d896561dbf3eb4ec3173e33288bf8844919643fd3e9fb6bc78f1ba8bd8a82252f4d13526ded4cc1aee27ae78f5b32642d9f97ef15fa230a12e
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-simple-keyring@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/eth-simple-keyring@npm:5.0.0"
@@ -4332,18 +4383,18 @@ __metadata:
   linkType: hard
 
 "@metamask/message-manager@npm:^7.0.0, @metamask/message-manager@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@metamask/message-manager@npm:7.0.2"
+  version: 7.1.0
+  resolution: "@metamask/message-manager@npm:7.1.0"
   dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.1.0
+    "@metamask/base-controller": ^3.1.0
+    "@metamask/controller-utils": ^4.2.0
+    "@metamask/eth-sig-util": ^6.0.0
     "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
-    eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: ee2f11a44fd7fae662aa72a0bfc02cb51327d1a42812c73aca291284a0dd2575836fd9e2a390e788da5e6515334e51863d839719762ceff65a56e60be14c046b
+  checksum: 4c7704fd5f3b377117a8c4b8075cf25b7522c7b74fb9abcc907c6857887f7a36d2c137cd0174bae2a03f2a34e4affdd1e78b877ff952d157da587aa0de5681b9
   languageName: node
   linkType: hard
 
@@ -4354,7 +4405,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0, @metamask/network-controller@npm:^10.3.1":
+"@metamask/network-controller@npm:10.3.0-preview.6f82024":
+  version: 10.3.0-preview.6f82024
+  resolution: "@metamask/network-controller@npm:10.3.0-preview.6f82024::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fnetwork-controller%2F10.3.0-preview.6f82024%2Fb143c60c85cbc4d4c1cd75f5fa0693218dbedcd6"
+  dependencies:
+    "@metamask/base-controller": 3.1.0-preview.6f82024
+    "@metamask/controller-utils": 4.1.0-preview.6f82024
+    "@metamask/eth-json-rpc-infura": ^8.1.0
+    "@metamask/eth-json-rpc-middleware": ^11.0.0
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/swappable-obj-proxy": ^2.1.0
+    "@metamask/utils": ^5.0.2
+    async-mutex: ^0.2.6
+    babel-runtime: ^6.26.0
+    eth-block-tracker: ^7.0.1
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    uuid: ^8.3.2
+  checksum: ce0b7b994668a62f63938c02cfacdafde262146d379abf22f2ee363d912aca96a7ef6ef65da3d906bbe89669b9ad41ef0dc1357e0e5e798a3e70b182cdf44bbe
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^10.3.0":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
   dependencies:
@@ -4523,13 +4597,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/preferences-controller@npm:4.1.0"
+"@metamask/preferences-controller@npm:4.2.0-preview.6f82024":
+  version: 4.2.0-preview.6f82024
+  resolution: "@metamask/preferences-controller@npm:4.2.0-preview.6f82024::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fpreferences-controller%2F4.2.0-preview.6f82024%2F3f82ab7d78523a3092efd35b6dbfdad2882b2dc1"
   dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-  checksum: 7a121d959082787767786639f5558496c3782bf119f317c24ccae7dc038e8c1a52676d4b5b1c6d94b6563c94d01f24cd3793167322ad5f28dce803223d774fcd
+    "@metamask/base-controller": 3.1.0-preview.6f82024
+    "@metamask/controller-utils": 4.1.0-preview.6f82024
+  checksum: 445b5ffcb82c43ebcade753c439f355f21b7c61a0fe5ab04f6029cbebebb69b588abaed008dfb08950c0adab52aa3f9ce1810894b4f8646833e9e56dbcd0fdbe
   languageName: node
   linkType: hard
 
@@ -8361,9 +8435,9 @@ __metadata:
   linkType: hard
 
 "@types/uuid@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "@types/uuid@npm:8.3.0"
-  checksum: 0f46b15020b9c252473fb327a6491fd7d238c7b5bbaebd32195a0de178db040f6abb96902507ba25dd4a673cdd9cc28b8880512dba54561e8bc60d8f326c1e30
+  version: 8.3.4
+  resolution: "@types/uuid@npm:8.3.4"
+  checksum: 6f11f3ff70f30210edaa8071422d405e9c1d4e53abbe50fdce365150d3c698fe7bbff65c1e71ae080cbfb8fded860dbb5e174da96fdbbdfcaa3fb3daa474d20f
   languageName: node
   linkType: hard
 
@@ -15909,7 +15983,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^7.0.0, eth-block-tracker@npm:^7.0.1":
+"eth-block-tracker@npm:^7.0.0":
   version: 7.0.1
   resolution: "eth-block-tracker@npm:7.0.1"
   dependencies:
@@ -15919,6 +15993,19 @@ __metadata:
     json-rpc-random-id: ^1.0.1
     pify: ^3.0.0
   checksum: b8ecdaebed26423fa8444a779ecf34fb102f873fd1a29135189a3c553f679e34c19151f6b8d1cbbe180fdcc9ba967a7a55af6a72678140d6e3c8e725e630771e
+  languageName: node
+  linkType: hard
+
+"eth-block-tracker@npm:^7.0.1":
+  version: 7.1.0
+  resolution: "eth-block-tracker@npm:7.1.0"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    "@metamask/utils": ^5.0.1
+    json-rpc-random-id: ^1.0.1
+    pify: ^3.0.0
+  checksum: 1d019f261e0ef07387cd74538b160700caa35ba9859ab9d4e5137c48bf9c92822c3b4ade40f8a504f16cb813de4c317c5378d047625ddf04592e256be8842588
   languageName: node
   linkType: hard
 
@@ -22481,9 +22568,9 @@ __metadata:
   linkType: hard
 
 "jsonschema@npm:^1.2.4":
-  version: 1.2.4
-  resolution: "jsonschema@npm:1.2.4"
-  checksum: fbdae335d3d2fa3c8b2630b1a3a4d547f89d651f772e0f6045c6ab06354899cc01e1f10f0c94ea6a40bdac7f391552fa9fa7a61f40da8567c2e8153c29f509cd
+  version: 1.4.1
+  resolution: "jsonschema@npm:1.4.1"
+  checksum: 1ef02a6cd9bc32241ec86bbf1300bdbc3b5f2d8df6eb795517cf7d1cd9909e7beba1e54fdf73990fd66be98a182bda9add9607296b0cb00b1348212988e424b2
   languageName: node
   linkType: hard
 
@@ -24204,7 +24291,7 @@ __metadata:
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^3.4.0
-    "@metamask/assets-controllers": ^9.2.0
+    "@metamask/assets-controllers": 10.0.0-preview.6f82024
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/browser-passworder": ^4.1.0
@@ -24231,7 +24318,7 @@ __metadata:
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^7.0.2
     "@metamask/metamask-eth-abis": ^3.0.0
-    "@metamask/network-controller": ^10.3.1
+    "@metamask/network-controller": 10.3.0-preview.6f82024
     "@metamask/notification-controller": ^3.0.0
     "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^4.0.0
@@ -25566,9 +25653,9 @@ __metadata:
   linkType: hard
 
 "multiformats@npm:^9.5.2":
-  version: 9.5.2
-  resolution: "multiformats@npm:9.5.2"
-  checksum: fadaad7803b67a39669a3cef4fb8a88ec60f049c8cb1a2c77d243ec4274b364bfa89c49d6b727a66ea6724d404774bef69f3cde48ae41a57dd46fe8350c897e0
+  version: 9.9.0
+  resolution: "multiformats@npm:9.9.0"
+  checksum: d3e8c1be400c09a014f557ea02251a2710dbc9fca5aa32cc702ff29f636c5471e17979f30bdcb0a9cbb556f162a8591dc2e1219c24fc21394a56115b820bb84e
   languageName: node
   linkType: hard
 

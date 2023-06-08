@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
+import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce } from 'lodash';
@@ -112,6 +112,7 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
+  CHAIN_ID_TO_TYPE_MAP,
 } from '../../shared/constants/network';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -195,6 +196,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import SelectedNetworkController from './controllers/selected-network-controller';
 
 import {
   CaveatMutatorFactories,
@@ -286,6 +288,11 @@ export default class MetamaskController extends EventEmitter {
 
     // next, we will initialize the controllers
     // controller initialization order matters
+
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger,
+      switchNetwork: (a) => {},
+    });
 
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
@@ -408,7 +415,11 @@ export default class MetamaskController extends EventEmitter {
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
-      allowedActions: ['ApprovalController:addRequest'],
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'SelectedNetworkController:getClientForDomain',
+        'SelectedNetworkController:getChainForDomain',
+      ],
       allowedEvents: ['NetworkController:stateChange'],
     });
     this.tokensController = new TokensController({
@@ -421,6 +432,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: () => {},
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -728,8 +740,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:networkDidChange',
       ),
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
+      getCurrentChainId: this.getCurrentChainId.bind(this),
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
       initState: initState.IncomingTransactionsController,
@@ -1136,8 +1147,7 @@ export default class MetamaskController extends EventEmitter {
           ({ networkId }) => networkId,
         );
       },
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
+      getCurrentChainId: this.getCurrentChainId.bind(this),
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
@@ -1422,6 +1432,7 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.setTradeTxId(txMeta.id);
     });
 
+
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -1580,6 +1591,7 @@ export default class MetamaskController extends EventEmitter {
       SmartTransactionsController: this.smartTransactionsController,
       NftController: this.nftController,
       PhishingController: this.phishingController,
+      SelectedNetworkController: this.selectedNetworkController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
       CronjobController: this.cronjobController,
@@ -1623,6 +1635,7 @@ export default class MetamaskController extends EventEmitter {
         TokensController: this.tokensController,
         SmartTransactionsController: this.smartTransactionsController,
         NftController: this.nftController,
+        SelectedNetworkController: this.selectedNetworkController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
         CronjobController: this.cronjobController,
@@ -2050,6 +2063,8 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       ...this.getProviderNetworkState(),
       accounts: await this.getPermittedAccounts(origin),
+      // configurationsByChainId:
+      //   this.selectedNetworkController.getAllConfigurationsByChainId(),
     };
   }
 
@@ -2066,6 +2081,13 @@ export default class MetamaskController extends EventEmitter {
       chainId: this.networkController.state.providerConfig.chainId,
       networkVersion: networkId ?? 'loading',
     };
+  }
+
+  getCurrentChainId(origin) {
+    if (origin) {
+      return this.selectedNetworkController.getChainForDomain(origin);
+    }
+    return this.networkController.state.providerConfig.chainId;
   }
 
   //=============================================================================
@@ -3592,7 +3614,7 @@ export default class MetamaskController extends EventEmitter {
   handleWatchAssetRequest = (asset, type, origin) => {
     switch (type) {
       case ERC20:
-        return this.tokensController.watchAsset(asset, type);
+        return this.tokensController.watchAsset(asset, type, origin);
       case ERC721:
       case ERC1155:
         return this.nftController.watchNft(asset, type, origin);
@@ -3912,15 +3934,62 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
+
+    // set chainid for domain if not exist
+    if (
+      this.selectedNetworkController.getChainForDomain(origin) === undefined
+    ) {
+      console.log(
+        'getChainForDomain',
+        this.selectedNetworkController.getChainForDomain(origin),
+        origin,
+      );
+      console.log(
+        'setting default chain id for ',
+        origin,
+        'to ',
+        this.networkController.state.providerConfig.chainId,
+      );
+      this.selectedNetworkController.setChainForDomain(
+        origin,
+        this.networkController.state.providerConfig.chainId,
+      );
+    }
+
+    const chainIdForRequest =
+      this.selectedNetworkController.getChainForDomain(origin);
+
+    console.log('chainIdForRequest', chainIdForRequest);
+    console.log(
+      'getNetworkClientsById',
+      this.networkController.getNetworkClientsById(),
+    );
+
+    if (
+      this.selectedNetworkController.getClientForDomain(origin) === undefined
+    ) {
+      this.selectedNetworkController.setClientForDomain(
+        origin,
+        this.findFullNetworkConfigurationByChainId(chainIdForRequest),
+      );
+    }
+
+    const networkClient =
+      this.selectedNetworkController.getClientForDomain(origin);
+
+    // append origin to each request
+    engine.push(createOriginMiddleware({ origin }));
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+    const filterMiddleware = createFilterMiddleware({
+      provider: networkClient.provider,
+      blockTracker: networkClient.blockTracker,
+    });
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
+      provider: networkClient.provider,
+      blockTracker: networkClient.blockTracker,
     });
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
@@ -3930,9 +3999,6 @@ export default class MetamaskController extends EventEmitter {
       engine.push(createDupeReqFilterMiddleware());
     }
 
-    // append origin to each request
-    engine.push(createOriginMiddleware({ origin }));
-
     // append tabId to each request if it exists
     if (tabId) {
       engine.push(createTabIdMiddleware({ tabId }));
@@ -3940,6 +4006,7 @@ export default class MetamaskController extends EventEmitter {
 
     // logging
     engine.push(createLoggerMiddleware({ origin }));
+
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -3974,6 +4041,24 @@ export default class MetamaskController extends EventEmitter {
         origin,
 
         subjectType,
+
+        setClientForDomain:
+          this.selectedNetworkController.setClientForDomain.bind(
+            this.selectedNetworkController,
+          ),
+
+        findFullNetworkConfigurationByChainId:
+          this.findFullNetworkConfigurationByChainId.bind(this),
+
+        getChainForDomain:
+          this.selectedNetworkController.getChainForDomain.bind(
+            this.selectedNetworkController,
+          ),
+
+        setChainForDomain:
+          this.selectedNetworkController.setChainForDomain.bind(
+            this.selectedNetworkController,
+          ),
 
         // Miscellaneous
         addSubjectMetadata:
@@ -4121,7 +4206,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     // forward to metamask primary provider
-    engine.push(providerAsMiddleware(provider));
+    engine.push(providerAsMiddleware(networkClient.provider));
+
     return engine;
   }
 
@@ -4431,6 +4517,21 @@ export default class MetamaskController extends EventEmitter {
         return Object.keys(rpcInfo).some((key) => {
           return configuration[key] === rpcInfo[key];
         });
+      },
+    );
+
+    return networkConfiguration || null;
+  }
+
+  findFullNetworkConfigurationByChainId(chainId) {
+    const networkClients = this.networkController.getNetworkClientsById();
+    const type = CHAIN_ID_TO_TYPE_MAP[chainId];
+    if (type && networkClients[type]) {
+      return networkClients[type];
+    }
+    const networkConfiguration = Object.values(networkClients).find(
+      (networkClient) => {
+        return networkClient.configuration.chainId === chainId;
       },
     );
 

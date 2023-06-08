@@ -563,9 +563,11 @@ const TRANSACTION_APPROVAL_TYPES = [
   ApprovalType.PersonalSign,
 ];
 
+// TODO refactor to branch if origin is dapp or extension
 export function hasTransactionPendingApprovals(state) {
   return (
-    hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    // hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    hasPendingApprovals(state, ApprovalType.Transaction) ||
     TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
   );
 }

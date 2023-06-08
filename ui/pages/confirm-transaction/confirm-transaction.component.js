@@ -56,6 +56,8 @@ const ConfirmTransaction = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
 
+  // first need to get the transaction all networks (not just currently selected networks)
+  // then get domain/chainId from transaction
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
 

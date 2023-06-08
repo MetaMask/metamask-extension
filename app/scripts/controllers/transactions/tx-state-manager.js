@@ -1,7 +1,15 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import { values, keyBy, mapValues, omitBy, pickBy, sortBy } from 'lodash';
+import {
+  values,
+  keyBy,
+  mapValues,
+  omitBy,
+  pickBy,
+  sortBy,
+  chain,
+} from 'lodash';
 import createId from '../../../../shared/modules/random-id';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { METAMASK_CONTROLLER_EVENTS } from '../../metamask-controller';
@@ -92,7 +100,7 @@ export default class TransactionStateManager extends EventEmitter {
   generateTxMeta(opts = {}) {
     const networkId = this.getNetworkId();
     const networkStatus = this.getNetworkStatus();
-    const chainId = this.getCurrentChainId();
+    const chainId = this.getCurrentChainId(opts.origin);
     if (networkStatus !== NetworkStatus.Available) {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
@@ -153,14 +161,23 @@ export default class TransactionStateManager extends EventEmitter {
    *  by id
    */
   getUnapprovedTxList() {
-    const chainId = this.getCurrentChainId();
-    const networkId = this.getNetworkId();
-    return pickBy(
-      this.store.getState().transactions,
-      (transaction) =>
-        transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId, networkId),
+    console.log('getUnapprovedTxList', this.store.getState().transactions);
+    console.log(
+      'full thing:',
+      chain(this.store.getState().transactions)
+        .pickBy(
+          (transaction) => transaction.status === TransactionStatus.unapproved,
+        )
+        .sortBy('origin')
+        .value(),
     );
+    return chain(this.store.getState().transactions)
+      .pickBy(
+        (transaction) => transaction.status === TransactionStatus.unapproved,
+        // TODO sort by active tab
+      )
+      .sortBy('origin')
+      .value();
   }
 
   /**
@@ -417,6 +434,7 @@ export default class TransactionStateManager extends EventEmitter {
     filterToCurrentNetwork = true,
     limit,
   } = {}) {
+    //TODO modify to not rely on current chainId
     const chainId = this.getCurrentChainId();
     const networkId = this.getNetworkId();
     // searchCriteria is an object that might have values that aren't predicate

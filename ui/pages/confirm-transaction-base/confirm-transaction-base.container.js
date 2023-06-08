@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import { ORIGIN_METAMASK } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
@@ -128,10 +129,16 @@ const mapStateToProps = (state, ownProps) => {
     networkId,
     unapprovedTxs,
     nextNonce,
+    domains,
   } = metamask;
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
-  const { txParams = {}, id: transactionId, type } = txData;
+  const { txParams = {}, id: transactionId, type, origin } = txData;
+  // todo use origin to fetch correct chainId from selectedNetworkController
+  let currentChainId = chainId;
+  if (origin !== ORIGIN_METAMASK) {
+    currentChainId = domains[origin];
+  }
   const txId = transactionId || Number(paramsTransactionId);
   const transaction = getUnapprovedTransaction(state, txId);
   const {
@@ -169,8 +176,8 @@ const mapStateToProps = (state, ownProps) => {
   const checksummedAddress = toChecksumHexAddress(toAddress);
   const addressBookObject =
     addressBook &&
-    addressBook[chainId] &&
-    addressBook[chainId][checksummedAddress];
+    addressBook[currentChainId] &&
+    addressBook[currentChainId][checksummedAddress];
   const toEns = getEnsResolutionByAddress(state, checksummedAddress);
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
@@ -186,7 +193,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
+      transactionMatchesNetwork(unapprovedTxs[key], currentChainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -200,6 +207,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {};
 
+  // TODO modify to use domain selected chainId
   const fullTxData = getFullTxData(
     state,
     txId,

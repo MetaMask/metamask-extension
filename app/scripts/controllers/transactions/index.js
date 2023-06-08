@@ -2156,9 +2156,11 @@ export default class TransactionController extends EventEmitter {
    */
   _updateMemstore() {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
+    // TODO get rid of currentNetworkTxList
     const currentNetworkTxList = this.txStateManager.getTransactions({
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
+    console.log('unapprovedTxs', unapprovedTxs);
     this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
   }
 

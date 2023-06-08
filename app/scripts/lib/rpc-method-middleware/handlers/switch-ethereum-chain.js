@@ -18,15 +18,18 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    getCurrentChainId: true,
+    setClientForDomain: true,
+    findFullNetworkConfigurationByChainId: true,
+    getChainForDomain: true,
+    setChainForDomain: true,
     findNetworkConfigurationBy: true,
     setProviderType: true,
-    setActiveNetwork: true,
     requestUserApproval: true,
   },
 };
 export default switchEthereumChain;
 
+// TODO: remove this in favor of findFullNetworkConfigurationByChainId
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
@@ -51,10 +54,11 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    getCurrentChainId,
+    setClientForDomain,
+    findFullNetworkConfigurationByChainId,
+    getChainForDomain,
+    setChainForDomain,
     findNetworkConfigurationBy,
-    setProviderType,
-    setActiveNetwork,
     requestUserApproval,
   },
 ) {
@@ -102,26 +106,28 @@ async function switchEthereumChainHandler(
 
   const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
-    const currentChainId = getCurrentChainId();
+    const currentChainId = getChainForDomain(req.origin);
     if (currentChainId === _chainId) {
       res.result = null;
       return end();
     }
     try {
-      const approvedRequestData = await requestUserApproval({
+      await requestUserApproval({
         origin,
         type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
-      if (
-        Object.values(BUILT_IN_INFURA_NETWORKS)
-          .map(({ chainId: id }) => id)
-          .includes(chainId)
-      ) {
-        await setProviderType(approvedRequestData.type);
-      } else {
-        await setActiveNetwork(approvedRequestData.id);
-      }
+      // if (
+      //   Object.values(BUILT_IN_INFURA_NETWORKS)
+      //     .map(({ chainId: id }) => id)
+      //     .includes(chainId)
+      // ) {
+      //   await setProviderType(approvedRequestData.type);
+      // } else {
+      setChainForDomain(origin, chainId);
+      const networkClient = findFullNetworkConfigurationByChainId(chainId);
+      setClientForDomain(origin, networkClient);
+      // }
       res.result = null;
     } catch (error) {
       return end(error);
