@@ -179,50 +179,60 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
-      <Box
-        className="snaps-connect__header"
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingBottom={4}
-      >
-        <SiteOrigin
-          chip
-          siteOrigin={origin}
-          title={origin}
-          iconSrc={iconUrl}
-          name={name}
-        />
-        {isMultiSnapConnect ? (
-          <>
-            <Text
-              paddingBottom={2}
-              paddingTop={8}
-              variant={TextVariant.headingLg}
-            >
-              {t('connectionRequest')}
-            </Text>
-            <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-              {t('multipleSnapConnectionWarning', [
-                <b key="0">{origin}</b>,
-                <b key="1">{snaps?.length}</b>,
-              ])}
-            </Text>
-          </>
-        ) : null}
+      <Box style={{ overflow: 'auto' }}>
+        <Box
+          className="snaps-connect__header"
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={4}
+        >
+          <SiteOrigin
+            chip
+            siteOrigin={origin}
+            title={origin}
+            iconSrc={iconUrl}
+            name={name}
+          />
+          {isMultiSnapConnect ? (
+            <>
+              <Text
+                paddingBottom={2}
+                paddingTop={8}
+                variant={TextVariant.headingLg}
+              >
+                {t('connectionRequest')}
+              </Text>
+              <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+                {t('multipleSnapConnectionWarning', [
+                  <b key="0">{origin}</b>,
+                  <b key="1">{snaps?.length}</b>,
+                ])}
+              </Text>
+            </>
+          ) : null}
+        </Box>
+        <SnapsConnectContent />
       </Box>
-      <SnapsConnectContent />
-      <PageContainerFooter
-        footerClassName="snaps-connect__footer"
-        cancelButtonType="default"
-        hideCancel={false}
-        disabled={isLoading}
-        onCancel={onCancel}
-        cancelText={t('cancel')}
-        onSubmit={onConnect}
-        submitText={t('connect')}
-      />
+      <Box
+        className="snaps-connect__footer"
+        style={{
+          width: "100%",
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
+      >
+        <PageContainerFooter
+          footerClassName="snaps-connect__footer"
+          cancelButtonType="default"
+          hideCancel={false}
+          disabled={isLoading}
+          onCancel={onCancel}
+          cancelText={t('cancel')}
+          onSubmit={onConnect}
+          submitText={t('connect')}
+        />
+      </Box>
     </Box>
   );
 }
