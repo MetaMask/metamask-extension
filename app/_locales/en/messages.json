@@ -3793,20 +3793,22 @@
     "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 account control to $1",
+    "message": "Give $2 account control to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
-    "message": "Grant $2 public key access to $1",
+    "message": "Give $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
