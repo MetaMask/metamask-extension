@@ -275,6 +275,7 @@ export default function SnapInstall({
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
           warnings={warnings}
+          snapName={snapName}
         />
       )}
     </Box>
