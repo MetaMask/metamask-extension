@@ -723,6 +723,7 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      showCustodianDeepLink,
     } = this.props;
     const { noteText } = this.state;
 
@@ -767,9 +768,8 @@ export default class ConfirmTransactionBase extends Component {
             if (!this._isMounted) {
               return;
             }
-
             if (txData.custodyStatus) {
-              this.props.showCustodianDeepLink({
+              showCustodianDeepLink({
                 fromAddress,
                 closeNotification: isNotification && unapprovedTxCount === 1,
                 txId: txData.id,
