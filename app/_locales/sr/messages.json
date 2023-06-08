@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Povratak na Sve"
-  },
   "backupApprovalInfo": {
     "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
   },
@@ -566,9 +563,6 @@
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
   },
-  "recents": {
-    "message": "Skorašnje"
-  },
   "recipientAddressPlaceholder": {
     "message": "Pretraga, javna adresa (0x) ili ENS"
   },
@@ -788,9 +782,6 @@
   },
   "transfer": {
     "message": "Prenos"
-  },
-  "transferBetweenAccounts": {
-    "message": "Prenos između mojih naloga"
   },
   "transferFrom": {
     "message": "Prebacite iz"

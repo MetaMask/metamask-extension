@@ -333,9 +333,6 @@
   "back": {
     "message": "Indietro"
   },
-  "backToAll": {
-    "message": "Torna a \"Tutti\""
-  },
   "backupApprovalInfo": {
     "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
   },
@@ -1332,9 +1329,6 @@
   "receive": {
     "message": "Ricevi"
   },
-  "recents": {
-    "message": "Recenti"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ricerca, indirizzo pubblico (0x) o ENS"
   },
@@ -1817,9 +1811,6 @@
   },
   "transfer": {
     "message": "Trasferisci"
-  },
-  "transferBetweenAccounts": {
-    "message": "Trasferimento tra i miei account"
   },
   "transferFrom": {
     "message": "Trasferisci Da"
