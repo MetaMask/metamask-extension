@@ -208,7 +208,8 @@
     "@metamask/keyring-controller@^8.0.0": "patch:@metamask/keyring-controller@npm%3A8.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.0-806630ae4e.patch",
     "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch",
     "semver@7.3.7": "^7.5.4",
-    "semver@7.3.8": "^7.5.4"
+    "semver@7.3.8": "^7.5.4",
+    "@metamask/selected-network-controller@^1.0.1": "npm:@metamask-previews/selected-network-controller@1.0.1-preview.dbee2e4"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -246,6 +247,7 @@
     "@metamask/design-tokens": "^1.12.0",
     "@metamask/desktop": "^0.3.0",
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
+    "@metamask/eth-json-rpc-provider": "^2.1.0",
     "@metamask/eth-keyring-controller": "^10.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^0.15.0",
     "@metamask/eth-snap-keyring": "^0.2.2",
@@ -274,7 +276,7 @@
     "@metamask/rpc-methods": "^2.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/selected-network-controller": "^1.0.0",
+    "@metamask/selected-network-controller": "^1.0.1",
     "@metamask/signature-controller": "^5.3.0",
     "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^4.0.0",

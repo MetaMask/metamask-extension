@@ -1245,7 +1245,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-            new Date(notification.readDate) < expirationTime,
+          new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -2165,7 +2165,7 @@ export function setProviderType(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setProviderType`, type);
-
+    console.log('SETTING PROVIDER TYPE');
     try {
       await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
@@ -2581,12 +2581,12 @@ export function exportAccount(
   setPrivateKey: (key: string) => void,
   setShowHoldToReveal: (show: boolean) => void,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return function (dispatch) {
+  return function(dispatch) {
     dispatch(showLoadingIndication());
 
     log.debug(`background.verifyPassword`);
     return new Promise<string>((resolve, reject) => {
-      callBackgroundMethod('verifyPassword', [password], function (err) {
+      callBackgroundMethod('verifyPassword', [password], function(err) {
         if (err) {
           log.error('Error in verifying password.');
           dispatch(hideLoadingIndication());
@@ -2598,7 +2598,7 @@ export function exportAccount(
         callBackgroundMethod<string>(
           'exportAccount',
           [address, password],
-          function (err2, result) {
+          function(err2, result) {
             dispatch(hideLoadingIndication());
 
             if (err2) {
@@ -2622,10 +2622,10 @@ export function exportAccounts(
   password: string,
   addresses: string[],
 ): ThunkAction<Promise<string[]>, MetaMaskReduxState, unknown, AnyAction> {
-  return function (dispatch) {
+  return function(dispatch) {
     log.debug(`background.verifyPassword`);
     return new Promise<string[]>((resolve, reject) => {
-      callBackgroundMethod('verifyPassword', [password], function (err) {
+      callBackgroundMethod('verifyPassword', [password], function(err) {
         if (err) {
           log.error('Error in submitting password.');
           reject(err);
@@ -2638,7 +2638,7 @@ export function exportAccounts(
               callBackgroundMethod<string>(
                 'exportAccount',
                 [address, password],
-                function (err2, result) {
+                function(err2, result) {
                   if (err2) {
                     logErrorWithMessage(err2);
                     dispatch(
@@ -3224,15 +3224,15 @@ export function setPendingTokens(pendingTokens: {
   } = pendingTokens;
   const tokens =
     customToken?.address &&
-    customToken?.symbol &&
-    Boolean(customToken?.decimals >= 0 && customToken?.decimals <= 36)
+      customToken?.symbol &&
+      Boolean(customToken?.decimals >= 0 && customToken?.decimals <= 36)
       ? {
-          ...selectedTokens,
-          [customToken.address]: {
-            ...customToken,
-            isCustom: true,
-          },
-        }
+        ...selectedTokens,
+        [customToken.address]: {
+          ...customToken,
+          isCustom: true,
+        },
+      }
       : selectedTokens;
 
   Object.keys(tokens).forEach((tokenAddress) => {
@@ -4460,6 +4460,14 @@ export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   }
 }
 ///: END:ONLY_INCLUDE_IN
+
+export function setUseRequestQueue(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseRequestQueue', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);

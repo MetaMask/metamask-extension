@@ -1546,6 +1546,16 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+/**
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseRequestQueue(state) {
+  return state.metamask.useRequestQueue;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled

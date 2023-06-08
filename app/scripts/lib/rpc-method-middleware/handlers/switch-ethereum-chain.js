@@ -25,11 +25,16 @@ const switchEthereumChain = {
     setProviderType: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    getNetworkConfigurations: true,
+    getNetworkClientIdForDomain: true,
+    getUseRequestQueue: true,
+    getProviderConfig: true,
   },
 };
+
 export default switchEthereumChain;
 
-function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
       .map(({ chainId: id }) => id)
@@ -47,6 +52,25 @@ function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   return findNetworkConfigurationBy({ chainId });
 }
 
+export function findExistingNetworkByNetworkClientId(
+  networkClientId,
+  getNetworkConfigurations,
+) {
+  if (BUILT_IN_INFURA_NETWORKS[networkClientId]) {
+    const { chainId, ticker, rpcUrl } =
+      BUILT_IN_INFURA_NETWORKS[networkClientId];
+    return {
+      chainId,
+      ticker,
+      rpcUrl,
+      type: networkClientId,
+      nickname: NETWORK_TO_NAME_MAP[networkClientId],
+    };
+  }
+
+  return getNetworkConfigurations()[networkClientId];
+}
+
 async function switchEthereumChainHandler(
   req,
   res,
@@ -60,6 +84,10 @@ async function switchEthereumChainHandler(
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
+    getNetworkConfigurations,
+    getNetworkClientIdForDomain,
+    getUseRequestQueue,
+    getProviderConfig,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -103,13 +131,37 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
-  if (requestData) {
+
+  const useRequestQueue = getUseRequestQueue();
+
+  const requestData = {
+    toNetworkConfiguration: findExistingNetwork(
+      _chainId,
+      findNetworkConfigurationBy,
+    ),
+    // fromNetworkConfiguration: findExistingNetworkByNetworkClientId(
+    //   getNetworkClientIdForDomain(origin),
+    //   getNetworkConfigurations,
+    // ),
+  };
+
+  // if (useRequestQueue === false) {
+  requestData.fromNetworkConfiguration = getProviderConfig();
+  // }
+
+  if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
+
+    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
+
     if (currentChainId === _chainId) {
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
       return end();
     }
+
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
@@ -125,7 +177,6 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
-      const networkClientId = findNetworkClientIdByChainId(_chainId);
       setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {

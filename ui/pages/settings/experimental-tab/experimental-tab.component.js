@@ -46,6 +46,8 @@ export default class ExperimentalTab extends PureComponent {
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -247,6 +249,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
+<<<<<<< HEAD
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
@@ -320,6 +323,36 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
   ///: END:ONLY_INCLUDE_IN
+=======
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
+  }
+>>>>>>> bb69c01557 (Add a queue for dapps accessing different networks)
 
   render() {
     return (
@@ -340,6 +373,7 @@ export default class ExperimentalTab extends PureComponent {
           this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IN
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }

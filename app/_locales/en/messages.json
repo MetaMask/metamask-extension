@@ -5029,6 +5029,18 @@
   "toggleEthSignOn": {
     "message": "ON (Not recommended)"
   },
+  "toggleRequestQueueDescription": {
+    "message": "When a dapp or the wallet makes a network request, it's possible that the currently selected network is not the same as what is expected. Turning this feature on will switch the network according to the origin of the request. Using switch ethereum chain will change the saved chain for the particular origin."
+  },
+  "toggleRequestQueueField": {
+    "message": "Enable or disable request queueing when network switching is required"
+  },
+  "toggleRequestQueueOff": {
+    "message": "off"
+  },
+  "toggleRequestQueueOn": {
+    "message": "on"
+  },
   "token": {
     "message": "Token"
   },
