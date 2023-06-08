@@ -123,11 +123,9 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const disablePickers =
-    isConfirmationPage ||
-    isTransactionEditPage ||
-    (isSwapsPage && !isSwapsBuildQuotePage);
-  const disableNetworkPicker = isSwapsPage || disablePickers;
+  const disableAccountPicker =
+    isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
+  const disableNetworkPicker = isSwapsPage || isTransactionEditPage;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -261,7 +259,7 @@ export const AppHeader = ({ location }) => {
                       },
                     });
                   }}
-                  disabled={disablePickers}
+                  disabled={disableAccountPicker}
                 />
               ) : null}
               <Box
