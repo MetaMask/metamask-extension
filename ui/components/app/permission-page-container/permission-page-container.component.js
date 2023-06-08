@@ -1,13 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
-///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
@@ -16,10 +12,6 @@ export default class PermissionPageContainer extends Component {
     rejectPermissionsRequest: PropTypes.func.isRequired,
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
-    setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
     request: PropTypes.object,
     targetSubjectMetadata: PropTypes.shape({
       name: PropTypes.string,
@@ -65,14 +57,6 @@ export default class PermissionPageContainer extends Component {
     }, {});
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  showSnapsPrivacyWarning() {
-    this.setState({
-      isShowingSnapsPrivacyWarning: true,
-    });
-  }
-  ///: END:ONLY_INCLUDE_IN
-
   getRequestedMethodNames(props) {
     return Object.keys(props.request.permissions || {});
   }
@@ -86,14 +70,6 @@ export default class PermissionPageContainer extends Component {
         legacy_event: true,
       },
     });
-
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    if (this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY]) {
-      if (this.props.snapsInstallPrivacyWarningShown === false) {
-        this.showSnapsPrivacyWarning();
-      }
-    }
-    ///: END:ONLY_INCLUDE_IN
   }
 
   onCancel = () => {
@@ -134,33 +110,8 @@ export default class PermissionPageContainer extends Component {
     const { targetSubjectMetadata, selectedIdentities, allIdentitiesSelected } =
       this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    const setIsShowingSnapsPrivacyWarning = (value) => {
-      this.setState({
-        isShowingSnapsPrivacyWarning: value,
-      });
-    };
-
-    const confirmSnapsPrivacyWarning = () => {
-      setIsShowingSnapsPrivacyWarning(false);
-      this.props.setSnapsInstallPrivacyWarningShownStatus(true);
-    };
-    ///: END:ONLY_INCLUDE_IN
-
     return (
       <div className="page-container permission-approval-container">
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          <>
-            {this.state.isShowingSnapsPrivacyWarning && (
-              <SnapPrivacyWarning
-                onAccepted={() => confirmSnapsPrivacyWarning()}
-                onCanceled={() => this.onCancel()}
-              />
-            )}
-          </>
-          ///: END:ONLY_INCLUDE_IN
-        }
         <PermissionPageContainerContent
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={this.state.selectedPermissions}

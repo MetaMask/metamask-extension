@@ -24,17 +24,21 @@ import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
 import { getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
+import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 
 export default function SnapsConnect({
   request,
   approveConnection,
   rejectConnection,
   targetSubjectMetadata,
+  snapsInstallPrivacyWarningShown,
+  setSnapsInstallPrivacyWarningShownStatus,
 }) {
   const t = useI18nContext();
   const { origin, iconUrl, name } = targetSubjectMetadata;
-  const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
+    useState(!snapsInstallPrivacyWarningShown);
 
   const onCancel = useCallback(() => {
     rejectConnection(request.metadata.id);
@@ -44,8 +48,6 @@ export default function SnapsConnect({
     try {
       setIsLoading(true);
       approveConnection(request);
-    } catch (err) {
-      setError(err);
     } finally {
       setIsLoading(false);
     }
@@ -158,55 +160,6 @@ export default function SnapsConnect({
     return null;
   };
 
-  const SnapsConnectError = () => {
-    const snaps = getSnaps();
-    let description = '';
-    if (snaps?.length === 1) {
-      description = t('connectionFailedDescription', [getSnapName(snaps?.[0])]);
-    } else if (snaps?.length > 1) {
-      description = t('connectionFailedDescriptionPlural');
-    }
-    return (
-      <Box
-        className="snaps-connect__error"
-        flexDirection={FlexDirection.Column}
-        display={Display.Flex}
-      >
-        <Box
-          className="snaps-connect__error__icons"
-          flexDirection={FlexDirection.Row}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-        >
-          <IconWithFallback
-            className="snaps-connect__error__icons__site-icon"
-            icon={iconUrl}
-            name={name}
-            size={32}
-          />
-          <hr className="snaps-connect__error__icons__connection-line" />
-          <Icon
-            className="snaps-connect__error__icons__question"
-            name={IconName.CircleX}
-            size={IconSize.Xl}
-            color={IconColor.errorDefault}
-          />
-          <hr className="snaps-connect__error__icons__connection-line" />
-          <Icon
-            className="snaps-connect__error__icons__snap"
-            name={IconName.Snaps}
-            size={IconSize.Xl}
-            color={IconColor.primaryDefault}
-          />
-        </Box>
-        <Text variant={TextVariant.headingLg}>{t('connectionFailed')}</Text>
-        {description && (
-          <Text variant={TextVariant.headingLg}>{description}</Text>
-        )}
-      </Box>
-    );
-  };
-
   const snaps = getSnaps();
   const isMultiSnapConnect = snaps?.length > 1;
 
@@ -217,6 +170,15 @@ export default function SnapsConnect({
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.center}
     >
+      {isShowingSnapsPrivacyWarning && (
+        <SnapPrivacyWarning
+          onAccepted={() => {
+            setIsShowingSnapsPrivacyWarning(false);
+            setSnapsInstallPrivacyWarningShownStatus(true);
+          }}
+          onCanceled={onCancel}
+        />
+      )}
       <Box
         className="snaps-connect__header"
         flexDirection={FlexDirection.Column}
@@ -250,7 +212,7 @@ export default function SnapsConnect({
           </>
         ) : null}
       </Box>
-      {error ? <SnapsConnectError /> : <SnapsConnectContent />}
+      <SnapsConnectContent />
       <PageContainerFooter
         footerClassName="snaps-connect__footer"
         cancelButtonType="default"
@@ -258,8 +220,8 @@ export default function SnapsConnect({
         disabled={isLoading}
         onCancel={onCancel}
         cancelText={t('cancel')}
-        onSubmit={error ? onCancel : onConnect}
-        submitText={t(error ? 'ok' : 'connect')}
+        onSubmit={onConnect}
+        submitText={t('connect')}
       />
     </Box>
   );
@@ -276,4 +238,6 @@ SnapsConnect.propTypes = {
     origin: PropTypes.string,
     subjectType: PropTypes.string,
   }),
+  snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
+  setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
 };

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -14,6 +15,9 @@ import {
   TextVariant,
   TEXT_ALIGN,
   FontWeight,
+  FlexDirection,
+  Display,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -21,13 +25,18 @@ import InstallError from '../../../../components/app/snaps/install-error/install
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
+  Icon,
   IconName,
+  IconSize,
   Text,
   ValidTag,
 } from '../../../../components/component-library';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
+import { getTargetSubjectMetadata } from '../../../../selectors';
+import IconWithFallback from '../../../../components/ui/icon-with-fallback/icon-with-fallback.component';
 
 export default function SnapInstall({
   request,
@@ -37,7 +46,12 @@ export default function SnapInstall({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
-
+  const siteMetadata =
+    useSelector((state) =>
+      getTargetSubjectMetadata(state, request?.metadata?.dappOrigin),
+    ) || {};
+  const { origin, iconUrl, name } = siteMetadata;
+  console.log(siteMetadata);
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
@@ -77,6 +91,59 @@ export default function SnapInstall({
     }
   };
 
+  const getFooterMessage = () => {
+    if (hasError) {
+      return 'ok';
+    } else if (isLoading) {
+      return 'connect';
+    }
+    return 'install';
+  };
+
+  const SnapsConnectError = () => {
+    const description = t('connectionFailedDescription', [snapName]);
+
+    return (
+      <Box
+        className="snaps-connect__error"
+        flexDirection={FlexDirection.Column}
+        display={Display.Flex}
+      >
+        <Box
+          className="snaps-connect__error__icons"
+          flexDirection={FlexDirection.Row}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+        >
+          <IconWithFallback
+            className="snaps-connect__error__icons__site-icon"
+            icon={iconUrl}
+            name={name}
+            size={32}
+          />
+          <hr className="snaps-connect__error__icons__connection-line" />
+          <Icon
+            className="snaps-connect__error__icons__question"
+            name={IconName.CircleX}
+            size={IconSize.Xl}
+            color={IconColor.errorDefault}
+          />
+          <hr className="snaps-connect__error__icons__connection-line" />
+          <Icon
+            className="snaps-connect__error__icons__snap"
+            name={IconName.Snaps}
+            size={IconSize.Xl}
+            color={IconColor.primaryDefault}
+          />
+        </Box>
+        <Text variant={TextVariant.headingLg}>{t('connectionFailed')}</Text>
+        {description && (
+          <Text variant={TextVariant.headingLg}>{description}</Text>
+        )}
+      </Box>
+    );
+  };
+
   return (
     <Box
       className="page-container snap-install"
@@ -85,7 +152,24 @@ export default function SnapInstall({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      {isLoading ? (
+        <Box
+          width="full"
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          paddingTop={4}
+        >
+          <SiteOrigin
+            chip
+            siteOrigin={origin}
+            title={origin}
+            iconSrc={iconUrl}
+            iconName={name}
+          />
+        </Box>
+      ) : (
+        <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      )}
       <Box
         ref={ref}
         onScroll={onScroll}
@@ -105,9 +189,7 @@ export default function SnapInstall({
             <PulseLoader />
           </Box>
         )}
-        {hasError && (
-          <InstallError error={requestState.error} title={t('requestFailed')} />
-        )}
+        {hasError && <SnapsConnectError />}
         {!hasError && !isLoading && (
           <>
             <Text
@@ -171,7 +253,7 @@ export default function SnapInstall({
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(hasError ? 'ok' : 'install')}
+          submitText={t(getFooterMessage())}
         />
       </Box>
       {isShowingWarning && (

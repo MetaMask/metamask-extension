@@ -82,7 +82,7 @@ const mapStateToProps = (state, ownProps) => {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   if (
     permissionsRequest &&
-    Object.keys(permissionsRequest.permissions || {}) === 1 &&
+    Object.keys(permissionsRequest.permissions || {}).length === 1 &&
     permissionsRequest.permissions?.[WALLET_SNAP_PERMISSION_KEY]
   ) {
     requestType = 'wallet_connectSnaps';

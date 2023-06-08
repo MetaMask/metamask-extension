@@ -378,14 +378,6 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
-                  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-                  snapsInstallPrivacyWarningShown={
-                    snapsInstallPrivacyWarningShown
-                  }
-                  setSnapsInstallPrivacyWarningShownStatus={
-                    setSnapsInstallPrivacyWarningShownStatus
-                  }
-                  ///: END:ONLY_INCLUDE_IN
                 />
               )}
             />
@@ -406,6 +398,12 @@ export default class PermissionConnect extends Component {
                     this.cancelPermissionsRequest(requestId)
                   }
                   targetSubjectMetadata={targetSubjectMetadata}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
                 />
               )}
             />
