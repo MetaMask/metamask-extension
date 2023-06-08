@@ -2,12 +2,17 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { isObject } from '@metamask/utils';
+import {
+  SnapCaveatType,
+  WALLET_SNAP_PERMISSION_KEY,
+} from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 ///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
@@ -19,6 +24,7 @@ export default class PermissionPageContainer extends Component {
     selectedIdentities: PropTypes.array,
     allIdentitiesSelected: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     setSnapsInstallPrivacyWarningShownStatus: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
@@ -38,6 +44,9 @@ export default class PermissionPageContainer extends Component {
     requestMetadata: {},
     selectedIdentities: [],
     allIdentitiesSelected: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    currentPermissions: {},
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -64,12 +73,51 @@ export default class PermissionPageContainer extends Component {
 
   getRequestedMethodState(methodNames) {
     return methodNames.reduce((acc, methodName) => {
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      if (methodName === RestrictedMethods.wallet_snap) {
+        acc[methodName] = this.getDedupedSnapPermissions();
+        return acc;
+      }
+      ///: END:ONLY_INCLUDE_IN
       acc[methodName] = true;
       return acc;
     }, {});
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getDedupedSnapPermissions() {
+    const permission =
+      this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY];
+    const requestedSnaps = permission?.caveats[0].value;
+    const currentSnaps =
+      this.props.currentPermissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0]
+        .value;
+
+    if (!isObject(currentSnaps)) {
+      return permission;
+    }
+
+    const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+    const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+    const dedupedCaveats = requestedSnapKeys.reduce((acc, snapId) => {
+      if (!currentSnapKeys.includes(snapId)) {
+        acc[snapId] = {};
+      }
+      return acc;
+    }, {});
+    const hasNothingToDisplay = Object.keys(dedupedCaveats).length === 0;
+
+    return {
+      ...permission,
+      caveats: [
+        {
+          type: SnapCaveatType.SnapIds,
+          value: hasNothingToDisplay ? requestedSnaps : dedupedCaveats,
+        },
+      ],
+    };
+  }
+
   showSnapsPrivacyWarning() {
     this.setState({
       isShowingSnapsPrivacyWarning: true,

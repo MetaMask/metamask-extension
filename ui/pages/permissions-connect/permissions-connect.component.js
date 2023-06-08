@@ -378,6 +378,12 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
                 />
               )}
             />

@@ -210,11 +210,7 @@ export default function SnapsConnect({
 
   // eslint-disable-next-line react/prop-types
   const ContentWrapper = ({ children }) =>
-    isMultiSnapConnect ? (
-      <Box>{children}</Box>
-    ) : (
-      <>{children}</>
-    );
+    isMultiSnapConnect ? <Box>{children}</Box> : <>{children}</>;
 
   return (
     <Box
