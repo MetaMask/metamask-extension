@@ -41,6 +41,9 @@ import {
   IMPORT_ACCOUNT_ROUTE,
   NEW_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   COMPLIANCE_FEATURE_ROUTE,
@@ -225,6 +228,25 @@ export const AccountListMenu = ({ onClose }) => {
             >
               {t('hardwareWallet')}
             </ButtonLink>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+              <>
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={Size.SM}
+                    startIconName={IconName.Snaps}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
+
+                      history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                    }}
+                  >
+                    {t('settingAddSnapAccount')}
+                  </ButtonLink>
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IN
+            }
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               <>
