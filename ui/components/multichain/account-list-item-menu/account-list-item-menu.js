@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -95,13 +95,11 @@ export const AccountListItemMenu = ({
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
 
-  const [isDisabled, setIsDisabled] = useState(false);
   const lastItemRef = useRef(null);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Tab' && event.target === lastItemRef.current) {
-      // If Tab is pressed at the last item, disable the focus lock
-      setIsDisabled(true);
+      // If Tab is pressed at the last item to close popover and focus to next element in DOM
       onClose();
     }
   };
@@ -118,7 +116,7 @@ export const AccountListItemMenu = ({
       preventOverflow
       style={{ zIndex: 1051, overflow: 'hidden', minWidth: 225 }}
     >
-      <ModalFocus disabled={isDisabled} restoreFocus>
+      <ModalFocus restoreFocus initialFocusRef={anchorElement}>
         <div onKeyDown={handleKeyDown}>
           <MenuItem
             onClick={() => {
