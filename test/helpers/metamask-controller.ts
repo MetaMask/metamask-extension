@@ -107,11 +107,14 @@ export const browserPolyfillMock = {
 
 export const metamaskControllerArgumentConstructor = ({
   isFirstMetaMaskControllerSetup = false,
+  includeInitState = false,
   storageMock = {},
 } = {}) => ({
   showUserConfirmation: noop,
   encryptor: mockEncryptor,
-  initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE),
+  ...(includeInitState
+    ? { initState: cloneDeep(FIRST_TIME_CONTROLLER_STATE) }
+    : {}),
   initLangCode: 'en_US',
   platform: {
     showTransactionNotification: noop,

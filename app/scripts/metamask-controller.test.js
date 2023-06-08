@@ -186,6 +186,7 @@ describe('MetaMaskController', function () {
       metamaskControllerArgumentConstructor({
         isFirstMetaMaskControllerSetup: true,
         storageMock,
+        includeInitState: true,
       }),
     );
   });

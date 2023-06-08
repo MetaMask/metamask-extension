@@ -62,6 +62,7 @@ describe('MetaMaskController', function () {
         metamaskControllerArgumentConstructor({
           isFirstMetaMaskControllerSetup: true,
           storageMock,
+          includeInitState: true,
         }),
       );
 
@@ -75,6 +76,7 @@ describe('MetaMaskController', function () {
       const metamaskControllerMV3 = new MetaMaskControllerMV3(
         metamaskControllerArgumentConstructor({
           storageMock,
+          includeInitState: true,
         }),
       );
       expect(metamaskControllerMV3.resetStates).not.toHaveBeenCalled();
