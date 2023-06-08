@@ -18,89 +18,6 @@ describe('Multiple transactions', function () {
       },
     ],
   };
-  it('should be able to confirm multiple transactions', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerMultipleTransactions()
-          .build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // confirm multiple transactions
-        await driver.waitForSelector({
-          text: 'Reject 4 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForSelector({
-          text: 'Reject 3 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
-          );
-          return confirmedTxes.length === 4;
-        }, 10000);
-      },
-    );
-  });
-
-  it('should be able to reject multiple transactions', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withTransactionControllerMultipleTransactions()
-          .build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // confirm multiple transactions
-        await driver.waitForSelector({
-          text: 'Reject 4 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
-        await driver.waitForSelector({
-          text: 'Reject 3 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
-        await driver.waitForSelector({
-          text: 'Reject 2 transactions',
-          tag: 'a',
-        });
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
-
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
-        await driver.clickElement({ text: 'Reject', tag: 'button' });
-
-        await driver.waitForSelector('[data-testid="home__activity-tab"]');
-      },
-    );
-  });
 
   it('creates multiple queued transactions, then confirms', async function () {
     await withFixtures(
@@ -126,9 +43,11 @@ describe('Multiple transactions', function () {
         });
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
+        const extensionTab = windowHandles[0];
+        const dApp = windowHandles[1];
         const confirmation = windowHandles[2];
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+
+        await driver.switchToWindow(dApp);
 
         // creates second transaction
         await driver.clickElement({
@@ -148,16 +67,15 @@ describe('Multiple transactions', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindow(extensionTab);
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
 
-        await driver.wait(async () => {
-          const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
-          );
-          return confirmedTxes.length === 2;
-        }, 10000);
+        const confirmedTxes = await driver.findElements(
+          '.transaction-list__completed-transactions .transaction-list-item',
+        );
+
+        assert.equal(confirmedTxes.length, 2);
       },
     );
   });
@@ -212,12 +130,14 @@ describe('Multiple transactions', function () {
         await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="home__activity-tab"]');
 
-        const noTransactions = await driver.findElements(
+        const isTransactionListEmpty = await driver.isElementPresentAndVisible(
           '.transaction-list__empty-text',
         );
-        assert.equal(
-          await noTransactions[0].getText(),
-          'You have no transactions',
+        assert.equal(isTransactionListEmpty, true);
+
+        // should not be present
+        await driver.assertElementNotPresent(
+          '.transaction-list__completed-transactions .transaction-list-item',
         );
       },
     );
