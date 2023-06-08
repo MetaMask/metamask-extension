@@ -18,6 +18,7 @@ import {
   FlexDirection,
   Display,
   IconColor,
+  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -100,19 +101,25 @@ export default function SnapInstall({
   };
 
   const SnapsConnectError = () => {
-    const description = t('connectionFailedDescription', [snapName]);
+    const description = t('connectionFailedDescription', [
+      <b key="0">{snapName}</b>,
+    ]);
 
     return (
       <Box
         className="snaps-connect__error"
         flexDirection={FlexDirection.Column}
         display={Display.Flex}
+        alignItems={AlignItems.center}
+        paddingLeft={4}
+        paddingRight={4}
       >
         <Box
           className="snaps-connect__error__icons"
           flexDirection={FlexDirection.Row}
           display={Display.Flex}
           alignItems={AlignItems.center}
+          paddingBottom={2}
         >
           <IconWithFallback
             className="snaps-connect__error__icons__site-icon"
@@ -135,9 +142,17 @@ export default function SnapInstall({
             color={IconColor.primaryDefault}
           />
         </Box>
-        <Text variant={TextVariant.headingLg}>{t('connectionFailed')}</Text>
+        <Text
+          paddingBottom={2}
+          variant={TextVariant.headingLg}
+          textAlign={TextAlign.Center}
+        >
+          {t('connectionFailed')}
+        </Text>
         {description && (
-          <Text variant={TextVariant.headingLg}>{description}</Text>
+          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+            {description}
+          </Text>
         )}
       </Box>
     );
@@ -151,7 +166,7 @@ export default function SnapInstall({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
-      {isLoading ? (
+      {isLoading || hasError ? (
         <Box
           width="full"
           alignItems={AlignItems.center}
@@ -175,7 +190,7 @@ export default function SnapInstall({
         className="snap-install__content"
         style={{
           overflowY: 'auto',
-          flex: !isLoading && '1',
+          flex: !isLoading && !hasError && '1',
         }}
       >
         {isLoading && (
