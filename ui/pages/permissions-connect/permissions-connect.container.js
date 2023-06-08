@@ -1,5 +1,7 @@
 import { SubjectType } from '@metamask/subject-metadata-controller';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -125,14 +127,13 @@ const mapStateToProps = (state, ownProps) => {
   let page = '';
   if (pathname === connectPath) {
     page = '1';
-  } else if (
-    pathname === confirmPermissionPath ||
-    pathname === snapsConnectPath
-  ) {
+  } else if (pathname === confirmPermissionPath) {
     page = isRequestingAccounts ? '2' : '1';
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
+  } else if (pathname === snapsConnectPath) {
+    page = 1;
     ///: END:ONLY_INCLUDE_IN
   } else {
     throw new Error('Incorrect path for permissions-connect component');
