@@ -91,7 +91,11 @@ module.exports = {
         'test/unit-global/**/*.js',
       ],
       // TODO: Convert these files to modern JS
-      excludedFiles: ['test/lib/wait-until-called.js'],
+      excludedFiles: [
+        'test/lib/wait-until-called.js',
+        'app/scripts/controllers/permissions/snaps/__mocks__/@metamask/rpc-methods.js',
+        'app/scripts/controllers/permissions/snaps/__mocks__/@metamask/snaps-controllers.js',
+      ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         path.resolve(__dirname, '.eslintrc.node.js'),
@@ -272,6 +276,7 @@ module.exports = {
         'app/scripts/controllers/network/**/*.test.ts',
         'app/scripts/controllers/network/provider-api-tests/*.ts',
         'app/scripts/controllers/permissions/**/*.test.js',
+        'app/scripts/controllers/permissions/snaps/__mocks__/*.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/metamask-controller.test.js',
