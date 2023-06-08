@@ -3,11 +3,13 @@ import { TextEncoder, TextDecoder } from 'util';
 import nock from 'nock';
 import log from 'loglevel';
 import { JSDOM } from 'jsdom';
+import { chrome } from 'jest-chrome';
 
 process.env.IN_TEST = true;
 process.env.METAMASK_BUILD_TYPE = 'main';
 
 global.chrome = {
+  ...chrome,
   runtime: { id: 'testid', getManifest: () => ({ manifest_version: 2 }) },
 };
 
