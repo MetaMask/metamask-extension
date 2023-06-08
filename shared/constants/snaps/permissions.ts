@@ -9,6 +9,7 @@ export const EndowmentPermissions = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'endowment:page-home': 'endowment:page-home',
   'endowment:name-lookup': 'endowment:name-lookup',
+  'endowment:user-input': 'endowment:user-input',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   'endowment:keyring': 'endowment:keyring',
@@ -26,6 +27,8 @@ export const ExcludedSnapEndowments = Object.freeze({
   'endowment:page-home':
     'This endowment is experimental and therefore not available.',
   'endowment:name-lookup':
+    'This endowment is experimental and therefore not available.',
+  'endowment:user-input':
     'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IF
 });

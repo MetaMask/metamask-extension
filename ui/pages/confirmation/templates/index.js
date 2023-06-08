@@ -20,6 +20,7 @@ import error from './error';
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
+import snapInterface from './snaps/snap-interface/snap-interface';
 ///: END:ONLY_INCLUDE_IF
 
 const APPROVAL_TEMPLATES = {
@@ -32,6 +33,7 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  snap_interface: snapInterface,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:

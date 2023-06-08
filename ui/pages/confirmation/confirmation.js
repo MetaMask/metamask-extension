@@ -25,7 +25,8 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IF
+  getRequestState,
+  ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
@@ -242,10 +243,15 @@ export default function ConfirmationPage({
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
+  const requestState = useSelector((state) =>
+    getRequestState(state, pendingConfirmation?.id),
+  );
+
   const SNAP_DIALOG_TYPE = [
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
+    'snap_interface',
   ];
   ///: END:ONLY_INCLUDE_IF
 
@@ -264,7 +270,8 @@ export default function ConfirmationPage({
     isSnapDialog &&
     targetSubjectMetadata &&
     getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
-  ///: END:ONLY_INCLUDE_IF
+  const isSnapInterface = pendingConfirmation?.type === 'snap_interface';
+  ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -291,7 +298,10 @@ export default function ConfirmationPage({
           {
             ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IF
+            snapId: isSnapDialog && pendingConfirmation.origin,
+            interfaceId: isSnapDialog && pendingConfirmation.id,
+            requestState,
+            ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
           t,
@@ -311,7 +321,9 @@ export default function ConfirmationPage({
     ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
-    ///: END:ONLY_INCLUDE_IF
+    requestState,
+
+    ///: END:ONLY_INCLUDE_IN
   ]);
 
   useEffect(() => {
@@ -496,52 +508,42 @@ export default function ConfirmationPage({
           />
         )}
       </div>
-      <ConfirmationFooter
-        alerts={
-          alertState[pendingConfirmation.id] &&
-          Object.values(alertState[pendingConfirmation.id])
-            .filter((alert) => alert.dismissed === false)
-            .map((alert, idx, filtered) => (
-              <Callout
-                key={alert.id}
-                severity={alert.severity}
-                dismiss={() => dismissAlert(alert.id)}
-                isFirst={idx === 0}
-                isLast={idx === filtered.length - 1}
-                isMultiple={filtered.length > 1}
-              >
-                <MetaMaskTemplateRenderer sections={alert.content} />
-              </Callout>
-            ))
-        }
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
-        style={
-          isSnapDialog
-            ? {
-                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-              }
-            : {}
-        }
-        actionsStyle={
-          isSnapDialog
-            ? {
-                borderTop: 0,
-              }
-            : {}
-        }
-        ///: END:ONLY_INCLUDE_IF
-        onSubmit={handleSubmit}
-        onCancel={templatedValues.onCancel}
-        submitText={templatedValues.submitText}
-        cancelText={templatedValues.cancelText}
-        loadingText={loadingText || templatedValues.loadingText}
-        loading={loading}
-        submitAlerts={submitAlerts.map((alert, idx) => (
-          <Callout key={alert.id} severity={alert.severity} isFirst={idx === 0}>
-            <MetaMaskTemplateRenderer sections={alert.content} />
-          </Callout>
-        ))}
-      />
+      {!isSnapInterface && (
+        <ConfirmationFooter
+          alerts={
+            alertState[pendingConfirmation.id] &&
+            Object.values(alertState[pendingConfirmation.id])
+              .filter((alert) => alert.dismissed === false)
+              .map((alert, idx, filtered) => (
+                <Callout
+                  key={alert.id}
+                  severity={alert.severity}
+                  dismiss={() => dismissAlert(alert.id)}
+                  isFirst={idx === 0}
+                  isLast={idx === filtered.length - 1}
+                  isMultiple={filtered.length > 1}
+                >
+                  <MetaMaskTemplateRenderer sections={alert.content} />
+                </Callout>
+              ))
+          }
+          onSubmit={handleSubmit}
+          onCancel={templatedValues.onCancel}
+          submitText={templatedValues.submitText}
+          cancelText={templatedValues.cancelText}
+          loadingText={loadingText || templatedValues.loadingText}
+          loading={loading}
+          submitAlerts={submitAlerts.map((alert, idx) => (
+            <Callout
+              key={alert.id}
+              severity={alert.severity}
+              isFirst={idx === 0}
+            >
+              <MetaMaskTemplateRenderer sections={alert.content} />
+            </Callout>
+          ))}
+        />
+      )}
     </div>
   );
 }

@@ -83,6 +83,7 @@ import {
   IframeExecutionService,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  InterfaceController,
 } from '@metamask/snaps-controllers';
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
@@ -1287,6 +1288,21 @@ export default class MetamaskController extends EventEmitter {
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
     });
 
+    const interfaceControllerMessenger = this.controllerMessenger.getRestricted(
+      {
+        name: 'InterfaceController',
+        allowedActions: [
+          `${this.approvalController.name}:addRequest`,
+          `${this.approvalController.name}:updateRequestState`,
+          `${this.approvalController.name}:acceptRequest`,
+        ],
+      },
+    );
+    this.interfaceController = new InterfaceController({
+      messenger: interfaceControllerMessenger,
+      state: initState.InterfaceController,
+    });
+
     ///: END:ONLY_INCLUDE_IF
 
     // account tracker watches balances, nonces, and any code at their address
@@ -2267,6 +2283,14 @@ export default class MetamaskController extends EventEmitter {
               origin,
             ).result;
           },
+          showInterface: (...args) =>
+            this.interfaceController.showInterface(...args),
+          updateInterface: (...args) =>
+            this.interfaceController.updateInterface(...args),
+          resolveInterface: (...args) =>
+            this.interfaceController.resolveInterface(...args),
+          readInterface: (...args) =>
+            this.interfaceController.readInterface(...args),
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
