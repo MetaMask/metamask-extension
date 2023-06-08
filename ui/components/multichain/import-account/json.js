@@ -8,7 +8,7 @@ import {
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-} from '../../../components/component-library';
+} from '../../component-library';
 import {
   Size,
   TextVariant,

@@ -5,7 +5,7 @@ import {
   FormTextField,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-} from '../../../components/component-library';
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
 

@@ -5,8 +5,8 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   BUTTON_SECONDARY_SIZES,
-} from '../../../components/component-library';
-import Box from '../../../components/ui/box/box';
+} from '../../component-library';
+import Box from '../../ui/box/box';
 import { DISPLAY } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';

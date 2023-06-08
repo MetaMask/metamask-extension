@@ -1,11 +1,11 @@
 import React from 'react';
-import NewAccountImportForm from '.';
+import { ImportAccount } from '.';
 
 export default {
   title: 'Pages/CreateAccount/ImportAccount',
-  component: NewAccountImportForm,
+  component: ImportAccount,
 };
 
-export const DefaultStory = (args) => <NewAccountImportForm {...args} />;
+export const DefaultStory = (args) => <ImportAccount {...args} />;
 
 DefaultStory.storyName = 'Default';

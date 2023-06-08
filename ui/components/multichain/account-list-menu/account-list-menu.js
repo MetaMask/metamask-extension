@@ -10,7 +10,7 @@ import {
   TextFieldSearch,
   Text,
 } from '../../component-library';
-import { AccountListItem, CreateAccount } from '..';
+import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   BLOCK_SIZES,
   Size,
@@ -46,7 +46,6 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import NewAccountImportForm from '../../../pages/create-account/import-account/import-account';
 
 export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -118,7 +117,7 @@ export const AccountListMenu = ({ onClose }) => {
       ) : null}
       {actionMode === 'import' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <NewAccountImportForm
+          <ImportAccount
             onActionComplete={(confirmed) => {
               if (confirmed) {
                 dispatch(toggleAccountMenu());

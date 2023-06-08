@@ -7,9 +7,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { ButtonLink, Label, Text } from '../../../components/component-library';
-import Box from '../../../components/ui/box';
-import Dropdown from '../../../components/ui/dropdown';
+import { ButtonLink, Label, Text } from '../../component-library';
+import Box from '../../ui/box';
+import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BLOCK_SIZES,
@@ -26,7 +26,7 @@ import * as actions from '../../../store/actions';
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
-export default function NewAccountImportForm({ onActionComplete }) {
+export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -158,8 +158,8 @@ export default function NewAccountImportForm({ onActionComplete }) {
       </Box>
     </>
   );
-}
+};
 
-NewAccountImportForm.propTypes = {
+ImportAccount.propTypes = {
   onActionComplete: PropTypes.func.isRequired,
 };
