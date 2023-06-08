@@ -3691,8 +3691,8 @@
     "message": "Set a spending cap for your $1",
     "description": "$1 is a token symbol"
   },
-  "settingAddSnapWallet": {
-    "message": "Add snap wallet"
+  "settingAddSnapAccount": {
+    "message": "Add snap account"
   },
   "settings": {
     "message": "Settings"
@@ -3897,12 +3897,12 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
-  },
-  "snapUpdateRequest": {
     "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
     "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
+    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
