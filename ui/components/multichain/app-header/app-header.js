@@ -198,6 +198,7 @@ export const AppHeader = ({ location }) => {
                       ref={menuRef}
                       as="button"
                       src={currentNetwork?.rpcPrefs?.imageUrl}
+                      label={currentNetwork?.nickname}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
