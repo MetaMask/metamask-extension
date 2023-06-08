@@ -76,7 +76,9 @@ async function defineAndRunBuildTasks() {
     platform,
   } = await parseArgv();
 
-  const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
+  const isRootTask = ['dist', 'prod', 'test', 'testDev', 'dev'].includes(
+    entryTask,
+  );
 
   if (isRootTask) {
     // scuttle on production/tests environment only
