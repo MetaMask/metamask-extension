@@ -103,7 +103,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
               data-testid="snap-privacy-warning-scroll"
               iconName={IconName.Arrow2Down}
               backgroundColor={BackgroundColor.infoDefault}
-              color={IconColor.iconDefault}
+              color={IconColor.primaryInverse}
               onClick={scrollToBottom}
               style={{ cursor: 'pointer' }}
             />

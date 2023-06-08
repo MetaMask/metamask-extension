@@ -14,6 +14,7 @@ import {
   TextVariant,
   TEXT_ALIGN,
   FontWeight,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -146,7 +147,7 @@ export default function SnapInstall({
                 data-testid="snap-install-scroll"
                 iconName={IconName.Arrow2Down}
                 backgroundColor={BackgroundColor.infoDefault}
-                color={BackgroundColor.backgroundDefault}
+                color={IconColor.primaryInverse}
                 onClick={scrollToBottom}
                 style={{ cursor: 'pointer' }}
               />
