@@ -63,7 +63,7 @@ export default function NewSnapAccountPage() {
 
   return (
     <Box className="snap-account-page">
-      {showPopup && <AddSnapAccountPopup onClose={hidePopup} />}
+      <AddSnapAccountPopup onClose={hidePopup} isOpen={showPopup} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
