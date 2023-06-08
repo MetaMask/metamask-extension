@@ -215,12 +215,12 @@
 .address-book-add-button {
   &__button {
     position: absolute;
-    top: 80px;
+    top: 92px;
     right: 16px;
     width: auto;
 
     @include screen-sm-max {
-      top: 8px;
+      top: 20px;
       right: 60px;
 
       &--hidden {
