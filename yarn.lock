@@ -8130,6 +8130,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-router-dom@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "@types/react-router-dom@npm:5.3.3"
+  dependencies:
+    "@types/history": ^4.7.11
+    "@types/react": "*"
+    "@types/react-router": "*"
+  checksum: 28c4ea48909803c414bf5a08502acbb8ba414669b4b43bb51297c05fe5addc4df0b8fd00e0a9d1e3535ec4073ef38aaafac2c4a2b95b787167d113bc059beff3
+  languageName: node
+  linkType: hard
+
+"@types/react-router@npm:*":
+  version: 5.1.20
+  resolution: "@types/react-router@npm:5.1.20"
+  dependencies:
+    "@types/history": ^4.7.11
+    "@types/react": "*"
+  checksum: 128764143473a5e9457ddc715436b5d49814b1c214dde48939b9bef23f0e77f52ffcdfa97eb8d3cc27e2c229869c0cdd90f637d887b62f2c9f065a87d6425419
+  languageName: node
+  linkType: hard
+
 "@types/react-transition-group@npm:^4.2.0, @types/react-transition-group@npm:^4.4.0":
   version: 4.4.6
   resolution: "@types/react-transition-group@npm:4.4.6"
