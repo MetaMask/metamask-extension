@@ -423,9 +423,6 @@
   "back": {
     "message": "Quay lại"
   },
-  "backToAll": {
-    "message": "Quay lại toàn bộ danh sách"
-  },
   "backup": {
     "message": "Sao lưu"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "recents": {
-    "message": "Gần đây"
-  },
   "recipientAddressPlaceholder": {
     "message": "Tìm kiếm, địa chỉ công khai (0x) hoặc ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Chuyển"
-  },
-  "transferBetweenAccounts": {
-    "message": "Chuyển giữa các tài khoản của tôi"
   },
   "transferFrom": {
     "message": "Chuyển từ"

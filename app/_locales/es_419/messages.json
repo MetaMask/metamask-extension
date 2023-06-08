@@ -250,9 +250,6 @@
   "back": {
     "message": "Volver"
   },
-  "backToAll": {
-    "message": "Volver a Todos"
-  },
   "backupApprovalInfo": {
     "message": "Este código secreto es necesario para que recupere la cartera en caso de que pierda el dispositivo, olvide su contraseña, tenga que volver a instalar MetaMask o quiera acceder a la cartera en otro dispositivo."
   },
@@ -1800,9 +1797,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recents": {
-    "message": "Recientes"
-  },
   "recipientAddressPlaceholder": {
     "message": "Búsqueda, dirección pública (0x) o ENS"
   },
@@ -2659,9 +2653,6 @@
   },
   "transfer": {
     "message": "Transferir"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre mis cuentas"
   },
   "transferFrom": {
     "message": "Transferir desde"

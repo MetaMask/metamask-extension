@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbage"
   },
-  "backToAll": {
-    "message": "Tilbage til Alle"
-  },
   "backupApprovalInfo": {
     "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
@@ -556,9 +553,6 @@
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
   },
-  "recents": {
-    "message": "Seneste"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søg, offentlig adresse (0x) eller ENS"
   },
@@ -769,9 +763,6 @@
   },
   "transfer": {
     "message": "Overfør"
-  },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellem konti"
   },
   "transferFrom": {
     "message": "Overfør fra"
