@@ -12,6 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import AddSnapAccountPopup from '../../../components/app/add-snap-account-popup/add-snap-account-popup';
 import SnapCard from '../snap-card/snap-card';
 
 export interface SnapDetails {
@@ -53,10 +54,16 @@ export default function NewSnapAccountPage() {
   // TODO: this is currently a mock
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [snapList, setSnapList] = useState(mockSnapList);
+  const [showPopup, setShowPopup] = useState(true);
   const history = useHistory();
+
+  const hidePopup = () => {
+    setShowPopup(false);
+  };
 
   return (
     <Box className="snap-account-page">
+      {showPopup && <AddSnapAccountPopup onClose={hidePopup} />}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}

@@ -269,6 +269,12 @@
   "addNewToken": {
     "message": "Add new token"
   },
+  "addSnapAccountPopupDescription": {
+    "message": "Discover options to keep your account secure with MetaMask Snaps"
+  },
+  "addSnapAccountPopupTitle": {
+    "message": "Add snap account"
+  },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"
   },
@@ -1687,6 +1693,9 @@
   },
   "general": {
     "message": "General"
+  },
+  "getStarted": {
+    "message": "Get started"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -3903,12 +3912,12 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
-  "snapUpdateRequest": {
     "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
     "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  },
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
