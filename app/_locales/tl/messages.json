@@ -423,9 +423,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
-  },
   "backup": {
     "message": "I-backup"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recents": {
-    "message": "Mga Kamakailan"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Mag-transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa iba't ibang account ko"
   },
   "transferFrom": {
     "message": "Mag-transfer Mula Kay/Sa"

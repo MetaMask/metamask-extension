@@ -469,9 +469,6 @@
   "back": {
     "message": "Back"
   },
-  "backToAll": {
-    "message": "Back to all"
-  },
   "backup": {
     "message": "Backup"
   },
@@ -3262,11 +3259,8 @@
   "receive": {
     "message": "Receive"
   },
-  "recents": {
-    "message": "Recents"
-  },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Enter public address (0x) or ENS name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -4741,9 +4735,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer from"
