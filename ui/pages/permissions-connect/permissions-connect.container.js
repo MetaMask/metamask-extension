@@ -82,6 +82,9 @@ const mapStateToProps = (state, ownProps) => {
   let requestType = getRequestType(state, permissionsRequestId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // We want to only assign the wallet_connectSnaps request type (i.e. only show
+  // SnapsConnect) if and only if we get a singular wallet_snap permission request.
+  // Any other request gets pushed to the normal permission connect flow.
   if (
     permissionsRequest &&
     Object.keys(permissionsRequest.permissions || {}).length === 1 &&

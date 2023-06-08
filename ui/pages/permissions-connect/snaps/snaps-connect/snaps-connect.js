@@ -218,7 +218,7 @@ export default function SnapsConnect({
       <Box
         className="snaps-connect__footer"
         style={{
-          width: "100%",
+          width: '100%',
           boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
         }}
       >
