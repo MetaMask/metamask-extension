@@ -553,6 +553,8 @@ export function getUnapprovedConfirmations(state) {
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
+  console.log('Before filter :', unapprovedConfirmations);
+  console.log(TEMPLATED_CONFIRMATION_APPROVAL_TYPES);
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );

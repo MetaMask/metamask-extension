@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isComponent } from '@metamask/snaps-ui';
 import { useSelector } from 'react-redux';
+import { UserInputEventType } from '@metamask/snaps-utils';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
   DISPLAY,
@@ -19,13 +20,28 @@ import { getTargetSubjectMetadata } from '../../../../selectors';
 import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
+import { handleSnapRequest } from '../../../../store/actions';
+
+const handleEvent = async (interfaceId, event, snapId) => {
+  console.log('snapId inside handleEvent: ', snapId);
+  return await handleSnapRequest({
+    snapId,
+    origin: '',
+    handler: 'onUserInput',
+    request: {
+      jsonrpc: '2.0',
+      method: ' ',
+      params: { event, id: interfaceId },
+    },
+  });
+};
 
 export const UI_MAPPING = {
-  panel: (props, elementKey) => ({
+  panel: (props, elementKey, interfaceId, snapId) => ({
     element: 'Box',
     children: props.children.map((element) =>
       // eslint-disable-next-line no-use-before-define
-      mapToTemplate(element, elementKey),
+      mapToTemplate(element, elementKey, interfaceId, snapId),
     ),
     props: {
       display: DISPLAY.FLEX,
@@ -64,14 +80,33 @@ export const UI_MAPPING = {
       text: props.value,
     },
   }),
+  button: (props, _elementKey, interfaceId, snapId) => ({
+    element: 'Button',
+    props: {
+      onClick: () =>
+        handleEvent(
+          interfaceId,
+          { type: UserInputEventType.ButtonClickEvent, name: props.name },
+          snapId,
+        ),
+      type: props.variant,
+      children: {
+        element: 'SnapUIMarkdown',
+        props: {
+          children: props.value,
+        },
+      },
+    },
+  }),
 };
 
 // TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
-export const mapToTemplate = (data, elementKeyIndex) => {
+export const mapToTemplate = (data, elementKeyIndex, interfaceId, snapId) => {
   const { type } = data;
+  console.log('snapId in maptotemplate:', snapId);
   elementKeyIndex.value += 1;
   const indexKey = `snap_ui_element_${type}__${elementKeyIndex.value}`;
-  const mapped = UI_MAPPING[type](data, elementKeyIndex);
+  const mapped = UI_MAPPING[type](data, elementKeyIndex, interfaceId, snapId);
   return { ...mapped, key: indexKey };
 };
 
@@ -100,7 +135,7 @@ export const SnapUIRenderer = ({
   }
 
   const elementKeyIndex = { value: 0 };
-  const sections = mapToTemplate(data, elementKeyIndex);
+  const sections = mapToTemplate(data, elementKeyIndex, snapId);
 
   return (
     <SnapDelineator snapName={snapName} type={delineatorType}>

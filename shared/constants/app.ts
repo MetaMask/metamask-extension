@@ -49,6 +49,7 @@ export const MESSAGE_TYPE = {
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
+  SNAP_INTERFACE: `snap_interface`,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',

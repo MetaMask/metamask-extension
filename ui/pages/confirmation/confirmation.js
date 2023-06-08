@@ -29,6 +29,7 @@ import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getTargetSubjectMetadata,
+  getRequestState,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
@@ -200,6 +201,10 @@ export default function ConfirmationPage({
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
+  const requestState = useSelector((state) =>
+    getRequestState(state, pendingConfirmation?.id),
+  );
+
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName =
     targetSubjectMetadata &&
@@ -209,9 +214,11 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogAlert,
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
+    'snap_interface',
   ];
 
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  const isSnapInterface = pendingConfirmation?.type === 'snap_interface';
   ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [
@@ -229,6 +236,9 @@ export default function ConfirmationPage({
           {
             ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             snapName: isSnapDialog && snapName,
+            snapId: isSnapDialog && pendingConfirmation.origin,
+            interfaceId: isSnapDialog && pendingConfirmation.id,
+            requestState,
             ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
@@ -246,6 +256,8 @@ export default function ConfirmationPage({
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     isSnapDialog,
     snapName,
+    requestState,
+
     ///: END:ONLY_INCLUDE_IN
   ]);
 
@@ -388,6 +400,7 @@ export default function ConfirmationPage({
           />
         )}
       </div>
+<<<<<<< HEAD
       <ConfirmationFooter
         alerts={
           alertState[pendingConfirmation.id] &&
@@ -434,6 +447,44 @@ export default function ConfirmationPage({
           </Callout>
         ))}
       />
+=======
+      {!isSnapInterface && (
+        <ConfirmationFooter
+          alerts={
+            alertState[pendingConfirmation.id] &&
+            Object.values(alertState[pendingConfirmation.id])
+              .filter((alert) => alert.dismissed === false)
+              .map((alert, idx, filtered) => (
+                <Callout
+                  key={alert.id}
+                  severity={alert.severity}
+                  dismiss={() => dismissAlert(alert.id)}
+                  isFirst={idx === 0}
+                  isLast={idx === filtered.length - 1}
+                  isMultiple={filtered.length > 1}
+                >
+                  <MetaMaskTemplateRenderer sections={alert.content} />
+                </Callout>
+              ))
+          }
+          onSubmit={handleSubmit}
+          onCancel={templatedValues.onCancel}
+          submitText={templatedValues.submitText}
+          cancelText={templatedValues.cancelText}
+          loadingText={loadingText || templatedValues.loadingText}
+          loading={loading}
+          submitAlerts={submitAlerts.map((alert, idx) => (
+            <Callout
+              key={alert.id}
+              severity={alert.severity}
+              isFirst={idx === 0}
+            >
+              <MetaMaskTemplateRenderer sections={alert.content} />
+            </Callout>
+          ))}
+        />
+      )}
+>>>>>>> a4463e68f (WIP)
     </div>
   );
 }
