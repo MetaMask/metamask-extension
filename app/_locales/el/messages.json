@@ -423,9 +423,6 @@
   "back": {
     "message": "Πίσω"
   },
-  "backToAll": {
-    "message": "Πίσω σε Όλα"
-  },
   "backup": {
     "message": "Αντίγραφο ασφαλείας"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Λήψη"
   },
-  "recents": {
-    "message": "Πρόσφατα"
-  },
   "recipientAddressPlaceholder": {
     "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
   },
@@ -3257,10 +3251,12 @@
     "message": "Εγκατάσταση Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Για να επιβεβαιώσετε ότι καταλαβαίνετε, επιλέξτε όλα τα πλαίσια ελέγχου."
+    "message": "Για να επιβεβαιώσετε ότι καταλαβαίνετε, επιλέξτε όλα τα πλαίσια ελέγχου.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Για να επιβεβαιώσετε ότι καταλαβαίνετε, επιλέξτε όλα τα κουτάκια."
+    "message": "Για να επιβεβαιώσετε ότι καταλαβαίνετε, επιλέξτε όλα τα κουτάκια.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Εκχωρείτε στο $2 βασική πρόσβαση στο snap \"$1\". Αυτό είναι αμετάκλητο και παρέχει στο \"$1\" τον έλεγχο των λογαριασμών και των περιουσιακών σας στοιχείων $2. Βεβαιωθείτε ότι εμπιστεύεστε το \"$1\" προτού συνεχίσετε.",
@@ -4058,9 +4054,6 @@
   },
   "transfer": {
     "message": "Μεταφορά"
-  },
-  "transferBetweenAccounts": {
-    "message": "Μεταφορά μεταξύ λογαριασμών μου"
   },
   "transferFrom": {
     "message": "Μεταφορά Από"

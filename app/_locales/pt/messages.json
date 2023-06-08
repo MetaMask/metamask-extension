@@ -423,9 +423,6 @@
   "back": {
     "message": "Voltar"
   },
-  "backToAll": {
-    "message": "Voltar para todos"
-  },
   "backup": {
     "message": "Backup"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Receber"
   },
-  "recents": {
-    "message": "Recentes"
-  },
   "recipientAddressPlaceholder": {
     "message": "Pesquisa, endereço público (0x) ou ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Instalar snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para confirmar que você entende, marque a caixa."
+    "message": "Para confirmar que você entende, marque a caixa.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para confirmar que você entende, marque todas as caixas."
+    "message": "Para confirmar que você entende, marque todas as caixas.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Você está concedendo ao snap \"$1\" acesso à sua chave $2. Isso é irrevogável e concede a \"$1\" controle de suas contas e ativos $2. Certifique-se de que confia em \"$1\" antes de prosseguir.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transferir"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre minhas contas"
   },
   "transferFrom": {
     "message": "Transferir de"

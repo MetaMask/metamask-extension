@@ -423,9 +423,6 @@
   "back": {
     "message": "返回"
   },
-  "backToAll": {
-    "message": "返回全部"
-  },
   "backup": {
     "message": "备份"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "接收"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜索、公共地址 (0x) 或 ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "安装Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。"
+    "message": "请勾选选项框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。"
+    "message": "请勾选所有方框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "转移"
-  },
-  "transferBetweenAccounts": {
-    "message": "在我的账户之间转移"
   },
   "transferFrom": {
     "message": "转移自"

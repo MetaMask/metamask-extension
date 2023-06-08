@@ -55,10 +55,10 @@ describe('Chain Interactions', function () {
         await driver.switchToWindow(extension);
 
         // verify networks
-        const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"] p',
-        );
-        assert.equal(await networkDisplay.getText(), 'Localhost 8545');
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8545',
+        });
 
         await driver.clickElement('[data-testid="network-display"]');
         const ganacheChain = await driver.findElements({
@@ -103,10 +103,10 @@ describe('Chain Interactions', function () {
         await driver.switchToWindow(extension);
 
         // verify current network
-        const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"] p',
-        );
-        assert.equal(await networkDisplay.getText(), `Localhost ${port}`);
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: `Localhost ${port}`,
+        });
       },
     );
   });
