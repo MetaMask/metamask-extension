@@ -73,6 +73,9 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
+// BEGIN:ONLY_INCLUDE_IN(build-flask);
+import { PPOMController, createPPOMMiddleware } from '@metamask/ppom-validator';
+//  END:ONLY_INCLUDE_IN(build-flask);
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 // eslint-disable-next-line import/order
@@ -199,6 +202,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+import { IndexedDBBackend } from './lib/indexed-db-backend';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -611,6 +615,22 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.setHotlistRefreshInterval(5 * SECOND);
       this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
+
+    // BEGIN:ONLY_INCLUDE_IN(build-flask);
+    this.ppomController = new PPOMController({
+      storageBackend: new IndexedDBBackend('PPOMDB', 1),
+      provider: this.provider,
+      state: initState.PPOMController,
+      chainId: hexToDecimal(
+        this.networkController.store.getState().providerConfig.chainId,
+      ),
+      onNetworkChange: (cb) => {
+        this.networkController.store.subscribe((networkState) => {
+          return cb(hexToDecimal(networkState.providerConfig.chainId));
+        });
+      },
+    });
+    // END:ONLY_INCLUDE_IN(build-flask)';
 
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
@@ -1478,6 +1498,9 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
+      // BEGIN:ONLY_INCLUDE_IN(build-flask);
+      PPOMController: this.ppomController,
+      // END:ONLY_INCLUDE_IN(build-flask);
     };
 
     this.store.updateStructure({
@@ -1582,6 +1605,9 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
+      // BEGIN:ONLY_INCLUDE_IN(build-flask);
+      this.ppomController.clear.bind(this.ppomController),
+      // END:ONLY_INCLUDE_IN(build-flask);
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -3803,6 +3829,10 @@ export default class MetamaskController extends EventEmitter {
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
+
+    // BEGIN:ONLY_INCLUDE_IN(build-flask);
+    engine.push(createPPOMMiddleware(this.ppomController));
+    // END:ONLY_INCLUDE_IN(build-flask);
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());

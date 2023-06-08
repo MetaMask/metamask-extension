@@ -196,6 +196,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `runtime-lavamoat.js`,
       pattern: '',
     },
+    {
+      src: './node_modules/@matamask/ppom-validator/dist',
+      pattern: '/ppom.wasm',
+      dest: '',
+    },
   ];
 
   const languageTags = new Set();
