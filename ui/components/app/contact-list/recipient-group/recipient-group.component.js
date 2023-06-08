@@ -28,14 +28,14 @@ export default function RecipientGroup({
     <Box
       className="send__select-recipient-wrapper__group"
       data-testid="recipient-group"
-      marginLeft={4}
-      marginRight={4}
     >
       {label && (
         <Box
           className="send__select-recipient-wrapper__group-label"
           marginTop={2}
           marginBottom={2}
+          marginLeft={4}
+          marginRight={4}
         >
           <Text variant={TextVariant.bodyMd}>{label}</Text>
         </Box>
@@ -52,8 +52,7 @@ export default function RecipientGroup({
             'send__select-recipient-wrapper__group-item--selected':
               addressesEqual(address, selectedAddress),
           })}
-          marginBottom={4}
-          marginTop={4}
+          padding={4}
         >
           <Identicon address={address} diameter={28} />
           <Box
