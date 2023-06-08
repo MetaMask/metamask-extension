@@ -1,5 +1,5 @@
 .snaps-connect {
-  &__content, &__error {
+  &__content {
     &__icons {
       &__site-icon {
         padding-right: 4px;
@@ -8,11 +8,11 @@
       &__connection-line {
         border: 1.11667px dashed var(--brand-colors-grey-grey200);
         width: 51.66px;
-        height: 0px;
+        height: 1px;
       }
 
       &__snap {
-         padding-left: 4px;
+        padding-left: 4px;
       }
     }
   }
