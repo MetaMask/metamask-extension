@@ -79,7 +79,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
                 <ButtonLink
                   key="privacyNoticeTermsOfUseLink"
                   size={BUTTON_LINK_SIZES.INHERIT}
-                  href="https://consensys.net/"
+                  href="https://consensys.net/terms-of-use/"
                   target="_blank"
                 >
                   &nbsp;{t('snapsTermsOfUse')}&nbsp;
