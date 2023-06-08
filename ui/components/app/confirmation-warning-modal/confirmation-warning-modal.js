@@ -6,9 +6,9 @@ import Popover from '../../ui/popover';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  Display,
+  FlexDirection,
+  FontWeight,
   JustifyContent,
   TextVariant,
   AlignItems,
@@ -24,8 +24,8 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
       className="confirmation-warning-modal__content"
       footer={
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           justifyContent={JustifyContent.spaceBetween}
           className="confirmation-warning-modal__footer"
         >
@@ -47,8 +47,8 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
       }
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         padding={3}
         margin={0}
@@ -63,7 +63,7 @@ const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
         <Text
           variant={TextVariant.headingSm}
           as="h4"
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {t('addEthereumChainWarningModalTitle')}
         </Text>

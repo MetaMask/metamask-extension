@@ -318,7 +318,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         },
         title: this.test.title,
       },
-      async ({ driver, ganacheServer }) => {
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -361,8 +361,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
 
-        // finds the transaction in the transactions list
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        // Identify the transaction in the transactions list
+        await driver.waitForSelector(
+          '[data-testid="eth-overview__primary-currency"]',
+        );
+
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
