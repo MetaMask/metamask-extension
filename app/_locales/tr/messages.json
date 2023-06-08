@@ -423,9 +423,6 @@
   "back": {
     "message": "Geri"
   },
-  "backToAll": {
-    "message": "Tümüne Geri Git"
-  },
   "backup": {
     "message": "Yedekle"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Al"
   },
-  "recents": {
-    "message": "Son Kullanılanlar"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ara, genel adres (0x) veya ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Snap'i yükle"
   },
   "snapInstallWarningCheck": {
-    "message": "Anladığını doğrulamak için kutucuğu işaretle."
+    "message": "Anladığını doğrulamak için kutucuğu işaretle.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin."
+    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transfer et"
-  },
-  "transferBetweenAccounts": {
-    "message": "Hesaplarım arası transfer"
   },
   "transferFrom": {
     "message": "Transfer kaynağı:"

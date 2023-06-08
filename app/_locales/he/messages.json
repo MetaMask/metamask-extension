@@ -93,9 +93,6 @@
   "back": {
     "message": "חזור"
   },
-  "backToAll": {
-    "message": "חזרה אל 'הכל'"
-  },
   "backupApprovalInfo": {
     "message": "קוד סודי זה נדרש כדי לשחזר את הארנק שלך במקרה שתאבד/י את מכשירך, תשכח/י את הססמה, תצטרכ/י להתקין מחדש את MetaMask או שתרצה/י לגשת לארנק שלך במכשיר אחר."
   },
@@ -572,9 +569,6 @@
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
   },
-  "recents": {
-    "message": "אחרונים"
-  },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
   },
@@ -797,9 +791,6 @@
   },
   "transfer": {
     "message": "העברה"
-  },
-  "transferBetweenAccounts": {
-    "message": "בצע העברה בין חשבונותיי"
   },
   "transferFrom": {
     "message": "העברה מ-"
