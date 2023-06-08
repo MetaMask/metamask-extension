@@ -549,9 +549,15 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger.subscribe(
           'NetworkController:networkDidChange',
           () => {
-            const state = this.networkController.store.getState();
+            let state = this.networkController.store.getState();
             if (process.env.IN_TEST) {
-              state.providerConfig.chainId = CHAIN_IDS.MAINNET;
+              state = {
+                ...state,
+                providerConfig: {
+                  ...state.providerConfig,
+                  chainId: CHAIN_IDS.MAINNET,
+                },
+              };
             }
             eventHandler(state);
           },
