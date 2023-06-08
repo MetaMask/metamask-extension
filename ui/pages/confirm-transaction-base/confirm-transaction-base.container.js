@@ -378,10 +378,12 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...otherDispatchProps
   } = dispatchProps;
 
-  let isMainBetaFlask = false;
+  let isMainBetaFlask = ownProps.isMainBetaFlask || false;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  isMainBetaFlask = true;
+  if (ownProps.isMainBetaFlask === undefined) {
+    isMainBetaFlask = true;
+  }
   ///: END:ONLY_INCLUDE_IN
 
   return {
