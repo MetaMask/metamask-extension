@@ -203,7 +203,6 @@ describe('MetaMask Import UI', function () {
         // enter private key
         await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey1);
-        await driver.findClickableElement({ text: 'Import', tag: 'button' });
         await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // should show the correct account name

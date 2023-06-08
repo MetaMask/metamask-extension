@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  assertAccountBalanceForDOM,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -40,10 +40,8 @@ describe('Address Book', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
-        await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="eth-overview-send"]');
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
