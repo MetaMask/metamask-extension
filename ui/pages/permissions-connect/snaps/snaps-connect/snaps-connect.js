@@ -10,6 +10,7 @@ import {
   IconName,
   IconSize,
   Text,
+  ValidTag,
 } from '../../../../components/component-library';
 import {
   IconColor,
@@ -19,6 +20,7 @@ import {
   AlignItems,
   TextAlign,
   Display,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -85,12 +87,36 @@ export default function SnapsConnect({
           height="full"
           width="full"
         >
+          <Text paddingBottom={2} variant={TextVariant.headingLg}>
+            {t('connectionRequest')}
+          </Text>
+          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+            {t('multipleSnapConnectionWarning', [
+              <Text
+                as={ValidTag.Span}
+                key="1"
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Medium}
+              >
+                {origin}
+              </Text>,
+              <Text
+                as={ValidTag.Span}
+                key="1"
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Medium}
+              >
+                {snaps?.length}
+              </Text>,
+            ])}
+          </Text>
           <Box
             className="snaps-connect__content__snaps-list"
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
             width="full"
             height="full"
+            marginTop={4}
           >
             {snaps.map((snap) => (
               // TODO(hbmalik88): add in the iconUrl prop when we have access to a snap's icons pre-installation
@@ -150,8 +176,22 @@ export default function SnapsConnect({
             padding={[0, 4]}
           >
             {t('snapConnectionWarning', [
-              <b key="0">{origin}</b>,
-              <b key="1">{getSnapName(snaps?.[0])}</b>,
+              <Text
+                as={ValidTag.Span}
+                key="1"
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Medium}
+              >
+                {origin}
+              </Text>,
+              <Text
+                as={ValidTag.Span}
+                key="2"
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Medium}
+              >
+                {getSnapName(snaps?.[0])}
+              </Text>,
             ])}
           </Text>
         </Box>
@@ -162,6 +202,14 @@ export default function SnapsConnect({
 
   const snaps = getSnaps();
   const isMultiSnapConnect = snaps?.length > 1;
+
+  // eslint-disable-next-line react/prop-types
+  const ScrollWrapper = ({ children }) =>
+    isMultiSnapConnect ? (
+      <Box style={{ overflow: 'auto' }}>{children}</Box>
+    ) : (
+      <>{children}</>
+    );
 
   return (
     <Box
@@ -179,14 +227,14 @@ export default function SnapsConnect({
           onCanceled={onCancel}
         />
       )}
-      <Box style={{ overflow: 'auto' }}>
+      <ScrollWrapper>
         <Box
           className="snaps-connect__header"
           flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           paddingLeft={4}
           paddingRight={4}
-          paddingBottom={4}
+          paddingBottom={8}
         >
           <SiteOrigin
             chip
@@ -195,26 +243,9 @@ export default function SnapsConnect({
             iconSrc={iconUrl}
             name={name}
           />
-          {isMultiSnapConnect ? (
-            <>
-              <Text
-                paddingBottom={2}
-                paddingTop={8}
-                variant={TextVariant.headingLg}
-              >
-                {t('connectionRequest')}
-              </Text>
-              <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-                {t('multipleSnapConnectionWarning', [
-                  <b key="0">{origin}</b>,
-                  <b key="1">{snaps?.length}</b>,
-                ])}
-              </Text>
-            </>
-          ) : null}
         </Box>
         <SnapsConnectContent />
-      </Box>
+      </ScrollWrapper>
       <Box
         className="snaps-connect__footer"
         style={{

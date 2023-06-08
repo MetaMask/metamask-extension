@@ -30,11 +30,39 @@ DefaultStory.args = {
           {
             value: {
               'npm:@metamask/test-snap-bip44': {},
-            }
-          }
-        ]
-      }
-    }
+            },
+          },
+        ],
+      },
+    },
+  },
+  targetSubjectMetadata: {
+    origin: 'metamask.io',
+  },
+};
+
+export const MultiStory = (args) => <SnapConnect {...args} />;
+
+MultiStory.storyName = 'Multi';
+
+MultiStory.args = {
+  request: {
+    metadata: {
+      id: 'foo',
+    },
+    permissions: {
+      wallet_snap: {
+        caveats: [
+          {
+            value: {
+              'npm:@metamask/test-snap-bip44': {},
+              'npm:@metamask/test-snap-bip32': {},
+              'npm:@metamask/test-snap-getEntropy': {},
+            },
+          },
+        ],
+      },
+    },
   },
   targetSubjectMetadata: {
     origin: 'metamask.io',
@@ -45,7 +73,7 @@ export const ScrollingStory = (args) => <SnapConnect {...args} />;
 
 ScrollingStory.storyName = 'Scrolling';
 
-ScrollingStory.args =  {
+ScrollingStory.args = {
   request: {
     metadata: {
       id: 'foo',
@@ -62,13 +90,13 @@ ScrollingStory.args =  {
               'npm:@metamask/test-snap-wasm': {},
               'npm:@metamask/test-snap-notify': {},
               'npm:@metamask/test-snap-dialog': {},
-            }
-          }
-        ]
-      }
-    }
+            },
+          },
+        ],
+      },
+    },
   },
   targetSubjectMetadata: {
     origin: 'metamask.io',
   },
-};;
+};
