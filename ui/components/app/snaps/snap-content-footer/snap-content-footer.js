@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 
 import { useHistory } from 'react-router-dom';
 
-import Typography from '../../../ui/typography/typography';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
-  TypographyVariant,
+  TextVariant,
   JustifyContent,
   AlignItems,
   TextColor,
@@ -16,7 +15,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Button from '../../../ui/button';
 import Box from '../../../ui/box/box';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Text } from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -41,13 +40,13 @@ export default function SnapContentFooter({ snapName, snapId }) {
         color={IconColor.iconMuted}
         paddingRight={1}
       />
-      <Typography color={TextColor.textMuted} variant={TypographyVariant.H7}>
+      <Text color={TextColor.textMuted} variant={TextVariant.bodySm} as="h6">
         {t('snapContent', [
           <Button type="inline" onClick={handleNameClick} key="button">
             {snapName}
           </Button>,
         ])}
-      </Typography>
+      </Text>
     </Box>
   );
 }

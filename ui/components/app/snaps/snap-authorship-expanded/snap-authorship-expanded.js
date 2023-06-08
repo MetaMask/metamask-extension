@@ -7,12 +7,12 @@ import Box from '../../../ui/box';
 import {
   BackgroundColor,
   TextColor,
-  FLEX_DIRECTION,
+  FlexDirection,
   TextVariant,
   BorderColor,
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   JustifyContent,
   BorderStyle,
   Color,
@@ -76,13 +76,13 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderDefault}
       borderWidth={1}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       borderRadius={BorderRadius.LG}
     >
       <Box
         alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        width={BLOCK_SIZES.FULL}
+        display={Display.Flex}
+        width={BlockSize.Full}
         paddingLeft={4}
         paddingRight={4}
         paddingTop={3}
@@ -94,8 +94,8 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         <Box
           marginLeft={4}
           marginRight={0}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>
@@ -110,15 +110,15 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Text>
         </Box>
       </Box>
-      <Box flexDirection={FLEX_DIRECTION.COLUMN} width={BLOCK_SIZES.FULL}>
+      <Box flexDirection={FlexDirection.Column} width={BlockSize.Full}>
         <Box
-          flexDirection={FLEX_DIRECTION.ROW}
+          flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           paddingLeft={4}
           paddingTop={4}
           paddingBottom={4}
           borderColor={BorderColor.borderDefault}
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
           style={{
             borderLeft: BorderStyle.none,
             borderRight: BorderStyle.none,
@@ -134,21 +134,21 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Box>
         </Box>
         <Box
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexDirection={FlexDirection.Column}
           padding={4}
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
         >
           {installOrigin && installInfo && (
             <Box
-              flexDirection={FLEX_DIRECTION.ROW}
+              flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.spaceBetween}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.Full}
             >
               <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
                 {t('installOrigin')}
               </Text>
               <Box
-                flexDirection={FLEX_DIRECTION.COLUMN}
+                flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.flexEnd}
               >
                 <ButtonLink href={installOrigin.origin} target="_blank">
@@ -163,7 +163,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             </Box>
           )}
           <Box
-            flexDirection={FLEX_DIRECTION.ROW}
+            flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
             marginTop={4}

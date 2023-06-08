@@ -5,7 +5,7 @@ import {
   BackgroundColor,
   BorderRadius,
   Color,
-  FLEX_DIRECTION,
+  FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
@@ -31,7 +31,7 @@ const SnapVersion = ({ version, url }) => {
     >
       <Box
         className="snap-version__wrapper"
-        flexDirection={FLEX_DIRECTION.ROW}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
