@@ -399,7 +399,7 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   ref?: React.Ref<HTMLElement>;
 }
 /**
- * @deprecated The JS version of `<Box />` has been deprecated in favour of the TS version in `ui/components/component-library/`.
+ * @deprecated The JS version of `<Box />` has been deprecated in favor of the TS version in `ui/components/component-library/`.
  * The component API should be the same, just update the import statement to:
  * import { Box } from '../../component-library';
  *
