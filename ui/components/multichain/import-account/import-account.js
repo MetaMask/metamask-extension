@@ -12,8 +12,8 @@ import Box from '../../ui/box';
 import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  BLOCK_SIZES,
-  FONT_WEIGHT,
+  BlockSize,
+  FontWeight,
   JustifyContent,
   Size,
   TextVariant,
@@ -82,13 +82,14 @@ export const ImportAccount = ({ onActionComplete }) => {
   function getLoadingMessage(strategy) {
     if (strategy === 'JSON File') {
       return (
-        <Text width={BLOCK_SIZES.THREE_FOURTHS} fontWeight={FONT_WEIGHT.BOLD}>
-          <br />
-          {t('importAccountJsonLoading1')}
-          <br />
-          <br />
-          {t('importAccountJsonLoading2')}
-        </Text>
+        <>
+          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+            {t('importAccountJsonLoading1')}
+          </Text>
+          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+            {t('importAccountJsonLoading2')}
+          </Text>
+        </>
       );
     }
 
@@ -130,7 +131,7 @@ export const ImportAccount = ({ onActionComplete }) => {
       </Text>
       <Box paddingTop={4} paddingBottom={8}>
         <Label
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
           marginBottom={4}
           justifyContent={JustifyContent.spaceBetween}
         >

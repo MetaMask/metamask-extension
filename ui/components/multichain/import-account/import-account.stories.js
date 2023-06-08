@@ -2,7 +2,7 @@ import React from 'react';
 import { ImportAccount } from '.';
 
 export default {
-  title: 'Pages/CreateAccount/ImportAccount',
+  title: 'Components/Multichain/ImportAccount',
   component: ImportAccount,
 };
 

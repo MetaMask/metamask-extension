@@ -7,7 +7,7 @@ import {
   BUTTON_SECONDARY_SIZES,
 } from '../../component-library';
 import Box from '../../ui/box/box';
-import { DISPLAY } from '../../../helpers/constants/design-system';
+import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
 
@@ -26,7 +26,7 @@ export default function BottomButtons({
   const dispatch = useDispatch();
 
   return (
-    <Box display={DISPLAY.FLEX} gap={4}>
+    <Box display={Display.Flex} gap={4}>
       <ButtonSecondary
         onClick={() => {
           dispatch(actions.hideWarning());
