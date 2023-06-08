@@ -4544,26 +4544,25 @@ describe('NetworkController', () => {
   });
 
   describe('removeNetworkConfigurations', () => {
-    it('removes a network configuration', async () => {
-      const networkConfigurationId = 'testNetworkConfigurationId';
+    it('remove a network configuration', async () => {
+      const testNetworkConfigurationId = 'testNetworkConfigurationId';
       await withController(
         {
           state: {
             networkConfigurations: {
-              [networkConfigurationId]: {
-                id: networkConfigurationId,
-                rpcUrl: 'https://test-rpc-url',
+              [testNetworkConfigurationId]: {
+                rpcUrl: 'https://rpc-url.com',
                 ticker: 'old_rpc_ticker',
-                nickname: 'old_rpc_chainName',
+                nickname: 'old_rpc_nickname',
                 rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: '0x1',
+                chainId: toHex(1337),
+                id: testNetworkConfigurationId,
               },
             },
           },
         },
         async ({ controller }) => {
-          controller.removeNetworkConfiguration(networkConfigurationId);
-
+          controller.removeNetworkConfiguration(testNetworkConfigurationId);
           expect(
             controller.store.getState().networkConfigurations,
           ).toStrictEqual({});
@@ -4583,7 +4582,7 @@ describe('NetworkController', () => {
                 ticker: 'old_rpc_ticker',
                 nickname: 'old_rpc_nickname',
                 rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: '0x1',
+                chainId: toHex(1337),
                 id: testNetworkConfigurationId,
               },
             },
