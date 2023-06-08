@@ -4,8 +4,8 @@ import {
   AlignItems,
   BackgroundColor,
   BorderColor,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -59,8 +59,8 @@ export const SnapDetailHeader = ({
         </Box>
         <Box justifyContent={JustifyContent.spaceBetween}>
           <Box
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.ROW}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
             alignItems={AlignItems.center}
           >
             <Text variant={TextVariant.headingLg} marginRight={1}>
@@ -99,12 +99,12 @@ export const SnapDetailHeader = ({
           </Box>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
             style={{
@@ -126,7 +126,7 @@ export const SnapDetailHeader = ({
               borderColor={BackgroundColor.infoMuted}
               label={
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   justifyContent={JustifyContent.center}
                   alignItems={AlignItems.center}
                 >
@@ -153,7 +153,7 @@ export const SnapDetailHeader = ({
               borderColor={BackgroundColor.infoMuted}
               label={
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   justifyContent={JustifyContent.center}
                   alignItems={AlignItems.center}
                 >

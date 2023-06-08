@@ -3,9 +3,9 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../../components/ui/box/box';
 import {
-  BLOCK_SIZES,
-  DISPLAY,
-  FLEX_DIRECTION,
+  BlockSize,
+  Display,
+  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -44,17 +44,17 @@ const SnapDetailsPage = () => {
   };
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       padding={[10, 10, 10, 10]}
       className="snap-details-page"
     >
       <SnapDetailHeader {...snapDetail} />
-      <Box display={DISPLAY.FLEX}>
+      <Box display={Display.Flex}>
         <Box
-          width={BLOCK_SIZES.FOUR_FIFTHS}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          width={BlockSize.FourFifths}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
           <Text
             variant={TextVariant.bodyMdBold}
@@ -68,9 +68,9 @@ const SnapDetailsPage = () => {
           </Text>
         </Box>
         <Box
-          width={BLOCK_SIZES.ONE_FIFTH}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          width={BlockSize.OneFifth}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           paddingLeft={4}
         >
           <Detail title={t('snapDetailTags')}>

@@ -5,9 +5,9 @@ import { Text, ValidTag } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FLEX_WRAP,
+  Display,
+  FlexDirection,
+  FlexWrap,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -58,8 +58,8 @@ export default function NewSnapAccountPage() {
   return (
     <Box className="snap-account-page">
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         marginTop={11}
@@ -81,8 +81,8 @@ export default function NewSnapAccountPage() {
         </Text>
       </Box>
       <Box
-        display={DISPLAY.GRID}
-        flexWrap={FLEX_WRAP.WRAP}
+        display={Display.Grid}
+        flexWrap={FlexWrap.Wrap}
         gap={4}
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
