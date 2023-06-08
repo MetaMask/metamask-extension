@@ -19,6 +19,7 @@ import {
   IconName,
   IconSize,
   AvatarAccountVariant,
+  ModalFocus,
 } from '../../component-library';
 import {
   Color,
@@ -75,8 +76,13 @@ export const AccountListItem = ({
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const ref = useRef(false);
+  const [referenceElement, setReferenceElement] = useState();
+  // const ref = useRef(false);
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
 
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
@@ -219,13 +225,15 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      <div ref={ref}>
-        <ButtonIcon
-          ariaLabel={`${identity.name} ${t('options')}`}
-          iconName={IconName.MoreVertical}
-          size={IconSize.Sm}
-          onClick={(e) => {
-            e.stopPropagation();
+      {/* <div ref={ref}> */}
+      <ButtonIcon
+        ariaLabel={`${identity.name} ${t('options')}`}
+        iconName={IconName.MoreVertical}
+        size={IconSize.Sm}
+        ref={setBoxRef}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!accountOptionsMenuOpen) {
             trackEvent({
               event: MetaMetricsEventName.AccountDetailMenuOpened,
               category: MetaMetricsEventCategory.Navigation,
@@ -233,21 +241,21 @@ export const AccountListItem = ({
                 location: 'Account Options',
               },
             });
-            setAccountOptionsMenuOpen(true);
-          }}
-          data-testid="account-list-item-menu-button"
-        />
-        {accountOptionsMenuOpen ? (
-          <AccountListItemMenu
-            anchorElement={ref.current}
-            blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
-            identity={identity}
-            onClose={() => setAccountOptionsMenuOpen(false)}
-            isRemovable={keyring?.type !== KeyringType.hdKeyTree}
-            closeMenu={closeMenu}
-          />
-        ) : null}
-      </div>
+          }
+          setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+        }}
+        data-testid="account-list-item-menu-button"
+      />
+      {/* </div> */}
+      <AccountListItemMenu
+        anchorElement={referenceElement}
+        blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
+        identity={identity}
+        onClose={() => setAccountOptionsMenuOpen(false)}
+        isOpen={accountOptionsMenuOpen}
+        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+        closeMenu={closeMenu}
+      />
     </Box>
   );
 };

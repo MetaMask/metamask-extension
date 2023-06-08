@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -24,7 +24,14 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
-import { Text, IconName } from '../../component-library';
+import {
+  Text,
+  IconName,
+  Popover,
+  PopoverPosition,
+  ModalFocus,
+  PopoverRole,
+} from '../../component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -42,6 +49,7 @@ export const AccountListItemMenu = ({
   closeMenu,
   isRemovable,
   identity,
+  isOpen,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -87,111 +95,137 @@ export const AccountListItemMenu = ({
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
 
-  return (
-    <Menu
-      anchorElement={anchorElement}
-      className="account-list-item-menu"
-      onHide={onClose}
-    >
-      <MenuItem
-        onClick={() => {
-          blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl()
-            : openBlockExplorer();
+  const [isDisabled, setIsDisabled] = useState(false);
+  const lastItemRef = useRef(null);
 
-          trackEvent({
-            event: MetaMetricsEventName.BlockExplorerLinkClicked,
-            category: MetaMetricsEventCategory.Accounts,
-            properties: {
-              location: 'Account Options',
-              chain_id: chainId,
-            },
-          });
-        }}
-        subtitle={blockExplorerUrlSubTitle || null}
-        iconName={IconName.Export}
-        data-testid="account-list-menu-open-explorer"
-      >
-        <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          dispatch(setAccountDetailsAddress(identity.address));
-          trackEvent({
-            event: MetaMetricsEventName.NavAccountDetailsOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: 'Account Options',
-            },
-          });
-          onClose();
-          closeMenu?.();
-        }}
-        iconName={IconName.ScanBarcode}
-        data-testid="account-list-menu-details"
-      >
-        <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
-      </MenuItem>
-      {isRemovable ? (
-        <MenuItem
-          data-testid="account-list-menu-remove"
-          onClick={() => {
-            dispatch(
-              showModal({
-                name: 'CONFIRM_REMOVE_ACCOUNT',
-                identity,
-              }),
-            );
-            trackEvent({
-              event: MetaMetricsEventName.AccountRemoved,
-              category: MetaMetricsEventCategory.Accounts,
-              properties: {
-                account_hardware_type: deviceName,
-                chain_id: chainId,
-                account_type: accountType,
-              },
-            });
-            onClose();
-            closeMenu?.();
-          }}
-          iconName={IconName.Trash}
-        >
-          <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
-        </MenuItem>
-      ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        isCustodial ? (
+  const handleKeyDown = (event) => {
+    console.log('this ran');
+    console.log(lastItemRef);
+    if (event.key === 'Tab' && event.target === lastItemRef.current) {
+      // If Tab is pressed at the last item, disable the focus lock
+      console.log('Tab pressed at last item');
+      setIsDisabled(true);
+    }
+  };
+
+  return (
+    <Popover
+      referenceElement={anchorElement}
+      role={PopoverRole.Tooltip}
+      position={PopoverPosition.Bottom}
+      offset={[0, 0]}
+      padding={0}
+      isOpen={isOpen}
+      isPortal
+      preventOverflow
+      style={{ zIndex: 1051, overflow: 'hidden', minWidth: 225 }}
+    >
+      <ModalFocus disabled={isDisabled} restoreFocus>
+        <div onKeyDown={handleKeyDown}>
           <MenuItem
-            data-testid="account-options-menu__remove-jwt"
-            onClick={async () => {
-              const token = await dispatch(mmiActions.getCustodianToken());
-              const custodyAccountDetails = await dispatch(
-                mmiActions.getAllCustodianAccountsWithToken(
-                  keyring.type.split(' - ')[1],
-                  token,
-                ),
-              );
-              dispatch(
-                showModal({
-                  name: 'CONFIRM_REMOVE_JWT',
-                  token,
-                  custodyAccountDetails,
-                  accounts,
-                  selectedAddress: toChecksumHexAddress(identity.address),
-                }),
-              );
+            onClick={() => {
+              blockExplorerLinkText.firstPart === 'addBlockExplorer'
+                ? routeToAddBlockExplorerUrl()
+                : openBlockExplorer();
+
+              trackEvent({
+                event: MetaMetricsEventName.BlockExplorerLinkClicked,
+                category: MetaMetricsEventCategory.Accounts,
+                properties: {
+                  location: 'Account Options',
+                  chain_id: chainId,
+                },
+              });
+            }}
+            subtitle={blockExplorerUrlSubTitle || null}
+            iconName={IconName.Export}
+            data-testid="account-list-menu-open-explorer"
+          >
+            <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
+          </MenuItem>
+
+          <MenuItem
+            ref={lastItemRef}
+            onClick={() => {
+              dispatch(setAccountDetailsAddress(identity.address));
+              trackEvent({
+                event: MetaMetricsEventName.NavAccountDetailsOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Account Options',
+                },
+              });
               onClose();
               closeMenu?.();
             }}
-            iconName={IconName.Trash}
+            iconName={IconName.ScanBarcode}
+            data-testid="account-list-menu-details"
           >
-            <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
+            <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
           </MenuItem>
-        ) : null
-        ///: END:ONLY_INCLUDE_IN
-      }
-    </Menu>
+
+          {isRemovable ? (
+            <MenuItem
+              data-testid="account-list-menu-remove"
+              onClick={() => {
+                dispatch(
+                  showModal({
+                    name: 'CONFIRM_REMOVE_ACCOUNT',
+                    identity,
+                  }),
+                );
+                trackEvent({
+                  event: MetaMetricsEventName.AccountRemoved,
+                  category: MetaMetricsEventCategory.Accounts,
+                  properties: {
+                    account_hardware_type: deviceName,
+                    chain_id: chainId,
+                    account_type: accountType,
+                  },
+                });
+                onClose();
+                closeMenu?.();
+              }}
+              iconName={IconName.Trash}
+            >
+              <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
+            </MenuItem>
+          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            isCustodial ? (
+              <MenuItem
+                data-testid="account-options-menu__remove-jwt"
+                onClick={async () => {
+                  const token = await dispatch(mmiActions.getCustodianToken());
+                  const custodyAccountDetails = await dispatch(
+                    mmiActions.getAllCustodianAccountsWithToken(
+                      keyring.type.split(' - ')[1],
+                      token,
+                    ),
+                  );
+                  dispatch(
+                    showModal({
+                      name: 'CONFIRM_REMOVE_JWT',
+                      token,
+                      custodyAccountDetails,
+                      accounts,
+                      selectedAddress: toChecksumHexAddress(identity.address),
+                    }),
+                  );
+                  onClose();
+                  closeMenu?.();
+                }}
+                iconName={IconName.Trash}
+              >
+                <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
+              </MenuItem>
+            ) : null
+            ///: END:ONLY_INCLUDE_IN
+          }
+        </div>
+      </ModalFocus>
+    </Popover>
   );
 };
 
