@@ -14148,14 +14148,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domexception@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "domexception@npm:1.0.0"
-  checksum: a580e233689e9dcd5e5322f4b58da618bdbf9c4b96532bd11065903b43e81acbe6ec936ceacc57ce2014b695f778ac6368eb079fe3efb1276073a363d59500a8
-  languageName: node
-  linkType: hard
-
-"domexception@npm:^1.0.1":
+"domexception@npm:^1.0.0, domexception@npm:^1.0.1":
   version: 1.0.1
   resolution: "domexception@npm:1.0.1"
   dependencies:
