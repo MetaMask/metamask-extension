@@ -1148,4 +1148,14 @@ export class NetworkController extends EventEmitter {
       networkConfigurations,
     });
   }
+
+  getNetworkConfigurationForChainId(chainId: string) {
+    console.log(this.store.getState().networkConfigurations);
+    for (const networkConfigId in this.store.getState().networkConfigurations) {
+      if (this.store.getState().networkConfigurations[networkConfigId].chainId === chainId) {
+        return networkConfigId;
+      }
+    }
+    return null;
+  }
 }
