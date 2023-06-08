@@ -423,9 +423,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToAll": {
-    "message": "Kembali ke semua"
-  },
   "backup": {
     "message": "Pencadangan"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recents": {
-    "message": "Terkini"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer antar akun saya"
   },
   "transferFrom": {
     "message": "Transfer dari"

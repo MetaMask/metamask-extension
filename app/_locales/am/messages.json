@@ -87,9 +87,6 @@
   "back": {
     "message": "ተመለስ"
   },
-  "backToAll": {
-    "message": "ወደ ሁሉም ተመለስ"
-  },
   "backupApprovalInfo": {
     "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
   },
@@ -560,9 +557,6 @@
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },
-  "recents": {
-    "message": "የቅርብ ጊዜያት"
-  },
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
   },
@@ -785,9 +779,6 @@
   },
   "transfer": {
     "message": "ያስተላልፉ"
-  },
-  "transferBetweenAccounts": {
-    "message": "በመለያዎች መካከል አስተላልፍ"
   },
   "transferFrom": {
     "message": "የማዛወሪያ ቅጽ"

@@ -35,8 +35,6 @@ jest.mock('../../../../ducks/send', () => ({
     `mockUseMyAccountsForRecipientSearch:${s}`,
   useContactListForRecipientSearch: (s) =>
     `mockUseContactListForRecipientSearch:${s}`,
-  getIsUsingMyAccountForRecipientSearch: (s) =>
-    `mockGetIsUsingMyAccountForRecipientSearch:${s}`,
   getRecipientUserInput: (s) => `mockRecipientUserInput:${s}`,
   getRecipient: (s) => `mockRecipient:${s}`,
 }));
@@ -58,8 +56,6 @@ describe('add-recipient container', () => {
           { name: 'account1:mockState' },
           { name: 'account2:mockState' },
         ],
-        isUsingMyAccountsForRecipientSearch:
-          'mockGetIsUsingMyAccountForRecipientSearch:mockState',
         userInput: 'mockRecipientUserInput:mockState',
         recipient: 'mockRecipient:mockState',
       });
