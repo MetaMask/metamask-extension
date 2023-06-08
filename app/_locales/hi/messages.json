@@ -423,9 +423,6 @@
   "back": {
     "message": "वापस"
   },
-  "backToAll": {
-    "message": "सभी पर वापस"
-  },
   "backup": {
     "message": "बैकअप"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recents": {
-    "message": "हाल ही के"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "स्थानांतरण"
-  },
-  "transferBetweenAccounts": {
-    "message": "मेरे खातों के बीच स्थानांतरित करें"
   },
   "transferFrom": {
     "message": "इससे स्थानांतरित करें"

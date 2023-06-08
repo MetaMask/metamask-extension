@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import {
   BlockSize,
@@ -16,9 +16,9 @@ import {
   FlexWrap,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../../component-library';
+import { Text } from '..';
 
-import Box from './box';
+import { Box } from './box';
 
 import README from './README.mdx';
 
@@ -41,7 +41,7 @@ const sizeControlOptions = [
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
-  title: 'Components/UI/Box (deprecated)',
+  title: 'Components/ComponentLibrary/Box',
   component: Box,
   parameters: {
     docs: {
@@ -215,13 +215,11 @@ export default {
       table: { category: 'as (root html element)' },
     },
   },
-} as ComponentMeta<typeof Box>;
+} as Meta<typeof Box>;
 
-export const DefaultStory: ComponentStory<typeof Box> = (args) => (
-  <Box {...args} />
-);
+export const BoxDefaultStory: StoryFn<typeof Box> = (args) => <Box {...args} />;
 
-DefaultStory.args = {
+BoxDefaultStory.args = {
   children: 'Box component',
   display: Display.Flex,
   justifyContent: JustifyContent.center,
@@ -232,9 +230,9 @@ DefaultStory.args = {
   padding: 4,
 };
 
-DefaultStory.storyName = 'Default';
+BoxDefaultStory.storyName = 'Default';
 
-export const Margin: ComponentStory<typeof Box> = (args) => {
+export const Margin: StoryFn<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -259,7 +257,7 @@ export const Margin: ComponentStory<typeof Box> = (args) => {
   );
 };
 
-export const Padding: ComponentStory<typeof Box> = (args) => {
+export const Padding: StoryFn<typeof Box> = (args) => {
   return (
     <Box borderColor={BorderColor.borderMuted}>
       <Box
@@ -282,7 +280,7 @@ export const Padding: ComponentStory<typeof Box> = (args) => {
   );
 };
 
-export const ColorStory: ComponentStory<typeof Box> = (args) => {
+export const ColorStory: StoryFn<typeof Box> = (args) => {
   return (
     <>
       <Box {...args} padding={3} color={TextColor.textDefault}>
@@ -671,7 +669,7 @@ export const ResponsiveProps = () => {
   );
 };
 
-export const As: ComponentStory<typeof Box> = (args) => {
+export const As: StoryFn<typeof Box> = (args) => {
   return (
     <>
       <Text marginBottom={4}>
@@ -679,15 +677,38 @@ export const As: ComponentStory<typeof Box> = (args) => {
         Inspect the below elements to see the underlying HTML elements
       </Text>
       <Box {...args}>div(default)</Box>
-      <Box as="ul">ul</Box>
-      <Box as="li">li</Box>
-      <Box as="button">button</Box>
-      <Box as="header">header</Box>
+      <Box as="button" disabled>
+        Box as 'button' tag
+      </Box>
+      <br />
+      <Box as="button" disabled>
+        Box as 'button' tag and disabled
+      </Box>
+      <br />
+      <Box as="a" href="https://metamask.io">
+        Box as 'a' tag with href
+      </Box>
+      <br />
+      <Box as="p" href="https://metamask.io" data-testid="hello">
+        Box as 'p' tag with href and data-testid
+      </Box>
+      <br />
+      <Box as="p" disabled>
+        Box as 'p' tag and disabled
+      </Box>
+      <br />
+      <Box>Box as 'span' tag (default)</Box>
+      <br />
+      <Box as="p">Box as 'p' tag</Box>
+      <br />
+      <Box as="li">Box as 'li' tag</Box>
+      <br />
+      <Box as="h1">Box as 'h1' tag</Box>
     </>
   );
 };
 
-export const Width: ComponentStory<typeof Box> = () => {
+export const Width: StoryFn<typeof Box> = () => {
   const getColumns = (): JSX.Element[] => {
     const content: JSX.Element[] = [];
     for (let i = 0; i < 12; i++) {
@@ -932,13 +953,4 @@ export const Width: ComponentStory<typeof Box> = () => {
       </Box>
     </>
   );
-};
-
-Width.args = {
-  width: [
-    BlockSize.Half,
-    BlockSize.OneFifth,
-    BlockSize.ThreeFourths,
-    BlockSize.OneFourth,
-  ],
 };

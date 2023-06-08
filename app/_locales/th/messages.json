@@ -395,9 +395,6 @@
   "transactionDropped": {
     "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
   },
-  "transferBetweenAccounts": {
-    "message": "โอนระหว่างบัญชีของฉัน"
-  },
   "typePassword": {
     "message": "พิมพ์รหัสผ่านของคุณ"
   },
