@@ -70,8 +70,8 @@ export class IndexedDBBackend implements StorageBackend {
     });
   }
 
-  async read(key: StorageKey, checksum: string): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
+  async read(key: StorageKey, checksum: string): Promise<ArrayBuffer> {
+    return new Promise<ArrayBuffer>((resolve, reject) => {
       this._getObjectStore('readonly')
         .then((objectStore) => {
           const request = objectStore.get([key.name, key.chainId]);
@@ -96,7 +96,11 @@ export class IndexedDBBackend implements StorageBackend {
     });
   }
 
-  async write(key: StorageKey, data: any, checksum: string): Promise<void> {
+  async write(
+    key: StorageKey,
+    data: ArrayBuffer,
+    checksum: string,
+  ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       validateChecksum(key, data, checksum)
         .then(() => {
