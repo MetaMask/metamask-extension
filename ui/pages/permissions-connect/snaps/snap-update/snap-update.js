@@ -205,7 +205,7 @@ export default function SnapUpdate({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          snapName={targetSubjectMetadata.name}
+          snapName={snapName}
           warnings={warnings}
         />
       )}

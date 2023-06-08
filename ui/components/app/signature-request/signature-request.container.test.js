@@ -61,7 +61,7 @@ const mockStoreWithEth = {
     cachedBalances: {},
     unapprovedDecryptMsgs: {},
     unapprovedEncryptionPublicKeyMsgs: {},
-    uncofirmedTransactions: {},
+    unconfirmedTransactions: {},
     selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
