@@ -6,14 +6,10 @@ import { isObject } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
-import IconWithFallback from '../../../../components/ui/icon-with-fallback/icon-with-fallback.component';
 import {
-  AvatarBase,
-  AvatarFavicon,
   AvatarIcon,
   BadgeWrapper,
   BadgeWrapperPosition,
-  Icon,
   IconName,
   IconSize,
   Text,
@@ -29,8 +25,6 @@ import {
   Display,
   FontWeight,
   BlockSize,
-  Size,
-  TextColor,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
@@ -39,7 +33,6 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import { getPermissions } from '../../../../selectors';
-import classnames from 'classnames';
 
 export default function SnapsConnect({
   request,

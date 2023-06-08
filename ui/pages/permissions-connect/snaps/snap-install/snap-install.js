@@ -27,7 +27,6 @@ import {
   AvatarIcon,
   BadgeWrapper,
   BadgeWrapperPosition,
-  Icon,
   IconName,
   IconSize,
   Text,
@@ -38,7 +37,6 @@ import SnapPermissionsList from '../../../../components/app/snaps/snap-permissio
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import { getTargetSubjectMetadata } from '../../../../selectors';
-import IconWithFallback from '../../../../components/ui/icon-with-fallback/icon-with-fallback.component';
 
 export default function SnapInstall({
   request,
