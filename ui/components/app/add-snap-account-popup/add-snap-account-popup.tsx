@@ -3,8 +3,6 @@ import Popover from '../../ui/popover';
 import {
   AlignItems,
   TextVariant,
-  Color,
-  TextColor,
   FlexDirection,
   JustifyContent,
   Display,
