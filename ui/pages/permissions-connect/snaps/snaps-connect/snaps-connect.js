@@ -8,7 +8,11 @@ import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import IconWithFallback from '../../../../components/ui/icon-with-fallback/icon-with-fallback.component';
 import {
+  AvatarBase,
+  AvatarFavicon,
   AvatarIcon,
+  BadgeWrapper,
+  BadgeWrapperPosition,
   Icon,
   IconName,
   IconSize,
@@ -25,6 +29,9 @@ import {
   Display,
   FontWeight,
   BlockSize,
+  Size,
+  TextColor,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -32,6 +39,7 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import { getPermissions } from '../../../../selectors';
+import classnames from 'classnames';
 
 export default function SnapsConnect({
   request,
@@ -84,7 +92,44 @@ export default function SnapsConnect({
 
   const snaps = getSnaps();
 
+  const ConnectIcon = () => {
+    return (
+      <BadgeWrapper
+        badge={
+          <AvatarIcon
+            iconName={IconName.Question}
+            size={IconSize.Xs}
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+            iconProps={{
+              size: IconSize.Md,
+              color: IconColor.iconDefault,
+            }}
+          />
+        }
+        position={BadgeWrapperPosition.bottomRight}
+      >
+        <AvatarIcon
+          iconName={IconName.Snaps}
+          size={IconSize.Xl}
+          backgroundColor={IconColor.infoDefault}
+          iconProps={{
+            size: IconSize.Xl,
+            color: IconColor.infoInverse,
+          }}
+        />
+      </BadgeWrapper>
+    );
+  };
+
+  const trimUrl = (url) => {
+    const regex = /^(https:\/\/|http:\/\/)/u;
+    return url.replace(regex, '');
+  };
+
   const SnapsConnectContent = () => {
+    const trimmedOrigin = trimUrl(origin);
     if (isLoading) {
       return (
         <Box
@@ -121,7 +166,7 @@ export default function SnapsConnect({
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
               >
-                {origin}
+                {trimmedOrigin}
               </Text>,
               <Text
                 as={ValidTag.Span}
@@ -146,7 +191,7 @@ export default function SnapsConnect({
               <SnapConnectCell
                 key={`snaps-connect-${snap}`}
                 snapId={snap}
-                origin={origin}
+                origin={trimmedOrigin}
               />
             ))}
           </Box>
@@ -163,37 +208,8 @@ export default function SnapsConnect({
           paddingLeft={4}
           paddingRight={4}
         >
-          <Box
-            className="snaps-connect__content__icons"
-            flexDirection={FlexDirection.Row}
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            paddingBottom={2}
-          >
-            <IconWithFallback
-              className="snaps-connect__content__icons__site-icon"
-              icon={iconUrl}
-              name={name}
-              size={32}
-            />
-            <hr className="snaps-connect__content__icons__connection-line" />
-            <Icon
-              className="snaps-connect__content__icons__question"
-              name={IconName.Question}
-              size={IconSize.Xl}
-              color={IconColor.infoInverse}
-            />
-            <hr className="snaps-connect__content__icons__connection-line" />
-            <AvatarIcon
-              className="snaps-connect__content__icons__snap"
-              iconName={IconName.Snaps}
-              size={IconSize.Xl}
-              backgroundColor={IconColor.infoDefault}
-              iconProps={{
-                size: IconSize.Xl,
-                color: IconColor.infoInverse,
-              }}
-            />
+          <Box paddingBottom={2}>
+            <ConnectIcon />
           </Box>
           <Text paddingBottom={2} variant={TextVariant.headingLg}>
             {t('connectionRequest')}
@@ -210,7 +226,7 @@ export default function SnapsConnect({
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
               >
-                {origin}
+                {trimmedOrigin}
               </Text>,
               <Text
                 as={ValidTag.Span}

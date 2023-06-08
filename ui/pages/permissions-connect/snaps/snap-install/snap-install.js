@@ -25,6 +25,8 @@ import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
+  BadgeWrapper,
+  BadgeWrapperPosition,
   Icon,
   IconName,
   IconSize,
@@ -99,6 +101,37 @@ export default function SnapInstall({
     return 'install';
   };
 
+  const ConnectionErrorIcon = () => {
+    return (
+      <BadgeWrapper
+        badge={
+          <AvatarIcon
+            iconName={IconName.Warning}
+            size={IconSize.Xs}
+            backgroundColor={BackgroundColor.backgroundAlternative}
+            borderColor={BackgroundColor.backgroundDefault}
+            borderWidth={2}
+            iconProps={{
+              size: IconSize.Md,
+              color: IconColor.errorDefault,
+            }}
+          />
+        }
+        position={BadgeWrapperPosition.bottomRight}
+      >
+        <AvatarIcon
+          iconName={IconName.Snaps}
+          size={IconSize.Xl}
+          backgroundColor={IconColor.infoDefault}
+          iconProps={{
+            size: IconSize.Xl,
+            color: IconColor.infoInverse,
+          }}
+        />
+      </BadgeWrapper>
+    );
+  };
+
   const SnapsConnectError = () => {
     const description = t('connectionFailedDescription', [
       <Text
@@ -120,33 +153,8 @@ export default function SnapInstall({
         paddingLeft={4}
         paddingRight={4}
       >
-        <Box
-          className="snaps-connect__error__icons"
-          flexDirection={FlexDirection.Row}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          paddingBottom={2}
-        >
-          <IconWithFallback
-            className="snaps-connect__error__icons__site-icon"
-            icon={iconUrl}
-            name={name}
-            size={32}
-          />
-          <hr className="snaps-connect__error__icons__connection-line" />
-          <Icon
-            className="snaps-connect__error__icons__question"
-            name={IconName.CircleX}
-            size={IconSize.Xl}
-            color={IconColor.errorDefault}
-          />
-          <hr className="snaps-connect__error__icons__connection-line" />
-          <Icon
-            className="snaps-connect__error__icons__snap"
-            name={IconName.Snaps}
-            size={IconSize.Xl}
-            color={IconColor.primaryDefault}
-          />
+        <Box paddingBottom={2}>
+          <ConnectionErrorIcon />
         </Box>
         <Text
           paddingBottom={2}
