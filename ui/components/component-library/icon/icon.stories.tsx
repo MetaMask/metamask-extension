@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   IconColor,
-  FLEX_DIRECTION,
+  FlexDirection,
   JustifyContent,
   TextVariant,
-  FLEX_WRAP,
-  TEXT_ALIGN,
+  FlexWrap,
+  TextAlign,
   BackgroundColor,
   BorderColor,
   Color,
@@ -48,9 +48,9 @@ export default {
     color: IconColor.inherit,
     size: IconSize.Md,
   },
-} as ComponentMeta<typeof Icon>;
+} as Meta<typeof Icon>;
 
-export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
+export const DefaultStory: StoryFn<typeof Icon> = (args) => {
   const [search, setSearch] = useState('');
   const iconList = Object.keys(IconName)
     .filter(
@@ -74,7 +74,7 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
         Icon search
       </Text>
       <Box
-        display={DISPLAY.GRID}
+        display={Display.Grid}
         gap={2}
         style={{
           gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
@@ -82,8 +82,8 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
       >
         <Box
           style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
           {/* TODO replace with FormTextField */}
           <Label htmlFor="icon-search">IconName</Label>
@@ -99,7 +99,7 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
       </Box>
       {iconList.length > 0 ? (
         <Box
-          display={DISPLAY.GRID}
+          display={Display.Grid}
           gap={2}
           style={{
             gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
@@ -110,8 +110,8 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
               <Box
                 borderColor={BorderColor.borderMuted}
                 borderRadius={BorderRadius.MD}
-                display={DISPLAY.FLEX}
-                flexDirection={FLEX_DIRECTION.COLUMN}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.center}
                 padding={4}
@@ -125,7 +125,7 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
                   size={TEXT_FIELD_SIZES.SM}
                   inputProps={{
                     variant: TextVariant.bodyXs,
-                    textAlign: TEXT_ALIGN.CENTER,
+                    textAlign: TextAlign.Center,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}
                   endAccessory={
@@ -169,16 +169,16 @@ export const DefaultStory: ComponentStory<typeof Icon> = (args) => {
 };
 DefaultStory.storyName = 'Default';
 
-export const Name: ComponentStory<typeof Icon> = (args) => (
+export const Name: StoryFn<typeof Icon> = (args) => (
   <>
-    <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={2}>
+    <Box display={Display.Flex} flexWrap={FlexWrap.Wrap} gap={2}>
       {Object.keys(IconName).map((item) => {
         return (
           <Box
             borderColor={BorderColor.borderMuted}
             borderRadius={BorderRadius.MD}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
             padding={4}
@@ -192,10 +192,10 @@ export const Name: ComponentStory<typeof Icon> = (args) => (
   </>
 );
 
-export const SizeStory: ComponentStory<typeof Icon> = (args) => (
+export const SizeStory: StoryFn<typeof Icon> = (args) => (
   <>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.baseline}
       gap={1}
       marginBottom={4}
@@ -242,78 +242,78 @@ export const SizeStory: ComponentStory<typeof Icon> = (args) => (
 );
 SizeStory.storyName = 'Size';
 
-export const ColorStory: ComponentStory<typeof Icon> = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline}>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+export const ColorStory: StoryFn<typeof Icon> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.inherit} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.iconDefault} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.iconAlternative} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.iconMuted} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.overlayDefault}
     >
       <Icon {...args} color={IconColor.overlayInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.primaryDefault} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.primaryDefault}
     >
       <Icon {...args} color={IconColor.primaryInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.errorDefault} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.errorDefault}
     >
       <Icon {...args} color={IconColor.errorInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.successDefault} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.successDefault}
     >
       <Icon {...args} color={IconColor.successInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.warningDefault} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.warningDefault}
     >
       <Icon {...args} color={IconColor.warningInverse} />
     </Box>
-    <Box padding={1} display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+    <Box padding={1} display={Display.Flex} alignItems={AlignItems.center}>
       <Icon {...args} color={IconColor.infoDefault} />
     </Box>
     <Box
       padding={1}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.infoDefault}
     >
@@ -324,8 +324,8 @@ export const ColorStory: ComponentStory<typeof Icon> = (args) => (
 ColorStory.storyName = 'Color';
 
 export const LayoutAndSpacing = () => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={4}>
-    <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+    <Box display={Display.Flex} alignItems={AlignItems.center}>
       <Icon
         name={IconName.Check}
         color={IconColor.successDefault}
@@ -335,7 +335,7 @@ export const LayoutAndSpacing = () => (
     </Box>
     <Box
       as="button"
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
       backgroundColor={BackgroundColor.primaryMuted}
@@ -352,7 +352,7 @@ export const LayoutAndSpacing = () => (
     </Box>
     <Box
       as="button"
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       padding={4}
       borderColor={BorderColor.borderMuted}

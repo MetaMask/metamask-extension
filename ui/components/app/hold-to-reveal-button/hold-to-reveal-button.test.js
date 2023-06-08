@@ -1,20 +1,21 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import configureMockState from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import HoldToRevealButton from './hold-to-reveal-button';
 
 const mockTrackEvent = jest.fn();
 
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useContext: () => mockTrackEvent,
-}));
-
 describe('HoldToRevealButton', () => {
+  const mockStore = configureMockState([thunk])(mockState);
   let props = {};
 
   beforeEach(() => {
@@ -51,21 +52,24 @@ describe('HoldToRevealButton', () => {
   });
 
   it('should show the locked padlock when a button is long pressed and then should show it after it was lifted off before the animation concludes', async () => {
-    const { getByText, queryByLabelText } = render(
-      <HoldToRevealButton {...props} />,
+    const { getByText, queryByLabelText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <HoldToRevealButton {...props} />
+      </MetaMetricsContext.Provider>,
+      mockStore,
     );
 
     const button = getByText('Hold to reveal SRP');
 
     fireEvent.mouseDown(button);
-    const circleLocked = queryByLabelText('circle-locked');
+    const circleLocked = queryByLabelText('hold to reveal circle locked');
 
     await waitFor(() => {
       expect(circleLocked).toBeInTheDocument();
     });
 
     fireEvent.mouseUp(button);
-    const circleUnlocked = queryByLabelText('circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
 
     await waitFor(() => {
       expect(circleUnlocked).not.toBeInTheDocument();
@@ -73,37 +77,40 @@ describe('HoldToRevealButton', () => {
   });
 
   it('should show the unlocked padlock when a button is long pressed for the duration of the animation', async () => {
-    const { getByText, queryByLabelText } = render(
-      <HoldToRevealButton {...props} />,
+    const { getByText, queryByLabelText, getByLabelText } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <HoldToRevealButton {...props} />
+      </MetaMetricsContext.Provider>,
+      mockStore,
     );
 
     const button = getByText('Hold to reveal SRP');
 
     fireEvent.mouseDown(button);
 
-    const circleLocked = queryByLabelText('circle-locked');
+    const circleLocked = getByLabelText('hold to reveal circle locked');
     fireEvent.transitionEnd(circleLocked);
 
-    const circleUnlocked = queryByLabelText('circle-unlocked');
+    const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
     fireEvent.animationEnd(circleUnlocked);
 
     await waitFor(() => {
       expect(circleUnlocked).toBeInTheDocument();
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(5, {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(2, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpHoldToRevealCompleted,
         properties: {
           key_type: MetaMetricsEventKeyType.Srp,
         },
       });
-      expect(mockTrackEvent).toHaveBeenNthCalledWith(6, {
+      expect(mockTrackEvent).toHaveBeenNthCalledWith(3, {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.SrpRevealViewed,
         properties: {

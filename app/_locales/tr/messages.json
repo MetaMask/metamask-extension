@@ -359,12 +359,6 @@
     "message": "Sahip olduğun tüm $1 için erişim ve transfer izni verilsin mi?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Onayla ve Yükle"
-  },
-  "approveAndUpdate": {
-    "message": "Onayla ve güncelle"
-  },
   "approveButtonText": {
     "message": "Onayla"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Varlık seçenekleri"
-  },
-  "assets": {
-    "message": "Varlıklar"
   },
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Hesabı bağla ya da yeni hesap oluştur"
   },
-  "connectHardwareWallet": {
-    "message": "Donanım Cüzdanı Bağla"
-  },
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
   },
@@ -791,9 +779,6 @@
   },
   "create": {
     "message": "Oluştur"
-  },
-  "createAccount": {
-    "message": "Hesap Oluştur"
   },
   "createNewWallet": {
     "message": "Yeni bir cüzdan oluştur"
@@ -1570,9 +1555,6 @@
   "history": {
     "message": "Geçmiş"
   },
-  "holdToReveal": {
-    "message": "GKİ'yi göstermek için basılı tut"
-  },
   "holdToRevealContent1": {
     "message": "Gizli Kurtarma İfadeniz: $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "ancak dolandırıcılar talep edilebilir.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "GKİ'nizi güvende tutun"
   },
   "ignoreAll": {
     "message": "Tümünü yoksay"
@@ -1644,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Herkes, mevcut tokenlerin sahte sürümleri de dahil olmak üzere herhangi bir ada sahip bir token oluşturabilir. Riski tamamen size ait olacak şekikde token ekleyin ve işlem yapın!"
-  },
-  "importTokens": {
-    "message": "tokenleri içe aktar"
   },
   "importTokensCamelCase": {
     "message": "Tokenleri içe aktar"
@@ -1999,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Buradan talep et"
   },
-  "missingToken": {
-    "message": "Tokeninizi görmüyor musunuz?"
-  },
   "moreComingSoon": {
     "message": "Daha fazlası çok yakında..."
   },
@@ -2244,9 +2217,6 @@
   "notEnoughGas": {
     "message": "Yeterli gaz yok"
   },
-  "notifications": {
-    "message": "Bildirimler"
-  },
   "notifications10ActionText": {
     "message": "Ayarlarda ziyaret et",
     "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
@@ -2374,7 +2344,7 @@
     "description": "Description on an action button that appears in the What's New popup. Tells the user that if they click it, they will go to our Advanced settings page."
   },
   "notifications8DescriptionOne": {
-    "message": "MetaMask 10.4.0 sürümü itibariyle Kayıt Defteri cihazınızı Metamask'e bağlamak için artık Ledger Live'e ihtiyacınız yok.",
+    "message": "MetaMask 10.4.0 sürümü itibariyle Kayıt Defteri cihazınızı MetaMask'e bağlamak için artık Ledger Live'e ihtiyacınız yok.",
     "description": "Description of a notification in the 'See What's New' popup. Describes changes for how Ledger Live is no longer needed to connect the device."
   },
   "notifications8DescriptionTwo": {
@@ -2533,7 +2503,7 @@
     "message": "Hemen erişim sağlamak için tarayıcı uzantısı simgesine tıklayın"
   },
   "onboardingPinExtensionLabel": {
-    "message": "Metamask'i sabitle"
+    "message": "MetaMask'i sabitle"
   },
   "onboardingPinExtensionStep1": {
     "message": "1"
@@ -3059,9 +3029,6 @@
   "searchResults": {
     "message": "Arama sonuçları"
   },
-  "searchSettings": {
-    "message": "Ayarlarda ara"
-  },
   "searchTokens": {
     "message": "Token ara"
   },
@@ -3226,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Gönder ekranında on altılık veri alanını göstermek için bunu seçin"
   },
-  "showHide": {
-    "message": "Göster/gizle"
-  },
   "showIncomingTransactions": {
     "message": "Gelen işlemleri göster"
   },
@@ -3296,10 +3260,12 @@
     "message": "Snap'i yükle"
   },
   "snapInstallWarningCheck": {
-    "message": "Anladığını doğrulamak için kutucuğu işaretle."
+    "message": "Anladığını doğrulamak için kutucuğu işaretle.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin."
+    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
@@ -3427,9 +3393,6 @@
   },
   "status": {
     "message": "Durum"
-  },
-  "statusConnected": {
-    "message": "Bağlandı"
   },
   "statusNotConnected": {
     "message": "Bağlanmadı"
@@ -3935,10 +3898,6 @@
   "toggleEthSignField": {
     "message": "eth_sign taleplerini değiştirin"
   },
-  "toggleTestNetworks": {
-    "message": "Test ağlarını $1",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4117,10 +4076,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask başlatılırken bir sorun oldu. Bu hata sürekli bir hata olmayabilir; bu yüzden uzantıyı yeniden başlatmayı dene."
-  },
-  "troubleTokenBalances": {
-    "message": "Token bakiyeleriniz yüklenirken sorun yaşadık. Burada görüntüleyebilirsiniz ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "İzin verdiğinizde paranıza aşağıdaki $1 erişimine izin verirsiniz"

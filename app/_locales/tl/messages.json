@@ -359,12 +359,6 @@
     "message": "Payagan ang pag-access at paglipat ng lahat ng iyong $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Aprubahan at I-install"
-  },
-  "approveAndUpdate": {
-    "message": "Aprubahan at i-update"
-  },
   "approveButtonText": {
     "message": "Aprubahan"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Mga opsyon ng asset"
-  },
-  "assets": {
-    "message": "Mga Asset"
   },
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng tulay."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Ikonekta ang account o gumawa ng bago"
   },
-  "connectHardwareWallet": {
-    "message": "Ikonekta ang hardware wallet"
-  },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
@@ -791,9 +779,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng account"
   },
   "createNewWallet": {
     "message": "Gumawa ng bagong wallet"
@@ -1570,9 +1555,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "I-hold para ipakita ang SRP"
-  },
   "holdToRevealContent1": {
     "message": "Ang iyong Secret Recovery Phrase ay nagbibigay ng $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "ngunit maaring hingin ng mga phisher.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Ingatan ang iyong SRP"
   },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
@@ -1644,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Sinumang ay maaaring lumikha ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
-  },
-  "importTokens": {
-    "message": "magdagdag ng mga token"
   },
   "importTokensCamelCase": {
     "message": "Mag-import ng mga Token"
@@ -1999,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Hilingin dito"
   },
-  "missingToken": {
-    "message": "Hindi mo ba nakikita ang iyong mga token?"
-  },
   "moreComingSoon": {
     "message": "Marami pang parating..."
   },
@@ -2243,9 +2216,6 @@
   },
   "notEnoughGas": {
     "message": "Hindi Sapat ang Gas"
-  },
-  "notifications": {
-    "message": "Mga Abiso"
   },
   "notifications10ActionText": {
     "message": "Bisitahin sa mga setting",
@@ -3059,9 +3029,6 @@
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
   },
-  "searchSettings": {
-    "message": "Maghanap sa mga Setting"
-  },
   "searchTokens": {
     "message": "Maghanap ng Mga Token"
   },
@@ -3226,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang field ng hex data sa screen ng pagpapadala"
   },
-  "showHide": {
-    "message": "Ipakita/itago"
-  },
   "showIncomingTransactions": {
     "message": "Ipakita ang Mga Papasok na Transaksyon"
   },
@@ -3296,10 +3260,12 @@
     "message": "I-install ang snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para kumpirmahing naunawaan mo, tsekan lahat."
+    "message": "Para kumpirmahing naunawaan mo, tsekan lahat.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon."
+    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
@@ -3427,9 +3393,6 @@
   },
   "status": {
     "message": "Istado"
-  },
-  "statusConnected": {
-    "message": "Nakakonekta"
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
@@ -3935,10 +3898,6 @@
   "toggleEthSignField": {
     "message": "I-toggle ang mga kahilingan sa eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 na test network",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4117,10 +4076,6 @@
   },
   "troubleStarting": {
     "message": "Nagkaproblema ang MetaMask sa pagsisimula. Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
-  },
-  "troubleTokenBalances": {
-    "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Sa pamamagitan ng pagbibigay ng pahintulot, pinapayagan mo ang sumusunod na $1 para ma-access ang pondo mo"
@@ -4373,7 +4328,7 @@
     "message": "Magsimula na tayo"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "Ang Metamask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
+    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsNew": {
     "message": "Ano'ng bago",

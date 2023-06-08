@@ -12,7 +12,7 @@ import Box from '../box/box';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { Text } from '../../component-library';
+import { Text, Icon, IconName, IconSize } from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
@@ -45,7 +45,7 @@ export default function DeprecatedTestNetworks() {
             className="deprecated-test-networks__content"
           >
             <Box marginRight={2} color={Color.warningDefault}>
-              <i className="fa fa-info-circle deprecated-test-networks__content__icon" />
+              <Icon name={IconName.Info} size={IconSize.Sm} />
             </Box>
             <Box justifyContent={JustifyContent.spaceBetween}>
               <Text

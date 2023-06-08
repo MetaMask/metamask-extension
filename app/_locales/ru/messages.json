@@ -359,12 +359,6 @@
     "message": "Разрешить доступ ко всем вашим $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Одобрить и установить"
-  },
-  "approveAndUpdate": {
-    "message": "Утвердить и обновить"
-  },
   "approveButtonText": {
     "message": "Одобрить"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Параметры актива"
-  },
-  "assets": {
-    "message": "Активы"
   },
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Подключите счет или создайте новый"
   },
-  "connectHardwareWallet": {
-    "message": "Подключить аппаратный кошелек"
-  },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
   },
@@ -791,9 +779,6 @@
   },
   "create": {
     "message": "Создать"
-  },
-  "createAccount": {
-    "message": "Создать счет"
   },
   "createNewWallet": {
     "message": "Создать новый кошелек"
@@ -1570,9 +1555,6 @@
   "history": {
     "message": "История"
   },
-  "holdToReveal": {
-    "message": "Удерживайте для отображения СВФ"
-  },
   "holdToRevealContent1": {
     "message": "Ваша секретная фраза для восстановления дает $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "но злоумышленники-фишеры могут.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Обеспечьте безопасность своей СВФ"
   },
   "ignoreAll": {
     "message": "Игнорировать все"
@@ -1644,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
-  },
-  "importTokens": {
-    "message": "импорт токенов"
   },
   "importTokensCamelCase": {
     "message": "Импорт токенов"
@@ -1999,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Запросите здесь"
   },
-  "missingToken": {
-    "message": "Не видите свой токен?"
-  },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
   },
@@ -2243,9 +2216,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notifications": {
-    "message": "Уведомления"
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",
@@ -3059,9 +3029,6 @@
   "searchResults": {
     "message": "Результаты поиска"
   },
-  "searchSettings": {
-    "message": "Поиск в настройках"
-  },
   "searchTokens": {
     "message": "Поиск токенов"
   },
@@ -3226,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
   },
-  "showHide": {
-    "message": "Показать/скрыть"
-  },
   "showIncomingTransactions": {
     "message": "Показать входящие транзакции"
   },
@@ -3296,10 +3260,12 @@
     "message": "Установить снап"
   },
   "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
@@ -3427,9 +3393,6 @@
   },
   "status": {
     "message": "Статус"
-  },
-  "statusConnected": {
-    "message": "Подключено"
   },
   "statusNotConnected": {
     "message": "Не подключено"
@@ -3935,10 +3898,6 @@
   "toggleEthSignField": {
     "message": "Переключить запросы eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 тестовые сети",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Токен"
   },
@@ -4117,10 +4076,6 @@
   },
   "troubleStarting": {
     "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
-  },
-  "troubleTokenBalances": {
-    "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Давая разрешение, вы предоставляете следующему $1 доступ к вашим средствам."

@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
@@ -12,6 +16,7 @@ describe('Address Book', function () {
       },
     ],
   };
+
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
@@ -33,11 +38,12 @@ describe('Address Book', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="eth-overview-send"]');
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
@@ -96,7 +102,9 @@ describe('Address Book', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.identicon__address-wrapper');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
         await driver.clickElement('[data-testid="recipient"]');
@@ -157,7 +165,9 @@ describe('Address Book', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.identicon__address-wrapper');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 

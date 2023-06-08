@@ -34,10 +34,13 @@ export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
+export { ModalFocus } from './modal-focus';
+export { Modal, useModalContext } from './modal';
 
 // Molecules
 export { BannerBase } from './banner-base';
 export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
+export { Popover, PopoverPosition, PopoverRole } from './popover';
 export { ModalHeader } from './modal-header';

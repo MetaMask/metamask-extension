@@ -359,12 +359,6 @@
     "message": "Cấp quyền truy cập vào và chuyển tất cả $1 của bạn?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Chấp nhận và cài đặt"
-  },
-  "approveAndUpdate": {
-    "message": "Phê duyệt và cập nhật"
-  },
   "approveButtonText": {
     "message": "Phê duyệt"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Tùy chọn tài sản"
-  },
-  "assets": {
-    "message": "Tài sản"
   },
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Kết nối tài khoản hoặc tạo tài khoản mới"
   },
-  "connectHardwareWallet": {
-    "message": "Kết nối với ví cứng"
-  },
   "connectManually": {
     "message": "Kết nối thủ công với trang web hiện tại"
   },
@@ -791,9 +779,6 @@
   },
   "create": {
     "message": "Tạo"
-  },
-  "createAccount": {
-    "message": "Tạo tài khoản"
   },
   "createNewWallet": {
     "message": "Tạo ví mới"
@@ -1570,9 +1555,6 @@
   "history": {
     "message": "Lịch sử"
   },
-  "holdToReveal": {
-    "message": "Giữ để hiển thị Cụm từ khôi phục bí mật"
-  },
   "holdToRevealContent1": {
     "message": "Cụm từ khôi phục bí mật của bạn cung cấp $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "nhưng những kẻ lừa đảo qua mạng thì có.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Đảm bảo an toàn cho Cụm từ khôi phục bí mật của bạn"
   },
   "ignoreAll": {
     "message": "Bỏ qua tất cả"
@@ -1644,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
-  },
-  "importTokens": {
-    "message": "nhập token"
   },
   "importTokensCamelCase": {
     "message": "Nhập token"
@@ -1999,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Yêu cầu tại đây"
   },
-  "missingToken": {
-    "message": "Không thấy token của mình?"
-  },
   "moreComingSoon": {
     "message": "Sắp có thêm..."
   },
@@ -2243,9 +2216,6 @@
   },
   "notEnoughGas": {
     "message": "Không đủ gas"
-  },
-  "notifications": {
-    "message": "Thông báo"
   },
   "notifications10ActionText": {
     "message": "Xem trong phần Cài đặt",
@@ -3059,9 +3029,6 @@
   "searchResults": {
     "message": "Kết quả tìm kiếm"
   },
-  "searchSettings": {
-    "message": "Tìm kiếm trong phần Cài đặt"
-  },
   "searchTokens": {
     "message": "Tìm kiếm token"
   },
@@ -3226,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Chọn tùy chọn này để hiển thị trường dữ liệu thập lục phân trên màn hình gửi"
   },
-  "showHide": {
-    "message": "Hiển thị/ẩn"
-  },
   "showIncomingTransactions": {
     "message": "Hiển thị các giao dịch đến"
   },
@@ -3296,10 +3260,12 @@
     "message": "Cài đặt Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô."
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô."
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
@@ -3427,9 +3393,6 @@
   },
   "status": {
     "message": "Trạng thái"
-  },
-  "statusConnected": {
-    "message": "Đã kết nối"
   },
   "statusNotConnected": {
     "message": "Chưa kết nối"
@@ -3935,10 +3898,6 @@
   "toggleEthSignField": {
     "message": "Bật/tắt yêu cầu eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 mạng thử nghiệm",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4117,10 +4076,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask đã gặp sự cố khi khởi động. Lỗi này có thể xảy ra không liên tục, vì vậy hãy thử khởi động lại tiện ích."
-  },
-  "troubleTokenBalances": {
-    "message": "Chúng tôi đã gặp phải vấn đề khi tải số dư token của bạn. Bạn có thể xem số dư ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Bằng cách cấp quyền, bạn cho phép $1 sau đây truy cập vào các khoản tiền của mình"

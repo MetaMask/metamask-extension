@@ -71,7 +71,7 @@ export default function FeeCard({
           disableEditGasFeeButton
           rows={[
             <TransactionDetailItem
-              key="gas-item"
+              key="fee-card-gas-item"
               detailTitle={
                 <>
                   {t('transactionDetailGasHeading')}

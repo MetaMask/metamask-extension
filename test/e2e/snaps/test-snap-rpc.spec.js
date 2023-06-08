@@ -3,10 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap RPC', function () {
-  // Disabled for now due to a bug.
-  // TODO: Re-enable when fixed.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('can use the cross-snap RPC endowment and produce a public key', async function () {
+  it('can use the cross-snap RPC endowment and produce a public key', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -56,10 +53,12 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElement('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
@@ -75,10 +74,10 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -101,17 +100,17 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 

@@ -6,14 +6,25 @@ import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IconName } from '../../component-library';
+import {
+  IconName,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  Text,
+  ///: END:ONLY_INCLUDE_IN(snaps)
+} from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
+///: END:ONLY_INCLUDE_IN
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -22,7 +33,23 @@ import {
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-import { getMetaMetricsId } from '../../../selectors';
+import {
+  getMetaMetricsId,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getUnreadNotificationsCount,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import {
+  AlignItems,
+  BackgroundColor,
+  Display,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IN
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
@@ -30,6 +57,17 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const metaMetricsId = useSelector(getMetaMetricsId);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
+  ///: END:ONLY_INCLUDE_IN
+
+  let supportText = t('support');
+  let supportLink = SUPPORT_LINK;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+  supportText = t('needHelpSubmitTicket');
+  supportLink = SUPPORT_REQUEST_LINK;
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
@@ -96,16 +134,54 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           {t('expandView')}
         </MenuItem>
       )}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <>
+          <MenuItem
+            iconName={IconName.Notification}
+            onClick={() => {
+              closeMenu();
+              history.push(NOTIFICATIONS_ROUTE);
+            }}
+          >
+            <Text as="span">{t('notifications')}</Text>
+            {unreadNotificationsCount > 0 && (
+              <Text
+                as="span"
+                display={Display.InlineBlock}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                backgroundColor={BackgroundColor.primaryDefault}
+                color={TextColor.primaryInverse}
+                padding={[0, 1, 0, 1]}
+                variant={TextVariant.bodyXs}
+                textAlign={TextAlign.Center}
+                data-testid="global-menu-notification-count"
+                style={{
+                  borderRadius: '16px',
+                  minWidth: '24px',
+                }}
+                marginInlineStart={2}
+              >
+                {unreadNotificationsCount > 99
+                  ? '99+'
+                  : unreadNotificationsCount}
+              </Text>
+            )}
+          </MenuItem>
+        </>
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
       <MenuItem
         iconName={IconName.MessageQuestion}
         onClick={() => {
-          global.platform.openTab({ url: SUPPORT_LINK });
+          global.platform.openTab({ url: supportLink });
           trackEvent(
             {
               category: MetaMetricsEventCategory.Home,
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
-                url: SUPPORT_LINK,
+                url: supportLink,
                 location: 'Global Menu',
               },
             },
@@ -119,7 +195,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         }}
         data-testid="global-menu-support"
       >
-        {t('support')}
+        {supportText}
       </MenuItem>
       <MenuItem
         iconName={IconName.Setting}

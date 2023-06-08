@@ -41,6 +41,7 @@ export enum ValidTag {
   Ul = 'ul',
   Label = 'label',
   Input = 'input',
+  Header = 'header',
 }
 
 export interface TextProps extends BoxProps {

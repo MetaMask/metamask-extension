@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
   JustifyContent,
   BorderRadius,
@@ -26,7 +27,6 @@ import {
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
-  MESSAGE_TYPE,
   ORIGIN_METAMASK,
 } from '../../../../shared/constants/app';
 import { requestUserApproval } from '../../../store/actions';
@@ -66,7 +66,7 @@ const AddNetwork = () => {
       unapprovedConfirmations?.find((confirmation) => {
         return (
           confirmation.origin === 'metamask' &&
-          confirmation.type === MESSAGE_TYPE.ADD_ETHEREUM_CHAIN
+          confirmation.type === ApprovalType.AddEthereumChain
         );
       });
     if (!showPopover && anAddNetworkConfirmationFromMetaMaskExists) {
@@ -88,8 +88,8 @@ const AddNetwork = () => {
           marginTop={4}
           marginRight={6}
           marginLeft={6}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           backgroundColor={BackgroundColor.backgroundAlternative}
         >
           <Box marginRight={4}>
@@ -135,9 +135,9 @@ const AddNetwork = () => {
         <Box className="add-network__networks-container">
           {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && (
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               alignItems={AlignItems.center}
-              flexDirection={FLEX_DIRECTION.ROW}
+              flexDirection={FlexDirection.Row}
               marginTop={7}
               marginBottom={4}
               paddingBottom={2}
@@ -186,13 +186,13 @@ const AddNetwork = () => {
             {notExistingNetworkConfigurations.map((item, index) => (
               <Box
                 key={index}
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.spaceBetween}
                 marginBottom={6}
                 className="add-network__list-of-networks"
               >
-                <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+                <Box display={Display.Flex} alignItems={AlignItems.center}>
                   <Box>
                     <IconBorder size={24}>
                       <IconWithFallback
@@ -213,7 +213,7 @@ const AddNetwork = () => {
                   </Box>
                 </Box>
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   alignItems={AlignItems.center}
                   marginLeft={1}
                 >
@@ -258,7 +258,7 @@ const AddNetwork = () => {
                       await dispatch(
                         requestUserApproval({
                           origin: ORIGIN_METAMASK,
-                          type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+                          type: ApprovalType.AddEthereumChain,
                           requestData: {
                             chainId: item.chainId,
                             rpcUrl: item.rpcUrl,

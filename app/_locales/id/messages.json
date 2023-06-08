@@ -359,12 +359,6 @@
     "message": "Berikan izin untuk mengakses dan mentransfer seluruh $1 Anda?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Setujui & instal"
-  },
-  "approveAndUpdate": {
-    "message": "Setujui dan perbarui"
-  },
   "approveButtonText": {
     "message": "Setujui"
   },
@@ -397,9 +391,6 @@
   },
   "assetOptions": {
     "message": "Opsi aset"
-  },
-  "assets": {
-    "message": "Aset"
   },
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan penghubung."
@@ -645,9 +636,6 @@
   "connectAccountOrCreate": {
     "message": "Hubungkan akun atau buat baru"
   },
-  "connectHardwareWallet": {
-    "message": "Hubungkan dompet perangkat keras"
-  },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
@@ -791,9 +779,6 @@
   },
   "create": {
     "message": "Buat"
-  },
-  "createAccount": {
-    "message": "Buat akun"
   },
   "createNewWallet": {
     "message": "Buat dompet baru"
@@ -1570,9 +1555,6 @@
   "history": {
     "message": "Riwayat"
   },
-  "holdToReveal": {
-    "message": "Tahan untuk mengungkap FPR"
-  },
   "holdToRevealContent1": {
     "message": "Frasa Pemulihan Rahasia memberikan $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1592,9 +1574,6 @@
   "holdToRevealContent5": {
     "message": "tetapi penipu akan mencoba memintanya.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Jaga keamanan FPR Anda"
   },
   "ignoreAll": {
     "message": "Abaikan semua"
@@ -1644,9 +1623,6 @@
   },
   "importTokenWarning": {
     "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko ditanggung sendiri!"
-  },
-  "importTokens": {
-    "message": "impor token"
   },
   "importTokensCamelCase": {
     "message": "Impor token"
@@ -1999,9 +1975,6 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "missingToken": {
-    "message": "Tidak melihat token Anda?"
-  },
   "moreComingSoon": {
     "message": "Selanjutnya akan segera hadir..."
   },
@@ -2243,9 +2216,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "notifications": {
-    "message": "Notifikasi"
   },
   "notifications10ActionText": {
     "message": "Lihat di Pengaturan",
@@ -3059,9 +3029,6 @@
   "searchResults": {
     "message": "Cari hasil"
   },
-  "searchSettings": {
-    "message": "Cari di Pengaturan"
-  },
   "searchTokens": {
     "message": "Cari token"
   },
@@ -3226,9 +3193,6 @@
   "showHexDataDescription": {
     "message": "Pilih ini untuk menampilkan bidang data hex di layar kirim"
   },
-  "showHide": {
-    "message": "Tampil/Sembunyi"
-  },
   "showIncomingTransactions": {
     "message": "Tampilkan transaksi masuk"
   },
@@ -3296,10 +3260,12 @@
     "message": "Instal Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya."
+    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak."
+    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Anda memberikan $2 akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset $2 Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
@@ -3427,9 +3393,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Terhubung"
   },
   "statusNotConnected": {
     "message": "Tidak terhubung"
@@ -3935,10 +3898,6 @@
   "toggleEthSignField": {
     "message": "Alihkan permintaan eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 jaringan pengujian",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4117,10 +4076,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
-  },
-  "troubleTokenBalances": {
-    "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Dengan memberikan izin, Anda mengizinkan $1 berikut untuk mengakses dana Anda"

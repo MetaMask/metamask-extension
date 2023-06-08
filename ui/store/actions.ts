@@ -23,12 +23,12 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
-import { hasUnconfirmedTransactions } from '../helpers/utils/confirm-tx.util';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
+  hasTransactionPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -2298,44 +2298,6 @@ export function addTokens(
   };
 }
 
-export function rejectWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('rejectWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
-  };
-}
-
-export function acceptWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('acceptWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
-  };
-}
-
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -2698,7 +2660,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   return (_, getState) => {
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasUnconfirmedTransactions(getState())
+      !hasTransactionPendingApprovals(getState())
     ) {
       closeNotificationPopup();
     }
@@ -4678,3 +4640,20 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   }
   return networkEIP1559Compatibility;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * Set status of popover warning for the first snap installation.
+ *
+ * @param shown - True if popover has been shown.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
+  return async () => {
+    await submitRequestToBackground(
+      'setSnapsInstallPrivacyWarningShownStatus',
+      [shown],
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN
