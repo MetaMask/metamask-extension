@@ -51,7 +51,6 @@ export default function SnapInstall({
       getTargetSubjectMetadata(state, request?.metadata?.dappOrigin),
     ) || {};
   const { origin, iconUrl, name } = siteMetadata;
-  console.log(siteMetadata);
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
@@ -102,7 +101,14 @@ export default function SnapInstall({
 
   const SnapsConnectError = () => {
     const description = t('connectionFailedDescription', [
-      <b key="0">{snapName}</b>,
+      <Text
+        as={ValidTag.Span}
+        key="1"
+        variant={TextVariant.bodyMd}
+        fontWeight={FontWeight.Medium}
+      >
+        {snapName}
+      </Text>,
     ]);
 
     return (

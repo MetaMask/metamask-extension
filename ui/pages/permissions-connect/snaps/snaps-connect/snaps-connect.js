@@ -104,7 +104,7 @@ export default function SnapsConnect({
               </Text>,
               <Text
                 as={ValidTag.Span}
-                key="1"
+                key="2"
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
               >
