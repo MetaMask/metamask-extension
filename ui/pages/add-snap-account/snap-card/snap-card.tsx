@@ -15,8 +15,8 @@ import {
   BorderColor,
   BorderRadius,
   Color,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   IconColor,
   JustifyContent,
   TextVariant,
@@ -45,8 +45,8 @@ export default function SnapCard({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderColor={BorderColor.borderMuted}
       borderRadius={BorderRadius.SM}
@@ -54,13 +54,13 @@ export default function SnapCard({
       padding={[4, 4, 4, 4]}
     >
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.spaceBetween}
         alignItems={AlignItems.center}
         marginBottom={2}
       >
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           style={{
@@ -97,7 +97,7 @@ export default function SnapCard({
         {snapSlug}
       </Text>
 
-      <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.spaceBetween}>
+      <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         {updateAvailable && (
           <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
             {t('snapUpdateAvailable')}

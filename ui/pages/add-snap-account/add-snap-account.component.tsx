@@ -4,7 +4,7 @@ import Box from '../../components/ui/box/box';
 import { ADD_SNAP_ACCOUNT_ROUTE } from '../../helpers/constants/routes';
 import {
   BackgroundColor,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import NewSnapAccountPage from './snap-account';
@@ -13,7 +13,7 @@ import SnapAccountDetailPage from './snap-account-detail';
 const AddSnapAccountPage = () => {
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundDefault}
       marginLeft={10}
