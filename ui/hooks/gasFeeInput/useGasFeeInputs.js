@@ -100,7 +100,6 @@ export function useGasFeeInputs(
   minimumGasLimit = '0x5208',
   editGasMode = EditGasModes.modifyInPlace,
 ) {
-
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
     id: _transaction?.id,
