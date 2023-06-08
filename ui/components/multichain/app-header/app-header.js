@@ -23,10 +23,8 @@ import {
   BLOCK_SIZES,
   DISPLAY,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarNetwork,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -195,15 +193,11 @@ export const AppHeader = ({ location }) => {
               {popupStatus ? (
                 <Box className="multichain-app-header__contents__container">
                   <Tooltip title={currentNetwork?.nickname} position="right">
-                    <AvatarNetwork
+                    <PickerNetwork
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
-                      aria-label={t('networkMenu')}
-                      padding={0}
-                      name={currentNetwork?.nickname}
                       src={currentNetwork?.rpcPrefs?.imageUrl}
-                      size={Size.SM}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();

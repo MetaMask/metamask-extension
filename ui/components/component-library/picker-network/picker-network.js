@@ -77,7 +77,7 @@ PickerNetwork.propTypes = {
   /**
    * The text content of the PickerNetwork component
    */
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   /**
    * PickerNetwork accepts all the props from Box
    */
