@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { isObject } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
@@ -29,6 +31,7 @@ import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/
 import { getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
+import { getPermissions } from '../../../../selectors';
 
 export default function SnapsConnect({
   request,
@@ -43,6 +46,9 @@ export default function SnapsConnect({
   const [isLoading, setIsLoading] = useState(false);
   const [isShowingSnapsPrivacyWarning, setIsShowingSnapsPrivacyWarning] =
     useState(!snapsInstallPrivacyWarningShown);
+  const currentPermissions = useSelector((state) =>
+    getPermissions(state, request?.metadata?.origin),
+  );
 
   const onCancel = useCallback(() => {
     rejectConnection(request.metadata.id);
@@ -60,7 +66,20 @@ export default function SnapsConnect({
   const getSnaps = () => {
     const permission = request.permissions?.[WALLET_SNAP_PERMISSION_KEY];
     const requestedSnaps = permission?.caveats?.[0].value;
-    return requestedSnaps ? Object.keys(requestedSnaps) : [];
+    const currentSnaps =
+      currentPermissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+
+    if (!isObject(currentSnaps) && requestedSnaps) {
+      return Object.keys(requestedSnaps);
+    }
+
+    const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+    const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+    const dedupedSnaps = requestedSnapKeys.filter(
+      (snapId) => !currentSnapKeys.includes(snapId),
+    );
+
+    return dedupedSnaps.length ? dedupedSnaps : requestedSnapKeys;
   };
 
   const snaps = getSnaps();
@@ -88,6 +107,7 @@ export default function SnapsConnect({
           paddingLeft={4}
           paddingRight={4}
           paddingTop={8}
+          width={BlockSize.Full}
           style={{ overflowY: 'hidden' }}
         >
           <Text paddingBottom={2} variant={TextVariant.headingLg}>
@@ -118,6 +138,7 @@ export default function SnapsConnect({
             flexDirection={FlexDirection.Column}
             display={Display.Flex}
             marginTop={4}
+            width={BlockSize.Full}
             style={{ overflowY: 'auto', flex: 1 }}
           >
             {snaps.map((snap) => (
