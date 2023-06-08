@@ -12,7 +12,7 @@ import Popover from '../../../ui/popover';
 import {
   FontWeight,
   TextVariant,
-  DISPLAY,
+  Display,
   Size,
   BorderStyle,
   BorderColor,
@@ -65,7 +65,7 @@ export default function ContractDetailsModal({
           fontWeight={FontWeight.Bold}
           variant={TextVariant.bodyMd}
           as="h5"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           boxProps={{ marginTop: 0, marginBottom: 0 }}
         >
           {t('contractTitle')}
@@ -73,7 +73,7 @@ export default function ContractDetailsModal({
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           color={TextColor.textAlternative}
           boxProps={{ marginTop: 2, marginBottom: 0 }}
         >
@@ -84,14 +84,14 @@ export default function ContractDetailsModal({
             <Text
               variant={TextVariant.bodySm}
               as="h6"
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               marginTop={4}
               marginBottom={2}
             >
               {nft ? t('contractNFT') : t('contractToken')}
             </Text>
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               borderRadius={Size.SM}
               borderStyle={BorderStyle.solid}
               borderColor={BorderColor.borderDefault}
@@ -124,7 +124,7 @@ export default function ContractDetailsModal({
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     color={TextColor.textAlternative}
                     marginTop={0}
                     marginBottom={4}
@@ -148,7 +148,7 @@ export default function ContractDetailsModal({
                   }
                 >
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     iconName={
                       copiedTokenAddress ? IconName.CopySuccess : IconName.Copy
                     }
@@ -163,7 +163,7 @@ export default function ContractDetailsModal({
                 </Tooltip>
                 <Tooltip position="top" title={t('openInBlockExplorer')}>
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
@@ -189,7 +189,7 @@ export default function ContractDetailsModal({
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           marginTop={4}
           marginBottom={2}
         >
@@ -200,7 +200,7 @@ export default function ContractDetailsModal({
             t('contractRequestingSpendingCap')}
         </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
@@ -224,7 +224,7 @@ export default function ContractDetailsModal({
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 color={TextColor.textAlternative}
                 marginTop={0}
                 marginBottom={4}
@@ -246,7 +246,7 @@ export default function ContractDetailsModal({
               }
             >
               <ButtonIcon
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 iconName={
                   copiedToAddress ? IconName.CopySuccess : IconName.Copy
                 }
@@ -261,7 +261,7 @@ export default function ContractDetailsModal({
             </Tooltip>
             <Tooltip position="top" title={t('openInBlockExplorer')}>
               <ButtonIcon
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
@@ -284,7 +284,7 @@ export default function ContractDetailsModal({
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         paddingTop={6}
         paddingRight={4}
         paddingBottom={6}
