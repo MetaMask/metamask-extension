@@ -1,27 +1,91 @@
-import * as React from 'react';
+import React from 'react';
 
 import {
   AlignItems,
-  BlockSize,
-  BLOCK_SIZES,
-  BorderStyle,
   BackgroundColor,
+  BlockSize,
   BorderColor,
-  TextColor,
-  IconColor,
+  BorderRadius,
+  BorderStyle,
+  Color,
   Display,
-  DISPLAY,
+  FlexDirection,
+  FlexWrap,
+  IconColor,
   JustifyContent,
   TextAlign,
-  TEXT_ALIGN,
-  FlexDirection,
-  FLEX_DIRECTION,
-  FlexWrap,
-  FLEX_WRAP,
-  BorderRadius,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 
-export type BoxChildren = React.ReactNode | ((...args: any[]) => any);
+export type StyleDeclarationType =
+  | 'margin'
+  | 'margin-top'
+  | 'margin-right'
+  | 'margin-bottom'
+  | 'margin-left'
+  | 'margin-inline'
+  | 'margin-inline-start'
+  | 'margin-inline-end'
+  | 'padding'
+  | 'padding-top'
+  | 'padding-right'
+  | 'padding-bottom'
+  | 'padding-left'
+  | 'padding-inline'
+  | 'padding-inline-start'
+  | 'padding-inline-end'
+  | 'display'
+  | 'gap'
+  | 'flex-direction'
+  | 'flex-wrap'
+  | 'justify-content'
+  | 'align-items'
+  | 'text-align'
+  | 'width'
+  | 'height'
+  | 'color'
+  | 'background-color'
+  | 'rounded'
+  | 'border-style'
+  | 'border-color'
+  | 'border-width';
+
+export type StylePropValueType =
+  | AlignItems
+  | AlignItemsArray
+  | BackgroundColor
+  | BackgroundColorArray
+  | BlockSize
+  | BlockSizeArray
+  | BorderColor
+  | BorderColorArray
+  | BorderRadius
+  | BorderRadiusArray
+  | BorderStyle
+  | BorderStyleArray
+  | Color
+  | Display
+  | DisplayArray
+  | FlexDirection
+  | FlexDirectionArray
+  | FlexWrap
+  | FlexWrapArray
+  | IconColor
+  | JustifyContent
+  | JustifyContentArray
+  | SizeNumberAndAuto
+  | SizeNumberAndAutoArray
+  | TextAlign
+  | TextAlignArray
+  | TextColor
+  | TextColorArray
+  | IconColor
+  | IconColorArray
+  | undefined;
+
+export interface ClassNamesObject {
+  [key: string]: any;
+}
 
 export type FlexDirectionArray = [
   FlexDirection,
@@ -29,82 +93,10 @@ export type FlexDirectionArray = [
   FlexDirection?,
   FlexDirection?,
 ];
-
-/**
- * @deprecated BoxFlexDirection is deprecated. Use FlexDirection instead.
- */
-type BoxFlexDirection =
-  | (typeof FLEX_DIRECTION)[keyof typeof FLEX_DIRECTION]
-  | null;
-
-/**
- * @deprecated BoxFlexDirectionArray is deprecated. Use FlexDirectionArray instead.
- */
-type BoxFlexDirectionArray = [
-  BoxFlexDirection,
-  BoxFlexDirection?,
-  BoxFlexDirection?,
-  BoxFlexDirection?,
-];
-
 export type FlexWrapArray = [FlexWrap, FlexWrap?, FlexWrap?, FlexWrap?];
-
-/**
- * @deprecated BoxFlexWrap is deprecated. Use FlexWrap instead.
- */
-type BoxFlexWrap = (typeof FLEX_WRAP)[keyof typeof FLEX_WRAP] | null;
-
-/**
- * @deprecated BoxFlexWrapArray is deprecated. Use FlexWrapArray instead.
- */
-type BoxFlexWrapArray = [BoxFlexWrap, BoxFlexWrap?, BoxFlexWrap?, BoxFlexWrap?];
-
 export type TextAlignArray = [TextAlign, TextAlign?, TextAlign?, TextAlign?];
-
-/**
- * @deprecated BoxTextAlign is deprecated. Use TextAlign instead.
- */
-type BoxTextAlign = (typeof TEXT_ALIGN)[keyof typeof TEXT_ALIGN] | null;
-/**
- * @deprecated BoxTextAlignArray is deprecated. Use TextAlignArray instead.
- */
-type BoxTextAlignArray = [
-  BoxTextAlign,
-  BoxTextAlign?,
-  BoxTextAlign?,
-  BoxTextAlign?,
-];
-
 export type DisplayArray = [Display, Display?, Display?, Display?];
-
-/**
- * @deprecated BoxDisplay is deprecated. Use Display instead.
- */
-type BoxDisplay = (typeof DISPLAY)[keyof typeof DISPLAY] | null;
-/**
- * @deprecated BoxDisplayArray is deprecated. Use DisplayArray instead.
- */
-type BoxDisplayArray = [BoxDisplay, BoxDisplay?, BoxDisplay?, BoxDisplay?];
-
 export type BlockSizeArray = [BlockSize, BlockSize?, BlockSize?, BlockSize?];
-
-/**
- * @deprecated BoxWidth is deprecated. Use BlockSize instead.
- */
-export type BoxWidth = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
-/**
- * @deprecated BoxWidthArray is deprecated. Use BlockSizeArray instead.
- */
-export type BoxWidthArray = [BoxWidth, BoxWidth?, BoxWidth?, BoxWidth?];
-
-/**
- * @deprecated BoxHeight is deprecated. Use BlockSize instead.
- */
-type BoxHeight = (typeof BLOCK_SIZES)[keyof typeof BLOCK_SIZES] | null;
-/**
- * @deprecated BoxHeightArray is deprecated. Use BlockSizeArray instead.
- */
-type BoxHeightArray = [BoxHeight, BoxHeight?, BoxHeight?, BoxHeight?];
 
 export type SizeNumber =
   | 0
@@ -130,6 +122,7 @@ export type SizeNumberArray = [
 ];
 
 export type SizeNumberAndAuto = SizeNumber | 'auto';
+
 export type SizeNumberAndAutoArray = [
   SizeNumberAndAuto,
   SizeNumberAndAuto?,
@@ -179,34 +172,70 @@ export type BackgroundColorArray = [
   BackgroundColor?,
 ];
 
+export type TextColorArray = [TextColor, TextColor?, TextColor?, TextColor?];
+
+export type IconColorArray = [IconColor, IconColor?, IconColor?, IconColor?];
+
 /**
- * @deprecated BoxProps have been deprecated in favor of the component-library Box types.
- * This component should be migrated to use the component-library Box.
- * import { Box } from '../../component-library';
- *
- * Help to migrate this component by submitting a PR
+ * Polymorphic props based on Ohans Emmanuel's article below
+ * https://blog.logrocket.com/build-strongly-typed-polymorphic-components-react-typescript/#ensuring-as-prop-only-receives-valid-html-element-strings
  */
-export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
+
+/**
+ * Uses generic type C to create polymorphic ref type
+ */
+export type PolymorphicRef<C extends React.ElementType> =
+  React.ComponentPropsWithRef<C>['ref'];
+
+/**
+ * Uses generic type C to define the type for the polymorphic "as" prop
+ * "as" can be used to override the default HTML element
+ */
+type AsProp<C extends React.ElementType> = {
   /**
-   * The content of the Box component.
+   * An override of the default HTML tag.
+   * Can also be a React component.
    */
-  children?: React.ReactNode;
+  as?: C;
+};
+
+/**
+ * Omits the as prop and props from component definition
+ */
+type PropsToOmit<C extends React.ElementType, P> = keyof (AsProp<C> & P);
+
+/**
+ * Accepts 2 generic types: C which represents the as prop and the component props - Props
+ */
+type PolymorphicComponentProp<
+  C extends React.ElementType,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  Props = {},
+> = React.PropsWithChildren<Props & AsProp<C>> &
+  Omit<React.ComponentPropsWithoutRef<C>, PropsToOmit<C, Props>>;
+
+export type PolymorphicComponentPropWithRef<
+  C extends React.ElementType,
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  Props = {},
+> = PolymorphicComponentProp<C, Props> & { ref?: PolymorphicRef<C> };
+
+/**
+ * Includes all style utility props. This should be used to extend the props of a component.
+ */
+export interface StyleUtilityProps {
   /**
    * The flex direction of the Box component.
-   * Use the FLEX_DIRECTION object from '../../../helpers/constants/design-system';
+   * Use the FlexDirection enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  flexDirection?:
-    | FlexDirection
-    | FlexDirectionArray
-    | BoxFlexDirection
-    | BoxFlexDirectionArray;
+  flexDirection?: FlexDirection | FlexDirectionArray;
   /**
    * The flex wrap of the Box component.
-   * Use the FLEX_WRAP object from '../../../helpers/constants/design-system';
+   * Use the FlexWrap enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  flexWrap?: BoxFlexWrap | BoxFlexWrapArray;
+  flexWrap?: FlexWrap | FlexWrapArray;
   /**
    * The gap between the Box component's children.
    * Use 1-12 for a gap of 4px-48px.
@@ -350,25 +379,25 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    * Use TextAlign enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  textAlign?: BoxTextAlign | BoxTextAlignArray | TextAlign | TextAlignArray;
+  textAlign?: TextAlign | TextAlignArray;
   /**
    * The display of the Box component.
-   * Use DISPLAY const from '../../../helpers/constants/design-system';
+   * Use Display enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  display?: Display | DisplayArray | BoxDisplay | BoxDisplayArray;
+  display?: Display | DisplayArray;
   /**
    * The width of the Box component.
-   * Use BLOCK_SIZES const from '../../../helpers/constants/design-system';
+   * Use BlockSize enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  width?: BlockSize | BlockSizeArray | BoxWidth | BoxWidthArray;
+  width?: BlockSize | BlockSizeArray;
   /**
    * The height of the Box component.
-   * Use BLOCK_SIZES const from '../../../helpers/constants/design-system';
+   * Use BlockSize enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  height?: BlockSize | BlockSizeArray | BoxHeight | BoxHeightArray;
+  height?: BlockSize | BlockSizeArray;
   /**
    * The background-color of the Box component.
    * Use BackgroundColor enum from '../../../helpers/constants/design-system';
@@ -376,35 +405,29 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    */
   backgroundColor?: BackgroundColor | BackgroundColorArray;
   /**
-   * Use the className prop to add an additional custom class to the Box component.
-   */
-  className?: string;
-  /**
-   * Use the style prop to add an additional custom style to the Box component.
-   */
-  style?: React.CSSProperties;
-  /**
-   * Use the as prop to change the underlying HTML element of the Box component.
-   */
-  as?: keyof HTMLElementTagNameMap;
-  /**
    * The text-color of the Box component.
    * Use TextColor enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  color?: TextColor | IconColor | string; // TODO: remove string when someone smarter figures out the issue with the color prop
-  /**
-   * The ref of the Box component.
-   */
-  ref?: React.Ref<HTMLElement>;
+  color?: TextColor | TextColorArray | IconColor | IconColorArray;
 }
 /**
- * @deprecated The JS version of `<Box />` has been deprecated in favor of the TS version in `ui/components/component-library/`.
- * The component API should be the same, just update the import statement to:
- * import { Box } from '../../component-library';
- *
- * Help to replace the JS `Box` with the TS `Box` by submitting a PR against
- * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
+ * Box component props.
  */
-declare const Box: React.FC<BoxProps>;
-export default Box;
+interface Props extends StyleUtilityProps {
+  /**
+   * The content of the Box component.
+   */
+  children?: React.ReactNode;
+  /**
+   * Additional className to apply to the Box component.
+   */
+  className?: string;
+}
+
+export type BoxProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, Props>;
+
+export type BoxComponent = <C extends React.ElementType = 'span'>(
+  props: BoxProps<C>,
+) => React.ReactElement | null;
