@@ -38,7 +38,7 @@ import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, IconName } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import SnapAuthorship from '../../components/app/snaps/snap-authorship';
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmationFooter from './components/confirmation-footer';
@@ -372,13 +372,7 @@ export default function ConfirmationPage({
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           isSnapDialog && (
-            <Box
-              alignItems="center"
-              margin={4}
-              flexDirection={FLEX_DIRECTION.COLUMN}
-            >
-              <SnapAuthorship snapId={pendingConfirmation?.origin} />
-            </Box>
+            <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
           )
           ///: END:ONLY_INCLUDE_IN
         }
@@ -412,6 +406,22 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        style={
+          isSnapDialog
+            ? {
+                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+              }
+            : {}
+        }
+        actionsStyle={
+          isSnapDialog
+            ? {
+                borderTop: 0,
+              }
+            : {}
+        }
+        ///: END:ONLY_INCLUDE_IN
         onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
