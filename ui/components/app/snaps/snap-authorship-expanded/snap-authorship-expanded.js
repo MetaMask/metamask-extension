@@ -93,7 +93,6 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         </Box>
         <Box
           marginLeft={4}
-          marginRight={0}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           style={{ overflow: 'hidden' }}
