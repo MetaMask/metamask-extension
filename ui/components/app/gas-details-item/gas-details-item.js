@@ -21,6 +21,7 @@ import TransactionDetailItem from '../transaction-detail-item/transaction-detail
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
 import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
+import { PriorityLevels } from '../../../../shared/constants/gas';
 import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
@@ -94,13 +95,17 @@ const GasDetailsItem = ({ userAcknowledgedGasMissing = false }) => {
             key="editGasSubTextFeeLabel"
             display="inline-flex"
             className={classNames('gas-details-item__gasfee-label', {
-              'gas-details-item__gas-fee-warning': estimateUsed === 'high',
+              'gas-details-item__gas-fee-warning':
+                estimateUsed === PriorityLevels.high ||
+                estimateUsed === PriorityLevels.dappSuggestedHigh,
             })}
           >
             <LoadingHeartBeat estimateUsed={estimateUsed} />
             <Box marginRight={1}>
               <strong>
-                {estimateUsed === 'high' && '⚠ '}
+                {(estimateUsed === PriorityLevels.high ||
+                  estimateUsed === PriorityLevels.dappSuggestedHigh) &&
+                  '⚠ '}
                 {t('editGasSubTextFeeLabel')}
               </strong>
             </Box>

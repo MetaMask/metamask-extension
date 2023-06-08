@@ -6,6 +6,76 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
     class="signature-request-siwe"
   >
     <div
+      class="request-signature__navigation"
+    >
+      <div
+        class="confirm-page-container-navigation"
+        style="display: none;"
+      >
+        <div
+          class="confirm-page-container-navigation__container"
+          data-testid="navigation-container"
+          style="visibility: hidden;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="first-page"
+          >
+            <i
+              class="fa fa-angle-double-left fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="previous-page"
+          >
+            <i
+              class="fa fa-angle-left fa-2x"
+            />
+          </button>
+        </div>
+        <div
+          class="confirm-page-container-navigation__textcontainer"
+        >
+          <div
+            class="confirm-page-container-navigation__navtext"
+          >
+            0
+             
+            of
+             
+            1
+          </div>
+          <div
+            class="confirm-page-container-navigation__longtext"
+          >
+            requests waiting to be acknowledged
+          </div>
+        </div>
+        <div
+          class="confirm-page-container-navigation__container"
+          style="visibility: initial;"
+        >
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="next-page"
+          >
+            <i
+              class="fa fa-angle-right fa-2x"
+            />
+          </button>
+          <button
+            class="confirm-page-container-navigation__arrow"
+            data-testid="last-page"
+          >
+            <i
+              class="fa fa-angle-double-right fa-2x"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
       class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
     >
       <div

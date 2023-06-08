@@ -423,9 +423,6 @@
   "back": {
     "message": "वापस"
   },
-  "backToAll": {
-    "message": "सभी पर वापस"
-  },
   "backup": {
     "message": "बैकअप"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recents": {
-    "message": "हाल ही के"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "स्नैप इंस्टाल करें"
   },
   "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "स्थानांतरण"
-  },
-  "transferBetweenAccounts": {
-    "message": "मेरे खातों के बीच स्थानांतरित करें"
   },
   "transferFrom": {
     "message": "इससे स्थानांतरित करें"
