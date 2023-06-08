@@ -66,7 +66,6 @@ export default function ContractDetailsModal({
           variant={TextVariant.bodyMd}
           as="h5"
           display={Display.Flex}
-          boxProps={{ marginTop: 0, marginBottom: 0 }}
         >
           {t('contractTitle')}
         </Text>
@@ -75,7 +74,7 @@ export default function ContractDetailsModal({
           as="h6"
           display={Display.Flex}
           color={TextColor.textAlternative}
-          boxProps={{ marginTop: 2, marginBottom: 0 }}
+          marginTop={2}
         >
           {t('contractDescription')}
         </Text>
@@ -126,7 +125,6 @@ export default function ContractDetailsModal({
                     as="h6"
                     display={Display.Flex}
                     color={TextColor.textAlternative}
-                    marginTop={0}
                     marginBottom={4}
                   >
                     {ellipsify(tokenAddress)}
@@ -226,7 +224,6 @@ export default function ContractDetailsModal({
                 as="h6"
                 display={Display.Flex}
                 color={TextColor.textAlternative}
-                marginTop={0}
                 marginBottom={4}
               >
                 {ellipsify(toAddress)}

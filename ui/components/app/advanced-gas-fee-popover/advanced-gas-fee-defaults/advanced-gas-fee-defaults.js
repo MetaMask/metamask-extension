@@ -90,7 +90,6 @@ const AdvancedGasFeeDefaults = () => {
           variant={TextVariant.bodySm}
           as="h6"
           color={TextColor.textAlternative}
-          margin={0}
         >
           {isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')

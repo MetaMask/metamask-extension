@@ -68,7 +68,6 @@ export default function NetworkAccountBalanceHeader({
             variant={TextVariant.bodySm}
             as="h6"
             color={TextColor.textAlternative}
-            marginBottom={0}
           >
             {networkName}
           </Text>
@@ -78,7 +77,6 @@ export default function NetworkAccountBalanceHeader({
             as="h6"
             color={TextColor.textDefault}
             fontWeight={FontWeight.Bold}
-            marginTop={0}
           >
             {accountName}
           </Text>
@@ -93,7 +91,6 @@ export default function NetworkAccountBalanceHeader({
           variant={TextVariant.bodySm}
           as="h6"
           color={TextColor.textAlternative}
-          marginBottom={0}
         >
           {t('balance')}
         </Text>
@@ -103,7 +100,6 @@ export default function NetworkAccountBalanceHeader({
           as="h6"
           color={TextColor.textDefault}
           fontWeight={FontWeight.Bold}
-          marginTop={0}
           align={TextAlign.End}
         >
           {accountBalance} {tokenName}
