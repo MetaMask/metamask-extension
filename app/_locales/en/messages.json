@@ -1024,6 +1024,12 @@
     "message": "$1 has suggested this price.",
     "description": "$1 is url for the dapp that has suggested gas settings"
   },
+  "dappSuggestedHigh": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedHighShortLabel": {
+    "message": "Site (high)"
+  },
   "dappSuggestedShortLabel": {
     "message": "Site"
   },
