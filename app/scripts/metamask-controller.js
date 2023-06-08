@@ -3327,36 +3327,39 @@ export default class MetamaskController extends EventEmitter {
    * array if no accounts are permitted.
    *
    * @param {string} origin - The origin whose exposed accounts to retrieve.
-   * @param {string[]} accounts - Array of optional account addresses to be revoked
+   * @param {Object} permission - Permission object to revoke the provided caveatValue according to target and caveatType
    * @returns {Promise<Any>} The origin's permitted accounts, or an empty
    * array.
    */
-  async revokePermissions(origin, accounts) {
+  async revokePermissions(origin, permission) {
+    const { target, caveatType, caveatValue } = permission || {};
+
     try {
       // revokePermissions will revoke specific accounts
       if (this.permissionController.hasPermissions(origin)) {
-        if (accounts && Array.isArray(accounts) && accounts.length > 0) {
+        if (
+          caveatValue &&
+          Array.isArray(caveatValue) &&
+          caveatValue.length > 0
+        ) {
           // we need to fetch the permission object specified by the target name
           const permissionByTargetName =
-            this.permissionController.getPermission(
-              origin,
-              RestrictedMethods.eth_accounts,
-            );
+            this.permissionController.getPermission(origin, target);
 
           const caveatValueByType = permissionByTargetName?.caveats?.find(
-            (c) => c.type === CaveatTypes.restrictReturnedAccounts,
+            (c) => c.type === caveatType,
           )?.value;
 
           if (
-            Array.isArray(accounts) &&
+            Array.isArray(caveatValue) &&
             Array.isArray(caveatValueByType) &&
-            !accounts.some((item) => caveatValueByType.includes(item))
+            !caveatValue.some((item) => caveatValueByType.includes(item))
           ) {
             throw new Error('Some items in the provided accounts not exist');
           }
 
           const updatedCaveatValue = caveatValueByType.filter(
-            (item) => !accounts.includes(item),
+            (item) => !caveatValue.includes(item),
           );
 
           // If the updated caveat value is an empty array, we revoke the permission object for the provided target.
@@ -3374,8 +3377,8 @@ export default class MetamaskController extends EventEmitter {
             // If the updated caveat value is not an empty array, we update the caveat value for the provided target and caveat type
             this.permissionController.updateCaveat(
               origin,
-              RestrictedMethods.eth_accounts,
-              CaveatTypes.restrictReturnedAccounts,
+              target,
+              caveatType,
               updatedCaveatValue,
             );
           }

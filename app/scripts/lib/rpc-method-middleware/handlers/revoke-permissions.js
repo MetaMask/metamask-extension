@@ -36,8 +36,8 @@ async function revokePermissionsHandler(
   { handleRevokePermissions },
 ) {
   try {
-    const { accounts } = req.params;
-    res.result = await handleRevokePermissions(accounts);
+    const { permission } = req.params;
+    res.result = await handleRevokePermissions(permission);
 
     return end();
   } catch (error) {
