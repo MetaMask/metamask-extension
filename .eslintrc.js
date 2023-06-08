@@ -247,6 +247,7 @@ module.exports = {
         'shared/**/*.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
+        'app/***/__mocks__/***/*.js',
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
@@ -283,6 +284,7 @@ module.exports = {
         'test/jest/*.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',
+        'app/***/__mocks__/***/*.js',
         'shared/lib/error-utils.test.js',
       ],
       extends: ['@metamask/eslint-config-jest'],

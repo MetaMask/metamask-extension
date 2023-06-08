@@ -14,6 +14,8 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
+jest.enableAutomock();
+
 jest.mock('../../ui/store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
@@ -54,6 +56,10 @@ describe('MetaMaskController', function () {
   afterEach(function () {
     // jest.mockRestore();
     jest.clearAllMocks();
+  });
+
+  afterAll(function () {
+    jest.disableAutomock();
   });
 
   describe('should reset states on first time profile load', function () {
