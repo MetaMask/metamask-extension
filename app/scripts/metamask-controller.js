@@ -3336,13 +3336,51 @@ export default class MetamaskController extends EventEmitter {
       // revokePermissions will revoke specific accounts
       if (this.permissionController.hasPermissions(origin)) {
         if (accounts && Array.isArray(accounts) && accounts.length > 0) {
-          accounts.forEach((account) => {
-            // Map each account in the array here
-            // Perform any required operations on each account
-            this.removeAllAccountPermissions(account);
-          });
+          // we need to fetch the permission object specified by the target name
+          const permissionByTargetName =
+            this.permissionController.getPermission(
+              origin,
+              RestrictedMethods.eth_accounts,
+            );
+
+          const caveatValueByType = permissionByTargetName?.caveats?.find(
+            (c) => c.type === CaveatTypes.restrictReturnedAccounts,
+          )?.value;
+
+          if (
+            Array.isArray(accounts) &&
+            Array.isArray(caveatValueByType) &&
+            !accounts.some((item) => caveatValueByType.includes(item))
+          ) {
+            throw new Error('Some items in the provided accounts not exist');
+          }
+
+          const updatedCaveatValue = caveatValueByType.filter(
+            (item) => !accounts.includes(item),
+          );
+
+          // If the updated caveat value is an empty array, we revoke the permission object for the provided target.
+          // This could be a case when user it trying to revoke permission for a single connected account to a specific origin
+          if (
+            !updatedCaveatValue ||
+            (Array.isArray(updatedCaveatValue) &&
+              updatedCaveatValue.length === 0)
+          ) {
+            this.permissionController.revokePermission(
+              origin,
+              RestrictedMethods.eth_accounts,
+            );
+          } else {
+            // If the updated caveat value is not an empty array, we update the caveat value for the provided target and caveat type
+            this.permissionController.updateCaveat(
+              origin,
+              RestrictedMethods.eth_accounts,
+              CaveatTypes.restrictReturnedAccounts,
+              updatedCaveatValue,
+            );
+          }
         } else {
-          // revokePermissions will revoke accounts connected to the provided origin
+          // revoke permissions for all targets for the provided origin
           this.permissionController.revokeAllPermissions(origin);
         }
       }
