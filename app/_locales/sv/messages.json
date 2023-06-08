@@ -93,9 +93,6 @@
   "back": {
     "message": "Bakåt"
   },
-  "backToAll": {
-    "message": "Tillbaka till Alla"
-  },
   "backupApprovalInfo": {
     "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
   },
@@ -559,9 +556,6 @@
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },
-  "recents": {
-    "message": "Senaste"
-  },
   "recipientAddressPlaceholder": {
     "message": "Sök, allmän adress (0x) eller ENS"
   },
@@ -775,9 +769,6 @@
   },
   "transfer": {
     "message": "Överföring"
-  },
-  "transferBetweenAccounts": {
-    "message": "Överför mellan mina konton"
   },
   "transferFrom": {
     "message": "Överför från"

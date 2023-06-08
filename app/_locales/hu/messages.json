@@ -93,9 +93,6 @@
   "back": {
     "message": "Vissza"
   },
-  "backToAll": {
-    "message": "Vissza az összeshez"
-  },
   "backupApprovalInfo": {
     "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
   },
@@ -568,9 +565,6 @@
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
-  "recents": {
-    "message": "Legutóbbiak"
-  },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
   },
@@ -790,9 +784,6 @@
   },
   "transfer": {
     "message": "Átutalás"
-  },
-  "transferBetweenAccounts": {
-    "message": "Fiókok közötti küldés"
   },
   "transferFrom": {
     "message": "Átvezetés innen: "
