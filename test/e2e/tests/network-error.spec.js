@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  regularDelayMs,
+  assertAccountBalanceForDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -66,11 +66,12 @@ describe('Gas API fallback', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await assertAccountBalanceForDOM(driver, ganacheServer);
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
@@ -83,7 +84,6 @@ describe('Gas API fallback', function () {
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
-        await driver.delay(regularDelayMs);
         await driver.findElement('.transaction-alerts');
 
         const error = await driver.isElementPresent({
