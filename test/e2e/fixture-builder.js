@@ -552,7 +552,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               name: 'TestDappCollectibles',
@@ -563,7 +563,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               description: 'Test Dapp Collectibles for testing.',
