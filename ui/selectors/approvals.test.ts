@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { hasPendingApprovals } from './approvals';
+import { hasPendingApprovalFlows, hasPendingApprovals } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -13,6 +13,7 @@ describe('approval selectors', () => {
           type: ApprovalType.WatchAsset,
           requestData: {},
           requestState: null,
+          expectsResult: false,
         },
         '2': {
           id: '2',
@@ -21,13 +22,14 @@ describe('approval selectors', () => {
           type: ApprovalType.Transaction,
           requestData: {},
           requestState: null,
+          expectsResult: false,
         },
       },
-      unapprovedTxs: {
-        '2': {
-          id: '2',
+      approvalFlows: [
+        {
+          id: '1',
         },
-      },
+      ],
     },
   };
 
@@ -43,6 +45,25 @@ describe('approval selectors', () => {
         mockedState,
         ApprovalType.SnapDialogPrompt,
       );
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('hasPendingApprovalFlows', () => {
+    it('should return true if there is at least one pending approval flow', () => {
+      const result = hasPendingApprovalFlows(mockedState);
+
+      expect(result).toBe(true);
+    });
+
+    it('should return false if there are no pending approval flows', () => {
+      const result = hasPendingApprovalFlows({
+        metamask: {
+          ...mockedState.metamask,
+          approvalFlows: [],
+        },
+      });
 
       expect(result).toBe(false);
     });
