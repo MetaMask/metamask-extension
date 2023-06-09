@@ -93,9 +93,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backToAll": {
-    "message": "Torna a Tot"
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
@@ -772,9 +769,6 @@
   },
   "transfer": {
     "message": "Transferència"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre els meus comptes"
   },
   "transferFrom": {
     "message": "Transferir Des de"

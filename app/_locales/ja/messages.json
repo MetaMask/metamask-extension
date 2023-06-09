@@ -423,9 +423,6 @@
   "back": {
     "message": "戻る"
   },
-  "backToAll": {
-    "message": "一覧に戻る"
-  },
   "backup": {
     "message": "バックアップ"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "受領"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリックアドレス (0x)、またはENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "スナップをインストール"
   },
   "snapInstallWarningCheck": {
-    "message": "理解したことを確認するために、次の項目にチェックを入れてください."
+    "message": "理解したことを確認するために、次の項目にチェックを入れてください.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
+    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "送金"
-  },
-  "transferBetweenAccounts": {
-    "message": "自分のアカウント間での振替"
   },
   "transferFrom": {
     "message": "送金元"
