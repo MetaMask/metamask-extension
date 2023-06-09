@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.31.1]
+### Fixed
+- Fix signature requests for Keystone Hardware Wallet users ([#19349](https://github.com/MetaMask/metamask-extension/pull/19349))
+
 ## [10.31.0]
 ### Added
 - Add extra friction to enable eth_sign in advanced settings ([#18848](https://github.com/MetaMask/metamask-extension/pull/18848))
@@ -3757,7 +3761,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...HEAD
+[10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
 [10.31.0]: https://github.com/MetaMask/metamask-extension/compare/v10.30.4...v10.31.0
 [10.30.4]: https://github.com/MetaMask/metamask-extension/compare/v10.30.3...v10.30.4
 [10.30.3]: https://github.com/MetaMask/metamask-extension/compare/v10.30.2...v10.30.3

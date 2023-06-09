@@ -423,9 +423,6 @@
   "back": {
     "message": "Πίσω"
   },
-  "backToAll": {
-    "message": "Πίσω σε Όλα"
-  },
   "backup": {
     "message": "Αντίγραφο ασφαλείας"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Λήψη"
   },
-  "recents": {
-    "message": "Πρόσφατα"
-  },
   "recipientAddressPlaceholder": {
     "message": "Αναζήτηση, δημόσια διεύθυνση (0x) ή ENS"
   },
@@ -4060,9 +4054,6 @@
   },
   "transfer": {
     "message": "Μεταφορά"
-  },
-  "transferBetweenAccounts": {
-    "message": "Μεταφορά μεταξύ λογαριασμών μου"
   },
   "transferFrom": {
     "message": "Μεταφορά Από"

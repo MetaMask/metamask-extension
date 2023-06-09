@@ -423,9 +423,6 @@
   "back": {
     "message": "戻る"
   },
-  "backToAll": {
-    "message": "一覧に戻る"
-  },
   "backup": {
     "message": "バックアップ"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "受領"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリックアドレス (0x)、またはENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "送金"
-  },
-  "transferBetweenAccounts": {
-    "message": "自分のアカウント間での振替"
   },
   "transferFrom": {
     "message": "送金元"
