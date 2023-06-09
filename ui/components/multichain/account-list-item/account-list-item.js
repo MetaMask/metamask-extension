@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -8,9 +8,9 @@ import { getRpcPrefsForCurrentProvider } from '../../../selectors';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '..';
-import Box from '../../ui/box/box';
 import {
   AvatarAccount,
+  Box,
   Text,
   AvatarFavicon,
   Tag,
@@ -19,19 +19,18 @@ import {
   IconName,
   IconSize,
   AvatarAccountVariant,
-  ModalFocus,
 } from '../../component-library';
 import {
   Color,
   TextAlign,
   AlignItems,
-  DISPLAY,
   TextVariant,
-  FLEX_DIRECTION,
+  FlexDirection,
   BorderRadius,
   JustifyContent,
   Size,
   BorderColor,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -76,12 +75,13 @@ export const AccountListItem = ({
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const [referenceElement, setReferenceElement] = useState();
+  const [accountListItemMenuElement, setAccountListItemMenuElement] =
+    useState();
   // const ref = useRef(false);
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
-  const setBoxRef = (ref) => {
-    setReferenceElement(ref);
+  const setAccountListItemMenuRef = (ref) => {
+    setAccountListItemMenuElement(ref);
   };
 
   const keyring = useSelector((state) =>
@@ -97,7 +97,7 @@ export const AccountListItem = ({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       padding={4}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-account-list-item', {
@@ -131,13 +131,13 @@ export const AccountListItem = ({
         marginInlineEnd={2}
       ></AvatarAccount>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         className="multichain-account-list-item__content"
       >
-        <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
             <Text
@@ -171,8 +171,8 @@ export const AccountListItem = ({
             <Text
               as="div"
               className="multichain-account-list-item__asset"
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
               ellipsis
               textAlign={TextAlign.End}
@@ -186,10 +186,10 @@ export const AccountListItem = ({
           </Box>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
-          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
             {connectedAvatar ? (
               <AvatarFavicon
                 size={Size.XS}
@@ -225,12 +225,11 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      {/* <div ref={ref}> */}
       <ButtonIcon
         ariaLabel={`${identity.name} ${t('options')}`}
         iconName={IconName.MoreVertical}
         size={IconSize.Sm}
-        ref={setBoxRef}
+        ref={setAccountListItemMenuRef}
         onClick={(e) => {
           e.stopPropagation();
           if (!accountOptionsMenuOpen) {
@@ -246,9 +245,8 @@ export const AccountListItem = ({
         }}
         data-testid="account-list-item-menu-button"
       />
-      {/* </div> */}
       <AccountListItemMenu
-        anchorElement={referenceElement}
+        anchorElement={accountListItemMenuElement}
         blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
         identity={identity}
         onClose={() => setAccountOptionsMenuOpen(false)}

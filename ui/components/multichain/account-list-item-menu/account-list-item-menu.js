@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -23,7 +23,7 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 ///: END:ONLY_INCLUDE_IN
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 import {
   Text,
   IconName,
@@ -91,11 +91,29 @@ export const AccountListItemMenu = ({
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const isCustodial = /Custody/u.test(keyring.type);
+  const isCustodial =
+    keyring && keyring.type ? /Custody/u.test(keyring.type) : false;
+
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
 
+  // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
+  // const viewOnExplorerItemRef = useRef(null);
+  const accountDetailsItemRef = useRef(null);
+  const removeAccountItemRef = useRef(null);
+  const removeJWTItemRef = useRef(null);
+
+  // Checks the MenuItems from the bottom to top and sets the lastItemRef to the first MenuItem that is not disabled
+  useEffect(() => {
+    if (isCustodial) {
+      lastItemRef.current = removeJWTItemRef.current;
+    } else if (isRemovable) {
+      lastItemRef.current = removeAccountItemRef.current;
+    } else {
+      lastItemRef.current = accountDetailsItemRef.current;
+    }
+  }, [isRemovable, isCustodial]);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Tab' && event.target === lastItemRef.current) {
@@ -141,7 +159,7 @@ export const AccountListItemMenu = ({
           </MenuItem>
 
           <MenuItem
-            ref={lastItemRef}
+            ref={accountDetailsItemRef}
             onClick={() => {
               dispatch(setAccountDetailsAddress(identity.address));
               trackEvent({
@@ -162,6 +180,7 @@ export const AccountListItemMenu = ({
 
           {isRemovable ? (
             <MenuItem
+              ref={removeAccountItemRef}
               data-testid="account-list-menu-remove"
               onClick={() => {
                 dispatch(
@@ -191,6 +210,7 @@ export const AccountListItemMenu = ({
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             isCustodial ? (
               <MenuItem
+                ref={removeJWTItemRef}
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
                   const token = await dispatch(mmiActions.getCustodianToken());
@@ -234,6 +254,12 @@ AccountListItemMenu.propTypes = {
    * Function that executes when the menu is closed
    */
   onClose: PropTypes.func.isRequired,
+  /**
+   * Represents if the menu is open or not
+   *
+   * @type {boolean}
+   */
+  isOpen: PropTypes.bool.isRequired,
   /**
    * Function that closes the menu
    */
