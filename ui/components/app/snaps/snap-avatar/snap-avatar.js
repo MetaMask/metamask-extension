@@ -8,7 +8,6 @@ import {
   AlignItems,
   DISPLAY,
   JustifyContent,
-  Size,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
@@ -23,7 +22,13 @@ import {
 } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
-const SnapAvatar = ({ snapId, className }) => {
+const SnapAvatar = ({
+  snapId,
+  badgeSize = IconSize.Sm,
+  avatarSize = IconSize.Lg,
+  borderWidth = 2,
+  className,
+}) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
   );
@@ -40,12 +45,12 @@ const SnapAvatar = ({ snapId, className }) => {
       badge={
         <AvatarIcon
           iconName={IconName.Snaps}
-          size={IconSize.Sm}
+          size={badgeSize}
           backgroundColor={IconColor.infoDefault}
           borderColor={BackgroundColor.backgroundDefault}
-          borderWidth={2}
+          borderWidth={borderWidth}
           iconProps={{
-            size: IconSize.Sm,
+            size: badgeSize,
             color: IconColor.infoInverse,
           }}
         />
@@ -53,10 +58,10 @@ const SnapAvatar = ({ snapId, className }) => {
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={Size.LG} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon size={avatarSize} src={iconUrl} name={friendlyName} />
       ) : (
         <AvatarBase
-          size={Size.LG}
+          size={avatarSize}
           display={DISPLAY.FLEX}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
@@ -75,6 +80,9 @@ SnapAvatar.propTypes = {
    * The id of the snap
    */
   snapId: PropTypes.string,
+  badgeSize: PropTypes.string,
+  avatarSize: PropTypes.string,
+  borderWidth: PropTypes.number,
   /**
    * The className of the SnapAvatar
    */
