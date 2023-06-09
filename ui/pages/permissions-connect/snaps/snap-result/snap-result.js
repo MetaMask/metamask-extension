@@ -44,7 +44,10 @@ export default function SnapResult({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
-  const snapName = getSnapName(targetSubjectMetadata.origin);
+  const snapName = getSnapName(
+    targetSubjectMetadata.origin,
+    targetSubjectMetadata,
+  );
 
   function getSuccessScreen(requestType, snapNameToRender) {
     let successScreenTitle;
