@@ -16,7 +16,6 @@ import {
   ValidTag,
 } from '../../../../components/component-library';
 import {
-  IconColor,
   FlexDirection,
   TextVariant,
   JustifyContent,
@@ -25,7 +24,6 @@ import {
   Display,
   FontWeight,
   BlockSize,
-  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -33,6 +31,7 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
 import { getPermissions } from '../../../../selectors';
+import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
 
 export default function SnapsConnect({
   request,
@@ -84,37 +83,6 @@ export default function SnapsConnect({
   };
 
   const snaps = getSnaps();
-
-  const ConnectIcon = () => {
-    return (
-      <BadgeWrapper
-        badge={
-          <AvatarIcon
-            iconName={IconName.Question}
-            size={IconSize.Sm}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            borderColor={BackgroundColor.backgroundDefault}
-            borderWidth={2}
-            iconProps={{
-              size: IconSize.Lg,
-              color: IconColor.iconDefault,
-            }}
-          />
-        }
-        position={BadgeWrapperPosition.bottomRight}
-      >
-        <AvatarIcon
-          iconName={IconName.Snaps}
-          size={IconSize.Xl}
-          backgroundColor={IconColor.infoDefault}
-          iconProps={{
-            size: IconSize.Xl,
-            color: IconColor.infoInverse,
-          }}
-        />
-      </BadgeWrapper>
-    );
-  };
 
   const trimUrl = (url) => {
     const regex = /^(https:\/\/|http:\/\/)/u;
@@ -202,7 +170,12 @@ export default function SnapsConnect({
           paddingRight={4}
         >
           <Box paddingBottom={2}>
-            <ConnectIcon />
+            <SnapAvatar
+              snapId={snaps[0]}
+              badgeSize={IconSize.Md}
+              avatarSize={IconSize.Xl}
+              borderWidth={3}
+            />
           </Box>
           <Text paddingBottom={2} variant={TextVariant.headingLg}>
             {t('connectionRequest')}
