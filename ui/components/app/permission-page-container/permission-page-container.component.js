@@ -16,6 +16,7 @@ import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 ///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
+import { getDedupedSnaps } from '../../../helpers/utils/util';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
@@ -86,33 +87,18 @@ export default class PermissionPageContainer extends Component {
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getDedupedSnapPermissions() {
-    const permission =
-      this.props.request.permissions[WALLET_SNAP_PERMISSION_KEY];
-    const requestedSnaps = permission?.caveats[0].value;
-    const currentSnaps =
-      this.props.currentPermissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0]
-        .value;
-
-    if (!isObject(currentSnaps)) {
-      return permission;
-    }
-
-    const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
-    const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
-    const dedupedCaveats = requestedSnapKeys.reduce((acc, snapId) => {
-      if (!currentSnapKeys.includes(snapId)) {
-        acc[snapId] = {};
-      }
-      return acc;
-    }, {});
-    const hasNothingToDisplay = Object.keys(dedupedCaveats).length === 0;
-
+    const { request, currentPermissions } = this.props;
+    const snapKeys = getDedupedSnaps(request, currentPermissions);
+    const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY] || {};
     return {
       ...permission,
       caveats: [
         {
           type: SnapCaveatType.SnapIds,
-          value: hasNothingToDisplay ? requestedSnaps : dedupedCaveats,
+          value: snapKeys.reduce((caveatValue, snapId) => {
+            caveatValue[snapId] = {};
+            return caveatValue;
+          }, {}),
         },
       ],
     };

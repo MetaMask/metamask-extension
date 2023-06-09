@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import Box from '../../../ui/box';
 import {
   IconColor,
@@ -18,10 +19,14 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapAvatar from '../snap-avatar/snap-avatar';
+import { getTargetSubjectMetadata } from '../../../../selectors';
 
 export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();
-  const friendlyName = getSnapName(snapId);
+  const snapMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, snapId),
+  );
+  const friendlyName = getSnapName(snapId, snapMetadata);
 
   return (
     <Box

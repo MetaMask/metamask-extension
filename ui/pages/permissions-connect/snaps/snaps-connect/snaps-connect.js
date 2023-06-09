@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
-import { isObject } from '@metamask/utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
@@ -23,11 +21,15 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getDedupedSnaps, getSnapName } from '../../../../helpers/utils/util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapPrivacyWarning from '../../../../components/app/snaps/snap-privacy-warning/snap-privacy-warning';
-import { getPermissions } from '../../../../selectors';
+import {
+  getPermissions,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
 import SnapAvatar from '../../../../components/app/snaps/snap-avatar/snap-avatar';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 
 export default function SnapsConnect({
   request,
@@ -59,34 +61,14 @@ export default function SnapsConnect({
     }
   }, [request, approveConnection]);
 
-  const getSnaps = () => {
-    const permission = request.permissions?.[WALLET_SNAP_PERMISSION_KEY];
-    const requestedSnaps = permission?.caveats?.[0].value;
-    const currentSnaps =
-      currentPermissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+  const snaps = getDedupedSnaps(request, currentPermissions);
 
-    if (!isObject(currentSnaps) && requestedSnaps) {
-      return Object.keys(requestedSnaps);
-    }
-
-    const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
-    const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
-    const dedupedSnaps = requestedSnapKeys.filter(
-      (snapId) => !currentSnapKeys.includes(snapId),
-    );
-
-    return dedupedSnaps.length ? dedupedSnaps : requestedSnapKeys;
-  };
-
-  const snaps = getSnaps();
-
-  const trimUrl = (url) => {
-    const regex = /^(https:\/\/|http:\/\/)/u;
-    return url.replace(regex, '');
-  };
+  const singularConnectSnapMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, snaps?.[0]),
+  );
 
   const SnapsConnectContent = () => {
-    const trimmedOrigin = trimUrl(origin);
+    const { hostname: trimmedOrigin } = useOriginMetadata(origin);
     if (isLoading) {
       return (
         <Box
@@ -155,6 +137,8 @@ export default function SnapsConnect({
         </Box>
       );
     } else if (snaps?.length === 1) {
+      const snapId = snaps[0];
+      const snapName = getSnapName(snapId, singularConnectSnapMetadata);
       return (
         <Box
           className="snaps-connect__content"
@@ -196,7 +180,7 @@ export default function SnapsConnect({
                 variant={TextVariant.bodyMd}
                 fontWeight={FontWeight.Medium}
               >
-                {getSnapName(snaps?.[0])}
+                {snapName}
               </Text>,
             ])}
           </Text>

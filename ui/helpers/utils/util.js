@@ -27,6 +27,8 @@ import {
   SNAPS_DERIVATION_PATHS,
   SNAPS_METADATA,
 } from '../../../shared/constants/snaps';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -564,6 +566,25 @@ export const getSnapName = (snapId, subjectMetadata) => {
   }
 
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
+export const getDedupedSnaps = (request, permissions) => {
+  const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
+  const requestedSnaps = permission?.caveats[0].value;
+  const currentSnaps =
+    permissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+
+  if (!isObject(currentSnaps) && requestedSnaps) {
+    return Object.keys(requestedSnaps);
+  }
+
+  const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+  const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+  const dedupedSnaps = requestedSnapKeys.filter(
+    (snapId) => !currentSnapKeys.includes(snapId),
+  );
+
+  return dedupedSnaps.length ? dedupedSnaps : requestedSnapKeys;
 };
 
 ///: END:ONLY_INCLUDE_IN
