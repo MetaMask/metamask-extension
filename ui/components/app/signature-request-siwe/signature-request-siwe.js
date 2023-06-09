@@ -29,14 +29,15 @@ import {
 import {
   resolvePendingApproval,
   rejectPendingApproval,
+  rejectAllMessages,
   completedTx,
+  showModal,
 } from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { showModal, cancelMsgs } from '../../../store/actions';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -114,7 +115,7 @@ export default function SignatureRequestSIWE({ txData }) {
         name: 'REJECT_TRANSACTIONS',
         unapprovedTxCount,
         onSubmit: async () => {
-          await dispatch(cancelMsgs(valuesFor(messagesList)));
+          await dispatch(rejectAllMessages(valuesFor(messagesList)));
           dispatch(clearConfirmTransaction());
           history.push(mostRecentOverviewPage);
         },
