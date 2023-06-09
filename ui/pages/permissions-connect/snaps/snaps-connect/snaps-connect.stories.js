@@ -3,19 +3,19 @@ import { Provider } from 'react-redux';
 
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import SnapConnect from '.';
+import SnapsConnect from '.';
 
 const store = configureStore(mockState);
 
 export default {
   title: 'Pages/Snaps/SnapConnect',
 
-  component: SnapConnect,
+  component: SnapsConnect,
   argTypes: {},
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = (args) => <SnapConnect {...args} />;
+export const DefaultStory = (args) => <SnapsConnect {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -41,7 +41,7 @@ DefaultStory.args = {
   },
 };
 
-export const MultiStory = (args) => <SnapConnect {...args} />;
+export const MultiStory = (args) => <SnapsConnect {...args} />;
 
 MultiStory.storyName = 'Multi';
 
@@ -69,7 +69,7 @@ MultiStory.args = {
   },
 };
 
-export const ScrollingStory = (args) => <SnapConnect {...args} />;
+export const ScrollingStory = (args) => <SnapsConnect {...args} />;
 
 ScrollingStory.storyName = 'Scrolling';
 

@@ -68,7 +68,7 @@ export default function SnapsConnect({
   );
 
   const SnapsConnectContent = () => {
-    const { hostname: trimmedOrigin } = useOriginMetadata(origin);
+    const { hostname: trimmedOrigin } = useOriginMetadata(origin) || {};
     if (isLoading) {
       return (
         <Box
