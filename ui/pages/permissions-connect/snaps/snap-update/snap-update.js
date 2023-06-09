@@ -14,6 +14,7 @@ import {
   JustifyContent,
   TextVariant,
   TEXT_ALIGN,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 
 import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
@@ -173,7 +174,7 @@ export default function SnapUpdate({
                 data-testid="snap-update-scroll"
                 iconName={IconName.Arrow2Down}
                 backgroundColor={BackgroundColor.infoDefault}
-                color={BackgroundColor.backgroundDefault}
+                color={IconColor.primaryInverse}
                 onClick={scrollToBottom}
                 style={{ cursor: 'pointer' }}
               />
