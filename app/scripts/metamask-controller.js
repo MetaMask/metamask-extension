@@ -715,9 +715,9 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (this.canUseHardwareWallets()) {
-      const keyringOverrides = this.opts.overrides?.keyrings;
-
+    if (this.opts.overrides?.keyrings) {
+      additionalKeyrings = this.opts.overrides?.keyrings;
+    } else if (this.canUseHardwareWallets()) {
       const keyringBuilderFactoryWithBridge = (Keyring, Bridge) => {
         const builder = () =>
           new Keyring({
@@ -728,13 +728,9 @@ export default class MetamaskController extends EventEmitter {
       };
 
       additionalKeyrings = [
-        keyringOverrides?.trezor
-          ? keyringBuilderFactory(keyringOverrides?.trezor)
-          : keyringBuilderFactoryWithBridge(TrezorKeyring, TrezorConnectBridge),
-        keyringOverrides?.ledger
-          ? keyringBuilderFactory(keyringOverrides?.ledger)
-          : keyringBuilderFactoryWithBridge(LedgerKeyring, LedgerIframeBridge),
-        keyringBuilderFactory(keyringOverrides?.lattice || LatticeKeyring),
+        keyringBuilderFactoryWithBridge(TrezorKeyring, TrezorConnectBridge),
+        keyringBuilderFactoryWithBridge(LedgerKeyring, LedgerIframeBridge),
+        keyringBuilderFactory(LatticeKeyring),
         keyringBuilderFactory(QRHardwareKeyring),
       ];
     }
@@ -2791,7 +2787,6 @@ export default class MetamaskController extends EventEmitter {
   //
 
   async getKeyringForDevice(deviceName, hdPath = null) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
     if (
       deviceName !== HardwareDeviceNames.QR &&
@@ -2810,7 +2805,7 @@ export default class MetamaskController extends EventEmitter {
         keyringName = QRHardwareKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringName = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        keyringName = LatticeKeyring.type;
         break;
       default:
         throw new Error(
