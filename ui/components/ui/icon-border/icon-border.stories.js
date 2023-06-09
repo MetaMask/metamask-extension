@@ -30,7 +30,7 @@ export const DefaultStory = (args) => (
     <BannerAlert
       severity={Severity.Warning}
       title="Deprecated"
-      description="<IconBorder/> has been deprecated in favour of the <AvatarBase /> component"
+      description="<IconBorder/> has been deprecated in favor of the <AvatarBase /> component"
       marginBottom={4}
     />
     <IconBorder {...args} />
