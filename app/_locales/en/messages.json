@@ -3370,9 +3370,6 @@
   "reportLastRunTooltip": {
     "message": "The date and time of when the last AML/CFT report was run"
   },
-  "requestFailed": {
-    "message": "Request failed"
-  },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
   },

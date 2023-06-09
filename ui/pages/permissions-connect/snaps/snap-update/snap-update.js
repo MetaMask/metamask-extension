@@ -127,7 +127,16 @@ export default function SnapUpdate({
           </Box>
         )}
         {hasError && (
-          <InstallError error={requestState.error} title={t('requestFailed')} />
+          <InstallError
+            iconName={IconName.Warning}
+            error={requestState.error}
+            title={t('snapUpdateErrorTitle')}
+            description={t('snapUpdateErrorDescription', [
+              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>,
+            ])}
+          />
         )}
         {!hasError && !isLoading && (
           <>
