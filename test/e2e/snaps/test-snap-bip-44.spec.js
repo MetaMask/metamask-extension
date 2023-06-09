@@ -52,9 +52,9 @@ describe('Test Snap bip-44', function () {
           text: 'Connect',
           tag: 'button',
         });
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
@@ -65,9 +65,9 @@ describe('Test Snap bip-44', function () {
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 

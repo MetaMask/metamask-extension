@@ -93,9 +93,6 @@
   "back": {
     "message": "Atpakaļ"
   },
-  "backToAll": {
-    "message": "Atgriezties pie visiem"
-  },
   "backupApprovalInfo": {
     "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
   },
@@ -571,9 +568,6 @@
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
   },
-  "recents": {
-    "message": "Nesenie"
-  },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"
   },
@@ -796,9 +790,6 @@
   },
   "transfer": {
     "message": "Pārsūtīt"
-  },
-  "transferBetweenAccounts": {
-    "message": "Pārsūtīt starp saviem kontiem"
   },
   "transferFrom": {
     "message": "Nosūtīt no"

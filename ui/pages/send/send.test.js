@@ -182,7 +182,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
     });
 
@@ -205,7 +205,7 @@ describe('Send Page', () => {
       // Ensure that the send flow renders on the add recipient screen when
       // there is no draft transaction.
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
       // Ensure we start a new draft transaction when its missing.
       expect(startNewDraftTransaction).toHaveBeenCalledTimes(1);
@@ -247,7 +247,7 @@ describe('Send Page', () => {
       const store = configureMockStore(middleware)(baseStore);
       const { getByPlaceholderText } = renderWithProvider(<Send />, store);
       expect(
-        getByPlaceholderText('Search, public address (0x), or ENS'),
+        getByPlaceholderText('Enter public address (0x) or ENS name'),
       ).toBeTruthy();
     });
 

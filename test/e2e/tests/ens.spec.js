@@ -102,7 +102,7 @@ describe('ENS', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.pasteIntoField(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,
         );
 

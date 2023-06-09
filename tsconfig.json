@@ -3,11 +3,13 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
+    "esModuleInterop": true,
     "inlineSources": true,
     "isolatedModules": true,
     "jsx": "react",
     "lib": ["dom", "es2020"],
     "moduleResolution": "node",
+    "noEmit": true,
     "noEmitOnError": true,
     "outDir": "tsout",
     "rootDir": ".",
@@ -15,22 +17,22 @@
     "strict": true
   },
   "exclude": [
-    "**/*.test.js",
-    "**/*.test.ts",
-    "**/*.test.tsx",
     "**/jest-coverage/**/*",
     "**/__mocks__/**/*",
     "**/storybook-build/**/*",
     "**/*.stories.*",
     ".storybook/**/*",
+    "app/scripts/controllers/*.test.ts",
+    "app/scripts/lib/**/*.test.ts",
     "builds/**/*",
     "dist/**/*",
     "node_modules/**",
     "development/ts-migration-dashboard/build/**/*",
-    "development/ts-migration-dashboard/intermediate/**/*"
+    "development/ts-migration-dashboard/intermediate/**/*",
+    "ui/**/*.test.js",
+    "ui/**/*.test.ts",
+    "ui/**/*.test.tsx"
   ],
   "extends": "@tsconfig/node16/tsconfig.json",
-  "paths": {
-    "*": ["./types/*"]
-  }
+  "include": ["app", "development", "shared", "types", "ui"]
 }

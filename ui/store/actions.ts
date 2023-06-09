@@ -2298,44 +2298,6 @@ export function addTokens(
   };
 }
 
-export function rejectWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('rejectWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
-  };
-}
-
-export function acceptWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('acceptWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
-  };
-}
-
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
