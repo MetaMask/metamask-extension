@@ -91,12 +91,12 @@ export default function SnapsConnect({
         badge={
           <AvatarIcon
             iconName={IconName.Question}
-            size={IconSize.Xs}
+            size={IconSize.Sm}
             backgroundColor={BackgroundColor.backgroundAlternative}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
             iconProps={{
-              size: IconSize.Md,
+              size: IconSize.Lg,
               color: IconColor.iconDefault,
             }}
           />
