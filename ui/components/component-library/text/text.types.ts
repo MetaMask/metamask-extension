@@ -23,6 +23,14 @@ export enum TextDirection {
  */
 export const InvisibleCharacter = '\u200B';
 
+/**
+ * @deprecated ValidTag enum is deprecated in favor of a union of strings.
+ * To change the root html element tag of the Text component, use the `as` prop and string value.
+ * e.g. `<Text as="h1">Hello World</Text>`
+ *
+ * Contribute to replacing the enum with a union of string by submitting a PR
+ */
+
 export enum ValidTag {
   Dd = 'dd',
   Div = 'div',
@@ -41,13 +49,34 @@ export enum ValidTag {
   Ul = 'ul',
   Label = 'label',
   Input = 'input',
+  Header = 'header',
 }
+
+export type ValidTagType =
+  | 'dd'
+  | 'div'
+  | 'dt'
+  | 'em'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'li'
+  | 'p'
+  | 'span'
+  | 'strong'
+  | 'ul'
+  | 'label'
+  | 'input'
+  | 'header';
 
 export interface TextProps extends BoxProps {
   /**
    * The text content of the Text component
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * The variation of font styles including sizes and weights of the Text component
    * Possible values:
@@ -106,7 +135,7 @@ export interface TextProps extends BoxProps {
   /**
    * Changes the root html element tag of the Text component.
    */
-  as?: ValidTag;
+  as?: ValidTagType;
   /**
    * Additional className to assign the Text component
    */

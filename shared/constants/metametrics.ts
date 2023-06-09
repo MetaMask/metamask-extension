@@ -583,7 +583,10 @@ export enum MetaMetricsEventName {
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  UserClickedDeepLink = 'User clicked deeplink',
+  UserClickedDeepLink = 'User Clicked Deeplink',
+  UserClickedConnectCustodialAccount = 'Clicked Connect Custodial Account',
+  UserClickedPortfolioButton = 'Clicked Portfolio Button',
+  UserClickedCompliance = 'Clicked Compliance',
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -651,15 +654,6 @@ export enum MetaMetricsEventLinkType {
 export enum MetaMetricsEventKeyType {
   Pkey = 'private_key',
   Srp = 'srp',
-}
-
-// NOTE: This doesn't seem to be used at all
-export enum MetaMetricsEventOnrampProviderType {
-  Coinbase = 'coinbase',
-  Moonpay = 'moonpay',
-  SelfDeposit = 'direct_deposit',
-  Transak = 'transak',
-  Wyre = 'wyre',
 }
 
 export enum MetaMetricsNetworkEventSource {

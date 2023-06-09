@@ -8,7 +8,7 @@ import { BannerAlert } from '../../component-library/banner-alert';
 <BannerAlert
   severity={SEVERITIES.WARNING}
   title="Deprecated"
-  description="<Typography/> has been deprecated in favour of the <Text /> component"
+  description="<Typography/> has been deprecated in favor of the <Text /> component"
   actionButtonLabel="See details"
   actionButtonProps={{
     href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -165,7 +165,7 @@ import { FONT_STYLE } from '../../../helpers/constants/design-system';
 
 ### Align
 
-Use the `align` prop and the `TEXT_ALIGN` object from `./ui/helpers/constants/design-system.js` to change the text alignment of the Typography component.
+Use the `align` prop and the `TextAlign` enum from `./ui/helpers/constants/design-system.js` to change the text alignment of the Typography component.
 
 <Canvas>
   <Story id="components-ui-typography--align" />
@@ -174,21 +174,21 @@ Use the `align` prop and the `TEXT_ALIGN` object from `./ui/helpers/constants/de
 ```jsx
 // If importing from ui/components/app/[YOUR_COMPONENT]/ directory
 import Typography from '../../ui/typography';
-import { TEXT_ALIGN } from '../../../helpers/constants/design-system';
+import { TextAlign } from '../../../helpers/constants/design-system';
 
-<Typography align={TEXT_ALIGN.LEFT}>
+<Typography align={TextAlign.Left}>
   left
 </Typography>
-<Typography align={TEXT_ALIGN.CENTER}>
+<Typography align={TextAlign.Center}>
   center
 </Typography>
-<Typography align={TEXT_ALIGN.RIGHT}>
+<Typography align={TextAlign.Right}>
   right
 </Typography>
-<Typography align={TEXT_ALIGN.JUSTIFY}>
+<Typography align={TextAlign.Justify}>
   justify
 </Typography>
-<Typography align={TEXT_ALIGN.END}>
+<Typography align={TextAlign.End}>
   end
 </Typography>
 ```

@@ -6,23 +6,23 @@ import {
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TextProps, ValidTag } from './text.types';
+import { TextProps } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {
   switch (variant) {
     case TextVariant.displayMd:
-      return ValidTag.H1;
+      return 'h1';
     case TextVariant.headingLg:
-      return ValidTag.H2;
+      return 'h2';
     case TextVariant.headingMd:
-      return ValidTag.H3;
+      return 'h3';
     case TextVariant.headingSm:
-      return ValidTag.H4;
+      return 'h4';
     case TextVariant.inherit:
-      return ValidTag.Span;
+      return 'span';
     // TextVariant.bodyLgMedium, TextVariant.bodyMd, TextVariant.bodyMdBold, TextVariant.bodySm, TextVariant.bodySmBold, TextVariant.bodyXs use default 'p' tag
     default:
-      return ValidTag.P;
+      return 'p';
   }
 };
 

@@ -4,10 +4,8 @@ import ImportToken from './import-token.component';
 
 import testData from '../../../.storybook/test-data';
 import configureStore from '../../store/store';
-const store = configureStore(testData);
-const { metamask } = store.getState();
 
-export const PersonalAddress = () => <code>{metamask.selectedAddress}</code>;
+export const PersonalAddress = () => <code>{configureStore(testData).getState().metamask.selectedAddress}</code>;
 
 # ImportToken
 

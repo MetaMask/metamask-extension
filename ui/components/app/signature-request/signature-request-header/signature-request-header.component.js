@@ -14,7 +14,14 @@ export default class SignatureRequestHeader extends PureComponent {
     return (
       <div className="signature-request-header">
         <div className="signature-request-header--account">
-          {fromAccount ? <AccountListItem account={fromAccount} /> : null}
+          {fromAccount ? (
+            <AccountListItem
+              account={fromAccount}
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              hideDefaultMismatchWarning
+              ///: END:ONLY_INCLUDE_IN
+            />
+          ) : null}
         </div>
         <div className="signature-request-header--network">
           <NetworkDisplay />

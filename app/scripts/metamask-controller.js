@@ -55,6 +55,7 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 ///: END:ONLY_INCLUDE_IN
@@ -68,7 +69,28 @@ import {
 } from '@metamask/snaps-controllers';
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  CUSTODIAN_TYPES,
+  MmiConfigurationController,
+} from '@metamask-institutional/custody-keyring';
+import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
+import { CustodyController } from '@metamask-institutional/custody-controller';
+import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+// eslint-disable-next-line import/order
+import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
+///: END:ONLY_INCLUDE_IN
+
+import { ApprovalType } from '@metamask/controller-utils';
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
+
 import {
   AssetType,
   TransactionStatus,
@@ -100,7 +122,6 @@ import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
-  MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IN
@@ -121,15 +142,16 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-// eslint-disable-next-line import/order
-import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
-///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
 } from './detect-multiple-instances';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import MMIController from './controllers/mmi-controller';
+import { mmiKeyringBuilderFactory } from './mmi-keyring-builder-factory';
+///: END:ONLY_INCLUDE_IN
 import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
@@ -145,10 +167,7 @@ import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
-import {
-  NetworkController,
-  NetworkControllerEventType,
-} from './controllers/network';
+import { NetworkController } from './controllers/network';
 import PreferencesController from './controllers/preferences';
 import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
@@ -262,16 +281,33 @@ export default class MetamaskController extends EventEmitter {
       }),
       showApprovalRequest: opts.showUserConfirmation,
       typesExcludedFromRateLimiting: [
-        MESSAGE_TYPE.ETH_SIGN,
-        MESSAGE_TYPE.PERSONAL_SIGN,
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        ApprovalType.EthSign,
+        ApprovalType.PersonalSign,
+        ApprovalType.EthSignTypedData,
+        ApprovalType.Transaction,
+        ApprovalType.WatchAsset,
+        ApprovalType.EthGetEncryptionPublicKey,
+        ApprovalType.EthDecrypt,
       ],
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiConfigurationController = new MmiConfigurationController({
+      initState: initState.MmiConfigurationController,
+      mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
-      allowedEvents: Object.values(NetworkControllerEventType),
+      allowedEvents: [
+        'NetworkController:networkWillChange',
+        'NetworkController:networkDidChange',
+        'NetworkController:infuraIsBlocked',
+        'NetworkController:infuraIsUnblocked',
+      ],
     });
+
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
       state: initState.NetworkController,
@@ -317,11 +353,11 @@ export default class MetamaskController extends EventEmitter {
       initLangCode: opts.initLangCode,
       onInfuraIsBlocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.InfuraIsBlocked,
+        'NetworkController:infuraIsBlocked',
       ),
       onInfuraIsUnblocked: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.InfuraIsUnblocked,
+        'NetworkController:infuraIsUnblocked',
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
@@ -367,7 +403,7 @@ export default class MetamaskController extends EventEmitter {
         // network provider by one update.
         onNetworkStateChange: (cb) =>
           networkControllerMessenger.subscribe(
-            NetworkControllerEventType.NetworkDidChange,
+            'NetworkController:networkDidChange',
             () => {
               const networkState = this.networkController.store.getState();
               const modifiedNetworkState = {
@@ -478,7 +514,7 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getNetworkIdentifier: () => {
         const { type, rpcUrl } =
@@ -517,7 +553,7 @@ export default class MetamaskController extends EventEmitter {
       // onNetworkDidChange
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
@@ -643,7 +679,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.store.getState().providerConfig.chainId,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
     });
 
@@ -655,7 +691,7 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
       ),
       getCurrentChainId: () =>
         this.networkController.store.getState().providerConfig.chainId,
@@ -733,6 +769,17 @@ export default class MetamaskController extends EventEmitter {
         keyringBuilderFactory(LatticeKeyring),
         keyringBuilderFactory(QRHardwareKeyring),
       ];
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
+        additionalKeyrings.push(
+          mmiKeyringBuilderFactory(
+            CUSTODIAN_TYPES[custodianType].keyringClass,
+            { mmiConfigurationController: this.mmiConfigurationController },
+          ),
+        );
+      }
+      ///: END:ONLY_INCLUDE_IN
     }
 
     this.keyringController = new KeyringController({
@@ -762,6 +809,7 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
           `SnapController:getPermitted`,
           `SnapController:install`,
+          `SubjectMetadataController:getSubjectMetadata`,
         ],
       }),
       state: initState.PermissionController,
@@ -821,7 +869,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     const snapExecutionServiceArgs = {
-      iframeUrl: new URL('https://execution.metamask.io/0.15.1/index.html'),
+      iframeUrl: new URL(process.env.IFRAME_EXECUTION_ENVIRONMENT_URL),
       messenger: this.controllerMessenger.getRestricted({
         name: 'ExecutionService',
       }),
@@ -988,6 +1036,22 @@ export default class MetamaskController extends EventEmitter {
       preferencesStore: this.preferencesController.store,
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.custodyController = new CustodyController({
+      initState: initState.CustodyController,
+    });
+    this.institutionalFeaturesController = new InstitutionalFeaturesController({
+      initState: initState.InstitutionalFeaturesController,
+      showConfirmRequest: opts.showUserConfirmation,
+    });
+    this.transactionUpdateController = new TransactionUpdateController({
+      initState: initState.TransactionUpdateController,
+      getCustodyKeyring: this.getCustodyKeyringIfExists.bind(this),
+      mmiConfigurationController: this.mmiConfigurationController,
+      captureException,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.backupController = new BackupController({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
@@ -1058,6 +1122,9 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      transactionUpdateController: this.transactionUpdateController,
+      ///: END:ONLY_INCLUDE_IN
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
@@ -1067,6 +1134,28 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController = new MMIController({
+      mmiConfigurationController: this.mmiConfigurationController,
+      keyringController: this.keyringController,
+      txController: this.txController,
+      securityProviderRequest: this.securityProviderRequest.bind(this),
+      preferencesController: this.preferencesController,
+      appStateController: this.appStateController,
+      transactionUpdateController: this.transactionUpdateController,
+      custodyController: this.custodyController,
+      institutionalFeaturesController: this.institutionalFeaturesController,
+      getState: this.getState.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      accountTracker: this.accountTracker,
+      metaMetricsController: this.metaMetricsController,
+      networkController: this.networkController,
+      permissionController: this.permissionController,
+      platform: this.platform,
+      extension: this.extension,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
@@ -1157,7 +1246,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
+      'NetworkController:networkDidChange',
       async () => {
         const { ticker } =
           this.networkController.store.getState().providerConfig;
@@ -1218,18 +1307,23 @@ export default class MetamaskController extends EventEmitter {
           ?.disabledRpcMethodPreferences?.eth_sign,
       getAllState: this.getState.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
+      getCurrentChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
-    this.signatureController.hub.on('cancelWithReason', (message, reason) => {
-      this.metaMetricsController.trackEvent({
-        event: reason,
-        category: MetaMetricsEventCategory.Transactions,
-        properties: {
-          action: 'Sign Request',
-          type: message.type,
-        },
-      });
-    });
+    this.signatureController.hub.on(
+      'cancelWithReason',
+      ({ message, reason }) => {
+        this.metaMetricsController.trackEvent({
+          event: reason,
+          category: MetaMetricsEventCategory.Transactions,
+          properties: {
+            action: 'Sign Request',
+            type: message.type,
+          },
+        });
+      },
+    );
 
     this.swapsController = new SwapsController({
       getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
@@ -1280,7 +1374,7 @@ export default class MetamaskController extends EventEmitter {
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
+      'NetworkController:networkDidChange',
       () => {
         this.accountTracker._updateAccounts();
       },
@@ -1288,7 +1382,7 @@ export default class MetamaskController extends EventEmitter {
 
     // clear unapproved transactions and messages when the network will change
     networkControllerMessenger.subscribe(
-      NetworkControllerEventType.NetworkWillChange,
+      'NetworkController:networkWillChange',
       () => {
         this.txController.txStateManager.clearUnapprovedTxs();
         this.encryptionPublicKeyController.clearUnapproved();
@@ -1430,6 +1524,13 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       DesktopController: this.desktopController.store,
       ///: END:ONLY_INCLUDE_IN
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      CustodyController: this.custodyController.store,
+      InstitutionalFeaturesController:
+        this.institutionalFeaturesController.store,
+      MmiConfigurationController: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -1465,6 +1566,13 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         DesktopController: this.desktopController.store,
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        CustodyController: this.custodyController.store,
+        InstitutionalFeaturesController:
+          this.institutionalFeaturesController.store,
+        MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IN
         ...resetOnRestartStore,
       },
@@ -1578,6 +1686,8 @@ export default class MetamaskController extends EventEmitter {
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
+        encrypt,
+        decrypt,
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:clearSnapState',
@@ -2022,10 +2132,6 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       addToken: tokensController.addToken.bind(tokensController),
-      rejectWatchAsset:
-        tokensController.rejectWatchAsset.bind(tokensController),
-      acceptWatchAsset:
-        tokensController.acceptWatchAsset.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
       setAccountLabel: preferencesController.setAccountLabel.bind(
         preferencesController,
@@ -2108,6 +2214,12 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      setSnapsInstallPrivacyWarningShownStatus:
+        appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
+          appStateController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
       setOutdatedBrowserWarningLastShown:
         appStateController.setOutdatedBrowserWarningLastShown.bind(
           appStateController,
@@ -2232,6 +2344,72 @@ export default class MetamaskController extends EventEmitter {
       approvePermissionsRequest: this.acceptPermissionsRequest,
       rejectPermissionsRequest: this.rejectPermissionsRequest,
       ...getPermissionBackgroundApiMethods(permissionController),
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      connectCustodyAddresses:
+        this.mmiController.connectCustodyAddresses.bind(this),
+      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
+      getCustodianAccountsByAddress:
+        this.mmiController.getCustodianAccountsByAddress.bind(this),
+      getCustodianTransactionDeepLink:
+        this.mmiController.getCustodianTransactionDeepLink.bind(this),
+      getCustodianConfirmDeepLink:
+        this.mmiController.getCustodianConfirmDeepLink.bind(this),
+      getCustodianSignMessageDeepLink:
+        this.mmiController.getCustodianSignMessageDeepLink.bind(this),
+      getCustodianToken: this.mmiController.getCustodianToken.bind(this),
+      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(this),
+      setWaitForConfirmDeepLinkDialog:
+        this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
+          this.custodyController,
+        ),
+      setCustodianConnectRequest:
+        this.custodyController.setCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getCustodianConnectRequest:
+        this.custodyController.getCustodianConnectRequest.bind(
+          this.custodyController,
+        ),
+      getAllCustodianAccountsWithToken:
+        this.mmiController.getAllCustodianAccountsWithToken.bind(this),
+      getMmiConfiguration:
+        this.mmiConfigurationController.getConfiguration.bind(
+          this.mmiConfigurationController,
+        ),
+      setComplianceAuthData:
+        this.institutionalFeaturesController.setComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      deleteComplianceAuthData:
+        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
+          this.institutionalFeaturesController,
+        ),
+      generateComplianceReport:
+        this.institutionalFeaturesController.generateComplianceReport.bind(
+          this.institutionalFeaturesController,
+        ),
+      syncReportsInProgress:
+        this.institutionalFeaturesController.syncReportsInProgress.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      removeConnectInstitutionalFeature:
+        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
+          this.institutionalFeaturesController,
+        ),
+
+      getComplianceHistoricalReportsByAddress:
+        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
+          this.institutionalFeaturesController,
+        ),
+      removeAddTokenConnectRequest:
+        this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
+          this.institutionalFeaturesController,
+        ),
+      setCustodianNewRefreshToken:
+        this.mmiController.setCustodianNewRefreshToken.bind(this),
+      ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // snaps
@@ -2663,6 +2841,10 @@ export default class MetamaskController extends EventEmitter {
   async submitPassword(password) {
     await this.keyringController.submitPassword(password);
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController.onSubmitPassword();
+    ///: END:ONLY_INCLUDE_IN
+
     try {
       await this.blockTracker.checkForLatestBlock();
     } catch (error) {
@@ -2781,6 +2963,16 @@ export default class MetamaskController extends EventEmitter {
 
     return keyring.mnemonic;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  async getCustodyKeyringIfExists(address) {
+    const custodyType = this.custodyController.getCustodyTypeByAddress(
+      toChecksumHexAddress(address),
+    );
+    const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
+    return keyring?.getAccountDetails(address) ? keyring : undefined;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   //
   // Hardware
@@ -3167,6 +3359,10 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController.removeAddress(address);
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.custodyController.removeAccount(address);
+    ///: END:ONLY_INCLUDE_IN(build-mmi)
 
     const keyring = await this.keyringController.getKeyringForAccount(address);
     // Remove account from the keyring
@@ -3726,6 +3922,21 @@ export default class MetamaskController extends EventEmitter {
           this.alertController.setWeb3ShimUsageRecorded.bind(
             this.alertController,
           ),
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        handleMmiAuthenticate:
+          this.institutionalFeaturesController.handleMmiAuthenticate.bind(
+            this.institutionalFeaturesController,
+          ),
+        handleMmiCheckIfTokenIsPresent:
+          this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
+        handleMmiPortfolio: this.mmiController.setMmiPortfolioCookie.bind(this),
+        handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
+        handleMmiSetAccountAndNetwork:
+          this.mmiController.setAccountAndNetwork.bind(this),
+        handleMmiOpenAddHardwareWallet:
+          this.mmiController.handleMmiOpenAddHardwareWallet.bind(this),
+        ///: END:ONLY_INCLUDE_IN
       }),
     );
 

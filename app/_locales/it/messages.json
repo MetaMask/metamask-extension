@@ -290,12 +290,6 @@
     "message": "Consenti l'accesso e il trasferimento di tutti i tuoi $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Approva & installa"
-  },
-  "approveAndUpdate": {
-    "message": "Approva & aggiorna"
-  },
   "approveButtonText": {
     "message": "Approva"
   },
@@ -314,9 +308,6 @@
   },
   "assetOptions": {
     "message": "Opzioni asset"
-  },
-  "assets": {
-    "message": "Patrimonio"
   },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
@@ -341,9 +332,6 @@
   },
   "back": {
     "message": "Indietro"
-  },
-  "backToAll": {
-    "message": "Torna a \"Tutti\""
   },
   "backupApprovalInfo": {
     "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
@@ -488,9 +476,6 @@
   "connectAccountOrCreate": {
     "message": "Connetti un account o creane uno nuovo"
   },
-  "connectHardwareWallet": {
-    "message": "Connetti Portafoglio Hardware"
-  },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
   },
@@ -618,9 +603,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea Account"
   },
   "createNewWallet": {
     "message": "Crea un nuovo portafoglio"
@@ -1347,9 +1329,6 @@
   "receive": {
     "message": "Ricevi"
   },
-  "recents": {
-    "message": "Recenti"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ricerca, indirizzo pubblico (0x) o ENS"
   },
@@ -1542,9 +1521,6 @@
   },
   "stateLogsDescription": {
     "message": "I log di stato contengono i tuoi indirizzi pubblici e le transazioni effettuate."
-  },
-  "statusConnected": {
-    "message": "Connesso"
   },
   "statusNotConnected": {
     "message": "Non connesso"
@@ -1836,19 +1812,12 @@
   "transfer": {
     "message": "Trasferisci"
   },
-  "transferBetweenAccounts": {
-    "message": "Trasferimento tra i miei account"
-  },
   "transferFrom": {
     "message": "Trasferisci Da"
   },
   "troubleConnectingToWallet": {
     "message": "Abbiamo riscontrato un errore nella connessione a $1, guarda la documentazione $2 e prova di nuovo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prova di nuovo"

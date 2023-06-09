@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import LedgerInstructionField from '../ledger-instruction-field';
-
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
@@ -15,13 +14,12 @@ import {
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
-import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
@@ -31,19 +29,14 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
+import SignatureRequestHeader from '../signature-request-header';
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -54,7 +47,6 @@ export default class SignatureRequestOriginal extends Component {
   static propTypes = {
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
-      balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
     cancel: PropTypes.func.isRequired,
@@ -66,13 +58,9 @@ export default class SignatureRequestOriginal extends Component {
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
-    nativeCurrency: PropTypes.string.isRequired,
-    currentCurrency: PropTypes.string.isRequired,
-    conversionRate: PropTypes.number,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
-    providerConfig: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
@@ -82,27 +70,6 @@ export default class SignatureRequestOriginal extends Component {
     showSignatureRequestWarning: false,
   };
 
-  getNetworkName() {
-    const { providerConfig } = this.props;
-    const providerName = providerConfig.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return providerConfig.nickname || t('unknownNetwork');
-    }
-  }
-
   msgHexToText = (hex) => {
     try {
       const stripped = stripHexPrefix(hex);
@@ -111,16 +78,6 @@ export default class SignatureRequestOriginal extends Component {
     } catch (e) {
       return hex;
     }
-  };
-
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
   };
 
   renderTypedData = (data) => {
@@ -232,7 +189,7 @@ export default class SignatureRequestOriginal extends Component {
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -240,7 +197,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
@@ -350,34 +307,13 @@ export default class SignatureRequestOriginal extends Component {
   render = () => {
     const {
       messagesCount,
-      nativeCurrency,
-      currentCurrency,
-      fromAccount: { address, balance, name },
-      conversionRate,
+      fromAccount: { address, name },
+      txData,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = this.getNetworkName();
-
-    const balanceInBaseAsset = conversionRate
-      ? formatCurrency(
-          getValueFromWeiHex({
-            value: balance,
-            fromCurrency: nativeCurrency,
-            toCurrency: currentCurrency,
-            conversionRate,
-            numberOfDecimals: 6,
-            toDenomination: EtherDenomination.ETH,
-          }),
-          currentCurrency,
-        )
-      : new Numeric(balance, 16, EtherDenomination.WEI)
-          .toDenomination(EtherDenomination.ETH)
-          .round(6)
-          .toBase(10)
-          .toString();
 
     return (
       <div className="request-signature__container">
@@ -385,15 +321,7 @@ export default class SignatureRequestOriginal extends Component {
           <ConfirmPageContainerNavigation />
         </div>
         <div className="request-signature__account">
-          <NetworkAccountBalanceHeader
-            networkName={currentNetwork}
-            accountName={name}
-            accountBalance={balanceInBaseAsset}
-            tokenName={
-              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-            }
-            accountAddress={address}
-          />
+          <SignatureRequestHeader txData={txData} />
         </div>
         {this.renderBody()}
         {this.props.isLedgerWallet ? (
