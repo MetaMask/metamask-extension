@@ -301,10 +301,10 @@ describe('MetaMask onboarding', function () {
         assert.equal(networkNotification, true);
 
         // Check localhost 8546 is selected and its balance value is correct
-        const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"] p',
-        );
-        assert.equal(await networkDisplay.getText(), networkName);
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: networkName,
+        });
 
         await assertAccountBalanceForDOM(driver, secondaryGanacheServer);
       },

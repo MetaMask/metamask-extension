@@ -423,9 +423,6 @@
   "back": {
     "message": "Volver"
   },
-  "backToAll": {
-    "message": "Volver a Todos"
-  },
   "backup": {
     "message": "Respaldo"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Recibir"
   },
-  "recents": {
-    "message": "Recientes"
-  },
   "recipientAddressPlaceholder": {
     "message": "Búsqueda, dirección pública (0x) o ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Instalar complemento"
   },
   "snapInstallWarningCheck": {
-    "message": "Para confirmar que comprende, verifique la casilla."
+    "message": "Para confirmar que comprende, verifique la casilla.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para confirmar que comprende, marque todas las casillas."
+    "message": "Para confirmar que comprende, marque todas las casillas.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Está otorgando acceso clave de $2 al complemento \"$1\". Esto es irrevocable y le otorga a \"$1\" el control de sus cuentas y activos de $2. Asegúrese de que confía en \"$1\" antes de continuar.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transferir"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre mis cuentas"
   },
   "transferFrom": {
     "message": "Transferir desde"

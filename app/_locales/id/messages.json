@@ -423,9 +423,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToAll": {
-    "message": "Kembali ke semua"
-  },
   "backup": {
     "message": "Pencadangan"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recents": {
-    "message": "Terkini"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Instal Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya."
+    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak."
+    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Anda memberikan $2 akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset $2 Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer antar akun saya"
   },
   "transferFrom": {
     "message": "Transfer dari"

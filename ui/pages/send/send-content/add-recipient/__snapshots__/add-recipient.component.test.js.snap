@@ -3,8 +3,278 @@
 exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
 <div>
   <div
-    class="send__select-recipient-wrapper"
+    class="box send__select-recipient-wrapper box--flex-direction-row"
   >
+    <div
+      class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
+    >
+      <p
+        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+      >
+        My accounts
+      </p>
+    </div>
+    <div
+      class="send__select-recipient-wrapper__list"
+    >
+      <div
+        class="box send__select-recipient-wrapper__group box--flex-direction-row"
+        data-testid="recipient-group"
+      >
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="28"
+                    transform="translate(-0.9173443158196976 -2.8912485607779366) rotate(328.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="28"
+                    transform="translate(-16.01115399522804 9.268404137780026) rotate(176.2 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="28"
+                    transform="translate(14.584361765945934 -12.429497257622447) rotate(468.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0x0dcd...e7bc
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#018E74"
+                    height="28"
+                    transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#18CAF2"
+                    height="28"
+                    transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81474"
+                    height="28"
+                    transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account 2
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xec1a...251b
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81432"
+                    height="28"
+                    transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#187AF2"
+                    height="28"
+                    transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB183E"
+                    height="28"
+                    transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Ledger 1
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xc42e...8813
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(242, 206, 2);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2340E1"
+                    height="28"
+                    transform="translate(-1.7054541409645272 -0.893781972900803) rotate(257.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#016D8E"
+                    height="28"
+                    transform="translate(11.213543194590896 2.66257866392058) rotate(77.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F5F500"
+                    height="28"
+                    transform="translate(11.486654880888956 -19.46641853277226) rotate(465.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account 3
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xeb9e...4823
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="send__select-recipient-wrapper__group-item"
     >
@@ -70,283 +340,17 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
 exports[`Add Recipient Component Own Account Recipient Search should match snapshot 1`] = `
 <div>
   <div
-    class="send__select-recipient-wrapper"
+    class="box send__select-recipient-wrapper box--flex-direction-row"
   >
     <div
       class="send__select-recipient-wrapper__list"
     >
-      <a
-        class="button btn-link send__select-recipient-wrapper__list__link"
-        role="button"
-        tabindex="0"
-      >
-        <span
-          class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
-          style="mask-image: url('./images/icons/arrow-left.svg');"
-        />
-        Back to all
-      </a>
       <div
-        class="send__select-recipient-wrapper__group"
-        data-testid="recipient-group"
+        class="send__select-recipient-wrapper__list"
       >
         <div
-          class="send__select-recipient-wrapper__group-label"
-        >
-          My accounts
-        </div>
-        <div
-          class="send__select-recipient-wrapper__group-item"
-        >
-          <div
-            class=""
-          >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 58, 0);"
-              >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="28"
-                    transform="translate(-0.9173443158196976 -2.8912485607779366) rotate(328.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="28"
-                    transform="translate(-16.01115399522804 9.268404137780026) rotate(176.2 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="28"
-                    transform="translate(14.584361765945934 -12.429497257622447) rotate(468.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div
-            class="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
-          >
-            <div
-              class="send__select-recipient-wrapper__group-item__title"
-            >
-              Test Account
-            </div>
-            <div
-              class="send__select-recipient-wrapper__group-item__subtitle"
-            >
-              0x0dcd...e7bc
-            </div>
-          </div>
-        </div>
-        <div
-          class="send__select-recipient-wrapper__group-item"
-        >
-          <div
-            class=""
-          >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
-              >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E74"
-                    height="28"
-                    transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#18CAF2"
-                    height="28"
-                    transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C81474"
-                    height="28"
-                    transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div
-            class="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
-          >
-            <div
-              class="send__select-recipient-wrapper__group-item__title"
-            >
-              Test Account 2
-            </div>
-            <div
-              class="send__select-recipient-wrapper__group-item__subtitle"
-            >
-              0xec1a...251b
-            </div>
-          </div>
-        </div>
-        <div
-          class="send__select-recipient-wrapper__group-item"
-        >
-          <div
-            class=""
-          >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
-              >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81432"
-                    height="28"
-                    transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#187AF2"
-                    height="28"
-                    transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB183E"
-                    height="28"
-                    transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div
-            class="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
-          >
-            <div
-              class="send__select-recipient-wrapper__group-item__title"
-            >
-              Test Ledger 1
-            </div>
-            <div
-              class="send__select-recipient-wrapper__group-item__subtitle"
-            >
-              0xc42e...8813
-            </div>
-          </div>
-        </div>
-        <div
-          class="send__select-recipient-wrapper__group-item"
-        >
-          <div
-            class=""
-          >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(242, 206, 2);"
-              >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#2340E1"
-                    height="28"
-                    transform="translate(-1.7054541409645272 -0.893781972900803) rotate(257.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#016D8E"
-                    height="28"
-                    transform="translate(11.213543194590896 2.66257866392058) rotate(77.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F5F500"
-                    height="28"
-                    transform="translate(11.486654880888956 -19.46641853277226) rotate(465.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div
-            class="send__select-recipient-wrapper__group-item__content"
-            data-testid="recipient"
-          >
-            <div
-              class="send__select-recipient-wrapper__group-item__title"
-            >
-              Test Account 3
-            </div>
-            <div
-              class="send__select-recipient-wrapper__group-item__subtitle"
-            >
-              0xeb9e...4823
-            </div>
-          </div>
-        </div>
+          class="send__select-recipient-wrapper__recent-group-wrapper"
+        />
       </div>
     </div>
   </div>
@@ -356,7 +360,7 @@ exports[`Add Recipient Component Own Account Recipient Search should match snaps
 exports[`Add Recipient Component Send State should match snapshot 1`] = `
 <div>
   <div
-    class="send__select-recipient-wrapper"
+    class="box send__select-recipient-wrapper box--flex-direction-row"
   >
     <div
       class="send__select-recipient-wrapper__group-item"
@@ -435,35 +439,302 @@ exports[`Add Recipient Component Send State should match snapshot 1`] = `
 exports[`Add Recipient Component render should match snapshot 1`] = `
 <div>
   <div
-    class="send__select-recipient-wrapper"
+    class="box send__select-recipient-wrapper box--flex-direction-row"
   >
+    <div
+      class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
+    >
+      <p
+        class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+      >
+        My accounts
+      </p>
+    </div>
+    <div
+      class="send__select-recipient-wrapper__list"
+    >
+      <div
+        class="box send__select-recipient-wrapper__group box--flex-direction-row"
+        data-testid="recipient-group"
+      >
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 58, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#18CDF2"
+                    height="28"
+                    transform="translate(-0.9173443158196976 -2.8912485607779366) rotate(328.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#035E56"
+                    height="28"
+                    transform="translate(-16.01115399522804 9.268404137780026) rotate(176.2 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F26602"
+                    height="28"
+                    transform="translate(14.584361765945934 -12.429497257622447) rotate(468.9 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0x0dcd...e7bc
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#018E74"
+                    height="28"
+                    transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#18CAF2"
+                    height="28"
+                    transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81474"
+                    height="28"
+                    transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account 2
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xec1a...251b
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#C81432"
+                    height="28"
+                    transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#187AF2"
+                    height="28"
+                    transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB183E"
+                    height="28"
+                    transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Ledger 1
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xc42e...8813
+            </p>
+          </div>
+        </div>
+        <div
+          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon"
+              style="height: 28px; width: 28px; border-radius: 14px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(242, 206, 2);"
+              >
+                <svg
+                  height="28"
+                  width="28"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2340E1"
+                    height="28"
+                    transform="translate(-1.7054541409645272 -0.893781972900803) rotate(257.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#016D8E"
+                    height="28"
+                    transform="translate(11.213543194590896 2.66257866392058) rotate(77.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F5F500"
+                    height="28"
+                    transform="translate(11.486654880888956 -19.46641853277226) rotate(465.0 14 14)"
+                    width="28"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
+            data-testid="recipient"
+          >
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+            >
+              Test Account 3
+            </p>
+            <p
+              class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            >
+              0xeb9e...4823
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="send__select-recipient-wrapper__list"
     >
       <div
         class="send__select-recipient-wrapper__list"
       >
-        <a
-          class="button btn-link send__select-recipient-wrapper__list__link"
-          role="button"
-          tabindex="0"
-        >
-          Transfer between my accounts
-        </a>
         <div
           class="send__select-recipient-wrapper__recent-group-wrapper"
         />
         <div
-          class="send__select-recipient-wrapper__group"
+          class="box send__select-recipient-wrapper__group box--flex-direction-row"
           data-testid="recipient-group"
         >
           <div
-            class="send__select-recipient-wrapper__group-label"
+            class="box send__select-recipient-wrapper__group-label box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
           >
-            A
+            <p
+              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            >
+              A
+            </p>
           </div>
           <div
-            class="send__select-recipient-wrapper__group-item"
+            class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
           >
             <div
               class=""
@@ -510,19 +781,19 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="send__select-recipient-wrapper__group-item__content"
+              class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
               data-testid="recipient"
             >
-              <div
-                class="send__select-recipient-wrapper__group-item__title"
+              <p
+                class="box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
               >
                 Address Book Account 1
-              </div>
-              <div
-                class="send__select-recipient-wrapper__group-item__subtitle"
+              </p>
+              <p
+                class="box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md box--flex-direction-row box--color-text-alternative"
               >
                 0xc42e...8813
-              </div>
+              </p>
             </div>
           </div>
         </div>
