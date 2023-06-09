@@ -217,7 +217,7 @@ export default function SnapsConnect({
           siteOrigin={origin}
           title={origin}
           iconSrc={iconUrl}
-          name={name}
+          iconName={name}
         />
       </Box>
       <SnapsConnectContent />
