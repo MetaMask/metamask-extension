@@ -90,7 +90,7 @@ export const CreateAccount = ({ onActionComplete }) => {
         placeholder={defaultAccountName}
         onChange={(event) => setNewAccountName(event.target.value)}
         helpText={errorMessage}
-        error={isValidAccountName}
+        error={!isValidAccountName}
       />
       <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={() => onActionComplete()} block>
