@@ -90,12 +90,10 @@ export const UI_MAPPING = {
           snapId,
         ),
       type: props.variant,
-      children: {
-        element: 'SnapUIMarkdown',
-        props: {
-          children: props.value,
-        },
-      },
+    },
+    children: {
+      element: 'SnapUIMarkdown',
+      children: props.value,
     },
   }),
 };
@@ -106,6 +104,7 @@ export const mapToTemplate = (data, elementKeyIndex, interfaceId, snapId) => {
   console.log('snapId in maptotemplate:', snapId);
   elementKeyIndex.value += 1;
   const indexKey = `snap_ui_element_${type}__${elementKeyIndex.value}`;
+  console.log(data.value);
   const mapped = UI_MAPPING[type](data, elementKeyIndex, interfaceId, snapId);
   return { ...mapped, key: indexKey };
 };
