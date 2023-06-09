@@ -423,9 +423,6 @@
   "back": {
     "message": "返回"
   },
-  "backToAll": {
-    "message": "返回全部"
-  },
   "backup": {
     "message": "备份"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "接收"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜索、公共地址 (0x) 或 ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "转移"
-  },
-  "transferBetweenAccounts": {
-    "message": "在我的账户之间转移"
   },
   "transferFrom": {
     "message": "转移自"

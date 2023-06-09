@@ -6,35 +6,22 @@ import SnapPrivacyWarning from './snap-privacy-warning';
 describe('Snap Privacy Warning Popover', () => {
   it('renders snaps privacy warning popover and works with accept flow', () => {
     const mockOnAcceptCallback = jest.fn();
-    const { getByTestId } = renderWithProvider(
+    renderWithProvider(
       <SnapPrivacyWarning
         onAccepted={mockOnAcceptCallback}
         onCanceled={jest.fn()}
       />,
     );
 
-    expect(screen.getByText('Third party software')).toBeInTheDocument();
+    expect(screen.getByText('Third-party software notice')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Installing a snap retrieves data from third parties. They may collect your personal information.',
-      ),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('MetaMask has no access to this information.'),
-    ).toBeInTheDocument();
-    const clickHereToReadMoreButton = getByTestId(
-      'snapsPrivacyPopup_readMoreButton',
-    );
-    expect(clickHereToReadMoreButton).toBeDefined();
-    clickHereToReadMoreButton.click();
-    expect(
-      screen.getByText(
-        'Any information you share with third-party-developed snaps will be collected directly by those snaps in accordance with their privacy policies.',
+        'Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.',
       ),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'During the installation of a snap, npmjs (npmjs.com) and AWS (aws.amazon.com) may collect your IP address. Please refer to their privacy policies for more information.',
+        'Consensys has no access to information you share with these third parties.',
       ),
     ).toBeInTheDocument();
     expect(
@@ -60,7 +47,7 @@ describe('Snap Privacy Warning Popover', () => {
       />,
     );
 
-    expect(screen.getByText('Third party software')).toBeInTheDocument();
+    expect(screen.getByText('Third-party software notice')).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: /Cancel/iu,

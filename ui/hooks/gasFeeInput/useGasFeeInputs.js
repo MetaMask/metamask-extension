@@ -163,7 +163,7 @@ export function useGasFeeInputs(
 
   /**
    * In EIP-1559 V2 designs change to gas estimate is always updated to transaction
-   * Thus callback setEstimateToUse can be deprecate in favour of this useEffect
+   * Thus callback setEstimateToUse can be deprecate in favor of this useEffect
    * so that transaction is source of truth whenever possible.
    */
   useEffect(() => {
