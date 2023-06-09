@@ -423,9 +423,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад ко всем"
-  },
   "backup": {
     "message": "Резервное копирование"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Получить"
   },
-  "recents": {
-    "message": "Недавние"
-  },
   "recipientAddressPlaceholder": {
     "message": "Поиск, открытый адрес (0x) или ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Установить снап"
   },
   "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Перевести"
-  },
-  "transferBetweenAccounts": {
-    "message": "Перевод между моими счетами"
   },
   "transferFrom": {
     "message": "Перевести с"

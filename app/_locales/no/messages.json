@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbake"
   },
-  "backToAll": {
-    "message": "Tilbake til alt"
-  },
   "backupApprovalInfo": {
     "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
@@ -559,9 +556,6 @@
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
   },
-  "recents": {
-    "message": "Nylige"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søk, offentlig adresse (0x) eller ENS"
   },
@@ -775,9 +769,6 @@
   },
   "transfer": {
     "message": "Overfør"
-  },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellom kontoene mine"
   },
   "transferFrom": {
     "message": "Overfør fra"
