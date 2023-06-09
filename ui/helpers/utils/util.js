@@ -9,9 +9,9 @@ import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { isObject } from '@metamask/utils';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
