@@ -548,19 +548,7 @@ export default class MetamaskController extends EventEmitter {
       onNetworkStateChange: (eventHandler) => {
         networkControllerMessenger.subscribe(
           'NetworkController:networkDidChange',
-          () => {
-            let state = this.networkController.store.getState();
-            if (process.env.IN_TEST) {
-              state = {
-                ...state,
-                providerConfig: {
-                  ...state.providerConfig,
-                  chainId: CHAIN_IDS.MAINNET,
-                },
-              };
-            }
-            eventHandler(state);
-          },
+          () => eventHandler(this.networkController.store.getState()),
         );
       },
       getCurrentNetworkEIP1559Compatibility:
@@ -576,11 +564,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.getState().providerConfig;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
-      getChainId: () => {
-        return process.env.IN_TEST
-          ? CHAIN_IDS.MAINNET
-          : this.networkController.store.getState().providerConfig.chainId;
-      },
+      getChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
     this.qrHardwareKeyring = new QRHardwareKeyring();
