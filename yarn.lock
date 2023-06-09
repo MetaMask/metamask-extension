@@ -14778,17 +14778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.14.0, enhanced-resolve@npm:^5.8.3":
-  version: 5.14.0
-  resolution: "enhanced-resolve@npm:5.14.0"
-  dependencies:
-    graceful-fs: ^4.2.4
-    tapable: ^2.2.0
-  checksum: fff1aaebbf376371e5df4502e111967f6247c37611ad3550e4e7fca657f6dcb29ef7ffe88bf14e5010b78997f1ddd984a8db97af87ee0a5477771398fd326f5b
-  languageName: node
-  linkType: hard
-
-"enhanced-resolve@npm:^5.14.1":
+"enhanced-resolve@npm:^5.14.0, enhanced-resolve@npm:^5.14.1, enhanced-resolve@npm:^5.8.3":
   version: 5.14.1
   resolution: "enhanced-resolve@npm:5.14.1"
   dependencies:
@@ -28956,14 +28946,15 @@ __metadata:
   linkType: hard
 
 "react-inspector@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "react-inspector@npm:2.3.0"
+  version: 2.3.1
+  resolution: "react-inspector@npm:2.3.1"
   dependencies:
     babel-runtime: ^6.26.0
     is-dom: ^1.0.9
+    prop-types: ^15.6.1
   peerDependencies:
     react: ^0.14.0 || ^15.0.0 || ^16.0.0
-  checksum: 2c64016d06907d0210924f56f0b964421d645c70e993eadabad2bd3d115b305e6369f13b37a39c80b135f556f8b4e6027856130fbcdcf825afcac8c90dc86287
+  checksum: ffd653df4399ff174a9b7c9475a7e3a26e97b1dc98d98dcce8708f769ad1ae3a27f9b5b82cd1ed96abbeab35fa46901472d105ad2761d082f18849060a165fd1
   languageName: node
   linkType: hard
 
