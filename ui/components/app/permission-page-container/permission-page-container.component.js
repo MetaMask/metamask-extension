@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { isEqual } from 'lodash';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { isObject } from '@metamask/utils';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
@@ -15,8 +14,8 @@ import PermissionsConnectFooter from '../permissions-connect-footer';
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
 ///: END:ONLY_INCLUDE_IN
-import { PermissionPageContainerContent } from '.';
 import { getDedupedSnaps } from '../../../helpers/utils/util';
+import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
   static propTypes = {
