@@ -469,9 +469,6 @@
   "back": {
     "message": "Back"
   },
-  "backToAll": {
-    "message": "Back to all"
-  },
   "backup": {
     "message": "Backup"
   },
@@ -742,6 +739,10 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
+  },
   "connectTo": {
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
@@ -806,6 +807,16 @@
   },
   "connectionError": {
     "message": "Connection error"
+  },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionRequest": {
+    "message": "Connection request"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1023,6 +1034,12 @@
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "$1 has suggested this price.",
     "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedHigh": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedHighShortLabel": {
+    "message": "Site (high)"
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
@@ -1555,10 +1572,6 @@
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
-  },
-  "forMoreDetails": {
-    "message": "for more details.",
-    "description": "Click for more details message in popup modal displayed when installing a snap for the first time."
   },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
@@ -2265,6 +2278,10 @@
   },
   "moreComingSoon": {
     "message": "More coming soon..."
+  },
+  "multipleSnapConnectionWarning": {
+    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -3256,11 +3273,8 @@
   "receive": {
     "message": "Receive"
   },
-  "recents": {
-    "message": "Recents"
-  },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Enter public address (0x) or ENS name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -3355,9 +3369,6 @@
   },
   "reportLastRunTooltip": {
     "message": "The date and time of when the last AML/CFT report was run"
-  },
-  "requestFailed": {
-    "message": "Request failed"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3768,6 +3779,10 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3787,20 +3802,22 @@
     "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 account control to $1",
+    "message": "Give $2 account control to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
-    "message": "Grant $2 public key access to $1",
+    "message": "Give $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
@@ -3851,27 +3868,22 @@
     "message": "The snap didn't return any insight"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "Installing a snap retrieves data from third parties. They may collect your personal information.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time."
+    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "MetaMask has no access to this information.",
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys has no access to information you share with these third parties.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
   },
-  "snapsThirdPartyNoticeReadMorePartOne": {
-    "message": "Any information you share with third-party-developed snaps will be collected directly by those snaps in accordance with their privacy policies. ",
-    "description": "First part of a tooltip content in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsThirdPartyNoticeReadMorePartThree": {
-    "message": "MetaMask has no access to information you share with these third parties.",
-    "description": "Third part of a tooltip content in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsThirdPartyNoticeReadMorePartTwo": {
-    "message": "During the installation of a snap, npmjs (npmjs.com) and AWS (aws.amazon.com) may collect your IP address. Please refer to their privacy policies for more information.",
-    "description": "Second part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  "snapsTermsOfUse": {
+    "message": "Terms of Use"
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -4491,7 +4503,7 @@
     "message": "Things to keep in mind:"
   },
   "thirdPartySoftware": {
-    "message": "Third party software",
+    "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
   "thisCollection": {
@@ -4733,9 +4745,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer from"

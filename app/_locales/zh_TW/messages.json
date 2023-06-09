@@ -160,9 +160,6 @@
   "back": {
     "message": "上一頁"
   },
-  "backToAll": {
-    "message": "回到全部"
-  },
   "backupApprovalInfo": {
     "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
@@ -1075,9 +1072,6 @@
   "receive": {
     "message": "接收"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜尋、公開位址 (0x)、或 ENS"
   },
@@ -1453,9 +1447,6 @@
   },
   "transfer": {
     "message": "交易"
-  },
-  "transferBetweenAccounts": {
-    "message": "在我的帳戶間轉帳"
   },
   "transferFrom": {
     "message": "交易來源"

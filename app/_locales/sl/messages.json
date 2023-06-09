@@ -93,9 +93,6 @@
   "back": {
     "message": "Nazaj"
   },
-  "backToAll": {
-    "message": "Nazaj na vse"
-  },
   "backupApprovalInfo": {
     "message": "Ta skrivna koda je potrebna za obnovitev denarnice, če izgubite napravo, pozabite geslo, ponovno namestite MetaMask ali želite dostopati do denarnice v drugi napravi."
   },
@@ -563,9 +560,6 @@
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
   },
-  "recents": {
-    "message": "Nedavno"
-  },
   "recipientAddressPlaceholder": {
     "message": "Iskanje, javni naslov (0x) ali ENS"
   },
@@ -788,9 +782,6 @@
   },
   "transfer": {
     "message": "Prenesi"
-  },
-  "transferBetweenAccounts": {
-    "message": "Prenos med mojimi računi"
   },
   "transferFrom": {
     "message": "Prenesi od"

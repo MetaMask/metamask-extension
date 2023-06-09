@@ -423,9 +423,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backToAll": {
-    "message": "Zurück zur Übersicht"
-  },
   "backup": {
     "message": "Datensicherung"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Erhalten"
   },
-  "recents": {
-    "message": "Letzte"
-  },
   "recipientAddressPlaceholder": {
     "message": "Suchen, öffentliche Adresse (0x) oder ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "Snap installieren"
   },
   "snapInstallWarningCheck": {
-    "message": "Um zu bestätigen, dass Sie das verstanden haben, markieren Sie das Kästchen."
+    "message": "Um zu bestätigen, dass Sie das verstanden haben, markieren Sie das Kästchen.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Um zu bestätigen, dass Sie alles verstanden haben, markieren Sie alle Kästchen."
+    "message": "Um zu bestätigen, dass Sie alles verstanden haben, markieren Sie alle Kästchen.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Sie gewähren dem Snap „$1“ wichtige $2-Zugriffsrechte. Dies kann nicht rückgängig gemacht werden und gibt „$1“ Kontrolle über Ihre $2-Konten und Vermögenswerte. Stellen Sie sicher, dass Sie „$1“ vertrauen, bevor Sie fortfahren.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "Überweisung"
-  },
-  "transferBetweenAccounts": {
-    "message": "Zwischen meinen Konten transferieren"
   },
   "transferFrom": {
     "message": "Transferieren von"

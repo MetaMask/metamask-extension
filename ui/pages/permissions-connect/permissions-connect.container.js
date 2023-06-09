@@ -1,4 +1,7 @@
 import { SubjectType } from '@metamask/subject-metadata-controller';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -32,6 +35,7 @@ import {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
@@ -75,10 +79,21 @@ const mapStateToProps = (state, ownProps) => {
     subjectType: SubjectType.Unknown,
   };
 
-  const requestType = getRequestType(state, permissionsRequestId);
+  let requestType = getRequestType(state, permissionsRequestId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  const requestState = getRequestState(state, permissionsRequestId);
+  // We want to only assign the wallet_connectSnaps request type (i.e. only show
+  // SnapsConnect) if and only if we get a singular wallet_snap permission request.
+  // Any other request gets pushed to the normal permission connect flow.
+  if (
+    permissionsRequest &&
+    Object.keys(permissionsRequest.permissions || {}).length === 1 &&
+    permissionsRequest.permissions?.[WALLET_SNAP_PERMISSION_KEY]
+  ) {
+    requestType = 'wallet_connectSnaps';
+  }
+
+  const requestState = getRequestState(state, permissionsRequestId) || {};
   ///: END:ONLY_INCLUDE_IN
 
   const accountsWithLabels = getAccountsWithLabels(state);
@@ -96,6 +111,7 @@ const mapStateToProps = (state, ownProps) => {
   const connectPath = `${CONNECT_ROUTE}/${permissionsRequestId}`;
   const confirmPermissionPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const snapsConnectPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAPS_CONNECT_ROUTE}`;
   const snapInstallPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_INSTALL_ROUTE}`;
   const snapUpdatePath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_UPDATE_ROUTE}`;
   const snapResultPath = `${CONNECT_ROUTE}/${permissionsRequestId}${CONNECT_SNAP_RESULT_ROUTE}`;
@@ -119,6 +135,8 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   } else if (isSnapInstallOrUpdateOrResult) {
     page = isRequestingAccounts ? '3' : '2';
+  } else if (pathname === snapsConnectPath) {
+    page = 1;
     ///: END:ONLY_INCLUDE_IN
   } else {
     throw new Error('Incorrect path for permissions-connect component');
@@ -128,6 +146,7 @@ const mapStateToProps = (state, ownProps) => {
     isRequestingAccounts,
     requestType,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    snapsConnectPath,
     snapInstallPath,
     snapUpdatePath,
     snapResultPath,

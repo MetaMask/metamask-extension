@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.31.0",
+  "version": "10.31.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -558,7 +558,7 @@
     "yargs": "^17.0.1"
   },
   "engines": {
-    "node": "^16.0.0",
+    "node": "^16.20.0",
     "yarn": "^3.2.4"
   },
   "lavamoat": {
