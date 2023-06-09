@@ -13,8 +13,8 @@ import PermissionsConnectFooter from '../permissions-connect-footer';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { RestrictedMethods } from '../../../../shared/constants/permissions';
 import SnapPrivacyWarning from '../snaps/snap-privacy-warning';
-///: END:ONLY_INCLUDE_IN
 import { getDedupedSnaps } from '../../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IN
 import { PermissionPageContainerContent } from '.';
 
 export default class PermissionPageContainer extends Component {
