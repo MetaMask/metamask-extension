@@ -1,6 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { Text } from '../../component-library';
+import Box from '../box/box';
+import {
+  BackgroundColor,
+  BlockSize,
+  Display,
+  FlexDirection,
+  FlexWrap,
+  JustifyContent,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 
 export default function ListItem({
   topContent,
@@ -22,8 +33,17 @@ export default function ListItem({
   );
 
   return (
-    <div
+    <Box
+      width={BlockSize.Full}
+      margin={0}
+      padding={4}
+      backgroundColor={BackgroundColor.backgroundDefault}
+      color={TextColor.textDefault}
       className={primaryClassName}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      flexWrap={FlexWrap.Wrap}
+      gap={4}
       onClick={onClick}
       data-testid={dataTestId}
       role="button"
@@ -35,30 +55,58 @@ export default function ListItem({
       }}
     >
       {topContent ? (
-        <div className="list-item__top-content">{topContent}</div>
+        <Box className="list-item__top-content">{topContent}</Box>
       ) : null}
-      {icon ? <div className="list-item__icon">{icon}</div> : null}
-      <div className="list-item__heading">
-        {React.isValidElement(title) ? (
-          title
-        ) : (
-          <h2 className="list-item__title">{title}</h2>
-        )}
-        {titleIcon && (
-          <div className="list-item__heading-wrap">{titleIcon}</div>
-        )}
-      </div>
-      {subtitle ? (
-        <div className="list-item__subheading">{subtitle}</div>
-      ) : null}
-      {children ? <div className="list-item__actions">{children}</div> : null}
-      {midContent ? (
-        <div className="list-item__mid-content">{midContent}</div>
-      ) : null}
-      {rightContent ? (
-        <div className="list-item__right-content">{rightContent}</div>
-      ) : null}
-    </div>
+      <Box
+        width={BlockSize.Full}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        gap={4}
+      >
+        {icon ? (
+          <Box
+            width={BlockSize.Max}
+            display={Display.InlineFlex}
+            className="list-item__icon"
+          >
+            {icon}
+          </Box>
+        ) : null}
+        <Box
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Box className="list-item__heading">
+            {React.isValidElement(title) ? (
+              title
+            ) : (
+              <Text ellipsis width={BlockSize.Full}>
+                {title}
+              </Text>
+            )}
+            {titleIcon && (
+              <Box className="list-item__heading-wrap">{titleIcon}</Box>
+            )}
+          </Box>
+          {subtitle ? (
+            <Box className="list-item__subheading">{subtitle}</Box>
+          ) : null}
+
+          {children ? (
+            <Box className="list-item__actions">{children}</Box>
+          ) : null}
+        </Box>
+
+        {midContent ? (
+          <Box className="list-item__mid-content">{midContent}</Box>
+        ) : null}
+        {rightContent ? (
+          <Box className="list-item__right-content">{rightContent}</Box>
+        ) : null}
+      </Box>
+    </Box>
   );
 }
 

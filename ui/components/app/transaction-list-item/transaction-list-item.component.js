@@ -14,10 +14,15 @@ import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
+  AlignItems,
   BackgroundColor,
+  BlockSize,
   Display,
+  FlexDirection,
+  FontWeight,
   IconColor,
   Size,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -50,7 +55,6 @@ import {
   getCurrentNetwork,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
-import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
@@ -237,7 +241,16 @@ function TransactionListItemInner({
       <ListItem
         onClick={toggleShowDetails}
         className={className}
-        title={title}
+        title={
+          <Text
+            ellipsis
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Medium}
+            width={BlockSize.Full}
+          >
+            {title}
+          </Text>
+        }
         icon={
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isCustodian ? (
@@ -280,29 +293,45 @@ function TransactionListItemInner({
           )
           ///: END:ONLY_INCLUDE_IN
         }
-        topContent={date}
+        topContent={
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            display={Display.Block}
+          >
+            {date}
+          </Text>
+        }
         subtitle={
-          <TransactionStatusLabel
-            statusOnly
-            isPending={isPending}
-            isEarliestNonce={isEarliestNonce}
-            error={err}
-            date={date}
-            status={displayedStatusKey}
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-            custodyStatusDisplayText={
-              transactionGroup.primaryTransaction.custodyStatusDisplayText
-            }
-            ///: END:ONLY_INCLUDE_IN
-          />
+          <Text fontWeight={FontWeight.Normal}>
+            <TransactionStatusLabel
+              statusOnly
+              isPending={isPending}
+              isEarliestNonce={isEarliestNonce}
+              error={err}
+              date={date}
+              status={displayedStatusKey}
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IN
+            />
+          </Text>
         }
         rightContent={
           !isSignatureReq &&
           !isApproval && (
-            <>
+            <Box
+              display={Display.InlineFlex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+              width={BlockSize.Max}
+            >
               <Text
-                variant={TextVariant.bodyLgMedium}
+                variant={TextVariant.bodyMd}
+                fontWeight={FontWeight.Medium}
                 className="transaction-list-item__primary-currency"
               >
                 {primaryCurrency}
@@ -313,11 +342,18 @@ function TransactionListItemInner({
               >
                 {secondaryCurrency}
               </Text>
-            </>
+            </Box>
           )
         }
       >
-        <Box className="transaction-list-item__pending-actions">
+        <Box
+          paddingTop={3}
+          display={Display.Flex}
+          gap={2}
+          width={BlockSize.Max}
+
+          // className="transaction-list-item__pending-actions"
+        >
           {showCancelButton && (
             <CancelButton
               transaction={transactionGroup.primaryTransaction}

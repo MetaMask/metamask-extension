@@ -13,7 +13,6 @@ import {
   IconColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box';
 
 const ICON_MAP = {
   [TransactionGroupCategory.approval]: IconName.Check,
@@ -60,7 +59,12 @@ export default function TransactionIcon({ status, category }) {
         `The category prop passed to TransactionIcon is not supported. The prop is: ${category}`,
       ),
     );
-    return <Box className="transaction-icon__grey-circle" />;
+    return (
+      <AvatarIcon
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        size={Size.MD}
+      />
+    );
   }
 
   return (

@@ -20,26 +20,26 @@
     color: var(--color-text-alternative);
   }
 
-  &__pending-actions {
-    padding-top: 12px;
-    display: flex;
+  // &__pending-actions {
+  //   padding-top: 12px;
+  //   display: flex;
 
-    .button {
-      @include H8;
+  //   .button {
+  //     @include H8;
 
-      padding: 8px;
-      width: 75px;
-      white-space: nowrap;
-    }
+  //     padding: 8px;
+  //     width: 75px;
+  //     white-space: nowrap;
+  //   }
 
-    & > .button:first-child {
-      margin-right: 6px;
-    }
+  //   & > .button:first-child {
+  //     margin-right: 6px;
+  //   }
 
-    &:empty {
-      padding-top: 0;
-    }
-  }
+  //   &:empty {
+  //     padding-top: 0;
+  //   }
+  // }
 
   .list-item__subheading {
     overflow: hidden;
