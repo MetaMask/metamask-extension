@@ -8,7 +8,7 @@ import {
   AlignItems,
   FLEX_DIRECTION,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -53,7 +53,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
       marginBottom={hasNoData && 12}
       alignItems={hasNoData && AlignItems.center}
       justifyContent={hasNoData && JustifyContent.center}
-      textAlign={hasNoData && TEXT_ALIGN.CENTER}
+      textAlign={hasNoData && TextAlign.Center}
       className="snap-insight"
     >
       {!loading && !error && (

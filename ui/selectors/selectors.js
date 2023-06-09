@@ -21,6 +21,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
+  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -501,9 +502,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { pendingApprovalCount = 0 } = state.metamask;
-
-  return pendingApprovalCount + getSuggestedAssetCount(state);
+  return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -553,15 +552,6 @@ export function getUnapprovedTemplatedConfirmations(state) {
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
-}
-
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
-}
-
-export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
 }
 
 export function getIsMainnet(state) {
@@ -1198,7 +1188,6 @@ export function getAllNetworks(state) {
       ({ chainId }) =>
         ![
           CHAIN_IDS.LOCALHOST,
-          CHAIN_IDS.MAINNET,
           // Linea gets added as a custom network configuration so
           // we must ignore it here to display in test networks
           CHAIN_IDS.LINEA_TESTNET,
@@ -1284,13 +1273,15 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
+    case CHAIN_IDS.AURORA:
+      return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
- * To check if teh chainId supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * To check if the chainId supports token detection,
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1302,6 +1293,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
 
@@ -1344,7 +1336,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1498,5 +1490,24 @@ export function getSnapsList(state) {
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
+}
+
+/**
+ * To get the state of snaps privacy warning popover.
+ *
+ * @param state - Redux state object.
+ * @returns True if popover has been shown, false otherwise.
+ */
+export function getSnapsInstallPrivacyWarningShown(state) {
+  const { snapsInstallPrivacyWarningShown } = state.metamask;
+
+  if (
+    snapsInstallPrivacyWarningShown === undefined ||
+    snapsInstallPrivacyWarningShown === null
+  ) {
+    return false;
+  }
+
+  return snapsInstallPrivacyWarningShown;
 }
 ///: END:ONLY_INCLUDE_IN

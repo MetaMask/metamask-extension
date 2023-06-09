@@ -9,9 +9,9 @@ import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
 import { Text } from '../../component-library';
 import {
   AlignItems,
-  BLOCK_SIZES,
-  DISPLAY,
-  FLEX_DIRECTION,
+  BlockSize,
+  Display,
+  FlexDirection,
   FontWeight,
   JustifyContent,
   TextAlign,
@@ -66,8 +66,8 @@ export default function ApproveContentCard({
     >
       {showHeader && (
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
           className="approve-content-card-container__card-header"
@@ -88,7 +88,7 @@ export default function ApproveContentCard({
             </>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
-            <Box width={BLOCK_SIZES.ONE_SIXTH}>
+            <Box width={BlockSize.OneSixth}>
               <Button type="link" onClick={() => onEditClick()}>
                 <Text
                   variant={TextVariant.bodySm}
@@ -124,14 +124,14 @@ export default function ApproveContentCard({
             />
           ) : (
             <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.spaceBetween}
             >
               {isMultiLayerFeeNetwork ? (
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.COLUMN}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
                   <TransactionDetailItem
@@ -174,8 +174,8 @@ export default function ApproveContentCard({
                     </Text>
                   </Box>
                   <Box
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
                     alignItems={AlignItems.flexEnd}
                     textAlign={TextAlign.Right}
                   >
@@ -210,7 +210,7 @@ export default function ApproveContentCard({
             </Box>
           ))}
         {renderDataContent && (
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box>
               <Text
                 variant={TextVariant.bodySm}

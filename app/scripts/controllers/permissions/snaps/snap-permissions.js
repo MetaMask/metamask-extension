@@ -9,6 +9,8 @@ import {
 } from '../../../../../shared/constants/permissions';
 import { nameLookupEndowmentBuilder } from './name-lookup';
 
+// TODO: Use the exported versions of these functions from the snaps monorepo after stable release.
+
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
  * specifications.
@@ -30,9 +32,9 @@ export const buildSnapEndowmentSpecifications = () =>
  */
 export const buildSnapRestrictedMethodSpecifications = (hooks) =>
   Object.values(restrictedMethodPermissionBuilders).reduce(
-    (specifications, { targetKey, specificationBuilder, methodHooks }) => {
-      if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
-        specifications[targetKey] = specificationBuilder({
+    (specifications, { targetName, specificationBuilder, methodHooks }) => {
+      if (!Object.keys(ExcludedSnapPermissions).includes(targetName)) {
+        specifications[targetName] = specificationBuilder({
           methodHooks: selectHooks(hooks, methodHooks),
         });
       }

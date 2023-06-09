@@ -7,7 +7,7 @@ import {
   BorderStyle,
   DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
@@ -68,7 +68,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
     },
     margin: {
       control: {

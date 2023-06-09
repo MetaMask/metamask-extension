@@ -44,9 +44,9 @@ describe('Create token, approve token and approve token without gas', function (
         // imports custom token from extension
         await driver.switchToWindow(extension);
         await driver.clickElement(`[data-testid="home__asset-tab"]`);
-        await driver.clickElement({ tag: 'button', text: 'Assets' });
+        await driver.clickElement({ tag: 'button', text: 'Tokens' });
 
-        await driver.clickElement({ text: 'import tokens', tag: 'a' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
         await driver.clickElement({
           text: 'Custom token',
           tag: 'button',
@@ -68,12 +68,11 @@ describe('Create token, approve token and approve token without gas', function (
 
         // renders balance for newly created token
         await driver.clickElement('.app-header__logo-container');
-        await driver.clickElement({ tag: 'button', text: 'Assets' });
-        const asset = await driver.waitForSelector({
-          css: '.asset-list-item__token-value',
-          text: '10',
+        await driver.clickElement({ tag: 'button', text: 'Tokens' });
+        await driver.waitForSelector({
+          css: '[data-testid="multichain-token-list-item-value"]',
+          text: '10 TST',
         });
-        assert.equal(await asset.getText(), '10');
       },
     );
   });

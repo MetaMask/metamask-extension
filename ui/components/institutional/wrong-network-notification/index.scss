@@ -1,0 +1,13 @@
+.wrong-network-notification {
+  @media screen and (min-width: $break-large) {
+    width: 85vw;
+  }
+
+  @media screen and (min-width: 768px) {
+    width: 80vw;
+  }
+
+  @media screen and (min-width: 1280px) {
+    width: 62vw;
+  }
+}

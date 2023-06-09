@@ -152,6 +152,7 @@ export const CHAIN_IDS = {
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
+  CRONOS: '0x19',
 } as const;
 
 /**
@@ -203,7 +204,7 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
-  AURORA: 'Aurora ETH',
+  AURORA_ETH: 'AURORA ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -219,6 +220,10 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
+  CRONOS: 'CRO',
+  GLIMMER: 'GLMR',
+  MOONRIVER: 'MOVR',
+  ONE: 'ONE',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -382,6 +387,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -508,17 +514,12 @@ export const BUYABLE_CHAINS_MAP: {
   [K in Exclude<
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
-    | typeof CHAIN_IDS.PALM
-    | typeof CHAIN_IDS.HARMONY
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
     | typeof CHAIN_IDS.FANTOM_TESTNET
-    | typeof CHAIN_IDS.MOONBEAM
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
-    | typeof CHAIN_IDS.MOONRIVER
-    | typeof CHAIN_IDS.AURORA
     | typeof CHAIN_IDS.LINEA_TESTNET
     | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
@@ -559,6 +560,30 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
     network: 'arbitrum',
   },
+  [CHAIN_IDS.CRONOS]: {
+    nativeCurrency: CURRENCY_SYMBOLS.CRONOS,
+    network: 'cronos',
+  },
+  [CHAIN_IDS.MOONBEAM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.GLIMMER,
+    network: 'moonbeam',
+  },
+  [CHAIN_IDS.MOONRIVER]: {
+    nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
+    network: 'moonriver',
+  },
+  [CHAIN_IDS.AURORA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
+    network: 'aurora',
+  },
+  [CHAIN_IDS.HARMONY]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ONE,
+    network: 'harmony',
+  },
+  [CHAIN_IDS.PALM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.PALM,
+    network: 'palm',
+  },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
@@ -576,7 +601,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     chainId: CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AURORA,
+    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://aurorascan.dev/',
       imageUrl: AURORA_TOKEN_IMAGE_URL,

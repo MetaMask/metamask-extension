@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ButtonBase } from '../../component-library';
-// TODO: Replace ICON_NAMES with IconName when ButtonBase/Buttons have been updated
-import { ICON_NAMES } from '../../component-library/icon/deprecated';
+import { ButtonBase, IconName } from '../../component-library';
 import {
   BackgroundColor,
   TextVariant,
@@ -40,7 +38,7 @@ export const AddressCopyButton = ({
         size={Size.SM}
         variant={TextVariant.bodySm}
         color={TextColor.primaryDefault}
-        endIconName={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
         className={classnames('multichain-address-copy-button', {
           'multichain-address-copy-button__address--wrap': wrap,
         })}

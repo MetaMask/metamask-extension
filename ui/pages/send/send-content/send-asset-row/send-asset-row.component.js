@@ -154,8 +154,8 @@ export default class SendAssetRow extends Component {
           isEqualCaseInsensitive(address, details.address) &&
           tokenId === details.tokenId,
       );
-      if (nft) {
-        return this.renderNft(nft);
+      if (nft || details) {
+        return this.renderNft(nft ?? details);
       }
     }
     return this.renderNativeCurrency();
@@ -184,8 +184,13 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
-      this.props;
+    const {
+      accounts,
+      selectedAddress,
+      nativeCurrency,
+      nativeCurrencyImage,
+      sendAsset,
+    } = this.props;
 
     const { sendableTokens, sendableNfts } = this.state;
 
@@ -204,11 +209,15 @@ export default class SendAssetRow extends Component {
         onClick={() => this.selectToken(AssetType.native)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          <Identicon
-            diameter={36}
-            image={nativeCurrencyImage}
-            address={nativeCurrency}
-          />
+          {sendAsset?.type === AssetType.NFT && sendAsset?.details?.image ? (
+            <img width={36} src={sendAsset.details.image} />
+          ) : (
+            <Identicon
+              diameter={36}
+              image={nativeCurrencyImage}
+              address={nativeCurrency}
+            />
+          )}
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">
@@ -277,7 +286,7 @@ export default class SendAssetRow extends Component {
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">
-            {nftCollection.name || name}
+            {nftCollection?.name || name}
           </div>
           <div className="send-v2__asset-dropdown__name">
             <span className="send-v2__asset-dropdown__name__label">

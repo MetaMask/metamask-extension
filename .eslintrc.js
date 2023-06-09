@@ -237,6 +237,7 @@ module.exports = {
       ],
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
+        'app/scripts/controllers/mmi-controller.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -265,6 +266,7 @@ module.exports = {
       files: [
         '**/__snapshots__/*.snap',
         'app/scripts/controllers/app-state.test.js',
+        'app/scripts/controllers/mmi-controller.test.js',
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/network/**/*.test.ts',
         'app/scripts/controllers/network/provider-api-tests/*.ts',

@@ -40,6 +40,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
 } from '../../../../shared/constants/metametrics';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 
 const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
 
@@ -59,6 +60,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const showTestNetworksRef = useRef(showTestNetworks);
   const networkListRef = useRef(null);
 
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+
   useEffect(() => {
     if (showTestNetworks && !showTestNetworksRef.current) {
       // Scroll to the bottom of the list
@@ -76,7 +79,7 @@ export const NetworkListMenu = ({ onClose }) => {
     >
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
-          {networks.map((network) => {
+          {networks.map((network, index) => {
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
@@ -86,7 +89,7 @@ export const NetworkListMenu = ({ onClose }) => {
               <NetworkListItem
                 name={network.nickname}
                 iconSrc={network?.rpcPrefs?.imageUrl}
-                key={network.id || network.chainId}
+                key={`${network.id || network.chainId}-${index}`}
                 selected={isCurrentNetwork}
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
@@ -171,11 +174,17 @@ export const NetworkListMenu = ({ onClose }) => {
             size={BUTTON_SECONDARY_SIZES.LG}
             block
             onClick={() => {
-              isFullScreen
-                ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
-                : global.platform.openExtensionInBrowser(
-                    ADD_POPULAR_CUSTOM_NETWORK,
-                  );
+              if (isFullScreen) {
+                if (completedOnboarding) {
+                  history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                } else {
+                  dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+                }
+              } else {
+                global.platform.openExtensionInBrowser(
+                  ADD_POPULAR_CUSTOM_NETWORK,
+                );
+              }
               dispatch(toggleNetworkMenu());
               trackEvent({
                 event: MetaMetricsEventName.AddNetworkButtonClick,

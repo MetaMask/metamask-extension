@@ -1,5 +1,9 @@
-const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  locateAccountBalanceDOM,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -89,12 +93,7 @@ describe('Deploy contract and call contract methods', function () {
 
         // renders the correct ETH balance
         await driver.switchToWindow(extension);
-        const balance = await ganacheServer.getBalance();
-        const balanceElement = await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: balance,
-        });
-        assert.equal(`${balance}\nETH`, await balanceElement.getText());
+        await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );
   });

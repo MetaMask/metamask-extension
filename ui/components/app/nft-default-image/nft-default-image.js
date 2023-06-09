@@ -1,26 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  Display,
+  AlignItems,
+  BlockSize,
+  JustifyContent,
+  TextVariant,
+  BorderRadius,
+  TextAlign,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
+import Box from '../../ui/box/box';
 
-export default function NftDefaultImage({ name, tokenId, handleImageClick }) {
+export default function NftDefaultImage({ name, tokenId, clickable = false }) {
   const t = useI18nContext();
-  const Tag = handleImageClick ? 'button' : 'div';
   return (
-    <Tag
+    <Box
       tabIndex={0}
       data-testid="nft-default-image"
       className={classnames('nft-default', {
-        'nft-default--clickable': handleImageClick,
+        'nft-default--clickable': clickable,
       })}
-      onClick={handleImageClick}
+      display={Display.Flex}
+      alignItems={AlignItems.Center}
+      justifyContent={JustifyContent.Center}
+      backgroundColor={BackgroundColor.backgroundAlternative}
+      width={BlockSize.Full}
+      borderRadius={BorderRadius.LG}
     >
-      <Text variant={TextVariant.bodySm} as="h6" className="nft-default__text">
+      <Text
+        variant={TextVariant.bodySm}
+        textAlign={TextAlign.Center}
+        ellipsis
+        as="h6"
+        className="nft-default__text"
+      >
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Text>
-    </Tag>
+    </Box>
   );
 }
 
@@ -34,7 +54,7 @@ NftDefaultImage.propTypes = {
    */
   tokenId: PropTypes.string,
   /**
-   * The click handler for the NFT default image
+   * Controls the css class for the cursor hover
    */
-  handleImageClick: PropTypes.func,
+  clickable: PropTypes.bool,
 };
