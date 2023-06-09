@@ -2587,6 +2587,48 @@ describe('NetworkController', () => {
     });
   });
 
+  describe('NetworkController:getEthQuery action', () => {
+    it('returns a EthQuery object that can be used to make requests to the currently selected network', async () => {
+      await withController(async ({ controller, messenger }) => {
+        await setFakeProvider(controller, {
+          stubs: [
+            {
+              request: {
+                method: 'test_method',
+                params: [],
+              },
+              response: {
+                result: 'test response',
+              },
+            },
+          ],
+        });
+
+        const ethQuery = messenger.call('NetworkController:getEthQuery');
+        assert(ethQuery, 'ethQuery is not set');
+
+        const promisifiedSendAsync = promisify(ethQuery.sendAsync).bind(
+          ethQuery,
+        );
+        const result = await promisifiedSendAsync({
+          id: 1,
+          jsonrpc: '2.0',
+          method: 'test_method',
+          params: [],
+        });
+        expect(result).toBe('test response');
+      });
+    });
+
+    it('returns undefined if the provider has not been set yet', async () => {
+      await withController(({ messenger }) => {
+        const ethQuery = messenger.call('NetworkController:getEthQuery');
+
+        expect(ethQuery).toBeUndefined();
+      });
+    });
+  });
+
   describe('rollbackToPreviousProvider', () => {
     for (const { networkType } of INFURA_NETWORKS) {
       describe(`if the previous provider configuration had a type of "${networkType}"`, () => {
@@ -6328,7 +6370,10 @@ function buildMessenger() {
 function buildNetworkControllerMessenger(messenger = buildMessenger()) {
   return messenger.getRestricted({
     name: 'NetworkController',
-    allowedActions: ['NetworkController:getProviderConfig'],
+    allowedActions: [
+      'NetworkController:getProviderConfig',
+      'NetworkController:getEthQuery',
+    ],
     allowedEvents: [
       'NetworkController:networkDidChange',
       'NetworkController:networkWillChange',
