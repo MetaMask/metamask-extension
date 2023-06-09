@@ -73,7 +73,10 @@ export default function SnapUpdate({
 
   const shouldShowWarning = warnings.length > 0;
 
-  const snapName = getSnapName(targetSubjectMetadata.origin);
+  const snapName = getSnapName(
+    targetSubjectMetadata.origin,
+    targetSubjectMetadata,
+  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
