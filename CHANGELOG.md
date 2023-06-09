@@ -23,6 +23,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix to ensure popover scroll button is correctly shown and hidden in the WhatsNewPopup (#19017)
 - Fix: Show network picker when locked (#19063)
 
+## [10.31.1]
+### Fixed
+- Fix signature requests for Keystone Hardware Wallet users ([#19349](https://github.com/MetaMask/metamask-extension/pull/19349))
 
 ## [10.31.0]
 ### Added
@@ -3777,6 +3780,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...HEAD
 [10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.32.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...HEAD
+[10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
 [10.31.0]: https://github.com/MetaMask/metamask-extension/compare/v10.30.4...v10.31.0
 [10.30.4]: https://github.com/MetaMask/metamask-extension/compare/v10.30.3...v10.30.4
 [10.30.3]: https://github.com/MetaMask/metamask-extension/compare/v10.30.2...v10.30.3
