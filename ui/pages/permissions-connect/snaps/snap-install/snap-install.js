@@ -15,20 +15,13 @@ import {
   TextVariant,
   TEXT_ALIGN,
   FontWeight,
-  FlexDirection,
-  Display,
-  IconColor,
-  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
-  BadgeWrapper,
-  BadgeWrapperPosition,
   IconName,
-  IconSize,
   Text,
   ValidTag,
 } from '../../../../components/component-library';
@@ -37,6 +30,7 @@ import SnapPermissionsList from '../../../../components/app/snaps/snap-permissio
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
 
 export default function SnapInstall({
   request,
@@ -99,77 +93,6 @@ export default function SnapInstall({
     return 'install';
   };
 
-  const ConnectionErrorIcon = () => {
-    return (
-      <BadgeWrapper
-        badge={
-          <AvatarIcon
-            iconName={IconName.Warning}
-            size={IconSize.Xs}
-            backgroundColor={BackgroundColor.backgroundAlternative}
-            borderColor={BackgroundColor.backgroundDefault}
-            borderWidth={2}
-            iconProps={{
-              size: IconSize.Md,
-              color: IconColor.errorDefault,
-            }}
-          />
-        }
-        position={BadgeWrapperPosition.bottomRight}
-      >
-        <AvatarIcon
-          iconName={IconName.Snaps}
-          size={IconSize.Xl}
-          backgroundColor={IconColor.infoDefault}
-          iconProps={{
-            size: IconSize.Xl,
-            color: IconColor.infoInverse,
-          }}
-        />
-      </BadgeWrapper>
-    );
-  };
-
-  const SnapsConnectError = () => {
-    const description = t('connectionFailedDescription', [
-      <Text
-        as={ValidTag.Span}
-        key="1"
-        variant={TextVariant.bodyMd}
-        fontWeight={FontWeight.Medium}
-      >
-        {snapName}
-      </Text>,
-    ]);
-
-    return (
-      <Box
-        className="snaps-connect__error"
-        flexDirection={FlexDirection.Column}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingLeft={4}
-        paddingRight={4}
-      >
-        <Box paddingBottom={2}>
-          <ConnectionErrorIcon />
-        </Box>
-        <Text
-          paddingBottom={2}
-          variant={TextVariant.headingLg}
-          textAlign={TextAlign.Center}
-        >
-          {t('connectionFailed')}
-        </Text>
-        {description && (
-          <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-            {description}
-          </Text>
-        )}
-      </Box>
-    );
-  };
-
   return (
     <Box
       className="page-container snap-install"
@@ -215,7 +138,18 @@ export default function SnapInstall({
             <PulseLoader />
           </Box>
         )}
-        {hasError && <SnapsConnectError />}
+        {hasError && (
+          <InstallError
+            iconName={IconName.Warning}
+            title={t('connectionFailed')}
+            description={t('connectionFailedDescription', [
+              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>,
+            ])}
+            error={requestState.error}
+          />
+        )}
         {!hasError && !isLoading && (
           <>
             <Text
