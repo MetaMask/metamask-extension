@@ -18,7 +18,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
-import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import {
   AvatarIcon,
@@ -29,6 +28,9 @@ import {
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
+import InstallError from '../../../../components/app/snaps/install-error/install-error';
+import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 
 export default function SnapInstall({
   request,
@@ -38,7 +40,8 @@ export default function SnapInstall({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
-
+  const siteMetadata = useOriginMetadata(request?.metadata?.dappOrigin) || {};
+  const { origin, iconUrl, name } = siteMetadata;
   const [isShowingWarning, setIsShowingWarning] = useState(false);
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
@@ -78,6 +81,15 @@ export default function SnapInstall({
     }
   };
 
+  const getFooterMessage = () => {
+    if (hasError) {
+      return 'ok';
+    } else if (isLoading) {
+      return 'connect';
+    }
+    return 'install';
+  };
+
   return (
     <Box
       className="page-container snap-install"
@@ -86,14 +98,31 @@ export default function SnapInstall({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
-      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      {isLoading || hasError ? (
+        <Box
+          width="full"
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+          paddingTop={4}
+        >
+          <SiteOrigin
+            chip
+            siteOrigin={origin}
+            title={origin}
+            iconSrc={iconUrl}
+            iconName={name}
+          />
+        </Box>
+      ) : (
+        <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+      )}
       <Box
         ref={ref}
         onScroll={onScroll}
         className="snap-install__content"
         style={{
           overflowY: 'auto',
-          flex: !isLoading && '1',
+          flex: !isLoading && !hasError && '1',
         }}
       >
         {isLoading && (
@@ -107,7 +136,16 @@ export default function SnapInstall({
           </Box>
         )}
         {hasError && (
-          <InstallError error={requestState.error} title={t('requestFailed')} />
+          <InstallError
+            iconName={IconName.Warning}
+            title={t('connectionFailed')}
+            description={t('connectionFailedDescription', [
+              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>,
+            ])}
+            error={requestState.error}
+          />
         )}
         {!hasError && !isLoading && (
           <>
@@ -172,7 +210,7 @@ export default function SnapInstall({
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
-          submitText={t(hasError ? 'ok' : 'install')}
+          submitText={t(getFooterMessage())}
         />
       </Box>
       {isShowingWarning && (

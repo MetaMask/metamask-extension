@@ -739,6 +739,10 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
+  },
   "connectTo": {
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
@@ -803,6 +807,16 @@
   },
   "connectionError": {
     "message": "Connection error"
+  },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionRequest": {
+    "message": "Connection request"
   },
   "contactUs": {
     "message": "Contact us"
@@ -2264,6 +2278,10 @@
   },
   "moreComingSoon": {
     "message": "More coming soon..."
+  },
+  "multipleSnapConnectionWarning": {
+    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -3763,6 +3781,10 @@
   },
   "smartTransaction": {
     "message": "Smart transaction"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
   "snapContent": {
     "message": "This content is coming from $1",
