@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -37,10 +37,9 @@ import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export const isValidSIWEOrigin = (req) => {
+export const isValidSIWEOrigin = (req, signableDomains) => {
   try {
-    const origin = "http://jiexi.eth.limo/"
-    const { siwe } = req;
+    const { origin, siwe } = req;
 
     // origin = scheme://[user[:password]@]domain[:port]
     // origin is supplied by environment and must match domain claim in message
@@ -62,11 +61,16 @@ export const isValidSIWEOrigin = (req) => {
       ".": "."
     }
 
+
     const isValidHostname = Object.entries(substitutes).some(([pattern, substitute]) => {
       const originHostName = originParts.hostname.replace(new RegExp(pattern), substitute)
-      return domainParts.hostname.localeCompare(originHostName, undefined, {
-        sensitivity: 'accent',
-      }) === 0
+      const domainHostNames = [...signableDomains, domainParts.hostname]
+      return domainHostNames.some(domainHostName => {
+        console.log("compare", domainHostName, originHostName)
+        return domainHostName.localeCompare(originHostName, undefined, {
+          sensitivity: 'accent',
+        }) === 0
+      })
     })
 
     if (!isValidHostname) {
@@ -99,6 +103,7 @@ export default function SignatureRequestSIWE({
   txData,
   cancelPersonalMessage,
   signPersonalMessage,
+  getTextRecord,
 }) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -119,6 +124,7 @@ export default function SignatureRequestSIWE({
     },
   } = txData;
 
+
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
   const fromAccount = getAccountByAddress(allAccounts, from);
@@ -127,11 +133,16 @@ export default function SignatureRequestSIWE({
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
 
-  const isSIWEDomainValid = isValidSIWEOrigin(txData.msgParams);
+
 
   const [isShowingDomainWarning, setIsShowingDomainWarning] = useState(false);
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
+  const [signableDomains, setSignableDomains] = useState([]);
+
+  const isSIWEDomainValid = isValidSIWEOrigin({...txData.msgParams
+    // , origin: "http://jiexi.eth.limo/"
+  }, signableDomains);
 
   const showSecurityProviderBanner =
     (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
@@ -139,6 +150,20 @@ export default function SignatureRequestSIWE({
         SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
     (txData?.securityProviderResponse &&
       Object.keys(txData.securityProviderResponse).length === 0);
+
+  useEffect(() => {
+    const effect = async () => {
+      try {
+        const textRecord = await getTextRecord(parsedMessage.domain, "signableDomains")
+        console.log("got text record", textRecord)
+        setSignableDomains(textRecord.split(","))
+      } catch (e) {
+        console.log("got error fetching text record", textRecord, e)
+        setSignableDomains([])
+      }
+    }
+    effect()
+  }, [parsedMessage.domain, setSignableDomains])
 
   const onSign = useCallback(
     async (event) => {
@@ -308,4 +333,8 @@ SignatureRequestSIWE.propTypes = {
    * Handler for sign button
    */
   signPersonalMessage: PropTypes.func.isRequired,
+  /**
+   * TODO
+   */
+  getTextRecord: PropTypes.func.isRequired,
 };

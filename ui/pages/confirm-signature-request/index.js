@@ -210,6 +210,10 @@ const ConfirmTxScreen = ({ match }) => {
     return dispatch(action(txData));
   };
 
+  const getTextRecord = (ensName, recordName) => {
+    return dispatch(actions.getTextRecord(ensName, recordName));
+  };
+
   const SigComponent = signatureSelect(txData);
 
   return (
@@ -225,6 +229,7 @@ const ConfirmTxScreen = ({ match }) => {
       cancelMessage={cancelMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
       cancelPersonalMessage={cancelMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
       cancelTypedMessage={cancelMessage(SIGN_MESSAGE_TYPE.TYPED)}
+      getTextRecord={getTextRecord}
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       selectedAccount={selectedAccount}
       ///: END:ONLY_INCLUDE_IN

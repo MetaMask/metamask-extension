@@ -323,6 +323,26 @@ export function tryReverseResolveAddress(
   };
 }
 
+export function getTextRecord(
+  ensName: string,
+  recordName: string,
+): ThunkAction<
+  Promise<string|null>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const textRecord = await submitRequestToBackground(
+      'getTextRecord',
+      [ensName, recordName],
+    );
+    // await forceUpdateMetamaskState(dispatch); ???
+    return textRecord;
+  };
+}
+
+
 export function resetAccount(): ThunkAction<
   Promise<string>,
   MetaMaskReduxState,
