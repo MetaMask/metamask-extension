@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  regularDelayMs,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -26,7 +30,7 @@ describe('Import ERC1155 NFT', function () {
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, _, contractRegistry }) => {
+      async ({ driver, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
@@ -40,6 +44,8 @@ describe('Import ERC1155 NFT', function () {
         // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('[data-testid="address"]', contractAddress);
         await driver.fill('[data-testid="token-id"]', '1');
+
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         const newNftNotification = await driver.findVisibleElement({
@@ -88,6 +94,7 @@ describe('Import ERC1155 NFT', function () {
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
         await driver.fill('[data-testid="address"]', contractAddress);
         await driver.fill('[data-testid="token-id"]', '4');
+        await driver.delay(regularDelayMs);
         await driver.clickElement({ text: 'Add', tag: 'button' });
 
         // Check error message appears
