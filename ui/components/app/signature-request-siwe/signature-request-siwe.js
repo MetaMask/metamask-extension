@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
-import { isValidSIWEOrigin } from '@metamask/controller-utils';
+import { parseDomainParts } from '@metamask/controller-utils';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -36,6 +36,64 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
+
+export const isValidSIWEOrigin = (req) => {
+  try {
+    const origin = "http://jiexi.eth.limo/"
+    const { siwe } = req;
+
+    // origin = scheme://[user[:password]@]domain[:port]
+    // origin is supplied by environment and must match domain claim in message
+    if (!origin || !siwe?.parsedMessage?.domain) {
+      return false;
+    }
+
+    const originParts = new URL(origin);
+    const domainParts = parseDomainParts(
+      siwe.parsedMessage.domain,
+      originParts.protocol,
+    );
+
+    console.log("isValidSIWEOrigin", originParts, domainParts)
+
+    const substitutes = {
+      ".eth.limo$": ".eth",
+      ".eth.link$": ".eth",
+      ".": "."
+    }
+
+    const isValidHostname = Object.entries(substitutes).some(([pattern, substitute]) => {
+      const originHostName = originParts.hostname.replace(new RegExp(pattern), substitute)
+      return domainParts.hostname.localeCompare(originHostName, undefined, {
+        sensitivity: 'accent',
+      }) === 0
+    })
+
+    if (!isValidHostname) {
+      return false;
+    }
+
+    if (domainParts.port !== '' && domainParts.port !== originParts.port) {
+      // If origin port is not specified, protocol default is implied
+      return (
+        originParts.port === '' &&
+        domainParts.port === DEFAULT_PORTS_BY_PROTOCOL[originParts.protocol]
+      );
+    }
+
+    if (
+      domainParts.username !== '' &&
+      domainParts.username !== originParts.username
+    ) {
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
 
 export default function SignatureRequestSIWE({
   txData,
