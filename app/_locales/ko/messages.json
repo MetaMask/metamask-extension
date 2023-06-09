@@ -423,9 +423,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backToAll": {
-    "message": "전체 목록으로 돌아가기"
-  },
   "backup": {
     "message": "백업"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "받기"
   },
-  "recents": {
-    "message": "최근"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "전송"
-  },
-  "transferBetweenAccounts": {
-    "message": "내 계정 간 전송"
   },
   "transferFrom": {
     "message": "전송 위치"

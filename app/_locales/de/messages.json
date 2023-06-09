@@ -423,9 +423,6 @@
   "back": {
     "message": "Zurück"
   },
-  "backToAll": {
-    "message": "Zurück zur Übersicht"
-  },
   "backup": {
     "message": "Datensicherung"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Erhalten"
   },
-  "recents": {
-    "message": "Letzte"
-  },
   "recipientAddressPlaceholder": {
     "message": "Suchen, öffentliche Adresse (0x) oder ENS"
   },
@@ -4063,9 +4057,6 @@
   },
   "transfer": {
     "message": "Überweisung"
-  },
-  "transferBetweenAccounts": {
-    "message": "Zwischen meinen Konten transferieren"
   },
   "transferFrom": {
     "message": "Transferieren von"
