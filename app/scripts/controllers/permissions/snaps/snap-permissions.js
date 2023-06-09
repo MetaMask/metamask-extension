@@ -35,9 +35,9 @@ export const buildSnapRestrictedMethodSpecifications = (hooks) =>
     ...Object.values(restrictedMethodPermissionBuilders),
     ...Object.values(snapKeyringPermissionBuilders),
   ].reduce(
-    (specifications, { targetKey, specificationBuilder, methodHooks }) => {
-      if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
-        specifications[targetKey] = specificationBuilder({
+    (specifications, { targetName, specificationBuilder, methodHooks }) => {
+      if (!Object.keys(ExcludedSnapPermissions).includes(targetName)) {
+        specifications[targetName] = specificationBuilder({
           methodHooks: selectHooks(hooks, methodHooks),
         });
       }

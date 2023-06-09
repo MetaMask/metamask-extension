@@ -8,12 +8,12 @@ const methodHooks = {
 };
 
 const snapKeyringPermissionBuilder = {
-  targetKey: methodName,
+  targetName: methodName,
   // eslint-disable-next-line no-shadow
   specificationBuilder: ({ methodHooks }) => {
     return {
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: methodName,
+      targetName: methodName,
       allowedCaveats: null,
       methodImplementation: getImplementation(methodHooks),
     };
@@ -35,5 +35,5 @@ function getImplementation({ getSnapKeyring, saveSnapKeyring }) {
 }
 
 export const snapKeyringPermissionBuilders = {
-  [snapKeyringPermissionBuilder.targetKey]: snapKeyringPermissionBuilder,
+  [snapKeyringPermissionBuilder.targetName]: snapKeyringPermissionBuilder,
 };

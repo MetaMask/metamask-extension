@@ -89,9 +89,6 @@ import { TransactionMeta } from '../../app/scripts/controllers/incoming-transact
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-// import { whiteListedKeyManagementSnaps } from '../../app/scripts/lib/snap-keyring';
-///: END:ONLY_INCLUDE_IN
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {

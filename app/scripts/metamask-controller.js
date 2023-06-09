@@ -52,15 +52,15 @@ import {
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-///: END:ONLY_INCLUDE_IN
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import {
   CronjobController,
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -135,9 +135,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
-///: END:ONLY_INCLUDE_IN
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 import {
@@ -773,7 +770,7 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     additionalKeyrings.push(
       (() => {
         const builder = () => new SnapKeyring(this.snapController);
@@ -1695,9 +1692,6 @@ export default class MetamaskController extends EventEmitter {
           'Snap Keyring',
         );
       }
-      // we can't provide constructor arguments to keyrings
-      // so we have to set the provider here
-      // snapKeyring.setController(this.snapController);
       this.snapKeyring = snapKeyring;
     }
     return this.snapKeyring;
@@ -2834,9 +2828,6 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
 
-      // set the snapcontroller referernce for snap keyring
-      const [snapKeyring] = keyringController.getKeyringsByType('Snap Keyring');
-      snapKeyring.setController(this.snapController);
       return vault;
     } finally {
       releaseLock();
@@ -2898,9 +2889,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.setLedgerTransportPreference(transportPreference);
 
-    const [snapKeyring] =
-      this.keyringController.getKeyringsByType('Snap Keyring');
-    snapKeyring.setController(this.snapController);
     return this.keyringController.fullUpdate();
   }
 
