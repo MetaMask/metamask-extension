@@ -24,11 +24,11 @@ export default function SmartTransactionsPopover({
   const t = useContext(I18nContext);
   return (
     <Popover
-      title={t('stxAreHere')}
+      title={t('smartSwapsAreHere')}
       footer={
         <>
           <Button type="primary" onClick={onEnableSmartTransactionsClick}>
-            {t('enableSmartTransactions')}
+            {t('enableSmartSwaps')}
           </Button>
           <Box marginTop={1}>
             <Text variant={TextVariant.bodyMd} as="h6">
@@ -73,7 +73,7 @@ export default function SmartTransactionsPopover({
           />
         </Box>
         <Typography variant={TypographyVariant.H7} marginTop={0}>
-          {t('stxDescription')}
+          {t('smartSwapsDescription')}
         </Typography>
         <Typography
           as="ul"
@@ -100,7 +100,7 @@ export default function SmartTransactionsPopover({
           color={TextColor.textAlternative}
           boxProps={{ marginTop: 3 }}
         >
-          {t('stxSubDescription')}&nbsp;
+          {t('smartSwapsSubDescription')}&nbsp;
           <Typography
             as="span"
             fontWeight={FONT_WEIGHT.BOLD}

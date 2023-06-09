@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
-  "enableSmartTransactions": {
-    "message": "Intelligente Transaktionen ermöglichen"
-  },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Mir ist klar, dass ich meine Konten und alle dazugehörigen Vermögenswerte verlieren kann, solange ich keine Sicherungskopie meiner Geheimen Wiederherstellungsphrase erstelle."
   },
-  "smartTransaction": {
-    "message": "Intelligente Transaktionen"
-  },
   "snapContent": {
     "message": "Diese Inhalte stammen von $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "Stark"
   },
-  "stxAreHere": {
-    "message": "Intelligente Transaktionen sind da!"
-  },
   "stxBenefit1": {
     "message": "Transaktionskosten minimieren"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "Versuchen Sie Ihren Swap erneut. Wir werden hier sein, um Sie beim nächsten Mal vor ähnlichen Risiken zu schützen."
   },
-  "stxDescription": {
-    "message": "MetaMask-Swap ist jetzt viel intelligenter geworden! Wenn Sie intelligente Transaktionen aktivieren, kann MetaMask Ihren Swap programmgesteuert optimieren, um Ihnen zu helfen:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Nicht genügend Mittel für eine intelligente Transaktion."
-  },
-  "stxErrorUnavailable": {
-    "message": "Intelligente Transaktionen sind vorübergehend nicht verfügbar."
-  },
   "stxFailure": {
     "message": "Swap fehlgeschlagen"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Ihr Swap wird öffentlich eingereicht ..."
-  },
-  "stxSubDescription": {
-    "message": "* Intelligente Transaktionen versuchen mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
   },
   "stxSuccess": {
     "message": "Swap abgeschlossen!"

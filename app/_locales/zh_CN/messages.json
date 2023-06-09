@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
-  "enableSmartTransactions": {
-    "message": "启用智能交易"
-  },
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
   },
-  "smartTransaction": {
-    "message": "智能交易"
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "强"
   },
-  "stxAreHere": {
-    "message": "智能交易已推出！"
-  },
   "stxBenefit1": {
     "message": "将交易成本减至最低"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
-  "stxDescription": {
-    "message": "MetaMask Swap变得更加智能！启用智能交易将允许MetaMask从编程上优化您的交换，以帮助："
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "没有足够的资金进行智能交易。"
-  },
-  "stxErrorUnavailable": {
-    "message": "智能交易暂时不可用。"
-  },
   "stxFailure": {
     "message": "交换失败"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "正在公开提交您的Swap..."
-  },
-  "stxSubDescription": {
-    "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
   "stxSuccess": {
     "message": "交换完成！"

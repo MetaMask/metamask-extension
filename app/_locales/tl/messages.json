@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
-  "enableSmartTransactions": {
-    "message": "Payagan ang mga smart transaction"
-  },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Secret Recovery Phrase, maaari kong maiwala ang aking mga account at lahat ng kanilang mga asset."
   },
-  "smartTransaction": {
-    "message": "Smart Transaction"
-  },
   "snapContent": {
     "message": "Ang nilalamang ito ay nagmumula sa $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "Mahirap"
   },
-  "stxAreHere": {
-    "message": "Narito na ang mga Smart Transaction!"
-  },
   "stxBenefit1": {
     "message": "Bawasan ang mga gastos sa transaksyon"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "Subukan muli ang iyong pagpapalit. Narito kami para protektahan ka sa mga katulad na panganib sa susunod."
   },
-  "stxDescription": {
-    "message": "Mas humusay pa ang mga Pagpapalit sa MetaMask! Papayagan ng Pagpapagana sa mga Smart Transaction ang MetaMask na pahusayin ang iyong Pagpapalit gamit ang program para makatulong sa: "
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Hindi sapat na pondo para sa smart transaction."
-  },
-  "stxErrorUnavailable": {
-    "message": "Pansamantalang hindi available ang mga Smart Transaction."
-  },
   "stxFailure": {
     "message": "Hindi matagumpay ang pag-swap"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Pampublikong isinusumite ang iyong Swap..."
-  },
-  "stxSubDescription": {
-    "message": "* Susubukan ng mga Smart Transaction na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Pagpapalit ay naging matagupay."
   },
   "stxSuccess": {
     "message": "Nakumpleto ang pagpapalit!"

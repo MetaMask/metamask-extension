@@ -375,32 +375,33 @@ export default function Swap() {
               {isViewQuoteRoute && t('edit')}
             </div>
           )}
-          {swapRedesignEnabled &&
-            !isAwaitingSwapRoute &&
-            !isAwaitingSignaturesRoute &&
-            !isSmartTransactionStatusRoute && (
-              <Box
-                display={DISPLAY.FLEX}
-                justifyContent={JustifyContent.center}
-                marginLeft={4}
-                width={FRACTIONS.ONE_TWELFTH}
-                tabIndex="0"
-                onKeyUp={(e) => {
-                  if (e.key === 'Enter') {
-                    redirectToDefaultRoute();
-                  }
-                }}
-              >
-                <Icon
-                  name={IconName.Arrow2Left}
-                  size={IconSize.Lg}
-                  color={IconColor.iconAlternative}
-                  onClick={redirectToDefaultRoute}
-                  style={{ cursor: 'pointer' }}
-                  title={t('cancel')}
-                />
-              </Box>
-            )}
+          {swapRedesignEnabled && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JustifyContent.center}
+              marginLeft={4}
+              width={FRACTIONS.ONE_TWELFTH}
+              tabIndex="0"
+              onKeyUp={(e) => {
+                if (e.key === 'Enter') {
+                  redirectToDefaultRoute();
+                }
+              }}
+            >
+              {!isAwaitingSwapRoute &&
+                !isAwaitingSignaturesRoute &&
+                !isSmartTransactionStatusRoute && (
+                  <Icon
+                    name={IconName.Arrow2Left}
+                    size={IconSize.Lg}
+                    color={IconColor.iconAlternative}
+                    onClick={redirectToDefaultRoute}
+                    style={{ cursor: 'pointer' }}
+                    title={t('cancel')}
+                  />
+                )}
+            </Box>
+          )}
           <div className="swaps__title">{t('swap')}</div>
           {!swapRedesignEnabled && (
             <div

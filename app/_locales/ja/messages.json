@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
-  "enableSmartTransactions": {
-    "message": "スマートトランザクションを有効にする"
-  },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
   },
-  "smartTransaction": {
-    "message": "スマートトランザクション"
-  },
   "snapContent": {
     "message": "このコンテンツは $1 からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "強"
   },
-  "stxAreHere": {
-    "message": "スマートトランザクションが利用可能になりました！"
-  },
   "stxBenefit1": {
     "message": "トランザクションコストを最小化"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回は同様のリスクを避けられるようサポートします。"
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps がはるかに賢くなりました！スマートトランザクションを有効にすると、MetaMask がプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "スマートトランザクションに十分な資金がありません。"
-  },
-  "stxErrorUnavailable": {
-    "message": "スマートトランザクションは一時的に利用できません。"
-  },
   "stxFailure": {
     "message": "スワップに失敗しました"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "スワップを公開で送信中..."
-  },
-  "stxSubDescription": {
-    "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
   "stxSuccess": {
     "message": "スワップ完了！"

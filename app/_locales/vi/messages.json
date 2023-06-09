@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
-  "enableSmartTransactions": {
-    "message": "Bật giao dịch thông minh"
-  },
   "enableToken": {
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Tôi hiểu rằng nếu chưa sao lưu Cụm Mật Khẩu Khôi Phục Bí Mật của mình, tôi có thể bị mất tài khoản và toàn bộ tài sản bên trong."
   },
-  "smartTransaction": {
-    "message": "Giao dịch thông minh"
-  },
   "snapContent": {
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "Mạnh"
   },
-  "stxAreHere": {
-    "message": "Giao dịch thông minh đã ra mắt!"
-  },
   "stxBenefit1": {
     "message": "Giảm thiểu chi phí giao dịch"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "Hãy thử hoán đổi lại. Chúng tôi ở đây để bảo vệ bạn trước những rủi ro tương tự trong lần tới."
   },
-  "stxDescription": {
-    "message": "Tính năng Hoán đổi của MetaMask nay đã thông minh hơn rất nhiều! Kích hoạt Giao dịch thông minh sẽ cho phép MetaMask tối ưu quy trình Hoán đổi để giúp bạn:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Không có đủ tiền để thực hiện giao dịch thông minh."
-  },
-  "stxErrorUnavailable": {
-    "message": "Giao dịch thông minh tạm thời không khả dụng."
-  },
   "stxFailure": {
     "message": "Hoán đổi không thành công"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Đang công khai gửi yêu cầu Hoán đổi của bạn..."
-  },
-  "stxSubDescription": {
-    "message": "* Giao dịch thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần theo cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
   },
   "stxSuccess": {
     "message": "Hoán đổi hoàn tất!"

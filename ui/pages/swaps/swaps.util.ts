@@ -686,11 +686,11 @@ export const getTranslatedStxErrorMessage = (
   switch (errorType) {
     case StxErrorTypes.unavailable:
     case StxErrorTypes.regularTxPending:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
     case StxErrorTypes.notEnoughFunds:
-      return t('stxErrorNotEnoughFunds');
+      return t('smartSwapsErrorNotEnoughFunds');
     default:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
   }
 };
 

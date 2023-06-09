@@ -1193,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
-  "enableSmartTransactions": {
-    "message": "Akıllı işlemleri etkinleştir"
-  },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -3232,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Gizli Kurtarma İfademi yedekleyene kadar hesaplarımı ve tüm varlıkları kaybedebileceğimi anlıyorum."
   },
-  "smartTransaction": {
-    "message": "Akıllı işlem"
-  },
   "snapContent": {
     "message": "Bu içerik $1 kaynaklıdır",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3418,9 +3412,6 @@
   "strong": {
     "message": "Güçlü"
   },
-  "stxAreHere": {
-    "message": "Akıllı İşlemler burada!"
-  },
   "stxBenefit1": {
     "message": "İşlem maliyetlerini en aza indir"
   },
@@ -3442,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "Takasını tekrar dene. Bir dahaki sefere seni benzer risklere karşı korumak için burada olacağız."
   },
-  "stxDescription": {
-    "message": "MetaMask Swapları artık çok daha akıllı! Akıllı İşlemleri, MetaMask'in renklerine yardımcı olmak için Swap'ını programlı olarak optimize etme bölümünden yararlanmak:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Akıllı işlem için yeterli para yok."
-  },
-  "stxErrorUnavailable": {
-    "message": "Akıllı İşlemler geçici olarak kullanılamıyor."
-  },
   "stxFailure": {
     "message": "Takas başarısız oldu"
   },
@@ -3463,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Swap işlemin herkese açık olarak gönderiliyor..."
-  },
-  "stxSubDescription": {
-    "message": "* Akıllı İşlemler, işlemini birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Takas'ının başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
   },
   "stxSuccess": {
     "message": "Takas tamamlandı!"

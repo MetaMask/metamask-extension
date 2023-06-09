@@ -440,7 +440,7 @@
   },
   "attemptToCancelSwap": {
     "message": "Attempt to cancel swap for ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
@@ -1375,8 +1375,8 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableSmartTransactions": {
-    "message": "Enable smart transactions"
+  "enableSmartSwaps": {
+    "message": "Enable smart swaps"
   },
   "enableSnap": {
     "message": "Enable"
@@ -3795,8 +3795,23 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
-  "smartTransaction": {
-    "message": "Smart transaction"
+  "smartSwap": {
+    "message": "Smart swap"
+  },
+  "smartSwapsAreHere": {
+    "message": "Smart Swaps are here!"
+  },
+  "smartSwapsDescription": {
+    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart swap."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Smart Swaps are temporarily unavailable."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
@@ -4055,9 +4070,6 @@
   "strong": {
     "message": "Strong"
   },
-  "stxAreHere": {
-    "message": "Smart Transactions are here!"
-  },
   "stxBenefit1": {
     "message": "Minimize transaction costs"
   },
@@ -4079,15 +4091,6 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Not enough funds for a smart transaction."
-  },
-  "stxErrorUnavailable": {
-    "message": "Smart Transactions are temporarily unavailable."
-  },
   "stxFailure": {
     "message": "Swap failed"
   },
@@ -4100,9 +4103,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Publicly submitting your Swap..."
-  },
-  "stxSubDescription": {
-    "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "stxSuccess": {
     "message": "Swap complete!"
