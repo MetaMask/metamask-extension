@@ -511,6 +511,13 @@ export default function PrepareSwapPage({
   }, [dispatch, fromToken, ethBalance, chainId]);
 
   useEffect(() => {
+    if (!fromToken?.symbol && !fetchParamsFromToken?.symbol) {
+      dispatch(setSwapsFromToken(defaultSwapsToken));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (prevFromTokenBalance !== fromTokenBalance) {
       onInputChange(fromTokenInputValue, fromTokenBalance);
     }

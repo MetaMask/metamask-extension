@@ -24,7 +24,6 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
-  getSwapsDefaultToken,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -51,8 +50,6 @@ import {
   navigateBackToBuildQuote,
   getSwapRedesignEnabled,
   setTransactionSettingsOpened,
-  setSwapsFromToken,
-  getFromToken,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -78,7 +75,6 @@ import {
   CONTRACT_DATA_DISABLED_ERROR,
   OFFLINE_FOR_MAINTENANCE,
 } from '../../../shared/constants/swaps';
-import { isSwapsDefaultTokenSymbol } from '../../../shared/modules/swaps.utils';
 
 import {
   resetBackgroundSwapsState,
@@ -133,8 +129,7 @@ export default function Swap() {
 
   const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
-  const { sourceTokenInfo = {}, destinationTokenInfo = {} } =
-    fetchParams?.metaData || {};
+  const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
@@ -167,8 +162,6 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const fromToken = useSelector(getFromToken, isEqual);
 
   useEffect(() => {
     const leaveSwaps = async () => {
@@ -486,15 +479,6 @@ export default function Swap() {
               render={() => {
                 if (!swapRedesignEnabled) {
                   return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
-                }
-                const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
-                  sourceTokenInfo?.symbol,
-                  chainId,
-                )
-                  ? defaultSwapsToken
-                  : sourceTokenInfo;
-                if (!fromToken?.symbol && !fetchParamsFromToken?.symbol) {
-                  dispatch(setSwapsFromToken(defaultSwapsToken));
                 }
 
                 return (
