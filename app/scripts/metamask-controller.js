@@ -618,15 +618,16 @@ export default class MetamaskController extends EventEmitter {
 
     // BEGIN:ONLY_INCLUDE_IN(build-flask);
     this.ppomController = new PPOMController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'PPOMController',
+      }),
       storageBackend: new IndexedDBBackend('PPOMDB', 1),
       provider: this.provider,
       state: initState.PPOMController,
-      chainId: hexToDecimal(
-        this.networkController.store.getState().providerConfig.chainId,
-      ),
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onNetworkChange: (cb) => {
         this.networkController.store.subscribe((networkState) => {
-          return cb(hexToDecimal(networkState.providerConfig.chainId));
+          return cb(networkState.providerConfig.chainId);
         });
       },
     });

@@ -197,9 +197,12 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: '',
     },
     {
-      src: './node_modules/@matamask/ppom-validator/dist',
-      pattern: '/ppom.wasm',
-      dest: '',
+      src: getPathInsideNodeModules(
+        '@metamask/ppom-validator',
+        'dist/ppom.wasm',
+      ),
+      dest: 'ppom.wasm',
+      pattern: '',
     },
   ];
 
