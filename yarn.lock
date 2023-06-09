@@ -15793,19 +15793,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "eth-block-tracker@npm:7.0.1"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": ^1.0.0
-    "@metamask/safe-event-emitter": ^3.0.0
-    "@metamask/utils": ^5.0.1
-    json-rpc-random-id: ^1.0.1
-    pify: ^3.0.0
-  checksum: b8ecdaebed26423fa8444a779ecf34fb102f873fd1a29135189a3c553f679e34c19151f6b8d1cbbe180fdcc9ba967a7a55af6a72678140d6e3c8e725e630771e
-  languageName: node
-  linkType: hard
-
 "eth-eip712-util-browser@npm:^0.0.3":
   version: 0.0.3
   resolution: "eth-eip712-util-browser@npm:0.0.3"

@@ -401,7 +401,7 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: ['ApprovalController:addRequest'],
+      allowedActions: [`${this.approvalController.name}:addRequest`],
     });
     this.nftController = new NftController(
       {
@@ -451,10 +451,6 @@ export default class MetamaskController extends EventEmitter {
               tokenId,
             },
           }),
-        messenger: this.controllerMessenger.getRestricted({
-          name: 'NftController',
-          allowedActions: [`${this.approvalController.name}:addRequest`],
-        }),
       },
       {},
       initState.NftController,
