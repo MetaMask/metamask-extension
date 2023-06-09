@@ -25,6 +25,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { TERMS_OF_USE_LINK } from '../../../../../shared/constants/terms';
 
 export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
   const t = useI18nContext();
@@ -79,7 +80,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
                 <ButtonLink
                   key="privacyNoticeTermsOfUseLink"
                   size={BUTTON_LINK_SIZES.INHERIT}
-                  href="https://consensys.net/terms-of-use/"
+                  href={TERMS_OF_USE_LINK}
                   target="_blank"
                 >
                   &nbsp;{t('snapsTermsOfUse')}&nbsp;
