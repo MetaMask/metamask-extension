@@ -3445,17 +3445,22 @@ export function rejectAllMessages(
   messageList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    return Promise.all(
+    const userRejectionError = serializeError(
+      ethErrors.provider.userRejectedRequest(),
+    );
+    await Promise.all(
       messageList.map(
         async ({ id }) =>
-          await dispatch(
-            rejectPendingApproval(
-              id,
-              serializeError(ethErrors.provider.userRejectedRequest()),
-            ),
-          ),
+          await submitRequestToBackground('rejectPendingApproval', [
+            id,
+            userRejectionError,
+          ]),
       ),
     );
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
   };
 }
 
