@@ -7,10 +7,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
 import {
-  AvatarIcon,
-  BadgeWrapper,
-  BadgeWrapperPosition,
-  IconName,
   IconSize,
   Text,
   ValidTag,
