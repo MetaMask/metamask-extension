@@ -584,7 +584,7 @@ export const getDedupedSnaps = (request, permissions) => {
     (snapId) => !currentSnapKeys.includes(snapId),
   );
 
-  return dedupedSnaps.length ? dedupedSnaps : requestedSnapKeys;
+  return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
 ///: END:ONLY_INCLUDE_IN
