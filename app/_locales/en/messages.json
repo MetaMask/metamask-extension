@@ -739,6 +739,10 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
+  },
   "connectTo": {
     "message": "Connect to $1",
     "description": "$1 is the name/origin of a web3 site/application that the user can connect to metamask"
@@ -803,6 +807,16 @@
   },
   "connectionError": {
     "message": "Connection error"
+  },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionRequest": {
+    "message": "Connection request"
   },
   "contactUs": {
     "message": "Contact us"
@@ -1559,10 +1573,6 @@
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
-  "forMoreDetails": {
-    "message": "for more details.",
-    "description": "Click for more details message in popup modal displayed when installing a snap for the first time."
-  },
   "forbiddenIpfsGateway": {
     "message": "Forbidden IPFS Gateway: Please specify a CID gateway"
   },
@@ -2268,6 +2278,10 @@
   },
   "moreComingSoon": {
     "message": "More coming soon..."
+  },
+  "multipleSnapConnectionWarning": {
+    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -3356,9 +3370,6 @@
   "reportLastRunTooltip": {
     "message": "The date and time of when the last AML/CFT report was run"
   },
-  "requestFailed": {
-    "message": "Request failed"
-  },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
   },
@@ -3768,6 +3779,10 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3853,27 +3868,22 @@
     "message": "The snap didn't return any insight"
   },
   "snapsPrivacyWarningFirstMessage": {
-    "message": "Installing a snap retrieves data from third parties. They may collect your personal information.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time."
+    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
   },
   "snapsPrivacyWarningSecondMessage": {
-    "message": "MetaMask has no access to this information.",
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys has no access to information you share with these third parties.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
   },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
   },
-  "snapsThirdPartyNoticeReadMorePartOne": {
-    "message": "Any information you share with third-party-developed snaps will be collected directly by those snaps in accordance with their privacy policies. ",
-    "description": "First part of a tooltip content in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsThirdPartyNoticeReadMorePartThree": {
-    "message": "MetaMask has no access to information you share with these third parties.",
-    "description": "Third part of a tooltip content in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsThirdPartyNoticeReadMorePartTwo": {
-    "message": "During the installation of a snap, npmjs (npmjs.com) and AWS (aws.amazon.com) may collect your IP address. Please refer to their privacy policies for more information.",
-    "description": "Second part of a tooltip content in popup modal displayed when installing a snap for the first time."
+  "snapsTermsOfUse": {
+    "message": "Terms of Use"
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -4493,7 +4503,7 @@
     "message": "Things to keep in mind:"
   },
   "thirdPartySoftware": {
-    "message": "Third party software",
+    "message": "Third-party software notice",
     "description": "Title of a popup modal displayed when installing a snap for the first time."
   },
   "thisCollection": {
