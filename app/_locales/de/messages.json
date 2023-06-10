@@ -1562,6 +1562,12 @@
     "message": "Betrüger aber schon.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Halten, um GWP anzuzeigen"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Bewahren Sie Ihre GWP sicher auf"
+  },
   "ignoreAll": {
     "message": "Alle ignorieren"
   },
@@ -3333,11 +3339,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Das Einfügen schlug fehl, weil sie mehr als 24 Wörter enthielt. Eine geheime Wiederherstellungsphrase darf maximal 24 Wörter enthalten.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Sie können Ihre gesamte geheime Wiederherstellungsphrase in ein beliebiges Feld einfügen",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Anfangen"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Zur Enthüllung Ihrer geheimen Wiederherstellungsphrase, müssen Sie zwei Fragen beantworten"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, kann MetaMask ..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Ihnen nicht helfen"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Schreiben Sie sie auf, gravieren Sie sie in Metall ein oder bewahren Sie sie an mehreren geheimen Orten auf, damit Sie sie niemals verlieren. Sollten Sie sie verlieren, ist sie für immer weg."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Richtig! Niemand kann Ihnen dabei helfen, Ihre geheime Wiederherstellungsphrase zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "diese für Sie zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, ist diese für immer verloren. Niemand kann Ihnen dabei helfen, sie zurückzubekommen, egal, was behauptet wird."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Falsch! Niemand kann Ihnen dabei helfen, Ihre geheime Wiederherstellungsphrase zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Sollte jemand, selbst ein Support-Mitarbeiter, nach Ihrer geheimen Wiederherstellungsphrase fragen ..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Werden Sie betrogen"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Jeder, der behauptet, Ihre gemeine Wiederherstellungsphrase zu benötigen, lügt Sie an. Wenn Sie diese mit solchen Personen teilen, werden diese Ihre Vermögenswerte stehlen."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Richtig! Es ist nie eine gute Idee, Ihre geheime Wiederherstellungsphrase mit anderen zu teilen"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Sie sollten sie dieser Person geben"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Jeder, der behauptet, Ihre gemeine Wiederherstellungsphrase zu benötigen, lügt Sie an. Wenn Sie diese mit einer solchen Person teilen, wird sie Ihre Vermögenswerte stehlen."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Nein! Teilen Sie Ihre geheime Wiederherstellungsphrase mit niemandem, niemals"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Sicherheits-Quiz"
   },
   "srpToggleShow": {
     "message": "Dieses Wort der geheimen Wiederherstellungsphrase anzeigen/ausblenden",
