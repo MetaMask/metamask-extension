@@ -29,13 +29,13 @@ import {
 } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
-  CurrencyRateController,
-  TokenListController,
-  TokensController,
-  TokenRatesController,
-  NftController,
   AssetsContractController,
+  CurrencyRateController,
+  NftController,
   NftDetectionController,
+  TokenListController,
+  TokenRatesController,
+  TokensController,
 } from '@metamask/assets-controllers';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
@@ -317,27 +317,20 @@ export default class MetamaskController extends EventEmitter {
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
+      allowedEvents: [
+        'TokenListController:stateChange',
+        'NetworkController:stateChange',
+      ],
     });
 
     this.tokenListController = new TokenListController({
-      chainId: hexToDecimal(
-        this.networkController.store.getState().providerConfig.chainId,
-      ),
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
         ? initState.TokenListController.preventPollingOnNetworkRestart
         : true,
-      onNetworkStateChange: (cb) => {
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-              chainId: hexToDecimal(networkState.providerConfig.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        });
-      },
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       messenger: tokenListMessenger,
       state: initState.TokenListController,
     });
@@ -358,33 +351,24 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.tokensController = new TokensController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       config: { provider: this.provider },
       state: initState.TokensController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'TokensController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
+        allowedActions: [`${this.approvalController.name}:addRequest`],
       }),
     });
 
     this.assetsContractController = new AssetsContractController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         // This handler is misnamed, and is a known issue that will be resolved
@@ -400,14 +384,7 @@ export default class MetamaskController extends EventEmitter {
             'NetworkController:networkDidChange',
             () => {
               const networkState = this.networkController.store.getState();
-              const modifiedNetworkState = {
-                ...networkState,
-                providerConfig: {
-                  ...networkState.providerConfig,
-                  chainId: hexToDecimal(networkState.providerConfig.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
+              return cb(networkState);
             },
           ),
       },
@@ -417,23 +394,21 @@ export default class MetamaskController extends EventEmitter {
       initState.AssetsContractController,
     );
 
+    const nftControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'NftController',
+      allowedActions: ['ApprovalController:addRequest'],
+    });
     this.nftController = new NftController(
       {
+        messenger: nftControllerMessenger,
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -479,21 +454,14 @@ export default class MetamaskController extends EventEmitter {
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
     this.nftDetectionController = new NftDetectionController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-              chainId: hexToDecimal(networkState.providerConfig.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -624,6 +592,7 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -631,17 +600,9 @@ export default class MetamaskController extends EventEmitter {
             `${this.currencyRateController.name}:stateChange`,
             listener,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
       },
       {
         disabled:
@@ -1194,9 +1155,8 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
-          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known NFT
-          const knownNft = allNfts?.[userAddress]?.[chainIdAsDecimal]?.find(
+          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -1207,7 +1167,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownNft,
               false,
-              { userAddress, chainId: chainIdAsDecimal },
+              { userAddress, chainId },
             );
           }
         }
