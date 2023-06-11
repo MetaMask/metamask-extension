@@ -4135,6 +4135,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-infura@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/eth-json-rpc-infura@npm:8.1.0"
+  dependencies:
+    "@metamask/utils": ^3.0.1
+    eth-json-rpc-middleware: ^9.0.0
+    eth-rpc-errors: ^4.0.3
+    json-rpc-engine: ^6.1.0
+    node-fetch: ^2.6.7
+  checksum: fd09383e2b3c16187b8889b53bfc431fc7ea4f6483acc23ddf77f2fd771ad0fbff41d6a62d4b05833e7cda66adafe0cb3730d7c0e9575b89683b71a82ab1ee1f
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-middleware@npm:^11.0.0":
   version: 11.0.0
   resolution: "@metamask/eth-json-rpc-middleware@npm:11.0.0"
