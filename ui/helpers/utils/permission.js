@@ -91,7 +91,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
           <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
@@ -160,7 +160,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
           <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
@@ -241,7 +241,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           fontWeight={FontWeight.Medium}
           as="span"
         >
-          {getSnapName(targetSubjectMetadata?.origin)}
+          {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
         </Text>,
         <Text as="span" key="2" fontWeight={FontWeight.Medium}>
           {coinTypeToProtocolName(coinType) ||
@@ -261,7 +261,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
-  [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
+  [RestrictedMethods.wallet_snap]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
       leftIcon: getLeftIcon(IconName.Flash),
@@ -269,7 +273,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     };
 
     return Object.keys(snaps).map((snapId) => {
-      const friendlyName = getSnapName(snapId);
+      const friendlyName = getSnapName(snapId, targetSubjectMetadata);
       if (friendlyName) {
         return {
           ...baseDescription,
