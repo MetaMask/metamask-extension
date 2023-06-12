@@ -141,34 +141,34 @@ exports[`Signature Request Component render should match snapshot when we are us
           <div
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
-            <p
+            <h6
               class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
             >
               Unknown private network
-            </p>
-            <p
+            </h6>
+            <h6
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Antonio
-            </p>
+            </h6>
           </div>
         </div>
         <div
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
-          <p
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
           >
             Balance
-          </p>
-          <p
+          </h6>
+          <h6
             align="end"
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
           >
             966.987986
              
             ABC
-          </p>
+          </h6>
         </div>
       </div>
     </div>
@@ -917,34 +917,34 @@ exports[`Signature Request Component render should match snapshot when we want t
           <div
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
-            <p
+            <h6
               class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
             >
               Unknown private network
-            </p>
-            <p
+            </h6>
+            <h6
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Antonio
-            </p>
+            </h6>
           </div>
         </div>
         <div
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
-          <p
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
           >
             Balance
-          </p>
-          <p
+          </h6>
+          <h6
             align="end"
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
           >
             1515270.174798
              
             DEF
-          </p>
+          </h6>
         </div>
       </div>
     </div>

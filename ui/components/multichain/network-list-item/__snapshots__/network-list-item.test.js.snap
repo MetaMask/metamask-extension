@@ -5,7 +5,7 @@ exports[`NetworkListItem renders properly 1`] = `
   <div
     class="box multichain-network-list-item box--padding-4 box--gap-2 box--flex-direction-row box--justify-content-space-between box--align-items-center box--width-full box--background-color-transparent box--display-flex"
   >
-    <p
+    <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <img
@@ -13,11 +13,11 @@ exports[`NetworkListItem renders properly 1`] = `
         class="mm-avatar-network__network-image"
         src="./images/matic-token.png"
       />
-    </p>
+    </div>
     <div
       class="box multichain-network-list-item__network-name box--flex-direction-row"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--ellipsis mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent"
       >
         <span
@@ -25,7 +25,7 @@ exports[`NetworkListItem renders properly 1`] = `
         >
           Polygon
         </span>
-      </p>
+      </button>
     </div>
     <button
       aria-label="[deleteNetwork]"

@@ -16,21 +16,21 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       <span>
          
         The 
-        <p
+        <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
           rel="noopener noreferrer"
           target="_blank"
         >
           Secret Recovery Phrase (SRP)
-        </p>
+        </a>
          provides 
-        <p
+        <strong
           class="mm-box mm-text mm-text--body-md-bold"
         >
           full access to your wallet and funds.
 
-        </p>
+        </strong>
         
          
       </span>
@@ -41,14 +41,14 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       <span>
          
         MetaMask is a 
-        <p
+        <a
           class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
           rel="noopener noreferrer"
           target="_blank"
         >
           non-custodial wallet
-        </p>
+        </a>
         . That means you're the owner of your SRP.
          
       </span>
@@ -67,11 +67,11 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
           <span>
              
             Make sure no one is looking at your screen. 
-            <p
+            <strong
               class="mm-box mm-text mm-text--body-md-bold"
             >
               MetaMask Support will never request this.
-            </p>
+            </strong>
             
              
           </span>
@@ -79,20 +79,20 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </div>
     </div>
     <form>
-      <p
+      <label
         class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--display-inline-flex mm-box--align-items-center"
         for="password-box"
       >
         Enter password to continue
-      </p>
+      </label>
       <div
-        class="box mm-text-field mm-text-field--size-lg mm-text-field--truncate box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+        class="box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
       >
-        <p
+        <input
           autocomplete="off"
           class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--background-color-transparent mm-box--border-style-none"
           data-testid="input-password"
-          focused="false"
+          focused="true"
           id="password-box"
           placeholder="Make sure nobody is looking"
           type="password"
@@ -103,17 +103,17 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     <div
       class="box box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-row"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
       >
         Cancel
-      </p>
-      <p
+      </button>
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         disabled=""
       >
         Next
-      </p>
+      </button>
     </div>
   </div>
 </div>

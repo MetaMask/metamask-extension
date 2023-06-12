@@ -58,11 +58,11 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <button
         class="account-modal__close"
       />
-      <p
+      <span
         class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-top-2"
       >
         Test Account
-      </p>
+      </span>
       <div
         class="box ellip-address-wrapper box--margin-top-2 box--padding-1 box--sm:padding-2 box--md:padding-1 box--lg:padding-2 box--flex-direction-row box--border-style-solid box--border-color-border-default box--border-width-1"
       >
@@ -79,21 +79,22 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <div
         class="box box--padding-right-5 box--padding-left-5 box--display-flex box--flex-direction-column box--align-items-flex-start box--width-full"
       >
-        <p
+        <label
           class="mm-box mm-text mm-label mm-text--body-sm mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         >
           Type your MetaMask password
-        </p>
+        </label>
         <div
           class="box mm-text-field mm-text-field--size-md mm-text-field--truncate export-private-key-modal__password-input box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
           data-testid="password-input"
         >
-          <p
+          <input
             autocomplete="off"
             class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--background-color-transparent mm-box--border-style-none"
             focused="false"
             placeholder="Enter password"
             type="password"
+            value=""
           />
         </div>
       </div>
@@ -118,19 +119,19 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <div
         class="box box--margin-top-3 box--padding-5 box--md:padding-5 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
       >
-        <p
+        <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md mm-box--margin-right-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           type="secondary"
         >
           Cancel
-        </p>
-        <p
+        </button>
+        <button
           class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           disabled=""
           type="primary"
         >
           Confirm
-        </p>
+        </button>
       </div>
     </div>
   </div>

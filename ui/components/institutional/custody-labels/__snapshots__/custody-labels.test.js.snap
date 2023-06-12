@@ -2,7 +2,7 @@
 
 exports[`CustodyLabels Component should render correctly 1`] = `
 <div>
-  <p
+  <label
     class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
     for="address-index"
   >
@@ -11,6 +11,6 @@ exports[`CustodyLabels Component should render correctly 1`] = `
     >
       value
     </p>
-  </p>
+  </label>
 </div>
 `;

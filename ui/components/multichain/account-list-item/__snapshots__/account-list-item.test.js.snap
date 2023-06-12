@@ -5,7 +5,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
   <div
     class="box multichain-account-list-item box--padding-4 box--display-flex box--flex-direction-row box--background-color-transparent"
   >
-    <p
+    <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
@@ -47,7 +47,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           </svg>
         </div>
       </div>
-    </p>
+    </div>
     <div
       class="box multichain-account-list-item__content box--display-flex box--flex-direction-column"
     >
@@ -57,10 +57,10 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         <div
           class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
         >
-          <p
+          <div
             class="mm-box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis mm-box--margin-inline-end-2"
           >
-            <p
+            <button
               class="mm-box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent"
             >
               <span
@@ -68,9 +68,9 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               >
                 Test Account
               </span>
-            </p>
-          </p>
-          <p
+            </button>
+          </div>
+          <div
             class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
@@ -91,7 +91,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 ETH
               </span>
             </div>
-          </p>
+          </div>
         </div>
       </div>
       <div
@@ -106,7 +106,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             0x0dc...e7bc
           </p>
         </div>
-        <p
+        <div
           class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
         >
           <div
@@ -127,7 +127,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               ETH
             </span>
           </div>
-        </p>
+        </div>
       </div>
     </div>
     <div>

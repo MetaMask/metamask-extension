@@ -142,12 +142,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
           >
             Unknown private network
           </h6>
           <h6
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
           >
             Test Account
           </h6>
@@ -157,13 +157,13 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
         >
           Balance
         </h6>
         <h6
           align="end"
-          class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
         >
           966.987986
            
@@ -287,11 +287,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Message:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -301,11 +301,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             URI:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -315,11 +315,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Version:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -329,11 +329,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Chain ID:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -343,11 +343,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Nonce:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -357,11 +357,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Issued At:
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
@@ -371,11 +371,11 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         <div
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
-          <p
+          <h4
             class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2"
           >
             Resources: 2
-          </p>
+          </h4>
           <p
             class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2"
           >

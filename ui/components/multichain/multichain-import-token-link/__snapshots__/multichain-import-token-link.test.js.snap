@@ -8,7 +8,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
     <div
       class="box box--display-flex box--flex-direction-row box--align-items-center"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="import-token-button"
       >
@@ -17,12 +17,12 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
           style="mask-image: url('./images/icons/add.svg');"
         />
         Import tokens
-      </p>
+      </button>
     </div>
     <div
       class="box box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-row box--align-items-center"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="refresh-list-button"
       >
@@ -31,7 +31,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
           style="mask-image: url('./images/icons/refresh.svg');"
         />
         Refresh list
-      </p>
+      </button>
     </div>
   </div>
 </div>
@@ -45,7 +45,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
     <div
       class="box box--display-flex box--flex-direction-row box--align-items-center"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="import-token-button"
       >
@@ -54,12 +54,12 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
           style="mask-image: url('./images/icons/add.svg');"
         />
         Import tokens
-      </p>
+      </button>
     </div>
     <div
       class="box box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-row box--align-items-center"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="refresh-list-button"
       >
@@ -68,7 +68,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
           style="mask-image: url('./images/icons/refresh.svg');"
         />
         Refresh list
-      </p>
+      </button>
     </div>
   </div>
 </div>

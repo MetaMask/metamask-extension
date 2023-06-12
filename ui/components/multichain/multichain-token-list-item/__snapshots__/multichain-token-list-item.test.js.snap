@@ -14,15 +14,15 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
       <div
         class="box mm-badge-wrapper box--margin-right-3 box--display-inline-block box--flex-direction-row"
       >
-        <p
+        <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
         >
           ?
-        </p>
+        </div>
         <div
           class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
         >
-          <p
+          <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
           >
             <img
@@ -30,7 +30,7 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
               class="mm-avatar-network__network-image"
               src="./images/eth_logo.png"
             />
-          </p>
+          </div>
         </div>
       </div>
       <div
@@ -54,11 +54,11 @@ exports[`MultichainTokenListItem should render correctly 1`] = `
           />
         </div>
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="multichain-token-list-item-value"
         >
-
-
+           
+           
         </p>
       </div>
     </a>

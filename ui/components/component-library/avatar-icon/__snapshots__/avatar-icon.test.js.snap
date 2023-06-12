@@ -2,7 +2,7 @@
 
 exports[`AvatarIcon should render correctly 1`] = `
 <div>
-  <p
+  <div
     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-primary-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     data-testid="avatar-icon"
   >
@@ -10,6 +10,6 @@ exports[`AvatarIcon should render correctly 1`] = `
       class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
       style="mask-image: url('./images/icons/swap-horizontal.svg');"
     />
-  </p>
+  </div>
 </div>
 `;

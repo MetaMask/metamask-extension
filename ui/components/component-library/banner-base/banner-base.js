@@ -111,7 +111,7 @@ BannerBase.propTypes = {
   /**
    * Props for action button (ButtonLink) of the BannerBase below the children
    */
-  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
+  actionButtonProps: PropTypes.object,
   /**
    * The onClick handler for the action button (ButtonLink)
    */
@@ -128,7 +128,7 @@ BannerBase.propTypes = {
   /**
    * The props to pass to the close button
    */
-  closeButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
+  closeButtonProps: PropTypes.object,
   /**
    * An additional className to apply to the BannerBase
    */

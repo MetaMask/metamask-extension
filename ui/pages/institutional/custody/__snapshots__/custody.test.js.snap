@@ -19,16 +19,16 @@ exports[`CustodyPage renders CustodyPage 1`] = `
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>
-      <p
+      <h4
         class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-4 mm-box--margin-bottom-4"
       >
         Custodial Accounts
-      </p>
-      <p
+      </h4>
+      <h6
         class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--margin-bottom-5 mm-box--color-text-default"
       >
         Please choose the custodian you want to connect in order to add or refresh a token.
-      </p>
+      </h6>
       <div
         class="box box--flex-direction-row"
       >
@@ -53,12 +53,12 @@ exports[`CustodyPage renders CustodyPage 1`] = `
                 Saturn Custody
               </p>
             </div>
-            <p
+            <button
               class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
               data-testid="custody-connect-button"
             >
               Select
-            </p>
+            </button>
           </div>
         </ul>
       </div>
@@ -87,7 +87,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
           style="mask-image: url('./images/icons/arrow-left.svg');"
         />
       </button>
-      <p
+      <h4
         class="mm-box mm-text mm-text--body-md"
       >
         <div
@@ -97,7 +97,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
             class="mm-box mm-text mm-text--body-md mm-box--margin-left-2"
           />
         </div>
-      </p>
+      </h4>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-top-4 mm-box--margin-bottom-4"
       >
@@ -153,18 +153,18 @@ exports[`CustodyPage renders CustodyPage 2`] = `
       <div
         class="box box--padding-4 box--display-flex box--flex-direction-row box--justify-content-center"
       >
-        <p
+        <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-box--margin-right-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           type="secondary"
         >
           Cancel
-        </p>
-        <p
+        </button>
+        <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           data-testid="jwt-form-connect-button"
         >
           Connect
-        </p>
+        </button>
       </div>
     </div>
   </div>

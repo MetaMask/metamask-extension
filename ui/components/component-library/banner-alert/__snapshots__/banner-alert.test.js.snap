@@ -11,11 +11,11 @@ exports[`BannerAlert should render BannerAlert element correctly 1`] = `
       style="mask-image: url('./images/icons/info.svg');"
     />
     <div>
-      <p
+      <h5
         class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium"
       >
         BannerAlert test
-      </p>
+      </h5>
       <p
         class="mm-box mm-text mm-text--body-md"
       >

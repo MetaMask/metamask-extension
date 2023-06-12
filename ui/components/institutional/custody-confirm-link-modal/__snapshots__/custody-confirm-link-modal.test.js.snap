@@ -20,21 +20,21 @@ exports[`Custody Confirm Link should match snapshot 1`] = `
         src="https://saturn-custody-ui.dev.metamask-institutional.io/saturn.svg"
       />
     </div>
-    <h2
+    <h4
       class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--padding-top-4"
     >
       Awaiting approval...
-    </h2>
+    </h4>
     <p
       class="mm-box mm-text custody-confirm-link__description mm-text--body-sm mm-text--text-align-center mm-box--padding-top-4 mm-box--padding-right-5 mm-box--padding-bottom-10 mm-box--padding-left-5 mm-box--color-text-default"
     >
       Approve the transaction in the Saturn Custody app. Once all required custody approvals have been performed the transaction will complete. Check your Saturn Custody app for status.
     </p>
-    <p
+    <button
       class="mm-box mm-text mm-button-base mm-button-base--size-md custody-confirm-link__btn mm-button-primary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
     >
       Close
-    </p>
+    </button>
   </div>
 </div>
 `;

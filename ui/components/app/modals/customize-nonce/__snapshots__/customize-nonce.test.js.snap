@@ -32,7 +32,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
         <div
           class="box box--margin-top-2 box--display-inline-flex box--flex-direction-row box--align-items-center"
         >
-          <p
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-normal"
           >
             This is an advanced feature, use cautiously.
@@ -44,7 +44,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
             >
               Learn more
             </a>
-          </p>
+          </h6>
         </div>
         <div
           class="box box--margin-top-3 box--flex-direction-row"
@@ -52,12 +52,12 @@ exports[`Customize Nonce should match snapshot 1`] = `
           <div
             class="box box--display-flex box--flex-direction-row box--align-items-center"
           >
-            <p
+            <h6
               boxprops="[object Object]"
               class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold"
             >
               Edit nonce
-            </p>
+            </h6>
             <div
               class="box box--flex-direction-row box--width-1/6"
             >

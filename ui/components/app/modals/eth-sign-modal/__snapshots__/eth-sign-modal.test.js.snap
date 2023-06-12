@@ -31,14 +31,14 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
       class="mm-box mm-text mm-text--body-md"
     >
       Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code.
-      <p
+      <a
         class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         href="https://support.metamask.io/hc/en-us/articles/14764161421467"
         rel="noopener noreferrer"
         target="_blank"
       >
         Learn more
-      </p>
+      </a>
     </p>
     <div
       class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-6 box--margin-bottom-6 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
@@ -62,31 +62,31 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
         readonly=""
         type="checkbox"
       />
-      <p
+      <label
         class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--display-inline-flex mm-box--align-items-center"
         for="eth-sign__checkbox"
       >
-        <p
+        <span
           class="mm-box mm-text mm-text--body-md"
         >
           I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. 
-        </p>
-      </p>
+        </span>
+      </label>
     </div>
     <div
       class="box box--margin-top-6 box--display-flex box--gap-4 box--flex-direction-row box--justify-content-space-between"
     >
-      <p
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
       >
         Cancel
-      </p>
-      <p
+      </button>
+      <button
         class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         disabled=""
       >
         Continue
-      </p>
+      </button>
     </div>
   </div>
 </div>

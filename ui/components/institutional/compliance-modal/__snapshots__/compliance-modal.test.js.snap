@@ -23,11 +23,11 @@ exports[`ComplianceModal should render the correct content 1`] = `
               src="images/compliance-logo-small.svg"
               width="32"
             />
-            <p
+            <h4
               class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-text-default"
             >
               [codefiCompliance]
-            </p>
+            </h4>
           </div>
           <button
             aria-label="[close]"

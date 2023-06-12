@@ -26,7 +26,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
         <div
           class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
         >
-          <p
+          <label
             class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
             for="address-0"
           >
@@ -35,15 +35,15 @@ exports[`CustodyAccountList renders accounts 1`] = `
             >
               Test Account 1
             </span>
-          </p>
-          <p
+          </label>
+          <label
             class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
             for="address-0"
           >
-            <p
+            <span
               class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex"
             >
-              <p
+              <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 href="https://etherscan.io/address/0x1234567890123456789012345678901234567890"
                 rel="noopener noreferrer"
@@ -58,7 +58,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                     style="mask-image: url('./images/icons/undefined.svg');"
                   />
                 </span>
-              </p>
+              </a>
               <div>
                 <div
                   aria-describedby="tippy-tooltip-1"
@@ -78,8 +78,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   </button>
                 </div>
               </div>
-            </p>
-          </p>
+            </span>
+          </label>
           <div
             class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
           />
@@ -102,7 +102,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
         <div
           class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
         >
-          <p
+          <label
             class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
             for="address-1"
           >
@@ -111,15 +111,15 @@ exports[`CustodyAccountList renders accounts 1`] = `
             >
               Test Account 2
             </span>
-          </p>
-          <p
+          </label>
+          <label
             class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
             for="address-1"
           >
-            <p
+            <span
               class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex"
             >
-              <p
+              <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 href="https://etherscan.io/address/0x0987654321098765432109876543210987654321"
                 rel="noopener noreferrer"
@@ -134,7 +134,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
                     style="mask-image: url('./images/icons/undefined.svg');"
                   />
                 </span>
-              </p>
+              </a>
               <div>
                 <div
                   aria-describedby="tippy-tooltip-2"
@@ -154,8 +154,8 @@ exports[`CustodyAccountList renders accounts 1`] = `
                   </button>
                 </div>
               </div>
-            </p>
-          </p>
+            </span>
+          </label>
           <div
             class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
           />
