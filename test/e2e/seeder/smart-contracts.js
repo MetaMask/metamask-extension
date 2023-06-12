@@ -14,7 +14,7 @@ const {
 } = require('@metamask/test-dapp/dist/constants.json');
 
 const hstFactory = {
-  initialAmount: 100,
+  initialAmount: 10,
   tokenName: 'TST',
   decimalUnits: 4,
   tokenSymbol: 'TST',

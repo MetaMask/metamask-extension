@@ -2,7 +2,6 @@ import React from 'react';
 import { renderWithProvider, fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { GlobalMenu } from '.';
 
 const render = () => {
@@ -38,7 +37,7 @@ describe('AccountListItem', () => {
     fireEvent.click(getByTestId('global-menu-portfolio'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `${process.env.PORTFOLIO_URL}?metamaskEntry=ext`,
+        url: `/?metamaskEntry=ext&metametricsId=`,
       });
     });
   });
@@ -49,9 +48,7 @@ describe('AccountListItem', () => {
     const { getByTestId } = render();
     fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: SUPPORT_LINK,
-      });
+      expect(global.platform.openTab).toHaveBeenCalled();
     });
   });
 

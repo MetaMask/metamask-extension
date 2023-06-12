@@ -9,11 +9,11 @@ import {
   TokensController,
   AssetsContractController,
 } from '@metamask/assets-controllers';
-import { convertHexToDecimal } from '@metamask/controller-utils';
+import { toHex } from '@metamask/controller-utils';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
-import { NetworkController, NetworkControllerEventType } from './network';
+import { NetworkController } from './network';
 import PreferencesController from './preferences';
 
 describe('DetectTokensController', function () {
@@ -204,7 +204,7 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '1',
+      chainId: toHex(1),
       preventPollingOnNetworkRestart: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
@@ -235,7 +235,7 @@ describe('DetectTokensController', function () {
           const modifiedNetworkState = {
             ...networkState,
             providerConfig: {
-              ...networkState.provider,
+              ...networkState.providerConfig,
             },
           };
           return cb(modifiedNetworkState);
@@ -246,21 +246,7 @@ describe('DetectTokensController', function () {
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: (cb) =>
-        networkControllerMessenger.subscribe(
-          NetworkControllerEventType.NetworkDidChange,
-          () => {
-            const networkState = network.store.getState();
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.provider,
-                chainId: convertHexToDecimal(networkState.provider.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          },
-        ),
+      onNetworkStateChange: network.store.subscribe.bind(network.store),
     });
   });
 
@@ -309,7 +295,7 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '11155111',
+      chainId: toHex(11155111),
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessengerSepolia,

@@ -209,7 +209,7 @@ const state = {
         symbol: 'UMA',
       },
     },
-    provider: {
+    providerConfig: {
       type: 'mainnet',
       nickname: '',
     },

@@ -1,0 +1,9 @@
+.snaps-connect {
+  overflow-y: hidden;
+
+  .page-container__footer {
+    border-top: 0;
+    margin-top: auto;
+    box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  }
+}

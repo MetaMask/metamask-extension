@@ -359,12 +359,6 @@
     "message": "Permitir acesso a todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Aprovar e instalar"
-  },
-  "approveAndUpdate": {
-    "message": "Aprovar e atualizar"
-  },
   "approveButtonText": {
     "message": "Aprovar"
   },
@@ -398,9 +392,6 @@
   "assetOptions": {
     "message": "Opções do ativo"
   },
-  "assets": {
-    "message": "Ativos"
-  },
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },
@@ -431,9 +422,6 @@
   },
   "back": {
     "message": "Voltar"
-  },
-  "backToAll": {
-    "message": "Voltar para todos"
   },
   "backup": {
     "message": "Backup"
@@ -645,9 +633,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -791,9 +776,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -1416,9 +1398,6 @@
     "message": "Essa taxa de gás foi sugerida por $1. Sua substituição pode causar um problema com a sua transação. Entre em contato com $1 se tiver perguntas.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Taxa de gás"
-  },
   "gasLimit": {
     "message": "Limite de gás"
   },
@@ -1573,9 +1552,6 @@
   "history": {
     "message": "Histórico"
   },
-  "holdToReveal": {
-    "message": "Segure para revelar a FRS"
-  },
   "holdToRevealContent1": {
     "message": "Sua Frase de Recuperação Secreta concede $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1595,9 +1571,6 @@
   "holdToRevealContent5": {
     "message": "mas os phishers talvez solicitem.",
     "description": "The text link in 'holdToRevealContent3'"
-  },
-  "holdToRevealTitle": {
-    "message": "Mantenha sua FRS em segurança"
   },
   "ignoreAll": {
     "message": "Ignorar tudo"
@@ -1647,9 +1620,6 @@
   },
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
-  },
-  "importTokens": {
-    "message": "importar tokens"
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
@@ -2002,9 +1972,6 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "missingToken": {
-    "message": "Não está vendo seu token?"
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
@@ -2246,9 +2213,6 @@
   },
   "notEnoughGas": {
     "message": "Não há gás suficiente"
-  },
-  "notifications": {
-    "message": "Notificações"
   },
   "notifications10ActionText": {
     "message": "Visite nas configurações",
@@ -2829,9 +2793,6 @@
   "receive": {
     "message": "Receber"
   },
-  "recents": {
-    "message": "Recentes"
-  },
   "recipientAddressPlaceholder": {
     "message": "Pesquisa, endereço público (0x) ou ENS"
   },
@@ -3062,9 +3023,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchSettings": {
-    "message": "Buscar nas configurações"
-  },
   "searchTokens": {
     "message": "Buscar tokens"
   },
@@ -3229,9 +3187,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
   },
@@ -3299,10 +3254,12 @@
     "message": "Instalar snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para confirmar que você entende, marque a caixa."
+    "message": "Para confirmar que você entende, marque a caixa.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para confirmar que você entende, marque todas as caixas."
+    "message": "Para confirmar que você entende, marque todas as caixas.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Você está concedendo ao snap \"$1\" acesso à sua chave $2. Isso é irrevogável e concede a \"$1\" controle de suas contas e ativos $2. Certifique-se de que confia em \"$1\" antes de prosseguir.",
@@ -3430,9 +3387,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Conectado"
   },
   "statusNotConnected": {
     "message": "Não conectado"
@@ -3587,10 +3541,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Você precisa de mais $1 $2 para concluir essa troca",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Melhores cotações de $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Nenhum token disponível correspondente a $1",
@@ -3923,9 +3873,6 @@
   "thingsToKeep": {
     "message": "Informações importantes:"
   },
-  "thisIsBasedOn": {
-    "message": "Isso se baseia em informações de "
-  },
   "time": {
     "message": "Hora"
   },
@@ -3944,10 +3891,6 @@
   },
   "toggleEthSignField": {
     "message": "Ativar/desativar solicitações eth_sign"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -4115,9 +4058,6 @@
   "transfer": {
     "message": "Transferir"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre minhas contas"
-  },
   "transferFrom": {
     "message": "Transferir de"
   },
@@ -4127,10 +4067,6 @@
   },
   "troubleStarting": {
     "message": "A MetaMask teve problemas para iniciar. Esse erro pode ser intermitente, por isso tente reiniciar a extensão."
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"

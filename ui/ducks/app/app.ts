@@ -66,6 +66,10 @@ interface AppState {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
+  accountDetailsAddress: string;
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: boolean;
+  ///: END:ONLY_INCLUDE_IN
 }
 
 interface AppSliceState {
@@ -130,6 +134,10 @@ const initialState: AppState = {
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
+  accountDetailsAddress: '',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: false,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default function reduceApp(
@@ -169,6 +177,13 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
+
+    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
+      return {
+        ...appState,
+        accountDetailsAddress: action.payload,
+      };
+    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:

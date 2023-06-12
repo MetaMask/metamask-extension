@@ -2,7 +2,14 @@ import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
 import LedgerInstructionField from '../ledger-instruction-field';
-import { sanitizeMessage, getURLHostName } from '../../../helpers/utils/util';
+import {
+  sanitizeMessage,
+  getURLHostName,
+  getNetworkNameFromProviderType,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shortenAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/utils/util';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
@@ -10,12 +17,18 @@ import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  IconColor,
+  DISPLAY,
+  BLOCK_SIZES,
+  TextVariant,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -23,6 +36,11 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { Icon, IconName, Text } from '../../component-library';
+import Box from '../../ui/box/box';
+///: END:ONLY_INCLUDE_IN
+
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -67,7 +85,7 @@ export default class SignatureRequest extends PureComponent {
     nativeCurrency: PropTypes.string,
     currentCurrency: PropTypes.string.isRequired,
     conversionRate: PropTypes.number,
-    provider: PropTypes.object,
+    providerConfig: PropTypes.object,
     subjectMetadata: PropTypes.object,
     unapprovedMessagesCount: PropTypes.number,
     clearConfirmTransaction: PropTypes.func.isRequired,
@@ -75,6 +93,13 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAll: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    showCustodianDeepLink: PropTypes.func,
+    isNotification: PropTypes.bool,
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
+    selectedAccount: PropTypes.object,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static contextTypes = {
@@ -87,6 +112,25 @@ export default class SignatureRequest extends PureComponent {
     showContractDetails: false,
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  componentDidMount() {
+    if (this.props.txData.custodyId) {
+      this.props.showCustodianDeepLink({
+        custodyId: this.props.txData.custodyId,
+        fromAddress: this.props.fromAccount.address,
+        closeNotification: this.props.isNotification,
+        onDeepLinkFetched: () => undefined,
+        onDeepLinkShown: () => {
+          this.context.trackEvent({
+            category: 'MMI',
+            event: 'Show deeplink for signature',
+          });
+        },
+      });
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   setMessageRootRef(ref) {
     this.messageRootRef = ref;
   }
@@ -96,27 +140,6 @@ export default class SignatureRequest extends PureComponent {
       wallet.length - 8,
       wallet.length,
     )}`;
-  }
-
-  getNetworkName() {
-    const { provider } = this.props;
-    const providerName = provider.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return provider.nickname || t('unknownNetwork');
-    }
   }
 
   memoizedParseMessage = memoize((data) => {
@@ -147,6 +170,7 @@ export default class SignatureRequest extends PureComponent {
 
   render() {
     const {
+      providerConfig,
       txData: {
         msgParams: { data, origin, version },
         type,
@@ -173,7 +197,11 @@ export default class SignatureRequest extends PureComponent {
       primaryType,
     } = this.memoizedParseMessage(data);
     const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
-    const currentNetwork = this.getNetworkName();
+    const networkName = getNetworkNameFromProviderType(providerConfig.type);
+    const currentNetwork =
+      networkName === ''
+        ? providerConfig.nickname || t('unknownNetwork')
+        : t(networkName);
 
     const balanceInBaseAsset = conversionRate
       ? formatCurrency(
@@ -255,6 +283,38 @@ export default class SignatureRequest extends PureComponent {
               securityProviderResponse={txData.securityProviderResponse}
             />
           ) : null}
+
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            this.props.selectedAccount.address === address ? null : (
+              <Box
+                className="request-signature__mismatch-info"
+                display={DISPLAY.FLEX}
+                width={BLOCK_SIZES.FULL}
+                padding={4}
+                marginBottom={4}
+                backgroundColor={BackgroundColor.primaryMuted}
+              >
+                <Icon
+                  name={IconName.Info}
+                  color={IconColor.infoDefault}
+                  marginRight={2}
+                />
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textDefault}
+                  as="h7"
+                >
+                  {this.context.t('mismatchAccount', [
+                    shortenAddress(this.props.selectedAccount.address),
+                    shortenAddress(address),
+                  ])}
+                </Text>
+              </Box>
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+
           <div className="signature-request__origin">
             <SiteOrigin
               siteOrigin={origin}
@@ -267,7 +327,7 @@ export default class SignatureRequest extends PureComponent {
           <Typography
             className="signature-request__content__title"
             variant={TypographyVariant.H3}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             boxProps={{
               marginTop: 4,
             }}
@@ -278,7 +338,7 @@ export default class SignatureRequest extends PureComponent {
             className="request-signature__content__subtitle"
             variant={TypographyVariant.H7}
             color={TextColor.textAlternative}
-            align={TEXT_ALIGN.CENTER}
+            align={TextAlign.Center}
             margin={12}
             marginTop={3}
           >
@@ -319,6 +379,9 @@ export default class SignatureRequest extends PureComponent {
           cancelAction={onCancel}
           signAction={onSign}
           disabled={
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            Boolean(this.props.txData?.custodyId) ||
+            ///: END:ONLY_INCLUDE_IN
             hardwareWalletRequiresConnection ||
             (messageIsScrollable && !this.state.hasScrolledMessage)
           }

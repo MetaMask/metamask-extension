@@ -1,0 +1,13 @@
+diff --git a/lib/linter/linter.js b/lib/linter/linter.js
+index 0f1bd4f77611aa5ccc43c94385efd4f9b5639327..59ff9f14727e22bbec2cc7539af30305f759b23a 100644
+--- a/lib/linter/linter.js
++++ b/lib/linter/linter.js
+@@ -708,7 +708,7 @@ function createLanguageOptions({ globals: configuredGlobals, parser, parserOptio
+  */
+ function resolveGlobals(providedGlobals, enabledEnvironments) {
+     return Object.assign(
+-        {},
++        Object.create(null),
+         ...enabledEnvironments.filter(env => env.globals).map(env => env.globals),
+         providedGlobals
+     );

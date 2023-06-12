@@ -10,7 +10,6 @@ const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
-const { ensureXServerIsRunning } = require('./x-server');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 
 const tinyDelayMs = 200;
@@ -107,12 +106,7 @@ async function withFixtures(options, testSuite) {
     }
     const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
     await mockServer.start(8000);
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
+
     driver = (await buildWebDriver(driverOptions)).driver;
     webDriver = driver.driver;
 
@@ -231,6 +225,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // metrics
   await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
+  await driver.waitForSelector('.import-srp__actions');
   // import with recovery phrase
   await driver.pasteIntoField(
     '[data-testid="import-srp__srp-word-0"]',
@@ -389,7 +384,181 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const DAPP_URL = 'http://127.0.0.1:8080';
+const DAPP_ONE_URL = 'http://127.0.0.1:8081';
+
+const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
+  contract
+    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
+    : await driver.openNewPage(dappURL);
+};
+const STALELIST_URL =
+  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
+
+const emptyHtmlPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+  </head>
+  <body>
+    Empty page
+  </body>
+</html>`;
+
+/**
+ * Setup fetch mocks for the phishing detection feature.
+ *
+ * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
+ * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
+ *
+ * @param {import('mockttp').Mockttp} mockServer - The mock server.
+ * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
+ * configuration lookup performed by the warning page.
+ */
+async function setupPhishingDetectionMocks(
+  mockServer,
+  metamaskPhishingConfigResponse,
+) {
+  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        version: 2,
+        tolerance: 2,
+        fuzzylist: [],
+        allowlist: [],
+        blocklist: ['127.0.0.1'],
+        lastUpdated: 0,
+      },
+    };
+  });
+
+  await mockServer
+    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+  await mockServer
+    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+
+  await mockServer
+    .forGet(
+      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
+    )
+    .thenCallback(() => metamaskPhishingConfigResponse);
+}
+
+function mockPhishingDetection(mockServer) {
+  setupPhishingDetectionMocks(mockServer, {
+    statusCode: 200,
+    json: {
+      version: 2,
+      tolerance: 2,
+      fuzzylist: [],
+      whitelist: [],
+      blacklist: ['127.0.0.1'],
+      lastUpdated: 0,
+    },
+  });
+}
+
+const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const defaultGanacheOptions = {
+  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+};
+
+const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
+
+const sendTransaction = async (driver, recipientAddress, quantity) => {
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
+  await driver.findElement('.transaction-list-item');
+};
+
+const findAnotherAccountFromAccountList = async (
+  driver,
+  itemNumber,
+  accountName,
+) => {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
+  const acctName = await driver.findElement(
+    `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
+  );
+  assert.equal(await acctName.getText(), accountName);
+  return accountMenuItemSelector;
+};
+
+const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+
+const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
+
+// Usually happens when onboarded to make sure the state is retrieved from metamaskState properly
+const assertAccountBalanceForDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  const balanceElement = await driver.findElement(
+    '[data-testid="eth-overview__primary-currency"]',
+  );
+  assert.equal(`${balance}\nETH`, await balanceElement.getText());
+};
+
+// Usually happens after txn is made
+const locateAccountBalanceDOM = async (driver, ganacheServer) => {
+  const balance = await ganacheServer.getBalance();
+  await driver.waitForSelector({
+    css: '[data-testid="eth-overview__primary-currency"]',
+    text: `${balance} ETH`,
+  });
+};
+
+const restartServiceWorker = async (driver) => {
+  const serviceWorkerElements = await driver.findElements({
+    text: 'terminate',
+    tag: 'span',
+  });
+  // 1st one is app-init.js; while 2nd one is service-worker.js
+  await serviceWorkerElements[1].click();
+};
+
+async function waitForAccountRendered(driver) {
+  await driver.waitForSelector(
+    '[data-testid="eth-overview__primary-currency"]',
+  );
+}
+
+const logInWithBalanceValidation = async (driver, ganacheServer) => {
+  await driver.fill('#password', 'correct horse battery staple');
+  await driver.press('#password', driver.Key.ENTER);
+  await assertAccountBalanceForDOM(driver, ganacheServer);
+};
+
 module.exports = {
+  DAPP_URL,
+  DAPP_ONE_URL,
+  SERVICE_WORKER_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
+  PRIVATE_KEY,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -404,4 +573,15 @@ module.exports = {
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
+  openDapp,
+  mockPhishingDetection,
+  setupPhishingDetectionMocks,
+  defaultGanacheOptions,
+  sendTransaction,
+  findAnotherAccountFromAccountList,
+  logInWithBalanceValidation,
+  assertAccountBalanceForDOM,
+  locateAccountBalanceDOM,
+  restartServiceWorker,
+  waitForAccountRendered,
 };

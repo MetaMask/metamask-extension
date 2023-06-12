@@ -15,13 +15,16 @@ const baseProps = {
   showRejectTransactionsConfirmationModal: () => undefined,
   sign: () => undefined,
   history: { push: '/' },
-  provider: { type: 'rpc' },
+  providerConfig: { type: 'rpc' },
   nativeCurrency: 'ABC',
   currentCurrency: 'def',
   fromAccount: {
     address: '0x123456789abcdef',
     balance: '0x346ba7725f412cbfdb',
     name: 'Antonio',
+  },
+  selectedAccount: {
+    address: '0x123456789abcdef',
   },
 };
 
@@ -288,9 +291,7 @@ describe('Signature Request Component', () => {
           'Because of an error, this request was not verified by the security provider. Proceed with caution.',
         ),
       ).toBeInTheDocument();
-      expect(
-        queryByText('This is based on information from'),
-      ).toBeInTheDocument();
+      expect(queryByText('OpenSea')).toBeInTheDocument();
     });
 
     it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
@@ -322,7 +323,40 @@ describe('Signature Request Component', () => {
           'Because of an error, this request was not verified by the security provider. Proceed with caution.',
         ),
       ).toBeNull();
-      expect(queryByText('This is based on information from')).toBeNull();
+      expect(queryByText('OpenSea')).toBeNull();
+    });
+
+    it('should render a warning when the selected account is not the one being used to sign', () => {
+      const msgParams = {
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { container } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          selectedAccount={{
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            balance: '0x0',
+            name: 'Account 1',
+          }}
+          conversionRate={null}
+          txData={{
+            msgParams,
+            securityProviderResponse: {
+              flagAsDangerous:
+                SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+            },
+          }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.request-signature__mismatch-info'),
+      ).toBeInTheDocument();
     });
   });
 });

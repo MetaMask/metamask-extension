@@ -90,7 +90,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
               style="height: 24px; width: 24px; border-radius: 12px;"
             >
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 151, 242);"
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 228, 0);"
               >
                 <svg
                   height="24"
@@ -99,25 +99,25 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   y="0"
                 >
                   <rect
-                    fill="#2362E1"
+                    fill="#F2BE02"
                     height="24"
-                    transform="translate(2.6919976385943882 -4.000732967425142) rotate(458.4 12 12)"
+                    transform="translate(4.11204385070503 -3.89652025148055) rotate(387.1 12 12)"
                     width="24"
                     x="0"
                     y="0"
                   />
                   <rect
-                    fill="#F94301"
+                    fill="#01778E"
                     height="24"
-                    transform="translate(-11.522594467237658 5.994263726614974) rotate(268.8 12 12)"
+                    transform="translate(-1.9540919563657109 12.528454691642345) rotate(227.4 12 12)"
                     width="24"
                     x="0"
                     y="0"
                   />
                   <rect
-                    fill="#FA7900"
+                    fill="#C81435"
                     height="24"
-                    transform="translate(-6.8071905594760675 22.110011910512533) rotate(117.3 12 12)"
+                    transform="translate(13.477268130678231 -9.444486788922836) rotate(422.3 12 12)"
                     width="24"
                     x="0"
                     y="0"
@@ -501,16 +501,26 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         class="confirm-page-container-content__error-container"
       >
         <div
-          class="error-message"
+          class="actionable-message actionable-message--danger actionable-message--warning actionable-message--with-icon"
         >
-          <span
-            class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
-            style="mask-image: url('./images/icons/warning.svg');"
-          />
-          <div
-            class="error-message__text"
+          <svg
+            viewBox="0 0 10 10"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            Insufficient funds.
+            <path
+              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+              fill="var(--color-error-default)"
+            />
+          </svg>
+          
+          <div
+            class="actionable-message__message"
+          >
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+            >
+              You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
+            </h6>
           </div>
         </div>
       </div>

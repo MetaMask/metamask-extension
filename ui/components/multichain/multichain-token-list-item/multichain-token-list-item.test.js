@@ -7,7 +7,7 @@ import { MultichainTokenListItem } from './multichain-token-list-item';
 
 const state = {
   metamask: {
-    provider: {
+    providerConfig: {
       ticker: 'ETH',
       nickname: '',
       chainId: '0x1',

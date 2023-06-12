@@ -4,14 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import { useHistory, useLocation } from 'react-router-dom';
 
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 
-import Identicon from '../../ui/identicon';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -28,8 +27,9 @@ import {
   getIsSwapsChain,
   getIsBridgeChain,
   getIsBuyableChain,
-  getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
+  getCurrentChainId,
+  getMetaMetricsId,
 } from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
@@ -52,6 +52,7 @@ import {
 } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className }) => {
@@ -68,10 +69,11 @@ const EthOverview = ({ className }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const chainId = useSelector(getCurrentChainId);
+  const metaMetricsId = useSelector(getMetaMetricsId);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
 
@@ -125,7 +127,6 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
-      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -156,37 +157,39 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
-                process.env.MULTICHAIN ? null : (
-                  <ButtonIcon
-                    className="eth-overview__portfolio-button"
-                    data-testid="home__portfolio-site"
-                    color={IconColor.primaryDefault}
-                    iconName={IconName.Diagram}
-                    ariaLabel={t('portfolio')}
-                    size={ButtonIconSize.Lg}
-                    onClick={() => {
-                      const portfolioUrl = process.env.PORTFOLIO_URL;
-                      global.platform.openTab({
-                        url: `${portfolioUrl}?metamaskEntry=ext`,
-                      });
-                      trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Home,
-                          event: MetaMetricsEventName.PortfolioLinkClicked,
-                          properties: {
-                            url: portfolioUrl,
-                          },
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                <ButtonIcon
+                  className="eth-overview__portfolio-button"
+                  data-testid="home__portfolio-site"
+                  color={IconColor.primaryDefault}
+                  iconName={IconName.Diagram}
+                  ariaLabel={t('portfolio')}
+                  size={ButtonIconSize.Lg}
+                  onClick={() => {
+                    const portfolioUrl = getPortfolioUrl(
+                      '',
+                      'ext',
+                      metaMetricsId,
+                    );
+                    global.platform.openTab({
+                      url: portfolioUrl,
+                    });
+                    trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.PortfolioLinkClicked,
+                        properties: {
+                          url: portfolioUrl,
                         },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  />
-                )
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                />
                 ///: END:ONLY_INCLUDE_IN
               }
             </div>
@@ -209,7 +212,7 @@ const EthOverview = ({ className }) => {
       buttons={
         <>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               Icon={
@@ -226,6 +229,8 @@ const EthOverview = ({ className }) => {
                   properties: {
                     location: 'Home',
                     text: 'Buy',
+                    chain_id: chainId,
+                    token_symbol: defaultSwapsToken,
                   },
                 });
               }}
@@ -234,7 +239,7 @@ const EthOverview = ({ className }) => {
           }
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             renderInstitutionalButtons()
             ///: END:ONLY_INCLUDE_IN
           }
@@ -257,6 +262,7 @@ const EthOverview = ({ className }) => {
                   token_symbol: 'ETH',
                   location: 'Home',
                   text: 'Send',
+                  chain_id: chainId,
                 },
               });
               dispatch(
@@ -284,6 +290,7 @@ const EthOverview = ({ className }) => {
                     token_symbol: 'ETH',
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
+                    chain_id: chainId,
                   },
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -309,7 +316,7 @@ const EthOverview = ({ className }) => {
             }
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(main,beta,flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
               disabled={!isBridgeChain}
@@ -320,10 +327,13 @@ const EthOverview = ({ className }) => {
               label={t('bridge')}
               onClick={() => {
                 if (isBridgeChain) {
-                  const portfolioUrl = process.env.PORTFOLIO_URL;
-                  const bridgeUrl = `${portfolioUrl}/bridge`;
+                  const portfolioUrl = getPortfolioUrl(
+                    'bridge',
+                    'ext_bridge_button',
+                    metaMetricsId,
+                  );
                   global.platform.openTab({
-                    url: `${bridgeUrl}?metamaskEntry=ext_bridge_button${
+                    url: `${portfolioUrl}${
                       location.pathname.includes('asset') ? '&token=native' : ''
                     }`,
                   });
@@ -333,6 +343,8 @@ const EthOverview = ({ className }) => {
                     properties: {
                       location: 'Home',
                       text: 'Bridge',
+                      chain_id: chainId,
+                      token_symbol: 'ETH',
                     },
                   });
                 }
@@ -355,7 +367,6 @@ const EthOverview = ({ className }) => {
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };

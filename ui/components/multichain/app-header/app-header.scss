@@ -29,8 +29,16 @@
       width: $width-screen-lg-min;
     }
 
-    &--avatar-network {
-      padding: 0; // TODO: Remove once https://github.com/MetaMask/metamask-extension/pull/17006 is merged
+    &__network-picker {
+      max-width: 250px;
+    }
+
+    &--avatar-network p {
+      display: none;
+    }
+
+    &__container {
+      width: fit-content;
     }
   }
 
@@ -63,4 +71,31 @@
 .multichain-app-header-logo {
   height: 75px;
   flex: 0 0 auto;
+}
+
+.custody-logo {
+  @media screen and (max-width: $break-small) {
+    display: none;
+  }
+
+  &--icon {
+    height: 35px;
+    margin-left: 10px;
+  }
+}
+
+.app-header__metafox-logo {
+  &--icon {
+    height: 32px;
+
+    @include screen-sm-min {
+      display: none;
+    }
+  }
+
+  &--horizontal {
+    @include screen-sm-max {
+      display: none;
+    }
+  }
 }

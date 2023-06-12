@@ -1,25 +1,31 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
 import { Text } from '../../component-library';
 import {
   AlignItems,
-  BLOCK_SIZES,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  BlockSize,
+  Display,
+  FlexDirection,
+  FontWeight,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
+import { getPreferences } from '../../../selectors';
 import { ConfirmGasDisplay } from '../confirm-gas-display';
 import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -37,6 +43,7 @@ export default function ApproveContentCard({
   ethTransactionTotal,
   nativeCurrency,
   fullTxData,
+  hexMinimumTransactionFee,
   hexTransactionTotal,
   fiatTransactionTotal,
   currentCurrency,
@@ -48,6 +55,7 @@ export default function ApproveContentCard({
   useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   return (
     <Box
@@ -58,8 +66,8 @@ export default function ApproveContentCard({
     >
       {showHeader && (
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.flexEnd}
           className="approve-content-card-container__card-header"
@@ -80,7 +88,7 @@ export default function ApproveContentCard({
             </>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
-            <Box width={BLOCK_SIZES.ONE_SIXTH}>
+            <Box width={BlockSize.OneSixth}>
               <Button type="link" onClick={() => onEditClick()}>
                 <Text
                   variant={TextVariant.bodySm}
@@ -116,30 +124,37 @@ export default function ApproveContentCard({
             />
           ) : (
             <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.spaceBetween}
             >
               {isMultiLayerFeeNetwork ? (
                 <Box
-                  display={DISPLAY.FLEX}
-                  flexDirection={FLEX_DIRECTION.COLUMN}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
                   className="approve-content-card-container__transaction-details-extra-content"
                 >
-                  <Box
-                    display={DISPLAY.FLEX}
-                    justifyContent={JustifyContent.spaceBetween}
-                  >
-                    <Text
-                      variant={TextVariant.bodySm}
-                      fontWeight={FONT_WEIGHT.NORMAL}
-                      color={TextColor.textMuted}
-                      as="h6"
-                    >
-                      <span>{t('transactionDetailLayer2GasHeading')}</span>
-                      {`${ethTransactionTotal} ${nativeCurrency}`}
-                    </Text>
-                  </Box>
+                  <TransactionDetailItem
+                    key="approve-content-card-min-tx-fee"
+                    detailTitle={t('transactionDetailLayer2GasHeading')}
+                    detailTotal={
+                      <UserPreferencedCurrencyDisplay
+                        type={PRIMARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                        numberOfDecimals={18}
+                      />
+                    }
+                    detailText={
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    }
+                    noBold
+                    flexWidthValues
+                  />
                   <MultiLayerFeeMessage
                     transaction={fullTxData}
                     layer2fee={hexTransactionTotal}
@@ -159,16 +174,16 @@ export default function ApproveContentCard({
                     </Text>
                   </Box>
                   <Box
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
                     alignItems={AlignItems.flexEnd}
-                    textAlign={TEXT_ALIGN.RIGHT}
+                    textAlign={TextAlign.Right}
                   >
                     {useCurrencyRateCheck && (
                       <Box>
                         <Text
                           variant={TextVariant.headingSm}
-                          fontWeight={FONT_WEIGHT.BOLD}
+                          fontWeight={FontWeight.Bold}
                           color={TextColor.TEXT_DEFAULT}
                           as="h4"
                         >
@@ -182,7 +197,7 @@ export default function ApproveContentCard({
                     <Box>
                       <Text
                         variant={TextVariant.bodySm}
-                        fontWeight={FONT_WEIGHT.NORMAL}
+                        fontWeight={FontWeight.Normal}
                         color={TextColor.textMuted}
                         as="h6"
                       >
@@ -195,7 +210,7 @@ export default function ApproveContentCard({
             </Box>
           ))}
         {renderDataContent && (
-          <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box>
               <Text
                 variant={TextVariant.bodySm}
@@ -303,6 +318,10 @@ ApproveContentCard.propTypes = {
    * Total sum of the transaction converted to hex value
    */
   hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Total sum of the transaction in fiat currency
    */

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getIsMainnet,
+  getIsMultiLayerFeeNetwork,
   getPreferences,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -22,7 +23,10 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { useDraftTransactionGasValues } from '../../../../hooks/useDraftTransactionGasValues';
+import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
+import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
+import { Icon, IconName } from '../../../component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
@@ -32,10 +36,12 @@ const ConfirmLegacyGasDisplay = () => {
 
   // state selectors
   const isMainnet = useSelector(getIsMainnet);
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const nativeCurrency = useSelector(getNativeCurrency);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const { transactionData } = useDraftTransactionGasValues();
+  const transactionData = useDraftTransactionWithTxParams();
   const txData = useSelector((state) => txDataSelector(state));
   const { id: transactionId, dappSuggestedGasFees } = txData;
   const transaction = Object.keys(transactionData).length
@@ -44,6 +50,40 @@ const ConfirmLegacyGasDisplay = () => {
   const { hexMinimumTransactionFee, hexMaximumTransactionFee } = useSelector(
     (state) => transactionFeeSelector(state, transaction),
   );
+
+  if (isMultiLayerFeeNetwork) {
+    return [
+      <TransactionDetailItem
+        key="legacy-total-item"
+        detailTitle={t('transactionDetailLayer2GasHeading')}
+        detailTotal={
+          <UserPreferencedCurrencyDisplay
+            type={PRIMARY}
+            value={hexMinimumTransactionFee}
+            hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+            numberOfDecimals={18}
+          />
+        }
+        detailText={
+          useCurrencyRateCheck && (
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={hexMinimumTransactionFee}
+              hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+            />
+          )
+        }
+        noBold
+        flexWidthValues
+      />,
+      <MultilayerFeeMessage
+        key="confirm-layer-1"
+        transaction={txData}
+        layer2fee={hexMinimumTransactionFee}
+        nativeCurrency={nativeCurrency}
+      />,
+    ];
+  }
 
   return (
     <TransactionDetailItem
@@ -56,7 +96,7 @@ const ConfirmLegacyGasDisplay = () => {
               contentText={t('transactionDetailDappGasTooltip')}
               position="top"
             >
-              <i className="fa fa-info-circle" />
+              <Icon name={IconName.Info} />
             </InfoTooltip>
           </>
         ) : (
@@ -84,7 +124,7 @@ const ConfirmLegacyGasDisplay = () => {
               }
               position="top"
             >
-              <i className="fa fa-info-circle" />
+              <Icon name={IconName.Info} />
             </InfoTooltip>
           </>
         )

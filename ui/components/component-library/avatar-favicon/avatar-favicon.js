@@ -7,7 +7,7 @@ import { IconName, Icon } from '../icon';
 import {
   BorderColor,
   Size,
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
   IconColor,
@@ -33,7 +33,7 @@ export const AvatarFavicon = React.forwardRef(
       <AvatarBase
         ref={ref}
         size={size}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         className={classnames('mm-avatar-favicon', className)}

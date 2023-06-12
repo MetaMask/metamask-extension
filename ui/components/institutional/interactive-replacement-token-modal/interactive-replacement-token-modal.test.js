@@ -45,7 +45,7 @@ describe('Interactive Replacement Token Modal', function () {
           custodianName: 'saturn-dev',
         },
       },
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       selectedAddress: '0xAddress',

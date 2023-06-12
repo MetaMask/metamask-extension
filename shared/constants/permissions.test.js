@@ -9,13 +9,15 @@ import {
 
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
+    // Since long-running is fenced out this causes problems with the test, we re-add it here.
     expect(Object.keys(EndowmentPermissions).sort()).toStrictEqual(
-      Object.keys(endowmentPermissionBuilders)
-        .filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapEndowments).includes(targetKey),
-        )
-        .sort(),
+      [
+        'endowment:long-running',
+        ...Object.keys(endowmentPermissionBuilders).filter(
+          (targetName) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetName),
+        ),
+      ].sort(),
     );
   });
 });
@@ -26,8 +28,8 @@ describe('RestrictedMethods', () => {
       [
         'eth_accounts',
         ...Object.keys(restrictedMethodPermissionBuilders).filter(
-          (targetKey) =>
-            !Object.keys(ExcludedSnapPermissions).includes(targetKey),
+          (targetName) =>
+            !Object.keys(ExcludedSnapPermissions).includes(targetName),
         ),
       ].sort(),
     );

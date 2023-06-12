@@ -17,10 +17,7 @@ import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import {
-  decGWEIToHexWEI,
-  hexToDecimal,
-} from '../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
   isInitialized: false,
@@ -173,7 +170,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
@@ -230,6 +227,16 @@ export function updateGasFees({
 
 export const getAlertEnabledness = (state) => state.metamask.alertEnabledness;
 
+/**
+ * Get the provider configuration for the current selected network.
+ *
+ * @param {object} state - Redux state object.
+ * @returns {import('../../../app/scripts/controllers/network/network-controller').NetworkControllerState['providerConfig']} The provider configuration for the current selected network.
+ */
+export function getProviderConfig(state) {
+  return state.metamask.providerConfig;
+}
+
 export const getUnconnectedAccountAlertEnabledness = (state) =>
   getAlertEnabledness(state)[AlertTypes.unconnectedAccount];
 
@@ -249,30 +256,20 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: {
-      allNfts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNfts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getNftContracts = (state) => {
   const {
-    metamask: {
-      allNftContracts,
-      provider: { chainId },
-      selectedAddress,
-    },
+    metamask: { allNftContracts, selectedAddress },
   } = state;
+  const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -287,7 +284,7 @@ export function getNativeCurrency(state) {
   const useCurrencyRateCheck = getUseCurrencyRateCheck(state);
   return useCurrencyRateCheck
     ? state.metamask.nativeCurrency
-    : state.metamask.provider.ticker;
+    : getProviderConfig(state).ticker;
 }
 
 export function getSendHexDataFeatureFlagState(state) {

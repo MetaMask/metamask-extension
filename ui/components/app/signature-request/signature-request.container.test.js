@@ -46,7 +46,7 @@ const mockStoreWithEth = {
         },
       },
     },
-    provider: {
+    providerConfig: {
       type: 'rpc',
     },
     preferences: {
@@ -61,7 +61,7 @@ const mockStoreWithEth = {
     cachedBalances: {},
     unapprovedDecryptMsgs: {},
     unapprovedEncryptionPublicKeyMsgs: {},
-    uncofirmedTransactions: {},
+    unconfirmedTransactions: {},
     selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
@@ -92,7 +92,7 @@ describe('Signature Request', () => {
     cancel: sinon.stub().resolves(),
     showRejectTransactionsConfirmationModal: sinon.stub().resolves(),
     cancelAll: sinon.stub().resolves(),
-    provider: {
+    providerConfig: {
       type: 'rpc',
     },
     unapprovedMessagesCount: 2,
@@ -111,6 +111,9 @@ describe('Signature Request', () => {
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
     conversionRate: null,
+    selectedAccount: {
+      address: '0x123456789abcdef',
+    },
   };
 
   const propsWithFiat = {

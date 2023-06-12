@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -18,10 +18,11 @@ import {
   ButtonIcon,
   IconName,
   IconSize,
+  AvatarAccountVariant,
 } from '../../component-library';
 import {
   Color,
-  TEXT_ALIGN,
+  TextAlign,
   AlignItems,
   DISPLAY,
   TextVariant,
@@ -37,6 +38,11 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -70,6 +76,8 @@ export const AccountListItem = ({
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const ref = useRef(false);
+  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
@@ -79,14 +87,16 @@ export const AccountListItem = ({
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
+  const trackEvent = useContext(MetaMetricsContext);
+
   return (
     <Box
       display={DISPLAY.FLEX}
       padding={4}
-      gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-account-list-item', {
         'multichain-account-list-item--selected': selected,
+        'multichain-account-list-item--connected': Boolean(connectedAvatar),
       })}
       onClick={() => {
         // Without this check, the account will be selected after
@@ -107,6 +117,12 @@ export const AccountListItem = ({
         borderColor={BorderColor.transparent}
         size={Size.SM}
         address={identity.address}
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
+        marginInlineEnd={2}
       ></AvatarAccount>
       <Box
         display={DISPLAY.FLEX}
@@ -117,12 +133,19 @@ export const AccountListItem = ({
           <Box
             display={DISPLAY.FLEX}
             justifyContent={JustifyContent.spaceBetween}
-            gap={2}
           >
-            <Text ellipsis as="div">
+            <Text
+              ellipsis
+              as="div"
+              className="multichain-account-list-item__account-name"
+              marginInlineEnd={2}
+            >
               <ButtonLink
-                onClick={onClick}
-                className="multichain-account-list-item__account-name"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClick();
+                }}
+                className="multichain-account-list-item__account-name__button"
                 color={Color.textDefault}
                 ellipsis
               >
@@ -139,40 +162,44 @@ export const AccountListItem = ({
                 )}
               </ButtonLink>
             </Text>
-            <Box
+            <Text
+              as="div"
+              className="multichain-account-list-item__asset"
               display={DISPLAY.FLEX}
               flexDirection={FLEX_DIRECTION.ROW}
               alignItems={AlignItems.center}
+              ellipsis
+              textAlign={TextAlign.End}
             >
-              {connectedAvatar ? (
-                <AvatarFavicon
-                  size={Size.XS}
-                  src={connectedAvatar}
-                  name={connectedAvatarName}
-                  marginInlineEnd={2}
-                />
-              ) : null}
-              <Text textAlign={TEXT_ALIGN.END} as="div">
-                <UserPreferencedCurrencyDisplay
-                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                  value={identity.balance}
-                  type={SECONDARY}
-                />
-              </Text>
-            </Box>
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={identity.balance}
+                type={SECONDARY}
+              />
+            </Text>
           </Box>
         </Box>
         <Box
           display={DISPLAY.FLEX}
           justifyContent={JustifyContent.spaceBetween}
         >
-          <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-            {shortenAddress(identity.address)}
-          </Text>
+          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+            {connectedAvatar ? (
+              <AvatarFavicon
+                size={Size.XS}
+                src={connectedAvatar}
+                name={connectedAvatarName}
+                className="multichain-account-list-item__avatar"
+              />
+            ) : null}
+            <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+              {shortenAddress(identity.address)}
+            </Text>
+          </Box>
           <Text
             variant={TextVariant.bodySm}
             color={Color.textAlternative}
-            textAlign={TEXT_ALIGN.END}
+            textAlign={TextAlign.End}
             as="div"
           >
             <UserPreferencedCurrencyDisplay
@@ -199,6 +226,13 @@ export const AccountListItem = ({
           size={IconSize.Sm}
           onClick={(e) => {
             e.stopPropagation();
+            trackEvent({
+              event: MetaMetricsEventName.AccountDetailMenuOpened,
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                location: 'Account Options',
+              },
+            });
             setAccountOptionsMenuOpen(true);
           }}
           data-testid="account-list-item-menu-button"

@@ -103,9 +103,6 @@
   "SIWEWarningTitle": {
     "message": "Are you sure?"
   },
-  "ShowMore": {
-    "message": "Show more"
-  },
   "about": {
     "message": "About"
   },
@@ -309,7 +306,7 @@
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "agreeTermsOfUse": {
-    "message": "I agree to Metamask's $1",
+    "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
   },
   "airgapVault": {
@@ -333,6 +330,12 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
@@ -354,6 +357,9 @@
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
+  },
+  "amlCompliance": {
+    "message": "AML/CFT Compliance"
   },
   "amount": {
     "message": "Amount"
@@ -392,12 +398,6 @@
     "message": "Allow access to and transfer all of your NFTs from $1?",
     "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "approveAndInstall": {
-    "message": "Approve & install"
-  },
-  "approveAndUpdate": {
-    "message": "Approve & update"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -435,9 +435,6 @@
   "assetOptions": {
     "message": "Asset options"
   },
-  "assets": {
-    "message": "Assets"
-  },
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
@@ -466,11 +463,11 @@
   "average": {
     "message": "Average"
   },
+  "awaitingApproval": {
+    "message": "Awaiting approval..."
+  },
   "back": {
     "message": "Back"
-  },
-  "backToAll": {
-    "message": "Back to all"
   },
   "backup": {
     "message": "Backup"
@@ -545,6 +542,9 @@
   "blockExplorerView": {
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
+  },
+  "blockaid": {
+    "message": "Blockaid"
   },
   "blockies": {
     "message": "Blockies"
@@ -645,6 +645,9 @@
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
   },
+  "click": {
+    "message": "Click"
+  },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
     "description": "Text that can be clicked to open a browser popup for connecting the ledger device via webhid"
@@ -660,6 +663,9 @@
   },
   "coingecko": {
     "message": "CoinGecko"
+  },
+  "compliance": {
+    "message": "Compliance"
   },
   "complianceActivatedDesc": {
     "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
@@ -721,11 +727,21 @@
   "connectAccountOrCreate": {
     "message": "Connect account or create new"
   },
-  "connectHardwareWallet": {
-    "message": "Connect hardware wallet"
+  "connectCustodialAccountMenu": {
+    "message": "Connect Custodial Account"
+  },
+  "connectCustodialAccountMsg": {
+    "message": "Please choose the custodian you want to connect in order to add or refresh a token."
+  },
+  "connectCustodialAccountTitle": {
+    "message": "Custodial Accounts"
   },
   "connectManually": {
     "message": "Manually connect to current site"
+  },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
   },
   "connectTo": {
     "message": "Connect to $1",
@@ -792,6 +808,16 @@
   "connectionError": {
     "message": "Connection error"
   },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionRequest": {
+    "message": "Connection request"
+  },
   "contactUs": {
     "message": "Contact us"
   },
@@ -827,10 +853,10 @@
     "message": "NFT contract"
   },
   "contractRequestingAccess": {
-    "message": "Contract requesting access"
+    "message": "Third party requesting access"
   },
   "contractRequestingSignature": {
-    "message": "Contract requesting signature"
+    "message": "Third party requesting signature"
   },
   "contractRequestingSpendingCap": {
     "message": "Third party requesting spending cap"
@@ -870,9 +896,6 @@
   },
   "create": {
     "message": "Create"
-  },
-  "createAccount": {
-    "message": "Create account"
   },
   "createNewWallet": {
     "message": "Create a new wallet"
@@ -932,6 +955,27 @@
   "custodianAccount": {
     "message": "Custodian account"
   },
+  "custodianReplaceRefreshTokenChangedFailed": {
+    "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
+  },
+  "custodianReplaceRefreshTokenChangedSubtitle": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianReplaceRefreshTokenChangedTitle": {
+    "message": "Your custodian token has been refreshed"
+  },
+  "custodianReplaceRefreshTokenSubtitle": {
+    "message": "This is will replace the custodian token for the following address:"
+  },
+  "custodianReplaceRefreshTokenTitle": {
+    "message": "Replace custodian token"
+  },
+  "custodyApiUrl": {
+    "message": "$1 API URL"
+  },
+  "custodyDeeplinkDescription": {
+    "message": "Approve the transaction in the $1 app. Once all required custody approvals have been performed the transaction will complete. Check your $1 app for status."
+  },
   "custodyRefreshTokenModalDescription": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -949,6 +993,9 @@
   },
   "custodySessionExpired": {
     "message": "Custodian session expired."
+  },
+  "custodyWrongChain": {
+    "message": "This account is not set up for use with $1"
   },
   "custom": {
     "message": "Advanced"
@@ -987,6 +1034,12 @@
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "$1 has suggested this price.",
     "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedHigh": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedHighShortLabel": {
+    "message": "Site (high)"
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
@@ -1059,6 +1112,10 @@
   },
   "description": {
     "message": "Description"
+  },
+  "descriptionFromSnap": {
+    "message": "Description from $1",
+    "description": "$1 represents the name of the snap"
   },
   "desktopConnectionCriticalErrorDescription": {
     "message": "This error could be intermittent, so try restarting the extension or disable MetaMask Desktop."
@@ -1325,14 +1382,14 @@
     "message": "Enable smart transactions"
   },
   "enableSnap": {
-    "message": "Enable snap"
-  },
-  "enableSnapDescription": {
-    "message": "Your installed snap will only have access to its permissions and run if it’s enabled."
+    "message": "Enable"
   },
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enabled": {
+    "message": "Enabled"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -1366,14 +1423,23 @@
   "enterANumber": {
     "message": "Enter a number"
   },
+  "enterCustodianToken": {
+    "message": "Enter your $1 token or add a new token"
+  },
   "enterMaxSpendLimit": {
     "message": "Enter max spend limit"
+  },
+  "enterOptionalPassword": {
+    "message": "Enter optional password"
   },
   "enterPassword": {
     "message": "Enter password"
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterYourPassword": {
+    "message": "Enter your password"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -1545,9 +1611,6 @@
     "message": "This gas fee has been suggested by $1. Overriding this may cause a problem with your transaction. Please reach out to $1 if you have questions.",
     "description": "$1 represents the Dapp's origin"
   },
-  "gasFee": {
-    "message": "Gas fee"
-  },
   "gasLimit": {
     "message": "Gas limit"
   },
@@ -1711,9 +1774,6 @@
   "history": {
     "message": "History"
   },
-  "holdToReveal": {
-    "message": "Hold to reveal SRP"
-  },
   "holdToRevealContent1": {
     "message": "Your Secret Recovery Phrase provides $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1734,8 +1794,31 @@
     "message": "but phishers might.",
     "description": "The text link in 'holdToRevealContent3'"
   },
-  "holdToRevealTitle": {
+  "holdToRevealContentPrivateKey1": {
+    "message": "Your Private Key provides $1",
+    "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealContentPrivateKey2": {
+    "message": "full access to your wallet and funds.",
+    "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
+  },
+  "holdToRevealLockedLabel": {
+    "message": "hold to reveal circle locked"
+  },
+  "holdToRevealPrivateKey": {
+    "message": "Hold to reveal Private Key"
+  },
+  "holdToRevealPrivateKeyTitle": {
+    "message": "Keep your private key safe"
+  },
+  "holdToRevealSRP": {
+    "message": "Hold to reveal SRP"
+  },
+  "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
+  },
+  "holdToRevealUnlockedLabel": {
+    "message": "hold to reveal circle unlocked"
   },
   "id": {
     "message": "Id"
@@ -1804,9 +1887,6 @@
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
   },
-  "importTokens": {
-    "message": "import tokens"
-  },
   "importTokensCamelCase": {
     "message": "Import tokens"
   },
@@ -1844,6 +1924,13 @@
   },
   "install": {
     "message": "Install"
+  },
+  "installOrigin": {
+    "message": "Install origin"
+  },
+  "installedOn": {
+    "message": "Installed on $1",
+    "description": "$1 is the date when the snap has been installed"
   },
   "institutionalFeatures": {
     "message": "Institutional Features"
@@ -1959,6 +2046,9 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "layer1Fees": {
+    "message": "Layer 1 fees"
+  },
   "learnCancelSpeeedup": {
     "message": "Learn how to $1",
     "description": "$1 is link to cancel or speed up transactions"
@@ -1969,6 +2059,9 @@
   "learnMoreAboutGas": {
     "message": "Want to $1 about gas?",
     "description": "$1 will be replaced by the learnMore translation key"
+  },
+  "learnMoreKeystone": {
+    "message": "Learn More"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
@@ -2142,6 +2235,9 @@
   "metrics": {
     "message": "Metrics"
   },
+  "mismatchAccount": {
+    "message": "Your selected account ($1) is different than the account trying to sign ($2)"
+  },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
@@ -2171,17 +2267,21 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
-  "missingToken": {
-    "message": "Don't see your token?"
-  },
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
   },
+  "more": {
+    "message": "more"
+  },
   "moreComingSoon": {
     "message": "More coming soon..."
+  },
+  "multipleSnapConnectionWarning": {
+    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
@@ -2227,6 +2327,9 @@
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
+  },
+  "networkMenu": {
+    "message": "Network Menu"
   },
   "networkMenuHeading": {
     "message": "Select a network"
@@ -2280,6 +2383,10 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkSwitchConnectionError": {
+    "message": "We can't connect to $1",
+    "description": "$1 represents the network name"
   },
   "networkURL": {
     "message": "Network URL"
@@ -2430,6 +2537,12 @@
   },
   "notEnoughGas": {
     "message": "Not enough gas"
+  },
+  "note": {
+    "message": "Note"
+  },
+  "notePlaceholder": {
+    "message": "The approver will see this note when approving the transaction at the custodian."
   },
   "notifications": {
     "message": "Notifications"
@@ -2804,7 +2917,7 @@
     "message": "Open in block explorer"
   },
   "openSea": {
-    "message": "OpenSea (Beta)"
+    "message": "OpenSea + Blockaid (Beta)"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -2870,6 +2983,9 @@
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
+  },
+  "pasteJWTToken": {
+    "message": "Paste or drop your token here:"
   },
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
@@ -3073,6 +3189,9 @@
   "portfolio": {
     "message": "Portfolio"
   },
+  "portfolioDashboard": {
+    "message": "Portfolio Dashboard"
+  },
   "portfolioView": {
     "message": "Portfolio view"
   },
@@ -3107,6 +3226,10 @@
   "privateKey": {
     "message": "Private Key",
     "description": "select this type of file to use to import an account"
+  },
+  "privateKeyCopyWarning": {
+    "message": "Private key for $1",
+    "description": "$1 represents the account name"
   },
   "privateKeyWarning": {
     "message": "Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account."
@@ -3150,11 +3273,8 @@
   "receive": {
     "message": "Receive"
   },
-  "recents": {
-    "message": "Recents"
-  },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Enter public address (0x) or ENS name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -3219,6 +3339,12 @@
   "removeAccountDescription": {
     "message": "This account will be removed from your wallet. Please make sure you have the original Secret Recovery Phrase or private key for this imported account before continuing. You can import or create accounts again from the account drop-down. "
   },
+  "removeJWT": {
+    "message": "Remove custodian token"
+  },
+  "removeJWTDescription": {
+    "message": "Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: "
+  },
   "removeNFT": {
     "message": "Remove NFT"
   },
@@ -3243,9 +3369,6 @@
   },
   "reportLastRunTooltip": {
     "message": "The date and time of when the last AML/CFT report was run"
-  },
-  "requestFailed": {
-    "message": "Request failed"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3409,9 +3532,6 @@
   "searchResults": {
     "message": "Search results"
   },
-  "searchSettings": {
-    "message": "Search in Settings"
-  },
   "searchTokens": {
     "message": "Search tokens"
   },
@@ -3423,6 +3543,9 @@
   },
   "security": {
     "message": "Security"
+  },
+  "securityAlert": {
+    "message": "Security alert from $1 and $2"
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -3481,17 +3604,26 @@
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
   },
+  "select": {
+    "message": "Select"
+  },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
   "selectAll": {
     "message": "Select all"
   },
+  "selectAllAccounts": {
+    "message": "Select all accounts"
+  },
   "selectAnAccount": {
     "message": "Select an account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "This account has already been connected to MetaMask"
+  },
+  "selectAnAccountHelp": {
+    "message": "Select the custodian accounts to use in MetaMask Institutional."
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -3564,6 +3696,10 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
+  "shortVersion": {
+    "message": "v$1",
+    "description": "$1 is the version number to show"
+  },
   "show": {
     "message": "Show"
   },
@@ -3579,9 +3715,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showHide": {
-    "message": "Show/hide"
-  },
   "showIncomingTransactions": {
     "message": "Show incoming transactions"
   },
@@ -3589,8 +3722,14 @@
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
+  "showMore": {
+    "message": "Show more"
+  },
   "showPermissions": {
     "message": "Show permissions"
+  },
+  "showPrivateKey": {
+    "message": "Show private key"
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
@@ -3640,6 +3779,10 @@
   "smartTransaction": {
     "message": "Smart transaction"
   },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3652,29 +3795,38 @@
     "message": "Install snap"
   },
   "snapInstallRequest": {
-    "message": "$1 wants to install $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name."
   },
-  "snapInstallRequestsPermission": {
-    "message": "$1 wants to install $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapInstallSuccess": {
+    "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 account control to $1",
+    "message": "Give $2 account control to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
-    "message": "Grant $2 public key access to $1",
+    "message": "Give $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1 couldn’t be installed.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Installation failed",
+    "description": "Error title used when snap installation fails."
   },
   "snapResultError": {
     "message": "Error"
@@ -3683,18 +3835,25 @@
     "message": "Success"
   },
   "snapResultSuccessDescription": {
-    "message": "$1 is now available to use."
+    "message": "$1 is ready to use"
   },
   "snapUpdate": {
     "message": "Update snap"
   },
-  "snapUpdateRequest": {
-    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapUpdateErrorDescription": {
+    "message": "$1 couldn’t be updated.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
   },
-  "snapUpdateRequestsPermission": {
-    "message": "$1 wants to update $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapUpdateErrorTitle": {
+    "message": "Update failed",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Update complete"
   },
   "snaps": {
     "message": "Snaps"
@@ -3708,8 +3867,23 @@
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys has no access to information you share with these third parties.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
+  },
+  "snapsTermsOfUse": {
+    "message": "Terms of Use"
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -3821,9 +3995,6 @@
   },
   "status": {
     "message": "Status"
-  },
-  "statusConnected": {
-    "message": "Connected"
   },
   "statusNotConnected": {
     "message": "Not connected"
@@ -3981,10 +4152,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Best of $1 quotes.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
@@ -4335,11 +4502,12 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thirdPartySoftware": {
+    "message": "Third-party software notice",
+    "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
   "thisCollection": {
     "message": "this collection"
-  },
-  "thisIsBasedOn": {
-    "message": "This is based on information from "
   },
   "thisServiceIsExperimental": {
     "message": "This service is experimental. By enabling this feature, you agree to OpenSea's $1.",
@@ -4358,15 +4526,44 @@
     "message": "To: $1",
     "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
+  "toggleEthSignBannerDescription": {
+    "message": "You’re at risk for phishing attacks. Protect yourself by turning off eth_sign."
+  },
   "toggleEthSignDescriptionField": {
-    "message": "Turn this on to let dapps request your signature using eth_sign requests. eth_sign is an open-ended signing method that lets you sign an arbitrary hash, making it a dangerous phishing risk. Only sign eth_sign requests if you can read what you are signing and trust the origin of the request."
+    "message": "If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs."
   },
   "toggleEthSignField": {
-    "message": "Toggle eth_sign requests"
+    "message": "Eth_sign requests"
   },
-  "toggleTestNetworks": {
-    "message": "$1 test networks",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
+  "toggleEthSignModalBannerBoldText": {
+    "message": " you might be getting scammed"
+  },
+  "toggleEthSignModalBannerText": {
+    "message": "If you've been asked to turn this setting on,"
+  },
+  "toggleEthSignModalCheckBox": {
+    "message": "I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. "
+  },
+  "toggleEthSignModalDescription": {
+    "message": "Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code."
+  },
+  "toggleEthSignModalFormError": {
+    "message": "The text is incorrect"
+  },
+  "toggleEthSignModalFormLabel": {
+    "message": "Enter “I only sign what I understand” to continue"
+  },
+  "toggleEthSignModalFormValidation": {
+    "message": "I only sign what I understand"
+  },
+  "toggleEthSignModalTitle": {
+    "message": "Use at your own risk"
+  },
+  "toggleEthSignOff": {
+    "message": "OFF (Recommended)"
+  },
+  "toggleEthSignOn": {
+    "message": "ON (Not recommended)"
   },
   "token": {
     "message": "Token"
@@ -4409,6 +4606,9 @@
   },
   "tokenSymbol": {
     "message": "Token symbol"
+  },
+  "tokens": {
+    "message": "Tokens"
   },
   "tokensFoundTitle": {
     "message": "$1 new tokens found",
@@ -4498,7 +4698,6 @@
   "transactionFailed": {
     "message": "Transaction Failed"
   },
-
   "transactionFee": {
     "message": "Transaction fee"
   },
@@ -4523,11 +4722,14 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
+  "transactionNote": {
+    "message": "Transaction note"
+  },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
   },
   "transactionSecurityCheck": {
-    "message": "Enable transaction security providers"
+    "message": "Enable security alerts"
   },
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
@@ -4543,9 +4745,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer from"
@@ -4572,10 +4771,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
-  },
-  "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "By granting permission, you are allowing the following $1 to access your funds"
@@ -4725,6 +4920,9 @@
     "message": "Verify this token on $1 and make sure this is the token you want to trade.",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
+  "version": {
+    "message": "Version"
+  },
   "view": {
     "message": "View"
   },
@@ -4759,6 +4957,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewinCustodianApp": {
+    "message": "View in custodian app"
   },
   "viewinExplorer": {
     "message": "View $1 in explorer",
@@ -4857,10 +5058,6 @@
   "youHaveAddedAll": {
     "message": "You've added all the popular networks. You can discover more networks $1 Or you can $2",
     "description": "$1 is a link with the text 'here' and $2 is a button with the text 'add more networks manually'"
-  },
-  "youInstalled": {
-    "message": "You installed",
-    "description": "Part of version description for installed snap"
   },
   "youNeedToAllowCameraAccess": {
     "message": "You need to allow camera access to use this feature."

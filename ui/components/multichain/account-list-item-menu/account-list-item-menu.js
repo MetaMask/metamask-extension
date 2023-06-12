@@ -3,13 +3,25 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
   getCurrentChainId,
+  getHardwareWalletType,
+  getAccountTypeForKeyring,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getMetaMaskAccountsOrdered,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IN
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { Menu, MenuItem } from '../../ui/menu';
 import { Text, IconName } from '../../component-library';
@@ -19,8 +31,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
-import { showModal } from '../../../store/actions';
+import { setAccountDetailsAddress, showModal } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
+import { formatAccountType } from '../../../helpers/utils/metrics';
 
 export const AccountListItemMenu = ({
   anchorElement,
@@ -39,6 +52,13 @@ export const AccountListItemMenu = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
 
+  const deviceName = useSelector(getHardwareWalletType);
+
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
   const blockExplorerLinkText = useSelector(getBlockExplorerLinkText);
   const openBlockExplorer = () => {
     trackEvent({
@@ -50,6 +70,7 @@ export const AccountListItemMenu = ({
         url_domain: getURLHostName(addressLink),
       },
     });
+
     global.platform.openTab({
       url: addressLink,
     });
@@ -60,6 +81,12 @@ export const AccountListItemMenu = ({
     history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const isCustodial = /Custody/u.test(keyring.type);
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
+
   return (
     <Menu
       anchorElement={anchorElement}
@@ -67,11 +94,20 @@ export const AccountListItemMenu = ({
       onHide={onClose}
     >
       <MenuItem
-        onClick={
+        onClick={() => {
           blockExplorerLinkText.firstPart === 'addBlockExplorer'
-            ? routeToAddBlockExplorerUrl
-            : openBlockExplorer
-        }
+            ? routeToAddBlockExplorerUrl()
+            : openBlockExplorer();
+
+          trackEvent({
+            event: MetaMetricsEventName.BlockExplorerLinkClicked,
+            category: MetaMetricsEventCategory.Accounts,
+            properties: {
+              location: 'Account Options',
+              chain_id: chainId,
+            },
+          });
+        }}
         subtitle={blockExplorerUrlSubTitle || null}
         iconName={IconName.Export}
         data-testid="account-list-menu-open-explorer"
@@ -80,7 +116,7 @@ export const AccountListItemMenu = ({
       </MenuItem>
       <MenuItem
         onClick={() => {
-          dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
+          dispatch(setAccountDetailsAddress(identity.address));
           trackEvent({
             event: MetaMetricsEventName.NavAccountDetailsOpened,
             category: MetaMetricsEventCategory.Navigation,
@@ -92,6 +128,7 @@ export const AccountListItemMenu = ({
           closeMenu?.();
         }}
         iconName={IconName.ScanBarcode}
+        data-testid="account-list-menu-details"
       >
         <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
       </MenuItem>
@@ -105,13 +142,55 @@ export const AccountListItemMenu = ({
                 identity,
               }),
             );
+            trackEvent({
+              event: MetaMetricsEventName.AccountRemoved,
+              category: MetaMetricsEventCategory.Accounts,
+              properties: {
+                account_hardware_type: deviceName,
+                chain_id: chainId,
+                account_type: accountType,
+              },
+            });
             onClose();
+            closeMenu?.();
           }}
           iconName={IconName.Trash}
         >
           <Text variant={TextVariant.bodySm}>{t('removeAccount')}</Text>
         </MenuItem>
       ) : null}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        isCustodial ? (
+          <MenuItem
+            data-testid="account-options-menu__remove-jwt"
+            onClick={async () => {
+              const token = await dispatch(mmiActions.getCustodianToken());
+              const custodyAccountDetails = await dispatch(
+                mmiActions.getAllCustodianAccountsWithToken(
+                  keyring.type.split(' - ')[1],
+                  token,
+                ),
+              );
+              dispatch(
+                showModal({
+                  name: 'CONFIRM_REMOVE_JWT',
+                  token,
+                  custodyAccountDetails,
+                  accounts,
+                  selectedAddress: toChecksumHexAddress(identity.address),
+                }),
+              );
+              onClose();
+              closeMenu?.();
+            }}
+            iconName={IconName.Trash}
+          >
+            <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
+          </MenuItem>
+        ) : null
+        ///: END:ONLY_INCLUDE_IN
+      }
     </Menu>
   );
 };

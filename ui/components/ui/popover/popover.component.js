@@ -15,7 +15,7 @@ import {
   Size,
   BorderColor,
   IconColor,
-  TEXT_ALIGN,
+  TextAlign,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
 
@@ -57,6 +57,7 @@ const Popover = ({
   footerClassName,
   onBack,
   onClose,
+  onScroll,
   className,
   contentClassName,
   showArrow,
@@ -95,7 +96,7 @@ const Popover = ({
           />
         ) : null}
         <Text
-          textAlign={centerTitle ? TEXT_ALIGN.CENTER : TEXT_ALIGN.START}
+          textAlign={centerTitle ? TextAlign.Center : TextAlign.Start}
           ellipsis
           variant={TextVariant.headingSm}
           as="h2"
@@ -133,6 +134,7 @@ const Popover = ({
         {children ? (
           <Box
             className={classnames('popover-content', contentClassName)}
+            onScroll={onScroll}
             {...{ ...defaultContentProps, ...contentProps }}
           >
             {children}
@@ -201,6 +203,10 @@ Popover.propTypes = {
    * onClose handler
    */
   onClose: PropTypes.func,
+  /**
+   * onScroll handler
+   */
+  onScroll: PropTypes.func,
   CustomBackground: PropTypes.func,
   /**
    * Add custom CSS class for content

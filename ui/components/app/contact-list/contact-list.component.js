@@ -31,12 +31,6 @@ export default class ContactList extends PureComponent {
 
     return (
       <div className="send__select-recipient-wrapper__recent-group-wrapper">
-        <RecipientGroup
-          label={t('recents')}
-          items={showLoadMore ? nonContacts.slice(0, 2) : nonContacts}
-          onSelect={this.props.selectRecipient}
-          selectedAddress={this.props.selectedAddress}
-        />
         {showLoadMore && (
           <Button
             type="link"

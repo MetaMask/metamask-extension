@@ -1,17 +1,17 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  DISPLAY,
+  Display,
   BackgroundColor,
   BorderColor,
-  FONT_WEIGHT,
-  FONT_STYLE,
+  FontWeight,
+  FontStyle,
   TextColor,
-  TEXT_ALIGN,
-  OVERFLOW_WRAP,
-  TEXT_TRANSFORM,
-  FRACTIONS,
-  FLEX_DIRECTION,
+  TextAlign,
+  OverflowWrap,
+  TextTransform,
+  BlockSize,
+  FlexDirection,
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
@@ -30,7 +30,7 @@ export default {
       page: README,
     },
   },
-} as ComponentMeta<typeof Text>;
+} as Meta<typeof Text>;
 
 function renderBackgroundColor(color) {
   let bgColor;
@@ -70,7 +70,7 @@ function renderBackgroundColor(color) {
   return bgColor;
 }
 
-const Template: ComponentStory<typeof Text> = (args) => (
+const Template: StoryFn<typeof Text> = (args) => (
   <Text {...args}>{args.children}</Text>
 );
 
@@ -92,7 +92,7 @@ export const Variant = (args) => (
   </>
 );
 
-export const ColorStory: ComponentStory<typeof Text> = (args) => {
+export const ColorStory: StoryFn<typeof Text> = (args) => {
   // Index of last valid color in TextColor array
   return (
     <>
@@ -113,9 +113,9 @@ export const ColorStory: ComponentStory<typeof Text> = (args) => {
 };
 ColorStory.storyName = 'Color';
 
-export const FontWeight: ComponentStory<typeof Text> = (args) => (
+export const FontWeightStory: StoryFn<typeof Text> = (args) => (
   <>
-    {Object.values(FONT_WEIGHT).map((weight) => (
+    {Object.values(FontWeight).map((weight) => (
       <Text {...args} fontWeight={weight} key={weight}>
         {weight}
       </Text>
@@ -123,9 +123,11 @@ export const FontWeight: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const FontStyle: ComponentStory<typeof Text> = (args) => (
+FontWeightStory.storyName = 'Font Weight';
+
+export const FontStyleStory: StoryFn<typeof Text> = (args) => (
   <>
-    {Object.values(FONT_STYLE).map((style) => (
+    {Object.values(FontStyle).map((style) => (
       <Text {...args} fontStyle={style} key={style}>
         {style}
       </Text>
@@ -133,9 +135,11 @@ export const FontStyle: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const TextTransform: ComponentStory<typeof Text> = (args) => (
+FontStyleStory.storyName = 'Font Style';
+
+export const TextTransformStory: StoryFn<typeof Text> = (args) => (
   <>
-    {Object.values(TEXT_TRANSFORM).map((transform) => (
+    {Object.values(TextTransform).map((transform) => (
       <Text {...args} textTransform={transform} key={transform}>
         {transform}
       </Text>
@@ -143,9 +147,11 @@ export const TextTransform: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const TextAlign: ComponentStory<typeof Text> = (args) => (
+TextTransformStory.storyName = 'Text Transform';
+
+export const TextAlignStory: StoryFn<typeof Text> = (args) => (
   <>
-    {Object.values(TEXT_ALIGN).map((align) => (
+    {Object.values(TextAlign).map((align) => (
       <Text {...args} textAlign={align} key={align}>
         {align}
       </Text>
@@ -153,26 +159,30 @@ export const TextAlign: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const OverflowWrap: ComponentStory<typeof Text> = (args) => (
+TextAlignStory.storyName = 'Text Align';
+
+export const OverflowWrapStory: StoryFn<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.warningDefault}
-    display={DISPLAY.BLOCK}
+    display={Display.Block}
     style={{ width: 200 }}
   >
-    <Text {...args} overflowWrap={OVERFLOW_WRAP.NORMAL}>
-      {OVERFLOW_WRAP.NORMAL}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+    <Text {...args} overflowWrap={OverflowWrap.Normal}>
+      {OverflowWrap.Normal}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
     </Text>
-    <Text {...args} overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>
-      {OVERFLOW_WRAP.BREAK_WORD}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
+    <Text {...args} overflowWrap={OverflowWrap.BreakWord}>
+      {OverflowWrap.BreakWord}: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
     </Text>
   </Box>
 );
 
-export const Ellipsis: ComponentStory<typeof Text> = (args) => (
+OverflowWrapStory.storyName = 'Overflow Wrap';
+
+export const Ellipsis: StoryFn<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.primaryDefault}
-    display={DISPLAY.BLOCK}
-    width={FRACTIONS.ONE_THIRD}
+    display={Display.Block}
+    width={BlockSize.OneThird}
   >
     <Text {...args} ellipsis>
       Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
@@ -183,7 +193,7 @@ export const Ellipsis: ComponentStory<typeof Text> = (args) => (
   </Box>
 );
 
-export const As: ComponentStory<typeof Text> = (args) => (
+export const As: StoryFn<typeof Text> = (args) => (
   <>
     {Object.keys(ValidTag).map((tag) => {
       if (ValidTag[tag] === ValidTag.Input) {
@@ -207,11 +217,11 @@ export const As: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
+export const TextDirectionStory: StoryFn<typeof Text> = (args) => (
   <Box
     style={{ maxWidth: 300 }}
-    display={DISPLAY.FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
     gap={4}
   >
     <Text {...args} textDirection={TextDirection.LeftToRight}>
@@ -225,4 +235,15 @@ export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
       Let the user agent decide with the auto option
     </Text>
   </Box>
+);
+
+export const Strong: StoryFn<typeof Text> = (args) => (
+  <>
+    <Text {...args} as="strong">
+      This is an as="strong" demo.
+    </Text>
+    <Text {...args}>
+      This is a <strong>strong element</strong> demo.
+    </Text>
+  </>
 );

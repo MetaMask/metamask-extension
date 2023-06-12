@@ -21,7 +21,7 @@ import {
   LedgerTransportTypes,
 } from '../../../../shared/constants/hardware-wallets';
 import {
-  BUTTON_TYPES,
+  BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
   Text,
@@ -36,7 +36,7 @@ const U2F_ERROR = 'U2F';
 const LEDGER_LIVE_PATH = `m/44'/60'/0'/0/0`;
 const MEW_PATH = `m/44'/60'/0'`;
 const BIP44_PATH = `m/44'/60'/0'/0`;
-const LEDGER_HD_PATHS = [
+export const LEDGER_HD_PATHS = [
   { name: 'Ledger Live', value: LEDGER_LIVE_PATH },
   { name: 'Legacy (MEW / MyCrypto)', value: MEW_PATH },
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
@@ -45,7 +45,7 @@ const LEDGER_HD_PATHS = [
 const LATTICE_STANDARD_BIP44_PATH = `m/44'/60'/0'/0/x`;
 const LATTICE_LEDGER_LIVE_PATH = `m/44'/60'/x'/0/0`;
 const LATTICE_MEW_PATH = `m/44'/60'/0'/x`;
-const LATTICE_HD_PATHS = [
+export const LATTICE_HD_PATHS = [
   {
     name: `Standard (${LATTICE_STANDARD_BIP44_PATH})`,
     value: LATTICE_STANDARD_BIP44_PATH,
@@ -58,7 +58,7 @@ const LATTICE_HD_PATHS = [
 ];
 
 const TREZOR_TESTNET_PATH = `m/44'/1'/0'/0`;
-const TREZOR_HD_PATHS = [
+export const TREZOR_HD_PATHS = [
   { name: `BIP44 Standard (e.g. MetaMask, Trezor)`, value: BIP44_PATH },
   { name: `Trezor Testnets`, value: TREZOR_TESTNET_PATH },
 ];
@@ -306,7 +306,7 @@ class ConnectHardwareForm extends Component {
               {this.context.t('troubleConnectingToLedgerU2FOnFirefox', [
                 // eslint-disable-next-line react/jsx-key
                 <Button
-                  type={BUTTON_TYPES.LINK}
+                  variant={BUTTON_VARIANT.LINK}
                   href={ZENDESK_URLS.HARDWARE_CONNECTION}
                   size={BUTTON_SIZES.INHERIT}
                   key="u2f-error-1"
@@ -325,7 +325,7 @@ class ConnectHardwareForm extends Component {
                 [
                   // eslint-disable-next-line react/jsx-key
                   <Button
-                    type={BUTTON_TYPES.LINK}
+                    variant={BUTTON_VARIANT.LINK}
                     href={ZENDESK_URLS.LEDGER_FIREFOX_U2F_GUIDE}
                     size={BUTTON_SIZES.INHERIT}
                     key="u2f-error-1"
@@ -349,7 +349,7 @@ class ConnectHardwareForm extends Component {
             this.state.device,
             // eslint-disable-next-line react/jsx-key
             <Button
-              type={BUTTON_TYPES.LINK}
+              variant={BUTTON_VARIANT.LINK}
               href={ZENDESK_URLS.HARDWARE_CONNECTION}
               key="u2f-error-1"
             >

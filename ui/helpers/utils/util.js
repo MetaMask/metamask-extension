@@ -7,10 +7,12 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -22,7 +24,7 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import {
   SNAPS_DERIVATION_PATHS,
   SNAPS_METADATA,
@@ -539,7 +541,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -566,6 +568,25 @@ export const getSnapName = (snapId, subjectMetadata) => {
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
 };
 
+export const getDedupedSnaps = (request, permissions) => {
+  const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
+  const requestedSnaps = permission?.caveats[0].value;
+  const currentSnaps =
+    permissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+
+  if (!isObject(currentSnaps) && requestedSnaps) {
+    return Object.keys(requestedSnaps);
+  }
+
+  const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+  const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+  const dedupedSnaps = requestedSnapKeys.filter(
+    (snapId) => !currentSnapKeys.includes(snapId),
+  );
+
+  return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
+};
+
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -583,4 +604,19 @@ export const sanitizeString = (value) => {
   }
   const regex = /\u202E/giu;
   return value.replace(regex, '\\u202E');
+};
+
+/**
+ * This method checks current provider type and returns its string representation
+ *
+ * @param {*} provider
+ * @param {*} t
+ * @returns
+ */
+
+export const getNetworkNameFromProviderType = (providerName) => {
+  if (providerName === NETWORK_TYPES.RPC) {
+    return '';
+  }
+  return providerName;
 };

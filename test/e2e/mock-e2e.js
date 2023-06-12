@@ -343,7 +343,7 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
-    .forGet('https://token-api.metaswap.codefi.network/token/0x539')
+    .forGet('https://token-api.metaswap.codefi.network/token/1337')
     .thenCallback(() => {
       return {
         statusCode: 200,

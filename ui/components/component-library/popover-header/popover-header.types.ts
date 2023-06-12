@@ -8,7 +8,7 @@ export interface PopoverHeaderProps extends HeaderBaseProps {
    */
   children?: React.ReactNode;
   /**
-   * Additional classNames to be added to the Popover component
+   * Additional classNames to be added to the PopoverHeader component
    */
   className?: string;
   /**

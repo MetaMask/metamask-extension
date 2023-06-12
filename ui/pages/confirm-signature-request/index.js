@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import log from 'loglevel';
+import { cloneDeep } from 'lodash';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -10,10 +11,16 @@ import SignatureRequestSIWE from '../../components/app/signature-request-siwe';
 import SignatureRequestOriginal from '../../components/app/signature-request-original';
 import Loading from '../../components/ui/loading-screen';
 import { useRouting } from '../../hooks/useRouting';
-import { getTotalUnapprovedSignatureRequestCount } from '../../selectors';
+import {
+  getTotalUnapprovedSignatureRequestCount,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
+import { getProviderConfig } from '../../ducks/metamask/metamask';
 
 const SIGN_MESSAGE_TYPE = {
   MESSAGE: 'message',
@@ -65,9 +72,14 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedTypedMessages,
     networkId,
     blockGasLimit,
-    provider: { chainId },
   } = useSelector((state) => state.metamask);
+  const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const selectedAccount = useSelector(getSelectedAccount);
+  ///: END:ONLY_INCLUDE_IN
+
   const [prevValue, setPrevValues] = useState();
 
   useEffect(() => {
@@ -157,9 +169,10 @@ const ConfirmTxScreen = ({ match }) => {
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
 
-    return transactionId
+    const unconfirmedTx = transactionId
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index];
+    return cloneDeep(unconfirmedTx);
   };
 
   const txData = getTxData() || {};
@@ -212,6 +225,9 @@ const ConfirmTxScreen = ({ match }) => {
       cancelMessage={cancelMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
       cancelPersonalMessage={cancelMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
       cancelTypedMessage={cancelMessage(SIGN_MESSAGE_TYPE.TYPED)}
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      selectedAccount={selectedAccount}
+      ///: END:ONLY_INCLUDE_IN
     />
   );
 };

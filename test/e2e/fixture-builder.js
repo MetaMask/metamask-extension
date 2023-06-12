@@ -3,11 +3,13 @@ const {
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
+const { toHex } = require('@metamask/controller-utils');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { DAPP_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -140,7 +142,8 @@ function defaultFixture() {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
-        termsOfUseLastAgreed: 86400000000000,
+        termsOfUseLastAgreed:
+          '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
         defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
@@ -156,6 +159,7 @@ function defaultFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
+        snapsInstallPrivacyWarningShown: true,
       },
       CachedBalancesController: {
         cachedBalances: {
@@ -196,7 +200,7 @@ function defaultFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
@@ -287,7 +291,6 @@ function defaultFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       TransactionController: {
@@ -328,7 +331,7 @@ function onboardingFixture() {
       NetworkController: {
         networkId: '1337',
         networkStatus: 'available',
-        provider: {
+        providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
@@ -391,7 +394,6 @@ function onboardingFixture() {
         allTokens: {},
         detectedTokens: [],
         ignoredTokens: [],
-        suggestedAssets: [],
         tokens: [],
       },
       config: {},
@@ -518,7 +520,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
             },
@@ -527,7 +529,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
               tokenId: '1',
@@ -550,7 +552,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               name: 'TestDappCollectibles',
@@ -561,7 +563,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               description: 'Test Dapp Collectibles for testing.',
@@ -593,13 +595,13 @@ class FixtureBuilder {
   withPermissionControllerConnectedToTestDapp() {
     return this.withPermissionController({
       subjects: {
-        'http://127.0.0.1:8080': {
-          origin: 'http://127.0.0.1:8080',
+        [DAPP_URL]: {
+          origin: DAPP_URL,
           permissions: {
             eth_accounts: {
               id: 'ZaqPEWxyhNCJYACFw93jE',
               parentCapability: 'eth_accounts',
-              invoker: 'http://127.0.0.1:8080',
+              invoker: DAPP_URL,
               caveats: [
                 {
                   type: 'restrictReturnedAccounts',
@@ -721,7 +723,7 @@ class FixtureBuilder {
       ignoredTokens: [],
       detectedTokens: [],
       allTokens: {
-        '0x539': {
+        [toHex(1337)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,
@@ -737,7 +739,6 @@ class FixtureBuilder {
       },
       allIgnoredTokens: {},
       allDetectedTokens: {},
-      suggestedAssets: [],
     });
     return this;
   }

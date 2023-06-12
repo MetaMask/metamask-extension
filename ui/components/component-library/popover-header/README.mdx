@@ -3,7 +3,7 @@ import { PopoverHeader } from './popover-header';
 
 # PopoverHeader
 
-PopoverHeader is built on top of [HeaderBase](/docs/components-componentlibrary-headerbase--default-story) component with the most common use case of a back button in the startAccessory position, title, and close button in the endAccessory position.
+`PopoverHeader` handles the title, close button and back button for all `Popover` components. It is built on top of the [HeaderBase](/docs/components-componentlibrary-headerbase--default-story) component
 
 <Canvas>
   <Story id="components-componentlibrary-popoverheader--default-story" />
@@ -17,16 +17,41 @@ The `PopoverHeader` accepts all props below as well as all [Box](/docs/ui-compon
 
 ### Children
 
-Wrapping string content in the `PopoverHeader` component will be rendered in the center of the header with the default title `Text` component.
+The title of the `PopoverHeader` component. Passing a `string` will render the content inside of a `Text` component. Passing any other type will render the content as is.
 
 <Canvas>
   <Story id="components-componentlibrary-popoverheader--children" />
 </Canvas>
 
 ```jsx
-import { PopoverHeader } from '../../component-library';
+import {
+  TextVariant,
+  TextAlign,
+  DISPLAY,
+  FLEX_DIRECTION,
+  AlignItems,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
-<PopoverHeader>Title is sentence case no period</PopoverHeader>;
+import { PopoverHeader,  AvatarAccount, Text } from '../../component-library';
+
+<PopoverHeader {...args} marginBottom={4}>
+  Children as string
+</PopoverHeader>
+<PopoverHeader
+  {...args}
+  childrenWrapperProps={{
+    display: DISPLAY.FLEX,
+    flexDirection: FLEX_DIRECTION.COLUMN,
+    alignItems: AlignItems.center,
+    justifyContent: JustifyContent.center,
+  }}
+>
+  <AvatarAccount address="0x1234" />
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+    Custom header using multiple components
+  </Text>
+</PopoverHeader>
 ```
 
 ### onBack
