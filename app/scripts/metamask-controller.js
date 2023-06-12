@@ -4296,13 +4296,13 @@ export default class MetamaskController extends EventEmitter {
    */
   findNetworkConfigurationBy(rpcInfo) {
     const { networkConfigurations } = this.networkController.store.getState();
-    const [id, networkConfiguration] = Object.entries(
-      networkConfigurations,
-    ).find((configuration) => {
-      return Object.keys(rpcInfo).some((key) => {
-        return configuration[key] === rpcInfo[key];
-      });
-    });
+    const networkConfiguration = Object.values(networkConfigurations).find(
+      (configuration) => {
+        return Object.keys(rpcInfo).some((key) => {
+          return configuration[key] === rpcInfo[key];
+        });
+      },
+    );
 
     return { ...networkConfiguration, id } || null;
   }
