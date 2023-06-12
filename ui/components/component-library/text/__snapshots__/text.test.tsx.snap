@@ -3,52 +3,52 @@
 exports[`Text should render the Text with proper variant class name 1`] = `
 <div>
   <h1
-    class="box mm-text mm-text--display-md box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--display-md"
   >
     display-md
   </h1>
   <h2
-    class="box mm-text mm-text--heading-lg box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--heading-lg"
   >
     heading-lg
   </h2>
   <h3
-    class="box mm-text mm-text--heading-md box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--heading-md"
   >
     heading-md
   </h3>
   <h4
-    class="box mm-text mm-text--heading-sm box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--heading-sm"
   >
     heading-sm
   </h4>
   <p
-    class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-lg-medium"
   >
     body-lg-medium
   </p>
   <p
-    class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-md"
   >
     body-md
   </p>
   <p
-    class="box mm-text mm-text--body-md-bold box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-md-bold"
   >
     body-md-bold
   </p>
   <p
-    class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-sm"
   >
     body-sm
   </p>
   <p
-    class="box mm-text mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-sm-bold"
   >
     body-sm-bold
   </p>
   <p
-    class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-xs"
   >
     body-xs
   </p>

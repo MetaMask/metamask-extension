@@ -66,7 +66,7 @@ export const Text: TextComponent = React.forwardRef(
         as={tag}
         dir={textDirection}
         ref={ref}
-        {...props} // Need to fix Box types to allow for spreading props
+        {...props} // TODO: Need to fix Box types to allow for spreading props
       >
         {children}
       </Box>

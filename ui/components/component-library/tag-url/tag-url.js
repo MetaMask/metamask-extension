@@ -97,7 +97,7 @@ TagUrl.propTypes = {
   /**
    * It accepts all the props from Text Component
    */
-  labelProps: PropTypes.shape(Text.PropTypes),
+  labelProps: PropTypes.object,
   /**
    * If we want a button in TagUrl component.
    */
