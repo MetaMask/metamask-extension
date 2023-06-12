@@ -164,9 +164,6 @@ export default function GasTiming({
     }
   }
 
-  console.log('attitude', attitude);
-  console.log('estimateUsed', estimateUsed);
-
   return (
     <Typography
       variant={TypographyVariant.H7}
