@@ -12,7 +12,6 @@ export default {
       control: 'onViewOnOpensea',
     },
   },
-
 };
 
 export const DefaultStory = (args) => <NftOptions {...args} />;
