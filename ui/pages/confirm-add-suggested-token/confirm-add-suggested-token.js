@@ -42,7 +42,7 @@ function getTokenName(name, symbol) {
 function hasDuplicateAddress(suggestedTokens, tokens) {
   const duplicate = suggestedTokens.find(({ requestData: { asset } }) => {
     const dupe = tokens.find(({ address }) => {
-      return isEqualCaseInsensitive(address, asset.address);
+      return isEqualCaseInsensitive(address, asset?.address);
     });
     return Boolean(dupe);
   });
@@ -61,8 +61,8 @@ function hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) {
   const duplicate = suggestedTokens.find(({ requestData: { asset } }) => {
     const dupe = tokens.find((token) => {
       return (
-        isEqualCaseInsensitive(token.symbol, asset.symbol) &&
-        !isEqualCaseInsensitive(token.address, asset.address)
+        isEqualCaseInsensitive(token.symbol, asset?.symbol) &&
+        !isEqualCaseInsensitive(token.address, asset?.address)
       );
     });
     return Boolean(dupe);

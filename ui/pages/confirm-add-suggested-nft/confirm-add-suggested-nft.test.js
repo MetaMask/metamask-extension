@@ -1,41 +1,63 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { fireEvent, screen } from '@testing-library/react';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest/rendering';
-import ConfirmAddSuggestedToken from '.';
+import ConfirmAddSuggestedNFT from '.';
 
-const MOCK_SUGGESTED_ASSETS = [
-  {
-    id: 1,
-    asset: {
-      address: '0x8b175474e89094c44da98b954eedeac495271d0a',
-      symbol: 'NEW',
-      decimals: 18,
-      image: 'metamark.svg',
-      unlisted: false,
+const PENDING_NFT_APPROVALS = {
+  1: {
+    id: '1',
+    origin: 'https://www.opensea.io',
+    time: 1,
+    type: ApprovalType.WatchAsset,
+    requestData: {
+      asset: {
+        address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+        name: 'CryptoKitty',
+        tokenId: '15',
+        standard: 'ERC721',
+        image: 'https://www.cryptokitties.com/images/kitty-eth.svg',
+      },
     },
   },
-  {
-    id: 2,
-    asset: {
-      address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
-      symbol: '0XYX',
-      decimals: 18,
-      image: '0x.svg',
-      unlisted: false,
+  2: {
+    id: '2',
+    origin: 'https://www.nft-collector.io',
+    time: 1,
+    type: ApprovalType.WatchAsset,
+    requestData: {
+      asset: {
+        address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+        name: 'Legends of the Dance Floor',
+        tokenId: '1',
+        standard: 'ERC721',
+        image:
+          'https://www.nft-collector.io/images/legends-of-the-dance-floor.png',
+      },
     },
   },
-];
+};
 
-const MOCK_TOKEN = {
-  address: '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d',
-  symbol: 'TEST',
-  decimals: '0',
+const PENDING_TOKEN_APPROVALS = {
+  3: {
+    id: '3',
+    origin: 'https://www.uniswap.io',
+    time: 2,
+    type: ApprovalType.WatchAsset,
+    requestData: {
+      asset: {
+        address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+        symbol: 'UNI',
+        decimals: '18',
+      },
+    },
+  },
 };
 
 jest.mock('../../store/actions', () => ({
@@ -43,66 +65,86 @@ jest.mock('../../store/actions', () => ({
   rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
 }));
 
-const renderComponent = (tokens = []) => {
+const renderComponent = (pendingNfts = {}) => {
   const store = configureStore({
     metamask: {
-      suggestedTokens: [...MOCK_SUGGESTED_ASSETS],
-      tokens,
+      pendingApprovals: pendingNfts,
       providerConfig: { chainId: '0x1' },
     },
     history: {
       mostRecentOverviewPage: '/',
     },
   });
-  return renderWithProvider(<ConfirmAddSuggestedToken />, store);
+  return renderWithProvider(<ConfirmAddSuggestedNFT />, store);
 };
 
-describe('ConfirmAddSuggestedToken Component', () => {
-  it('should render', () => {
-    renderComponent();
-
-    expect(screen.getByText('Add suggested tokens')).toBeInTheDocument();
-    expect(
-      screen.getByText('Would you like to import these tokens?'),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Token')).toBeInTheDocument();
-    expect(screen.getByText('Balance')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Add token' }),
-    ).toBeInTheDocument();
+describe('ConfirmAddSuggestedNFT Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should render the list of suggested tokens', () => {
-    renderComponent();
+  it('should render one suggested NFT', () => {
+    renderComponent({
+      1: {
+        id: '1',
+        origin: 'https://www.opensea.io',
+        time: 1,
+        type: ApprovalType.WatchAsset,
+        requestData: {
+          asset: {
+            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+            name: 'CryptoKitty',
+            tokenId: '15',
+            standard: 'ERC721',
+          },
+        },
+      },
+    });
 
-    for (const { asset } of MOCK_SUGGESTED_ASSETS) {
-      expect(screen.getByText(asset.symbol)).toBeInTheDocument();
+    expect(screen.getByText('Add suggested NFTs')).toBeInTheDocument();
+    expect(screen.getByText('www.opensea.io')).toBeInTheDocument();
+    expect(
+      screen.getByText('wants to add this asset to your wallet'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('CryptoKitty')).toBeInTheDocument();
+    expect(screen.getByText('#15')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add NFT' })).toBeInTheDocument();
+  });
+
+  it('should render a list of suggested NFTs', () => {
+    renderComponent({ ...PENDING_NFT_APPROVALS, ...PENDING_TOKEN_APPROVALS });
+
+    for (const {
+      requestData: { asset },
+    } of Object.values(PENDING_NFT_APPROVALS)) {
+      expect(screen.getByText(asset.name)).toBeInTheDocument();
+      expect(screen.getByText(`#${asset.tokenId}`)).toBeInTheDocument();
     }
     expect(screen.getAllByRole('img')).toHaveLength(
-      MOCK_SUGGESTED_ASSETS.length,
+      Object.values(PENDING_NFT_APPROVALS).length,
     );
   });
 
-  it('should dispatch resolvePendingApproval when clicking the "Add token" button', async () => {
-    renderComponent();
-    const addTokenBtn = screen.getByRole('button', { name: 'Add token' });
+  it('should dispatch resolvePendingApproval when clicking the "Add NFTs" button', async () => {
+    renderComponent(PENDING_NFT_APPROVALS);
+    const addNftButton = screen.getByRole('button', { name: 'Add NFTs' });
 
     await act(async () => {
-      fireEvent.click(addTokenBtn);
+      fireEvent.click(addNftButton);
     });
 
     expect(resolvePendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
+      Object.values(PENDING_NFT_APPROVALS).length,
     );
 
-    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
+    Object.values(PENDING_NFT_APPROVALS).forEach(({ id }) => {
       expect(resolvePendingApproval).toHaveBeenCalledWith(id, null);
     });
   });
 
   it('should dispatch rejectPendingApproval when clicking the "Cancel" button', async () => {
-    renderComponent();
+    renderComponent(PENDING_NFT_APPROVALS);
     const cancelBtn = screen.getByRole('button', { name: 'Cancel' });
 
     await act(async () => {
@@ -110,10 +152,10 @@ describe('ConfirmAddSuggestedToken Component', () => {
     });
 
     expect(rejectPendingApproval).toHaveBeenCalledTimes(
-      MOCK_SUGGESTED_ASSETS.length,
+      Object.values(PENDING_NFT_APPROVALS).length,
     );
 
-    MOCK_SUGGESTED_ASSETS.forEach(({ id }) => {
+    Object.values(PENDING_NFT_APPROVALS).forEach(({ id }) => {
       expect(rejectPendingApproval).toHaveBeenCalledWith(
         id,
         expect.objectContaining({
@@ -125,44 +167,25 @@ describe('ConfirmAddSuggestedToken Component', () => {
     });
   });
 
-  describe('when the suggested token address matches an existing token address', () => {
-    it('should show "already listed" warning', () => {
-      const mockTokens = [
-        {
-          ...MOCK_TOKEN,
-          address: MOCK_SUGGESTED_ASSETS[0].asset.address,
-        },
-      ];
-      renderComponent(mockTokens);
+  it('should allow users to remove individual NFTs from the list of NFTs to add', async () => {
+    renderComponent(PENDING_NFT_APPROVALS);
 
-      expect(
-        screen.getByText(
-          'This action will edit tokens that are already listed in your wallet, which can be used' +
-            ' to phish you. Only approve if you are certain that you mean to change what these' +
-            ' tokens represent. Learn more about',
-        ),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('link', { name: 'scams and security risks.' }),
-      ).toBeInTheDocument();
+    const idToRemove = Object.values(PENDING_NFT_APPROVALS)[0].id;
+    const removeBtn = screen.getByTestId(
+      `confirm-add-suggested-nft__nft-remove-${idToRemove}`,
+    );
+    await act(async () => {
+      fireEvent.click(removeBtn);
     });
-  });
 
-  describe('when the suggested token symbol matches an existing token symbol and has a different address', () => {
-    it('should show "reuses a symbol" warning', () => {
-      const mockTokens = [
-        {
-          ...MOCK_TOKEN,
-          symbol: MOCK_SUGGESTED_ASSETS[0].asset.symbol,
-        },
-      ];
-      renderComponent(mockTokens);
-
-      expect(
-        screen.getByText(
-          'A token here reuses a symbol from another token you watch, this can be confusing or deceptive.',
-        ),
-      ).toBeInTheDocument();
-    });
+    expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
+    expect(rejectPendingApproval).toHaveBeenCalledWith(
+      idToRemove,
+      expect.objectContaining({
+        code: 4001,
+        message: 'User rejected the request.',
+        stack: expect.any(String),
+      }),
+    );
   });
 });

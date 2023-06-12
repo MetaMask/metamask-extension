@@ -103,9 +103,12 @@ const ConfirmAddSuggestedNFT = () => {
 
   let origin;
   if (suggestedNfts.length) {
-    origin = new URL(suggestedNfts[0].origin)?.host || 'dapp';
+    try {
+      origin = new URL(suggestedNfts[0].origin)?.host;
+    } catch {
+      origin = 'dapp';
+    }
   }
-
   return (
     <div className="page-container">
       <div className="confirm-add-suggested-nft__header">
@@ -114,7 +117,7 @@ const ConfirmAddSuggestedNFT = () => {
           textAlign={TextAlign.Center}
           margin={2}
         >
-          {t('addSuggestedTokens')}
+          {t('addSuggestedNFTs')}
         </Text>
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
           {t('wantsToAddThisAsset', [
@@ -143,7 +146,7 @@ const ConfirmAddSuggestedNFT = () => {
                 },
               }) => {
                 const nftImageURL = getAssetImageURL(image, ipfsGateway);
-                let blockExplorerLink = getTokenTrackerLink(
+                const blockExplorerLink = getTokenTrackerLink(
                   address,
                   chainId,
                   null,
@@ -152,10 +155,7 @@ const ConfirmAddSuggestedNFT = () => {
                     blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                   },
                 );
-                if (blockExplorerLink.includes('etherscan.io')) {
-                  // this will only work for etherscan
-                  blockExplorerLink = `${blockExplorerLink}?a=${tokenId}`;
-                }
+
                 if (suggestedNfts.length === 1) {
                   return (
                     <Box
@@ -258,10 +258,12 @@ const ConfirmAddSuggestedNFT = () => {
                     </div>
                     <ButtonIcon
                       className="confirm-add-suggested-nft__nft-remove"
+                      data-testid={`confirm-add-suggested-nft__nft-remove-${id}`}
                       iconName={IconName.Close}
                       size={ButtonIconSize.Sm}
                       color={IconColor.iconMuted}
                       onClick={(e) => {
+                        console.log('rejecting');
                         e.preventDefault();
                         e.stopPropagation();
                         dispatch(
