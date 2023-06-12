@@ -16,11 +16,11 @@ exports[`ButtonBase should render anchor element correctly by href and externalL
 
 exports[`ButtonBase should render button element correctly and match snapshot 1`] = `
 <div>
-  <button
-    class="box mm-text mm-button-base mm-button-base--size-md mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-pill"
+  <p
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
     data-testid="button-base"
   >
     Button base
-  </button>
+  </p>
 </div>
 `;

@@ -8,7 +8,6 @@ import {
   TextColor,
   TextTransform,
   TextVariant,
-  Color,
 } from '../../../helpers/constants/design-system';
 import { TextDirection } from './text.types';
 import { Text } from '.';
@@ -115,7 +114,7 @@ describe('Text', () => {
         <Text color={TextColor.textDefault}>text-default</Text>
         <Text color={TextColor.textAlternative}>text-alternative</Text>
         <Text color={TextColor.textMuted}>text-muted</Text>
-        <Text color={Color.overlayInverse}>overlay-inverse</Text>
+        <Text color={TextColor.overlayInverse}>overlay-inverse</Text>
         <Text color={TextColor.primaryDefault}>primary-default</Text>
         <Text color={TextColor.primaryInverse}>primary-inverse</Text>
         <Text color={TextColor.errorDefault}>error-default</Text>

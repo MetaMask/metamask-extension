@@ -5,8 +5,8 @@ exports[`Beta Header should match snapshot 1`] = `
   <div
     class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-warning-default"
   >
-    <h6
-      class="box mm-text beta-header__message mm-text--body-sm box--flex-direction-row box--color-warning-inverse"
+    <p
+      class="mm-box mm-text beta-header__message mm-text--body-sm mm-box--color-warning-inverse"
     >
       <span>
          
@@ -21,7 +21,7 @@ exports[`Beta Header should match snapshot 1`] = `
         
          
       </span>
-    </h6>
+    </p>
     <button
       aria-label="Close"
       class="box mm-button-icon mm-button-icon--size-sm beta-header__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-warning-inverse box--background-color-transparent box--rounded-lg"

@@ -27,7 +27,7 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
         ...Dce07538D
       </div>
       <p
-        class="box mm-text confirm-action-jwt__show-more mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-goerli"
+        class="mm-box mm-text confirm-action-jwt__show-more mm-text--body-md mm-box--margin-left-2 mm-box--color-goerli"
       >
         <a
           rel="noopener noreferrer"
@@ -35,11 +35,11 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
           Show more
         </a>
       </p>
-      <h6
-        class="box mm-text mm-text--body-sm mm-text--text-align-center box--margin-top-2 box--flex-direction-row box--color-text-default"
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-text--text-align-center mm-box--margin-top-2"
       >
         Are you sure you want to remove this token? All accounts assigned to this token will be removed from extension as well: 
-      </h6>
+      </p>
       <div
         class="box confirm-action-jwt__accounts-list box--flex-direction-row"
       >
@@ -60,31 +60,31 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
               <div
                 class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
               >
-                <label
-                  class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                <p
+                  class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
                   for="address-0"
                 >
                   <span
-                    class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                    class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1"
                   >
                     Test name account
                   </span>
-                </label>
-                <label
-                  class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                </p>
+                <p
+                  class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center"
                   for="address-0"
                 >
-                  <span
-                    class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                  <p
+                    class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex"
                   >
-                    <a
-                      class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                    <p
+                      class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                       href="https://etherscan.io/address/0xaD6D458402F60fD3Bd25163575031ACDce07538D"
                       rel="noopener noreferrer"
                       target="_blank"
                     >
                       <span
-                        class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
+                        class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
                       >
                         0xaD6...538D
                         <span
@@ -92,7 +92,7 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
                           style="mask-image: url('./images/icons/undefined.svg');"
                         />
                       </span>
-                    </a>
+                    </p>
                     <div>
                       <div
                         aria-describedby="tippy-tooltip-1"
@@ -112,13 +112,13 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
                         </button>
                       </div>
                     </div>
-                  </span>
-                </label>
+                  </p>
+                </p>
                 <div
                   class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
                 >
-                  <label
-                    class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                  <p
+                    class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                     for="address-0"
                   />
                 </div>

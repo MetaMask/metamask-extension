@@ -23,13 +23,13 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               <div
                 class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
               >
-                <h6
-                  class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                <p
+                  class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block"
                   for="custom-spending-cap"
                   tag="label"
                 >
                   Custom spending cap
-                </h6>
+                </p>
                 
                 <div
                   class="box box--display-inline-block box--flex-direction-row"
@@ -54,11 +54,11 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               <div
                 class="box form-field__heading-detail box--margin-bottom-2 box--flex-direction-row box--text-align-end"
               >
-                <button
-                  class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                <p
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 >
                   Use default
-                </button>
+                </p>
               </div>
             </div>
             <input
@@ -75,32 +75,32 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
         <div
           class="box custom-spending-cap__max box--margin-left-auto box--padding-right-4 box--padding-bottom-2 box--flex-direction-row box--text-align-end box--width-max"
         >
-          <button
-            class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          <p
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           >
             Max
-          </button>
+          </p>
         </div>
         <div
           class="box custom-spending-cap__description box--flex-direction-row"
         >
-          <h6
-            class="box mm-text mm-text--body-sm box--padding-top-2 box--padding-bottom-2 box--flex-direction-row box--color-text-default"
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--color-text-default"
           >
             <span>
                
               This allows the third party to spend 
-              <h6
-                class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              <p
+                class="mm-box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold"
               >
                 10
                  
                 TST
-              </h6>
+              </p>
                from your current balance.
                
             </span>
-          </h6>
+          </p>
         </div>
       </label>
     </div>

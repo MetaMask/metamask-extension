@@ -58,11 +58,11 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <button
         class="account-modal__close"
       />
-      <span
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-top-2 box--flex-direction-row box--color-text-default"
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-top-2"
       >
         Test Account
-      </span>
+      </p>
       <div
         class="box ellip-address-wrapper box--margin-top-2 box--padding-1 box--sm:padding-2 box--md:padding-1 box--lg:padding-2 box--flex-direction-row box--border-style-solid box--border-color-border-default box--border-width-1"
       >
@@ -72,34 +72,33 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box export-private-key-modal__divider box--margin-5 box--md:margin-3 box--flex-direction-row box--width-full"
       />
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-4 box--md:margin-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-4 mm-box--sm:margin-0 mm-box--md:margin-4 mm-box--lg:margin-0"
       >
         Show Private Keys
       </p>
       <div
         class="box box--padding-right-5 box--padding-left-5 box--display-flex box--flex-direction-column box--align-items-flex-start box--width-full"
       >
-        <label
-          class="box mm-text mm-label mm-text--body-sm mm-text--font-weight-bold box--margin-bottom-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+        <p
+          class="mm-box mm-text mm-label mm-text--body-sm mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         >
           Type your MetaMask password
-        </label>
+        </p>
         <div
           class="box mm-text-field mm-text-field--size-md mm-text-field--truncate export-private-key-modal__password-input box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
           data-testid="password-input"
         >
-          <input
+          <p
             autocomplete="off"
-            class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--background-color-transparent mm-box--border-style-none"
             focused="false"
             placeholder="Enter password"
             type="password"
-            value=""
           />
         </div>
       </div>
       <p
-        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-error-default"
+        class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
       />
       <div
         class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
@@ -110,7 +109,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         />
         <div>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md"
           >
             Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account.
           </p>
@@ -119,19 +118,19 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
       <div
         class="box box--margin-top-3 box--padding-5 box--md:padding-5 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
       >
-        <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--margin-right-4 box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-1/2 box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        <p
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md mm-box--margin-right-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           type="secondary"
         >
           Cancel
-        </button>
-        <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-1/2 box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        </p>
+        <p
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           disabled=""
           type="primary"
         >
           Confirm
-        </button>
+        </p>
       </div>
     </div>
   </div>

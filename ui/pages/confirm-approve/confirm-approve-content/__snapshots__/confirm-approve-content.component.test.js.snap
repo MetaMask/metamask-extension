@@ -20,11 +20,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
-        <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
-        </h6>
+        </p>
       </div>
     </div>
     <div
@@ -134,11 +134,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             <div
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
-              <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-sm"
               >
                 Nonce
-              </h6>
+              </p>
               <a
                 class="button btn-link confirm-approve-content__custom-nonce-edit"
                 role="button"
@@ -147,11 +147,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Edit
               </a>
             </div>
-            <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+            <p
+              class="mm-box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -196,11 +196,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
-        <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
-        </h6>
+        </p>
       </div>
     </div>
     <div
@@ -321,11 +321,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             <div
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
-              <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-sm"
               >
                 Nonce
-              </h6>
+              </p>
               <a
                 class="button btn-link confirm-approve-content__custom-nonce-edit"
                 role="button"
@@ -334,11 +334,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Edit
               </a>
             </div>
-            <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+            <p
+              class="mm-box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -383,11 +383,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
-        <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
-        </h6>
+        </p>
       </div>
     </div>
     <div
@@ -508,11 +508,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             <div
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
-              <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-sm"
               >
                 Nonce
-              </h6>
+              </p>
               <a
                 class="button btn-link confirm-approve-content__custom-nonce-edit"
                 role="button"
@@ -521,11 +521,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Edit
               </a>
             </div>
-            <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+            <p
+              class="mm-box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div
@@ -570,11 +570,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             src="https://metamask.github.io/test-dapp/metamask-fox.svg"
           />
         </div>
-        <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
-        </h6>
+        </p>
       </div>
     </div>
     <div
@@ -695,11 +695,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             <div
               class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
             >
-              <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+              <p
+                class="mm-box mm-text mm-text--body-sm"
               >
                 Nonce
-              </h6>
+              </p>
               <a
                 class="button btn-link confirm-approve-content__custom-nonce-edit"
                 role="button"
@@ -708,11 +708,11 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
                 Edit
               </a>
             </div>
-            <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+            <p
+              class="mm-box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold"
             >
               2
-            </h6>
+            </p>
           </div>
         </div>
         <div

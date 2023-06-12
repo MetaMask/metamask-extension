@@ -141,34 +141,34 @@ exports[`Signature Request Component render should match snapshot when we are us
           <div
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
-            <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
             >
               Unknown private network
-            </h6>
-            <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Antonio
-            </h6>
+            </p>
           </div>
         </div>
         <div
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
-          <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
           >
             Balance
-          </h6>
-          <h6
+          </p>
+          <p
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
           >
             966.987986
              
             ABC
-          </h6>
+          </p>
         </div>
       </div>
     </div>
@@ -917,34 +917,34 @@ exports[`Signature Request Component render should match snapshot when we want t
           <div
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
-            <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
             >
               Unknown private network
-            </h6>
-            <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            </p>
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
             >
               Antonio
-            </h6>
+            </p>
           </div>
         </div>
         <div
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
-          <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-0 mm-box--color-text-alternative"
           >
             Balance
-          </h6>
-          <h6
+          </p>
+          <p
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--margin-top-0 mm-box--color-text-default"
           >
             1515270.174798
              
             DEF
-          </h6>
+          </p>
         </div>
       </div>
     </div>

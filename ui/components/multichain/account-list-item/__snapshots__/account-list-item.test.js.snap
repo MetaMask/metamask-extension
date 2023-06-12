@@ -5,8 +5,8 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
   <div
     class="box multichain-account-list-item box--padding-4 box--display-flex box--flex-direction-row box--background-color-transparent"
   >
-    <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--margin-inline-end-2 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+    <p
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
         class="mm-avatar-account__jazzicon"
@@ -47,7 +47,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           </svg>
         </div>
       </div>
-    </div>
+    </p>
     <div
       class="box multichain-account-list-item__content box--display-flex box--flex-direction-column"
     >
@@ -57,21 +57,21 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
         <div
           class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
         >
-          <div
-            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
+          <p
+            class="mm-box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis mm-box--margin-inline-end-2"
           >
-            <button
-              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+            <p
+              class="mm-box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent"
             >
               <span
-                class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
                 Test Account
               </span>
-            </button>
-          </div>
-          <div
-            class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+            </p>
+          </p>
+          <p
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
               class="currency-display-component"
@@ -91,7 +91,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
                 ETH
               </span>
             </div>
-          </div>
+          </p>
         </div>
       </div>
       <div
@@ -101,13 +101,13 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="box box--display-flex box--flex-direction-row box--align-items-center"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             0x0dc...e7bc
           </p>
         </div>
-        <div
-          class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
+        <p
+          class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
         >
           <div
             class="currency-display-component"
@@ -127,7 +127,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
               ETH
             </span>
           </div>
-        </div>
+        </p>
       </div>
     </div>
     <div>

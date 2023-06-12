@@ -3,18 +3,19 @@
 exports[`Json should match snapshot 1`] = `
 <DocumentFragment>
   <p
-    class="box mm-text mm-text--body-md mm-text--text-align-center box--flex-direction-row box--color-text-default"
+    class="mm-box mm-text mm-text--body-md mm-text--text-align-center"
   >
     Used by a variety of different clients
-    <a
-      class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
-      href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
-      rel="noopener noreferrer"
-      target="_blank"
-    >
-      File import not working? Click here!
-    </a>
   </p>
+  <p
+    class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+    href="https://metamask.zendesk.com/hc/en-us/articles/360015289932"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    File import not working? Click here!
+  </p>
+  <p />
   <input
     data-testid="file-input"
     id="file-input"
@@ -25,13 +26,13 @@ exports[`Json should match snapshot 1`] = `
     class="box mm-form-text-field box--margin-bottom-4 box--display-flex box--flex-direction-column"
   >
     <div
-      class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+      class="box mm-text-field mm-text-field--size-md mm-text-field--error mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
     >
-      <input
+      <p
         aria-invalid="true"
         autocomplete="off"
-        class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
-        focused="true"
+        class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--background-color-transparent mm-box--border-style-none"
+        focused="false"
         id="json-password-box"
         placeholder="Enter optional password"
         type="password"
@@ -42,17 +43,17 @@ exports[`Json should match snapshot 1`] = `
   <div
     class="box box--display-flex box--gap-4 box--flex-direction-row"
   >
-    <button
-      class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent box--rounded-pill box--border-color-primary-default box--border-style-solid box--border-width-1"
+    <p
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
     >
       Cancel
-    </button>
-    <button
-      class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+    </p>
+    <p
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       disabled=""
     >
       Import
-    </button>
+    </p>
   </div>
 </DocumentFragment>
 `;

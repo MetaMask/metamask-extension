@@ -9,12 +9,12 @@ exports[`ComplianceDetails should render correctly 1`] = `
       class="box compliance-details__row box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-column box--justify-content-center box--height-2/3"
     >
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md"
       >
         Address
       </p>
       <p
-        class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-xs"
       >
         0xAddress
       </p>
@@ -26,7 +26,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="box box--margin-bottom-1 box--display-flex box--flex-direction-row box--align-items-center box--color-text-alternative"
       >
         <p
-          class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2"
         >
           Risk rating
         </p>
@@ -59,7 +59,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="box compliance-row__column-risk compliance-row__column-risk--green box--flex-direction-row"
       >
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md"
         >
           low
         </p>
@@ -72,7 +72,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="box box--display-flex box--flex-direction-row box--align-items-center box--color-text-alternative"
       >
         <p
-          class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2"
         >
           Report last run
         </p>
@@ -102,7 +102,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         </div>
       </div>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
     <div
