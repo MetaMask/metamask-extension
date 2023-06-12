@@ -4304,7 +4304,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    return { ...networkConfiguration, id } || null;
+    return networkConfiguration || null;
   }
 
   /**
