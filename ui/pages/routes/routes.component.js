@@ -425,6 +425,19 @@ export default class Routes extends Component {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    const isAddSnapAccountPage = Boolean(
+      matchPath(location.pathname, {
+        path: `${ADD_SNAP_ACCOUNT_ROUTE}`,
+        exact: true,
+      }),
+    );
+
+    if (isAddSnapAccountPage) {
+      return true;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const isInitializing = Boolean(
       matchPath(location.pathname, {
         path: ONBOARDING_ROUTE,

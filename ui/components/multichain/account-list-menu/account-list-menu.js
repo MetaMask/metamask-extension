@@ -237,8 +237,9 @@ export const AccountListMenu = ({ onClose }) => {
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       dispatch(toggleAccountMenu());
-
-                      history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      global.platform.openExtensionInBrowser(
+                        ADD_SNAP_ACCOUNT_ROUTE,
+                      );
                     }}
                   >
                     {t('settingAddSnapAccount')}
