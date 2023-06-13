@@ -4372,26 +4372,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/network-controller@npm:8.0.0"
-  dependencies:
-    "@metamask/base-controller": ^2.0.0
-    "@metamask/controller-utils": ^3.4.0
-    "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/utils": ^5.0.1
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-json-rpc-infura: ^5.1.0
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    uuid: ^8.3.2
-    web3-provider-engine: ^16.0.5
-  checksum: d8da6a26320577d516c47a007881386ce0fbd4c63911e58058c07cdc0efda8f84d70f7f8295f3cf8e87106c816fa0b1a75df6efec98d1f1fa1232446f773f596
-  languageName: node
-  linkType: hard
-
 "@metamask/network-controller@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/network-controller@npm:9.0.0"
@@ -34500,7 +34480,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"web3-provider-engine@npm:^16.0.3, web3-provider-engine@npm:^16.0.5":
+"web3-provider-engine@npm:^16.0.3":
   version: 16.0.5
   resolution: "web3-provider-engine@npm:16.0.5"
   dependencies:
