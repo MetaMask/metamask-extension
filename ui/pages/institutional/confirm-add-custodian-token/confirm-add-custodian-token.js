@@ -100,7 +100,7 @@ const ConfirmAddCustodianToken = () => {
 
   trackEvent({
     category: MetaMetricsEventCategory.MMI,
-    event: MetaMetricsEventName.CustodianOnboarding,
+    event: MetaMetricsEventName.AddsCustodianTokenInOnboarding,
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
@@ -199,7 +199,7 @@ const ConfirmAddCustodianToken = () => {
                 history.push(mostRecentOverviewPage);
                 trackEvent({
                   category: MetaMetricsEventCategory.MMI,
-                  event: MetaMetricsEventName.CustodianOnboarding,
+                  event: MetaMetricsEventName.AddsCustodianTokenInOnboarding,
                   properties: {
                     actions: 'Custodian RPC cancel',
                     custodian: connectRequest.custodian,
@@ -247,7 +247,7 @@ const ConfirmAddCustodianToken = () => {
                   });
                   trackEvent({
                     category: MetaMetricsEventCategory.MMI,
-                    event: MetaMetricsEventName.CustodianOnboarding,
+                    event: MetaMetricsEventName.AddsCustodianTokenInOnboarding,
                     properties: {
                       actions: 'Custodian RPC confirm',
                       custodian: connectRequest.custodian,

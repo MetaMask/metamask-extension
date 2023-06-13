@@ -172,7 +172,7 @@ const CustodyPage = () => {
       );
       trackEvent({
         category: MetaMetricsEventCategory.MMI,
-        event: MetaMetricsEventName.ConnectCustodianError,
+        event: MetaMetricsEventName.ConnectionToCustodianFailed,
         properties: {
           custodian: selectedCustodianName,
         },
@@ -209,7 +209,7 @@ const CustodyPage = () => {
       setAccounts(accountsValue);
       trackEvent({
         category: MetaMetricsEventCategory.MMI,
-        event: MetaMetricsEventName.ConnectCustodian,
+        event: MetaMetricsEventName.ConnectsToCustodian,
         properties: {
           custodian: selectedCustodianName,
           apiUrl,
@@ -545,7 +545,7 @@ const CustodyPage = () => {
 
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
-                event: MetaMetricsEventName.ConnectCustodianCancel,
+                event: MetaMetricsEventName.ConnectionToCustodianCanceled,
                 properties: {
                   custodian: selectedCustodianName,
                   numberOfAccounts: Object.keys(selectedAccounts).length,
