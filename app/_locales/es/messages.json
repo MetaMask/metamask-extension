@@ -1563,7 +1563,7 @@
     "description": "The text link in 'holdToRevealContent3'"
   },
   "holdToRevealSRP": {
-    "message": "No revele su SRP"
+    "message": "Mantén presionado para revelar su SRP"
   },
   "holdToRevealSRPTitle": {
     "message": "Proteja su SRP"
