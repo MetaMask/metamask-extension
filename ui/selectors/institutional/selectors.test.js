@@ -1,4 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
+import { toHex } from '@metamask/controller-utils';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,
@@ -11,12 +12,12 @@ import {
   getIsCustodianSupportedChain,
 } from './selectors';
 
-describe('Institutional selectors', () => {
-  const state = {
+function buildState(overrides = {}) {
+  const defaultState = {
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: '1',
+        chainId: toHex(1),
       },
       identities: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
@@ -65,9 +66,13 @@ describe('Institutional selectors', () => {
       },
     },
   };
+  return { ...defaultState, ...overrides };
+}
 
+describe('Institutional selectors', () => {
   describe('getWaitForConfirmDeepLinkDialog', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getWaitForConfirmDeepLinkDialog(state);
       expect(result).toStrictEqual(state.metamask.waitForConfirmDeepLinkDialog);
     });
@@ -75,6 +80,7 @@ describe('Institutional selectors', () => {
 
   describe('getCustodyAccountDetails', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getCustodyAccountDetails(state);
       expect(result).toStrictEqual(state.metamask.custodyAccountDetails);
     });
@@ -82,6 +88,7 @@ describe('Institutional selectors', () => {
 
   describe('getTransactionStatusMap', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getTransactionStatusMap(state);
       expect(result).toStrictEqual(state.metamask.custodyStatusMaps);
     });
@@ -89,6 +96,7 @@ describe('Institutional selectors', () => {
 
   describe('getCustodianSupportedChains', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getCustodyAccountSupportedChains(
         state,
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
@@ -103,6 +111,7 @@ describe('Institutional selectors', () => {
 
   describe('getMmiPortfolioEnabled', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getMmiPortfolioEnabled(state);
       expect(result).toStrictEqual(
         state.metamask.mmiConfiguration.portfolio.enabled,
@@ -112,6 +121,7 @@ describe('Institutional selectors', () => {
 
   describe('getMmiPortfolioUrl', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getMmiPortfolioUrl(state);
       expect(result).toStrictEqual(
         state.metamask.mmiConfiguration.portfolio.url,
@@ -121,6 +131,7 @@ describe('Institutional selectors', () => {
 
   describe('getConfiguredCustodians', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getConfiguredCustodians(state);
       expect(result).toStrictEqual(state.metamask.mmiConfiguration.custodians);
     });
@@ -128,6 +139,7 @@ describe('Institutional selectors', () => {
 
   describe('getCustodianIconForAddress', () => {
     it('extracts a state property', () => {
+      const state = buildState();
       const result = getCustodianIconForAddress(
         state,
         '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
@@ -140,12 +152,100 @@ describe('Institutional selectors', () => {
   });
 
   describe('getIsCustodianSupportedChain', () => {
-    it('extracts a state property', () => {
-      const result = getIsCustodianSupportedChain(
-        state,
-        '0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275',
-      );
-      expect(result).toStrictEqual(true);
+    it('returns true if the current keyring type is "custody" and currently selected chain ID is in the list of supported chain IDs', () => {
+      const accountAddress = '0x1';
+      const state = buildState({
+        metamask: {
+          identities: {
+            [accountAddress]: {
+              address: accountAddress,
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: [accountAddress],
+            },
+          ],
+          custodianSupportedChains: {
+            [accountAddress]: {
+              supportedChains: ['1', '2', '3'],
+            },
+          },
+          selectedAddress: accountAddress,
+          providerConfig: {
+            chainId: toHex(1),
+          },
+        },
+      });
+
+      const isSupported = getIsCustodianSupportedChain(state);
+
+      expect(isSupported).toBe(true);
+    });
+
+    it('returns false if the current keyring type is "custody" and the currently selected chain ID is not in the list of supported chain IDs', () => {
+      const accountAddress = '0x1';
+      const state = buildState({
+        metamask: {
+          identities: {
+            [accountAddress]: {
+              address: accountAddress,
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: [accountAddress],
+            },
+          ],
+          custodianSupportedChains: {
+            [accountAddress]: {
+              supportedChains: ['4'],
+            },
+          },
+          selectedAddress: accountAddress,
+          providerConfig: {
+            chainId: toHex(1),
+          },
+        },
+      });
+
+      const isSupported = getIsCustodianSupportedChain(state);
+
+      expect(isSupported).toBe(false);
+    });
+
+    it('returns true if the current keyring type is not "custody"', () => {
+      const accountAddress = '0x1';
+      const state = buildState({
+        metamask: {
+          identities: {
+            [accountAddress]: {
+              address: accountAddress,
+            },
+          },
+          keyrings: [
+            {
+              type: 'SomethingElse',
+              accounts: [accountAddress],
+            },
+          ],
+          custodianSupportedChains: {
+            [accountAddress]: {
+              supportedChains: ['4'],
+            },
+          },
+          selectedAddress: accountAddress,
+          providerConfig: {
+            chainId: toHex(1),
+          },
+        },
+      });
+
+      const isSupported = getIsCustodianSupportedChain(state);
+
+      expect(isSupported).toBe(true);
     });
   });
 });
