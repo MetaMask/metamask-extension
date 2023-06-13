@@ -13,11 +13,16 @@ export default {
     },
   },
   args: {
-    backgroundColor: 'blue',
-    estimateUsed: '',
+    backgroundColor: 'var(--color-background-default)',
+    estimateUsed: 'low',
   },
 };
 
-export const DefaultStory = (args) => <LoadingHeartBeat {...args} />;
+export const DefaultStory = (args) => (
+  <div>
+    <LoadingHeartBeat {...args} />
+    Text underneath LoadingHeartBeat
+  </div>
+);
 
 DefaultStory.storyName = 'Default';
