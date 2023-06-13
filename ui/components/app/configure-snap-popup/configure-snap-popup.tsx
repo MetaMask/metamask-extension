@@ -5,7 +5,7 @@ import { BUTTON_VARIANT, Button, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  FLEX_DIRECTION,
+  FlexDirection,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -33,7 +33,7 @@ export default function ConfigureSnapPopup({
       centerTitle
     >
       <Box
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.flexStart}
         alignItems={AlignItems.center}
       >

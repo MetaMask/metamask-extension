@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import Box from '../../../components/ui/box/box';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,6 +10,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   Text,
   Button,
   Tag,
@@ -46,7 +45,6 @@ export const SnapDetailHeader = ({
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
-  const dispatch = useDispatch();
 
   return (
     <>

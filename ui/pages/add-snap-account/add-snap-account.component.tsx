@@ -1,12 +1,12 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Box from '../../components/ui/box/box';
 import { ADD_SNAP_ACCOUNT_ROUTE } from '../../helpers/constants/routes';
 import {
   BackgroundColor,
   Display,
   JustifyContent,
 } from '../../helpers/constants/design-system';
+import { Box } from '../../components/component-library';
 import NewSnapAccountPage from './snap-account';
 import SnapAccountDetailPage from './snap-account-detail';
 

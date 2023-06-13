@@ -15,8 +15,8 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export default function AddSnapAccountModa({

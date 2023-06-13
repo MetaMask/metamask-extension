@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Box from '../../../components/ui/box/box';
-import { Text, ValidTag } from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -76,7 +75,7 @@ export default function NewSnapAccountPage() {
           {t('snapCreateAccountTitle', [
             <Text
               variant={TextVariant.headingLg}
-              as={ValidTag.Span}
+              as="span"
               className="snap-account-color-text"
             >
               {t('snapCreateAccountTitle2')}

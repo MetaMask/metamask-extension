@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Box from '../../../components/ui/box/box';
 import {
+  Box,
   BUTTON_VARIANT,
   Button,
   Icon,

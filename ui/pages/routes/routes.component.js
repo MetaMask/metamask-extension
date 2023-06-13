@@ -40,6 +40,7 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
+import AddSnapAccountPage from '../add-snap-account/add-snap-account.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
@@ -87,13 +88,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 
@@ -114,7 +113,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import AddSnapAccountPage from '../add-snap-account/add-snap-account.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -331,10 +329,14 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        <Authenticated
-          path={ADD_SNAP_ACCOUNT_ROUTE}
-          component={AddSnapAccountPage}
-        />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          <Authenticated
+            path={ADD_SNAP_ACCOUNT_ROUTE}
+            component={AddSnapAccountPage}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}

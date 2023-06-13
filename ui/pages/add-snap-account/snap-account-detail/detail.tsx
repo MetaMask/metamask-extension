@@ -3,8 +3,7 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
-import { Text } from '../../../components/component-library';
+import { Box, Text } from '../../../components/component-library';
 
 const Detail = ({
   title,

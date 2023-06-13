@@ -1,16 +1,12 @@
 import React from 'react';
-import TermsOfUsePopup from '.';
+import AddSnapAccountModal from '.';
 
 export default {
-  title: 'Components/App/TermsOfUsePopup',
-  component: TermsOfUsePopup,
-  argTypes: {
-    onAccept: {
-      action: 'onAccept',
-    },
-  },
+  title: 'Components/App/AddSnapAccountModal',
+  component: AddSnapAccountModal,
+  argTypes: {},
 };
 
-export const DefaultStory = (args) => <TermsOfUsePopup {...args} />;
+export const DefaultStory = (args) => <AddSnapAccountModal {...args} />;
 
 DefaultStory.storyName = 'Default';

@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { useHistory } from 'react-router-dom';
-import Box from '../../../components/ui/box/box';
 import {
   BlockSize,
   Display,
@@ -10,6 +9,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   BUTTON_VARIANT,
   Button,
   Tag,

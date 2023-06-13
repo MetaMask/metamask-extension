@@ -1,1 +1,1 @@
-export { default } from './configure-snap-popup.tsx';
+export { default } from './configure-snap-popup';

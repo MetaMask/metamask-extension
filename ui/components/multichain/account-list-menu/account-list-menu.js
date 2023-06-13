@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '../../ui/box/box';
 import {
   IconName,
   ButtonLink,
   TextFieldSearch,
   Text,
+  Box,
 } from '../../component-library';
 import { AccountListItem } from '..';
 import {
-  BLOCK_SIZES,
+  BlockSize,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -109,7 +109,7 @@ export const AccountListMenu = ({ onClose }) => {
           >
             <TextFieldSearch
               size={Size.SM}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.FULL}
               placeholder={t('searchAccounts')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
