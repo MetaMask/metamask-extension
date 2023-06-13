@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import { EtherDenomination } from '../../../../shared/constants/common';
-import Box from '../box/box';
 import { Text } from '../../component-library';
 import {
   AlignItems,
