@@ -513,10 +513,12 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getProviderAndBlockTracker().provider,
       // NOTE: This option is inaccurately named; it should be called
       // onNetworkDidChange
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
+      onNetworkStateChange: (eventHandler) => {
+        networkControllerMessenger.subscribe(
+          'NetworkController:networkDidChange',
+          () => eventHandler(this.networkController.store.getState()),
+        );
+      },
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -530,11 +532,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.getState().providerConfig;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
-      getChainId: () => {
-        return process.env.IN_TEST
-          ? CHAIN_IDS.MAINNET
-          : this.networkController.store.getState().providerConfig.chainId;
-      },
+      getChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
     this.qrHardwareKeyring = new QRHardwareKeyring();
