@@ -2,7 +2,7 @@ import React from 'react';
 import UpdateSnapPermissionList from './update-snap-permission-list';
 
 export default {
-  title: 'Components/App/UpdateSnapPermissionList',
+  title: 'Components/App/Snaps/UpdateSnapPermissionList',
   component: UpdateSnapPermissionList,
 
   argTypes: {
