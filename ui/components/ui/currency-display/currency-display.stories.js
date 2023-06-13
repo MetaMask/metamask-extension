@@ -59,7 +59,7 @@ argTypes: {
     },
   },
   args: {
-    denomination: 'ETH',
+    denomination: EtherDenomination.ETH,
     value: decimalToHex('123.45'),
     numberOfDecimals: '2',
     currency: 'USD',
