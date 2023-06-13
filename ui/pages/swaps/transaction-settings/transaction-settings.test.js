@@ -52,7 +52,7 @@ describe('TransactionSettings', () => {
     expect(
       document.querySelector('.transaction-settings__button-group'),
     ).toMatchSnapshot();
-    expect(queryByText('Smart transaction')).not.toBeInTheDocument();
+    expect(queryByText('Smart swap')).not.toBeInTheDocument();
     expect(getByTestId('button-group__button1')).toHaveAttribute(
       'aria-checked',
       'true',
@@ -79,7 +79,7 @@ describe('TransactionSettings', () => {
     expect(
       document.querySelector('.transaction-settings__button-group'),
     ).toMatchSnapshot();
-    expect(getByText('Smart transaction')).toBeInTheDocument();
+    expect(getByText('Smart swap')).toBeInTheDocument();
     expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
     await fireEvent.click(document.querySelector('.toggle-button'));
     await fireEvent.click(getByTestId('update-transaction-settings-button'));
