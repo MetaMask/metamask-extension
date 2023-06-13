@@ -24,12 +24,7 @@ import {
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  Color,
-  FONT_WEIGHT,
-  IconColor,
-  TextVariant,
-} from '../constants/design-system';
+import { Color, FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -93,16 +88,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           <Text
             key="1"
             color={Color.primaryDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
-          <b key="2">
+          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
               `${path.join('/')} (${curve})`}
-          </b>,
+          </Text>,
         ]),
       };
 
@@ -163,16 +157,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           <Text
             key="1"
             color={Color.primaryDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
             as="span"
           >
-            {getSnapName(targetSubjectMetadata?.origin)}
+            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
           </Text>,
-          <b key="2">
+          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
             {getSnapDerivationPathName(path, curve) ??
               `${path.join('/')} (${curve})`}
-          </b>,
+          </Text>,
         ]),
       };
 
@@ -245,16 +238,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         <Text
           key="1"
           color={Color.primaryDefault}
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TextVariant.bodySm}
+          fontWeight={FontWeight.Medium}
           as="span"
         >
-          {getSnapName(targetSubjectMetadata?.origin)}
+          {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
         </Text>,
-        <b key="2">
+        <Text as="span" key="2" fontWeight={FontWeight.Medium}>
           {coinTypeToProtocolName(coinType) ||
             t('unrecognizedProtocol', [coinType])}
-        </b>,
+        </Text>,
       ]),
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
@@ -269,7 +261,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.AddSquare,
     weight: 3,
   }),
-  [RestrictedMethods.wallet_snap]: ({ t, permissionValue }) => {
+  [RestrictedMethods.wallet_snap]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
     const snaps = permissionValue.caveats[0].value;
     const baseDescription = {
       leftIcon: getLeftIcon(IconName.Flash),
@@ -277,7 +273,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     };
 
     return Object.keys(snaps).map((snapId) => {
-      const friendlyName = getSnapName(snapId);
+      const friendlyName = getSnapName(snapId, targetSubjectMetadata);
       if (friendlyName) {
         return {
           ...baseDescription,

@@ -23,8 +23,6 @@
   }
 
   &__header {
-    padding: 20px 16px 20px 16px;
-
     &__title-container {
       display: grid;
       align-items: center;
@@ -32,8 +30,8 @@
 
       @include screen-sm-max {
         grid-template-rows: 1fr 1fr;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
+        grid-template-columns: 0.5fr 2fr 0.5fr;
+        gap: 16px;
         grid-template-areas:
           'back title close'
           'search search search';
@@ -44,6 +42,7 @@
 
         &__title {
           grid-area: title;
+          text-align: center;
         }
 
         &__close-button {
@@ -135,6 +134,14 @@
         }
       }
     }
+
+    .app-header__logo-container {
+      display: flex;
+    }
+
+    .app-header__metafox-logo--icon {
+      height: 24px;
+    }
   }
 
   &__subheader,
@@ -210,7 +217,6 @@
   }
 
   &__content {
-    margin-top: 8px;
     display: flex;
     flex-flow: row nowrap;
     height: 100%;

@@ -31,7 +31,6 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
 import {
-  getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
 } from '../../selectors';
@@ -56,21 +55,18 @@ const ConfirmTransaction = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
+
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
     return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedTxs[paramsTransactionId] ||
-          unconfirmedTxsSorted[0]
+      ? unconfirmedTxs[paramsTransactionId] || unconfirmedTxsSorted[0]
       : {};
   }, [
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
     unconfirmedTxs,
     unconfirmedTxsSorted,
   ]);
@@ -87,7 +83,6 @@ const ConfirmTransaction = () => {
     getTransaction,
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
     unconfirmedTxs,
     unconfirmedTxsSorted,
   ]);

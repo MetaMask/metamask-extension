@@ -8,12 +8,13 @@ export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
 export { AvatarToken } from './avatar-token';
+export { AvatarBase } from './avatar-base';
 export {
   BadgeWrapper,
   BadgeWrapperPosition,
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
-export { AvatarBase } from './avatar-base';
+export { Box } from './box';
 export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';

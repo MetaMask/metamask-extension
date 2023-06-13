@@ -359,12 +359,6 @@
     "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "स्वीकृत और इंस्टॉल करें"
-  },
-  "approveAndUpdate": {
-    "message": "स्वीकृत और अपडेट करें"
-  },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "वापस"
-  },
-  "backToAll": {
-    "message": "सभी पर वापस"
   },
   "backup": {
     "message": "बैकअप"
@@ -642,9 +633,6 @@
   "connectAccountOrCreate": {
     "message": "खाता कनेक्ट करें या नया बनाएं"
   },
-  "connectHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट कनेक्ट करें"
-  },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
   },
@@ -788,9 +776,6 @@
   },
   "create": {
     "message": "बनाएं"
-  },
-  "createAccount": {
-    "message": "अकाउंट बनाएं"
   },
   "createNewWallet": {
     "message": "एक नया वॉलेट बनाएं"
@@ -1636,9 +1621,6 @@
   "importTokenWarning": {
     "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण शामिल हैं। अपने जोखिम पर जोड़ें और व्यापार करें!"
   },
-  "importTokens": {
-    "message": "टोकन आयात करें"
-  },
   "importTokensCamelCase": {
     "message": "टोकन आयात करें"
   },
@@ -1990,9 +1972,6 @@
   "missingSettingRequest": {
     "message": "यहां अनुरोध करें"
   },
-  "missingToken": {
-    "message": "क्या अपना टोकन नहीं देख रहे हैं?"
-  },
   "moreComingSoon": {
     "message": "और अधिक जल्द ही आ रहा..."
   },
@@ -2234,9 +2213,6 @@
   },
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
-  },
-  "notifications": {
-    "message": "सूचनाएं"
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",
@@ -2817,9 +2793,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recents": {
-    "message": "हाल ही के"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
@@ -3214,9 +3187,6 @@
   "showHexDataDescription": {
     "message": "भेजने की स्क्रीन पर हेक्स डेटा फील्ड दिखाने के लिए इसका चयन करें"
   },
-  "showHide": {
-    "message": "दिखाएं/छिपाएं"
-  },
   "showIncomingTransactions": {
     "message": "आने वाले लेन-देन दिखाएं"
   },
@@ -3284,10 +3254,12 @@
     "message": "स्नैप इंस्टाल करें"
   },
   "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
@@ -3415,9 +3387,6 @@
   },
   "status": {
     "message": "स्टेटस"
-  },
-  "statusConnected": {
-    "message": "कनेक्ट किया गया"
   },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
@@ -3923,10 +3892,6 @@
   "toggleEthSignField": {
     "message": "Eth_sign अनुरोधों को टॉगल करें"
   },
-  "toggleTestNetworks": {
-    "message": "$1 परीक्षण नेटवर्क",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "टोकन"
   },
@@ -4093,9 +4058,6 @@
   "transfer": {
     "message": "स्थानांतरण"
   },
-  "transferBetweenAccounts": {
-    "message": "मेरे खातों के बीच स्थानांतरित करें"
-  },
   "transferFrom": {
     "message": "इससे स्थानांतरित करें"
   },
@@ -4105,10 +4067,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask को शुरू करने में परेशानी आई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
-  },
-  "troubleTokenBalances": {
-    "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "अनुमति प्रदान करके, आप निम्नलिखित $1 को अपने फंड तक पहुंचने की इजाजत दे रहे हैं"
