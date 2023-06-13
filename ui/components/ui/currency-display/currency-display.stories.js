@@ -4,41 +4,58 @@ import CurrencyDisplay from '.';
 
 export default {
   title: 'Components/UI/CurrencyDisplay',
-  argTypes: {
-    value: {
-      control: {
-        type: 'text',
-      },
-    },
-    displayValue: {
-      control: {
-        type: 'text',
-      },
+argTypes: {
+    className: {
+      control: 'text',
     },
     currency: {
-      control: {
-        type: 'text',
-      },
+      control: 'text',
     },
-    prefix: {
-      control: {
-        type: 'text',
-      },
-    },
-    suffix: {
-      control: {
-        type: 'text',
-      },
-    },
-    numberOfDecimals: {
-      control: {
-        type: 'text',
-      },
+    'data-testid': {
+      control: 'text',
     },
     denomination: {
-      control: {
-        type: 'text',
-      },
+      control: 'select',
+      options: [EtherDenomination.ETH, EtherDenomination.GWEI],
+    },
+    displayValue: {
+      control: 'text',
+    },
+    hideLabel: {
+      control: 'boolean',
+    },
+    hideTitle: {
+      control: 'boolean',
+    },
+    numberOfDecimals: {
+      control: 'number',
+    },
+    prefix: {
+      control: 'text',
+    },
+    prefixComponent: {
+      control: 'text',
+    },
+    style: {
+      control: 'object',
+    },
+    suffix: {
+      control: 'text',
+    },
+    value: {
+      control: 'text',
+    },
+    prefixComponentWrapperProps: {
+      control: 'object',
+    },
+    textProps: {
+      control: 'object',
+    },
+    suffixProps: {
+      control: 'object',
+    },
+    boxProps: {
+      control: 'object',
     },
   },
   args: {
