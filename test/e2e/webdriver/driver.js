@@ -199,11 +199,37 @@ class Driver {
 
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
-    const element = await this.driver.wait(
-      until.elementLocated(locator),
-      this.timeout,
-    );
-    return wrapElementWithAPI(element, this);
+    try {
+      const element = await this.driver.wait(
+        until.elementLocated(locator),
+        this.timeout,
+      );
+      return wrapElementWithAPI(element, this);
+    } catch (error) {
+      if (error.name === 'TimeoutError') {
+        throw new Error(
+          `Timeout with locator ${this.#printLocator(rawLocator)}`,
+        );
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  /**
+   * Print a locator for debugging purposes.
+   *
+   * @param {object | string} rawLocator - The raw locator to print.
+   */
+  #printLocator(rawLocator) {
+    if (typeof rawLocator === 'object') {
+      return Object.entries(rawLocator)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join(', ');
+    } else if (rawLocator === '') {
+      return '[empty string]';
+    }
+    return `css: ${rawLocator}`;
   }
 
   async findVisibleElement(rawLocator) {
