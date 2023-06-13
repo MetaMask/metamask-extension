@@ -1,11 +1,9 @@
-import { strict as assert } from 'assert';
-import sinon from 'sinon';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import CachedBalancesController from './cached-balances';
 
-describe('CachedBalancesController', function () {
-  describe('updateCachedBalances', function () {
-    it('should update the cached balances', async function () {
+describe('CachedBalancesController', () => {
+  describe('updateCachedBalances', () => {
+    it('should update the cached balances', async () => {
       const controller = new CachedBalancesController({
         getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
@@ -18,26 +16,24 @@ describe('CachedBalancesController', function () {
         },
       });
 
-      controller._generateBalancesToCache = sinon
-        .stub()
-        .callsFake(() => Promise.resolve('mockNewCachedBalances'));
+      jest
+        .spyOn(controller, '_generateBalancesToCache')
+        .mockResolvedValue('mockNewCachedBalances');
 
       await controller.updateCachedBalances({ accounts: 'mockAccounts' });
 
-      assert.equal(controller._generateBalancesToCache.callCount, 1);
-      assert.deepEqual(controller._generateBalancesToCache.args[0], [
+      expect(controller._generateBalancesToCache).toHaveBeenCalledWith(
         'mockAccounts',
         CHAIN_IDS.GOERLI,
-      ]);
-      assert.equal(
-        controller.store.getState().cachedBalances,
+      );
+      expect(controller.store.getState().cachedBalances).toStrictEqual(
         'mockNewCachedBalances',
       );
     });
   });
 
-  describe('_generateBalancesToCache', function () {
-    it('should generate updated account balances where the current network was updated', function () {
+  describe('_generateBalancesToCache', () => {
+    it('should generate updated account balances where the current network was updated', () => {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
@@ -69,7 +65,7 @@ describe('CachedBalancesController', function () {
         CHAIN_IDS.GOERLI,
       );
 
-      assert.deepEqual(result, {
+      expect(result).toStrictEqual({
         [CHAIN_IDS.GOERLI]: {
           a: '0x4',
           b: '0x2',
@@ -83,7 +79,7 @@ describe('CachedBalancesController', function () {
       });
     });
 
-    it('should generate updated account balances where the a new network was selected', function () {
+    it('should generate updated account balances where the a new network was selected', () => {
       const controller = new CachedBalancesController({
         accountTracker: {
           store: {
@@ -110,7 +106,7 @@ describe('CachedBalancesController', function () {
         16,
       );
 
-      assert.deepEqual(result, {
+      expect(result).toStrictEqual({
         [CHAIN_IDS.GOERLI]: {
           a: '0x1',
           b: '0x2',
@@ -124,9 +120,9 @@ describe('CachedBalancesController', function () {
     });
   });
 
-  describe('_registerUpdates', function () {
-    it('should subscribe to the account tracker with the updateCachedBalances method', async function () {
-      const subscribeSpy = sinon.spy();
+  describe('_registerUpdates', () => {
+    it('should subscribe to the account tracker with the updateCachedBalances method', async () => {
+      const subscribeSpy = jest.fn();
       const controller = new CachedBalancesController({
         getCurrentChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
@@ -135,17 +131,16 @@ describe('CachedBalancesController', function () {
           },
         },
       });
-      subscribeSpy.resetHistory();
 
-      const updateCachedBalancesSpy = sinon.spy();
+      subscribeSpy.mockReset();
+
+      const updateCachedBalancesSpy = jest.fn();
       controller.updateCachedBalances = updateCachedBalancesSpy;
       controller._registerUpdates({ accounts: 'mockAccounts' });
 
-      assert.equal(subscribeSpy.callCount, 1);
-
-      subscribeSpy.args[0][0]();
-
-      assert.equal(updateCachedBalancesSpy.callCount, 1);
+      expect(subscribeSpy).toHaveBeenCalled();
+      subscribeSpy.mock.calls[0][0]();
+      expect(updateCachedBalancesSpy).toHaveBeenCalled();
     });
   });
 });
