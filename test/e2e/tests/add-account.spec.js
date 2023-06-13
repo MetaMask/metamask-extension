@@ -45,7 +45,7 @@ describe('Add account', function () {
           '[data-testid="multichain-account-menu-add-account"]',
         );
 
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
         const accountName = await driver.waitForSelector({
           css: '[data-testid="account-menu-icon"]',
@@ -86,7 +86,7 @@ describe('Add account', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-add-account"]',
         );
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
         await waitForAccountRendered(driver);
 
@@ -190,8 +190,7 @@ describe('Add account', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-add-account"]',
         );
-
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
         // Wait for 2nd account to be created
@@ -220,7 +219,10 @@ describe('Add account', function () {
         await driver.clickElement('.menu__background');
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.fill('#private-key-box', testPrivateKey);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+
+        await driver.clickElement(
+          '[data-testid="import-account-confirm-button"]',
+        );
 
         // Wait for 3rd account to be created
         await waitForAccountRendered(driver);

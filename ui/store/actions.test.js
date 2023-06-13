@@ -2045,7 +2045,7 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.getApi.returns({
-        cancelTransaction: sinon.stub().callsFake((_1, _2, cb) => {
+        rejectPendingApproval: sinon.stub().callsFake((_1, _2, cb) => {
           cb();
         }),
         getState: sinon.stub().callsFake((cb) =>
