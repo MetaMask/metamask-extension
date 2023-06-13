@@ -62,6 +62,9 @@ export default {
     chipProps: {
       control: 'object',
     },
+    snapId: {
+      control: 'text',
+    },
   },
 };
 
@@ -97,6 +100,7 @@ DefaultStory.args = {
   version: '10.5.1234',
   url: 'https://metamask.io/',
   status: 'stopped',
+  snapId: 'npm:@metamask/test-snap-bip44',
 };
 
 export const Status = () => (
@@ -112,6 +116,7 @@ export const Status = () => (
       cardProps={{
         marginBottom: 3,
       }}
+      snapId="npm:@metamask/test-snap-bip44"
     />
     <SnapSettingsCard
       isEnabled
@@ -125,6 +130,7 @@ export const Status = () => (
       cardProps={{
         marginBottom: 3,
       }}
+      snapId="npm:@metamask/test-snap-bip44"
     />
     <SnapSettingsCard
       name="Stopped snap"
@@ -137,6 +143,7 @@ export const Status = () => (
       cardProps={{
         marginBottom: 3,
       }}
+      snapId="npm:@metamask/test-snap-bip44"
     />
     <SnapSettingsCard
       isEnabled
@@ -147,6 +154,7 @@ export const Status = () => (
       version="10.5.1234"
       url="https://metamask.io/"
       status="crashed"
+      snapId="npm:@metamask/test-snap-bip44"
     />
   </>
 );

@@ -1,42 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Box from '../../../ui/box';
-
 import {
   Color,
   AlignItems,
   JustifyContent,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import {
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  Box,
+} from '../../../component-library';
 import SnapAvatar from '../snap-avatar';
 
 const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
   return (
     <Box
       className="snap-settings-card"
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       padding={[4, 4, 4, 4]}
     >
       <Box
         className="snap-settings-card__inner-wrapper"
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.flexStart}
-        width={BLOCK_SIZES.FULL}
+        width={BlockSize.Full}
         onClick={onClick}
       >
         <Box>
           <SnapAvatar snapId={snapId} />
         </Box>
-        <Box paddingLeft={4} paddingRight={4} width={BLOCK_SIZES.FULL}>
+        <Box paddingLeft={4} paddingRight={4} width={BlockSize.Full}>
           <Text
             className="snap-settings-card__title"
             color={Color.textDefault}

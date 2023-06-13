@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getWeightedPermissions } from '../../../../helpers/utils/permission';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import PermissionCell from '../../permission-cell';
-import Box from '../../../ui/box';
+import { Box } from '../../../component-library';
 
 export default function UpdateSnapPermissionList({
   approvedPermissions,
