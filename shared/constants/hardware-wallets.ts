@@ -13,7 +13,6 @@ export enum HardwareKeyringNames {
   trezor = 'Trezor',
   lattice = 'Lattice1',
   qr = 'QR',
-  snap = 'Snap',
 }
 
 export enum HardwareDeviceNames {
