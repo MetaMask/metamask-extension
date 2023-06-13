@@ -40,9 +40,7 @@ describe('Account Import Strategies', () => {
       await expect(
         async () =>
           await accountImporter.importAccount('Private Key', ['popcorn']),
-      ).rejects.toThrow(
-        'Cannot convert string to buffer. toBuffer only supports 0x-prefixed hex strings and this string was given: 0xpopcorn',
-      );
+      ).rejects.toThrow(`t('importAccountErrorNotHexadecimal')`);
     });
   });
 
