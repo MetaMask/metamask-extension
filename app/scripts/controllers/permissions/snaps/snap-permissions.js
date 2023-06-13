@@ -19,9 +19,9 @@ export const buildSnapEndowmentSpecifications = () =>
   Object.values({
     ...endowmentPermissionBuilders,
     'endowment:name-lookup': nameLookupEndowmentBuilder,
-  }).reduce((allSpecifications, { targetKey, specificationBuilder }) => {
-    if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
-      allSpecifications[targetKey] = specificationBuilder();
+  }).reduce((allSpecifications, { targetName, specificationBuilder }) => {
+    if (!Object.keys(ExcludedSnapEndowments).includes(targetName)) {
+      allSpecifications[targetName] = specificationBuilder();
     }
     return allSpecifications;
   }, {});
