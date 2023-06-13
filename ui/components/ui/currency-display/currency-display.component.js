@@ -6,8 +6,8 @@ import { EtherDenomination } from '../../../../shared/constants/common';
 import { Text, Box } from '../../component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_WRAP,
+  Display,
+  FlexWrap,
 } from '../../../helpers/constants/design-system';
 
 export default function CurrencyDisplay({
