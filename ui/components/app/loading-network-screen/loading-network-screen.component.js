@@ -23,6 +23,7 @@ import Box from '../../ui/box/box';
 export default class LoadingNetworkScreen extends PureComponent {
   state = {
     showErrorScreen: false,
+    hidePopover: false,
   };
 
   static contextTypes = {
@@ -79,7 +80,7 @@ export default class LoadingNetworkScreen extends PureComponent {
       <Popover
         onClose={() => {
           window.clearTimeout(this.cancelCallTimeout);
-          this.setState({ showErrorScreen: false });
+          this.setState({ showErrorScreen: false, hidePopover: true });
         }}
         centerTitle
         title={
@@ -101,7 +102,7 @@ export default class LoadingNetworkScreen extends PureComponent {
           <ButtonSecondary
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
-              this.setState({ showErrorScreen: false });
+              this.setState({ showErrorScreen: false, hidePopover: true });
               showNetworkDropdown();
             }}
             variant={TextVariant.bodySm}
@@ -172,14 +173,17 @@ export default class LoadingNetworkScreen extends PureComponent {
   };
 
   render() {
-    const { rollbackToPreviousProvider, showDeprecatedRpcUrlWarning } =
-      this.props;
+    const {
+      rollbackToPreviousProvider,
+      showNetworkDropdown,
+      showDeprecatedRpcUrlWarning,
+    } = this.props;
 
     let loadingMessageToRender;
-    if (this.state.showErrorScreen) {
-      loadingMessageToRender = this.renderErrorScreenContent();
-    } else if (showDeprecatedRpcUrlWarning) {
+    if (showDeprecatedRpcUrlWarning && !this.state.hidePopover) {
       loadingMessageToRender = this.renderDeprecatedRpcUrlWarning();
+    } else if (this.state.showErrorScreen) {
+      loadingMessageToRender = this.renderErrorScreenContent();
     } else {
       loadingMessageToRender = this.getConnectingLabel(
         this.props.loadingMessage,
@@ -191,7 +195,10 @@ export default class LoadingNetworkScreen extends PureComponent {
         header={
           <div
             className="page-container__header-close"
-            onClick={rollbackToPreviousProvider}
+            onClick={async () => {
+              await rollbackToPreviousProvider();
+              showNetworkDropdown();
+            }}
           />
         }
         showLoadingSpinner={!this.state.showErrorScreen}
