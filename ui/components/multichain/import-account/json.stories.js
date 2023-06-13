@@ -2,7 +2,7 @@ import React from 'react';
 import JsonImportSubview from './json';
 
 export default {
-  title: 'Pages/CreateAccount/ImportAccount/JsonImportSubview',
+  title: 'Components/Multichain/JsonImportSubview',
   component: JsonImportSubview,
 };
 

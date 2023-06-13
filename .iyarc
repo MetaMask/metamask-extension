@@ -3,4 +3,6 @@ GHSA-257v-vj4p-3w2h
 
 # request library is subject to SSRF.
 # addressed by temporary patch in .yarn/patches/request-npm-2.88.2-f4a57c72c4.patch
-GHSA-p8p7-x288-28g6
+# NOTE: Disabled for now since this library seems to have been removed from the
+# dependency tree — we can re-enable this line later if it appears again
+#GHSA-p8p7-x288-28g6
