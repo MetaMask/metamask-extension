@@ -256,7 +256,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^3.0.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/ppom-validator": "git@github.com:MetaMask/ppom-validator.git#3068c89fbef5166c6b99fec1341f5815154d7926",
+    "@metamask/ppom-validator": "git@github.com:MetaMask/ppom-validator.git#6ec7979f9054c791bb3a072b942540e12471467b",
     "@metamask/providers": "^10.2.1",
     "@metamask/rate-limit-controller": "^2.0.0",
     "@metamask/rpc-methods": "^0.32.2",

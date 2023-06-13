@@ -1619,6 +1619,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blockaid/ppom-mock@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@blockaid/ppom-mock@npm:1.0.0"
+  checksum: 297efc29210aae5fb258bbecefcd742645966041bd9af6f256aa80c671920d5e7d9e669c4d1e34795f8556997663abc42422bfafc511ab8379134ce1c8ac324e
+  languageName: node
+  linkType: hard
+
 "@chainsafe/as-sha256@npm:^0.3.1":
   version: 0.3.1
   resolution: "@chainsafe/as-sha256@npm:0.3.1"
@@ -4534,14 +4541,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#3068c89fbef5166c6b99fec1341f5815154d7926":
+"@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#6ec7979f9054c791bb3a072b942540e12471467b":
   version: 0.0.0
-  resolution: "@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#commit=3068c89fbef5166c6b99fec1341f5815154d7926"
+  resolution: "@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#commit=6ec7979f9054c791bb3a072b942540e12471467b"
   dependencies:
+    "@blockaid/ppom-mock": ^1.0.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/controller-utils": ^4.0.0
     await-semaphore: ^0.1.3
-  checksum: 08d3a4f4ce395054fe3d214fbc057ef7bedfecaf51da30285345c25bf8bd8adbb12065c7be2551b61798e9e9b06279613c7b9030517a9f1527716e46c6a88f0d
+  checksum: b851a100844aa11108feeac641675917acac89d8f32b0ac4134ec3a740ddf077a815135d48919a5e15b14b87c30fb6ea7e6f8d3607e743eb06cd38da1cce1a0f
   languageName: node
   linkType: hard
 
@@ -24086,7 +24094,7 @@ __metadata:
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/ppom-validator": "git@github.com:MetaMask/ppom-validator.git#3068c89fbef5166c6b99fec1341f5815154d7926"
+    "@metamask/ppom-validator": "git@github.com:MetaMask/ppom-validator.git#6ec7979f9054c791bb3a072b942540e12471467b"
     "@metamask/providers": ^10.2.1
     "@metamask/rate-limit-controller": ^2.0.0
     "@metamask/rpc-methods": ^0.32.2
