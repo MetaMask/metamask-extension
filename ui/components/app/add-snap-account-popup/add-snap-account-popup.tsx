@@ -1,5 +1,4 @@
 import React from 'react';
-import Popover from '../../ui/popover';
 import {
   AlignItems,
   TextVariant,

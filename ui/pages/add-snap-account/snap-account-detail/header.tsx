@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Box from '../../../components/ui/box/box';
 import {
   AlignItems,
@@ -21,6 +22,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SnapCardProps } from '../snap-account/snap-account';
 import ConfigureSnapPopup from '../../../components/app/configure-snap-popup/configure-snap-popup';
+import { installSnapFromSnapAccounts } from '../../../store/actions';
 
 export const SnapDetailHeader = ({
   updateAvailable,
@@ -30,6 +32,7 @@ export const SnapDetailHeader = ({
   developer,
   auditUrls,
   website,
+  id: snapId,
 }: Pick<
   SnapCardProps,
   | 'updateAvailable'
@@ -39,9 +42,11 @@ export const SnapDetailHeader = ({
   | 'developer'
   | 'auditUrls'
   | 'website'
+  | 'id'
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -91,8 +96,14 @@ export const SnapDetailHeader = ({
                 {t('snapConfigure')}
               </Button>
             )}
-            {!isInstalled && (
-              <Button variant={BUTTON_VARIANT.PRIMARY}>
+            {isInstalled && (
+              <Button
+                variant={BUTTON_VARIANT.PRIMARY}
+                onClick={async () => {
+                  console.log('calling dispatch', snapId);
+                  await installSnapFromSnapAccounts(snapId);
+                }}
+              >
                 {t('snapInstall')}
               </Button>
             )}
