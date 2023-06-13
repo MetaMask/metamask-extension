@@ -1,6 +1,6 @@
 .address-book-wrapper {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   height: 100%;
 }
 
@@ -214,15 +214,7 @@
 
 .address-book-add-button {
   &__button {
-    position: absolute;
-    top: 92px;
-    right: 16px;
-    width: auto;
-
     @include screen-sm-max {
-      top: 20px;
-      right: 60px;
-
       &--hidden {
         display: none;
       }

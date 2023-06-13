@@ -93,9 +93,6 @@
   "back": {
     "message": "Grįžti"
   },
-  "backToAll": {
-    "message": "Atgal prie visų"
-  },
   "backupApprovalInfo": {
     "message": "Šis slaptas kodas reikalingas norint atkurti jūsų slaptažodinę, jeigu pamestumėte savo įrenginį, pamirštumėte savo slaptažodį, iš naujo įdiegtumėte „MetaMask“, taip pat norint pasiekti slaptažodinę iš kito įrenginio."
   },
@@ -575,9 +572,6 @@
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
   },
-  "recents": {
-    "message": "Naujausi"
-  },
   "recipientAddressPlaceholder": {
     "message": "Ieška, viešieji adresai (0x) arba ENS"
   },
@@ -800,9 +794,6 @@
   },
   "transfer": {
     "message": "Pervesti"
-  },
-  "transferBetweenAccounts": {
-    "message": "Perkėlimas tarp savo paskyrų"
   },
   "transferFrom": {
     "message": "Pervedimas iš"

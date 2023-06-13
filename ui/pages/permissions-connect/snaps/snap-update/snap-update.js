@@ -14,6 +14,7 @@ import {
   JustifyContent,
   TextVariant,
   TEXT_ALIGN,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 
 import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
@@ -72,7 +73,10 @@ export default function SnapUpdate({
 
   const shouldShowWarning = warnings.length > 0;
 
-  const snapName = getSnapName(targetSubjectMetadata.origin);
+  const snapName = getSnapName(
+    targetSubjectMetadata.origin,
+    targetSubjectMetadata,
+  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -123,7 +127,16 @@ export default function SnapUpdate({
           </Box>
         )}
         {hasError && (
-          <InstallError error={requestState.error} title={t('requestFailed')} />
+          <InstallError
+            iconName={IconName.Warning}
+            error={requestState.error}
+            title={t('snapUpdateErrorTitle')}
+            description={t('snapUpdateErrorDescription', [
+              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>,
+            ])}
+          />
         )}
         {!hasError && !isLoading && (
           <>
@@ -173,7 +186,7 @@ export default function SnapUpdate({
                 data-testid="snap-update-scroll"
                 iconName={IconName.Arrow2Down}
                 backgroundColor={BackgroundColor.infoDefault}
-                color={BackgroundColor.backgroundDefault}
+                color={IconColor.primaryInverse}
                 onClick={scrollToBottom}
                 style={{ cursor: 'pointer' }}
               />
@@ -205,7 +218,7 @@ export default function SnapUpdate({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          snapName={targetSubjectMetadata.name}
+          snapName={snapName}
           warnings={warnings}
         />
       )}

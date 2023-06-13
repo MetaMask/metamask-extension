@@ -225,6 +225,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   // metrics
   await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
+  await driver.waitForSelector('.import-srp__actions');
   // import with recovery phrase
   await driver.pasteIntoField(
     '[data-testid="import-srp__srp-word-0"]',
@@ -488,6 +489,7 @@ const sendTransaction = async (driver, recipientAddress, quantity) => {
   await driver.clickElement('[data-testid="page-container-footer-next"]');
   await driver.clickElement('[data-testid="page-container-footer-next"]');
   await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.waitForElementNotPresent('.transaction-list-item--unconfirmed');
   await driver.findElement('.transaction-list-item');
 };
 
@@ -529,12 +531,34 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   });
 };
 
+const restartServiceWorker = async (driver) => {
+  const serviceWorkerElements = await driver.findElements({
+    text: 'terminate',
+    tag: 'span',
+  });
+  // 1st one is app-init.js; while 2nd one is service-worker.js
+  await serviceWorkerElements[1].click();
+};
+
+async function waitForAccountRendered(driver) {
+  await driver.waitForSelector(
+    '[data-testid="eth-overview__primary-currency"]',
+  );
+}
+
+const logInWithBalanceValidation = async (driver, ganacheServer) => {
+  await driver.fill('#password', 'correct horse battery staple');
+  await driver.press('#password', driver.Key.ENTER);
+  await assertAccountBalanceForDOM(driver, ganacheServer);
+};
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
   SERVICE_WORKER_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
+  PRIVATE_KEY,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -555,6 +579,9 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  logInWithBalanceValidation,
   assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
+  restartServiceWorker,
+  waitForAccountRendered,
 };
