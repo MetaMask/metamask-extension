@@ -14,18 +14,12 @@ import {
   setInitialGasEstimate,
   setSwapsErrorKey,
   setSwapsTxGasPrice,
-  setApproveTxId,
-  setTradeTxId,
   stopPollingForQuotes,
-  updateAndApproveTx,
-  updateSwapApprovalTransaction,
-  updateSwapTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
   setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
-  cancelTx,
   fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
@@ -1191,20 +1185,23 @@ export const signAndSendTransactions = (
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
-      const approveTxMeta = await addUnapprovedTransaction(
-        undefined,
-        { ...approveTxParams, amount: '0x0' },
-        TransactionType.swapApproval,
-      );
-      await dispatch(setApproveTxId(approveTxMeta.id));
-      finalApproveTxMeta = await dispatch(
-        updateSwapApprovalTransaction(approveTxMeta.id, {
-          type: TransactionType.swapApproval,
-          sourceTokenSymbol: sourceTokenInfo.symbol,
-        }),
-      );
+
       try {
-        await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
+        finalApproveTxMeta = await addUnapprovedTransaction(
+          undefined,
+          { ...approveTxParams, amount: '0x0' },
+          TransactionType.swapApproval,
+          {
+            requireApproval: false,
+            swaps: {
+              hasApproveTx: true,
+              meta: {
+                type: TransactionType.swapApproval,
+                sourceTokenSymbol: sourceTokenInfo.symbol,
+              },
+            },
+          },
+        );
       } catch (e) {
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
@@ -1212,47 +1209,34 @@ export const signAndSendTransactions = (
       }
     }
 
-    const tradeTxMeta = await addUnapprovedTransaction(
-      undefined,
-      usedTradeTxParams,
-      TransactionType.swap,
-    );
-    dispatch(setTradeTxId(tradeTxMeta.id));
-
-    // The simulationFails property is added during the transaction controllers
-    // addUnapprovedTransaction call if the estimateGas call fails. In cases
-    // when no approval is required, this indicates that the swap will likely
-    // fail. There was an earlier estimateGas call made by the swaps controller,
-    // but it is possible that external conditions have change since then, and
-    // a previously succeeding estimate gas call could now fail. By checking for
-    // the `simulationFails` property here, we can reduce the number of swap
-    // transactions that get published to the blockchain only to fail and thereby
-    // waste the user's funds on gas.
-    if (!approveTxParams && tradeTxMeta.simulationFails) {
-      await dispatch(cancelTx(tradeTxMeta, false));
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
-      return;
-    }
-    const finalTradeTxMeta = await dispatch(
-      updateSwapTransaction(tradeTxMeta.id, {
-        estimatedBaseFee: decEstimatedBaseFee,
-        sourceTokenSymbol: sourceTokenInfo.symbol,
-        destinationTokenSymbol: destinationTokenInfo.symbol,
-        type: TransactionType.swap,
-        destinationTokenDecimals: destinationTokenInfo.decimals,
-        destinationTokenAddress: destinationTokenInfo.address,
-        swapMetaData,
-        swapTokenValue,
-        approvalTxId: finalApproveTxMeta?.id,
-      }),
-    );
     try {
-      await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
+      await addUnapprovedTransaction(
+        undefined,
+        usedTradeTxParams,
+        TransactionType.swap,
+        {
+          requireApproval: false,
+          swaps: {
+            hasApproveTx: Boolean(approveTxParams),
+            meta: {
+              estimatedBaseFee: decEstimatedBaseFee,
+              sourceTokenSymbol: sourceTokenInfo.symbol,
+              destinationTokenSymbol: destinationTokenInfo.symbol,
+              type: TransactionType.swap,
+              destinationTokenDecimals: destinationTokenInfo.decimals,
+              destinationTokenAddress: destinationTokenInfo.address,
+              swapMetaData,
+              swapTokenValue,
+              approvalTxId: finalApproveTxMeta?.id,
+            },
+          },
+        },
+      );
     } catch (e) {
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
+      console.error(e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;
