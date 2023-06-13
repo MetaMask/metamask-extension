@@ -1,10 +1,11 @@
 import React from 'react';
 import { decimalToHex } from '../../../../shared/modules/conversion.utils';
+import { EtherDenomination } from '../../../../shared/constants/common';
 import CurrencyDisplay from '.';
 
 export default {
   title: 'Components/UI/CurrencyDisplay',
-argTypes: {
+  argTypes: {
     className: {
       control: 'text',
     },

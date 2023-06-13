@@ -45,9 +45,9 @@ export default function CurrencyDisplay({
       data-testid={dataTestId}
       style={style}
       title={(!hideTitle && title) || null}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
-      flexWrap={FLEX_WRAP.WRAP}
+      flexWrap={FlexWrap.Wrap}
       {...boxProps}
     >
       {prefixComponent ? (
