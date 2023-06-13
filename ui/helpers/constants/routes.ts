@@ -48,7 +48,7 @@ const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
-const ADD_SNAP_ACCOUNT_ROUTE = 'add-snap-account';
+const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';

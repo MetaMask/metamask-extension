@@ -31,7 +31,7 @@ export const SnapDetailHeader = ({
   developer,
   auditUrls,
   website,
-  id: snapId,
+  snapId,
 }: Pick<
   SnapCardProps,
   | 'updateAvailable'
@@ -41,7 +41,7 @@ export const SnapDetailHeader = ({
   | 'developer'
   | 'auditUrls'
   | 'website'
-  | 'id'
+  | 'snapId'
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
