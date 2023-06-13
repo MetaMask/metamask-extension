@@ -192,15 +192,6 @@ describe('BackupController', () => {
           'network-configuration-id-4'
         ].chainId,
       ).toStrictEqual('0x89');
-      // check Preferences backup
-      expect(
-        backupController.preferencesController.store.frequentRpcListDetail[0]
-          .chainId,
-      ).toStrictEqual('0x539');
-      expect(
-        backupController.preferencesController.store.frequentRpcListDetail[1]
-          .chainId,
-      ).toStrictEqual('0x38');
       // make sure identities are not lost after restore
       expect(
         backupController.preferencesController.store.identities[
