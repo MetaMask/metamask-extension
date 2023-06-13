@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
+  BackgroundColor,
   BlockSize,
-  BorderColor,
   Display,
   FlexDirection,
   FlexWrap,
@@ -36,6 +36,7 @@ export const ActivityListItem = ({
   return (
     <Box
       as="button"
+      backgroundColor={BackgroundColor.backgroundDefault}
       className={primaryClassName}
       onClick={onClick}
       data-testid={dataTestId}
@@ -45,9 +46,9 @@ export const ActivityListItem = ({
           onClick();
         }
       }}
+      padding={4}
       display={Display.Flex}
       width={BlockSize.Full}
-      borderColor={BorderColor.warningAlternative}
       flexWrap={FlexWrap.Wrap}
       gap={4}
     >

@@ -1,10 +1,10 @@
+/* eslint-disable import/no-duplicates */
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import ListItem from '../../ui/list-item';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -13,6 +13,19 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
+import {
+  BackgroundColor,
+  Display,
+  Size,
+} from '../../../helpers/constants/design-system';
+import {
+  AvatarNetwork,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Box,
+  Text,
+} from '../../component-library';
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
@@ -31,8 +44,12 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getCurrentNetwork,
+} from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
+import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
@@ -40,7 +57,7 @@ import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import SiteOrigin from '../../ui/site-origin';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 
 function TransactionListItemInner({
   transactionGroup,
@@ -113,9 +130,6 @@ function TransactionListItemInner({
 
   const {
     title,
-    subtitle,
-    subtitleContainsOrigin,
-    date,
     category,
     primaryCurrency,
     recipientAddress,
@@ -124,7 +138,11 @@ function TransactionListItemInner({
     isPending,
     senderAddress,
   } = useTransactionDisplayData(transactionGroup);
-
+  const date = formatDateWithYearContext(
+    transactionGroup.primaryTransaction.time,
+    "MMM d 'at' h:mm a",
+    "MMM d, y 'at' h:mm a",
+  );
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
@@ -195,7 +213,7 @@ function TransactionListItemInner({
     isCustodian,
     ///: END:ONLY_INCLUDE_IN
   ]);
-
+  const currentChain = useSelector(getCurrentNetwork);
   let showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -219,14 +237,15 @@ function TransactionListItemInner({
 
   return (
     <>
-      <ListItem
+      <ActivityListItem
+        topContent={date}
         onClick={toggleShowDetails}
         className={className}
         title={title}
         icon={
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isCustodian ? (
-            <div style={{ position: 'relative' }} data-testid="custody-icon">
+            <Box style={{ position: 'relative' }} data-testid="custody-icon">
               <TransactionIcon
                 category={category}
                 status={displayedStatusKey}
@@ -237,17 +256,38 @@ function TransactionListItemInner({
                 color={getTransactionColor(status)}
                 size={IconSize.Xs}
               />
-            </div>
+            </Box>
           ) : (
             ///: END:ONLY_INCLUDE_IN
-            <TransactionIcon category={category} status={displayedStatusKey} />
+            <BadgeWrapper
+              anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+              positionObj={{ top: -4, right: -4 }}
+              display={Display.Block}
+              badge={
+                <AvatarNetwork
+                  className="activity-tx__network-badge"
+                  data-testid="activity-tx-network-badge"
+                  size={Size.XS}
+                  name={currentChain.nickname}
+                  src={currentChain.rpcPrefs?.imageUrl}
+                  borderWidth={1}
+                  borderColor={BackgroundColor.backgroundDefault}
+                />
+              }
+            >
+              <TransactionIcon
+                category={category}
+                status={displayedStatusKey}
+              />
+            </BadgeWrapper>
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           )
           ///: END:ONLY_INCLUDE_IN
         }
         subtitle={
-          <h3>
+          <Text>
             <TransactionStatusLabel
+              statusOnly
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
               error={err}
@@ -260,14 +300,7 @@ function TransactionListItemInner({
               }
               ///: END:ONLY_INCLUDE_IN
             />
-            {subtitleContainsOrigin ? (
-              <SiteOrigin siteOrigin={subtitle} />
-            ) : (
-              <span className="transaction-list-item__address" title={subtitle}>
-                {subtitle}
-              </span>
-            )}
-          </h3>
+          </Text>
         }
         rightContent={
           !isSignatureReq &&
@@ -300,7 +333,7 @@ function TransactionListItemInner({
           <a {...debugTransactionMeta} className="test-transaction-meta" />
           ///: END:ONLY_INCLUDE_IN
         }
-      </ListItem>
+      </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
           title={title}
