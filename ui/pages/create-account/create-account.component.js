@@ -4,8 +4,6 @@ import Box from '../../components/ui/box';
 
 import {
   CONNECT_HARDWARE_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
-  NEW_ACCOUNT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -14,23 +12,11 @@ import {
 import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IN
 import ConnectHardwareForm from './connect-hardware';
-import NewAccountImportForm from './import-account';
-import NewAccountCreateForm from './new-account.container';
 
 export default function CreateAccountPage() {
   return (
     <Box className="new-account">
       <Switch>
-        <Route
-          exact
-          path={NEW_ACCOUNT_ROUTE}
-          component={NewAccountCreateForm}
-        />
-        <Route
-          exact
-          path={IMPORT_ACCOUNT_ROUTE}
-          component={NewAccountImportForm}
-        />
         <Route
           exact
           path={CONNECT_HARDWARE_ROUTE}
