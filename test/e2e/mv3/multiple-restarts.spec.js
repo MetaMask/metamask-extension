@@ -356,6 +356,10 @@ async function unlockWallet(driver, walletPassword) {
 async function terminateServiceWorker(driver) {
   await driver.openNewPage('chrome://inspect/#service-workers/');
 
+  await driver.waitForSelector({
+    text: 'Service workers',
+    tag: 'button',
+  });
   await driver.clickElement({
     text: 'Service workers',
     tag: 'button',

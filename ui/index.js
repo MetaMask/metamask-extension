@@ -210,6 +210,15 @@ function setupDebuggingHelpers(store) {
     });
     return state;
   };
+  window.stateHooks.getSentryState = function () {
+    const fullState = store.getState();
+    const debugState = maskObject(fullState, SENTRY_STATE);
+    return {
+      browser: window.navigator.userAgent,
+      store: debugState,
+      version: global.platform.getVersion(),
+    };
+  };
 }
 
 window.logStateString = async function (cb) {
