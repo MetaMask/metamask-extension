@@ -135,7 +135,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
           >
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="$0.56"
             >
               <span

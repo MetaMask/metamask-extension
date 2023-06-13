@@ -257,11 +257,11 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.0001"
             >
               <div
-                class="box currency-display-component__prefix box--margin-inline-end-1 box--flex-direction-row"
+                class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
               >
                 <i
                   class="fab fa-ethereum"
@@ -378,7 +378,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       >
                         <div>
                           <div
-                            class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             title="0.000021"
                           >
                             <span
@@ -403,7 +403,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       </strong>
                       <div>
                         <div
-                          class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                           title="0.000021"
                         >
                           <span
@@ -437,7 +437,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                           class="confirm-page-container-content__total-value"
                         >
                           <div
-                            class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             title="0.000121"
                           >
                             <span
@@ -469,7 +469,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                         </strong>
                          
                         <div
-                          class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                           title="0.000121"
                         >
                           <span

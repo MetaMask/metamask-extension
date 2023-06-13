@@ -27,7 +27,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
         </div>
       </div>
       <div
-        class="box currency-display-component currency-input__conversion-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0.00432788 ETH"
       >
         <span
@@ -125,7 +125,7 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
         </div>
       </div>
       <div
-        class="box currency-display-component currency-input__conversion-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="$231.06 USD"
       >
         <span
@@ -179,7 +179,7 @@ exports[`CurrencyInput Component rendering should render properly without a suff
         </div>
       </div>
       <div
-        class="box currency-display-component currency-input__conversion-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+        class="mm-box currency-display-component currency-input__conversion-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="$0.00 USD"
       >
         <span

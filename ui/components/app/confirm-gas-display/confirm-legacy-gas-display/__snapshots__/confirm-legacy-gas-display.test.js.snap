@@ -46,7 +46,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
         >
           <div>
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.000021"
             >
               <span
@@ -62,7 +62,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
         >
           <div>
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.000021 ETH"
             >
               <span
@@ -92,7 +92,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
         </strong>
         <div>
           <div
-            class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
             title="0.000021 ETH"
           >
             <span

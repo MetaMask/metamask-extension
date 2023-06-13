@@ -12,11 +12,11 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
       class="confirm-detail-row__details"
     >
       <div
-        class="box currency-display-component confirm-detail-row__primary box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+        class="mm-box currency-display-component confirm-detail-row__primary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0"
       >
         <div
-          class="box currency-display-component__prefix box--margin-inline-end-1 box--flex-direction-row"
+          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
         >
           <i
             class="fab fa-ethereum"
@@ -30,11 +30,11 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         </span>
       </div>
       <div
-        class="box currency-display-component confirm-detail-row__secondary box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+        class="mm-box currency-display-component confirm-detail-row__secondary mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
         title="0"
       >
         <div
-          class="box currency-display-component__prefix box--margin-inline-end-1 box--flex-direction-row"
+          class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
         >
           <i
             class="fab fa-ethereum"

@@ -74,7 +74,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
           >
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.006 ETH"
             >
               <span
@@ -107,7 +107,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
         >
           <div
-            class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
             title="0.006 ETH"
           >
             <span

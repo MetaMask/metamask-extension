@@ -287,11 +287,11 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
           >
             <div
-              class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0"
             >
               <div
-                class="box currency-display-component__prefix box--margin-inline-end-1 box--flex-direction-row"
+                class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
               >
                 <i
                   class="fab fa-ethereum"
@@ -448,7 +448,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021"
                       >
                         <span
@@ -466,7 +466,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
@@ -511,7 +511,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
@@ -551,7 +551,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="confirm-page-container-content__total-value"
                     >
                       <div
-                        class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021"
                       >
                         <span
@@ -569,7 +569,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="confirm-page-container-content__total-value"
                     >
                       <div
-                        class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
@@ -606,7 +606,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     </strong>
                      
                     <div
-                      class="box currency-display-component box--display-flex box--flex-direction-row box--flex-wrap-wrap box--align-items-center"
+                      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       title="0.00021 ETH"
                     >
                       <span
