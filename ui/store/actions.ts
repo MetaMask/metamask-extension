@@ -4703,4 +4703,18 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
     );
   };
 }
+
+export async function installSnapFromSnapAccounts(snapId: string) {
+  // return async () => {
+  try {
+    log.debug(`background.installSnaps`);
+    await submitRequestToBackground('installSnaps', [
+      'metamask',
+      { [snapId]: {} },
+    ]);
+  } catch (e) {
+    console.error(e);
+  }
+  // };
+}
 ///: END:ONLY_INCLUDE_IN

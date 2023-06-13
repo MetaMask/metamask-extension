@@ -27,7 +27,7 @@ const SnapDetailsPage = () => {
   // TODO: replace with data from redux
 
   const snapDetail = {
-    id: 'mockSnapId',
+    id: 'local:http://localhost:8080',
     iconUrl: '/images/logo/metamask-fox.svg',
     snapTitle: 'Metamask TSS',
     snapSlug: 'Secure your account with MetaMask Mobile',
