@@ -7,9 +7,8 @@ import { debounce } from 'lodash';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import Button from '../../ui/button';
 import Popover from '../../ui/popover';
-import { Text } from '../../component-library';
+import { Button, IconName, Text } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
@@ -19,7 +18,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { TextVariant } from '../../../helpers/constants/design-system';
+import { Size, TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -113,15 +112,74 @@ const renderDescription = (description) => {
   );
 };
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const closeAndViewPortfolioDashboard = (
+  seenNotifications,
+  trackEvent,
+  onClose,
+) => {
+  updateViewedNotifications(seenNotifications);
+
+  trackEvent({
+    category: 'Task Success/Engagement',
+    event: 'Portfolio Dashboard Modal Button',
+    properties: {
+      action: 'Button was clicked',
+    },
+  });
+
+  onClose();
+};
+
+const renderInstitutionalButton = (notification, mmiPortfolioUrl) => {
+  const { customButton } = notification;
+  return (
+    customButton &&
+    customButton.name === 'mmi-portfolio' && (
+      <Button
+        className="whats-new-popup__button"
+        data-testid="view-mmi-portfolio"
+        size={Size.SM}
+        startIconName={IconName.MmmiPortfolioDashboard}
+        onClick={() => {
+          closeAndViewPortfolioDashboard();
+          window.open(mmiPortfolioUrl, '_blank');
+        }}
+      >
+        {customButton.text}
+      </Button>
+    )
+  );
+};
+///: END:ONLY_INCLUDE_IN
+
 const renderFirstNotification = (
   notification,
   idRefMap,
   history,
   isLast,
   trackEvent,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  mmiPortfolioUrl,
+  ///: END:ONLY_INCLUDE_IN
 ) => {
-  const { id, date, title, description, image, actionText } = notification;
+  const {
+    id,
+    date,
+    title,
+    description,
+    image,
+    actionText,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    hideDate,
+    ///: END:ONLY_INCLUDE_IN
+  } = notification;
   const actionFunction = getActionFunctionById(id, history);
+  let showNotificationDate = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  showNotificationDate = !hideDate;
+  ///: END:ONLY_INCLUDE_IN
 
   const imageComponent = image && (
     <img
@@ -150,7 +208,9 @@ const renderFirstNotification = (
         <div className="whats-new-popup__notification-description">
           {renderDescription(description)}
         </div>
-        <div className="whats-new-popup__notification-date">{date}</div>
+        {showNotificationDate && (
+          <div className="whats-new-popup__notification-date">{date}</div>
+        )}
       </div>
       {placeImageBelowDescription && imageComponent}
       {actionText && (
@@ -168,6 +228,11 @@ const renderFirstNotification = (
           {actionText}
         </Button>
       )}
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        renderInstitutionalButton(notification, mmiPortfolioUrl)
+        ///: END:ONLY_INCLUDE_IN
+      }
       <div
         className="whats-new-popup__intersection-observable"
         ref={idRefMap[id]}
@@ -212,7 +277,12 @@ const renderSubsequentNotification = (
   );
 };
 
-export default function WhatsNewPopup({ onClose }) {
+export default function WhatsNewPopup({
+  onClose,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  mmiPortfolioUrl,
+  ///: END:ONLY_INCLUDE_IN
+}) {
   const t = useContext(I18nContext);
   const history = useHistory();
 
@@ -285,10 +355,35 @@ export default function WhatsNewPopup({ onClose }) {
       observer.observe(ref.current);
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent({
+      category: 'Task Success/Engagement',
+      event: 'Portfolio Dashboard Modal Open',
+      properties: {
+        action: 'Modal was opened',
+      },
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     return () => {
       observer.disconnect();
     };
-  }, [idRefMap, setSeenNotifications]);
+  }, [
+    idRefMap,
+    setSeenNotifications,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
+
+  // Display the swaps notification with full image
+  // Displays the NFTs & OpenSea notifications 18,19 with full image
+  const notificationRenderers = {
+    0: renderFirstNotification,
+    1: renderFirstNotification,
+    16: renderFirstNotification,
+    17: renderFirstNotification,
+  };
 
   return (
     <Popover
@@ -316,22 +411,23 @@ export default function WhatsNewPopup({ onClose }) {
         {notifications.map(({ id }, index) => {
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
-          // Display the swaps notification with full image
-          // Displays the NFTs & OpenSea notifications 18,19 with full image
-          return index === 0 || id === 1 || id === 18 || id === 19
-            ? renderFirstNotification(
-                notification,
-                idRefMap,
-                history,
-                isLast,
-                trackEvent,
-              )
-            : renderSubsequentNotification(
-                notification,
-                idRefMap,
-                history,
-                isLast,
-              );
+          // Choose the appropriate rendering function based on the id
+          let renderNotification =
+            notificationRenderers[id] || renderSubsequentNotification;
+
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          renderNotification = renderFirstNotification;
+          ///: END:ONLY_INCLUDE_IN
+
+          return renderNotification(
+            notification,
+            idRefMap,
+            history,
+            isLast,
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            mmiPortfolioUrl,
+            ///: END:ONLY_INCLUDE_IN
+          );
         })}
       </div>
     </Popover>
@@ -340,4 +436,7 @@ export default function WhatsNewPopup({ onClose }) {
 
 WhatsNewPopup.propTypes = {
   onClose: PropTypes.func.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  mmiPortfolioUrl: PropTypes.string.isRequired,
+  ///: END:ONLY_INCLUDE_IN
 };
