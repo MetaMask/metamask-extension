@@ -4555,14 +4555,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rate-limit-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/rate-limit-controller@npm:2.0.0"
+"@metamask/rate-limit-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/rate-limit-controller@npm:3.0.0"
   dependencies:
-    "@metamask/base-controller": ^2.0.0
-    eth-rpc-errors: ^4.0.0
+    "@metamask/base-controller": ^3.0.0
+    eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
-  checksum: da0b3cb6607201b07ee54f81a4ce8ce3ce047acde33c5f483aa0c8c907bcbe32e70944d95cf4f0df5d4b664388be832320d6973cf61cd00e22f81d16ff0ddfd2
+  checksum: 9bf1a99056303a1a23e3ea1984f2db2635f5a09edc307e114e6246db1addac878f8d8e89be862d2f1ad06248c0d4e4613d648caf191dc42fbdc0d310e6f8896f
   languageName: node
   linkType: hard
 
@@ -24066,7 +24066,7 @@ __metadata:
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
     "@metamask/providers": ^10.2.1
-    "@metamask/rate-limit-controller": ^2.0.0
+    "@metamask/rate-limit-controller": ^3.0.0
     "@metamask/rpc-methods": ^0.32.2
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.34.0-flask.1"
     "@metamask/safe-event-emitter": ^2.0.0

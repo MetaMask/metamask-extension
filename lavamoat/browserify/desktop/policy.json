@@ -1849,13 +1849,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/rate-limit-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "eth-rpc-errors": true
-      }
-    },
-    "@metamask/rate-limit-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/rpc-methods-flask": {
