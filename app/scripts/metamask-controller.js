@@ -894,29 +894,33 @@ export default class MetamaskController extends EventEmitter {
         name: 'RateLimitController',
       }),
       implementations: {
-        showNativeNotification: (origin, message) => {
-          const subjectMetadataState = this.controllerMessenger.call(
-            'SubjectMetadataController:getState',
-          );
+        showNativeNotification: {
+          method: (origin, message) => {
+            const subjectMetadataState = this.controllerMessenger.call(
+              'SubjectMetadataController:getState',
+            );
 
-          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+            const originMetadata = subjectMetadataState.subjectMetadata[origin];
 
-          this.platform
-            ._showNotification(originMetadata?.name ?? origin, message)
-            .catch((error) => {
-              log.error('Failed to create notification', error);
-            });
+            this.platform
+              ._showNotification(originMetadata?.name ?? origin, message)
+              .catch((error) => {
+                log.error('Failed to create notification', error);
+              });
 
-          return null;
+            return null;
+          },
         },
-        showInAppNotification: (origin, message) => {
-          this.controllerMessenger.call(
-            'NotificationController:show',
-            origin,
-            message,
-          );
+        showInAppNotification: {
+          method: (origin, message) => {
+            this.controllerMessenger.call(
+              'NotificationController:show',
+              origin,
+              message,
+            );
 
-          return null;
+            return null;
+          },
         },
       },
     });
