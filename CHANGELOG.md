@@ -12,7 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add reveal UI to export private key flow ([#18170](https://github.com/MetaMask/metamask-extension/pull/18170))
 
 ### Changed
-- [FLASK] `snaps-monorepo@0.33.1-flask.1` ([#18913](https://github.com/MetaMask/metamask-extension/pull/18913))
+- [FLASK] **BREAKING:** Block `wallet_requestPermissions` (#18913)
+- [FLASK] Fix issues with installing specific versions of snaps (#18913)
 
 ### Fixed
 - [FLASK] Fix an issue with submitting an empty Snaps UI prompt (#19227)
