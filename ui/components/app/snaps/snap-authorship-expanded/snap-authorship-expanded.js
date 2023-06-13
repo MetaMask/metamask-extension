@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { getSnapPrefix } from '@metamask/snaps-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '../../../ui/box';
+
 import {
   BackgroundColor,
   TextColor,
@@ -25,7 +25,7 @@ import {
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 
-import { Text, ButtonLink } from '../../../component-library';
+import { Text, ButtonLink, Box } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -111,6 +111,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
       </Box>
       <Box flexDirection={FlexDirection.Column} width={BlockSize.Full}>
         <Box
+          display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           paddingLeft={4}
@@ -139,6 +140,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         >
           {installOrigin && installInfo && (
             <Box
+              display={Display.Flex}
               flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.spaceBetween}
               width={BlockSize.Full}
@@ -162,6 +164,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             </Box>
           )}
           <Box
+            display={Display.Flex}
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}

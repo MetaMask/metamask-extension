@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../ui/box';
+
 import {
   AlignItems,
   BorderRadius,
@@ -13,7 +13,13 @@ import {
   Color,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import {
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  Box,
+} from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
@@ -31,7 +37,6 @@ export const Copyable = ({ text }) => {
     >
       <Text
         variant={TextVariant.bodySm}
-        as="h6"
         color={TextColor.textAlternative}
         marginRight={2}
         overflowWrap={OverflowWrap.Anywhere}

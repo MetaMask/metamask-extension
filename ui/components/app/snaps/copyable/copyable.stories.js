@@ -3,7 +3,6 @@ import { Copyable } from './copyable';
 
 export default {
   title: 'Components/App/Snaps/Copyable',
-
   component: Copyable,
   argTypes: {
     text: {

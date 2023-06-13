@@ -3,7 +3,6 @@ import SnapAuthorshipExpanded from './snap-authorship-expanded';
 
 export default {
   title: 'Components/App/Snaps/SnapAuthorshipExpanded',
-
   component: SnapAuthorshipExpanded,
   argTypes: {
     snapId: {
