@@ -296,7 +296,7 @@ export const BUILT_IN_NETWORKS = {
     networkId: NETWORK_IDS.LINEA_GOERLI,
     chainId: CHAIN_IDS.LINEA_GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://explorer.goerli.linea.build',
+    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
@@ -421,8 +421,8 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
   },
   [CHAIN_IDS.LINEA_GOERLI]: {
-    domain: 'linea.build',
-    subdomain: 'explorer.goerli',
+    domain: 'lineascan.build',
+    subdomain: 'goerli',
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_GOERLI],
   },
   [CHAIN_IDS.BSC]: {

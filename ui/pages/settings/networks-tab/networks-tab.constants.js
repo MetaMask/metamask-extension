@@ -53,7 +53,7 @@ const defaultNetworksData = [
     }),
     chainId: CHAIN_IDS.LINEA_GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
-    blockExplorerUrl: 'https://explorer.goerli.linea.build',
+    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
 ];
 
