@@ -449,8 +449,8 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_GOERLI],
   },
   [CHAIN_IDS.LINEA_MAINNET]: {
-    domain: 'build',
-    subdomain: 'lineascan',
+    domain: 'lineascan.build',
+    subdomain: defaultEtherscanSubdomainPrefix,
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_MAINNET],
   },
   [CHAIN_IDS.BSC]: {
