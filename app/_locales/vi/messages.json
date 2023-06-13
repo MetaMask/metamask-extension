@@ -359,9 +359,6 @@
     "message": "Cấp quyền truy cập vào và chuyển tất cả $1 của bạn?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Chấp nhận và cài đặt"
-  },
   "approveButtonText": {
     "message": "Phê duyệt"
   },
@@ -425,9 +422,6 @@
   },
   "back": {
     "message": "Quay lại"
-  },
-  "backToAll": {
-    "message": "Quay lại toàn bộ danh sách"
   },
   "backup": {
     "message": "Sao lưu"
@@ -2799,9 +2793,6 @@
   "receive": {
     "message": "Nhận"
   },
-  "recents": {
-    "message": "Gần đây"
-  },
   "recipientAddressPlaceholder": {
     "message": "Tìm kiếm, địa chỉ công khai (0x) hoặc ENS"
   },
@@ -3263,10 +3254,12 @@
     "message": "Cài đặt Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô."
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô."
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
@@ -4064,9 +4057,6 @@
   },
   "transfer": {
     "message": "Chuyển"
-  },
-  "transferBetweenAccounts": {
-    "message": "Chuyển giữa các tài khoản của tôi"
   },
   "transferFrom": {
     "message": "Chuyển từ"

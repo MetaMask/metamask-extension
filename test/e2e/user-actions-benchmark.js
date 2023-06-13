@@ -66,7 +66,7 @@ async function confirmTx() {
       await driver.clickElement('[data-testid="eth-overview-send"]');
 
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 

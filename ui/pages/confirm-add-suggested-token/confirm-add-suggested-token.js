@@ -1,6 +1,8 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { ApprovalType } from '@metamask/controller-utils';
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import Button from '../../components/ui/button';
 import Identicon from '../../components/ui/identicon';
@@ -12,8 +14,11 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getTokens } from '../../ducks/metamask/metamask';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { getSuggestedAssets } from '../../selectors';
-import { rejectWatchAsset, acceptWatchAsset } from '../../store/actions';
+import { getApprovalRequestsByType } from '../../selectors';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+} from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -72,7 +77,11 @@ const ConfirmAddSuggestedToken = () => {
   const history = useHistory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const suggestedAssets = useSelector(getSuggestedAssets);
+  const suggestedAssets = useSelector((metamaskState) =>
+    getApprovalRequestsByType(metamaskState, ApprovalType.WatchAsset).map(
+      ({ requestData }) => requestData,
+    ),
+  );
   const tokens = useSelector(getTokens);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -119,7 +128,7 @@ const ConfirmAddSuggestedToken = () => {
   const handleAddTokensClick = useCallback(async () => {
     await Promise.all(
       suggestedAssets.map(async ({ asset, id }) => {
-        await dispatch(acceptWatchAsset(id));
+        await dispatch(resolvePendingApproval(id, null));
 
         trackEvent({
           event: MetaMetricsEventName.TokenAdded,
@@ -136,9 +145,22 @@ const ConfirmAddSuggestedToken = () => {
         });
       }),
     );
-
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, trackEvent, mostRecentOverviewPage, suggestedAssets]);
+
+  const handleCancelClick = useCallback(async () => {
+    await Promise.all(
+      suggestedAssets.map(({ id }) =>
+        dispatch(
+          rejectPendingApproval(
+            id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          ),
+        ),
+      ),
+    );
+    history.push(mostRecentOverviewPage);
+  }, [dispatch, history, mostRecentOverviewPage, suggestedAssets]);
 
   const goBackIfNoSuggestedAssetsOnFirstRender = () => {
     if (!suggestedAssets.length) {
@@ -201,12 +223,7 @@ const ConfirmAddSuggestedToken = () => {
       <PageContainerFooter
         cancelText={t('cancel')}
         submitText={t('addToken')}
-        onCancel={async () => {
-          await Promise.all(
-            suggestedAssets.map(({ id }) => dispatch(rejectWatchAsset(id))),
-          );
-          history.push(mostRecentOverviewPage);
-        }}
+        onCancel={handleCancelClick}
         onSubmit={handleAddTokensClick}
         disabled={suggestedAssets.length === 0}
       />

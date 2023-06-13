@@ -93,9 +93,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backToAll": {
-    "message": "Înapoi la toate"
-  },
   "backupApprovalInfo": {
     "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
@@ -562,9 +559,6 @@
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },
-  "recents": {
-    "message": "Recente"
-  },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
   },
@@ -781,9 +775,6 @@
   },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferă între conturile mele"
   },
   "transferFrom": {
     "message": "Transferați de la"

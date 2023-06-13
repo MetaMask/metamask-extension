@@ -81,9 +81,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
-  },
   "backupApprovalInfo": {
     "message": "Ang secret code na ito ay kinakailangan para ma-recover ang iyong wallet kung sakaling mawawala mo ang iyong device, nakalimutan mo ang iyong password, kailangan mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
@@ -499,9 +496,6 @@
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
   },
-  "recents": {
-    "message": "Kamakailan"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },
@@ -712,9 +706,6 @@
   },
   "transfer": {
     "message": "Mag-transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa pagitan ng aking mga account"
   },
   "transferFrom": {
     "message": "I-transfer Mula Sa"
