@@ -7,11 +7,16 @@ import messages from '../../../../app/_locales/en/messages.json';
 import Json from './json';
 
 const mockImportFunc = jest.fn();
+const mockOnActionComplete = jest.fn();
+
 describe('Json', () => {
   const mockStore = configureMockStore()(mockState);
   it('should match snapshot', () => {
     const { asFragment } = renderWithProvider(
-      <Json importAccountFunc={mockImportFunc} />,
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+      />,
       mockStore,
     );
     expect(asFragment()).toMatchSnapshot();
@@ -19,7 +24,10 @@ describe('Json', () => {
 
   it('should render', () => {
     const { getByText } = renderWithProvider(
-      <Json importAccountFunc={mockImportFunc} />,
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+      />,
       mockStore,
     );
 
@@ -29,7 +37,10 @@ describe('Json', () => {
 
   it('should import file without password', async () => {
     const { getByText, getByTestId } = renderWithProvider(
-      <Json importAccountFunc={mockImportFunc} />,
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+      />,
       mockStore,
     );
 
@@ -58,7 +69,10 @@ describe('Json', () => {
 
   it('should import file with password', async () => {
     const { getByText, getByTestId, getByPlaceholderText } = renderWithProvider(
-      <Json importAccountFunc={mockImportFunc} />,
+      <Json
+        importAccountFunc={mockImportFunc}
+        onActionComplete={mockOnActionComplete}
+      />,
       mockStore,
     );
 
