@@ -90,30 +90,28 @@ export const AccountListItemMenu = ({
   };
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const isCustodial =
-    keyring && keyring.type ? /Custody/u.test(keyring.type) : false;
 
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
-  // const viewOnExplorerItemRef = useRef(null);
   const accountDetailsItemRef = useRef(null);
   const removeAccountItemRef = useRef(null);
   const removeJWTItemRef = useRef(null);
 
-  // Checks the MenuItems from the bottom to top and sets the lastItemRef to the first MenuItem that is not disabled
+  // Checks the MenuItems from the bottom to top to set lastItemRef on the last MenuItem that is not disabled
   useEffect(() => {
-    if (isCustodial) {
+    if (removeJWTItemRef.current) {
       lastItemRef.current = removeJWTItemRef.current;
-    } else if (isRemovable) {
+    } else if (removeAccountItemRef.current) {
       lastItemRef.current = removeAccountItemRef.current;
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-  }, [isRemovable, isCustodial]);
+  }, []);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Tab' && event.target === lastItemRef.current) {
