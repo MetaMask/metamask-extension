@@ -180,7 +180,7 @@ export const isValidDate = (d: Date | number) => {
  * @property {() => void} reject - A function that rejects the Promise.
  */
 
-export interface DeferredPromise {
+interface DeferredPromise {
   promise: Promise<any>;
   resolve?: () => void;
   reject?: () => void;
