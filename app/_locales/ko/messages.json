@@ -423,9 +423,6 @@
   "back": {
     "message": "뒤로"
   },
-  "backToAll": {
-    "message": "전체 목록으로 돌아가기"
-  },
   "backup": {
     "message": "백업"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "받기"
   },
-  "recents": {
-    "message": "최근"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "스냅 설치"
   },
   "snapInstallWarningCheck": {
-    "message": "이해하셨으면 모두 체크해 주세요."
+    "message": "이해하셨으면 모두 체크해 주세요.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "이해하셨으면 모든 란에 체크하세요."
+    "message": "이해하셨으면 모든 란에 체크하세요.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
@@ -4061,9 +4057,6 @@
   },
   "transfer": {
     "message": "전송"
-  },
-  "transferBetweenAccounts": {
-    "message": "내 계정 간 전송"
   },
   "transferFrom": {
     "message": "전송 위치"

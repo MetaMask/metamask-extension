@@ -774,27 +774,27 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.error": true,
         "console.info": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
       },
       "packages": {
+        "@ethersproject/abi>@ethersproject/address": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/base-controller": true,
-        "@metamask/assets-controllers>@metamask/controller-utils": true,
+        "@metamask/assets-controllers>@metamask/rpc-errors": true,
         "@metamask/assets-controllers>abort-controller": true,
         "@metamask/assets-controllers>multiformats": true,
+        "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
+        "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/utils": true,
         "browserify>events": true,
         "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
-        "eth-rpc-errors": true,
         "ethereumjs-util": true,
         "single-call-balance-checker-abi": true,
         "uuid": true
@@ -818,26 +818,10 @@
         "superstruct": true
       }
     },
-    "@metamask/assets-controllers>@metamask/base-controller": {
+    "@metamask/assets-controllers>@metamask/rpc-errors": {
       "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
     "@metamask/assets-controllers>abort-controller": {
@@ -3591,22 +3575,18 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/safe-event-emitter": true,
-        "eth-block-tracker>@metamask/utils": true,
+        "@metamask/utils": true,
+        "eth-block-tracker>@metamask/safe-event-emitter": true,
         "eth-block-tracker>pify": true,
         "eth-query>json-rpc-random-id": true
       }
     },
-    "eth-block-tracker>@metamask/utils": {
+    "eth-block-tracker>@metamask/safe-event-emitter": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
+        "setTimeout": true
       },
       "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
+        "browserify>events": true
       }
     },
     "eth-ens-namehash": {
@@ -5111,34 +5091,6 @@
       },
       "packages": {
         "react": true
-      }
-    },
-    "react-transition-group": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-transition-group>chain-function": true,
-        "react-transition-group>dom-helpers": true,
-        "react-transition-group>warning": true
-      }
-    },
-    "react-transition-group>dom-helpers": {
-      "globals": {
-        "document": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
-    "react-transition-group>warning": {
-      "globals": {
-        "console": true
       }
     },
     "readable-stream": {

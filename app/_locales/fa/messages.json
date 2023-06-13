@@ -93,9 +93,6 @@
   "back": {
     "message": "بازگشت"
   },
-  "backToAll": {
-    "message": "برگشت به همه"
-  },
   "backupApprovalInfo": {
     "message": "در صورت مفقود شدن دستگاه، فراموش شدن رمز عبور، لزوم نصب-دوباره MetaMask، یا اقدام دسترسی به کیف تان از دستگاه دیگر، کود مخفی جهت بازیابی کیف تان، لازم خواهد بود."
   },
@@ -575,9 +572,6 @@
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
   },
-  "recents": {
-    "message": "واپسین"
-  },
   "recipientAddressPlaceholder": {
     "message": "جستجو، آدرس عمومی (0x)، یا ENS"
   },
@@ -800,9 +794,6 @@
   },
   "transfer": {
     "message": "انتقال"
-  },
-  "transferBetweenAccounts": {
-    "message": "انتقال میان حساب های من"
   },
   "transferFrom": {
     "message": "انتقال از"

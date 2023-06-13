@@ -423,9 +423,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
-  },
   "backup": {
     "message": "I-backup"
   },
@@ -2796,9 +2793,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recents": {
-    "message": "Mga Kamakailan"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },
@@ -3260,10 +3254,12 @@
     "message": "I-install ang snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para kumpirmahing naunawaan mo, tsekan lahat."
+    "message": "Para kumpirmahing naunawaan mo, tsekan lahat.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon."
+    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
@@ -4062,9 +4058,6 @@
   "transfer": {
     "message": "Mag-transfer"
   },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa iba't ibang account ko"
-  },
   "transferFrom": {
     "message": "Mag-transfer Mula Kay/Sa"
   },
@@ -4326,7 +4319,7 @@
     "message": "Magsimula na tayo"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "Ang Metamask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
+    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsNew": {
     "message": "Ano'ng bago",

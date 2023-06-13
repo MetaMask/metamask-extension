@@ -2,7 +2,7 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
-  assertAccountBalanceForDOM,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -28,17 +28,16 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         title: this.test.title,
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
@@ -83,7 +82,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
@@ -135,9 +134,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -148,7 +145,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Paste address without hex prefix
         await driver.pasteIntoField(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({
@@ -198,10 +195,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send TST
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -212,7 +206,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
 
         // Type address without hex prefix
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           nonHexPrefixedAddress,
         );
         await driver.waitForSelector({

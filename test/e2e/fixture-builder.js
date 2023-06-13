@@ -3,6 +3,7 @@ const {
   SnapCaveatType,
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
+const { toHex } = require('@metamask/controller-utils');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -519,7 +520,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
             },
@@ -528,7 +529,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
               tokenId: '1',
@@ -551,7 +552,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               name: 'TestDappCollectibles',
@@ -562,7 +563,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          1337: [
+          [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               description: 'Test Dapp Collectibles for testing.',
@@ -722,7 +723,7 @@ class FixtureBuilder {
       ignoredTokens: [],
       detectedTokens: [],
       allTokens: {
-        '0x539': {
+        [toHex(1337)]: {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,

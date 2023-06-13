@@ -93,9 +93,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToAll": {
-    "message": "Kembali kepada Semua"
-  },
   "backupApprovalInfo": {
     "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
@@ -555,9 +552,6 @@
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
   },
-  "recents": {
-    "message": "Baru-baru ini"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat awam (0x), atau ENS"
   },
@@ -777,9 +771,6 @@
   },
   "transfer": {
     "message": "Pindah"
-  },
-  "transferBetweenAccounts": {
-    "message": "Pindahkan antara akaun saya"
   },
   "transferFrom": {
     "message": "Pindah Daripada"

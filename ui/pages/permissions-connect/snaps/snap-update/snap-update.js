@@ -6,22 +6,31 @@ import SnapInstallWarning from '../../../../components/app/snaps/snap-install-wa
 import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
+  BackgroundColor,
   BLOCK_SIZES,
   BorderStyle,
   FLEX_DIRECTION,
+  FontWeight,
   JustifyContent,
   TextVariant,
   TEXT_ALIGN,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 
 import UpdateSnapPermissionList from '../../../../components/app/snaps/update-snap-permission-list';
 import { getSnapInstallWarnings } from '../util';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
-import { Text } from '../../../../components/component-library';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
+import {
+  AvatarIcon,
+  IconName,
+  Text,
+  ValidTag,
+} from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 
 export default function SnapUpdate({
   request,
@@ -34,6 +43,9 @@ export default function SnapUpdate({
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
+
+  const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
+    useScrollRequired([requestState]);
 
   const onCancel = useCallback(
     () => rejectSnapUpdate(request.metadata.id),
@@ -61,7 +73,10 @@ export default function SnapUpdate({
 
   const shouldShowWarning = warnings.length > 0;
 
-  const snapName = getSnapName(targetSubjectMetadata.origin);
+  const snapName = getSnapName(
+    targetSubjectMetadata.origin,
+    targetSubjectMetadata,
+  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -81,25 +96,26 @@ export default function SnapUpdate({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
+      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
-        className="snap-update__header"
-        paddingLeft={4}
-        paddingRight={4}
-        alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        ref={ref}
+        onScroll={onScroll}
+        className="snap-update__content"
+        style={{
+          overflowY: 'auto',
+          flex: !isLoading && '1',
+        }}
       >
-        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {!isLoading && !hasError && (
           <Text
             paddingBottom={4}
             paddingTop={4}
             variant={TextVariant.headingLg}
+            textAlign="center"
           >
             {t('snapUpdate')}
           </Text>
         )}
-      </Box>
-      <Box className="snap-update__content">
         {isLoading && (
           <Box
             className="snap-update__content__loader-container"
@@ -111,7 +127,16 @@ export default function SnapUpdate({
           </Box>
         )}
         {hasError && (
-          <InstallError error={requestState.error} title={t('requestFailed')} />
+          <InstallError
+            iconName={IconName.Warning}
+            error={requestState.error}
+            title={t('snapUpdateErrorTitle')}
+            description={t('snapUpdateErrorDescription', [
+              <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+                {snapName}
+              </Text>,
+            ])}
+          />
         )}
         {!hasError && !isLoading && (
           <>
@@ -123,9 +148,30 @@ export default function SnapUpdate({
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapUpdateRequest', [
-                <b key="1">{originMetadata?.hostname}</b>,
-                <b key="2">{snapName}</b>,
-                <b key="3">v{newVersion}</b>,
+                <Text
+                  as={ValidTag.Span}
+                  key="1"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {originMetadata?.hostname}
+                </Text>,
+                <Text
+                  as={ValidTag.Span}
+                  key="2"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {snapName}
+                </Text>,
+                <Text
+                  as={ValidTag.Span}
+                  key="3"
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {newVersion}
+                </Text>,
               ])}
             </Text>
             <UpdateSnapPermissionList
@@ -134,6 +180,17 @@ export default function SnapUpdate({
               newPermissions={newPermissions}
               targetSubjectMetadata={targetSubjectMetadata}
             />
+            {isScrollable && !isScrolledToBottom ? (
+              <AvatarIcon
+                className="snap-install__scroll-button"
+                data-testid="snap-update-scroll"
+                iconName={IconName.Arrow2Down}
+                backgroundColor={BackgroundColor.infoDefault}
+                color={IconColor.primaryInverse}
+                onClick={scrollToBottom}
+                style={{ cursor: 'pointer' }}
+              />
+            ) : null}
           </>
         )}
       </Box>
@@ -141,11 +198,16 @@ export default function SnapUpdate({
         className="snap-update__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
       >
         <PageContainerFooter
           cancelButtonType="default"
           hideCancel={hasError}
-          disabled={isLoading}
+          disabled={
+            isLoading || (!hasError && isScrollable && !isScrolledToBottom)
+          }
           onCancel={onCancel}
           cancelText={t('cancel')}
           onSubmit={handleSubmit}
@@ -156,7 +218,7 @@ export default function SnapUpdate({
         <SnapInstallWarning
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
-          snapName={targetSubjectMetadata.name}
+          snapName={snapName}
           warnings={warnings}
         />
       )}
