@@ -194,7 +194,7 @@ export const MAINNET_RPC_URL = getRpcUrl({
 });
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
-export const LINEA_TESTNET_RPC_URL = 'https://rpc.goerli.linea.build';
+export const LINEA_TESTNET_RPC_URL = `https://linea-goerli.infura.io/v3/${infuraProjectId}`;
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 /**
