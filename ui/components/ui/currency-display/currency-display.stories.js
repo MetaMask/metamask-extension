@@ -4,7 +4,6 @@ import CurrencyDisplay from '.';
 
 export default {
   title: 'Components/UI/CurrencyDisplay',
-
   argTypes: {
     value: {
       control: {
