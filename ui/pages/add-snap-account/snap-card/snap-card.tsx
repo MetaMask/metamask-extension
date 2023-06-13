@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Box,
   BUTTON_VARIANT,
@@ -30,6 +31,7 @@ export default function SnapCard({
   updateAvailable,
   isInstalled,
   website,
+  id,
   onClickFunc,
 }: Pick<
   SnapCardProps,
@@ -39,8 +41,10 @@ export default function SnapCard({
   | 'updateAvailable'
   | 'isInstalled'
   | 'website'
+  | 'id'
 > & { onClickFunc: () => void }) {
   const t = useI18nContext();
+  const history = useHistory();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
 
   return (
@@ -83,7 +87,14 @@ export default function SnapCard({
             {t('snapConfigure')}
           </Button>
         ) : (
-          <Button variant={BUTTON_VARIANT.SECONDARY}>{t('install')}</Button>
+          <Button
+            variant={BUTTON_VARIANT.SECONDARY}
+            onClick={() => {
+              history.push(`/add-snap-account/${id}`);
+            }}
+          >
+            {t('install')}
+          </Button>
         )}
       </Box>
       <Text

@@ -49,7 +49,12 @@ export const SnapDetailHeader = ({
   return (
     <>
       <Box marginBottom={5}>
-        <Box alignItems={AlignItems.center} marginBottom={4}>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          marginBottom={4}
+        >
           <Button
             variant={BUTTON_VARIANT.LINK}
             marginRight={4}
@@ -60,7 +65,10 @@ export const SnapDetailHeader = ({
           <Icon name={IconName.ArrowRight} marginRight={4} />
           <Text>{snapTitle}</Text>
         </Box>
-        <Box justifyContent={JustifyContent.spaceBetween}>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
