@@ -15,6 +15,214 @@ describe('ERC721 NFTs testdapp interaction', function () {
     ],
   };
 
+  it('should prompt users to add their NFTs to their wallet (one by one)', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver, _, contractRegistry }) => {
+        const contract = contractRegistry.getContractAddress(smartContract);
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // Open Dapp and wait for deployed contract
+        await openDapp(driver, contract);
+        await driver.findClickableElement('#deployButton');
+
+        // mint NFT
+        await driver.fill('#mintAmountInput', '5');
+        await driver.clickElement({ text: 'Mint', tag: 'button' });
+
+        // Notification
+        await driver.waitUntilXWindowHandles(3);
+        let windowHandles = await driver.getAllWindowHandles();
+        const [extension] = windowHandles;
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        const transactionItem = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Deposit',
+        });
+        assert.equal(await transactionItem.isDisplayed(), true);
+
+        // verify the mint transaction has finished
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        const nftsMintStatus = await driver.findElement({
+          css: '#nftsStatus',
+          text: 'Mint completed',
+        });
+        assert.equal(await nftsMintStatus.isDisplayed(), true);
+
+        // watch 3 of the nfts
+        await driver.clickElement({ text: 'Watch NFT 1', tag: 'button' });
+        await driver.clickElement({ text: 'Watch NFT 2', tag: 'button' });
+        await driver.clickElement({ text: 'Watch NFT 3', tag: 'button' });
+
+        await driver.waitUntilXWindowHandles(3);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        // confirm watchNFT
+        await driver.waitForSelector({
+          css: '.mm-text--heading-lg',
+          text: 'Add suggested NFTs',
+        });
+        await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
+        await driver.switchToWindow(extension);
+        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await driver.findElement({ text: 'TestDappNFTs (3)' });
+        const nftsListItemsFirstCheck = await driver.findElements(
+          '.nft-item__item',
+        );
+        assert.equal(nftsListItemsFirstCheck.length, 3);
+
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        await driver.clickElement({ text: 'Watch NFT 4', tag: 'button' });
+        await driver.clickElement({ text: 'Watch NFT 5', tag: 'button' });
+        await driver.clickElement({ text: 'Watch NFT 6', tag: 'button' });
+
+        await driver.waitUntilXWindowHandles(3);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        // confirm watchNFT
+        await driver.waitForSelector({
+          css: '.mm-text--heading-lg',
+          text: 'Add suggested NFTs',
+        });
+        await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
+        await driver.switchToWindow(extension);
+        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await driver.findElement({ text: 'TestDappNFTs (6)' });
+        const nftsListItemsSecondCheck = await driver.findElements(
+          '.nft-item__item',
+        );
+        assert.equal(nftsListItemsSecondCheck.length, 6);
+      },
+    );
+  });
+
+  it('should prompt users to add their NFTs to their wallet (all at once)', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.title,
+        failOnConsoleError: false,
+      },
+      async ({ driver, _, contractRegistry }) => {
+        const contract = contractRegistry.getContractAddress(smartContract);
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        // Open Dapp and wait for deployed contract
+        await openDapp(driver, contract);
+        await driver.findClickableElement('#deployButton');
+
+        // mint NFT
+        await driver.fill('#mintAmountInput', '5');
+        await driver.clickElement({ text: 'Mint', tag: 'button' });
+
+        // Notification
+        await driver.waitUntilXWindowHandles(3);
+        let windowHandles = await driver.getAllWindowHandles();
+        const [extension] = windowHandles;
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.waitForSelector({
+          css: '.confirm-page-container-summary__action__name',
+          text: 'Deposit',
+        });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        const transactionItem = await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Deposit',
+        });
+        assert.equal(await transactionItem.isDisplayed(), true);
+        // verify the mint transaction has finished
+        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+        const nftsMintStatus = await driver.findElement({
+          css: '#nftsStatus',
+          text: 'Mint completed',
+        });
+        assert.equal(await nftsMintStatus.isDisplayed(), true);
+
+        // watch all nfts
+        await driver.clickElement({ text: 'Watch all NFTs', tag: 'button' });
+
+        await driver.waitUntilXWindowHandles(3);
+        windowHandles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+
+        // confirm watchNFT
+        await driver.waitForSelector({
+          css: '.mm-text--heading-lg',
+          text: 'Add suggested NFTs',
+        });
+
+        await driver.findElements('.confirm-add-suggested-nft__nft-list-item');
+        const suggestedNftListItems = await driver.findElements(
+          '.confirm-add-suggested-nft__nft-list-item',
+        );
+        // there are 6 nfts to add because one is minted as part of the fixture
+        assert.equal(suggestedNftListItems.length, 6);
+
+        // remove one nft from the list
+        const removeButtons = await driver.findElements(
+          '.confirm-add-suggested-nft__nft-remove',
+        );
+        await removeButtons[0].click();
+
+        await driver.clickElement({ text: 'Add NFTs', tag: 'button' });
+        await driver.switchToWindow(extension);
+        await driver.clickElement({ text: 'NFTs', tag: 'button' });
+        await driver.findElement({ text: 'TestDappNFTs (5)' });
+        const nftsListItemsSecondCheck = await driver.findElements(
+          '.nft-item__item',
+        );
+
+        assert.equal(nftsListItemsSecondCheck.length, 5);
+      },
+    );
+  });
+
   it('should transfer a single ERC721 NFT from one account to another', async function () {
     await withFixtures(
       {
