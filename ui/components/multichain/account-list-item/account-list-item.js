@@ -77,7 +77,6 @@ export const AccountListItem = ({
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [accountListItemMenuElement, setAccountListItemMenuElement] =
     useState();
-  // const ref = useRef(false);
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
 
   const setAccountListItemMenuRef = (ref) => {
