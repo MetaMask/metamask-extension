@@ -585,7 +585,6 @@ async function unlockWallet(driver, walletPassword) {
   await driver.press('#password', driver.Key.ENTER);
 }
 
-
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
