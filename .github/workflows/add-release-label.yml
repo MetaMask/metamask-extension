@@ -57,6 +57,6 @@ jobs:
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues
         env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          RELEASE_LABEL_TOKEN: ${{ secrets.RELEASE_LABEL_TOKEN }}
           NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
         run: npm run add-release-label-to-pr-and-linked-issues

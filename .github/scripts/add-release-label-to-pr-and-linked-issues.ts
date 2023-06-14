@@ -21,11 +21,11 @@ async function main(): Promise<void> {
   // We can't use "GITHUB_TOKEN" here, as its permissions are scoped to the repository where the action is running.
   // "GITHUB_TOKEN" does not have access to other repositories, even when they belong to the same organization.
   // As we want to update linked issues which are not necessarily located in the same repository,
-  // we need to create our own "PERSONAL_ACCESS_TOKEN" with "repo" permissions.
+  // we need to create our own "RELEASE_LABEL_TOKEN" with "repo" permissions.
   // Such a token allows to access other repositories of the MetaMask organisation.
-  const personalAccessToken = process.env.PERSONAL_ACCESS_TOKEN;
+  const personalAccessToken = process.env.RELEASE_LABEL_TOKEN;
   if (!personalAccessToken) {
-    core.setFailed('PERSONAL_ACCESS_TOKEN not found');
+    core.setFailed('RELEASE_LABEL_TOKEN not found');
     process.exit(1);
   }
 
