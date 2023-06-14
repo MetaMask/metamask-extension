@@ -120,11 +120,28 @@ export const AccountListItemMenu = ({
     }
   };
 
+  // Handle click outside of the popover to close it
+  const popoverDialogRef = useRef(null);
+
+  const handleClickOutside = () => {
+    if (popoverDialogRef?.current) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
       referenceElement={anchorElement}
-      role={PopoverRole.Tooltip}
+      role={PopoverRole.Dialog}
       position={PopoverPosition.Bottom}
       offset={[0, 0]}
       padding={0}
@@ -133,7 +150,7 @@ export const AccountListItemMenu = ({
       preventOverflow
     >
       <ModalFocus restoreFocus initialFocusRef={anchorElement}>
-        <div onKeyDown={handleKeyDown}>
+        <div onKeyDown={handleKeyDown} ref={popoverDialogRef}>
           <MenuItem
             onClick={() => {
               blockExplorerLinkText.firstPart === 'addBlockExplorer'
