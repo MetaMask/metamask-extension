@@ -89,6 +89,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           });
           closeMenu();
         }}
+        data-testid="global-menu-connected-sites"
       >
         {t('connectedSites')}
       </MenuItem>
