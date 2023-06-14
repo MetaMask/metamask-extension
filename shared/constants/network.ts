@@ -260,10 +260,7 @@ const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
 
 export const TEST_NETWORK_TICKER_MAP: {
-  [K in Exclude<
-    NetworkType,
-    'localhost' | 'mainnet' | 'rpc'
-  >]: `${Capitalize<K>}${typeof CURRENCY_SYMBOLS.ETH}`;
+  [K in Exclude<NetworkType, 'localhost' | 'mainnet' | 'rpc'>]: string;
 } = {
   [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
     CURRENCY_SYMBOLS.ETH
@@ -271,9 +268,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
     CURRENCY_SYMBOLS.ETH
   }`,
-  [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}` as `${Capitalize<
-    typeof NETWORK_TYPES.LINEA_GOERLI
-  >}${typeof CURRENCY_SYMBOLS.ETH}`,
+  [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
 };
 
 /**
