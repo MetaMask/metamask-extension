@@ -1879,6 +1879,7 @@ export default class TransactionController extends EventEmitter {
       if (customNonceValue) {
         txMeta.nonceDetails.customNonceValue = customNonceValue;
       }
+      console.log("nonceDetails inserted into tx", txMeta.nonceDetails)
       this.txStateManager.updateTransaction(
         txMeta,
         'transactions#approveTransaction',

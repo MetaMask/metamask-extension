@@ -4211,7 +4211,9 @@ export default class MetamaskController extends EventEmitter {
   async getPendingNonce(address) {
     const { nonceDetails, releaseLock } =
       await this.txController.nonceTracker.getNonceLock(address);
-    const pendingNonce = nonceDetails.params.highestSuggested;
+    const pendingNonce = nonceDetails.params.highestSuggested; // here?...
+
+    console.log("pending nonce", nonceDetails)
 
     releaseLock();
     return pendingNonce;
@@ -4228,7 +4230,9 @@ export default class MetamaskController extends EventEmitter {
       address,
     );
     nonceLock.releaseLock();
-    return nonceLock.nextNonce;
+    console.log("next nonce", nonceLock.nonceDetails.params.nextNetworkNonce)
+    // return nonceLock.nextNonce;
+    return nonceLock.nonceDetails.params.nextNetworkNonce;
   }
 
   //=============================================================================
@@ -4432,6 +4436,7 @@ export default class MetamaskController extends EventEmitter {
 
   resolvePendingApproval = async (id, value, options) => {
     try {
+      console.log("accepted", id, value, options)
       await this.approvalController.accept(id, value, options);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {

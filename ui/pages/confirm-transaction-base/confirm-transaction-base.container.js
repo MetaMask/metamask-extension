@@ -128,6 +128,7 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     nextNonce,
   } = metamask;
+  // console.log("nextNonce from state", nextNonce)
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;

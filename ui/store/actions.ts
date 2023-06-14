@@ -1139,6 +1139,8 @@ export function updateAndApproveTx(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
+    console.log("updateAndApprove", txMeta)
+
     !dontShowLoadingIndicator && dispatch(showLoadingIndication());
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
@@ -3989,6 +3991,7 @@ export function getNextNonce(): ThunkAction<
     const address = getState().metamask.selectedAddress;
     let nextNonce;
     try {
+      console.log("next nonce action")
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
         address,
       ]);
@@ -3996,6 +3999,7 @@ export function getNextNonce(): ThunkAction<
       dispatch(displayWarning(error));
       throw error;
     }
+    console.log("next nonce action result", nextNonce)
     dispatch(setNextNonce(nextNonce));
     return nextNonce;
   };
