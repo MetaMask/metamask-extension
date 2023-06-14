@@ -6,6 +6,7 @@ import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getURLHostName } from '../../../ui/helpers/utils/util';
+import { t } from '../translate';
 
 export default class ExtensionPlatform {
   //
@@ -181,10 +182,13 @@ export default class ExtensionPlatform {
       toLower(getURLHostName(url).replace(/([.]\w+)$/u, '')),
     );
 
-    const title = 'Confirmed transaction';
-    const message = `Transaction ${nonce} confirmed! ${
-      url.length ? `View on ${view}` : ''
-    }`;
+    const title = t('notificationTransactionSuccessTitle');
+    let message = t('notificationTransactionSuccessMessage', [nonce]);
+
+    if (url.length) {
+      message += ` ${t('notificationTransactionSuccessView', [view])}`;
+    }
+
     await this._showNotification(title, message, url);
   }
 
