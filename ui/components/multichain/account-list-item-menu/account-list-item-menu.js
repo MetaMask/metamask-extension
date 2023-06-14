@@ -111,7 +111,11 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
-  }, []);
+  }, [
+    removeJWTItemRef.current,
+    removeAccountItemRef.current,
+    accountDetailsItemRef.current,
+  ]);
 
   const handleKeyDown = (event) => {
     if (event.key === 'Tab' && event.target === lastItemRef.current) {
@@ -123,8 +127,11 @@ export const AccountListItemMenu = ({
   // Handle click outside of the popover to close it
   const popoverDialogRef = useRef(null);
 
-  const handleClickOutside = () => {
-    if (popoverDialogRef?.current) {
+  const handleClickOutside = (event) => {
+    if (
+      popoverDialogRef?.current &&
+      !popoverDialogRef.current.contains(event.target)
+    ) {
       onClose();
     }
   };
