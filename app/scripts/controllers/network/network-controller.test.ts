@@ -2455,7 +2455,7 @@ describe('NetworkController', () => {
       ticker,
       blockExplorerUrl,
     } of INFURA_NETWORKS) {
-      describe(`given a type of "${networkType}"`, () => {
+      describe(`given a network type of "${networkType}"`, () => {
         refreshNetworkTests({
           expectedProviderConfig: buildProviderConfig({
             type: networkType,
@@ -2464,53 +2464,113 @@ describe('NetworkController', () => {
             await controller.setProviderType(networkType);
           },
         });
+      });
 
-        it(`overwrites the provider configuration using type: "${networkType}", chainId: "${chainId}", ticker "${ticker}", and blockExplorerUrl "${blockExplorerUrl}", clearing rpcUrl and nickname`, async () => {
-          await withController(
-            {
-              state: {
-                providerConfig: {
-                  type: 'rpc',
-                  rpcUrl: 'https://mock-rpc-url',
-                  chainId: '0x1337',
-                  nickname: 'test-chain',
-                  ticker: 'TEST',
-                  rpcPrefs: {
-                    blockExplorerUrl: 'https://test-block-explorer.com',
-                  },
+      it(`overwrites the provider configuration using a predetermined chainId, ticker, and blockExplorerUrl for "${networkType}", clearing id, rpcUrl, and nickname`, async () => {
+        await withController(
+          {
+            state: {
+              providerConfig: {
+                type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: '0x1337',
+                nickname: 'test-chain',
+                ticker: 'TEST',
+                rpcPrefs: {
+                  blockExplorerUrl: 'https://test-block-explorer.com',
                 },
               },
             },
-            async ({ controller }) => {
-              const fakeProvider = buildFakeProvider();
-              const fakeNetworkClient = buildFakeClient(fakeProvider);
-              mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
+          },
+          async ({ controller }) => {
+            const fakeProvider = buildFakeProvider();
+            const fakeNetworkClient = buildFakeClient(fakeProvider);
+            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
 
-              controller.setProviderType(networkType);
+            await controller.setProviderType(networkType);
 
-              expect(controller.store.getState().providerConfig).toStrictEqual({
-                type: networkType,
-                rpcUrl: undefined,
-                chainId,
-                ticker,
-                nickname: undefined,
-                rpcPrefs: { blockExplorerUrl },
-                id: undefined,
-              });
-            },
-          );
-        });
+            expect(controller.store.getState().providerConfig).toStrictEqual({
+              type: networkType,
+              rpcUrl: undefined,
+              chainId,
+              ticker,
+              nickname: undefined,
+              rpcPrefs: { blockExplorerUrl },
+              id: undefined,
+            });
+          },
+        );
       });
     }
 
-    describe('given a type of "rpc"', () => {
-      it('throws', async () => {
-        await withController(async ({ controller }) => {
-          await expect(() => controller.setProviderType('rpc')).rejects.toThrow(
-            new Error(
+    describe('given a network type of "rpc"', () => {
+      it('throws because there is no way to switch to a custom RPC endpoint using this method', async () => {
+        await withController(
+          {
+            state: {
+              providerConfig: {
+                type: NETWORK_TYPES.RPC,
+                rpcUrl: 'http://somethingexisting.com',
+                chainId: toHex(99999),
+                ticker: 'something existing',
+                nickname: 'something existing',
+              },
+            },
+          },
+          async ({ controller }) => {
+            await expect(() =>
+              controller.setProviderType(NETWORK_TYPES.RPC),
+            ).rejects.toThrow(
               'NetworkController - cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"',
-            ),
-          );
+            );
+          },
+        );
+      });
+
+      it("doesn't set a provider", async () => {
+        await withController(async ({ controller }) => {
+          const fakeProvider = buildFakeProvider();
+          const fakeNetworkClient = buildFakeClient(fakeProvider);
+          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+
+          try {
+            await controller.setProviderType(NETWORK_TYPES.RPC);
+          } catch {
+            // catch the rejection (it is tested above)
+          }
+
+          expect(createNetworkClientMock).not.toHaveBeenCalled();
+          expect(controller.getProviderAndBlockTracker().provider).toBeNull();
+        });
+      });
+
+      it('does not update networkDetails.EIPS in state', async () => {
+        await withController(async ({ controller }) => {
+          const fakeProvider = buildFakeProvider([
+            {
+              request: {
+                method: 'eth_getBlockByNumber',
+                params: ['latest', false],
+              },
+              response: {
+                result: {
+                  baseFeePerGas: '0x1',
+                },
+              },
+            },
+          ]);
+          const fakeNetworkClient = buildFakeClient(fakeProvider);
+          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+
+          try {
+            await controller.setProviderType(NETWORK_TYPES.RPC);
+          } catch {
+            // catch the rejection (it is tested above)
+          }
+
+          expect(
+            controller.store.getState().networkDetails.EIPS[1559],
+          ).toBeUndefined();
         });
       });
     });
@@ -2519,9 +2579,9 @@ describe('NetworkController', () => {
       it('throws', async () => {
         await withController(async ({ controller }) => {
           await expect(() =>
-            controller.setProviderType('sadlflaksdj'),
+            controller.setProviderType('invalid-infura-network'),
           ).rejects.toThrow(
-            new Error('Unknown Infura provider type "sadlflaksdj".'),
+            new Error('Unknown Infura provider type "invalid-infura-network".'),
           );
         });
       });
