@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import {
   MetaMetricsEventAccountImportType,
@@ -6,54 +7,56 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { ButtonLink, Label, Text } from '../../../components/component-library';
-import Box from '../../../components/ui/box';
-import Dropdown from '../../../components/ui/dropdown';
+import { ButtonLink, Label, Text } from '../../component-library';
+import Box from '../../ui/box';
+import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  BLOCK_SIZES,
-  BorderColor,
-  FONT_WEIGHT,
+  BlockSize,
+  FontWeight,
   JustifyContent,
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useRouting } from '../../../hooks/useRouting';
 import * as actions from '../../../store/actions';
 
 // Subviews
 import JsonImportView from './json';
 import PrivateKeyImportView from './private-key';
 
-export default function NewAccountImportForm() {
+export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { navigateToMostRecentOverviewPage } = useRouting();
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
   const [type, setType] = useState(menuItems[0]);
 
-  function importAccount(strategy, importArgs) {
+  async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
 
-    dispatch(actions.importNewAccount(strategy, importArgs, loadingMessage))
-      .then(({ selectedAddress }) => {
-        if (selectedAddress) {
-          trackImportEvent(strategy, true);
-          dispatch(actions.hideWarning());
-          navigateToMostRecentOverviewPage();
-        } else {
-          dispatch(actions.displayWarning(t('importAccountError')));
-        }
-      })
-      .catch((error) => {
-        trackImportEvent(strategy, error.message);
-        translateWarning(error.message);
-      });
+    try {
+      const { selectedAddress } = await dispatch(
+        actions.importNewAccount(strategy, importArgs, loadingMessage),
+      );
+      if (selectedAddress) {
+        trackImportEvent(strategy, true);
+        dispatch(actions.hideWarning());
+        onActionComplete(true);
+      } else {
+        dispatch(actions.displayWarning(t('importAccountError')));
+        return false;
+      }
+    } catch (error) {
+      trackImportEvent(strategy, error.message);
+      translateWarning(error.message);
+      return false;
+    }
+
+    return true;
   }
 
   function trackImportEvent(strategy, wasSuccessful) {
@@ -79,13 +82,14 @@ export default function NewAccountImportForm() {
   function getLoadingMessage(strategy) {
     if (strategy === 'JSON File') {
       return (
-        <Text width={BLOCK_SIZES.THREE_FOURTHS} fontWeight={FONT_WEIGHT.BOLD}>
-          <br />
-          {t('importAccountJsonLoading1')}
-          <br />
-          <br />
-          {t('importAccountJsonLoading2')}
-        </Text>
+        <>
+          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+            {t('importAccountJsonLoading1')}
+          </Text>
+          <Text width={BlockSize.ThreeFourths} fontWeight={FontWeight.Bold}>
+            {t('importAccountJsonLoading2')}
+          </Text>
+        </>
       );
     }
 
@@ -112,40 +116,22 @@ export default function NewAccountImportForm() {
     }
   }
 
-  function PrivateKeyOrJson() {
-    switch (type) {
-      case menuItems[0]:
-        return <PrivateKeyImportView importAccountFunc={importAccount} />;
-      case menuItems[1]:
-      default:
-        return <JsonImportView importAccountFunc={importAccount} />;
-    }
-  }
-
   return (
     <>
-      <Box
-        padding={4}
-        className="bottom-border-1px" // There is no way to do just a bottom border in the Design System
-        borderColor={BorderColor.borderDefault}
-      >
-        <Text variant={TextVariant.headingLg}>{t('importAccount')}</Text>
-        <Text variant={TextVariant.bodySm} marginTop={2}>
-          {t('importAccountMsg')}{' '}
-          <ButtonLink
-            size={Size.inherit}
-            href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('here')}
-          </ButtonLink>
-        </Text>
-      </Box>
-
-      <Box padding={4} paddingBottom={8} paddingLeft={4} paddingRight={4}>
+      <Text variant={TextVariant.bodySm} marginTop={2}>
+        {t('importAccountMsg')}{' '}
+        <ButtonLink
+          size={Size.inherit}
+          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {t('here')}
+        </ButtonLink>
+      </Text>
+      <Box paddingTop={4} paddingBottom={8}>
         <Label
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
           marginBottom={4}
           justifyContent={JustifyContent.spaceBetween}
         >
@@ -159,8 +145,22 @@ export default function NewAccountImportForm() {
             }}
           />
         </Label>
-        <PrivateKeyOrJson />
+        {type === menuItems[0] ? (
+          <PrivateKeyImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        ) : (
+          <JsonImportView
+            importAccountFunc={importAccount}
+            onActionComplete={onActionComplete}
+          />
+        )}
       </Box>
     </>
   );
-}
+};
+
+ImportAccount.propTypes = {
+  onActionComplete: PropTypes.func.isRequired,
+};
