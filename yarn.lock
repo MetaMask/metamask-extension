@@ -4536,6 +4536,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#6ec7979f9054c791bb3a072b942540e12471467b":
+  version: 0.0.0
+  resolution: "@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#commit=6ec7979f9054c791bb3a072b942540e12471467b"
+  dependencies:
+    "@blockaid/ppom-mock": ^1.0.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+    await-semaphore: ^0.1.3
+  checksum: b851a100844aa11108feeac641675917acac89d8f32b0ac4134ec3a740ddf077a815135d48919a5e15b14b87c30fb6ea7e6f8d3607e743eb06cd38da1cce1a0f
+  languageName: node
+  linkType: hard
+
 "@metamask/preferences-controller@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/preferences-controller@npm:4.1.0"
