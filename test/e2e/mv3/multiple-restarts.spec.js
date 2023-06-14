@@ -12,6 +12,7 @@ const {
   generateRandNumBetween,
   switchToWindow,
   sleepSeconds,
+  terminateServiceWorker,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -424,28 +425,3 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
   });
 });
-
-async function terminateServiceWorker(driver) {
-  await driver.openNewPage('chrome://inspect/#service-workers/');
-
-  await driver.waitForSelector({
-    text: 'Service workers',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Service workers',
-    tag: 'button',
-  });
-
-  await driver.clickElement({
-    text: 'terminate',
-    tag: 'span',
-  });
-
-  const serviceWorkerTab = await switchToWindow(
-    driver,
-    WINDOW_TITLES.ServiceWorkerSettings,
-  );
-
-  await driver.closeWindowHandle(serviceWorkerTab);
-}

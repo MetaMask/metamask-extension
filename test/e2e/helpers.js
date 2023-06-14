@@ -608,6 +608,31 @@ async function sleepSeconds(sec) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
 
+async function terminateServiceWorker(driver) {
+  await driver.openNewPage('chrome://inspect/#service-workers/');
+
+  await driver.waitForSelector({
+    text: 'Service workers',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: 'Service workers',
+    tag: 'button',
+  });
+
+  await driver.clickElement({
+    text: 'terminate',
+    tag: 'span',
+  });
+
+  const serviceWorkerTab = await switchToWindow(
+    driver,
+    WINDOW_TITLES.ServiceWorkerSettings,
+  );
+
+  await driver.closeWindowHandle(serviceWorkerTab);
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -651,4 +676,5 @@ module.exports = {
   generateRandNumBetween,
   switchToWindow,
   sleepSeconds,
+  terminateServiceWorker,
 };
