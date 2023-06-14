@@ -1,0 +1,17 @@
+.list-with-search {
+  .searchable-item-list {
+    &__list-container {
+      overflow-y: inherit;
+    }
+  }
+
+  &__text-search {
+    outline: none;
+  }
+
+  .mm-button-icon {
+    .mm-icon--size-lg {
+      --size: 20px;
+    }
+  }
+}

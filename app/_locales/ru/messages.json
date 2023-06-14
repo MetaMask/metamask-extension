@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать эту сеть в MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Добавить токен"
+  },
+  "addTokenByContractAddress": {
+    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Адрес"

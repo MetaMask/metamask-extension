@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "커스텀 토큰 추가"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "토큰 추가"
+  },
+  "addTokenByContractAddress": {
+    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "주소"

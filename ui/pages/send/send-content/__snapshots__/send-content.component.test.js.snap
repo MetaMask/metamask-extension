@@ -205,6 +205,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     </span>
                     <div
                       class="info-tooltip"
+                      data-testid="info-tooltip"
                     >
                       <div>
                         <div

@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Tambahkan token kustom"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Tidak dapat menemukan token? Tambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan dengan MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Tambahkan token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Tidak dapat menemukan token? Tambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Alamat"

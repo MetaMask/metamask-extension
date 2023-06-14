@@ -28,13 +28,14 @@ describe('ExchangeRateDisplay', () => {
 
   it('clicks on the switch link', () => {
     const props = createProps();
+    props.showIconForSwappingTokens = true;
     const { getByTestId } = renderWithProvider(
       <ExchangeRateDisplay {...props} />,
     );
     expect(getByTestId('exchange-rate-display__base-symbol')).toHaveTextContent(
       'ETH',
     );
-    fireEvent.click(getByTestId('exchange-rate-display__switch-arrows'));
+    fireEvent.click(getByTestId('exchange-rate-display__switch'));
     expect(getByTestId('exchange-rate-display__base-symbol')).toHaveTextContent(
       'BAT',
     );

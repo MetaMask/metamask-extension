@@ -553,6 +553,21 @@ export function formatSwapsValueForDisplay(destinationAmount: string): string {
   return amountToDisplay;
 }
 
+export const getClassNameForCharLength = (
+  num: string,
+  classNamePrefix: string,
+): string => {
+  let modifier;
+  if (!num || num.length <= 10) {
+    modifier = 'lg';
+  } else if (num.length > 10 && num.length <= 13) {
+    modifier = 'md';
+  } else {
+    modifier = 'sm';
+  }
+  return `${classNamePrefix}--${modifier}`;
+};
+
 /**
  * Checks whether a contract address is valid before swapping tokens.
  *

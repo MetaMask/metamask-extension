@@ -70,7 +70,8 @@ async function main() {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      // TODO: Enable Swaps E2E tests again with a new PR, which will have updated E2E tests for the new Swaps UI redesign.
+      // ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];

@@ -120,6 +120,7 @@ const initialState = {
   },
   currentSmartTransactionsError: '',
   swapsSTXLoading: false,
+  transactionSettingsOpened: false,
 };
 
 const slice = createSlice({
@@ -208,6 +209,9 @@ const slice = createSlice({
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
     },
+    setTransactionSettingsOpened: (state, action) => {
+      state.transactionSettingsOpened = action.payload || false;
+    },
   },
 });
 
@@ -268,6 +272,9 @@ export const getSwapsFallbackGasPrice = (state) =>
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
 
+export const getTransactionSettingsOpened = (state) =>
+  state.swaps.transactionSettingsOpened;
+
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -323,6 +330,15 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
   return smartTransactionsEnabled && !currentSmartTransactionsError;
+};
+
+export const getSwapRedesignEnabled = (state) => {
+  const swapRedesign =
+    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
+  if (swapRedesign === undefined) {
+    return true; // By default show the redesign if we don't have feature flags returned yet.
+  }
+  return swapRedesign.extensionActive;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
@@ -478,6 +494,7 @@ const {
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
   setSwapsSTXSubmitLoading,
+  setTransactionSettingsOpened,
 } = actions;
 
 export {
@@ -497,6 +514,7 @@ export {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
+  setTransactionSettingsOpened,
 };
 
 export const navigateBackToBuildQuote = (history) => {

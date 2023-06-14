@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "カスタムトークンを追加"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります。",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "トークンを追加"
+  },
+  "addTokenByContractAddress": {
+    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "アドレス"

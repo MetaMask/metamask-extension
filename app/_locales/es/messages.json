@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Añadir token personalizado"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Esto permitirá que la red se utilice en MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Agregar token"
+  },
+  "addTokenByContractAddress": {
+    "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Dirección"

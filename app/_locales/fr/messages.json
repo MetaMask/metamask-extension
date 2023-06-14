@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Vous ne trouvez pas de jeton ? Vous pouvez ajouter manuellement n’importe quel jeton avec son adresse par copier-coller. Les adresses des contrats de jetons sont disponibles sur $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Cela permettra d’utiliser ce réseau dans MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Ajouter le jeton"
+  },
+  "addTokenByContractAddress": {
+    "message": "Vous ne trouvez pas de jeton ? Vous pouvez ajouter manuellement n’importe quel jeton avec son adresse par copier-coller. Les adresses des contrats de jetons sont disponibles sur $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Adresse"

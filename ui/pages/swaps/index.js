@@ -46,6 +46,8 @@ import {
   getCurrentSmartTransactionsEnabled,
   getCurrentSmartTransactionsError,
   navigateBackToBuildQuote,
+  getSwapRedesignEnabled,
+  setTransactionSettingsOpened,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -61,6 +63,8 @@ import {
   SWAPS_ERROR_ROUTE,
   DEFAULT_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   ERROR_FETCHING_QUOTES,
@@ -84,6 +88,14 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
+import { Icon, IconName, IconSize } from '../../components/component-library';
+import Box from '../../components/ui/box';
+import {
+  DISPLAY,
+  JustifyContent,
+  IconColor,
+  FRACTIONS,
+} from '../../helpers/constants/design-system';
 import {
   fetchTokens,
   fetchTopAssets,
@@ -94,6 +106,8 @@ import SmartTransactionStatus from './smart-transaction-status';
 import AwaitingSwap from './awaiting-swap';
 import LoadingQuote from './loading-swaps-quotes';
 import BuildQuote from './build-quote';
+import PrepareSwapPage from './prepare-swap-page/prepare-swap-page';
+import NotificationPage from './notification-page/notification-page';
 import ViewQuote from './view-quote';
 
 export default function Swap() {
@@ -110,6 +124,7 @@ export default function Swap() {
   const isSmartTransactionStatusRoute =
     pathname === SMART_TRANSACTION_STATUS_ROUTE;
   const isViewQuoteRoute = pathname === VIEW_QUOTE_ROUTE;
+  const isPrepareSwapRoute = pathname === PREPARE_SWAP_ROUTE;
 
   const [currentStxErrorTracked, setCurrentStxErrorTracked] = useState(false);
   const fetchParams = useSelector(getFetchParams, isEqual);
@@ -142,6 +157,7 @@ export default function Swap() {
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const swapRedesignEnabled = useSelector(getSwapRedesignEnabled);
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
@@ -367,29 +383,79 @@ export default function Swap() {
     <div className="swaps">
       <div className="swaps__container">
         <div className="swaps__header">
-          <div
-            className="swaps__header-edit"
-            onClick={async () => {
-              await dispatch(navigateBackToBuildQuote(history));
-            }}
-          >
-            {isViewQuoteRoute && t('edit')}
-          </div>
+          {!swapRedesignEnabled && (
+            <div
+              className="swaps__header-edit"
+              onClick={async () => {
+                await dispatch(navigateBackToBuildQuote(history));
+              }}
+            >
+              {isViewQuoteRoute && t('edit')}
+            </div>
+          )}
+          {swapRedesignEnabled &&
+            !isAwaitingSwapRoute &&
+            !isAwaitingSignaturesRoute &&
+            !isSmartTransactionStatusRoute && (
+              <Box
+                display={DISPLAY.FLEX}
+                justifyContent={JustifyContent.center}
+                marginLeft={4}
+                width={FRACTIONS.ONE_TWELFTH}
+              >
+                <Icon
+                  name={IconName.Arrow2Left}
+                  size={IconSize.Lg}
+                  color={IconColor.iconAlternative}
+                  onClick={async () => {
+                    clearTemporaryTokenRef.current();
+                    dispatch(clearSwapsState());
+                    await dispatch(resetBackgroundSwapsState());
+                    history.push(DEFAULT_ROUTE);
+                  }}
+                  style={{ cursor: 'pointer' }}
+                  title={t('cancel')}
+                />
+              </Box>
+            )}
           <div className="swaps__title">{t('swap')}</div>
-          <div
-            className="swaps__header-cancel"
-            onClick={async () => {
-              clearTemporaryTokenRef.current();
-              dispatch(clearSwapsState());
-              await dispatch(resetBackgroundSwapsState());
-              history.push(DEFAULT_ROUTE);
-            }}
-          >
-            {!isAwaitingSwapRoute &&
-              !isAwaitingSignaturesRoute &&
-              !isSmartTransactionStatusRoute &&
-              t('cancel')}
-          </div>
+          {!swapRedesignEnabled && (
+            <div
+              className="swaps__header-cancel"
+              onClick={async () => {
+                clearTemporaryTokenRef.current();
+                dispatch(clearSwapsState());
+                await dispatch(resetBackgroundSwapsState());
+                history.push(DEFAULT_ROUTE);
+              }}
+            >
+              {!isAwaitingSwapRoute &&
+                !isAwaitingSignaturesRoute &&
+                !isSmartTransactionStatusRoute &&
+                t('cancel')}
+            </div>
+          )}
+          {swapRedesignEnabled && (
+            <Box
+              display={DISPLAY.FLEX}
+              justifyContent={JustifyContent.center}
+              marginRight={4}
+              width={FRACTIONS.ONE_TWELFTH}
+            >
+              {isPrepareSwapRoute && (
+                <Icon
+                  name={IconName.Setting}
+                  size={IconSize.Lg}
+                  color={IconColor.iconAlternative}
+                  onClick={() => {
+                    dispatch(setTransactionSettingsOpened(true));
+                  }}
+                  style={{ cursor: 'pointer' }}
+                  title={t('transactionSettings')}
+                />
+              )}
+            </Box>
+          )}
         </div>
         <div className="swaps__content">
           <Switch>
@@ -399,6 +465,9 @@ export default function Swap() {
               path={BUILD_QUOTE_ROUTE}
               exact
               render={() => {
+                if (swapRedesignEnabled) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                }
                 if (tradeTxData && !conversionError) {
                   return <Redirect to={{ pathname: AWAITING_SWAP_ROUTE }} />;
                 } else if (tradeTxData && routeState) {
@@ -409,6 +478,25 @@ export default function Swap() {
 
                 return (
                   <BuildQuote
+                    ethBalance={ethBalance}
+                    selectedAccountAddress={selectedAccountAddress}
+                    shuffledTokensList={shuffledTokensList}
+                  />
+                );
+              }}
+            />
+            <FeatureToggledRoute
+              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+              flag={swapsEnabled}
+              path={PREPARE_SWAP_ROUTE}
+              exact
+              render={() => {
+                if (!swapRedesignEnabled) {
+                  return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
+                }
+
+                return (
+                  <PrepareSwapPage
                     ethBalance={ethBalance}
                     selectedAccountAddress={selectedAccountAddress}
                     shuffledTokensList={shuffledTokensList}
@@ -431,6 +519,9 @@ export default function Swap() {
                       to={{ pathname: SMART_TRANSACTION_STATUS_ROUTE }}
                     />
                   );
+                }
+                if (swapRedesignEnabled) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
                 }
                 if (Object.values(quotes).length) {
                   return (
@@ -458,6 +549,16 @@ export default function Swap() {
                   );
                 }
                 return <Redirect to={{ pathname: BUILD_QUOTE_ROUTE }} />;
+              }}
+            />
+            <Route
+              path={SWAPS_NOTIFICATION_ROUTE}
+              exact
+              render={() => {
+                if (!swapsErrorKey) {
+                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
+                }
+                return <NotificationPage notificationKey={swapsErrorKey} />;
               }}
             />
             <FeatureToggledRoute

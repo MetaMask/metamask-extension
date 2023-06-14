@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "कस्टम टोकन जोड़ें"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "टोकन जोड़ें"
+  },
+  "addTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "पता"

@@ -2,6 +2,8 @@
 @import 'awaiting-signatures/index';
 @import 'smart-transaction-status/index';
 @import 'build-quote/index';
+@import 'prepare-swap-page/index';
+@import 'notification-page/index';
 @import 'countdown-timer/index';
 @import 'dropdown-input-pair/index';
 @import 'dropdown-search-list/index';
@@ -17,6 +19,10 @@
 @import 'import-token/index';
 @import 'create-new-swap/index';
 @import 'view-on-block-explorer/index';
+@import 'transaction-settings/index';
+@import 'list-with-search/index';
+@import 'popover-custom-background/index';
+@import 'mascot-background-animation/index';
 
 .swaps {
   display: flex;
@@ -91,15 +97,17 @@
     justify-content: center;
     align-items: center;
     padding-top: 0;
-    padding-bottom: 16px;
+    padding-bottom: 12px;
     background: var(--color-background-alternative);
     width: 100%;
-    position: relative;
     flex-direction: row;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 
     @include screen-sm-min {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 12px;
+      padding-bottom: 12px;
       height: 66px;
     }
   }
@@ -121,6 +129,14 @@
     cursor: pointer;
     padding-left: 24px;
     flex: 1;
+  }
+
+  &__header-back {
+    @include H7;
+
+    color: var(--color-primary-default);
+    cursor: pointer;
+    padding-left: 24px;
   }
 
   .actionable-message__message &__notification-close-button {

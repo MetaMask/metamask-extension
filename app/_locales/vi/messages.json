@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Thêm token tùy chỉnh"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Thao tác này sẽ cho phép sử dụng mạng này trong MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Thêm token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Bạn không tìm thấy token? Bạn có thể dán địa chỉ của bất kỳ token nào để thêm token đó theo cách thủ công. Bạn có thể tìm thấy địa chỉ hợp đồng token trên $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Địa chỉ"
