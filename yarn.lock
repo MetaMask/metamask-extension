@@ -2795,11 +2795,11 @@ __metadata:
   linkType: hard
 
 "@httptoolkit/httpolyglot@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@httptoolkit/httpolyglot@npm:2.0.1"
+  version: 2.1.1
+  resolution: "@httptoolkit/httpolyglot@npm:2.1.1"
   dependencies:
     "@types/node": ^16.7.10
-  checksum: d5209dcaba13c11a82833306ee64e19f5a4516590297dbb9e9f11cbaad1e56b1f958576c4d2562fbc56d4ff3a532a8bc660715a4ff9f688f5640d23229337163
+  checksum: 138ccd61355de334c509e2fc4ac9ade9e1aa6aa770ed2271e0bd1d883ed815eb742d0a4de37837edd03a9a243c05d6da32c5febe970f4518c46e2d76e6ff10d5
   languageName: node
   linkType: hard
 
@@ -2846,8 +2846,8 @@ __metadata:
   linkType: hard
 
 "@httptoolkit/websocket-stream@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@httptoolkit/websocket-stream@npm:6.0.0"
+  version: 6.0.1
+  resolution: "@httptoolkit/websocket-stream@npm:6.0.1"
   dependencies:
     "@types/ws": "*"
     duplexify: ^3.5.1
@@ -2857,7 +2857,7 @@ __metadata:
     safe-buffer: ^5.1.2
     ws: "*"
     xtend: ^4.0.0
-  checksum: ec5061b7b793228a002487f373ca56b4192650bbf906e0afb273f784733d9b86c2ebf896ce5a0a4405253d80479985705f174bad892b0e7b7edd0af45856f81e
+  checksum: e70059c24499abab695e7bc269aefc1a751d161296975a4af932577497c4ecd66b7745dc0c63608e06989442db996d76e563bce08156563bac7bc3411ad9bcee
   languageName: node
   linkType: hard
 
@@ -13631,15 +13631,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"degenerator@npm:^3.0.1":
-  version: 3.0.1
-  resolution: "degenerator@npm:3.0.1"
+"degenerator@npm:^3.0.2":
+  version: 3.0.4
+  resolution: "degenerator@npm:3.0.4"
   dependencies:
     ast-types: ^0.13.2
     escodegen: ^1.8.1
     esprima: ^4.0.0
-    vm2: ^3.9.3
-  checksum: 110d5fa772933d21484995e518feeb2ea54e5804421edf8546900973a227dcdf621a0cbac0a5d0a13273424ea3763aba815246dfffa386483f5480d60f50bed1
+    vm2: ^3.9.17
+  checksum: 99c27c9456095e32c4f6e01091d2b5c249f246b574487c52bca571e1e586b02d4b74a0ea7f22f30cc953c914383d02e2038d7d476a22f2704a8c1e88b671007d
   languageName: node
   linkType: hard
 
@@ -18330,6 +18330,17 @@ __metadata:
   peerDependencies:
     graphql: ^0.10.5 || ^0.11.3 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0
   checksum: 2b9533c6774e7be46acd6fbee528aab06429f15dc222eabd991e82c02bf74e390b638dffa1a3fd86c1e26212c40a42a0418d7f4a7c3a1edf0534978ef128e528
+  languageName: node
+  linkType: hard
+
+"graphql-tag@npm:^2.12.6":
+  version: 2.12.6
+  resolution: "graphql-tag@npm:2.12.6"
+  dependencies:
+    tslib: ^2.1.0
+  peerDependencies:
+    graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: b15162a3d62f17b9b79302445b9ee330e041582f1c7faca74b9dec5daa74272c906ec1c34e1c50592bb6215e5c3eba80a309103f6ba9e4c1cddc350c46f010df
   languageName: node
   linkType: hard
 
@@ -25118,8 +25129,8 @@ __metadata:
   linkType: hard
 
 "mockttp@npm:^2.6.0":
-  version: 2.6.0
-  resolution: "mockttp@npm:2.6.0"
+  version: 2.7.0
+  resolution: "mockttp@npm:2.7.0"
   dependencies:
     "@graphql-tools/schema": ^7.1.5
     "@httptoolkit/httpolyglot": ^2.0.1
@@ -25140,6 +25151,7 @@ __metadata:
     fetch-ponyfill: ^7.1.0
     graphql: ^14.0.2 || ^15.5
     graphql-subscriptions: ^1.1.0
+    graphql-tag: ^2.12.6
     http-encoding: ^1.5.0
     http2-wrapper: 2.0.5
     lodash: ^4.16.4
@@ -25151,8 +25163,8 @@ __metadata:
     uuid: ^8.3.2
     ws: ^7.3.1
   bin:
-    mockttp: dist/standalone/standalone-bin.js
-  checksum: 1ea5eb956ee496832332eda89aea249360a4b546abc42df6f226453d71ea06b90b5985441a366edbff48eaa5f359e31e613073813b0ad66832244bd589f808d3
+    mockttp: dist/admin/admin-bin.js
+  checksum: 7b016a7c86a25b92a43dba9b91c2929f992873da2328b85a4bd0e67c32d79f0962e07a2ce274884d867160f22611afa24ab4525de2642bbdcd68a97049636b1e
   languageName: node
   linkType: hard
 
@@ -26610,13 +26622,13 @@ __metadata:
   linkType: hard
 
 "pac-resolver@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "pac-resolver@npm:5.0.0"
+  version: 5.0.1
+  resolution: "pac-resolver@npm:5.0.1"
   dependencies:
-    degenerator: ^3.0.1
+    degenerator: ^3.0.2
     ip: ^1.1.5
-    netmask: ^2.0.1
-  checksum: d6c0f86917bcb759136f47ded0818f14bf2b424a1c3efe6e11bdb9728e5465bfefd05c163f9808766b06605aa0d211c538583293c72dca4c499452493550f4d7
+    netmask: ^2.0.2
+  checksum: e3bd8aada70d173cd4cec1ac810fb56161678b7a597060a740c4a31d9c5f8cd95687b2d0fd90b69c0cafe5ef787404074f38042ba08c8d378fed48973f58e493
   languageName: node
   linkType: hard
 
@@ -34296,15 +34308,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vm2@npm:^3.9.3":
-  version: 3.9.17
-  resolution: "vm2@npm:3.9.17"
+"vm2@npm:^3.9.17":
+  version: 3.9.19
+  resolution: "vm2@npm:3.9.19"
   dependencies:
     acorn: ^8.7.0
     acorn-walk: ^8.2.0
   bin:
     vm2: bin/vm2
-  checksum: 9a03740a40ab2be5e3348a95fb31512da1a3c85318febb07e5299fa103ff05bcd7b6f458211fa38a1281dc27beccd04ff90355fc1d34fe2ee6ca10d0bb8c6f35
+  checksum: fc6cf553134145cd7bb5246985bf242b056e3fb5ea71e2eef6710b2a5d6c6119cc6bc960435ff62480ee82efb43369be8f4db07b6690916ae7d3b2e714f395d8
   languageName: node
   linkType: hard
 
