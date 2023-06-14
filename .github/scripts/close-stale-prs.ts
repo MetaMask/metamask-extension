@@ -21,11 +21,17 @@ async function main(): Promise<void> {
 
   try {
     // Get all open PRs
-    const { data: pulls } = await octokit.rest.pulls.list({
+    const response = await octokit.rest.pulls.list({
       owner: context.repo.owner,
       repo: context.repo.repo,
       state: 'open',
+      perPage: 100,
+      page: 1,
     });
+
+    console.log(response);
+
+    const { data: pulls } = response;
 
     const staleThreshold = Date.now() - A_MONTH_IN_MS;
 
