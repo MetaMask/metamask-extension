@@ -5,15 +5,19 @@ import {
   FormTextField,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-} from '../../../components/component-library';
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
 
 PrivateKeyImportView.propTypes = {
   importAccountFunc: PropTypes.func.isRequired,
+  onActionComplete: PropTypes.func.isRequired,
 };
 
-export default function PrivateKeyImportView({ importAccountFunc }) {
+export default function PrivateKeyImportView({
+  importAccountFunc,
+  onActionComplete,
+}) {
   const t = useI18nContext();
   const [privateKey, setPrivateKey] = useState('');
 
@@ -51,6 +55,7 @@ export default function PrivateKeyImportView({ importAccountFunc }) {
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={privateKey === ''}
+        onActionComplete={onActionComplete}
       />
     </>
   );

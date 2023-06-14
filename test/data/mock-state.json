@@ -322,7 +322,7 @@
     },
     "allNftContracts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
+        "0x1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -335,7 +335,7 @@
             "externalLink": null
           }
         ],
-        "137": [
+        "0x89": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -348,7 +348,7 @@
             "externalLink": null
           }
         ],
-        "11155111": [
+        "0xaa36a7": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -361,7 +361,7 @@
             "externalLink": null
           }
         ],
-        "5": [
+        "0x5": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -385,7 +385,7 @@
             "externalLink": null
           }
         ],
-        "153": [
+        "0x99": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -402,7 +402,7 @@
     },
     "allNfts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
+        "0x1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -412,7 +412,7 @@
             "standard": "ERC721"
           }
         ],
-        "137": [
+        "0x89": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -422,7 +422,7 @@
             "standard": "ERC721"
           }
         ],
-        "11155111": [
+        "0xaa36a7": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -432,7 +432,7 @@
             "standard": "ERC721"
           }
         ],
-        "5": [
+        "0x5": [
           {
             "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
             "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -543,7 +543,7 @@
             "standard": "ERC721"
           }
         ],
-        "153": [
+        "0x99": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",

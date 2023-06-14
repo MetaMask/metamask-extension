@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
 import {
-  BLOCK_SIZES,
+  BlockSize,
   BorderColor,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   FontWeight,
   JustifyContent,
   Size,
@@ -19,8 +19,8 @@ import {
   AvatarToken,
   BadgeWrapper,
   Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { getCurrentChainId, getNativeCurrencyImage } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -48,15 +48,15 @@ export const MultichainTokenListItem = ({
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       gap={4}
       data-testid="multichain-token-list-item"
     >
       <Box
         className="multichain-token-list-item__container-cell"
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         padding={4}
         as="a"
         data-testid="multichain-token-list-button"
@@ -101,17 +101,17 @@ export const MultichainTokenListItem = ({
         </BadgeWrapper>
         <Box
           className="multichain-token-list-item__container-cell--text-container"
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          width={BLOCK_SIZES.FULL}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
           style={{ flexGrow: 1, overflow: 'hidden' }}
         >
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
             gap={1}
           >
-            <Box width={BLOCK_SIZES.ONE_THIRD}>
+            <Box width={BlockSize.OneThird}>
               <Tooltip
                 position="bottom"
                 interactive
@@ -132,7 +132,7 @@ export const MultichainTokenListItem = ({
             <Text
               fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
-              width={BLOCK_SIZES.TWO_THIRD}
+              width={BlockSize.TwoThirds}
               textAlign={TextAlign.End}
             >
               {secondary}

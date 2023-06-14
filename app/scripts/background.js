@@ -676,10 +676,8 @@ export function setupController(
   //
   // User Interface setup
   //
+  updateBadge();
 
-  controller.txController.initApprovals().then(() => {
-    updateBadge();
-  });
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -705,6 +703,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
+
+  controller.txController.initApprovals();
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.

@@ -25,8 +25,6 @@ const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
-const NEW_ACCOUNT_ROUTE = '/new-account';
-const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
@@ -44,6 +42,7 @@ const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
@@ -128,8 +127,6 @@ const PATH_NAME_MAP = {
   [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
-  [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
@@ -193,8 +190,6 @@ export {
   IMPORT_TOKEN_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
-  NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   TOKEN_DETAILS,
@@ -238,6 +233,7 @@ export {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
