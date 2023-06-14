@@ -179,7 +179,6 @@ export const AccountListItemMenu = ({
           >
             <Text variant={TextVariant.bodySm}>{t('viewOnExplorer')}</Text>
           </MenuItem>
-
           <MenuItem
             ref={accountDetailsItemRef}
             onClick={() => {
@@ -199,7 +198,6 @@ export const AccountListItemMenu = ({
           >
             <Text variant={TextVariant.bodySm}>{t('accountDetails')}</Text>
           </MenuItem>
-
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
