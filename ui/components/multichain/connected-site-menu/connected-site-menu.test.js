@@ -10,9 +10,9 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
+import { ConnectedSiteMenu } from './connected-site-menu';
 
-describe('Multichain Connected Site Menu', () => {
+describe('Connected Site Menu', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
 
   const identities = {
@@ -51,7 +51,7 @@ describe('Multichain Connected Site Menu', () => {
     };
     const store = configureMockStore()(mockStore);
     const { getByTestId, container } = renderWithProvider(
-      <MultichainConnectedSiteMenu {...props} />,
+      <ConnectedSiteMenu {...props} />,
       store,
     );
     expect(getByTestId('connection-menu')).toBeDefined();
@@ -64,7 +64,7 @@ describe('Multichain Connected Site Menu', () => {
     };
     const store = configureMockStore()(mockStore);
     const { getByTestId, container } = renderWithProvider(
-      <MultichainConnectedSiteMenu {...props} />,
+      <ConnectedSiteMenu {...props} />,
       store,
     );
     expect(getByTestId('connection-menu')).toBeDefined();
@@ -78,7 +78,7 @@ describe('Multichain Connected Site Menu', () => {
     };
     const store = configureMockStore()(mockStore);
     const { getByTestId, container } = renderWithProvider(
-      <MultichainConnectedSiteMenu {...props} />,
+      <ConnectedSiteMenu {...props} />,
       store,
     );
     expect(getByTestId('connection-menu')).toBeDefined();

@@ -2,11 +2,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { MultichainTokenListItem } from './multichain-token-list-item';
+import { TokenListItem } from './token-list-item';
 
 export default {
   title: 'Components/Multichain/MultichainTokenListItem',
-  component: MultichainTokenListItem,
+  component: TokenListItem,
   argTypes: {
     tokenSymbol: {
       control: 'text',
@@ -43,7 +43,7 @@ const customNetworkData = {
 const customNetworkStore = configureStore(customNetworkData);
 
 const Template = (args) => {
-  return <MultichainTokenListItem {...args} />;
+  return <TokenListItem {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -52,7 +52,7 @@ export const ChaosStory = (args) => (
   <div
     style={{ width: '336px', border: '1px solid var(--color-border-muted)' }}
   >
-    <MultichainTokenListItem {...args} />
+    <TokenListItem {...args} />
   </div>
 );
 ChaosStory.storyName = 'ChaosStory';
