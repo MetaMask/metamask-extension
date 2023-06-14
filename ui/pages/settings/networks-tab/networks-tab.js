@@ -25,7 +25,6 @@ import {
 import {
   NETWORK_TYPES,
   TEST_CHAINS,
-  getRpcUrl,
   BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
@@ -36,14 +35,7 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  isATestNetwork:
-    TEST_CHAINS.includes(network.chainId) &&
-    // TODO: remove this condition once the linea mainnet is ready
-    network.rpcUrl !==
-      getRpcUrl({
-        network: NETWORK_TYPES.LINEA_MAINNET,
-        excludeProjectId: true,
-      }),
+  isATestNetwork: TEST_CHAINS.includes(network.chainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
@@ -86,8 +78,8 @@ const NetworksTab = ({ addNewNetwork }) => {
   if (!isLineaMainnetReleased) {
     networksToRender = networksToRender.filter(
       (network) =>
-        network.blockExplorerUrl !==
-        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].blockExplorerUrl,
+        network.chainId !==
+        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].chainId,
     );
   }
   let selectedNetwork =

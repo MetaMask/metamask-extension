@@ -123,8 +123,7 @@ export const NETWORK_IDS = {
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
   LINEA_GOERLI: '59140',
-  // TODO: change network ID for linea mainnet
-  LINEA_MAINNET: '59140',
+  LINEA_MAINNET: '59144',
 } as const;
 
 /**
@@ -151,8 +150,7 @@ export const CHAIN_IDS = {
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
   LINEA_GOERLI: '0xe704',
-  // TODO: change chain ID for linea mainnet
-  LINEA_MAINNET: '0xe704',
+  LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
