@@ -45,8 +45,8 @@ import {
   JustifyContent,
   TextAlign,
   TextVariant,
+  BlockSize,
 } from '../../helpers/constants/design-system';
-import { BlockSize } from '../../helpers/constants/design-system';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
