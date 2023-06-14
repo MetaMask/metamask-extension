@@ -79,30 +79,28 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
           paddingLeft={4}
           paddingRight={2}
         >
-          <Box className="snap-privacy-warning__message">
-            <Text variant={TextVariant.bodyMd}>
-              {t('snapsPrivacyWarningFirstMessage', [
-                <ButtonLink
-                  key="privacyNoticeTermsOfUseLink"
-                  size={BUTTON_LINK_SIZES.INHERIT}
-                  href={TERMS_OF_USE_LINK}
-                  target="_blank"
-                >
-                  &nbsp;{t('snapsTermsOfUse')}&nbsp;
-                </ButtonLink>,
-              ])}
-            </Text>
-            <Text variant={TextVariant.bodyMd} paddingTop={6}>
-              {t('snapsPrivacyWarningSecondMessage')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              fontWeight={FontWeight.Bold}
-              paddingTop={6}
-            >
-              {t('snapsPrivacyWarningThirdMessage')}
-            </Text>
-          </Box>
+          <Text variant={TextVariant.bodyMd}>
+            {t('snapsPrivacyWarningFirstMessage', [
+              <ButtonLink
+                key="privacyNoticeTermsOfUseLink"
+                size={BUTTON_LINK_SIZES.INHERIT}
+                href={TERMS_OF_USE_LINK}
+                target="_blank"
+              >
+                &nbsp;{t('snapsTermsOfUse')}&nbsp;
+              </ButtonLink>,
+            ])}
+          </Text>
+          <Text variant={TextVariant.bodyMd} paddingTop={6}>
+            {t('snapsPrivacyWarningSecondMessage')}
+          </Text>
+          <Text
+            variant={TextVariant.bodyMd}
+            fontWeight={FontWeight.Bold}
+            paddingTop={6}
+          >
+            {t('snapsPrivacyWarningThirdMessage')}
+          </Text>
           {isScrollable && !isScrolledToBottom ? (
             <AvatarIcon
               className="snap-privacy-warning__content__scroll-button"
@@ -111,7 +109,8 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
               backgroundColor={BackgroundColor.infoDefault}
               color={IconColor.infoInverse}
               onClick={scrollToBottom}
-              style={{ cursor: 'pointer' }}
+              marginLeft="auto"
+              marginRight="auto"
               as="button"
             />
           ) : null}
@@ -119,7 +118,8 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
 
         <Box
           display={Display.Flex}
-          gap={4}
+          flexDirection={[FlexDirection.Column, FlexDirection.Row]}
+          gap={[2, 4]}
           paddingLeft={4}
           paddingRight={4}
           paddingBottom={4}

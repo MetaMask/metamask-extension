@@ -6,10 +6,10 @@ export default {
   component: SnapInstallWarning,
   argTypes: {
     onCancel: {
-      control: 'onCancel',
+      action: 'onCancel',
     },
     onSubmit: {
-      control: 'onSubmit',
+      action: 'onSubmit',
     },
     warnings: {
       control: 'array',

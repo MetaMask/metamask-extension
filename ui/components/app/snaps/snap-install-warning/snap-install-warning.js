@@ -77,6 +77,7 @@ export default function SnapInstallWarning({
         }}
       >
         <ModalHeader
+          onClose={onCancel}
           childrenWrapperProps={{
             display: Display.Flex,
             flexDirection: FlexDirection.Column,
