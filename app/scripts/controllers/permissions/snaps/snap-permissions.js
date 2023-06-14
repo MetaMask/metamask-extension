@@ -7,7 +7,6 @@ import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/permissions';
-import { nameLookupEndowmentBuilder } from './name-lookup';
 
 // TODO: Use the exported versions of these functions from the snaps monorepo after stable release.
 
@@ -16,15 +15,15 @@ import { nameLookupEndowmentBuilder } from './name-lookup';
  * specifications.
  */
 export const buildSnapEndowmentSpecifications = () =>
-  Object.values({
-    ...endowmentPermissionBuilders,
-    'endowment:name-lookup': nameLookupEndowmentBuilder,
-  }).reduce((allSpecifications, { targetName, specificationBuilder }) => {
-    if (!Object.keys(ExcludedSnapEndowments).includes(targetName)) {
-      allSpecifications[targetName] = specificationBuilder();
-    }
-    return allSpecifications;
-  }, {});
+  Object.values(endowmentPermissionBuilders).reduce(
+    (allSpecifications, { targetName, specificationBuilder }) => {
+      if (!Object.keys(ExcludedSnapEndowments).includes(targetName)) {
+        allSpecifications[targetName] = specificationBuilder();
+      }
+      return allSpecifications;
+    },
+    {},
+  );
 
 /**
  * @param {Record<string, Function>} hooks - The hooks for the Snap
