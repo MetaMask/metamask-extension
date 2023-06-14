@@ -429,7 +429,7 @@ export default class Routes extends Component {
     const isAddSnapAccountPage = Boolean(
       matchPath(location.pathname, {
         path: `${ADD_SNAP_ACCOUNT_ROUTE}`,
-        exact: true,
+        exact: false,
       }),
     );
 
