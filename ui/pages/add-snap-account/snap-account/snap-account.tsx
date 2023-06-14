@@ -126,6 +126,7 @@ export default function NewSnapAccountPage() {
               variant={TextVariant.headingLg}
               as="span"
               className="snap-account-color-text"
+              key="snap-title-2"
             >
               {t('snapCreateAccountTitle2')}
             </Text>,
