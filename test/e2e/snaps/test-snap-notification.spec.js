@@ -92,7 +92,7 @@ describe('Test Snap Notification', function () {
           '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
-        // await driver.clickElement('.menu__background');
+        await driver.clickElement('.menu__background');
 
         // try to click on the account menu icon (via xpath)
         await driver.clickElement(

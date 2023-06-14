@@ -134,7 +134,7 @@ describe('Test Snap Management', function () {
           '[data-testid="global-menu-notification-count"]',
         );
         assert.equal(await notificationResult.getText(), '1');
-        // await driver.clickElement('.menu__background');
+        await driver.clickElement('.menu__background');
 
         // try to remove snap
         await driver.clickElement({
