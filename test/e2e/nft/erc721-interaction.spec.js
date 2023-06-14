@@ -51,7 +51,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Confirm transfer
         await driver.waitForSelector({
           css: '.mm-text--heading-md',
-          text: 'TestDappCollectibles',
+          text: 'TestDappNFTs',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
@@ -62,7 +62,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
 
         // Verify transaction
-        await driver.findElement({ text: 'Send TDC' });
+        await driver.findElement({ text: 'Send TDN' });
       },
     );
   });
@@ -116,7 +116,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of your TestDappCollectibles (#1)?',
+          'Allow access to and transfer of your TestDappNFTs (#1)?',
         );
         assert.equal(await func.getText(), 'Function: Approve');
 
@@ -132,7 +132,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Verify transaction
         const completedTx = await driver.waitForSelector({
           css: '.list-item__title',
-          text: 'Approve TDC spending cap',
+          text: 'Approve TDN spending cap',
         });
         assert.equal(await completedTx.isDisplayed(), true);
       },
@@ -184,7 +184,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Allow access to and transfer of all your TestDappCollectibles?',
+          'Allow access to and transfer of all your TestDappNFTs?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: true');
@@ -203,7 +203,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Verify transaction
         const completedTx = await driver.waitForSelector({
           css: '.list-item__title',
-          text: 'Approve TDC with no spend limit',
+          text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
       },
@@ -258,7 +258,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         );
         assert.equal(
           await title.getText(),
-          'Revoke permission to access and transfer all of your TestDappCollectibles?',
+          'Revoke permission to access and transfer all of your TestDappNFTs?',
         );
         assert.equal(await func.getText(), 'Function: SetApprovalForAll');
         assert.equal(await params.getText(), 'Parameters: false');
@@ -277,7 +277,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         // Verify transaction
         const completedTx = await driver.waitForSelector({
           css: '.list-item__title',
-          text: 'Approve TDC with no spend limit',
+          text: 'Approve TDN with no spend limit',
         });
         assert.equal(await completedTx.isDisplayed(), true);
       },
