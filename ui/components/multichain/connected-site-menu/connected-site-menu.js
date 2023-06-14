@@ -26,7 +26,7 @@ import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export const MultichainConnectedSiteMenu = ({
+export const ConnectedSiteMenu = ({
   className,
   globalMenuColor,
   status,
@@ -92,9 +92,9 @@ export const MultichainConnectedSiteMenu = ({
   );
 };
 
-MultichainConnectedSiteMenu.propTypes = {
+ConnectedSiteMenu.propTypes = {
   /**
-   * Additional classNames to be added to the MultichainConnectedSiteMenu
+   * Additional classNames to be added to the ConnectedSiteMenu
    */
   className: PropTypes.string,
   /**

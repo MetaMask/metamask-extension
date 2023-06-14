@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Multichain Connected Site Menu should render the site menu in connected state 1`] = `
+exports[`Connected Site Menu should render the site menu in connected state 1`] = `
 <div>
   <button
     class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
@@ -37,7 +37,7 @@ exports[`Multichain Connected Site Menu should render the site menu in connected
 </div>
 `;
 
-exports[`Multichain Connected Site Menu should render the site menu in not connected state 1`] = `
+exports[`Connected Site Menu should render the site menu in not connected state 1`] = `
 <div>
   <button
     class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
@@ -74,7 +74,7 @@ exports[`Multichain Connected Site Menu should render the site menu in not conne
 </div>
 `;
 
-exports[`Multichain Connected Site Menu should render the site menu in not connected to current account state 1`] = `
+exports[`Connected Site Menu should render the site menu in not connected to current account state 1`] = `
 <div>
   <button
     class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
