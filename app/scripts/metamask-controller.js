@@ -70,6 +70,7 @@ import {
 } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';

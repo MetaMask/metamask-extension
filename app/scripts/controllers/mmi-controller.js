@@ -14,9 +14,7 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
