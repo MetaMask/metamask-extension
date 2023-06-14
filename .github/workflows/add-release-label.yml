@@ -23,7 +23,7 @@ jobs:
           node-version: '16'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Get the next semver version
         id: get-next-semver-version
