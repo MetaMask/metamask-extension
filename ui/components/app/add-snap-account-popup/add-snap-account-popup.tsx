@@ -57,6 +57,9 @@ export default function AddSnapAccountModa({
             block
             className="get-started_button"
             data-testid="get-started-button"
+            onClick={() => {
+              onClose();
+            }}
           >
             {t('getStarted')}
           </Button>
