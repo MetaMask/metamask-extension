@@ -126,8 +126,8 @@ export default class AddRecipient extends Component {
       );
       // In the future, we will want to add a type for domain resolution
       // that we can point to as a defacto name for the type
-      // maybe we have some casa profiles for domain types
-      // the snap would have to pair its reply with some error handler
+      // maybe we have some casa profiles for domain types?
+      // the snap would have to pair its reply with some error message/handler
     }
 
     return (
