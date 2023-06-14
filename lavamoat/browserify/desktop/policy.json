@@ -1644,36 +1644,14 @@
     },
     "@metamask/message-manager": {
       "packages": {
-        "@metamask/message-manager>@metamask/base-controller": true,
-        "@metamask/message-manager>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/message-manager>jsonschema": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-sig-util": true,
         "ethereumjs-util": true,
         "uuid": true
-      }
-    },
-    "@metamask/message-manager>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/message-manager>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/message-manager>jsonschema": {
@@ -1924,35 +1902,13 @@
         "console.info": true
       },
       "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/message-manager": true,
-        "@metamask/signature-controller>@metamask/base-controller": true,
-        "@metamask/signature-controller>@metamask/controller-utils": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/smart-transactions-controller": {

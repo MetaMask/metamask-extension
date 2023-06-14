@@ -14,6 +14,7 @@ const MenuItem = React.forwardRef(
       iconName,
       onClick,
       subtitle,
+      disabled = false,
     },
     ref,
   ) => (
@@ -22,6 +23,7 @@ const MenuItem = React.forwardRef(
       data-testid={dataTestId}
       onClick={onClick}
       ref={ref}
+      disabled={disabled}
     >
       {iconName ? (
         <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
@@ -41,14 +43,7 @@ MenuItem.propTypes = {
   iconName: PropTypes.string,
   onClick: PropTypes.func,
   subtitle: PropTypes.node,
-};
-
-MenuItem.defaultProps = {
-  className: undefined,
-  'data-testid': undefined,
-  iconName: undefined,
-  onClick: undefined,
-  subtitle: undefined,
+  disabled: PropTypes.bool,
 };
 
 MenuItem.displayName = 'MenuItem';
