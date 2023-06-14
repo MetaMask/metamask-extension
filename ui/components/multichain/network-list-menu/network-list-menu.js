@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -12,7 +12,7 @@ import {
   setProviderType,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { CHAIN_IDS, LINEA_MAINNET_RPC_URL, TEST_CHAINS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getAllEnabledNetworks,
@@ -37,8 +37,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { shouldShowLineaMainnet } from '../../../../shared/modules/network.utils';
+import {
+  getCompletedOnboarding,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
 
 const UNREMOVABLE_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
@@ -63,19 +65,9 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
-  const [lineaMainnetReleased, setLineaMainnetReleased] = useState(false);
+  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   useEffect(() => {
-    async function shouldShowLineaMainnetNetwork() {
-      const showLineaMainnet = await shouldShowLineaMainnet(
-        LINEA_MAINNET_RPC_URL,
-      );
-      if (showLineaMainnet) {
-        setLineaMainnetReleased(true);
-      }
-    }
-    shouldShowLineaMainnetNetwork();
-
     if (showTestNetworks && !showTestNetworksRef.current) {
       // Scroll to the bottom of the list
       networkListRef.current.lastChild.scrollIntoView();

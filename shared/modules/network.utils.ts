@@ -61,11 +61,16 @@ function isSafeInteger(value: unknown): value is number {
 export async function shouldShowLineaMainnet(rpcUrl: string): Promise<boolean> {
   const currentDateHigherThanReleaseDate =
     new Date().getTime() > Date.UTC(2023, 6, 11);
+
+  if (!currentDateHigherThanReleaseDate) {
+    return false;
+  }
+
   let chainId: string | null;
   try {
     chainId = (await jsonRpcRequest(rpcUrl, 'eth_chainId')) as string;
   } catch (error) {
     chainId = null;
   }
-  return currentDateHigherThanReleaseDate && Boolean(chainId);
+  return Boolean(chainId);
 }

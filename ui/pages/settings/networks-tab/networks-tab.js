@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useLocation, useHistory } from 'react-router-dom';
@@ -18,15 +18,16 @@ import {
   getNetworkConfigurations,
   getNetworksTabSelectedNetworkConfigurationId,
 } from '../../../selectors';
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
-  LINEA_MAINNET_RPC_URL,
+  getProviderConfig,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
+import {
   NETWORK_TYPES,
   TEST_CHAINS,
   getRpcUrl,
   BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
-import { shouldShowLineaMainnet } from '../../../../shared/modules/network.utils';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
 import NetworksForm from './networks-form';
@@ -50,7 +51,6 @@ const NetworksTab = ({ addNewNetwork }) => {
   const dispatch = useDispatch();
   const { pathname } = useLocation();
   const history = useHistory();
-  const [isLineaMainnetReleased, setIsLineaMainnetReleased] = useState(false);
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -64,6 +64,7 @@ const NetworksTab = ({ addNewNetwork }) => {
   const networksTabSelectedNetworkConfigurationId = useSelector(
     getNetworksTabSelectedNetworkConfigurationId,
   );
+  const isLineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   const networkConfigurationsList = Object.entries(networkConfigurations).map(
     ([networkConfigurationId, networkConfiguration]) => {
@@ -111,13 +112,6 @@ const NetworksTab = ({ addNewNetwork }) => {
   }
 
   useEffect(() => {
-    async function showShouldLineaMainnetNetwork() {
-      const showLineaMainnet = await shouldShowLineaMainnet(
-        LINEA_MAINNET_RPC_URL,
-      );
-      setIsLineaMainnetReleased(showLineaMainnet);
-    }
-    showShouldLineaMainnetNetwork();
     return () => {
       dispatch(setSelectedNetworkConfigurationId(''));
     };

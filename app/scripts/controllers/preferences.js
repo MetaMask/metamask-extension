@@ -3,9 +3,13 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
 ///: END:ONLY_INCLUDE_IN
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
+import {
+  IPFS_DEFAULT_GATEWAY_URL,
+  LINEA_MAINNET_RPC_URL,
+} from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
 export default class PreferencesController {
   /**
@@ -69,6 +73,7 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      isLineaMainnetReleased: false,
       ...opts.initState,
     };
 
@@ -92,6 +97,8 @@ export default class PreferencesController {
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
@@ -573,5 +580,15 @@ export default class PreferencesController {
     }
 
     this.store.updateState({ infuraBlocked: isBlocked });
+  }
+
+  /**
+   * A method to check is the linea mainnet network should be displayed
+   */
+  async _showShouldLineaMainnetNetwork() {
+    const showLineaMainnet = await shouldShowLineaMainnet(
+      LINEA_MAINNET_RPC_URL,
+    );
+    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
   }
 }
