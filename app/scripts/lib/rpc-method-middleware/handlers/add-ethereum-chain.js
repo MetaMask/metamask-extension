@@ -250,7 +250,7 @@ async function addEthereumChainHandler(
   let networkConfigurationId;
 
   const { id: approvalFlowId } = await startApprovalFlow({
-    loadingText: 'Adding Network',
+    loadingText: 'addingCustomNetwork',
   });
 
   console.log('APPROVAL FLOW STARTED');
@@ -296,7 +296,7 @@ async function addEthereumChainHandler(
 
     setApprovalFlowLoadingText({
       id: approvalFlowId,
-      loadingText: 'Switching Network',
+      loadingText: 'switchingNetworksLoadingText',
     });
 
     // Simulate original race condition
@@ -328,9 +328,11 @@ async function addEthereumChainHandler(
         error.code,
         errorCodes.provider.userRejectedRequest,
       );
-      if (error.code !== errorCodes.provider.userRejectedRequest) {
-        return end(error);
-      }
+      return end(
+        error.code === errorCodes.provider.userRejectedRequest
+          ? undefined
+          : error,
+      );
     }
   } finally {
     console.log('END APPROVAL FLOW');
