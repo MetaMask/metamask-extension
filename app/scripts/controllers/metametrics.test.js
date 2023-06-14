@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import { toHex } from '@metamask/controller-utils';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -885,7 +886,7 @@ describe('MetaMetricsController', function () {
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
       const MOCK_ALL_TOKENS = {
-        '0x1': {
+        [toHex(1)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -900,7 +901,7 @@ describe('MetaMetricsController', function () {
             },
           ],
         },
-        '0x4': {
+        [toHex(4)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -920,7 +921,7 @@ describe('MetaMetricsController', function () {
         },
         allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
-            56: [
+            [toHex(56)]: [
               {
                 address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
                 tokenId: '100',
@@ -936,7 +937,7 @@ describe('MetaMetricsController', function () {
             ],
           },
           '0xe04AB39684A24D8D4124b114F3bd6FBEB779cacA': {
-            69: [
+            [toHex(59)]: [
               {
                 address: '0x63d646bc7380562376d5de205123a57b1718184d',
                 tokenId: '14',
@@ -1022,7 +1023,9 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
-          '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
+          [toHex(1)]: {
+            '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
+          },
         },
         networkConfigurations: {
           'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },

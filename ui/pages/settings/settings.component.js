@@ -23,24 +23,29 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
 import {
   ButtonIcon,
+  ButtonIconSize,
   Icon,
   IconName,
   Text,
+  Box,
 } from '../../components/component-library';
 import {
   AlignItems,
   Color,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import Box from '../../components/ui/box';
+import MetafoxLogo from '../../components/ui/metafox-logo';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -121,6 +126,7 @@ class SettingsPage extends PureComponent {
 
     const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     return (
       <div
@@ -128,22 +134,38 @@ class SettingsPage extends PureComponent {
           'settings-page--selected': currentPath !== SETTINGS_ROUTE,
         })}
       >
-        <div className="settings-page__header">
+        <Box
+          className="settings-page__header"
+          padding={4}
+          paddingBottom={[2, 4]}
+        >
           <div className="settings-page__header__title-container">
-            {currentPath !== SETTINGS_ROUTE && (
-              <ButtonIcon
-                ariaLabel={t('back')}
-                iconName={IconName.ArrowLeft}
-                className="settings-page__header__title-container__back-button"
-                color={Color.iconDefault}
-                onClick={() => history.push(backRoute)}
-                display={[DISPLAY.FLEX, DISPLAY.NONE]}
-              />
+            {isPopup && (
+              <>
+                {currentPath === SETTINGS_ROUTE ? (
+                  <MetafoxLogo
+                    className="settings-page__header__title-container__metamask-logo"
+                    unsetIconHeight
+                    onClick={async () => history.push(DEFAULT_ROUTE)}
+                    display={[Display.Flex, Display.None]}
+                  />
+                ) : (
+                  <ButtonIcon
+                    ariaLabel={t('back')}
+                    iconName={IconName.ArrowLeft}
+                    className="settings-page__header__title-container__back-button"
+                    color={Color.iconDefault}
+                    onClick={() => history.push(backRoute)}
+                    display={[Display.Flex, Display.None]}
+                    size={ButtonIconSize.Sm}
+                  />
+                )}
+              </>
             )}
             {this.renderTitle()}
             <Box
               className="settings-page__header__title-container__search"
-              display={[DISPLAY.BLOCK]}
+              display={[Display.BLOCK]}
             >
               <SettingsSearch
                 onSearch={({ searchQuery = '', results = [] }) => {
@@ -173,10 +195,11 @@ class SettingsPage extends PureComponent {
                   history.push(mostRecentOverviewPage);
                 }
               }}
+              size={ButtonIconSize.Sm}
               marginLeft="auto"
             />
           </div>
-        </div>
+        </Box>
 
         <div className="settings-page__content">
           <div className="settings-page__content__tabs">
@@ -244,8 +267,8 @@ class SettingsPage extends PureComponent {
         <Box
           className="settings-page__subheader"
           padding={4}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
           <Text
