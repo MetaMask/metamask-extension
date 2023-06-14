@@ -27,7 +27,7 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
-      padding={[4, 4, 4, 4]}
+      padding={4}
     >
       <Box
         className="snap-settings-card__inner-wrapper"
@@ -70,7 +70,7 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
 
 SnapSettingsCard.propTypes = {
   /**
-   * Name of the snap used for the title of the card and fallback letter for the snap icon
+   * Name of the snap
    */
   name: PropTypes.string,
   /**
@@ -78,7 +78,7 @@ SnapSettingsCard.propTypes = {
    */
   packageName: PropTypes.string,
   /**
-   * onClick function of the "See Details" Button
+   * onClick event handler
    */
   onClick: PropTypes.func,
   /**

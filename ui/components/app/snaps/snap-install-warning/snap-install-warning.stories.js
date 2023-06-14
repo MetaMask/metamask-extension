@@ -17,9 +17,13 @@ export default {
     snapName: {
       control: 'text',
     },
+    isOpen: {
+      control: 'boolean',
+    },
   },
   args: {
     snapName: 'Snap Name',
+    isOpen: true,
     warnings: [
       { message: 'Warning 1', id: '1' },
       { message: 'Warning 2', id: '2' },

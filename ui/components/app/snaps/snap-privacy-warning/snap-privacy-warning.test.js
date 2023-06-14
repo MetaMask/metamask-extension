@@ -8,6 +8,7 @@ describe('Snap Privacy Warning Popover', () => {
     const mockOnAcceptCallback = jest.fn();
     renderWithProvider(
       <SnapPrivacyWarning
+        isOpen
         onAccepted={mockOnAcceptCallback}
         onCanceled={jest.fn()}
       />,
@@ -42,6 +43,7 @@ describe('Snap Privacy Warning Popover', () => {
     const mockOnCanceledCallback = jest.fn();
     renderWithProvider(
       <SnapPrivacyWarning
+        isOpen
         onAccepted={mockOnAcceptCallback}
         onCanceled={mockOnCanceledCallback}
       />,

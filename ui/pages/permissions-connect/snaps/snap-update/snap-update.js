@@ -214,14 +214,13 @@ export default function SnapUpdate({
           submitText={t(hasError ? 'ok' : 'update')}
         />
       </Box>
-      {isShowingWarning && (
-        <SnapInstallWarning
-          onCancel={() => setIsShowingWarning(false)}
-          onSubmit={onSubmit}
-          snapName={snapName}
-          warnings={warnings}
-        />
-      )}
+      <SnapInstallWarning
+        isOpen={isShowingWarning}
+        onCancel={() => setIsShowingWarning(false)}
+        onSubmit={onSubmit}
+        snapName={snapName}
+        warnings={warnings}
+      />
     </Box>
   );
 }

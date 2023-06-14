@@ -13,6 +13,9 @@ import {
   Size,
   JustifyContent,
   FontWeight,
+  Display,
+  FlexDirection,
+  AlignItems,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import {
@@ -20,7 +23,13 @@ import {
   Text,
   IconName,
   Box,
+  Label,
   Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  BUTTON_SIZES,
 } from '../../../component-library';
 
 /**
@@ -47,6 +56,7 @@ export default function SnapInstallWarning({
   onSubmit,
   warnings,
   snapName,
+  isOpen,
 }) {
   const t = useI18nContext();
   const [checkboxState, dispatch] = useReducer(checkboxStateReducer, {});
@@ -57,94 +67,95 @@ export default function SnapInstallWarning({
     dispatch({ type: 'check', checkboxId });
   }, []);
 
-  const SnapInstallWarningFooter = () => {
-    return (
-      <div className="snap-install-warning__footer">
+  return (
+    <Modal className="snap-install-warning" onClose={onCancel} isOpen={isOpen}>
+      <ModalOverlay />
+      <ModalContent
+        modalDialogProps={{
+          display: Display.Flex,
+          flexDirection: FlexDirection.Column,
+          gap: 4,
+        }}
+      >
+        <ModalHeader
+          childrenWrapperProps={{
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+            alignItems: AlignItems.center,
+            justifyContent: JustifyContent.Center,
+            gap: 4,
+          }}
+        >
+          <AvatarIcon
+            iconName={IconName.Danger}
+            backgroundColor={BackgroundColor.warningMuted}
+            color={IconColor.warningDefault}
+            size={Size.XL}
+          />
+          <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
+            {t('snapInstallWarningHeading')}
+          </Text>
+        </ModalHeader>
+        <Text textAlign={TextAlign.Center} marginBottom={4}>
+          {warnings.length > 1
+            ? t('snapInstallWarningCheckPlural', [
+                <Text
+                  key="snapNameInWarningDescription"
+                  fontWeight={FontWeight.Medium}
+                  as="span"
+                >
+                  {snapName}
+                </Text>,
+              ])
+            : t('snapInstallWarningCheck', [
+                <Text
+                  key="snapNameInWarningDescription"
+                  fontWeight={FontWeight.Medium}
+                  as="span"
+                >
+                  {snapName}
+                </Text>,
+              ])}
+        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={4}
+          marginBottom={4}
+        >
+          {warnings.map((warning, i) => (
+            <Box
+              key={warning.id}
+              display={Display.Flex}
+              gap={2}
+              alignItems={AlignItems.center}
+            >
+              <CheckBox
+                checked={checkboxState[warning.id] ?? false}
+                id={warning.id}
+                onClick={() => onCheckboxClicked(warning.id)}
+              />
+              <Label htmlFor={warning.id}>{warning.message}</Label>
+            </Box>
+          ))}
+        </Box>
         <Button
-          className="snap-install-warning__footer-button"
-          type="primary"
+          size={BUTTON_SIZES.LG}
           disabled={!isAllChecked}
           onClick={onSubmit}
         >
           {t('confirm')}
         </Button>
-      </div>
-    );
-  };
-
-  return (
-    <Popover
-      className="snap-install-warning"
-      footer={<SnapInstallWarningFooter />}
-      headerProps={{ padding: [6, 6, 0] }}
-      contentProps={{
-        paddingLeft: [6, 4],
-        paddingRight: [6, 4],
-        paddingTop: 0,
-        paddingBottom: [6, 4],
-      }}
-      footerProps={{ padding: [4, 6] }}
-      onClose={onCancel}
-    >
-      <Box justifyContent={JustifyContent.center} marginBottom={6}>
-        <AvatarIcon
-          iconName={IconName.Danger}
-          backgroundColor={BackgroundColor.warningMuted}
-          color={IconColor.warningDefault}
-          size={Size.XL}
-        />
-      </Box>
-      <Text
-        paddingBottom={6}
-        textAlign={TextAlign.Center}
-        variant={TextVariant.headingMd}
-        as="h2"
-      >
-        {t('snapInstallWarningHeading')}
-      </Text>
-      <Text paddingBottom={6} textAlign={TextAlign.Center}>
-        {warnings.length > 1
-          ? t('snapInstallWarningCheckPlural', [
-              <Text
-                key="snapNameInWarningDescription"
-                fontWeight={FontWeight.Medium}
-                as="span"
-              >
-                {snapName}
-              </Text>,
-            ])
-          : t('snapInstallWarningCheck', [
-              <Text
-                key="snapNameInWarningDescription"
-                fontWeight={FontWeight.Medium}
-                as="span"
-              >
-                {snapName}
-              </Text>,
-            ])}
-      </Text>
-      {warnings.map((warning, i) => (
-        <div
-          className={classnames('checkbox-label', {
-            'checkbox-label--first': i === 0,
-          })}
-          key={warning.id}
-        >
-          <CheckBox
-            checked={checkboxState[warning.id] ?? false}
-            id={warning.id}
-            onClick={() => onCheckboxClicked(warning.id)}
-          />
-          <label htmlFor={warning.id}>
-            <Text variant={TextVariant.bodyMd}>{warning.message}</Text>
-          </label>
-        </div>
-      ))}
-    </Popover>
+      </ModalContent>
+    </Modal>
   );
 }
 
 SnapInstallWarning.propTypes = {
+  /**
+   * Whether the modal is open or not
+   */
+  isOpen: PropTypes.bool,
   /**
    * onCancel handler
    */
