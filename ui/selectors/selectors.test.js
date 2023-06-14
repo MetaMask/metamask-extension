@@ -127,7 +127,7 @@ describe('Selectors', () => {
         1: {
           id: '1',
           origin: 'dapp',
-          time: Date.now(),
+          time: 1,
           type: ApprovalType.WatchAsset,
           requestData: {
             asset: {
@@ -142,7 +142,7 @@ describe('Selectors', () => {
         2: {
           id: '2',
           origin: 'dapp',
-          time: Date.now(),
+          time: 1,
           type: ApprovalType.WatchAsset,
           requestData: {
             asset: {
@@ -156,7 +156,7 @@ describe('Selectors', () => {
         3: {
           id: '3',
           origin: 'origin',
-          time: Date.now(),
+          time: 1,
           type: ApprovalType.Transaction,
           requestData: {
             // something that is not an asset
@@ -165,7 +165,7 @@ describe('Selectors', () => {
         4: {
           id: '4',
           origin: 'dapp',
-          time: Date.now(),
+          time: 1,
           type: ApprovalType.WatchAsset,
           requestData: {
             asset: {
@@ -184,7 +184,7 @@ describe('Selectors', () => {
         {
           id: '4',
           origin: 'dapp',
-          time: Date.now(),
+          time: 1,
           type: ApprovalType.WatchAsset,
           requestData: {
             asset: {
