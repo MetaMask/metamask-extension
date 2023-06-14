@@ -8,7 +8,7 @@ on:
       - closed
 
 jobs:
-  add_release_label:
+  add-release-label:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
@@ -55,8 +55,8 @@ jobs:
           echo "NEXT_SEMVER_VERSION=${NEXT_VERSION}" >> $GITHUB_ENV
 
       - name: Add release label to PR and linked issues
-        id: add_release_label_to_pr_and_linked_issues
+        id: add-release-label-to-pr-and-linked-issues
         env:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           NEXT_SEMVER_VERSION: ${{ env.NEXT_SEMVER_VERSION }}
-        run: npm run add_release_label_to_pr_and_linked_issues
+        run: npm run add-release-label-to-pr-and-linked-issues

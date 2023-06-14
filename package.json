@@ -96,7 +96,7 @@
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
     "label-prs": "ts-node ./.github/scripts/label-prs.ts",
-    "add_release_label_to_pr_and_linked_issues": "ts-node ./.github/scripts/add_release_label_to_pr_and_linked_issues.ts"
+    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts"
   },
   "resolutions": {
     "analytics-node/axios": "^0.21.2",
