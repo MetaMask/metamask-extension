@@ -25,6 +25,7 @@ import {
   ButtonLink,
   IconName,
   Text,
+  Box,
 } from '../../components/component-library';
 import {
   getCurrentChainId,
@@ -35,12 +36,17 @@ import {
 import NftDefaultImage from '../../components/app/nft-default-image/nft-default-image';
 import { getAssetImageURL, shortenAddress } from '../../helpers/utils/util';
 import {
+  AlignItems,
   BorderRadius,
+  Display,
+  FlexDirection,
+  FlexWrap,
   IconColor,
+  JustifyContent,
   TextAlign,
   TextVariant,
 } from '../../helpers/constants/design-system';
-import Box from '../../components/ui/box/box';
+import { BlockSize } from '../../helpers/constants/design-system';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -90,16 +96,14 @@ const ConfirmAddSuggestedNFT = () => {
     history.push(mostRecentOverviewPage);
   }, [dispatch, history, mostRecentOverviewPage, suggestedNfts]);
 
-  const goBackIfNoSuggestedNftsOnFirstRender = () => {
-    if (!suggestedNfts.length) {
-      history.push(mostRecentOverviewPage);
-    }
-  };
-
   useEffect(() => {
+    const goBackIfNoSuggestedNftsOnFirstRender = () => {
+      if (!suggestedNfts.length) {
+        history.push(mostRecentOverviewPage);
+      }
+    };
     goBackIfNoSuggestedNftsOnFirstRender();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [history, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
   if (suggestedNfts.length) {
@@ -110,8 +114,8 @@ const ConfirmAddSuggestedNFT = () => {
     }
   }
   return (
-    <div className="page-container">
-      <div className="confirm-add-suggested-nft__header">
+    <Box>
+      <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
         <Text
           variant={TextVariant.headingLg}
           textAlign={TextAlign.Center}
@@ -121,19 +125,30 @@ const ConfirmAddSuggestedNFT = () => {
         </Text>
         <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
           {t('wantsToAddThisAsset', [
-            <ButtonLink key={origin} size={BUTTON_SIZES.INHERIT}>
-              {origin}
-            </ButtonLink>,
+            origin === 'dapp' ? (
+              <Text key={origin} variant={TextVariant.bodyMd} fontWeight="bold">
+                {origin}
+              </Text>
+            ) : (
+              <ButtonLink
+                key={origin}
+                size={BUTTON_SIZES.INHERIT}
+                href={origin}
+                target="_blank"
+              >
+                {origin}
+              </ButtonLink>
+            ),
           ])}
         </Text>
-      </div>
-      <div className="page-container__content">
+      </Box>
+      <Box className="confirm-add-suggested-nft__content">
         <Box
           className="confirm-add-suggested-nft"
           padding={2}
           borderRadius={BorderRadius.MD}
         >
-          <div
+          <Box
             className={classnames({
               'confirm-add-suggested-nft__nft-list': suggestedNfts.length > 1,
             })}
@@ -177,8 +192,21 @@ const ConfirmAddSuggestedNFT = () => {
                           name={name || symbol || shortenAddress(address)}
                         />
                       )}
-                      <div className="confirm-add-suggested-nft__nft-single-details">
-                        <div className="confirm-add-suggested-nft__nft-single-sub-details">
+                      <Box
+                        padding={1}
+                        display={Display.Flex}
+                        flexDirection={FlexDirection.Row}
+                        justifyContent={JustifyContent.spaceBetween}
+                        alignItems={AlignItems.Center}
+                      >
+                        <Box
+                          display={Display.Flex}
+                          flexDirection={FlexDirection.Column}
+                          justifyContent={JustifyContent.spaceEvenly}
+                          flexWrap={FlexWrap.NoWrap}
+                          width={BlockSize.Full}
+                          className="confirm-add-suggested-nft__nft-single-sub-details"
+                        >
                           {rpcPrefs.blockExplorerUrl ? (
                             <ButtonLink
                               className="confirm-add-suggested-nft__nft-name"
@@ -204,20 +232,28 @@ const ConfirmAddSuggestedNFT = () => {
                           >
                             #{tokenId}
                           </Text>
-                        </div>
-                      </div>
+                        </Box>
+                      </Box>
                     </Box>
                   );
                 }
                 return (
-                  <div
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Row}
+                    flexWrap={FlexWrap.NoWrap}
+                    alignItems={AlignItems.Center}
+                    justifyContent={JustifyContent.spaceBetween}
+                    marginBottom={4}
                     className="confirm-add-suggested-nft__nft-list-item"
                     key={`${address}-${tokenId}`}
                   >
-                    <div
-                      className={classnames(
-                        'confirm-add-suggested-nft__nft-details',
-                      )}
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      flexWrap={FlexWrap.NoWrap}
+                      alignItems={AlignItems.Center}
+                      justifyContent={JustifyContent.spaceBetween}
                     >
                       {nftImageURL ? (
                         <img
@@ -228,7 +264,14 @@ const ConfirmAddSuggestedNFT = () => {
                       ) : (
                         <NftDefaultImage className="confirm-add-suggested-nft__nft-image-default" />
                       )}
-                      <div className="confirm-add-suggested-nft__nft-sub-details">
+                      <Box
+                        display={Display.Flex}
+                        flexDirection={FlexDirection.Column}
+                        justifyContent={JustifyContent.spaceEvenly}
+                        flexWrap={FlexWrap.NoWrap}
+                        width={BlockSize.Full}
+                        className="confirm-add-suggested-nft__nft-sub-details"
+                      >
                         {rpcPrefs.blockExplorerUrl ? (
                           <ButtonLink
                             className="confirm-add-suggested-nft__nft-name"
@@ -254,8 +297,8 @@ const ConfirmAddSuggestedNFT = () => {
                         >
                           #{tokenId}
                         </Text>
-                      </div>
-                    </div>
+                      </Box>
+                    </Box>
                     <ButtonIcon
                       className="confirm-add-suggested-nft__nft-remove"
                       data-testid={`confirm-add-suggested-nft__nft-remove-${id}`}
@@ -263,7 +306,6 @@ const ConfirmAddSuggestedNFT = () => {
                       size={ButtonIconSize.Sm}
                       color={IconColor.iconMuted}
                       onClick={(e) => {
-                        console.log('rejecting');
                         e.preventDefault();
                         e.stopPropagation();
                         dispatch(
@@ -276,20 +318,20 @@ const ConfirmAddSuggestedNFT = () => {
                         );
                       }}
                     />
-                  </div>
+                  </Box>
                 );
               },
             )}
-          </div>
+          </Box>
         </Box>
-      </div>
+      </Box>
       <PageContainerFooter
         cancelText={t('cancel')}
         submitText={suggestedNfts.length === 1 ? t('addNft') : t('addNfts')}
         onCancel={handleCancelNftClick}
         onSubmit={handleAddNftsClick}
       />
-    </div>
+    </Box>
   );
 };
 
