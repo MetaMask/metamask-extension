@@ -8,7 +8,7 @@ import {
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-} from '../../../components/component-library';
+} from '../../component-library';
 import {
   Size,
   TextVariant,
@@ -21,9 +21,13 @@ import BottomButtons from './bottom-buttons';
 
 JsonImportSubview.propTypes = {
   importAccountFunc: PropTypes.func.isRequired,
+  onActionComplete: PropTypes.func.isRequired,
 };
 
-export default function JsonImportSubview({ importAccountFunc }) {
+export default function JsonImportSubview({
+  importAccountFunc,
+  onActionComplete,
+}) {
   const t = useI18nContext();
   const warning = useSelector((state) => state.appState.warning);
   const [password, setPassword] = useState('');
@@ -95,6 +99,7 @@ export default function JsonImportSubview({ importAccountFunc }) {
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={isPrimaryDisabled}
+        onActionComplete={onActionComplete}
       />
     </>
   );

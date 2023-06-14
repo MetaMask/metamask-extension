@@ -106,6 +106,7 @@ export enum BorderColor {
   lineaTestnet = 'lineatestnet',
   transparent = 'transparent',
   localhost = 'localhost',
+  backgroundDefault = 'background-default', // exception for border color when element is meant to look "cut out"
 }
 
 export enum TextColor {
