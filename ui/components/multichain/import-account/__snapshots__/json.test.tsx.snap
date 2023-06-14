@@ -49,6 +49,7 @@ exports[`Json should match snapshot 1`] = `
     </button>
     <button
       class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+      data-testid="import-account-confirm-button"
       disabled=""
     >
       Import
