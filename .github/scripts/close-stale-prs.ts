@@ -29,7 +29,7 @@ async function main(): Promise<void> {
       page: 1,
     });
 
-    console.log(response);
+    console.log(Object.keys(response));
 
     const { data: pulls } = response;
 
