@@ -32,6 +32,7 @@ async function main(): Promise<void> {
     const stalePRs = [];
     for (const pr of pulls) {
       const prLastUpdated = new Date(pr.updated_at).getTime();
+      console.log({ prLastUpdated });
       const isPRStale = prLastUpdated < staleThreshold;
 
       if (isPRStale) {
