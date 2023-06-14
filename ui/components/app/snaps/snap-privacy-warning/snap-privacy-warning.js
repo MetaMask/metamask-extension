@@ -15,7 +15,6 @@ import {
   JustifyContent,
   FlexDirection,
   TextVariant,
-  TextAlign,
 } from '../../../../helpers/constants/design-system';
 
 import {
