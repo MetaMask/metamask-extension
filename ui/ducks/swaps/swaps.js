@@ -210,7 +210,7 @@ const slice = createSlice({
       state.swapsSTXLoading = action.payload || false;
     },
     setTransactionSettingsOpened: (state, action) => {
-      state.transactionSettingsOpened = action.payload || false;
+      state.transactionSettingsOpened = Boolean(action.payload);
     },
   },
 });

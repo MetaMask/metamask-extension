@@ -33,15 +33,10 @@ export default function ViewQuotePriceDifference(props) {
 
   const t = useContext(I18nContext);
 
-  let priceDifferenceTitle = '';
-  let priceDifferenceMessage = '';
-  let priceDifferenceClass = '';
-  if (priceSlippageUnknownFiatValue) {
-    // A calculation error signals we cannot determine dollar value
-    priceDifferenceTitle = t('swapPriceUnavailableTitle');
-    priceDifferenceMessage = t('swapPriceUnavailableDescription');
-    priceDifferenceClass = GasRecommendations.high;
-  } else {
+  let priceDifferenceTitle = t('swapPriceUnavailableTitle');
+  let priceDifferenceMessage = t('swapPriceUnavailableDescription');
+  let priceDifferenceClass = GasRecommendations.high;
+  if (!priceSlippageUnknownFiatValue) {
     priceDifferenceTitle = t('swapPriceDifferenceTitle', [
       priceDifferencePercentage,
     ]);

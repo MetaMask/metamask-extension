@@ -38,7 +38,7 @@ export const TextField = ({
   readOnly,
   required,
   size = Size.MD,
-  testId,
+  testId = '',
   type = 'text',
   truncate = true,
   value,
