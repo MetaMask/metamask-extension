@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 
-export default function KeyRingLabel({ keyring }) {
+export default function KeyringLabel({ keyring }) {
   const t = useI18nContext();
   let label = null;
 
@@ -54,6 +54,6 @@ export default function KeyRingLabel({ keyring }) {
   );
 }
 
-KeyRingLabel.propTypes = {
+KeyringLabel.propTypes = {
   keyring: PropTypes.object,
 };
