@@ -323,7 +323,7 @@ export default function WhatsNewPopup({ onClose }) {
           const isLast = index === notifications.length - 1;
           // Display the swaps notification with full image
           // Displays the NFTs & OpenSea notifications 18,19 with full image
-          return index === 0 || id === 1 || id === 18 || id === 19
+          return index === 0 || id === 1 || id === 18 || id === 19 || id === 21
             ? renderFirstNotification(
                 notification,
                 idRefMap,
