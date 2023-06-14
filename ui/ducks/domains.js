@@ -227,6 +227,7 @@ export function lookupDomainName(domainName) {
             });
           }),
         );
+        console.log(results);
         const successfulResolutions = results.filter(
           (result) => result.resolvedAccount !== null,
         );
@@ -241,18 +242,18 @@ export function lookupDomainName(domainName) {
             domainName: trimmedDomainName,
           }),
         );
+      } else {
+        await dispatch(
+          domainLookup({
+            address,
+            error,
+            chainId,
+            network,
+            domainType: ENS,
+            domainName: trimmedDomainName,
+          }),
+        );
       }
-
-      await dispatch(
-        domainLookup({
-          address,
-          error,
-          chainId,
-          network,
-          domainType: ENS,
-          domainName: trimmedDomainName,
-        }),
-      );
     }
   };
 }
