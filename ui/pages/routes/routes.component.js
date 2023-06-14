@@ -27,7 +27,7 @@ import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AppHeader as MultichainAppHeader,
+  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -535,7 +535,7 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && <MultichainAppHeader location={location} />}
+        {!this.hideAppHeader() && <AppHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

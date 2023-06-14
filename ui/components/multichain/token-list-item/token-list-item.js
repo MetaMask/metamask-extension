@@ -30,7 +30,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-export const MultichainTokenListItem = ({
+export const TokenListItem = ({
   className,
   onClick,
   tokenSymbol,
@@ -150,13 +150,13 @@ export const MultichainTokenListItem = ({
   );
 };
 
-MultichainTokenListItem.propTypes = {
+TokenListItem.propTypes = {
   /**
    * An additional className to apply to the TokenList.
    */
   className: PropTypes.string,
   /**
-   * The onClick handler to be passed to the MultichainTokenListItem component
+   * The onClick handler to be passed to the TokenListItem component
    */
   onClick: PropTypes.func,
   /**

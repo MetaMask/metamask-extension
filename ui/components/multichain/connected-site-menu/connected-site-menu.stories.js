@@ -8,11 +8,11 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { MultichainConnectedSiteMenu } from './multichain-connected-site-menu';
+import { ConnectedSiteMenu } from './connected-site-menu';
 
 export default {
-  title: 'Components/Multichain/MultichainConnectedSiteMenu',
-  component: MultichainConnectedSiteMenu,
+  title: 'Components/Multichain/ConnectedSiteMenu',
+  component: ConnectedSiteMenu,
   argTypes: {
     globalMenuColor: {
       control: 'text',
@@ -31,7 +31,7 @@ export default {
 };
 
 const Template = (args) => {
-  return <MultichainConnectedSiteMenu {...args} />;
+  return <ConnectedSiteMenu {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
