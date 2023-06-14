@@ -75,8 +75,8 @@ export const AppHeader = ({ location }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
+  const custodianIcon = selectedAddress && useSelector((state) =>
+    getCustodianIconForAddress(state, selectedAddress)
   );
   ///: END:ONLY_INCLUDE_IN
 

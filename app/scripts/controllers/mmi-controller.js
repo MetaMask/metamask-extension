@@ -544,30 +544,6 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async setMmiPortfolioCookie() {
-    await this.appStateController.getUnlockPromise(true);
-    const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const getAccountDetails = (address) =>
-      this.custodyController.getAccountDetails(address);
-    const extensionId = this.extension.runtime.id;
-    const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ];
-
-    handleMmiPortfolio({
-      keyringAccounts,
-      identities,
-      metaMetricsId,
-      networks,
-      getAccountDetails,
-      extensionId,
-    });
-  }
-
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
     const selectedAddress = this.preferencesController.getSelectedAddress();
