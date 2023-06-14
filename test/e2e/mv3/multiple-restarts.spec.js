@@ -5,15 +5,42 @@ const {
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
+  unlockWallet,
+  DEFAULT_GANACHE_OPTIONS,
+  generateETHBalance,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+function roundToXDecimalPlaces(number, decimalPlaces) {
+  return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
+}
+
+function generateRandNumBetween(x, y) {
+  const min = Math.min(x, y);
+  const max = Math.max(x, y);
+  const randomNumber = Math.random() * (max - min) + min;
+
+  return randomNumber;
+}
+
 describe('MV3 - Restart service worker multiple times', function () {
   it('Simple simple send flow within full screen view should still be usable', async function () {
+    const initialBalance = roundToXDecimalPlaces(
+      generateRandNumBetween(10, 100),
+      4,
+    );
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: generateGanacheOptions(),
+        ganacheOptions: generateGanacheOptions({
+          accounts: [
+            {
+              secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
+              balance: generateETHBalance(initialBalance),
+            },
+          ],
+        }),
         title: this.test.title,
         driverOptions: { openDevToolsForTabs: true },
       },
@@ -22,26 +49,74 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await unlockWallet(driver, WALLET_PASSWORD);
 
-        await assertETHBalance(driver, '25');
+        await assertETHBalance(driver, initialBalance);
 
         // first send ETH and then terminate SW
         const RECIPIENT_ADDRESS = '0x985c30949c92df7a0bd42e0f3e3d539ece98db24';
-        await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
+        const amountFirstTx = roundToXDecimalPlaces(
+          generateRandNumBetween(0.5, 2),
+          4,
+        );
+
+        const gasFeesFirstTx = await simpleSendETH(
+          driver,
+          amountFirstTx,
+          RECIPIENT_ADDRESS,
+        );
+        const totalAfterFirstTx = roundToXDecimalPlaces(
+          initialBalance - amountFirstTx - gasFeesFirstTx,
+          4,
+        );
+
         await terminateServiceWorker(driver);
 
-        await assertETHBalance(driver, '24');
+        await assertETHBalance(driver, totalAfterFirstTx);
 
         // first send ETH #2 and then terminate SW
-        await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
+        const amountSecondTx = roundToXDecimalPlaces(
+          generateRandNumBetween(0.5, 2),
+          4,
+        );
+        const gasFeesSecondTx = await simpleSendETH(
+          driver,
+          amountSecondTx,
+          RECIPIENT_ADDRESS,
+        );
+        const totalAfterSecondTx = roundToXDecimalPlaces(
+          initialBalance -
+            amountFirstTx -
+            gasFeesFirstTx -
+            amountSecondTx -
+            gasFeesSecondTx,
+          4,
+        );
+
         await terminateServiceWorker(driver);
 
-        await assertETHBalance(driver, '22.9999');
+        await assertETHBalance(driver, totalAfterSecondTx);
 
         // first terminate SW and then send ETH
-        await terminateServiceWorker(driver);
-        await simpleSendETH(driver, '1', RECIPIENT_ADDRESS);
+        const amountThirdTx = roundToXDecimalPlaces(
+          generateRandNumBetween(0.5, 2),
+          4,
+        );
+        const gasFeesThirdTx = await simpleSendETH(
+          driver,
+          amountThirdTx,
+          RECIPIENT_ADDRESS,
+        );
+        const totalAfterThirdTx = roundToXDecimalPlaces(
+          initialBalance -
+            amountFirstTx -
+            gasFeesFirstTx -
+            amountSecondTx -
+            gasFeesSecondTx -
+            amountThirdTx -
+            gasFeesThirdTx,
+          4,
+        );
 
-        await assertETHBalance(driver, '21.9999');
+        await assertETHBalance(driver, totalAfterThirdTx);
       },
     );
 
@@ -50,13 +125,23 @@ describe('MV3 - Restart service worker multiple times', function () {
 
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.fill('[data-testid="ens-input"]', recipient);
-      await driver.fill('.unit-input__input', value);
+      const formattedValue = `${value}`.replace('.', ',');
+      await driver.fill('.unit-input__input', formattedValue);
+
       await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+      const gasFeesEl = await driver.findElement(
+        '.transaction-detail-item__detail-values .currency-display-component',
+      );
+      const gasFees = await gasFeesEl.getText();
+
       await driver.clickElement('[data-testid="page-container-footer-next"]');
       await driver.clickElement('[data-testid="home__activity-tab"]');
       await driver.findElement('.transaction-list-item');
       // reset view to assets tab
       await driver.clickElement('[data-testid="home__asset-tab"]');
+
+      return gasFees;
     }
 
     async function assertETHBalance(driver, expectedBalance) {
@@ -347,11 +432,6 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
   });
 });
-
-async function unlockWallet(driver, walletPassword) {
-  await driver.fill('#password', walletPassword);
-  await driver.press('#password', driver.Key.ENTER);
-}
 
 async function terminateServiceWorker(driver) {
   await driver.openNewPage('chrome://inspect/#service-workers/');

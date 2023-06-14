@@ -580,6 +580,11 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
 
+async function unlockWallet(driver, walletPassword) {
+  await driver.fill('#password', walletPassword);
+  await driver.press('#password', driver.Key.ENTER);
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -616,4 +621,7 @@ module.exports = {
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
+  unlockWallet,
+  DEFAULT_GANACHE_OPTIONS,
+  generateETHBalance,
 };
