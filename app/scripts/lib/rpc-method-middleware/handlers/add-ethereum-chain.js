@@ -24,6 +24,7 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
+    setApprovalFlowLoadingText: true,
   },
 };
 export default addEthereumChain;
@@ -42,6 +43,7 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
+    setApprovalFlowLoadingText,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -247,11 +249,13 @@ async function addEthereumChainHandler(
   }
   let networkConfigurationId;
 
-  const { id: approvalFlowId } = await startApprovalFlow();
+  const { id: approvalFlowId } = await startApprovalFlow({
+    loadingText: 'Adding Network',
+  });
 
   console.log('APPROVAL FLOW STARTED');
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   console.log('ISSUE ADD CHAIN');
 
@@ -290,8 +294,13 @@ async function addEthereumChainHandler(
 
     console.log('CHAIN ADDED');
 
+    setApprovalFlowLoadingText({
+      id: approvalFlowId,
+      loadingText: 'Switching Network',
+    });
+
     // Simulate original race condition
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     console.log('ISSUE SWITCH CHAIN');
 
@@ -310,8 +319,6 @@ async function addEthereumChainHandler(
       });
 
       console.log('USER APPROVED SWITCHING CHAIN');
-
-      await setActiveNetwork(networkConfigurationId);
     } catch (error) {
       // For the purposes of this method, it does not matter if the user
       // declines to switch the selected network. However, other errors indicate
@@ -327,7 +334,15 @@ async function addEthereumChainHandler(
     }
   } finally {
     console.log('END APPROVAL FLOW');
-    endApprovalFlow(approvalFlowId);
+    endApprovalFlow({ id: approvalFlowId });
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
   }
 
   return end();

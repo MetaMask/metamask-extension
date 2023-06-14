@@ -33,6 +33,7 @@ import {
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   hasPendingApprovalFlows as hasPendingApprovalFlowsSelector,
+  getPendingApprovalFlows,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -179,6 +180,8 @@ export default function ConfirmationPage({
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const hasPendingApprovalFlows = useSelector(hasPendingApprovalFlowsSelector);
+  const pendingApprovalFlows = useSelector(getPendingApprovalFlows);
+  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
@@ -277,9 +280,17 @@ export default function ConfirmationPage({
     hasPendingApprovalFlows,
   ]);
 
+  useEffect(() => {
+    setApprovalFlowLoadingText(
+      pendingApprovalFlows.length > 0
+        ? pendingApprovalFlows[pendingApprovalFlows.length - 1].loadingText
+        : null,
+    );
+  }, [pendingApprovalFlows]);
+
   if (!pendingConfirmation) {
     if (hasPendingApprovalFlows) {
-      return <Loading />;
+      return <Loading loadingMessage={approvalFlowLoadingText} />;
     }
 
     return null;

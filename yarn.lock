@@ -3875,14 +3875,14 @@ __metadata:
 
 "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::locator=metamask-crx%40workspace%3A.":
   version: 3.1.0
-  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::version=3.1.0&hash=de9e56&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch::version=3.1.0&hash=71746f&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: e7edf6df97ee59fdfa8d064fcd51ed93a4f34af64119615480518fc3eb8b96e7899bf5dfb062591133b50e356b0e9e1bc9841f15f937e1429dd717cf8bbc59ad
+  checksum: 874758694ace3ca8a7105c5460b261ec038f6019d301b8c6d30f8e43af09aef18fdb3e478e3f50ec0451bdb365f7737b76af851c180851d47cf97b0f9a4291ff
   languageName: node
   linkType: hard
 
