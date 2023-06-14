@@ -8,20 +8,10 @@ const {
   unlockWallet,
   DEFAULT_GANACHE_OPTIONS,
   generateETHBalance,
+  roundToXDecimalPlaces,
+  generateRandNumBetween,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-
-function roundToXDecimalPlaces(number, decimalPlaces) {
-  return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
-}
-
-function generateRandNumBetween(x, y) {
-  const min = Math.min(x, y);
-  const max = Math.max(x, y);
-  const randomNumber = Math.random() * (max - min) + min;
-
-  return randomNumber;
-}
 
 describe('MV3 - Restart service worker multiple times', function () {
   it('Simple simple send flow within full screen view should still be usable', async function () {
