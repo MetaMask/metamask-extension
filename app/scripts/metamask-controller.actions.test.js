@@ -5,6 +5,7 @@ import proxyquire from 'proxyquire';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
+import { metamaskControllerArgumentConstructor } from '../../test/helpers/metamask-controller';
 
 const Ganache = require('../../test/e2e/ganache');
 
