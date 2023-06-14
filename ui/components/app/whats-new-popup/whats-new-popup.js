@@ -8,7 +8,13 @@ import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
-import { Button, IconName, Text } from '../../component-library';
+import {
+  Button,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  IconName,
+  ///: END:ONLY_INCLUDE_IN
+  Text,
+} from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
@@ -18,7 +24,12 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import { Size, TextVariant } from '../../../helpers/constants/design-system';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Size,
+  ///: END:ONLY_INCLUDE_IN
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -112,47 +123,6 @@ const renderDescription = (description) => {
   );
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-const closeAndViewPortfolioDashboard = (
-  seenNotifications,
-  trackEvent,
-  onClose,
-) => {
-  updateViewedNotifications(seenNotifications);
-
-  trackEvent({
-    category: 'Task Success/Engagement',
-    event: 'Portfolio Dashboard Modal Button',
-    properties: {
-      action: 'Button was clicked',
-    },
-  });
-
-  onClose();
-};
-
-const renderInstitutionalButton = (notification, mmiPortfolioUrl) => {
-  const { customButton } = notification;
-  return (
-    customButton &&
-    customButton.name === 'mmi-portfolio' && (
-      <Button
-        className="whats-new-popup__button"
-        data-testid="view-mmi-portfolio"
-        size={Size.SM}
-        startIconName={IconName.MmmiPortfolioDashboard}
-        onClick={() => {
-          closeAndViewPortfolioDashboard();
-          window.open(mmiPortfolioUrl, '_blank');
-        }}
-      >
-        {customButton.text}
-      </Button>
-    )
-  );
-};
-///: END:ONLY_INCLUDE_IN
-
 const renderFirstNotification = (
   notification,
   idRefMap,
@@ -161,6 +131,8 @@ const renderFirstNotification = (
   trackEvent,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   mmiPortfolioUrl,
+  seenNotifications,
+  onClose,
   ///: END:ONLY_INCLUDE_IN
 ) => {
   const {
@@ -171,6 +143,7 @@ const renderFirstNotification = (
     image,
     actionText,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    customButton,
     hideDate,
     ///: END:ONLY_INCLUDE_IN
   } = notification;
@@ -230,7 +203,21 @@ const renderFirstNotification = (
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        renderInstitutionalButton(notification, mmiPortfolioUrl)
+        customButton && customButton.name === 'mmi-portfolio' && (
+          <Button
+            className="whats-new-popup__button"
+            data-testid="view-mmi-portfolio"
+            size={Size.SM}
+            startIconName={IconName.MmmiPortfolioDashboard}
+            onClick={() => {
+              updateViewedNotifications(seenNotifications);
+              onClose();
+              window.open(mmiPortfolioUrl, '_blank');
+            }}
+          >
+            {customButton.text}
+          </Button>
+        )
         ///: END:ONLY_INCLUDE_IN
       }
       <div
@@ -355,34 +342,18 @@ export default function WhatsNewPopup({
       observer.observe(ref.current);
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    trackEvent({
-      category: 'Task Success/Engagement',
-      event: 'Portfolio Dashboard Modal Open',
-      properties: {
-        action: 'Modal was opened',
-      },
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     return () => {
       observer.disconnect();
     };
-  }, [
-    idRefMap,
-    setSeenNotifications,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    trackEvent,
-    ///: END:ONLY_INCLUDE_IN
-  ]);
+  }, [idRefMap, setSeenNotifications]);
 
   // Display the swaps notification with full image
   // Displays the NFTs & OpenSea notifications 18,19 with full image
   const notificationRenderers = {
     0: renderFirstNotification,
     1: renderFirstNotification,
-    16: renderFirstNotification,
-    17: renderFirstNotification,
+    18: renderFirstNotification,
+    19: renderFirstNotification,
   };
 
   return (
@@ -426,6 +397,8 @@ export default function WhatsNewPopup({
             isLast,
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             mmiPortfolioUrl,
+            seenNotifications,
+            onClose,
             ///: END:ONLY_INCLUDE_IN
           );
         })}
