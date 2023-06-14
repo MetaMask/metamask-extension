@@ -1,7 +1,6 @@
 import React, { useCallback, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { produce } from 'immer';
-import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CheckBox from '../../../ui/check-box/check-box.component';
 
@@ -17,7 +16,7 @@ import {
   FlexDirection,
   AlignItems,
 } from '../../../../helpers/constants/design-system';
-import Popover from '../../../ui/popover';
+
 import {
   AvatarIcon,
   Text,
@@ -123,7 +122,7 @@ export default function SnapInstallWarning({
           gap={4}
           marginBottom={4}
         >
-          {warnings.map((warning, i) => (
+          {warnings.map((warning) => (
             <Box
               key={warning.id}
               display={Display.Flex}
