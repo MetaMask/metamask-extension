@@ -71,13 +71,26 @@ export default function SnapCard({
             borderRadius: '50%',
             height: '32px',
             width: '32px',
+            backgroundColor: BackgroundColor.infoDefault,
           }}
           borderWidth={1}
           borderColor={BorderColor.borderMuted}
           padding={[2, 2, 2, 2]}
           marginRight={1}
         >
-          <img src={iconUrl} className="snap-detail-icon" />
+          {iconUrl ? (
+            <img src={iconUrl} className="snap-detail-icon" />
+          ) : (
+            // This is the fallback icon based on the first letter of the snap name.
+            <Box
+              className="snap-detail-icon"
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+            >
+              <Text>{snapTitle ? snapTitle[0] : 'M'}</Text>
+            </Box>
+          )}
         </Box>
         {isInstalled ? (
           <Button
