@@ -217,8 +217,8 @@ export function lookupDomainName(domainName) {
                   jsonrpc: '2.0',
                   method: ' ',
                   params: {
-                    content: domainName,
-                    id: `eip155:${parseInt(chainId, 10)}`,
+                    domain: domainName,
+                    chainId: `eip155:${parseInt(chainId, 10)}`,
                   },
                 },
               }).then((res) => {
