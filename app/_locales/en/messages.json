@@ -796,7 +796,7 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connecting to Linea Goerli test network"
   },
   "connectingToMainnet": {
@@ -2126,7 +2126,7 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli test network"
   },
   "link": {
