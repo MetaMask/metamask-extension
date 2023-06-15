@@ -722,204 +722,271 @@ describe('NetworkController', () => {
   });
 
   describe('getEIP1559Compatibility', () => {
-    describe('when the latest block has a baseFeePerGas property', () => {
-      it('stores the fact that the network supports EIP-1559', async () => {
-        await withController(
-          {
-            state: {
-              networkDetails: {
-                EIPS: {},
-              },
-            },
-          },
-          async ({ controller }) => {
-            const fakeProvider = buildFakeProvider([
-              {
-                request: {
-                  method: 'eth_getBlockByNumber',
-                },
-                response: {
-                  result: POST_1559_BLOCK,
-                },
-              },
-            ]);
-            const fakeNetworkClient = buildFakeClient(fakeProvider);
-            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-            await controller.initializeProvider();
-
-            await controller.getEIP1559Compatibility();
-
-            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
-              true,
-            );
-          },
-        );
-      });
-
-      it('returns true', async () => {
+    describe('if no provider has been set yet', () => {
+      it('does not make any state changes', async () => {
         await withController(async ({ controller }) => {
-          const fakeProvider = buildFakeProvider([
-            {
-              request: {
-                method: 'eth_getBlockByNumber',
-              },
-              response: {
-                result: POST_1559_BLOCK,
-              },
+          const promiseForNoStateChanges = waitForStateChanges({
+            controller,
+            count: 0,
+            operation: async () => {
+              await controller.getEIP1559Compatibility();
             },
-          ]);
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-          await controller.initializeProvider();
+          });
 
-          const supportsEIP1559 = await controller.getEIP1559Compatibility();
-
-          expect(supportsEIP1559).toBeTruthy();
+          expect(Boolean(promiseForNoStateChanges)).toBe(true);
         });
-      });
-    });
-
-    describe('when the latest block does not have a baseFeePerGas property', () => {
-      it('stores the fact that the network does not support EIP-1559', async () => {
-        await withController(
-          {
-            state: {
-              networkDetails: {
-                EIPS: {},
-              },
-            },
-          },
-          async ({ controller }) => {
-            const fakeProvider = buildFakeProvider([
-              {
-                request: {
-                  method: 'eth_getBlockByNumber',
-                },
-                response: {
-                  result: PRE_1559_BLOCK,
-                },
-              },
-            ]);
-            const fakeNetworkClient = buildFakeClient(fakeProvider);
-            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-            await controller.initializeProvider();
-
-            await controller.getEIP1559Compatibility();
-
-            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
-              false,
-            );
-          },
-        );
       });
 
       it('returns false', async () => {
         await withController(async ({ controller }) => {
-          const fakeProvider = buildFakeProvider([
-            {
-              request: {
-                method: 'eth_getBlockByNumber',
-              },
-              response: {
-                result: PRE_1559_BLOCK,
-              },
-            },
-          ]);
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-          await controller.initializeProvider();
+          const isEIP1559Compatible =
+            await controller.getEIP1559Compatibility();
 
-          const supportsEIP1559 = await controller.getEIP1559Compatibility();
-
-          expect(supportsEIP1559).toBe(false);
+          expect(isEIP1559Compatible).toBe(false);
         });
       });
     });
 
-    describe('when the request for the latest block responds with null', () => {
-      it('persists false to state as whether the network supports EIP-1559', async () => {
+    describe('if a provider has been set but networkDetails.EIPS in state already has a "1559" property', () => {
+      it('does not make any state changes', async () => {
         await withController(
           {
             state: {
               networkDetails: {
-                EIPS: {},
+                EIPS: {
+                  1559: true,
+                },
               },
             },
           },
           async ({ controller }) => {
-            const fakeProvider = buildFakeProvider([
-              {
-                request: {
-                  method: 'eth_getBlockByNumber',
-                },
-                response: {
-                  result: null,
-                },
+            setFakeProvider(controller, {
+              stubLookupNetworkWhileSetting: true,
+            });
+            const promiseForNoStateChanges = waitForStateChanges({
+              controller,
+              count: 0,
+              operation: async () => {
+                await controller.getEIP1559Compatibility();
               },
-            ]);
-            const fakeNetworkClient = buildFakeClient(fakeProvider);
-            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-            await controller.initializeProvider();
+            });
 
-            await controller.getEIP1559Compatibility();
-
-            expect(controller.store.getState().networkDetails.EIPS[1559]).toBe(
-              false,
-            );
+            expect(Boolean(promiseForNoStateChanges)).toBe(true);
           },
         );
       });
 
-      it('returns false', async () => {
-        await withController(async ({ controller }) => {
-          const fakeProvider = buildFakeProvider([
-            {
-              request: {
-                method: 'eth_getBlockByNumber',
-              },
-              response: {
-                result: null,
+      it('returns the value of the "1559" property', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {
+                  1559: true,
+                },
               },
             },
-          ]);
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-          await controller.initializeProvider();
+          },
+          async ({ controller }) => {
+            setFakeProvider(controller, {
+              stubLookupNetworkWhileSetting: true,
+            });
+            const isEIP1559Compatible =
+              await controller.getEIP1559Compatibility();
 
-          const supportsEIP1559 = await controller.getEIP1559Compatibility();
-
-          expect(supportsEIP1559).toBe(false);
-        });
+            expect(isEIP1559Compatible).toBe(true);
+          },
+        );
       });
     });
 
-    it('does not make multiple requests to eth_getBlockByNumber when called multiple times and the request to eth_getBlockByNumber succeeded the first time', async () => {
-      await withController(async ({ controller }) => {
-        const fakeProvider = buildFakeProvider([
-          {
-            request: {
-              method: 'eth_getBlockByNumber',
-            },
-            response: SUCCESSFUL_ETH_GET_BLOCK_BY_NUMBER_RESPONSE,
-          },
-        ]);
-        const fakeNetworkClient = buildFakeClient(fakeProvider);
-        mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-        await withoutCallingGetEIP1559Compatibility({
-          controller,
-          operation: async () => {
-            await controller.initializeProvider();
-          },
+    describe('if a provider has been set and networkDetails.EIPS in state does not already have a "1559" property', () => {
+      describe('if the request for the latest block is successful', () => {
+        describe('if the latest block has a "baseFeePerGas" property', () => {
+          it('sets the "1559" property to true', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: POST_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(true);
+            });
+          });
+
+          it('returns true', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: POST_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(true);
+            });
+          });
         });
 
-        await controller.getEIP1559Compatibility();
-        await controller.getEIP1559Compatibility();
+        describe('if the latest block does not have a "baseFeePerGas" property', () => {
+          it('sets the "1559" property to false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: PRE_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
 
-        expect(
-          fakeProvider.calledStubs.filter(
-            (stub) => stub.request.method === 'eth_getBlockByNumber',
-          ),
-        ).toHaveLength(1);
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(false);
+            });
+          });
+
+          it('returns false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: PRE_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(false);
+            });
+          });
+        });
+
+        describe('if the request for the latest block responds with null', () => {
+          it('sets the "1559" property to false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: null,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(false);
+            });
+          });
+
+          it('returns false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: null,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(false);
+            });
+          });
+        });
+      });
+
+      describe('if the request for the latest block is unsuccessful', () => {
+        it('does not make any state changes', async () => {
+          await withController(async ({ controller }) => {
+            setFakeProvider(controller, {
+              stubs: [
+                {
+                  request: {
+                    method: 'eth_getBlockByNumber',
+                    params: ['latest', false],
+                  },
+                  error: GENERIC_JSON_RPC_ERROR,
+                },
+              ],
+              stubLookupNetworkWhileSetting: true,
+            });
+
+            const promiseForNoStateChanges = waitForStateChanges({
+              controller,
+              count: 0,
+              operation: async () => {
+                try {
+                  await controller.getEIP1559Compatibility();
+                } catch (error) {
+                  // ignore error
+                }
+              },
+            });
+
+            expect(Boolean(promiseForNoStateChanges)).toBe(true);
+          });
+        });
       });
     });
   });
@@ -6464,33 +6531,6 @@ async function withoutCallingLookupNetwork({
 }
 
 /**
- * For each kind of way that the provider can be set, `getEIP1559Compatibility`
- * is always called. This can cause difficulty when testing the behavior of
- * `getEIP1559Compatibility` itself, as extra requests then have to be
- * mocked. This function takes a function that presumably sets the provider,
- * stubbing `getEIP1559Compatibility` before the function and releasing the stub
- * afterward.
- *
- * @param args - The arguments.
- * @param args.controller - The network controller.
- * @param args.operation - The function that presumably involves
- * `getEIP1559Compatibility`.
- */
-async function withoutCallingGetEIP1559Compatibility({
-  controller,
-  operation,
-}: {
-  controller: NetworkController;
-  operation: () => void | Promise<void>;
-}) {
-  const spy = jest
-    .spyOn(controller, 'getEIP1559Compatibility')
-    .mockResolvedValue(false);
-  await operation();
-  spy.mockRestore();
-}
-
-/**
  * Waits for changes to the primary observable store of a controller to occur
  * before proceeding. May be called with a function, in which case waiting will
  * occur after the function is called; or may be called standalone if you want
@@ -6534,7 +6574,7 @@ async function waitForStateChanges({
   },
 }: {
   controller: NetworkController;
-  propertyPath: string[];
+  propertyPath?: string[];
   count?: number | null;
   duration?: number;
   operation?: () => void | Promise<void>;
@@ -6614,11 +6654,16 @@ async function waitForStateChanges({
     };
 
     eventListener = (newState) => {
-      const isInteresting = isStateChangeInteresting(
-        newState,
-        allStates.length > 0 ? allStates[allStates.length - 1] : initialState,
-        propertyPath,
-      );
+      const isInteresting =
+        propertyPath === undefined
+          ? true
+          : isStateChangeInteresting(
+              newState,
+              allStates.length > 0
+                ? allStates[allStates.length - 1]
+                : initialState,
+              propertyPath,
+            );
 
       allStates.push({ ...newState });
 

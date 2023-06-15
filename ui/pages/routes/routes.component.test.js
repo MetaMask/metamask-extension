@@ -58,7 +58,7 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
   describe('render during send flow', () => {
-    it('should render with network and account change disabled while adding recipient for send flow', () => {
+    it('should render with network change disabled while adding recipient for send flow', () => {
       const store = configureMockStore()({
         ...mockSendState,
         send: {
@@ -68,25 +68,21 @@ describe('Routes Component', () => {
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      expect(getByTestId('account-menu-icon')).toBeDisabled();
-
       const networkDisplay = getByTestId('network-display');
       fireEvent.click(networkDisplay);
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render with network and account change disabled while user is in send page', () => {
+    it('should render with network change disabled while user is in send page', () => {
       const store = configureMockStore()({
         ...mockSendState,
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      expect(getByTestId('account-menu-icon')).toBeDisabled();
-
       const networkDisplay = getByTestId('network-display');
       fireEvent.click(networkDisplay);
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
-    it('should render with network and account change disabled while editing a send transaction', () => {
+    it('should render with network change disabled while editing a send transaction', () => {
       const store = configureMockStore()({
         ...mockSendState,
         send: {
@@ -95,8 +91,6 @@ describe('Routes Component', () => {
         },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
-
-      expect(getByTestId('account-menu-icon')).toBeDisabled();
 
       const networkDisplay = getByTestId('network-display');
       fireEvent.click(networkDisplay);

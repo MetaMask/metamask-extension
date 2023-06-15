@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { detectNewTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { MultichainImportTokenLink } from './multichain-import-token-link';
+import { ImportTokenLink } from './import-token-link';
 
 const mockPushHistory = jest.fn();
 
@@ -34,10 +34,7 @@ describe('Import Token Link', () => {
 
     const store = configureMockStore()(mockState);
 
-    const { container } = renderWithProvider(
-      <MultichainImportTokenLink />,
-      store,
-    );
+    const { container } = renderWithProvider(<ImportTokenLink />, store);
 
     expect(container).toMatchSnapshot();
   });
@@ -53,10 +50,7 @@ describe('Import Token Link', () => {
 
     const store = configureMockStore()(mockState);
 
-    const { container } = renderWithProvider(
-      <MultichainImportTokenLink />,
-      store,
-    );
+    const { container } = renderWithProvider(<ImportTokenLink />, store);
 
     expect(container).toMatchSnapshot();
   });
@@ -72,7 +66,7 @@ describe('Import Token Link', () => {
 
     const store = configureMockStore()(mockState);
 
-    renderWithProvider(<MultichainImportTokenLink />, store);
+    renderWithProvider(<ImportTokenLink />, store);
 
     const refreshList = screen.getByTestId('refresh-list-button');
     fireEvent.click(refreshList);
@@ -91,7 +85,7 @@ describe('Import Token Link', () => {
 
     const store = configureMockStore()(mockState);
 
-    renderWithProvider(<MultichainImportTokenLink />, store);
+    renderWithProvider(<ImportTokenLink />, store);
 
     const importToken = screen.getByTestId('import-token-button');
     fireEvent.click(importToken);
