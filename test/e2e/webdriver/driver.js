@@ -9,6 +9,10 @@ const {
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
 
+async function sleepSeconds(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
@@ -25,6 +29,7 @@ function wrapElementWithAPI(element, driver) {
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
     await element.sendKeys(input);
+    await sleepSeconds(1);
   };
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
