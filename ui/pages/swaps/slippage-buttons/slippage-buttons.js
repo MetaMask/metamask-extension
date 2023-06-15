@@ -210,10 +210,10 @@ export default function SlippageButtons({
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    boxProps={{ paddingRight: 2 }}
+                    paddingRight={2}
                     fontWeight={FontWeight.Bold}
                   >
-                    {t('smartTransaction')}
+                    {t('smartSwap')}
                   </Text>
                   {currentSmartTransactionsError ? (
                     <InfoTooltip

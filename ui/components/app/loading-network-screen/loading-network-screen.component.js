@@ -64,8 +64,8 @@ export default class LoadingNetworkScreen extends PureComponent {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('connectingToLineaTestnet');
+      case NETWORK_TYPES.LINEA_GOERLI:
+        return t('connectingToLineaGoerli');
       default:
         return t('connectingTo', [providerId]);
     }
@@ -79,6 +79,7 @@ export default class LoadingNetworkScreen extends PureComponent {
       <Popover
         onClose={() => {
           window.clearTimeout(this.cancelCallTimeout);
+          this.setState({ showErrorScreen: false });
         }}
         centerTitle
         title={
@@ -100,6 +101,7 @@ export default class LoadingNetworkScreen extends PureComponent {
           <ButtonSecondary
             onClick={() => {
               window.clearTimeout(this.cancelCallTimeout);
+              this.setState({ showErrorScreen: false });
               showNetworkDropdown();
             }}
             variant={TextVariant.bodySm}

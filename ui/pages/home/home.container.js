@@ -1,7 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -22,7 +21,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
@@ -36,7 +34,8 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  hasPendingApprovalsSelector,
+  getSuggestedTokens,
+  getSuggestedNfts,
 } from '../../selectors';
 
 import {
@@ -71,6 +70,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -121,16 +121,16 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
-    state,
-    ApprovalType.WatchAsset,
-  );
+  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
+
+  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
   return {
     forgottenPassword,
-    hasWatchAssetPendingApprovals,
+    hasWatchTokenPendingApprovals,
+    hasWatchNftPendingApprovals,
     swapsEnabled,
-    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
+    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,

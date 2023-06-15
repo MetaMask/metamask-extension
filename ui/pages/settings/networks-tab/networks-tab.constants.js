@@ -4,7 +4,6 @@ import {
   CURRENCY_SYMBOLS,
   CHAIN_IDS,
   NETWORK_TYPES,
-  LINEA_TESTNET_RPC_URL,
 } from '../../../../shared/constants/network';
 
 const defaultNetworksData = [
@@ -45,13 +44,16 @@ const defaultNetworksData = [
     blockExplorerUrl: 'https://sepolia.etherscan.io',
   },
   {
-    labelKey: NETWORK_TYPES.LINEA_TESTNET,
+    labelKey: NETWORK_TYPES.LINEA_GOERLI,
     iconColor: '#234FD5',
-    providerType: NETWORK_TYPES.LINEA_TESTNET,
-    rpcUrl: LINEA_TESTNET_RPC_URL,
-    chainId: CHAIN_IDS.LINEA_TESTNET,
-    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
-    blockExplorerUrl: 'https://explorer.goerli.linea.build',
+    providerType: NETWORK_TYPES.LINEA_GOERLI,
+    rpcUrl: getRpcUrl({
+      network: NETWORK_TYPES.LINEA_GOERLI,
+      excludeProjectId: true,
+    }),
+    chainId: CHAIN_IDS.LINEA_GOERLI,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
 ];
 

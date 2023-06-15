@@ -10,6 +10,12 @@ executors:
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
+  node-browsers-large:
+    docker:
+      - image: cimg/node:16.20-browsers
+    resource_class: large
+    environment:
+      NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
@@ -500,7 +506,7 @@ jobs:
             - builds-test
 
   prep-build-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -551,7 +557,7 @@ jobs:
           command: yarn verify-locales --quiet
 
   test-storybook:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     steps:
       - checkout
       - attach_workspace:
@@ -649,7 +655,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2
+              yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 20m
       - run:
@@ -686,7 +692,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --debug --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -714,7 +720,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2
+              yarn test:e2e:firefox:snaps --retries 2 --debug
             fi
           no_output_timeout: 20m
       - run:
@@ -751,7 +757,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2
+              yarn test:e2e:chrome:snaps --retries 2 --debug
             fi
           no_output_timeout: 20m
       - run:
@@ -788,7 +794,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox --retries 2
+              yarn test:e2e:firefox --retries 2 --debug
             fi
           no_output_timeout: 20m
       - run:
