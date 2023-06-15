@@ -36,6 +36,12 @@ export const Anchored = () => {
         <MenuItem iconName={IconName.EyeSlash} onClick={action('Menu Item 3')}>
           Menu Item 3
         </MenuItem>
+        <MenuItem
+          iconName={IconName.AddSquare}
+          onClick={action('Disabled Item')}
+        >
+          Disabled Item
+        </MenuItem>
       </Menu>
     </>
   );

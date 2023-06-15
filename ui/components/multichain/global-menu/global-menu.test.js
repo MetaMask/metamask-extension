@@ -4,10 +4,11 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { GlobalMenu } from '.';
 
-const render = () => {
+const render = (metamaskStateChanges = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...metamaskStateChanges,
     },
   });
   return renderWithProvider(
@@ -49,6 +50,20 @@ describe('AccountListItem', () => {
     fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalled();
+    });
+  });
+
+  it('disables the settings item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeDisabled();
+    });
+  });
+
+  it('enables the settings item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeEnabled();
     });
   });
 
