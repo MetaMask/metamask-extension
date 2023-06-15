@@ -15,7 +15,6 @@ import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { Text } from '../../component-library';
-import { date } from 'superstruct';
 
 const PAGE_INCREMENT = 10;
 
