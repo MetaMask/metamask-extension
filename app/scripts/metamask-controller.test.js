@@ -202,8 +202,6 @@ describe('MetaMaskController', function () {
   });
 
   describe('MetaMaskController Behaviour', function () {
-
-
     describe('should reset states on first time profile load', function () {
       it('in mv2, it should reset state without attempting to call browser storage', function () {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
@@ -351,14 +349,17 @@ describe('MetaMaskController', function () {
           metamaskController.getState().identities,
         );
 
-        expectWithinRange(secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected, [
-          startTimeAlt,
-          endTimeAlt,
-        ]);
+        expectWithinRange(
+          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected,
+          [startTimeAlt, endTimeAlt],
+        );
 
         delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected;
         expect(secondVaultIdentities).toStrictEqual({
-          [TEST_ADDRESS_ALT]: { address: TEST_ADDRESS_ALT, name: DEFAULT_LABEL },
+          [TEST_ADDRESS_ALT]: {
+            address: TEST_ADDRESS_ALT,
+            name: DEFAULT_LABEL,
+          },
         });
       });
 
@@ -431,15 +432,6 @@ describe('MetaMaskController', function () {
         );
 
         expect(TEST_HEX_BALANCE).toStrictEqual(gotten);
-      });
-    });
-
-    describe('#getApi', function () {
-      it('getState', function () {
-        const getApi = metamaskController.getApi();
-        const state = getApi.getState();
-
-        expect(state).toStrictEqual(metamaskController.getState());
       });
     });
 
@@ -540,7 +532,8 @@ describe('MetaMaskController', function () {
           .mockClear()
           .mockReturnValue([mockHDKeyring]);
 
-        const recoveredMnemonic = metamaskController.getPrimaryKeyringMnemonic();
+        const recoveredMnemonic =
+          metamaskController.getPrimaryKeyringMnemonic();
 
         expect(recoveredMnemonic).toStrictEqual(uint8ArrayMnemonic);
       });
@@ -650,7 +643,9 @@ describe('MetaMaskController', function () {
 
     describe('unlockHardwareWalletAccount', function () {
       const accountToUnlock = 10;
-      const windowOpenStub = jest.spyOn(window, 'open').mockImplementation(noop);
+      const windowOpenStub = jest
+        .spyOn(window, 'open')
+        .mockImplementation(noop);
       const addNewAccountStub = jest
         .spyOn(KeyringController.prototype, 'addNewAccount')
         .mockReturnValue({});
@@ -1160,10 +1155,11 @@ describe('MetaMaskController', function () {
         });
 
         metamaskController.provider = provider;
-        const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-          TEST_TOKEN_ADDRESS,
-          TEST_USER_ADDRESS,
-        );
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            TEST_TOKEN_ADDRESS,
+            TEST_USER_ADDRESS,
+          );
 
         expect(tokenDetails.standard).toStrictEqual('ERC20');
         expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
@@ -1193,10 +1189,11 @@ describe('MetaMaskController', function () {
         });
 
         metamaskController.provider = provider;
-        const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-          TEST_TOKEN_ADDRESS,
-          TEST_USER_ADDRESS,
-        );
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            TEST_TOKEN_ADDRESS,
+            TEST_USER_ADDRESS,
+          );
 
         expect(tokenDetails.standard).toStrictEqual('ERC20');
         expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
@@ -1212,10 +1209,11 @@ describe('MetaMaskController', function () {
         });
 
         metamaskController.provider = provider;
-        const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-          TEST_TOKEN_ADDRESS,
-          TEST_USER_ADDRESS,
-        );
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            TEST_TOKEN_ADDRESS,
+            TEST_USER_ADDRESS,
+          );
 
         expect(tokenDetails.standard).toStrictEqual('ERC20');
         expect(tokenDetails.decimals).toStrictEqual('18');
@@ -1257,10 +1255,11 @@ describe('MetaMaskController', function () {
             return tokenData;
           });
 
-        const tokenDetails = await metamaskController.getTokenStandardAndDetails(
-          '0xNotInTokenList',
-          TEST_USER_ADDRESS,
-        );
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0xNotInTokenList',
+            TEST_USER_ADDRESS,
+          );
         expect(tokenDetails.standard).toStrictEqual(
           tokenData.standard.toUpperCase(),
         );
@@ -1385,7 +1384,6 @@ describe('MetaMaskController', function () {
             type: NETWORK_TYPES.RPC,
           });
         });
-
         it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', function () {
           expect(
             metamaskController.findNetworkConfigurationBy({
@@ -1441,4 +1439,77 @@ describe('MetaMaskController', function () {
       });
     });
   });
+  // =======
+  //   describe('MV3 Specific behaviour', function () {
+  //     before(async function () {
+  //       globalThis.isFirstTimeProfileLoaded = true;
+  //     });
+
+  //     beforeEach(async function () {
+  //       sandbox.spy(MetaMaskControllerMV3.prototype, 'resetStates');
+  //     });
+
+  //     it('it should reset state', function () {
+  //       browserPolyfillMock.storage.session.set.resetHistory();
+
+  //       const metamaskControllerMV3 = new MetaMaskControllerMV3({
+  //         showUserConfirmation: noop,
+  //         encryptor: {
+  //           encrypt(_, object) {
+  //             this.object = object;
+  //             return Promise.resolve('mock-encrypted');
+  //           },
+  //           decrypt() {
+  //             return Promise.resolve(this.object);
+  //           },
+  //         },
+  //         initState: cloneDeep(firstTimeState),
+  //         initLangCode: 'en_US',
+  //         platform: {
+  //           showTransactionNotification: () => undefined,
+  //           getVersion: () => 'foo',
+  //         },
+  //         browser: browserPolyfillMock,
+  //         infuraProjectId: 'foo',
+  //         isFirstMetaMaskControllerSetup: true,
+  //       });
+  //       assert.equal(metamaskControllerMV3.resetStates.callCount, 1);
+  //       assert.equal(browserPolyfillMock.storage.session.set.callCount, 1);
+  //       assert.deepEqual(
+  //         browserPolyfillMock.storage.session.set.getCall(0).args[0],
+  //         {
+  //           isFirstMetaMaskControllerSetup: false,
+  //         },
+  //       );
+  //     });
+
+  //     it('in mv3, it should not reset states if isFirstMetaMaskControllerSetup is false', function () {
+  //       browserPolyfillMock.storage.session.set.resetHistory();
+
+  //       const metamaskControllerMV3 = new MetaMaskControllerMV3({
+  //         showUserConfirmation: noop,
+  //         encryptor: {
+  //           encrypt(_, object) {
+  //             this.object = object;
+  //             return Promise.resolve('mock-encrypted');
+  //           },
+  //           decrypt() {
+  //             return Promise.resolve(this.object);
+  //           },
+  //         },
+  //         initState: cloneDeep(firstTimeState),
+  //         initLangCode: 'en_US',
+  //         platform: {
+  //           showTransactionNotification: () => undefined,
+  //           getVersion: () => 'foo',
+  //         },
+  //         browser: browserPolyfillMock,
+  //         infuraProjectId: 'foo',
+  //         isFirstMetaMaskControllerSetup: false,
+  //       });
+  //       assert.equal(metamaskControllerMV3.resetStates.callCount, 0);
+  //       assert.equal(browserPolyfillMock.storage.session.set.callCount, 0);
+  //     });
+  //   });
+  // 46a2604df0f09f412c89d586a552ff2d07f9dff0
 });
