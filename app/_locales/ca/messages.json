@@ -154,7 +154,7 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
@@ -393,7 +393,7 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Xarxa de test Linea Goerli"
   },
   "links": {
