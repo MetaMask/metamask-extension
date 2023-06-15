@@ -114,7 +114,12 @@ const ConfirmAddSuggestedNFT = () => {
     }
   }
   return (
-    <Box>
+    <Box
+      height={BlockSize.Full}
+      width={BlockSize.Full}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <Box paddingBottom={2} className="confirm-add-suggested-nft__header">
         <Text
           variant={TextVariant.headingLg}
@@ -144,7 +149,7 @@ const ConfirmAddSuggestedNFT = () => {
       </Box>
       <Box className="confirm-add-suggested-nft__content">
         <Box
-          className="confirm-add-suggested-nft"
+          className="confirm-add-suggested-nft__card"
           padding={2}
           borderRadius={BorderRadius.MD}
         >

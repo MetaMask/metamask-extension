@@ -558,24 +558,23 @@ export function getUnapprovedTemplatedConfirmations(state) {
 
 export function getSuggestedTokens(state) {
   return (
-    getUnapprovedConfirmations(state)?.filter(
-      ({ type, requestData: { asset = {} } }) => {
-        return type === ApprovalType.WatchAsset && asset.tokenId === undefined;
-      },
-    ) || []
+    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId === undefined
+      );
+    }) || []
   );
 }
 
 export function getSuggestedNfts(state) {
   return (
-    getUnapprovedConfirmations(state)?.filter(
-      ({ requestData: { asset: { standard } = {} }, type }) => {
-        return (
-          type === ApprovalType.WatchAsset &&
-          [ERC721, ERC1155].includes(standard)
-        );
-      },
-    ) || []
+    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        [ERC721, ERC1155].includes(requestData?.asset?.standard)
+      );
+    }) || []
   );
 }
 
