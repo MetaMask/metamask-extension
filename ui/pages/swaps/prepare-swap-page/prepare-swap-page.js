@@ -780,6 +780,7 @@ export default function PrepareSwapPage({
           isOpen={isSwapToOpen}
           isClosedOnOutsideClick
           isClosedOnEscapeKey
+          className="mm-modal__custom-scrollbar"
         >
           <ModalOverlay />
           <ModalContent>
@@ -813,6 +814,7 @@ export default function PrepareSwapPage({
           isOpen={isSwapFromOpen}
           isClosedOnOutsideClick
           isClosedOnEscapeKey
+          className="mm-modal__custom-scrollbar"
         >
           <ModalOverlay />
           <ModalContent>

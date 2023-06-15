@@ -150,6 +150,7 @@ export default function TransactionSettings({
       isOpen
       isClosedOnOutsideClick
       isClosedOnEscapeKey
+      className="mm-modal__custom-scrollbar"
     >
       <ModalOverlay />
       <ModalContent>
