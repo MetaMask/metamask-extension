@@ -35,7 +35,8 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  hasPendingApprovals,
+  getSuggestedTokens,
+  getSuggestedNfts,
 } from '../../selectors';
 
 import {
@@ -121,17 +122,9 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchTokenPendingApprovals = hasPendingApprovals(
-    state,
-    ApprovalType.WatchAsset,
-    ({ requestData: { asset } }) => asset.tokenId === undefined,
-  );
+  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
 
-  const hasWatchNftPendingApprovals = hasPendingApprovals(
-    state,
-    ApprovalType.WatchAsset,
-    ({ requestData: { asset } }) => asset.tokenId !== undefined,
-  );
+  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
   return {
     forgottenPassword,
