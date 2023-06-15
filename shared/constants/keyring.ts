@@ -8,9 +8,11 @@ export enum InternalKeyringType {
   imported = 'Simple Key Pair',
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export enum SnapKeyringType {
   snap = 'Snap Keyring',
 }
+///: END:ONLY_INCLUDE_IN
 
 /**
  * All keyrings supported by MetaMask.
@@ -18,5 +20,7 @@ export enum SnapKeyringType {
 export const KeyringType = {
   ...HardwareKeyringType,
   ...InternalKeyringType,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   ...SnapKeyringType,
+  ///: END:ONLY_INCLUDE_IN
 };
