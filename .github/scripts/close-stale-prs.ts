@@ -22,7 +22,7 @@ async function main(): Promise<void> {
 
   try {
     const stalenessThreshold = Number(new Date()) - ONE_MONTH_IN_MS;
-    const formattedThreshold = convertDateFormat(String(stalenessThreshold));
+    const formattedThreshold = convertDateFormat(stalenessThreshold);
 
     console.log({ formattedThreshold });
 
@@ -59,8 +59,8 @@ async function commentAndClosePR(octokit: InstanceType<typeof GitHub>, prNumber:
   });
 }
 
-function convertDateFormat(dateString: string): string {
-  const date = new Date(dateString);
+function convertDateFormat(dateNumber: number): string {
+  const date = new Date(dateNumber);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
