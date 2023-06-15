@@ -919,6 +919,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 4 calls per 5 minutes
+          rateLimitCount: 4,
+          rateLimitTimeout: 300000,
         },
         showInAppNotification: {
           method: (origin, message) => {
@@ -930,6 +933,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 5 calls per minute
+          rateLimitCount: 5,
+          rateLimitTimeout: 60000,
         },
       },
     });
