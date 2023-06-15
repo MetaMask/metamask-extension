@@ -67,7 +67,7 @@ export default function GasDisplay({ gasError }) {
   const { chainId } = providerConfig;
   const networkName = NETWORK_TO_NAME_MAP[chainId];
   const isInsufficientTokenError =
-    draftTransaction?.amount.error === INSUFFICIENT_TOKENS_ERROR;
+    draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];
   const currentNetworkName = networkName || providerConfig.nickname;
 
