@@ -9,7 +9,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { tEn } = require('../../lib/i18n-helpers');
 
-describe('settingsSecurityAndPrivacy-RevealSRP', function () {
+describe('Reveal SRP through settings', function () {
   const testPassword = 'correct horse battery staple';
   const wrongTestPassword = 'test test test test';
   const seedPhraseWords =
