@@ -22,8 +22,8 @@ const ganacheOptions = {
   ],
 };
 
-describe('MetaMask Import UI', function () {
-  it('Importing wallet using Secret Recovery Phrase', async function () {
+describe('Import flow', function () {
+  it('Import wallet using Secret Recovery Phrase', async function () {
     const testPassword = 'correct horse battery staple';
 
     await withFixtures(
@@ -138,7 +138,7 @@ describe('MetaMask Import UI', function () {
     );
   });
 
-  it('Importing wallet using Secret Recovery Phrase with pasting word by word', async function () {
+  it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
     const testPassword = 'correct horse battery staple';
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -175,7 +175,7 @@ describe('MetaMask Import UI', function () {
     );
   });
 
-  it('Import Account using private key', async function () {
+  it('Import Account using private key and remove imported account', async function () {
     const testPrivateKey1 =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
     const testPrivateKey2 =
@@ -195,52 +195,45 @@ describe('MetaMask Import UI', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // Imports an account with private key
-        // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement({ text: 'Import account', tag: 'button' });
 
-        // enter private key
+        // Imports Account 4 with private key
         await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey1);
         await driver.clickElement(
           '[data-testid="import-account-confirm-button"]',
         );
 
-        // should show the correct account name
-        const importedAccountName = await driver.findElement(
-          '[data-testid="account-menu-icon"]',
-        );
-        assert.equal(await importedAccountName.getText(), 'Account 4');
+        // New imported account has correct name and label
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Account 4',
+        });
 
-        // should show the imported label
-        // confirm 4th account is account 4, as expected
         const accountMenuItemSelector = await findAnotherAccountFromAccountList(
           driver,
           4,
           'Account 4',
         );
-        // confirm label is present on the same menu item
-        const importedLabel = await driver.findElement(
-          `${accountMenuItemSelector} .mm-tag`,
-        );
-        assert.equal(await importedLabel.getText(), 'Imported');
+        await driver.findElement({
+          css: `${accountMenuItemSelector} .mm-tag`,
+          text: 'Imported',
+        });
 
-        // Imports and removes an account
-        // choose Create account from the account menu
+        // Imports Account 5 with private key
         await driver.clickElement({ text: 'Import account', tag: 'button' });
-        // enter private key
         await driver.findClickableElement('#private-key-box');
         await driver.fill('#private-key-box', testPrivateKey2);
         await driver.clickElement(
           '[data-testid="import-account-confirm-button"]',
         );
 
-        // should see new account in account menu
-        const importedAccount2Name = await driver.findElement(
-          '[data-testid="account-menu-icon"]',
-        );
-        assert.equal(await importedAccount2Name.getText(), 'Account 5');
+        // New imported account has correct name and label
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Account 5',
+        });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItems = await driver.findElements(
           '.multichain-account-list-item',
@@ -251,20 +244,14 @@ describe('MetaMask Import UI', function () {
           '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
         );
 
+        // Account 5 can be removed
         await driver.clickElement('[data-testid="account-list-menu-remove"]');
-
-        // should remove the account
         await driver.clickElement({ text: 'Remove', tag: 'button' });
-
-        // Wait until selected account switches away from removed account to first account
-        await driver.waitForSelector({
+        await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 1',
         });
-
-        await driver.delay(regularDelayMs);
         await driver.clickElement('[data-testid="account-menu-icon"]');
-
         const accountListItemsAfterRemoval = await driver.findElements(
           '.multichain-account-list-item',
         );
@@ -310,25 +297,21 @@ describe('MetaMask Import UI', function () {
           '[data-testid="import-account-confirm-button"]',
         );
 
-        // should show the correct account name
-        const importedAccountName = await driver.findElement(
-          '[data-testid="account-menu-icon"]',
-        );
-        assert.equal(await importedAccountName.getText(), 'Account 4');
+        // New imported account has correct name and label
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Account 4',
+        });
 
-        // should show the imported label
-        // confirm 4th account is account 4, as expected
         const accountMenuItemSelector = await findAnotherAccountFromAccountList(
           driver,
           4,
           'Account 4',
         );
-
-        // confirm label is present on the same menu item
-        const importedLabel = await driver.findElement(
-          `${accountMenuItemSelector} .mm-tag`,
-        );
-        assert.equal(await importedLabel.getText(), 'Imported');
+        await driver.findElement({
+          css: `${accountMenuItemSelector} .mm-tag`,
+          text: 'Imported',
+        });
 
         const accountListItems = await driver.findElements(
           '.multichain-account-list-item',

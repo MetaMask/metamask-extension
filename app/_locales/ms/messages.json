@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
@@ -395,7 +395,7 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {

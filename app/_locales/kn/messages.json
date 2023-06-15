@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "links": {

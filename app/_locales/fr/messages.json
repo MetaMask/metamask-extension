@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connexion au réseau de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Réseau de test Linea Goerli"
   },
   "link": {

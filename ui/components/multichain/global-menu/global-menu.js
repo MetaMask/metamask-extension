@@ -58,6 +58,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const history = useHistory();
   const metaMetricsId = useSelector(getMetaMetricsId);
 
+  const hasUnapprovedTransactions = useSelector(
+    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
+  );
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
   ///: END:ONLY_INCLUDE_IN
@@ -199,6 +203,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       </MenuItem>
       <MenuItem
         iconName={IconName.Setting}
+        disabled={hasUnapprovedTransactions}
         onClick={() => {
           history.push(SETTINGS_ROUTE);
           trackEvent({
@@ -210,6 +215,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           });
           closeMenu();
         }}
+        data-testid="global-menu-settings"
       >
         {t('settings')}
       </MenuItem>
