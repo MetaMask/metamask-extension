@@ -77,6 +77,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
       <MenuItem
         iconName={IconName.Connect}
+        disabled={hasUnapprovedTransactions}
         onClick={() => {
           history.push(CONNECTED_ROUTE);
           trackEvent({
@@ -88,6 +89,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
           });
           closeMenu();
         }}
+        data-testid="global-menu-connected-sites"
       >
         {t('connectedSites')}
       </MenuItem>
