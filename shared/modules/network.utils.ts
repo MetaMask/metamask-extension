@@ -57,6 +57,6 @@ function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
 }
 
-export async function shouldShowLineaMainnet(): Promise<boolean> {
+export function shouldShowLineaMainnet(): boolean {
   return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
 }
