@@ -186,7 +186,6 @@ export const AccountListMenu = ({ onClose }) => {
                 size={Size.SM}
                 startIconName={IconName.Add}
                 onClick={() => {
-                  dispatch(toggleAccountMenu());
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -195,7 +194,7 @@ export const AccountListMenu = ({ onClose }) => {
                       location: 'Main Menu',
                     },
                   });
-                  history.push(NEW_ACCOUNT_ROUTE);
+                  setActionMode('add');
                 }}
                 data-testid="multichain-account-menu-add-account"
               >
@@ -207,7 +206,6 @@ export const AccountListMenu = ({ onClose }) => {
                 size={Size.SM}
                 startIconName={IconName.Import}
                 onClick={() => {
-                  dispatch(toggleAccountMenu());
                   trackEvent({
                     category: MetaMetricsEventCategory.Navigation,
                     event: MetaMetricsEventName.AccountAddSelected,
@@ -216,7 +214,7 @@ export const AccountListMenu = ({ onClose }) => {
                       location: 'Main Menu',
                     },
                   });
-                  history.push(IMPORT_ACCOUNT_ROUTE);
+                  setActionMode('import');
                 }}
               >
                 {t('importAccount')}
