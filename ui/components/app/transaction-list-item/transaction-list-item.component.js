@@ -15,8 +15,11 @@ import TransactionStatusLabel from '../transaction-status-label/transaction-stat
 import TransactionIcon from '../transaction-icon';
 import {
   BackgroundColor,
+  Color,
   Display,
+  FontWeight,
   Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -140,8 +143,8 @@ function TransactionListItemInner({
   } = useTransactionDisplayData(transactionGroup);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
-    "MMM d 'at' h:mm a",
-    "MMM d, y 'at' h:mm a",
+    'MMM d, y',
+    'MMM d',
   );
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
@@ -306,27 +309,29 @@ function TransactionListItemInner({
           !isSignatureReq &&
           !isApproval && (
             <>
-              <h2
+              <Text
+                variant={TextVariant.bodyLgMedium}
+                fontweight={FontWeight.Medium}
+                color={Color.textDefault}
                 title={primaryCurrency}
-                className="transaction-list-item__primary-currency"
               >
                 {primaryCurrency}
-              </h2>
-              <h3 className="transaction-list-item__secondary-currency">
+              </Text>
+              <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
                 {secondaryCurrency}
-              </h3>
+              </Text>
             </>
           )
         }
       >
         <div className="transaction-list-item__pending-actions">
-          {speedUpButton}
           {showCancelButton && (
             <CancelButton
               transaction={transactionGroup.primaryTransaction}
               cancelTransaction={cancelTransaction}
             />
           )}
+          {speedUpButton}
         </div>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -402,6 +407,7 @@ TransactionListItemInner.propTypes = {
 };
 
 const TransactionListItem = (props) => {
+  debugger;
   const { transactionGroup } = props;
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;

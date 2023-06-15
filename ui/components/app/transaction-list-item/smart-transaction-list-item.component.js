@@ -50,11 +50,7 @@ export default function SmartTransactionListItem({
     destinationTokenSymbol,
   ]);
   const subtitle = 'metamask';
-  const date = formatDateWithYearContext(
-    time,
-    "MMM d 'at' h:mm a",
-    "MMM d, y 'at' h:mm a",
-  );
+  const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;

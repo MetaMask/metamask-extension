@@ -14,6 +14,8 @@ import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { Text } from '../../component-library';
+import { date } from 'superstruct';
 
 const PAGE_INCREMENT = 10;
 
@@ -94,13 +96,40 @@ export default function TransactionList({
       chainId,
     ],
   );
+  const groupTransactionsByDate = (transactionGroups) => {
+    const groupedTransactions = [];
+
+    transactionGroups.forEach((transactionGroup) => {
+      const date = new Date(
+        transactionGroup.primaryTransaction.time,
+      ).toDateString();
+
+      const existingGroup = groupedTransactions.find(
+        (group) => group.date === date,
+      );
+
+      if (existingGroup) {
+        existingGroup.transactionGroups.push(transactionGroup);
+      } else {
+        groupedTransactions.push({
+          date,
+          transactionGroups: [transactionGroup],
+        });
+      }
+    });
+
+    return groupedTransactions;
+  };
+
   const completedTransactions = useMemo(
     () =>
-      getFilteredTransactionGroups(
-        unfilteredCompletedTransactions,
-        hideTokenTransactions,
-        tokenAddress,
-        chainId,
+      groupTransactionsByDate(
+        getFilteredTransactionGroups(
+          unfilteredCompletedTransactions,
+          hideTokenTransactions,
+          tokenAddress,
+          chainId,
+        ),
       ),
     [
       hideTokenTransactions,
@@ -167,21 +196,32 @@ export default function TransactionList({
               )
               ///: END:ONLY_INCLUDE_IN
               .slice(0, limit)
-              .map((transactionGroup, index) =>
-                transactionGroup.initialTransaction?.transactionType ===
-                'smart' ? (
-                  <SmartTransactionListItem
-                    transactionGroup={transactionGroup}
-                    smartTransaction={transactionGroup.initialTransaction}
-                    key={`${transactionGroup.nonce}:${index}`}
-                  />
-                ) : (
-                  <TransactionListItem
-                    transactionGroup={transactionGroup}
-                    key={`${transactionGroup.nonce}:${limit + index - 10}`}
-                  />
-                ),
-              )
+              .map((dateGroup) => {
+                return dateGroup.transactionGroups.map(
+                  (transactionGroup, index) =>
+                    transactionGroup.initialTransaction?.transactionType ===
+                    'smart' ? (
+                      <>
+                        <Text>{dateGroup.date}</Text>
+                        <SmartTransactionListItem
+                          transactionGroup={transactionGroup}
+                          smartTransaction={transactionGroup.initialTransaction}
+                          key={`${transactionGroup.nonce}:${index}`}
+                        />
+                      </>
+                    ) : (
+                      <>
+                        <Text>{dateGroup.date}</Text>
+                        <TransactionListItem
+                          transactionGroup={transactionGroup}
+                          key={`${transactionGroup.nonce}:${
+                            limit + index - 10
+                          }`}
+                        />
+                      </>
+                    ),
+                );
+              })
           ) : (
             <div className="transaction-list__empty">
               <div className="transaction-list__empty-text">
