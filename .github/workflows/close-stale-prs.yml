@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: yarn
 
-    - name: Run PR labelling script
+    - name: Run stale PR closing script
       run: npm run close-stale-prs
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

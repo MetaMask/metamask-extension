@@ -25,7 +25,9 @@ async function main(): Promise<void> {
 
     const response = await octokit.rest.search.issuesAndPullRequests({ q: searchQuery });
 
-    console.log({ totalCount: response.data.total_count, response });
+    const prNumbers = response.data.items.map((item) => item);
+
+    console.log({ totalCount: response.data.total_count, prNumbers });
 
     // .issues({ q: searchQuery })
     //   .then(response => {
@@ -49,8 +51,6 @@ async function main(): Promise<void> {
     //   perPage: 100,
     //   page: 1,
     // });
-
-    console.log(Object.keys(response));
 
     // const { data: pulls } = response;
 
