@@ -55,11 +55,17 @@ import {
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isEmptyHexString,
+  toChecksumHexAddress,
+} from '../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getAccountType } from '../../selectors/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
   TransactionType,
@@ -126,10 +132,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  let toAddress = txParamsToAddress;
-  if (type !== TransactionType.simpleSend) {
-    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
-  }
+
+  const isSendingAmount =
+    type === TransactionType.simpleSend || !isEmptyHexString(amount);
+
+  const toAddress = isSendingAmount
+    ? txParamsToAddress
+    : propsToAddress || tokenToAddress || txParamsToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
@@ -196,6 +205,23 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state);
+
+  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
+  let isNoteToTraderSupported = false;
+  if (
+    state.metamask.custodyAccountDetails &&
+    state.metamask.custodyAccountDetails[fromChecksumHexAddress]
+  ) {
+    const { custodianName } =
+      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
+      (custodian) => custodian.name === custodianName,
+    )?.isNoteToTraderSupported;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     balance,
     fromAddress,
@@ -246,6 +272,10 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNoteToTraderSupported,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

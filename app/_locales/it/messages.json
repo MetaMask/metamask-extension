@@ -315,9 +315,6 @@
   "assetOptions": {
     "message": "Opzioni asset"
   },
-  "assets": {
-    "message": "Patrimonio"
-  },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
   },

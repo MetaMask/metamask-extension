@@ -8,8 +8,10 @@ import {
   FONT_WEIGHT,
   OVERFLOW_WRAP,
   TextColor,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
+import { Icon, IconName, IconSize } from '../../component-library';
 
 const MARGIN_MAP = {
   [Size.XS]: 0,
@@ -48,7 +50,12 @@ export default function DefinitionList({
                 position="top"
                 containerClassName="definition-list__tooltip-wrapper"
               >
-                <i className="fas fa-info-circle" />
+                <Icon
+                  name={IconName.Info}
+                  size={IconSize.Sm}
+                  marginLeft={1}
+                  color={IconColor.iconDefault}
+                />
               </Tooltip>
             )}
           </Typography>

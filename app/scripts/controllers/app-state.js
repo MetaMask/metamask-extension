@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
+import { ApprovalType } from '@metamask/controller-utils';
 import { METAMASK_CONTROLLER_EVENTS } from '../metamask-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -12,8 +13,6 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
-
-const APPROVAL_REQUEST_TYPE = 'unlock';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -375,6 +374,25 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({ usedNetworks });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * Set the interactive replacement token with a url and the old refresh token
+   *
+   * @param {object} opts
+   * @param opts.url
+   * @param opts.oldRefreshToken
+   * @returns {void}
+   */
+  showInteractiveReplacementTokenBanner({ url, oldRefreshToken }) {
+    this.store.updateState({
+      interactiveReplacementToken: {
+        url,
+        oldRefreshToken,
+      },
+    });
+  }
+
+  ///: END:ONLY_INCLUDE_IN
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *
@@ -408,7 +426,7 @@ export default class AppStateController extends EventEmitter {
         {
           id: this._approvalRequestId,
           origin: ORIGIN_METAMASK,
-          type: APPROVAL_REQUEST_TYPE,
+          type: ApprovalType.Unlock,
         },
         true,
       )

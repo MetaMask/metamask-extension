@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { debounce } from 'lodash';
 import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
@@ -238,6 +239,16 @@ export default function WhatsNewPopup({ onClose }) {
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  const handleDebouncedScroll = debounce((target) => {
+    setShouldShowScrollButton(
+      target.scrollHeight - target.scrollTop !== target.clientHeight,
+    );
+  }, 100);
+
+  const handleScroll = (e) => {
+    handleDebouncedScroll(e.target);
+  };
+
   const handleScrollDownClick = (e) => {
     e.stopPropagation();
     idRefMap[notifications[notifications.length - 1].id].current.scrollIntoView(
@@ -245,7 +256,6 @@ export default function WhatsNewPopup({ onClose }) {
         behavior: 'smooth',
       },
     );
-    setShouldShowScrollButton(false);
   };
   useEffect(() => {
     const observer = new window.IntersectionObserver(
@@ -300,6 +310,7 @@ export default function WhatsNewPopup({ onClose }) {
       popoverRef={popoverRef}
       showScrollDown={shouldShowScrollButton && notifications.length > 1}
       onScrollDownButtonClick={handleScrollDownClick}
+      onScroll={handleScroll}
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {

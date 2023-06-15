@@ -26,7 +26,11 @@ import {
   DISPLAY,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_VARIANT, Text } from '../../component-library';
+import {
+  BUTTON_SECONDARY_SIZES,
+  ButtonSecondary,
+  Text,
+} from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -64,10 +68,15 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [showTestNetworks, showTestNetworksRef]);
 
   return (
-    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
+    <Popover
+      contentClassName="multichain-network-list-menu-content-wrapper"
+      onClose={onClose}
+      centerTitle
+      title={t('networkMenuHeading')}
+    >
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
-          {networks.map((network) => {
+          {networks.map((network, index) => {
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
@@ -77,7 +86,7 @@ export const NetworkListMenu = ({ onClose }) => {
               <NetworkListItem
                 name={network.nickname}
                 iconSrc={network?.rpcPrefs?.imageUrl}
-                key={network.id || network.chainId}
+                key={`${network.id || network.chainId}-${index}`}
                 selected={isCurrentNetwork}
                 onClick={async () => {
                   dispatch(toggleNetworkMenu());
@@ -158,8 +167,8 @@ export const NetworkListMenu = ({ onClose }) => {
           />
         </Box>
         <Box padding={4}>
-          <Button
-            variant={BUTTON_VARIANT.SECONDARY}
+          <ButtonSecondary
+            size={BUTTON_SECONDARY_SIZES.LG}
             block
             onClick={() => {
               isFullScreen
@@ -175,7 +184,7 @@ export const NetworkListMenu = ({ onClose }) => {
             }}
           >
             {t('addNetwork')}
-          </Button>
+          </ButtonSecondary>
         </Box>
       </>
     </Popover>

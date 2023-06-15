@@ -26,7 +26,6 @@ import {
 } from '../../../store/actions';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { TextField } from '../../../components/component-library';
-import { Icon } from '../../../components/component-library/icon/deprecated';
 import NetworkDropdown from '../../../components/app/dropdowns/network-dropdown';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import {
@@ -232,7 +231,6 @@ export default function PrivacySettings() {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
-                      icon={<Icon name="add" marginRight={2} />}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
                     </Button>

@@ -34,7 +34,6 @@
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   &__custody-logo {
     &--icon {
       height: 16px;
@@ -46,7 +45,6 @@
       }
     }
   }
-  ///: END:ONLY_INCLUDE_IN
 
   &__contents {
     display: flex;

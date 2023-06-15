@@ -193,7 +193,7 @@ export const MAINNET_RPC_URL = getRpcUrl({
 });
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
-export const LINEA_TESTNET_RPC_URL = 'https://rpc.goerli.linea.build';
+export const LINEA_TESTNET_RPC_URL = `https://linea-goerli.infura.io/v3/${infuraProjectId}`;
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 /**
@@ -203,7 +203,7 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
-  AURORA: 'Aurora ETH',
+  AURORA_ETH: 'AURORA ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -381,6 +381,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -575,7 +576,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     chainId: CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AURORA,
+    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://aurorascan.dev/',
       imageUrl: AURORA_TOKEN_IMAGE_URL,

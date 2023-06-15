@@ -391,10 +391,132 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
+const STALELIST_URL =
+  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
+
+const emptyHtmlPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>title</title>
+  </head>
+  <body>
+    Empty page
+  </body>
+</html>`;
+
+/**
+ * Setup fetch mocks for the phishing detection feature.
+ *
+ * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
+ * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
+ *
+ * @param {import('mockttp').Mockttp} mockServer - The mock server.
+ * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
+ * configuration lookup performed by the warning page.
+ */
+async function setupPhishingDetectionMocks(
+  mockServer,
+  metamaskPhishingConfigResponse,
+) {
+  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        version: 2,
+        tolerance: 2,
+        fuzzylist: [],
+        allowlist: [],
+        blocklist: ['127.0.0.1'],
+        lastUpdated: 0,
+      },
+    };
+  });
+
+  await mockServer
+    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+  await mockServer
+    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage,
+      };
+    });
+
+  await mockServer
+    .forGet(
+      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
+    )
+    .thenCallback(() => metamaskPhishingConfigResponse);
+}
+
+function mockPhishingDetection(mockServer) {
+  setupPhishingDetectionMocks(mockServer, {
+    statusCode: 200,
+    json: {
+      version: 2,
+      tolerance: 2,
+      fuzzylist: [],
+      whitelist: [],
+      blacklist: ['127.0.0.1'],
+      lastUpdated: 0,
+    },
+  });
+}
+
+const PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+
+const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const defaultGanacheOptions = {
+  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+};
+
+const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
+
+const sendTransaction = async (driver, recipientAddress, quantity) => {
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+  await driver.fill('[data-testid="ens-input"]', recipientAddress);
+  await driver.fill('.unit-input__input', quantity);
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="page-container-footer-next"]');
+  await driver.clickElement('[data-testid="home__activity-tab"]');
+  await driver.findElement('.transaction-list-item');
+};
+
+const findAnotherAccountFromAccountList = async (
+  driver,
+  itemNumber,
+  accountName,
+) => {
+  await driver.clickElement('.account-menu__icon');
+  const accountMenuItemSelector = `.account-menu__account:nth-child(${itemNumber})`;
+  const fourthAccountName = await driver.findElement(
+    `${accountMenuItemSelector} .account-menu__name`,
+  );
+  assert.equal(await fourthAccountName.getText(), accountName);
+  return accountMenuItemSelector;
+};
+
+const TEST_SEED_PHRASE =
+  'forum vessel pink push lonely enact gentle tail admit parrot grunt dress';
+
+const TEST_SEED_PHRASE_TWO =
+  'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
+  SERVICE_WORKER_URL,
+  TEST_SEED_PHRASE,
+  TEST_SEED_PHRASE_TWO,
   getWindowHandles,
   convertToHexValue,
   tinyDelayMs,
@@ -410,4 +532,9 @@ module.exports = {
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
+  mockPhishingDetection,
+  setupPhishingDetectionMocks,
+  defaultGanacheOptions,
+  sendTransaction,
+  findAnotherAccountFromAccountList,
 };
