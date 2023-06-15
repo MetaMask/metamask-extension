@@ -213,7 +213,7 @@ export default function SlippageButtons({
                     paddingRight={2}
                     fontWeight={FontWeight.Bold}
                   >
-                    {t('smartTransaction')}
+                    {t('smartSwap')}
                   </Text>
                   {currentSmartTransactionsError ? (
                     <InfoTooltip

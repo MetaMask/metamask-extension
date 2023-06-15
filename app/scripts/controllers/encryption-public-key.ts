@@ -45,7 +45,7 @@ export type CoreMessage = AbstractMessage & {
 };
 
 export type StateMessage = Required<
-  Omit<AbstractMessage, 'securityProviderResponse'>
+  Omit<AbstractMessage, 'securityProviderResponse' | 'metadata'>
 > & {
   msgParams: string;
 };

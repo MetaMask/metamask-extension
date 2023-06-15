@@ -136,6 +136,11 @@ function defaultFixture() {
             id: 19,
             isShown: true,
           },
+          21: {
+            date: null,
+            id: 21,
+            isShown: true,
+          },
         },
       },
       AppStateController: {
@@ -184,6 +189,7 @@ function defaultFixture() {
           [CHAIN_IDS.MAINNET]: null,
           [CHAIN_IDS.GOERLI]: null,
           [CHAIN_IDS.SEPOLIA]: null,
+          [CHAIN_IDS.LINEA_GOERLI]: null,
         },
       },
       KeyringController: {

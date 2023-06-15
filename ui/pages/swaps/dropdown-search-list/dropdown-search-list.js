@@ -13,6 +13,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
+import {
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
 import {
@@ -210,7 +215,7 @@ export default function DropdownSearchList({
               </div>
             </div>
           </div>
-          <i className="fa fa-caret-down fa-lg dropdown-search-list__caret" />
+          <Icon name={IconName.ArrowDown} size={IconSize.Xs} marginRight={3} />
         </div>
       )}
       {isOpen && (
@@ -238,7 +243,7 @@ export default function DropdownSearchList({
                       key="searchable-item-list-item-last"
                     >
                       <ActionableMessage
-                        message={t('addCustomTokenByContractAddress', [
+                        message={t('addTokenByContractAddress', [
                           <a
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {

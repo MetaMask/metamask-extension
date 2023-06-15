@@ -36,8 +36,11 @@ export function getConfiguredCustodians(state) {
 export function getCustodianIconForAddress(state, address) {
   let custodianIcon;
 
-  const checksummedAddress = toChecksumAddress(address);
-  if (state.metamask.custodyAccountDetails?.[checksummedAddress]) {
+  const checksummedAddress = address && toChecksumAddress(address);
+  if (
+    checksummedAddress &&
+    state.metamask.custodyAccountDetails?.[checksummedAddress]
+  ) {
     const { custodianName } =
       state.metamask.custodyAccountDetails[checksummedAddress];
     custodianIcon = state.metamask.mmiConfiguration?.custodians?.find(
