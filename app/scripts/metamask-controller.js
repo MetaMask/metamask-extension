@@ -350,7 +350,7 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      setMmiPortfolioCookie: this.setMmiPortfolioCookie.bind(this),
+      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
     });
@@ -518,12 +518,10 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getProviderAndBlockTracker().provider,
       // NOTE: This option is inaccurately named; it should be called
       // onNetworkDidChange
-      onNetworkStateChange: (eventHandler) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:networkDidChange',
-          () => eventHandler(this.networkController.store.getState()),
-        );
-      },
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:networkDidChange',
+      ),
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -537,8 +535,11 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.getState().providerConfig;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
-      getChainId: () =>
-        this.networkController.store.getState().providerConfig.chainId,
+      getChainId: () => {
+        return process.env.IN_TEST
+          ? CHAIN_IDS.MAINNET
+          : this.networkController.store.getState().providerConfig.chainId;
+      },
     });
 
     this.qrHardwareKeyring = new QRHardwareKeyring();
@@ -3889,7 +3890,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        setMmiPortfolioCookie: this.setMmiPortfolioCookie.bind(this),
+        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -3954,7 +3955,7 @@ export default class MetamaskController extends EventEmitter {
    * so it needs to be here and not in our controller because
    * preferences controllers is initiated first
    */
-  async setMmiPortfolioCookie() {
+  async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
     const { identities } = this.preferencesController.store.getState();
