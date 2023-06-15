@@ -241,7 +241,7 @@ async function retrieveLinkedIssues(octokit: InstanceType<typeof GitHub>, repoOw
   query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
     repository(owner: $repoOwner, name: $repoName) {
       pullRequest(number: $prNumber) {
-        closingIssuesReferences(first: 100) { # Assuming a PR would not close more than 100 issues
+        closingIssuesReferences(first: 100) {
           nodes {
             id
             number
