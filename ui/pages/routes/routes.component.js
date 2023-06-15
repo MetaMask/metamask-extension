@@ -22,6 +22,7 @@ import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
+import CreateAccountPage from '../create-account/create-account.component';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
@@ -62,6 +63,7 @@ import {
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
   LOCK_ROUTE,
+  NEW_ACCOUNT_ROUTE,
   RESTORE_VAULT_ROUTE,
   REVEAL_SEED_ROUTE,
   SEND_ROUTE,
@@ -90,7 +92,6 @@ import {
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
-  CONNECT_HARDWARE_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -110,7 +111,6 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
-import CreateAccountPage from '../create-account/create-account.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -326,7 +326,7 @@ export default class Routes extends Component {
         {
           ///: END:ONLY_INCLUDE_IN
         }
-        <Authenticated path={CONNECT_HARDWARE_ROUTE} component={CreateAccountPage} />
+        <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
