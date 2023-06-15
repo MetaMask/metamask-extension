@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  regularDelayMs,
+} = require('../helpers');
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -96,14 +101,14 @@ describe('Custom network', function () {
       },
     );
   });
-  it("don't add bad rpc custom network", async function () {
+
+  it('don’t add bad rpc custom network', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
@@ -135,16 +140,23 @@ describe('Custom network', function () {
           'MetaMask Notification',
           windowHandles,
         );
+
+        const errMsg1 = 'verify the network details';
+        await driver.findElement({
+          tag: 'a',
+          text: errMsg1,
+        });
+
         await driver.clickElement({
           tag: 'button',
           text: 'Approve',
         });
 
-        const errMsg =
+        const errMsg2 =
           'Chain ID returned by the custom network does not match the submitted chain ID.';
         await driver.findElement({
           tag: 'span',
-          text: errMsg,
+          text: errMsg2,
         });
 
         const approveBtn = await driver.findElement({
@@ -161,7 +173,7 @@ describe('Custom network', function () {
     );
   });
 
-  it("don't add unreachable custom network", async function () {
+  it('don’t add unreachable custom network', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -236,21 +248,23 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ tag: 'div', text: 'Settings' });
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
+
         await driver.clickElement({ tag: 'button', text: 'Add network' });
-
         await driver.clickElement({
           tag: 'button',
           text: 'Add',
         });
+
         // verify network details
         const title = await driver.findElement({
           tag: 'h6',
           text: 'Arbitrum One',
         });
+
         assert.equal(
           await title.getText(),
           'Arbitrum One',
@@ -298,7 +312,7 @@ describe('Custom network', function () {
         });
         // verify network switched
         const networkDisplayed = await driver.findElement({
-          tag: 'span',
+          tag: 'p',
           text: 'Arbitrum One',
         });
         assert.equal(
@@ -322,10 +336,10 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ tag: 'div', text: 'Settings' });
+        // Avoid a stale element error
+        await driver.delay(regularDelayMs);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ tag: 'button', text: 'Add network' });
 
         // had to put all Add elements in list since list is changing and networks are not always in same order
@@ -342,11 +356,13 @@ describe('Custom network', function () {
         });
 
         // verify if added network is in list of networks
-        const networkDisplay = await driver.findElement('.network-display');
+        const networkDisplay = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
         await networkDisplay.click();
 
         const arbitrumNetwork = await driver.findElements({
-          text: `Arbitrum One`,
+          text: 'Arbitrum One',
           tag: 'span',
         });
         assert.ok(arbitrumNetwork.length, 1);
@@ -354,7 +370,7 @@ describe('Custom network', function () {
     );
   });
 
-  it('Add a custom network and then delete that same network', async function () {
+  it('Delete the Arbitrum network', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -378,30 +394,24 @@ describe('Custom network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Networks', tag: 'div' });
 
         const arbitrumNetwork = await driver.clickElement({
-          text: `Arbitrum One`,
+          text: 'Arbitrum One',
           tag: 'div',
         });
 
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Delete',
-        });
+        // Click first Delete button
+        await driver.clickElement('button.btn-danger');
 
-        await driver.waitForSelector('.modal-container__footer', {
-          timeout: 15000,
-        });
-        // should be deleted from the modal shown again to complete  deletion custom network
-        await driver.clickElement({
-          tag: 'button',
-          text: 'Delete',
-        });
+        // Click modal Delete button
+        await driver.clickElement('button.btn-danger-primary');
 
-        // it checks if custom network is delete
+        // Checks if Arbitrum is deleted
         const existNetwork = await driver.isElementPresent(arbitrumNetwork);
         assert.equal(existNetwork, false, 'Network is not deleted');
       },

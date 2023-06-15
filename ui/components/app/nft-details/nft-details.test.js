@@ -3,6 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
+import { toHex } from '@metamask/controller-utils';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -43,7 +44,7 @@ describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][5];
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
 
   const props = {
     nft: nfts[5],
@@ -203,6 +204,13 @@ describe('NFT Details', () => {
           providerConfig: {
             chainId: '0x89',
           },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+            },
+          },
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -262,6 +270,13 @@ describe('NFT Details', () => {
           ...mockState.metamask,
           providerConfig: {
             chainId: '0x99',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x99',
+              nickname: 'Custom Mainnet RPC',
+            },
           },
         },
       };

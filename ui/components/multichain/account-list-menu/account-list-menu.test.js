@@ -4,11 +4,7 @@ import reactRouterDom from 'react-router-dom';
 import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import {
-  NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 import { AccountListMenu } from '.';
 
 const render = (props = { onClose: () => jest.fn() }) => {
@@ -48,16 +44,24 @@ describe('AccountListMenu', () => {
     expect(getByText('Hardware wallet')).toBeInTheDocument();
   });
 
-  it('navigates to new account screen when clicked', () => {
-    const { getByText } = render();
+  it('shows the account creation UI when Add Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
     fireEvent.click(getByText('Add account'));
-    expect(historyPushMock).toHaveBeenCalledWith(NEW_ACCOUNT_ROUTE);
+    expect(getByText('Create')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
-  it('navigates to import account screen when clicked', () => {
-    const { getByText } = render();
+  it('shows the account import UI when Import Account is clicked', () => {
+    const { getByText, getByPlaceholderText } = render();
     fireEvent.click(getByText('Import account'));
-    expect(historyPushMock).toHaveBeenCalledWith(IMPORT_ACCOUNT_ROUTE);
+    expect(getByText('Import')).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
+
+    fireEvent.click(getByText('Cancel'));
+    expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
   });
 
   it('navigates to hardware wallet connection screen when clicked', () => {

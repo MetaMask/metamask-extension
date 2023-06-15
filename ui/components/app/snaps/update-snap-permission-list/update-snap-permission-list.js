@@ -16,25 +16,7 @@ export default function UpdateSnapPermissionList({
   return (
     <Box paddingTop={1}>
       {getWeightedPermissions(t, newPermissions, targetSubjectMetadata).map(
-        (permission, index) => {
-          return (
-            <PermissionCell
-              title={permission.label}
-              description={permission.description}
-              weight={permission.weight}
-              avatarIcon={permission.leftIcon}
-              dateApproved={permission?.permissionValue?.date}
-              key={`${permission.permissionName}-${index}`}
-            />
-          );
-        },
-      )}
-      {getWeightedPermissions(
-        t,
-        approvedPermissions,
-        targetSubjectMetadata,
-      ).map((permission, index) => {
-        return (
+        (permission, index) => (
           <PermissionCell
             title={permission.label}
             description={permission.description}
@@ -43,23 +25,35 @@ export default function UpdateSnapPermissionList({
             dateApproved={permission?.permissionValue?.date}
             key={`${permission.permissionName}-${index}`}
           />
-        );
-      })}
-      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
-        (permission, index) => {
-          return (
-            <PermissionCell
-              title={permission.label}
-              description={permission.description}
-              weight={permission.weight}
-              avatarIcon={permission.leftIcon}
-              dateApproved={permission?.permissionValue?.date}
-              key={`${permission.permissionName}-${index}`}
-              revoked
-            />
-          );
-        },
+        ),
       )}
+      {getWeightedPermissions(t, revokedPermissions, targetSubjectMetadata).map(
+        (permission, index) => (
+          <PermissionCell
+            title={permission.label}
+            description={permission.description}
+            weight={permission.weight}
+            avatarIcon={permission.leftIcon}
+            dateApproved={permission?.permissionValue?.date}
+            key={`${permission.permissionName}-${index}`}
+            revoked
+          />
+        ),
+      )}
+      {getWeightedPermissions(
+        t,
+        approvedPermissions,
+        targetSubjectMetadata,
+      ).map((permission, index) => (
+        <PermissionCell
+          title={permission.label}
+          description={permission.description}
+          weight={permission.weight}
+          avatarIcon={permission.leftIcon}
+          dateApproved={permission?.permissionValue?.date}
+          key={`${permission.permissionName}-${index}`}
+        />
+      ))}
     </Box>
   );
 }

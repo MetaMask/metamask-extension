@@ -56,7 +56,7 @@ describe('Import ERC1155 NFT', function () {
         assert.equal(await importedERC1155.isDisplayed(), true);
 
         const importedERC1155Image = await driver.findVisibleElement(
-          '.nfts-items__item img',
+          '.nft-item__item',
         );
         assert.equal(await importedERC1155Image.isDisplayed(), true);
       },

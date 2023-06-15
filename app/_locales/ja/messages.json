@@ -359,12 +359,6 @@
     "message": "すべての $1 へのアクセスとその送金を許可しますか？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "承認してインストール"
-  },
-  "approveAndUpdate": {
-    "message": "承認して更新"
-  },
   "approveButtonText": {
     "message": "承認"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "戻る"
-  },
-  "backToAll": {
-    "message": "一覧に戻る"
   },
   "backup": {
     "message": "バックアップ"
@@ -642,9 +633,6 @@
   "connectAccountOrCreate": {
     "message": "アカウントを接続するか、または新規に作成します"
   },
-  "connectHardwareWallet": {
-    "message": "ハードウェアウォレットの接続"
-  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -760,7 +748,7 @@
     "message": "トークンコントラクト"
   },
   "convertTokenToNFTDescription": {
-    "message": "このアセットは NFT であることが検出されました。Metamask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
+    "message": "このアセットは NFT であることが検出されました。MetaMask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
   },
   "convertTokenToNFTExistDescription": {
     "message": "このアセットは NFT として追加されていることが検出されました。トークンリストから削除しますか？"
@@ -788,9 +776,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAccount": {
-    "message": "アカウントを作成"
   },
   "createNewWallet": {
     "message": "新規ウォレットを作成"
@@ -1636,9 +1621,6 @@
   "importTokenWarning": {
     "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります!"
   },
-  "importTokens": {
-    "message": "トークンをインポート"
-  },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
@@ -1990,9 +1972,6 @@
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "missingToken": {
-    "message": "トークンが見当たりませんか？"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
@@ -2234,9 +2213,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",
@@ -2817,9 +2793,6 @@
   "receive": {
     "message": "受領"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリックアドレス (0x)、またはENS"
   },
@@ -3214,9 +3187,6 @@
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
   },
-  "showHide": {
-    "message": "表示・非表示"
-  },
   "showIncomingTransactions": {
     "message": "受信トランザクションを表示"
   },
@@ -3284,10 +3254,12 @@
     "message": "スナップをインストール"
   },
   "snapInstallWarningCheck": {
-    "message": "理解したことを確認するために、次の項目にチェックを入れてください."
+    "message": "理解したことを確認するために、次の項目にチェックを入れてください.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
+    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
@@ -3415,9 +3387,6 @@
   },
   "status": {
     "message": "ステータス"
-  },
-  "statusConnected": {
-    "message": "接続済み"
   },
   "statusNotConnected": {
     "message": "未接続"
@@ -3572,10 +3541,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "このスワップを完了させるには、さらに$1の$2が必要です。",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "最善の$1の見積もり。",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1と一致するトークンがありません",
@@ -3927,10 +3892,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 要求の設定"
   },
-  "toggleTestNetworks": {
-    "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "トークン"
   },
@@ -4097,9 +4058,6 @@
   "transfer": {
     "message": "送金"
   },
-  "transferBetweenAccounts": {
-    "message": "自分のアカウント間での振替"
-  },
   "transferFrom": {
     "message": "送金元"
   },
@@ -4109,10 +4067,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
-  },
-  "troubleTokenBalances": {
-    "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "パーミッションを付与することで、次の$1による資金へのアクセスが許可されます"

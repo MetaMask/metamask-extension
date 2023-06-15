@@ -83,34 +83,12 @@ type NetworkConfigurationId = string;
 type ChainId = Hex;
 
 /**
- * The set of event types that NetworkController can publish via its messenger.
- */
-export enum NetworkControllerEventType {
-  /**
-   * @see {@link NetworkControllerNetworkDidChangeEvent}
-   */
-  NetworkDidChange = 'NetworkController:networkDidChange',
-  /**
-   * @see {@link NetworkControllerNetworkWillChangeEvent}
-   */
-  NetworkWillChange = 'NetworkController:networkWillChange',
-  /**
-   * @see {@link NetworkControllerInfuraIsBlockedEvent}
-   */
-  InfuraIsBlocked = 'NetworkController:infuraIsBlocked',
-  /**
-   * @see {@link NetworkControllerInfuraIsUnblockedEvent}
-   */
-  InfuraIsUnblocked = 'NetworkController:infuraIsUnblocked',
-}
-
-/**
  * `networkWillChange` is published when the current network is about to be
  * switched, but the new provider has not been created and no state changes have
  * occurred yet.
  */
 export type NetworkControllerNetworkWillChangeEvent = {
-  type: NetworkControllerEventType.NetworkWillChange;
+  type: 'NetworkController:networkWillChange';
   payload: [];
 };
 
@@ -119,7 +97,7 @@ export type NetworkControllerNetworkWillChangeEvent = {
  * switched network (but before the network has been confirmed to be available).
  */
 export type NetworkControllerNetworkDidChangeEvent = {
-  type: NetworkControllerEventType.NetworkDidChange;
+  type: 'NetworkController:networkDidChange';
   payload: [];
 };
 
@@ -129,7 +107,7 @@ export type NetworkControllerNetworkDidChangeEvent = {
  * location.
  */
 export type NetworkControllerInfuraIsBlockedEvent = {
-  type: NetworkControllerEventType.InfuraIsBlocked;
+  type: 'NetworkController:infuraIsBlocked';
   payload: [];
 };
 
@@ -139,7 +117,7 @@ export type NetworkControllerInfuraIsBlockedEvent = {
  * their location, or the network is switched to a non-Infura network.
  */
 export type NetworkControllerInfuraIsUnblockedEvent = {
-  type: NetworkControllerEventType.InfuraIsUnblocked;
+  type: 'NetworkController:infuraIsUnblocked';
   payload: [];
 };
 
@@ -152,15 +130,29 @@ export type NetworkControllerEvent =
   | NetworkControllerInfuraIsBlockedEvent
   | NetworkControllerInfuraIsUnblockedEvent;
 
+export type NetworkControllerGetProviderConfigAction = {
+  type: `NetworkController:getProviderConfig`;
+  handler: () => ProviderConfiguration;
+};
+
+export type NetworkControllerGetEthQueryAction = {
+  type: `NetworkController:getEthQuery`;
+  handler: () => EthQuery | undefined;
+};
+
+export type NetworkControllerAction =
+  | NetworkControllerGetProviderConfigAction
+  | NetworkControllerGetEthQueryAction;
+
 /**
  * The messenger that the NetworkController uses to publish events.
  */
 export type NetworkControllerMessenger = RestrictedControllerMessenger<
   typeof name,
-  never,
+  NetworkControllerAction,
   NetworkControllerEvent,
-  never,
-  NetworkControllerEventType
+  string,
+  string
 >;
 
 /**
@@ -196,6 +188,10 @@ export type ProviderConfiguration = {
   rpcPrefs?: {
     blockExplorerUrl?: string;
   };
+  /**
+   * The ID of the network configuration used to build this provider config.
+   */
+  id?: NetworkConfigurationId;
 };
 
 /**
@@ -372,9 +368,7 @@ function buildDefaultNetworkStatusState(): NetworkStatus {
  */
 function buildDefaultNetworkDetailsState(): NetworkDetails {
   return {
-    EIPS: {
-      1559: undefined,
-    },
+    EIPS: {},
   };
 }
 
@@ -456,6 +450,8 @@ export class NetworkController extends EventEmitter {
 
   #blockTrackerProxy: SwappableProxy<PollingBlockTracker> | null;
 
+  #ethQuery: EthQuery | undefined;
+
   #infuraProjectId: NetworkControllerOptions['infuraProjectId'];
 
   #trackMetaMetricsEvent: NetworkControllerOptions['trackMetaMetricsEvent'];
@@ -499,6 +495,13 @@ export class NetworkController extends EventEmitter {
     }
     this.#infuraProjectId = infuraProjectId;
     this.#trackMetaMetricsEvent = trackMetaMetricsEvent;
+
+    this.#messenger.registerActionHandler(`${name}:getProviderConfig`, () => {
+      return this.store.getState().providerConfig;
+    });
+    this.#messenger.registerActionHandler(`${name}:getEthQuery`, () => {
+      return this.#ethQuery;
+    });
   }
 
   /**
@@ -582,7 +585,7 @@ export class NetworkController extends EventEmitter {
    * blocking requests, or if the network is not Infura-supported.
    */
   async lookupNetwork(): Promise<void> {
-    const { chainId, type } = this.store.getState().providerConfig;
+    const { type } = this.store.getState().providerConfig;
     const { provider } = this.getProviderAndBlockTracker();
     let networkChanged = false;
     let networkId: NetworkIdState = null;
@@ -596,29 +599,16 @@ export class NetworkController extends EventEmitter {
       return;
     }
 
-    if (!chainId) {
-      log.warn(
-        'NetworkController - lookupNetwork aborted due to missing chainId',
-      );
-      this.#resetNetworkId();
-      this.#resetNetworkStatus();
-      this.#resetNetworkDetails();
-      return;
-    }
-
     const isInfura = isInfuraProviderType(type);
 
     const listener = () => {
       networkChanged = true;
       this.#messenger.unsubscribe(
-        NetworkControllerEventType.NetworkDidChange,
+        'NetworkController:networkDidChange',
         listener,
       );
     };
-    this.#messenger.subscribe(
-      NetworkControllerEventType.NetworkDidChange,
-      listener,
-    );
+    this.#messenger.subscribe('NetworkController:networkDidChange', listener);
 
     try {
       const results = await Promise.all([
@@ -664,10 +654,7 @@ export class NetworkController extends EventEmitter {
       // in the process of being called, so we don't need to go further.
       return;
     }
-    this.#messenger.unsubscribe(
-      NetworkControllerEventType.NetworkDidChange,
-      listener,
-    );
+    this.#messenger.unsubscribe('NetworkController:networkDidChange', listener);
 
     this.store.updateState({
       networkStatus,
@@ -692,15 +679,15 @@ export class NetworkController extends EventEmitter {
 
     if (isInfura) {
       if (networkStatus === NetworkStatus.Available) {
-        this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
+        this.#messenger.publish('NetworkController:infuraIsUnblocked');
       } else if (networkStatus === NetworkStatus.Blocked) {
-        this.#messenger.publish(NetworkControllerEventType.InfuraIsBlocked);
+        this.#messenger.publish('NetworkController:infuraIsBlocked');
       }
     } else {
       // Always publish infuraIsUnblocked regardless of network status to
       // prevent consumers from being stuck in a blocked state if they were
       // previously connected to an Infura network that was blocked
-      this.#messenger.publish(NetworkControllerEventType.InfuraIsUnblocked);
+      this.#messenger.publish('NetworkController:infuraIsUnblocked');
     }
   }
 
@@ -755,6 +742,7 @@ export class NetworkController extends EventEmitter {
       ticker: 'ticker' in network ? network.ticker : 'ETH',
       nickname: undefined,
       rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
+      id: undefined,
     });
   }
 
@@ -892,12 +880,13 @@ export class NetworkController extends EventEmitter {
    * the new network.
    */
   async #switchNetwork(providerConfig: ProviderConfiguration) {
-    this.#messenger.publish(NetworkControllerEventType.NetworkWillChange);
+    const { type, rpcUrl, chainId } = providerConfig;
+    this.#messenger.publish('NetworkController:networkWillChange');
     this.#resetNetworkId();
     this.#resetNetworkStatus();
     this.#resetNetworkDetails();
-    this.#configureProvider(providerConfig);
-    this.#messenger.publish(NetworkControllerEventType.NetworkDidChange);
+    this.#configureProvider({ type, rpcUrl, chainId });
+    this.#messenger.publish('NetworkController:networkDidChange');
     await this.lookupNetwork();
   }
 
@@ -906,8 +895,7 @@ export class NetworkController extends EventEmitter {
    * block tracker) to talk to a network.
    *
    * @param args - The arguments.
-   * @param args.type - The shortname of an Infura-supported network (see
-   * {@link NETWORK_TYPES}).
+   * @param args.type - The provider type.
    * @param args.rpcUrl - The URL of the RPC endpoint that represents the
    * network. Only used for non-Infura networks.
    * @param args.chainId - The chain ID of the network (as per EIP-155). Only
@@ -915,21 +903,43 @@ export class NetworkController extends EventEmitter {
    * any Infura-supported network).
    * @throws if the `type` if not a known Infura-supported network.
    */
-  #configureProvider({ type, rpcUrl, chainId }: ProviderConfiguration): void {
+  #configureProvider({
+    type,
+    rpcUrl,
+    chainId,
+  }: {
+    type: ProviderType;
+    rpcUrl: string | undefined;
+    chainId: Hex | undefined;
+  }): void {
     const isInfura = isInfuraProviderType(type);
     if (isInfura) {
-      // infura type-based endpoints
       this.#configureInfuraProvider({
         type,
         infuraProjectId: this.#infuraProjectId,
       });
-    } else if (type === NETWORK_TYPES.RPC && rpcUrl) {
-      // url-based rpc endpoints
+    } else if (type === NETWORK_TYPES.RPC) {
+      if (chainId === undefined) {
+        throw new Error('chainId must be provided for custom RPC endpoints');
+      }
+      if (rpcUrl === undefined) {
+        throw new Error('rpcUrl must be provided for custom RPC endpoints');
+      }
       this.#configureStandardProvider(rpcUrl, chainId);
     } else {
-      throw new Error(
-        `NetworkController - #configureProvider - unknown type "${type}"`,
-      );
+      throw new Error(`Unrecognized network type: '${type}'`);
+    }
+  }
+
+  /**
+   * Creates a new instance of EthQuery that wraps the current provider and
+   * saves it for future usage.
+   */
+  #registerProvider() {
+    const { provider } = this.getProviderAndBlockTracker();
+
+    if (provider) {
+      this.#ethQuery = new EthQuery(provider);
     }
   }
 
@@ -956,7 +966,7 @@ export class NetworkController extends EventEmitter {
       infuraProjectId,
       type: NetworkClientType.Infura,
     });
-    this.#setProviderAndBlockTracker({ provider, blockTracker });
+    this.#updateProvider(provider, blockTracker);
   }
 
   /**
@@ -973,7 +983,27 @@ export class NetworkController extends EventEmitter {
       rpcUrl,
       type: NetworkClientType.Custom,
     });
-    this.#setProviderAndBlockTracker({ provider, blockTracker });
+    this.#updateProvider(provider, blockTracker);
+  }
+
+  /**
+   * Given a provider and a block tracker, updates any proxies pointing to
+   * these objects that have been previously set, or initializes any proxies
+   * that have not been previously set, then creates an instance of EthQuery
+   * that wraps the provider.
+   *
+   * @param provider - The provider.
+   * @param blockTracker - The block tracker.
+   */
+  #updateProvider(
+    provider: SafeEventEmitterProvider,
+    blockTracker: PollingBlockTracker,
+  ) {
+    this.#setProviderAndBlockTracker({
+      provider,
+      blockTracker,
+    });
+    this.#registerProvider();
   }
 
   /**

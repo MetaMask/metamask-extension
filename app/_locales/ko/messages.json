@@ -359,12 +359,6 @@
     "message": "내 모든 $1에 액세스 및 전송할 수 있는 권한을 부여할까요?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "승인 및 설치"
-  },
-  "approveAndUpdate": {
-    "message": "승인 및 업데이트"
-  },
   "approveButtonText": {
     "message": "승인"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "뒤로"
-  },
-  "backToAll": {
-    "message": "전체 목록으로 돌아가기"
   },
   "backup": {
     "message": "백업"
@@ -642,9 +633,6 @@
   "connectAccountOrCreate": {
     "message": "계정 연결 또는 새 계정 만들기"
   },
-  "connectHardwareWallet": {
-    "message": "하드웨어 지갑 연결"
-  },
   "connectManually": {
     "message": "현재 사이트에 수동으로 연결"
   },
@@ -788,9 +776,6 @@
   },
   "create": {
     "message": "생성"
-  },
-  "createAccount": {
-    "message": "계정 생성"
   },
   "createNewWallet": {
     "message": "새 지갑 생성"
@@ -1636,9 +1621,6 @@
   "importTokenWarning": {
     "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 거래는 사용자의 책임입니다."
   },
-  "importTokens": {
-    "message": "토큰 가져오기"
-  },
   "importTokensCamelCase": {
     "message": "토큰 가져오기"
   },
@@ -1990,9 +1972,6 @@
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
   },
-  "missingToken": {
-    "message": "토큰이 보이지 않나요?"
-  },
   "moreComingSoon": {
     "message": "더 추가 예정..."
   },
@@ -2234,9 +2213,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "notifications": {
-    "message": "알림"
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",
@@ -2817,9 +2793,6 @@
   "receive": {
     "message": "받기"
   },
-  "recents": {
-    "message": "최근"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
@@ -3214,9 +3187,6 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
-  "showHide": {
-    "message": "보기/숨기기"
-  },
   "showIncomingTransactions": {
     "message": "수신 거래 표시"
   },
@@ -3284,10 +3254,12 @@
     "message": "스냅 설치"
   },
   "snapInstallWarningCheck": {
-    "message": "이해하셨으면 모두 체크해 주세요."
+    "message": "이해하셨으면 모두 체크해 주세요.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "이해하셨으면 모든 란에 체크하세요."
+    "message": "이해하셨으면 모든 란에 체크하세요.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
@@ -3415,9 +3387,6 @@
   },
   "status": {
     "message": "상태"
-  },
-  "statusConnected": {
-    "message": "연결됨"
   },
   "statusNotConnected": {
     "message": "연결되지 않음"
@@ -3572,10 +3541,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "이 스왑을 완료하려면 $1개의 추가 $2이(가) 필요합니다.",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "$1의 최고 견적",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1와(과) 일치하는 토큰이 없습니다.",
@@ -3927,10 +3892,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 요청 토글"
   },
-  "toggleTestNetworks": {
-    "message": "$1 테스트 네트워크",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "토큰"
   },
@@ -4097,9 +4058,6 @@
   "transfer": {
     "message": "전송"
   },
-  "transferBetweenAccounts": {
-    "message": "내 계정 간 전송"
-  },
   "transferFrom": {
     "message": "전송 위치"
   },
@@ -4109,10 +4067,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
-  },
-  "troubleTokenBalances": {
-    "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "권한을 부여하면 다음 $1이(가) 귀하의 자금에 액세스할 수 있습니다."

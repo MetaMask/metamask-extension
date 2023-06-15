@@ -67,6 +67,9 @@ interface AppState {
   customTokenAmount: string;
   txId: number | null;
   accountDetailsAddress: string;
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: boolean;
+  ///: END:ONLY_INCLUDE_IN
 }
 
 interface AppSliceState {
@@ -132,6 +135,9 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: false,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default function reduceApp(
