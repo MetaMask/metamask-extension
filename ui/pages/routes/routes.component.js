@@ -90,6 +90,7 @@ import {
   DESKTOP_PAIRING_ROUTE,
   DESKTOP_ERROR_ROUTE,
   ///: END:ONLY_INCLUDE_IN
+  CONNECT_HARDWARE_ROUTE,
 } from '../../helpers/constants/routes';
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -109,6 +110,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import CreateAccountPage from '../create-account/create-account.component';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -324,6 +326,7 @@ export default class Routes extends Component {
         {
           ///: END:ONLY_INCLUDE_IN
         }
+        <Authenticated path={CONNECT_HARDWARE_ROUTE} component={CreateAccountPage} />
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
