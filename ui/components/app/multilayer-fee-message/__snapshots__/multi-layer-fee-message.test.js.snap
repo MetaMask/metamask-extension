@@ -13,6 +13,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          data-testid=""
         >
           Layer 1 fees
         </h6>
@@ -21,6 +22,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Unknown
           </h6>
@@ -31,9 +33,11 @@ exports[`Multi layer fee message when balance and token price checker is disable
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         />
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+          data-testid=""
         />
       </div>
     </div>
@@ -45,6 +49,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          data-testid=""
         >
           Total
         </h6>
@@ -53,6 +58,7 @@ exports[`Multi layer fee message when balance and token price checker is disable
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             0.001000021000 ETH
           </h6>
@@ -63,11 +69,13 @@ exports[`Multi layer fee message when balance and token price checker is disable
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         >
           Amount + fees
         </h6>
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+          data-testid=""
         />
       </div>
     </div>
@@ -88,6 +96,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          data-testid=""
         >
           Layer 1 fees
         </h6>
@@ -96,11 +105,13 @@ exports[`Multi layer fee message when balance and token price checker is enabled
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            data-testid=""
           >
             Unknown
           </h6>
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Unknown
           </h6>
@@ -111,9 +122,11 @@ exports[`Multi layer fee message when balance and token price checker is enabled
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         />
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+          data-testid=""
         />
       </div>
     </div>
@@ -125,6 +138,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          data-testid=""
         >
           Total
         </h6>
@@ -133,6 +147,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            data-testid=""
           >
             <div
               class="currency-display-component"
@@ -150,6 +165,7 @@ exports[`Multi layer fee message when balance and token price checker is enabled
           </h6>
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             0.001000021000 ETH
           </h6>
@@ -160,11 +176,13 @@ exports[`Multi layer fee message when balance and token price checker is enabled
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         >
           Amount + fees
         </h6>
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+          data-testid=""
         />
       </div>
     </div>

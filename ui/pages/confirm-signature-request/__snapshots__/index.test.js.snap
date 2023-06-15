@@ -198,6 +198,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
             </div>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              data-testid=""
             >
               https://metamask.github.io
             </span>
@@ -206,11 +207,13 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       </div>
       <h3
         class="box box--margin-top-4 box--margin-bottom-1 box--flex-direction-row typography signature-request__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Signature request
       </h3>
       <h6
         class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+        data-testid=""
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -223,6 +226,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
+            data-testid=""
           >
             Verify third-party details
           </h6>
@@ -237,6 +241,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
       >
         <p
           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-message__title typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+          data-testid=""
         >
           Mail
         </p>
@@ -248,6 +253,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           >
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+              data-testid=""
             >
               Contents
               :
@@ -255,6 +261,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+              data-testid=""
             >
               Hello, Bob!
             </span>
@@ -264,6 +271,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           >
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+              data-testid=""
             >
               From
               :
@@ -277,6 +285,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
               >
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                  data-testid=""
                 >
                   Name
                   :
@@ -284,6 +293,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                  data-testid=""
                 >
                   Cow
                 </span>
@@ -293,6 +303,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
               >
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                  data-testid=""
                 >
                   Wallets
                   :
@@ -306,6 +317,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                   >
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       0
                       :
@@ -313,9 +325,11 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                        data-testid=""
                       >
                         <div
                           class="tx-insight tx-insight-component tx-insight-component-address"
@@ -382,6 +396,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                   >
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       1
                       :
@@ -389,9 +404,11 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                        data-testid=""
                       >
                         <div
                           class="tx-insight tx-insight-component tx-insight-component-address"
@@ -462,6 +479,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           >
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+              data-testid=""
             >
               To
               :
@@ -475,6 +493,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
               >
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                  data-testid=""
                 >
                   0
                   :
@@ -488,6 +507,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                   >
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       Name
                       :
@@ -495,6 +515,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       Bob
                     </span>
@@ -504,6 +525,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                   >
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       Wallets
                       :
@@ -517,6 +539,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                       >
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           0
                           :
@@ -524,9 +547,11 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           <h6
                             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                            data-testid=""
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"
@@ -593,6 +618,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                       >
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           1
                           :
@@ -600,9 +626,11 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           <h6
                             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                            data-testid=""
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"
@@ -669,6 +697,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                       >
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           2
                           :
@@ -676,9 +705,11 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                          data-testid=""
                         >
                           <h6
                             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                            data-testid=""
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"

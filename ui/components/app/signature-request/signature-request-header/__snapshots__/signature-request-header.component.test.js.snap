@@ -88,6 +88,7 @@ exports[`SignatureRequestHeader renders correctly with fromAccount 1`] = `
         </div>
         <span
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         >
           Private network
         </span>
@@ -126,6 +127,7 @@ exports[`SignatureRequestHeader renders correctly without fromAccount 1`] = `
         </div>
         <span
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          data-testid=""
         >
           Private network
         </span>

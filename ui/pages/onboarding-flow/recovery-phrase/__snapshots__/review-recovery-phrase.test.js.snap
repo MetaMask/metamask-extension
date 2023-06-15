@@ -34,6 +34,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
     >
       <h2
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__header typography--h2 typography--weight-bold typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Write down your Secret Recovery Phrase
       </h2>
@@ -43,6 +44,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
     >
       <h4
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access.
       </h4>
@@ -52,6 +54,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
     >
       <h4
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Tips
         :
@@ -60,6 +63,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Save in a password manager
           </h4>
@@ -67,6 +71,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Store in a safe deposit box
           </h4>
@@ -74,6 +79,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Write down and store in multiple secret places
           </h4>
@@ -277,6 +283,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         />
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__secret-blocker--text typography--h6 typography--weight-normal typography--style-normal typography--color-overlay-inverse"
+          data-testid=""
         >
           Make sure nobody is looking
         </h6>
@@ -332,6 +339,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
     >
       <h2
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography recovery-phrase__header typography--h2 typography--weight-bold typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Write down your Secret Recovery Phrase
       </h2>
@@ -341,6 +349,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
     >
       <h4
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Write down this 12-word Secret Recovery Phrase and save it in a place that you trust and only you can access.
       </h4>
@@ -350,6 +359,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
     >
       <h4
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
+        data-testid=""
       >
         Tips
         :
@@ -358,6 +368,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Save in a password manager
           </h4>
@@ -365,6 +376,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Store in a safe deposit box
           </h4>
@@ -372,6 +384,7 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         <li>
           <h4
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-normal typography--style-normal typography--color-text-default"
+            data-testid=""
           >
             Write down and store in multiple secret places
           </h4>

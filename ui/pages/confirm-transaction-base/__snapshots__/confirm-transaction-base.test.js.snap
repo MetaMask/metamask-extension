@@ -341,6 +341,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       Estimated gas fee
                       <div
@@ -374,6 +375,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     >
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        data-testid=""
                       >
                         <div>
                           <div
@@ -399,6 +401,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     <div />
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      data-testid=""
                     >
                       <strong>
                         Max fee:
@@ -429,6 +432,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      data-testid=""
                     >
                       Total
                     </h6>
@@ -437,6 +441,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     >
                       <h6
                         class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        data-testid=""
                       >
                         <div
                           class="confirm-page-container-content__total-value"
@@ -463,11 +468,13 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                      data-testid=""
                     >
                       Amount + gas fee
                     </h6>
                     <h6
                       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      data-testid=""
                     >
                       <div
                         class="confirm-page-container-content__total-amount"
@@ -519,6 +526,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           >
             <h6
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+              data-testid=""
             >
               You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
             </h6>

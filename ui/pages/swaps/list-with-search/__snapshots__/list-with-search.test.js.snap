@@ -12,6 +12,7 @@ exports[`ListWithSearch renders the component with initial props 1`] = `
   <input
     autocomplete="off"
     class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-2 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+    data-testid=""
     focused="true"
     id="list-with-search__text-search"
     placeholder="Enter token name or paste address"
