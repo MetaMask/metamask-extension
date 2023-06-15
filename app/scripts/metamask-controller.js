@@ -80,7 +80,12 @@ import { SignatureController } from '@metamask/signature-controller';
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -3451,10 +3456,10 @@ export default class MetamaskController extends EventEmitter {
 
   handleWatchAssetRequest = (asset, type, origin) => {
     switch (type) {
-      case 'ERC20':
+      case ERC20:
         return this.tokensController.watchAsset(asset, type);
-      case 'ERC721':
-      case 'ERC1155':
+      case ERC721:
+      case ERC1155:
         return this.nftController.watchNft(asset, type, origin);
       default:
         throw new Error(`Asset type ${type} not supported`);

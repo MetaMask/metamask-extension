@@ -117,7 +117,7 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getSuggestedNfs', () => {
+  describe('#getSuggestedNfts', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
       expect(selectors.getSuggestedNfts({ metamask: {} })).toStrictEqual([]);
     });
