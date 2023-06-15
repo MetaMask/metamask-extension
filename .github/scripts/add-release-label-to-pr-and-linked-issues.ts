@@ -232,118 +232,76 @@ async function retrievePullRequest(octokit: InstanceType<typeof GitHub>, repoOwn
   return pullRequest;
 }
 
-// This function retrieves the timeline events for a pull request
-async function retrieveTimelineEvents(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, prNumber: number): Promise<Array<Record<string, any>>> {
 
-  // We assume there won't be more than 100 timeline events
-  const retrieveTimelineEventsQuery = `
-    query($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
-      repository(owner: $repoOwner, name: $repoName) {
-        pullRequest(number: $prNumber) {
-          timelineItems(itemTypes: [CONNECTED_EVENT, DISCONNECTED_EVENT], first: 100) {
-            nodes {
-              ... on ConnectedEvent {
-                __typename
-                createdAt
-                subject {
-                  ... on Issue {
-                    number
-                    id
-                    repository {
-                      name
-                      owner {
-                        login
-                      }
-                    }
-                  }
-                }
-              }
-              ... on DisconnectedEvent {
-                __typename
-                createdAt
-                subject {
-                  ... on Issue {
-                    number
-                    id
-                    repository {
-                      name
-                      owner {
-                        login
-                      }
-                    }
-                  }
-                }
+// This function retrieves the list of linked issues for a pull request
+async function retrieveLinkedIssues(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, prNumber: number): Promise<Labelable[]> {
+
+  // We assume there won't be more than 100 linked issues
+  const retrieveLinkedIssuesQuery = `
+  query ($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
+    repository(owner: $repoOwner, name: $repoName) {
+      pullRequest(number: $prNumber) {
+        closingIssuesReferences(first: 100) { # Assuming a PR would not close more than 100 issues
+          nodes {
+            id
+            number
+            createdAt
+            repository {
+              name
+              owner {
+                login
               }
             }
           }
         }
       }
     }
+  }
   `;
 
-  const retrieveTimelineEventsResult: {
+  const retrieveLinkedIssuesResult: {
     repository: {
       pullRequest: {
-        timelineItems: {
+        closingIssuesReferences: {
           nodes: Array<{
-            __typename: 'ConnectedEvent' | 'DisconnectedEvent';
+            id: string;
+            number: number;
             createdAt: string;
-            subject: {
-              number: number;
-              id: string;
-              repository: {
-                name: string;
-                owner: {
-                  login: string;
-                };
+            repository: {
+              name: string;
+              owner: {
+                login: string;
               };
             };
           }>;
         };
       };
     };
-  } = await octokit.graphql(retrieveTimelineEventsQuery, {
+  } = await octokit.graphql(retrieveLinkedIssuesQuery, {
     repoOwner,
     repoName,
-    prNumber,
+    prNumber
   });
 
-  const timelineEvents = retrieveTimelineEventsResult?.repository?.pullRequest?.timelineItems?.nodes;
-
-  return timelineEvents;
-}
-
-// This function retrieves the list of linked issues for a pull request
-async function retrieveLinkedIssues(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, prNumber: number): Promise<Labelable[]> {
-
-  // The list of linked issues can be deduced from timeline events
-  const timelineEvents = await retrieveTimelineEvents(octokit, repoOwner, repoName, prNumber);
-
-  const linkedIssuesMap: Record<string, Labelable> = {};
-
-  // This way to retrieve linked issues is not straightforward, but there's currently no easier way to obtain linked issues thanks to Github APIs
-  timelineEvents?.forEach((event) => {
-    const issue = event.subject;
-
-
-    if (event?.__typename === 'ConnectedEvent') {
-      linkedIssuesMap[issue.id] = {
-        id: issue.id,
-        number: issue?.number,
-        repoOwner: issue?.repository?.owner?.login,
-        repoName: issue?.repository?.name,
-        createdAt: event?.createdAt,
+  const linkedIssues = retrieveLinkedIssuesResult?.repository?.pullRequest?.closingIssuesReferences?.nodes?.map((issue: {
+    id: string;
+    number: number;
+    createdAt: string;
+    repository: {
+      name: string;
+      owner: {
+        login: string;
       };
-    } else if (event?.__typename === 'DisconnectedEvent') {
-      const linkedIssue = linkedIssuesMap[issue.id] as Labelable;
-
-      if (linkedIssue && new Date(event?.createdAt) > new Date(linkedIssue?.createdAt)) {
-        delete linkedIssuesMap[issue.id];
-      }
-    }
-  });
-
-  const linkedIssues = Object.values(linkedIssuesMap);
+    };
+  }) => {
+    return {
+      id: issue?.id,
+      number: issue?.number,
+      repoOwner: issue?.repository?.owner?.login,
+      repoName: issue?.repository?.name,
+      createdAt: issue?.createdAt
+    };
+  }) || [];
 
   return linkedIssues;
 }
