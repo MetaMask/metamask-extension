@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
+import { GitHub } from '@actions/github/lib/utils';
 
 // 30 days in milliseconds
 const A_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
@@ -21,68 +22,50 @@ async function main(): Promise<void> {
 
 
   try {
-    const searchQuery = `is:open is:pr repo:${context.repo.owner}/${context.repo.repo} updated:>2023-01-15`;
+    const A_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
+    const stalenessThreshold = Number(new Date()) - A_MONTH_IN_MS;
+    const formattedThreshold = convertDateFormat(stalenessThreshold)
+
+    console.log({ formattedThreshold });
+
+    const searchQuery = `is:open is:pr repo:${context.repo.owner}/${context.repo.repo} updated:>${formattedThreshold}`;
 
     const response = await octokit.rest.search.issuesAndPullRequests({ q: searchQuery });
 
-    const prNumbers = response.data.items.map((item) => item);
+    const prNumbers = response.data.items.map((item) => item.number);
 
-    console.log({ totalCount: response.data.total_count, prNumbers });
-
-    // .issues({ q: searchQuery })
-    //   .then(response => {
-    //     const totalIssues = response.data.total_count;
-    //     const issues = response.data.items;
-
-    //     console.log(`Total number of open issues: ${totalIssues}`);
-    //     console.log('List of issues:');
-    //     issues.forEach(issue => console.log(issue.html_url));
-    //   })
-    //   .catch(error => {
-    //     console.error('Error occurred while searching for issues:', error);
-    //   });
-
-
-    // // Get all open PRs
-    // const response = await octokit.rest.pulls.list({
-    //   owner: context.repo.owner,
-    //   repo: context.repo.repo,
-    //   state: 'open',
-    //   perPage: 100,
-    //   page: 1,
-    // });
-
-    // const { data: pulls } = response;
-
-    // const staleThreshold = Date.now() - A_MONTH_IN_MS;
-
-    // const stalePRs = [];
-    // for (const pr of pulls) {
-    //   const prLastUpdated = new Date(pr.updated_at).getTime();
-    //   console.log({ prLastUpdated });
-    //   const isPRStale = prLastUpdated < staleThreshold;
-
-    //   if (isPRStale) {
-    //     stalePRs.push(pr.number);
-    //     // // Close the PR
-    //     // await octokit.rest.pulls.update({
-    //     //   owner: context.repo.owner,
-    //     //   repo: context.repo.repo,
-    //     //   pull_number: pr.number,
-    //     //   state: 'closed',
-    //     // });
-
-    //     // // Comment on the PR
-    //     // await octokit.rest.issues.createComment({
-    //     //   owner: context.repo.owner,
-    //     //   repo: context.repo.repo,
-    //     //   issue_number: pr.number,
-    //     //   body: 'Thank you for your contribution to MetaMask Extension. In order to maintain a clean and relevant PR queue, we close all PRs after 30 days of inactivity. Please reopen this PR once your changes address our feedback.',
-    //     // });
-      // }
-    // }
-    // console.log(stalePRs);
+    for (let i = 0 ; i < prNumbers.length; i += 1) {
+      console.log(prNumbers[i]);
+      // await closeAndComment(octokit, prNumbers[i]);
+    }
   } catch (error) {
     console.error(`Error processing PRs: ${error}`);
   }
+}
+
+async function closeAndComment(octokit: InstanceType<typeof GitHub>, prNumber: number) {
+  // Close the PR
+  await octokit.rest.pulls.update({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    pull_number: prNumber,
+    state: 'closed',
+  });
+
+  // Comment on the PR
+  await octokit.rest.issues.createComment({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    issue_number: prNumber,
+    body: 'Thank you for your contribution to MetaMask Extension. In order to maintain a clean and relevant PR queue, we close all PRs after 30 days of inactivity. Please reopen this PR once your changes address our feedback.',
+  });
+}
+
+function convertDateFormat(dateString) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
