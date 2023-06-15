@@ -272,6 +272,9 @@ export class Numeric {
   ) {
     this.base = base;
     this.denomination = denomination;
+    if (value === "0x8ea1930da18e5c9a") {
+      this.test = true;
+    }
     if (value instanceof BigNumber) {
       this.value = value;
     } else if (value instanceof BN) {
@@ -336,7 +339,14 @@ export class Numeric {
    */
   toBase(base: NumericBase) {
     if (this.base !== base) {
-      return new Numeric(this.value, base, this.denomination);
+      const result = new Numeric(this.value, base, this.denomination);
+      if (this.test) {
+        console.log(`toBase: ${result.value}`);
+      }
+      return result;
+    }
+    if (this.test) {
+      console.log(`toBase: ${this.value}`);
     }
     return this;
   }
@@ -361,12 +371,21 @@ export class Numeric {
    */
   toDenomination(denomination?: EtherDenomination) {
     if (denomination && this.denomination !== denomination) {
+      if (this.test) {
+        console.log(`toDenomination: ${this}`);
+      }
       const result = new Numeric(
         toSpecifiedDenomination[denomination](getValueInETH(this)),
         this.base,
         denomination,
       );
+      if (this.test) {
+        console.log(`toDenomination: ${result.value}`);
+      }
       return result;
+    }
+    if (this.test) {
+      console.log(`toDenomination: ${this.value}`);
     }
     return this;
   }
@@ -435,11 +454,18 @@ export class Numeric {
     roundingMode: number = BigNumber.ROUND_HALF_DOWN,
   ) {
     if (typeof numberOfDecimals === 'number') {
-      return new Numeric(
+      const result = new Numeric(
         this.value.round(numberOfDecimals, roundingMode),
         this.base,
         this.denomination,
       );
+      if (this.test) {
+        console.log(`round: ${result.value}`);
+      }
+      return result;
+    }
+    if (this.test) {
+      console.log(`round: ${this.value}`);
     }
     return this;
   }
@@ -596,6 +622,9 @@ export class Numeric {
    * @returns the string representation of the Numeric
    */
   toString() {
+    if (this.test) {
+      console.log(`toString: ${this.value}`);
+    }
     return this.value.toString(this.base);
   }
 
