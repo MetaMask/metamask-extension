@@ -26,7 +26,7 @@ const IMPORT_TOKEN_ROUTE = '/import-token';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
-const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
+const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
@@ -44,6 +44,7 @@ const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
@@ -52,6 +53,8 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
+const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
+const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
 const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
 const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
@@ -129,7 +132,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
+  [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
@@ -175,6 +178,8 @@ const PATH_NAME_MAP = {
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
+  [PREPARE_SWAP_ROUTE]: 'Prepare Swap Page',
+  [SWAPS_NOTIFICATION_ROUTE]: 'Swaps Notification Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
@@ -194,7 +199,7 @@ export {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   TOKEN_DETAILS,
@@ -238,6 +243,7 @@ export {
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
@@ -247,6 +253,8 @@ export {
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
   SWAPS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,

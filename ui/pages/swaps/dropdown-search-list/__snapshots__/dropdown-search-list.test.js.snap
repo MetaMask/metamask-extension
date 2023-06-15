@@ -36,8 +36,9 @@ exports[`DropdownSearchList renders the component with initial props 1`] = `
           </div>
         </div>
       </div>
-      <i
-        class="fa fa-caret-down fa-lg dropdown-search-list__caret"
+      <span
+        class="box mm-icon mm-icon--size-xs box--margin-right-3 box--display-inline-block box--flex-direction-row box--color-inherit"
+        style="mask-image: url('./images/icons/arrow-down.svg');"
       />
     </div>
   </div>
