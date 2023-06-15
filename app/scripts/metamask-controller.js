@@ -350,7 +350,7 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+      setMmiPortfolioCookie: this.setMmiPortfolioCookie.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
     });
@@ -3889,7 +3889,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+        setMmiPortfolioCookie: this.setMmiPortfolioCookie.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
