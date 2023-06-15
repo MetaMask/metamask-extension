@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {

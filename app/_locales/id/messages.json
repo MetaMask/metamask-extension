@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menghubungkan ke jaringan uji Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Jaringan uji Linea Goerli"
   },
   "link": {

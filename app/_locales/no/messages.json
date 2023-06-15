@@ -154,7 +154,7 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Oppretter forbindelse med Linea Goerli Test Network"
   },
   "connectingToMainnet": {
