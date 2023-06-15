@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크에 연결 중"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "이 토큰을 추가할까요?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크"
   },
   "link": {

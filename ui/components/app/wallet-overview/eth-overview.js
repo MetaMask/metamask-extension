@@ -364,6 +364,39 @@ const EthOverview = ({ className }) => {
             />
             ///: END:ONLY_INCLUDE_IN
           }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            <IconButton
+              className="eth-overview__button"
+              data-testid="eth-overview-portfolio"
+              Icon={
+                <Icon
+                  name={IconName.Diagram}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              onClick={() => {
+                const url = getPortfolioUrl(
+                  '',
+                  'ext_portfolio_button',
+                  metaMetricsId,
+                );
+                global.platform.openTab({ url });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.PortfolioLinkClicked,
+                  properties: {
+                    location: 'Home',
+                    text: 'Portfolio',
+                    chain_id: chainId,
+                    token_symbol: 'ETH',
+                  },
+                });
+              }}
+            />
+            ///: END:ONLY_INCLUDE_IN
+          }
         </>
       }
       className={className}

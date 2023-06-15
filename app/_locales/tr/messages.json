@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Goerli Test Ağına Bağlanıyor"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli test ağına bağlanılıyor"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "Bu tokenleri içe aktarmak ister misiniz?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli test ağı"
   },
   "link": {

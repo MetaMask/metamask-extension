@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pieslēdzas Linea Goerli testa tīklam"
   },
   "connectingToMainnet": {
@@ -402,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testa tīkls"
   },
   "links": {

@@ -689,7 +689,7 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1840,7 +1840,7 @@
   "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Δίκτυο δοκιμών Linea Goerli"
   },
   "link": {

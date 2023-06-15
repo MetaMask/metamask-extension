@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Jungiamasi prie „Linea“ bandomojo tinklo"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "„Linea“ bandomasis tinklas"
   },
   "links": {
