@@ -52,7 +52,7 @@ export const ActivityListItem = ({
       flexWrap={FlexWrap.Wrap}
       gap={4}
     >
-      {topContent ? (
+      {topContent && (
         <Text
           variant={TextVariant.bodyMd}
           color={TextColor.textDefault}
@@ -61,14 +61,14 @@ export const ActivityListItem = ({
         >
           {topContent}
         </Text>
-      ) : null}
+      )}
       <Box
         display={Display.Flex}
         width={BlockSize.Full}
         flexDirection={FlexDirection.Row}
         gap={4}
       >
-        {icon ? <Box display={Display.InlineFlex}>{icon}</Box> : null}
+        {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
         <Box
           display={Display.InlineFlex}
           width={BlockSize.Full}
@@ -76,7 +76,7 @@ export const ActivityListItem = ({
         >
           <Box
             display={Display.InlineFlex}
-            width={[BlockSize.FourTwelfths, BlockSize.SevenTwelfths]}
+            width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
             flexDirection={FlexDirection.Column}
             className="activity-list-item__detail-container"
           >
@@ -88,7 +88,7 @@ export const ActivityListItem = ({
             >
               {title}
             </Text>
-            {subtitle ? (
+            {subtitle && (
               <Text
                 ellipsis
                 textAlign={TextAlign.Left}
@@ -97,27 +97,25 @@ export const ActivityListItem = ({
               >
                 {subtitle}
               </Text>
-            ) : null}
-            {children ? (
-              <Box className="activity-list-item__children" paddingTop={4}>
-                {children}
-              </Box>
-            ) : null}
+            )}
+            {children && (
+              <Box className="activity-list-item__children">{children}</Box>
+            )}
           </Box>
 
-          {midContent ? (
+          {midContent && (
             <Box
               display={Display.InlineFlex}
               className="activity-list-item__mid-content"
             >
               {midContent}
             </Box>
-          ) : null}
-          {rightContent ? (
+          )}
+          {rightContent && (
             <Box className="activity-list-item__right-content">
               {rightContent}
             </Box>
-          ) : null}
+          )}
         </Box>
       </Box>
     </Box>

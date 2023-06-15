@@ -19,6 +19,7 @@ import {
   Display,
   FontWeight,
   Size,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -241,7 +242,6 @@ function TransactionListItemInner({
   return (
     <>
       <ActivityListItem
-        topContent={date}
         onClick={toggleShowDetails}
         className={className}
         title={title}
@@ -314,17 +314,22 @@ function TransactionListItemInner({
                 fontweight={FontWeight.Medium}
                 color={Color.textDefault}
                 title={primaryCurrency}
+                textAlign={TextAlign.Right}
               >
                 {primaryCurrency}
               </Text>
-              <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+              <Text
+                variant={TextVariant.bodySm}
+                color={Color.textAlternative}
+                textAlign={TextAlign.Right}
+              >
                 {secondaryCurrency}
               </Text>
             </>
           )
         }
       >
-        <div className="transaction-list-item__pending-actions">
+        <Box paddingTop={4} className="transaction-list-item__pending-actions">
           {showCancelButton && (
             <CancelButton
               transaction={transactionGroup.primaryTransaction}
@@ -332,7 +337,7 @@ function TransactionListItemInner({
             />
           )}
           {speedUpButton}
-        </div>
+        </Box>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />
@@ -407,7 +412,6 @@ TransactionListItemInner.propTypes = {
 };
 
 const TransactionListItem = (props) => {
-  debugger;
   const { transactionGroup } = props;
   const [editGasMode, setEditGasMode] = useState();
   const transaction = transactionGroup.primaryTransaction;
