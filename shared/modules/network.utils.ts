@@ -1,5 +1,4 @@
 import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
-import { jsonRpcRequest } from './rpc.utils';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -58,19 +57,6 @@ function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
 }
 
-export async function shouldShowLineaMainnet(rpcUrl: string): Promise<boolean> {
-  const currentDateHigherThanReleaseDate =
-    new Date().getTime() > Date.UTC(2023, 6, 11);
-
-  if (!currentDateHigherThanReleaseDate) {
-    return false;
-  }
-
-  let chainId: string | null;
-  try {
-    chainId = (await jsonRpcRequest(rpcUrl, 'eth_chainId')) as string;
-  } catch (error) {
-    chainId = null;
-  }
-  return Boolean(chainId);
+export async function shouldShowLineaMainnet(): Promise<boolean> {
+  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
 }

@@ -3,10 +3,7 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
 ///: END:ONLY_INCLUDE_IN
-import {
-  IPFS_DEFAULT_GATEWAY_URL,
-  LINEA_MAINNET_RPC_URL,
-} from '../../../shared/constants/network';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
@@ -586,9 +583,7 @@ export default class PreferencesController {
    * A method to check is the linea mainnet network should be displayed
    */
   async _showShouldLineaMainnetNetwork() {
-    const showLineaMainnet = await shouldShowLineaMainnet(
-      LINEA_MAINNET_RPC_URL,
-    );
+    const showLineaMainnet = await shouldShowLineaMainnet();
     this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
   }
 }
