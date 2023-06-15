@@ -196,7 +196,7 @@
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/signature-controller@^2.0.0": "patch:@metamask/signature-controller@npm%3A2.0.0#./.yarn/patches/@metamask-signature-controller-npm-2.0.0-f441f2596e.patch"
+    "@metamask/signature-controller@^3.0.0": "patch:@metamask/signature-controller@npm%3A3.0.0#./.yarn/patches/@metamask-signature-controller-npm-3.0.0-8771b6885e.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
