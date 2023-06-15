@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  useEffect,
-  ///: END:ONLY_INCLUDE_IN
-} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   useDispatch,
@@ -37,7 +31,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useRejectTransactionModalHooks } from '../../../hooks/useRejectTransactionModalHooks';
+import { useRejectTransactionModal } from '../../../hooks/useRejectTransactionModal';
 
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';
@@ -47,13 +41,6 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-// eslint-disable-next-line import/order
-import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
-import Box from '../../ui/box/box';
-///: END:ONLY_INCLUDE_IN
 
 import {
   TextAlign,
@@ -77,6 +64,14 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/order
+import Box from '../../ui/box/box';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
+
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
@@ -90,6 +85,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const [hasScrolledMessage, setHasScrolledMessage] = useState(false);
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [messageRootRef, setMessageRootRef] = useState(null);
+  const [messageIsScrollable, setMessageIsScrollable] = useState(false);
 
   const {
     type,
@@ -104,7 +100,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const unapprovedMessagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const subjectMetadata = useSelector(getSubjectMetadata);
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
-  const { handleCancelAll } = useRejectTransactionModalHooks();
+  const { handleCancelAll } = useRejectTransactionModal();
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   // Used to show a warning if the signing account is not the selected account
@@ -116,8 +112,11 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const { address } = getAccountByAddress(allAccounts, from) || {};
   ///: END:ONLY_INCLUDE_IN
 
-  const messageIsScrollable =
-    messageRootRef?.scrollHeight > messageRootRef?.clientHeight;
+  useEffect(() => {
+    setMessageIsScrollable(
+      messageRootRef?.scrollHeight > messageRootRef?.clientHeight,
+    );
+  }, [messageRootRef]);
 
   const targetSubjectMetadata = txData.msgParams.origin
     ? subjectMetadata?.[txData.msgParams.origin]
@@ -163,8 +162,6 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
     primaryType,
   } = parseMessage();
 
-  const rejectNText = t('rejectRequestsN', [unapprovedMessagesCount]);
-
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   useEffect(() => {
     if (txData.custodyId) {
@@ -187,7 +184,14 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
         }),
       );
     }
-  }, []);
+  }, [
+    dispatch,
+    mmiActions,
+    txData.custodyId,
+    address,
+    isNotification,
+    trackEvent,
+  ]);
   ///: END:ONLY_INCLUDE_IN
 
   return (
@@ -323,7 +327,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
           data-testid="signature-request-reject-all"
           onClick={handleCancelAll}
         >
-          {rejectNText}
+          {t('rejectRequestsN', [unapprovedMessagesCount])}
         </Button>
       ) : null}
     </div>

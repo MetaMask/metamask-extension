@@ -67,41 +67,31 @@ jest.mock('react-redux', () => {
 });
 
 const generateUseSelectorRouter = (opts) => (selector) => {
-  if (selector === getProviderConfig) {
-    return opts.metamask.providerConfig;
+  switch (selector) {
+    case getProviderConfig:
+      return opts.metamask.providerConfig;
+    case getCurrentCurrency:
+      return opts.metamask.currentCurrency;
+    case getNativeCurrency:
+      return opts.metamask.nativeCurrency;
+    case getTotalUnapprovedMessagesCount:
+      return opts.metamask.unapprovedTypedMessagesCount;
+    case getPreferences:
+      return opts.metamask.preferences;
+    case conversionRateSelector:
+      return opts.metamask.conversionRate;
+    case getSelectedAccount:
+      return opts.metamask.accounts[opts.metamask.selectedAddress];
+    case getMemoizedAddressBook:
+      return [];
+    case accountsWithSendEtherInfoSelector:
+      return Object.values(opts.metamask.accounts);
+    case unconfirmedTransactionsHashSelector:
+    case getMemoizedMetaMaskIdentities:
+      return {};
+    default:
+      return undefined;
   }
-  if (selector === getCurrentCurrency) {
-    return opts.metamask.currentCurrency;
-  }
-  if (selector === getNativeCurrency) {
-    return opts.metamask.nativeCurrency;
-  }
-  if (selector === getTotalUnapprovedMessagesCount) {
-    return opts.metamask.unapprovedTypedMessagesCount;
-  }
-  if (selector === getPreferences) {
-    return opts.metamask.preferences;
-  }
-  if (selector === conversionRateSelector) {
-    return opts.metamask.conversionRate;
-  }
-  if (selector === getSelectedAccount) {
-    return opts.metamask.accounts[opts.metamask.selectedAddress];
-  }
-  if (
-    selector === unconfirmedTransactionsHashSelector ||
-    selector === getMemoizedMetaMaskIdentities
-  ) {
-    return {};
-  }
-  if (selector === getMemoizedAddressBook) {
-    return [];
-  }
-  if (selector === accountsWithSendEtherInfoSelector) {
-    return Object.values(opts.metamask.accounts);
-  }
-
-  return undefined;
 };
 describe('Signature Request Component', () => {
   const store = configureMockStore()(mockState);
