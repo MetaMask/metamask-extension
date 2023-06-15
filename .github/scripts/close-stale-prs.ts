@@ -27,6 +27,7 @@ async function main(): Promise<void> {
 
     const response = await octokit.rest.search.issuesAndPullRequests({ q: searchQuery });
 
+    // at most 20 PRs per run
     const prNumbers = response.data.items.map((item) => item.number);
 
     for (let i = 0 ; i < prNumbers.length; i += 1) {

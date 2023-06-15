@@ -1,11 +1,11 @@
 name: Close stale PRs
 
 on:
-  pull_request:
-    types: [assigned, opened, edited, synchronize, reopened]
+  schedule:
+    - cron: '0 0 * * *'  # This will run the action every day at 00:00
 
 jobs:
-  label-pr:
+  close_stale_prs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
