@@ -95,6 +95,7 @@ import {
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
+  clearSmartTransactionFees,
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
@@ -204,6 +205,8 @@ export default function PrepareSwapPage({
   const currentSmartTransactionsEnabled = useSelector(
     getCurrentSmartTransactionsEnabled,
   );
+  const isSmartTransaction =
+    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
   const smartTransactionsOptInPopoverDisplayed =
     smartTransactionsOptInStatus !== undefined;
   const currentSmartTransactionsError = useSelector(
@@ -622,6 +625,9 @@ export default function PrepareSwapPage({
     timeoutIdForQuotesPrefetching = setTimeout(() => {
       timeoutIdForQuotesPrefetching = null;
       if (!isReviewSwapButtonDisabled) {
+        if (isSmartTransaction) {
+          clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+        }
         // Only do quotes prefetching if the Review swap button is enabled.
         prefetchQuotesWithoutRedirecting();
       }
@@ -637,6 +643,7 @@ export default function PrepareSwapPage({
     fromTokenAddress,
     toTokenAddress,
     smartTransactionsOptInStatus,
+    isSmartTransaction,
   ]);
 
   // Set text for the main button based on different conditions.
