@@ -2861,7 +2861,6 @@ describe('NetworkController', () => {
     });
   });
 
-
   describe('getEIP1559Compatibility', () => {
     describe('if no provider has been set yet', () => {
       it('does not make any state changes', async () => {
@@ -3131,7 +3130,6 @@ describe('NetworkController', () => {
       });
     });
   });
-
 
   describe('resetConnection', () => {
     [
@@ -5169,7 +5167,6 @@ describe('NetworkController', () => {
       });
     });
   });
-
 });
 
 /**
