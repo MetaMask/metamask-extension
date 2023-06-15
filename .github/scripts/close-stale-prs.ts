@@ -2,8 +2,7 @@ import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
 
-// 30 days in milliseconds
-const A_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
+const ONE_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -22,9 +21,8 @@ async function main(): Promise<void> {
 
 
   try {
-    const A_MONTH_IN_MS = 30 * 24 * 60 * 60 * 1000;
-    const stalenessThreshold = Number(new Date()) - A_MONTH_IN_MS;
-    const formattedThreshold = convertDateFormat(stalenessThreshold)
+    const stalenessThreshold = Number(new Date()) - ONE_MONTH_IN_MS;
+    const formattedThreshold = convertDateFormat(String(stalenessThreshold));
 
     console.log({ formattedThreshold });
 
@@ -36,22 +34,14 @@ async function main(): Promise<void> {
 
     for (let i = 0 ; i < prNumbers.length; i += 1) {
       console.log(prNumbers[i]);
-      // await closeAndComment(octokit, prNumbers[i]);
+      // await commentAndClosePR(octokit, prNumbers[i]);
     }
   } catch (error) {
     console.error(`Error processing PRs: ${error}`);
   }
 }
 
-async function closeAndComment(octokit: InstanceType<typeof GitHub>, prNumber: number) {
-  // Close the PR
-  await octokit.rest.pulls.update({
-    owner: context.repo.owner,
-    repo: context.repo.repo,
-    pull_number: prNumber,
-    state: 'closed',
-  });
-
+async function commentAndClosePR(octokit: InstanceType<typeof GitHub>, prNumber: number): Promise<void> {
   // Comment on the PR
   await octokit.rest.issues.createComment({
     owner: context.repo.owner,
@@ -59,9 +49,17 @@ async function closeAndComment(octokit: InstanceType<typeof GitHub>, prNumber: n
     issue_number: prNumber,
     body: 'Thank you for your contribution to MetaMask Extension. In order to maintain a clean and relevant PR queue, we close all PRs after 30 days of inactivity. Please reopen this PR once your changes address our feedback.',
   });
+
+  // Close the PR
+  await octokit.rest.pulls.update({
+    owner: context.repo.owner,
+    repo: context.repo.repo,
+    pull_number: prNumber,
+    state: 'closed',
+  });
 }
 
-function convertDateFormat(dateString) {
+function convertDateFormat(dateString: string): string {
   const date = new Date(dateString);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
