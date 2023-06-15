@@ -22,16 +22,14 @@ import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
-import CreateAccountPage from '../create-account';
+import CreateAccountPage from '../create-account/create-account.component';
+import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
-import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
-import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import AppHeader from '../../components/app/app-header';
 import {
-  AppHeader as MultichainAppHeader,
+  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -62,6 +60,7 @@ import {
   IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -285,6 +284,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+          component={ConfirmAddSuggestedNftPage}
           exact
         />
         <Authenticated
@@ -541,36 +545,20 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() &&
-          (process.env.MULTICHAIN ? (
-            <MultichainAppHeader location={location} />
-          ) : (
-            <AppHeader
-              hideNetworkIndicator={this.onInitializationUnlockPage()}
-              disableNetworkIndicator={this.onSwapsPage()}
-              onClick={this.onAppHeaderClick}
-              disabled={
-                this.onConfirmPage() ||
-                this.onEditTransactionPage() ||
-                (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
-              }
-            />
-          ))}
+        {!this.hideAppHeader() && <AppHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
-        {completedOnboarding ? <NetworkDropdown /> : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {process.env.MULTICHAIN ? null : <AccountMenu />}
-        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+        {isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
-        {process.env.MULTICHAIN && isNetworkMenuOpen ? (
+        {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
-        {process.env.MULTICHAIN && accountDetailsAddress ? (
+        {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
         <div className="main-container-wrapper">
@@ -611,8 +599,8 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('connectingToLineaTestnet');
+      case NETWORK_TYPES.LINEA_GOERLI:
+        return t('connectingToLineaGoerli');
       default:
         return t('connectingTo', [providerId]);
     }

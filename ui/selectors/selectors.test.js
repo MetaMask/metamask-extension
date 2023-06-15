@@ -1,3 +1,4 @@
+import { ApprovalType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -17,6 +18,184 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { selectedAddress } }),
       ).toStrictEqual(selectedAddress);
+    });
+  });
+
+  describe('#getSuggestedTokens', () => {
+    it('returns an empty array if pendingApprovals is undefined', () => {
+      expect(selectors.getSuggestedTokens({ metamask: {} })).toStrictEqual([]);
+    });
+
+    it('returns suggestedTokens from filtered pending approvals', () => {
+      const pendingApprovals = {
+        1: {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        2: {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+        3: {
+          id: '3',
+          origin: 'origin',
+          time: 1,
+          type: ApprovalType.Transaction,
+          requestData: {
+            // something that is not an asset
+          },
+        },
+        4: {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getSuggestedTokens({ metamask: { pendingApprovals } }),
+      ).toStrictEqual([
+        {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('#getSuggestedNfts', () => {
+    it('returns an empty array if pendingApprovals is undefined', () => {
+      expect(selectors.getSuggestedNfts({ metamask: {} })).toStrictEqual([]);
+    });
+
+    it('returns suggestedNfts from filtered pending approvals', () => {
+      const pendingApprovals = {
+        1: {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        2: {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+        3: {
+          id: '3',
+          origin: 'origin',
+          time: 1,
+          type: ApprovalType.Transaction,
+          requestData: {
+            // something that is not an asset
+          },
+        },
+        4: {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+              standard: 'ERC721',
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getSuggestedNfts({ metamask: { pendingApprovals } }),
+      ).toStrictEqual([
+        {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+              standard: 'ERC721',
+            },
+          },
+        },
+      ]);
     });
   });
 
@@ -468,5 +647,19 @@ describe('Selectors', () => {
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);
     expect(isFantomTokenSupported).toBeFalsy();
+  });
+
+  it('returns proper values for snaps privacy warning shown status', () => {
+    mockState.metamask.snapsInstallPrivacyWarningShown = false;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = true;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(true);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = undefined;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = null;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
   });
 });

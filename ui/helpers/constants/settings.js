@@ -242,9 +242,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('lineatestnet'),
-    descriptionMessage: (t) => t('lineatestnet'),
-    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
+    sectionMessage: (t) => t('lineaGoerli'),
+    descriptionMessage: (t) => t('lineaGoerli'),
+    route: `${NETWORKS_ROUTE}#networks-linea-goerli`,
     icon: 'fa fa-plug',
   },
   {

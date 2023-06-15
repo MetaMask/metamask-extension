@@ -1,14 +1,10 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
-@import 'account-menu/index';
 @import 'add-network/index';
 @import 'advanced-gas-inputs/index';
 @import 'app-loading-spinner/index';
-@import 'import-token-link/index';
 @import 'advanced-gas-controls/index';
 @import 'alerts/alerts';
-@import 'app-header/index';
-@import 'asset-list-item/asset-list-item';
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
@@ -49,7 +45,6 @@
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
 @import 'info-box/index';
-@import 'menu-bar/index';
 @import 'modal/index';
 @import 'modals/index';
 @import 'multilayer-fee-message/index';
@@ -69,6 +64,7 @@
 @import 'signature-request-original/index';
 @import 'signature-request-original/signature-request-original-warning/index';
 @import 'srp-input/srp-input';
+@import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
@@ -94,7 +90,6 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
-@import 'asset-list/detected-tokens-link/index';
 @import 'detected-token/detected-token-address/index';
 @import 'detected-token/detected-token-aggregators/index';
 @import 'detected-token/detected-token-values/index';

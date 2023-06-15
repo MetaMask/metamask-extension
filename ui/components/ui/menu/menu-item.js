@@ -12,11 +12,13 @@ const MenuItem = ({
   iconName,
   onClick,
   subtitle,
+  disabled = false,
 }) => (
   <button
     className={classnames('menu-item', className)}
     data-testid={dataTestId}
     onClick={onClick}
+    disabled={disabled}
   >
     {iconName ? (
       <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
@@ -35,14 +37,7 @@ MenuItem.propTypes = {
   iconName: PropTypes.string,
   onClick: PropTypes.func,
   subtitle: PropTypes.node,
-};
-
-MenuItem.defaultProps = {
-  className: undefined,
-  'data-testid': undefined,
-  iconName: undefined,
-  onClick: undefined,
-  subtitle: undefined,
+  disabled: PropTypes.bool,
 };
 
 export default MenuItem;

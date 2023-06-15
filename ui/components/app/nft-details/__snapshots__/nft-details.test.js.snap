@@ -40,16 +40,37 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     class="box nft-details box--flex-direction-row"
   >
     <div
-      class="nft-details__top-section"
+      class="box nft-details__top-section box--gap-6 box--flex-direction-column"
     >
       <div
-        class="box nft-details__card box--flex-direction-row box--justify-content-center box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1 box--display-flex"
+        class="box nft-details__nft-item box--flex-direction-row"
       >
-        <img
-          alt="MUNK #1 1"
-          class="nft-details__image"
-          src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-        />
+        <button
+          class="box nft-item__container box--flex-direction-row"
+          data-testid="nft-item"
+        >
+          <div
+            class="box mm-badge-wrapper nft-item__badge-wrapper box--flex-direction-row"
+          >
+            <img
+              alt="MUNK #1 1"
+              class="box nft-item__item nft-item__item-image box--display-block box--flex-direction-row box--justify-content-center"
+              data-testid="nft-image"
+              src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+            />
+            <div
+              class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+              style="top: -4px; right: -4px;"
+            >
+              <div
+                class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-width-2 box--border-style-solid"
+                data-testid="nft-network-badge"
+              >
+                G
+              </div>
+            </div>
+          </div>
+        </button>
       </div>
       <div
         class="box nft-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"

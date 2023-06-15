@@ -2,6 +2,7 @@ const {
   convertToHexValue,
   withFixtures,
   sendTransaction,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -22,10 +23,10 @@ describe('Simple send', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
+
         await sendTransaction(
           driver,
           '0x985c30949c92df7a0bd42e0f3e3d539ece98db24',

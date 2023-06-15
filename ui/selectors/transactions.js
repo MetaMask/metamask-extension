@@ -547,7 +547,9 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
   const chainId = getCurrentChainId(state);
 
   const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
-    ({ id }) => transactionMatchesNetwork(unapprovedTxs[id], chainId),
+    ({ id }) =>
+      unapprovedTxs[id] &&
+      transactionMatchesNetwork(unapprovedTxs[id], chainId),
   );
 
   return filteredUnapprovedTxInCurrentNetwork.length > 0;
