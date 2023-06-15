@@ -221,6 +221,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const smartTransactionFees = useSelector(getSmartTransactionFees, isEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+  const isSmartTransaction =
+    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
@@ -430,11 +432,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   additionalTrackingParams.reg_tx_max_fee_in_usd = Number(maxFeeInUsd);
   additionalTrackingParams.reg_tx_max_fee_in_eth = Number(maxRawEthFee);
 
-  if (
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    smartTransactionFees?.tradeTxFees
-  ) {
+  if (isSmartTransaction && smartTransactionFees?.tradeTxFees) {
     const stxEstimatedFeeInWeiDec =
       smartTransactionFees?.tradeTxFees.feeEstimate +
       (smartTransactionFees?.approvalTxFees?.feeEstimate || 0);
@@ -500,7 +498,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     : null;
 
   let ethBalanceNeededStx;
-  if (smartTransactionsError?.balanceNeededWei) {
+  if (isSmartTransaction && smartTransactionsError?.balanceNeededWei) {
     ethBalanceNeededStx = decWEIToDecETH(
       smartTransactionsError.balanceNeededWei -
         smartTransactionsError.currentBalanceWei,
@@ -509,7 +507,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       if (insufficientTokens) {
         dispatch(setBalanceError(true));
       } else if (balanceError && !insufficientTokens) {
@@ -521,13 +519,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       dispatch(setBalanceError(false));
     }
     // eslint-disable-next-line
-  }, [
-    insufficientTokens,
-    insufficientEth,
-    dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
-  ]);
+  }, [insufficientTokens, insufficientEth, dispatch, isSmartTransaction]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -557,15 +549,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   }, [originalApproveAmount, approveAmount]);
 
   // If it's not a Smart Transaction and ETH balance is needed, we want to show a warning.
-  const isNotStxAndEthBalanceIsNeeded =
-    (!currentSmartTransactionsEnabled || !smartTransactionsOptInStatus) &&
-    ethBalanceNeeded;
+  const isNotStxAndEthBalanceIsNeeded = !isSmartTransaction && ethBalanceNeeded;
 
   // If it's a Smart Transaction and ETH balance is needed, we want to show a warning.
-  const isStxAndEthBalanceIsNeeded =
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    ethBalanceNeededStx;
+  const isStxAndEthBalanceIsNeeded = isSmartTransaction && ethBalanceNeededStx;
 
   // Indicates if we should show to a user a warning about insufficient funds for swapping.
   const showInsufficientWarning =
@@ -855,11 +842,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
 
   useEffect(() => {
-    if (
-      currentSmartTransactionsEnabled &&
-      smartTransactionsOptInStatus &&
-      !insufficientTokens
-    ) {
+    if (isSmartTransaction && !insufficientTokens) {
       const unsignedTx = {
         from: unsignedTransaction.from,
         to: unsignedTransaction.to,
@@ -893,8 +876,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     // eslint-disable-next-line
   }, [
     dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    isSmartTransaction,
     unsignedTransaction.data,
     unsignedTransaction.from,
     unsignedTransaction.value,
@@ -967,14 +949,14 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       // Removes a smart transactions error when the component loads.
       dispatch({
         type: SET_SMART_TRANSACTIONS_ERROR,
         payload: null,
       });
     }
-  }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
+  }, [isSmartTransaction, dispatch]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,
@@ -1254,11 +1236,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           /* istanbul ignore next */ () => {
             setSubmitClicked(true);
             if (!balanceError) {
-              if (
-                currentSmartTransactionsEnabled &&
-                smartTransactionsOptInStatus &&
-                smartTransactionFees?.tradeTxFees
-              ) {
+              if (isSmartTransaction && smartTransactionFees?.tradeTxFees) {
                 dispatch(
                   signAndSendSwapsSmartTransaction({
                     unsignedTransaction,
@@ -1284,11 +1262,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           }
         }
         submitText={
-          currentSmartTransactionsEnabled &&
-          smartTransactionsOptInStatus &&
-          swapsSTXLoading
-            ? t('preparingSwap')
-            : t('swap')
+          isSmartTransaction && swapsSTXLoading ? t('preparingSwap') : t('swap')
         }
         hideCancel
         disabled={isSwapButtonDisabled}
