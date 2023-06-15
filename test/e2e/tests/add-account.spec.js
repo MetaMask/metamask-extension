@@ -42,7 +42,7 @@ describe('Add account', function () {
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
-          '[data-testid="multichain-account-menu-add-account"]',
+          '[data-testid="multichain-account-menu-popover-add-account"]',
         );
 
         await driver.fill('[placeholder="Account 2"]', '2nd account');
@@ -84,7 +84,7 @@ describe('Add account', function () {
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
-          '[data-testid="multichain-account-menu-add-account"]',
+          '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
@@ -188,7 +188,7 @@ describe('Add account', function () {
         await driver.clickElement('[data-testid="account-menu-icon"]');
 
         await driver.clickElement(
-          '[data-testid="multichain-account-menu-add-account"]',
+          '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
