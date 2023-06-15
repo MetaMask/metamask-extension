@@ -4268,7 +4268,7 @@ __metadata:
 
 "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api":
   version: 0.1.0
-  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=6a5ed379c08108630119849ce8e01145e3f630c5"
+  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=12bed3376c73b162e6c9a067c0f65e04b16ebbb1"
   dependencies:
     "@ethereumjs/tx": ^4.1.2
     "@ethereumjs/util": ^8.0.5
@@ -4281,7 +4281,7 @@ __metadata:
     bn.js: ^5.2.1
     eth-rpc-errors: ^4.0.3
     uuid: ^9.0.0
-  checksum: d35caad974f6089812a0c791810ee87fc5abe11189a5a1b8eeb9a1e25c0624bf201ddb1cc717ff42d1a78333ed648b666918994cdbb23e687bc16d8cefe87479
+  checksum: a131b1912743f366d4ab46754eabd5b66eec38f55efedec14b7d9f78f090eb3c4628ed44c15b2635e47ad6f79e1fce410eeb427b405b8053e974c8fed8268c1b
   languageName: node
   linkType: hard
 
