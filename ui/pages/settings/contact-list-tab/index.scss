@@ -23,6 +23,8 @@
 
   &__header,
   &__header--edit {
+    margin: 16px;
+
     &__name {
       @include H3;
 
