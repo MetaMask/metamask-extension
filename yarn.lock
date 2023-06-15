@@ -10002,7 +10002,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"async-limiter@npm:^1.0.0, async-limiter@npm:~1.0.0":
+"async-limiter@npm:~1.0.0":
   version: 1.0.1
   resolution: "async-limiter@npm:1.0.1"
   checksum: 2b849695b465d93ad44c116220dee29a5aeb63adac16c1088983c339b0de57d76e82533e8e364a93a9f997f28bbfc6a92948cefc120652bd07f3b59f8d75cf2b
@@ -22131,9 +22131,9 @@ __metadata:
   linkType: hard
 
 "jsan@npm:^3.1.13":
-  version: 3.1.13
-  resolution: "jsan@npm:3.1.13"
-  checksum: a517d5b3ebf2eea362d592fa7d46ce70f80da4f0e7c8edca7642316c6710e5316883f03bcd96623f473825580e13339812d4f27f5232a633cbe6d8753e6bcd97
+  version: 3.1.14
+  resolution: "jsan@npm:3.1.14"
+  checksum: e0ee10807d74d9f1425eb9f395386ff8b1ea3393b4354d32908eb1d4550150e3e10310778d5cc1b73b3e7e7d551fa5d91ef8b49238e8b607478ae5e7506ec103
   languageName: node
   linkType: hard
 
@@ -28627,10 +28627,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"querystring@npm:0.2.0, querystring@npm:^0.2.0":
+"querystring@npm:0.2.0":
   version: 0.2.0
   resolution: "querystring@npm:0.2.0"
   checksum: 8258d6734f19be27e93f601758858c299bdebe71147909e367101ba459b95446fbe5b975bf9beb76390156a592b6f4ac3a68b6087cea165c259705b8b4e56a69
+  languageName: node
+  linkType: hard
+
+"querystring@npm:^0.2.0":
+  version: 0.2.1
+  resolution: "querystring@npm:0.2.1"
+  checksum: 7b83b45d641e75fd39cd6625ddfd44e7618e741c61e95281b57bbae8fde0afcc12cf851924559e5cc1ef9baa3b1e06e22b164ea1397d65dd94b801f678d9c8ce
   languageName: node
   linkType: hard
 
@@ -30778,9 +30785,9 @@ __metadata:
   linkType: hard
 
 "sc-formatter@npm:^3.0.1":
-  version: 3.0.2
-  resolution: "sc-formatter@npm:3.0.2"
-  checksum: d589706dbf0df42fa64a37d94c2bf415385dd5bcc279480a4aa663cc4b983fc3ce1e9ef4d0771f802de22dfc1d0212710aa858fd39c0b1deb568819463dfab19
+  version: 3.0.3
+  resolution: "sc-formatter@npm:3.0.3"
+  checksum: 8bc5974dd837ffa8b835b78a117468ad9c72e00a088ecda93e8c4bca8bbadc83772df89282fd3ecac9f54cda6bbe3c0b31f46014c13558682661d2be596d3957
   languageName: node
   linkType: hard
 
@@ -31477,8 +31484,8 @@ __metadata:
   linkType: hard
 
 "socketcluster-client@npm:^14.2.1":
-  version: 14.3.1
-  resolution: "socketcluster-client@npm:14.3.1"
+  version: 14.3.2
+  resolution: "socketcluster-client@npm:14.3.2"
   dependencies:
     buffer: ^5.2.1
     clone: 2.1.1
@@ -31489,8 +31496,8 @@ __metadata:
     sc-errors: ^2.0.1
     sc-formatter: ^3.0.1
     uuid: 3.2.1
-    ws: 7.1.0
-  checksum: 64aa6d978bec7f32903572aa71594186b2ba695f87e0aa7a54041f81ca32e3a7e183c418f72d15edb02f27439ed63cfabd052a146e7928e0c5848239d949975b
+    ws: ^7.5.0
+  checksum: 819e4cbf6874ddf2912474fa807e8f38527da3a4081871ad69a65f4db67200ddc609770b3cb033d5b49dbd1a9949ef1871f079a843cbb76ee31f981e00bec479
   languageName: node
   linkType: hard
 
@@ -35444,15 +35451,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:7.1.0":
-  version: 7.1.0
-  resolution: "ws@npm:7.1.0"
-  dependencies:
-    async-limiter: ^1.0.0
-  checksum: 9cf09adf7866dbe912620c9b13615b0420f3a0de469084446bcf146155497951a90ec3e39c7ac248dffb4a97932da539d727198a44870a3c80835d0b940fddf9
-  languageName: node
-  linkType: hard
-
 "ws@npm:7.4.6":
   version: 7.4.6
   resolution: "ws@npm:7.4.6"
@@ -35468,7 +35466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:7.5.9, ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6":
+"ws@npm:7.5.9, ws@npm:^7, ws@npm:^7.2.0, ws@npm:^7.3.1, ws@npm:^7.4.6, ws@npm:^7.5.0":
   version: 7.5.9
   resolution: "ws@npm:7.5.9"
   peerDependencies:
