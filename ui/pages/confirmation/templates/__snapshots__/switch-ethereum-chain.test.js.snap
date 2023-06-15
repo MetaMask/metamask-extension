@@ -31,7 +31,6 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
           </div>
           <span
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-            data-testid=""
           >
             Test initial state
           </span>
@@ -39,13 +38,11 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
       </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-        data-testid=""
       >
         Allow this site to switch the network?
       </h3>
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
-        data-testid=""
       >
         This will switch the selected network within MetaMask to a previously added network:
       </h6>
@@ -67,7 +64,6 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
             <h6
               class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-              data-testid=""
             >
               Test initial state
             </h6>
@@ -94,7 +90,6 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             </div>
             <h6
               class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-              data-testid=""
             >
               Test chain
             </h6>
@@ -161,7 +156,6 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           </div>
           <span
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-            data-testid=""
           >
             Test initial state
           </span>
@@ -169,13 +163,11 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
       </div>
       <h3
         class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-        data-testid=""
       >
         Allow this site to switch the network?
       </h3>
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
-        data-testid=""
       >
         This will switch the selected network within MetaMask to a previously added network:
       </h6>
@@ -197,7 +189,6 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             </div>
             <h6
               class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-              data-testid=""
             >
               Test initial state
             </h6>
@@ -224,7 +215,6 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             </div>
             <h6
               class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-              data-testid=""
             >
               Test chain
             </h6>
@@ -252,7 +242,6 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
         </svg>
         <p
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography callout__content typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-          data-testid=""
         >
           <span>
             Switching networks will cancel all pending confirmations

@@ -80,7 +80,7 @@ export default function Typography({
   marginLeft,
   boxProps = {},
   className,
-  testId = '',
+  testId,
   children,
 }) {
   let Tag = as ?? variant;

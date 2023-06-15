@@ -8,19 +8,16 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
   >
     <h2
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
-      data-testid=""
     >
       Help us improve MetaMask
     </h2>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-      data-testid=""
     >
       MetaMask would like to gather usage data to better understand how our users interact with MetaMask. This data will be used to provide the service, which includes improving the service based on your use.
     </p>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__desc typography--p typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
-      data-testid=""
     >
       MetaMask will...
     </p>
@@ -52,7 +49,6 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             
             <span
               class="box box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
-              data-testid=""
             >
               Never
             </span>
@@ -74,7 +70,6 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
-              data-testid=""
             >
               Never
             </span>
@@ -96,7 +91,6 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
             
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--span typography--weight-bold typography--style-normal typography--color-text-default"
-              data-testid=""
             >
               Never
             </span>
@@ -109,13 +103,11 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     </ul>
     <h6
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
-      data-testid=""
     >
       This data is aggregated and is therefore anonymous for the purposes of General Data Protection Regulation (EU) 2016/679.
     </h6>
     <h6
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography onboarding-metametrics__terms typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
-      data-testid=""
     >
       <span>
          

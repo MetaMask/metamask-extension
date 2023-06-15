@@ -18,13 +18,11 @@ exports[`Desktop Error page should render connection lost page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MetaMask Desktop connection was lost
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Please make sure you have the desktop app up and running or disable MetaMask Desktop.
     </p>
@@ -74,13 +72,11 @@ exports[`Desktop Error page should render critical error page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MetaMask had trouble starting
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       This error could be intermittent, so try restarting the extension or disable MetaMask Desktop.
     </p>
@@ -130,13 +126,11 @@ exports[`Desktop Error page should render default error page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Something went wrong...
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Check your MetaMask Desktop to restore connection
     </p>
@@ -174,13 +168,11 @@ exports[`Desktop Error page should render desktop app outdated page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MetaMask Desktop is outdated
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Your MetaMask desktop app needs to be upgraded.
     </p>
@@ -218,13 +210,11 @@ exports[`Desktop Error page should render extension outdated page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MetaMask Extension is outdated
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Your MetaMask extension needs to be upgraded.
     </p>
@@ -262,19 +252,16 @@ exports[`Desktop Error page should render not found page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MetaMask Desktop was not found
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       Please make sure you have the desktop app up and running.
     </p>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       If you have no desktop app installed, please download it on the MetaMask website.
     </p>
@@ -312,13 +299,11 @@ exports[`Desktop Error page should render pairing key not match page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       MM Desktop is already paired
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       If you want to start a new pairing, please remove the current connection.
     </p>
@@ -363,13 +348,11 @@ exports[`Desktop Error page should render route not found page 1`] = `
     </svg>
     <h4
       class="box box--margin-top-6 box--margin-bottom-6 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       desktopRouteNotFoundErrorTitle
     </h4>
     <p
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
-      data-testid=""
     >
       desktopRouteNotFoundErrorDescription
     </p>

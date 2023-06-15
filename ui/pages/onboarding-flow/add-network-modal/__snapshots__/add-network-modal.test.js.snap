@@ -7,7 +7,6 @@ exports[`Add Network Modal should render 1`] = `
   >
     <h4
       class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--align-center typography--color-text-default"
-      data-testid=""
     >
       Add custom network
     </h4>

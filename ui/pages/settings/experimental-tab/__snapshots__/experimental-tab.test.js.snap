@@ -7,7 +7,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
   >
     <h4
       class="box box--margin-top-1 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-alternative"
-      data-testid=""
     >
       Privacy
     </h4>
@@ -25,13 +24,11 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         >
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            data-testid=""
           >
             We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
           </h6>
           <h6
             class="box box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            data-testid=""
           >
             Select providers:
           </h6>
@@ -40,7 +37,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           >
             <h5
               class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
-              data-testid=""
             >
               OpenSea + Blockaid (Beta)
             </h5>
@@ -88,7 +84,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           </div>
           <h6
             class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            data-testid=""
           >
             <span>
                
@@ -106,7 +101,6 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           </h6>
           <h5
             class="box box--margin-top-2 box--margin-bottom-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-muted"
-            data-testid=""
           >
             More coming soon...
           </h5>

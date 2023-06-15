@@ -10,7 +10,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
     >
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-        data-testid=""
       >
         <div
           class="box box--display-flex box--flex-direction-row"
@@ -59,7 +58,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
       >
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-          data-testid=""
         >
           <div
             class="gas-details-item__currency-container"
@@ -81,7 +79,6 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
         </h6>
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
-          data-testid=""
         >
           <div
             class="gas-details-item__currency-container"
@@ -114,14 +111,12 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
       <div>
         <h6
           class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--positive typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
-          data-testid=""
         >
           Maybe in 1 seconds
         </h6>
       </div>
       <h6
         class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
-        data-testid=""
       >
         <div
           class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"

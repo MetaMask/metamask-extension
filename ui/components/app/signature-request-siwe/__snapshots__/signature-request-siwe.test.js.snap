@@ -202,7 +202,6 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
               </div>
               <span
                 class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-                data-testid=""
               >
                 https://example-dapp.website
               </span>
