@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-ui';
+import { NodeType, isComponent } from '@metamask/snaps-ui';
 import { useSelector } from 'react-redux';
 import { UserInputEventType } from '@metamask/snaps-utils';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
@@ -98,10 +98,14 @@ export const UI_MAPPING = {
   }),
 };
 
+const statefullComponents = [NodeType.Form, NodeType.Input];
+
+const isForm = (type) => type === NodeType.Form;
+const isStatefullComponent = (type) => statefullComponents.includes(type);
+
 // TODO: Stop exporting this when we remove the mapToTemplate hack in confirmation templates.
 export const mapToTemplate = (data, elementKeyIndex, interfaceId, snapId) => {
   const { type } = data;
-  console.log('snapId in maptotemplate:', snapId);
   elementKeyIndex.value += 1;
   const indexKey = `snap_ui_element_${type}__${elementKeyIndex.value}`;
   console.log(data.value);
@@ -115,6 +119,7 @@ export const SnapUIRenderer = ({
   delineatorType = DelineatorType.Content,
   data,
 }) => {
+  const [state, setState] = useState({});
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),

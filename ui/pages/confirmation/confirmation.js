@@ -400,54 +400,6 @@ export default function ConfirmationPage({
           />
         )}
       </div>
-<<<<<<< HEAD
-      <ConfirmationFooter
-        alerts={
-          alertState[pendingConfirmation.id] &&
-          Object.values(alertState[pendingConfirmation.id])
-            .filter((alert) => alert.dismissed === false)
-            .map((alert, idx, filtered) => (
-              <Callout
-                key={alert.id}
-                severity={alert.severity}
-                dismiss={() => dismissAlert(alert.id)}
-                isFirst={idx === 0}
-                isLast={idx === filtered.length - 1}
-                isMultiple={filtered.length > 1}
-              >
-                <MetaMaskTemplateRenderer sections={alert.content} />
-              </Callout>
-            ))
-        }
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-        style={
-          isSnapDialog
-            ? {
-                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-              }
-            : {}
-        }
-        actionsStyle={
-          isSnapDialog
-            ? {
-                borderTop: 0,
-              }
-            : {}
-        }
-        ///: END:ONLY_INCLUDE_IN
-        onSubmit={handleSubmit}
-        onCancel={templatedValues.onCancel}
-        submitText={templatedValues.submitText}
-        cancelText={templatedValues.cancelText}
-        loadingText={loadingText || templatedValues.loadingText}
-        loading={loading}
-        submitAlerts={submitAlerts.map((alert, idx) => (
-          <Callout key={alert.id} severity={alert.severity} isFirst={idx === 0}>
-            <MetaMaskTemplateRenderer sections={alert.content} />
-          </Callout>
-        ))}
-      />
-=======
       {!isSnapInterface && (
         <ConfirmationFooter
           alerts={
@@ -467,6 +419,23 @@ export default function ConfirmationPage({
                 </Callout>
               ))
           }
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          style={
+            isSnapDialog
+              ? {
+                  boxShadow:
+                    'var(--shadow-size-lg) var(--color-shadow-default)',
+                }
+              : {}
+          }
+          actionsStyle={
+            isSnapDialog
+              ? {
+                  borderTop: 0,
+                }
+              : {}
+          }
+          ///: END:ONLY_INCLUDE_IN
           onSubmit={handleSubmit}
           onCancel={templatedValues.onCancel}
           submitText={templatedValues.submitText}
@@ -484,7 +453,6 @@ export default function ConfirmationPage({
           ))}
         />
       )}
->>>>>>> a4463e68f (WIP)
     </div>
   );
 }
