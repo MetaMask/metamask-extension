@@ -118,7 +118,7 @@ describe('Eth sign', function () {
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
