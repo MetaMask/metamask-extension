@@ -383,9 +383,6 @@
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token."
   },
-  "myAccounts": {
-    "message": "Mga Account Ko"
-  },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"

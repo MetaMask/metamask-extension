@@ -2295,9 +2295,6 @@
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
-  "myAccounts": {
-    "message": "My accounts"
-  },
   "name": {
     "message": "Name"
   },
@@ -5191,6 +5188,9 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourAccounts": {
+    "message": "Your accounts"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"
