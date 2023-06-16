@@ -136,6 +136,11 @@ function defaultFixture() {
             id: 19,
             isShown: true,
           },
+          21: {
+            date: null,
+            id: 21,
+            isShown: true,
+          },
         },
       },
       AppStateController: {
@@ -184,6 +189,7 @@ function defaultFixture() {
           [CHAIN_IDS.MAINNET]: null,
           [CHAIN_IDS.GOERLI]: null,
           [CHAIN_IDS.SEPOLIA]: null,
+          [CHAIN_IDS.LINEA_GOERLI]: null,
         },
       },
       KeyringController: {
@@ -555,7 +561,7 @@ class FixtureBuilder {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
-              name: 'TestDappCollectibles',
+              name: 'TestDappNFTs',
               symbol: 'TDC',
             },
           ],
@@ -566,12 +572,12 @@ class FixtureBuilder {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
-              description: 'Test Dapp Collectibles for testing.',
+              description: 'Test Dapp NFTs for testing.',
               favorite: false,
               image:
                 'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
               isCurrentlyOwned: true,
-              name: 'Test Dapp Collectibles #1',
+              name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
             },

@@ -345,6 +345,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       Estimated gas fee
                       <div
                         class="info-tooltip"
+                        data-testid="info-tooltip"
                       >
                         <div>
                           <div

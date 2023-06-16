@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Łączenie z siecią testową Linea Goerli"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Sieć testowa Linea Goerli"
   },
   "links": {

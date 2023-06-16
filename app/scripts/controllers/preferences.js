@@ -80,7 +80,7 @@ export default class PreferencesController {
     this.tokenListController = opts.tokenListController;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.handleMmiPortfolio = opts.handleMmiPortfolio;
+    this.handleMmiDashboardData = opts.handleMmiDashboardData;
 
     if (!process.env.IN_TEST) {
       this.mmiConfigurationStore = opts.mmiConfigurationStore.getState();
@@ -534,7 +534,7 @@ export default class PreferencesController {
   async prepareMmiPortfolio() {
     if (!process.env.IN_TEST) {
       try {
-        const mmiDashboardData = await this.handleMmiPortfolio();
+        const mmiDashboardData = await this.handleMmiDashboardData();
         const cookieSetUrls =
           this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls;
         setDashboardCookie(mmiDashboardData, cookieSetUrls);
