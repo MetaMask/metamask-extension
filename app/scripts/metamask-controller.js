@@ -355,7 +355,7 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
     });
@@ -919,6 +919,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 2 calls per 5 minutes
+          rateLimitCount: 2,
+          rateLimitTimeout: 300000,
         },
         showInAppNotification: {
           method: (origin, message) => {
@@ -930,6 +933,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 5 calls per minute
+          rateLimitCount: 5,
+          rateLimitTimeout: 60000,
         },
       },
     });
@@ -3910,7 +3916,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -3975,7 +3981,7 @@ export default class MetamaskController extends EventEmitter {
    * so it needs to be here and not in our controller because
    * preferences controllers is initiated first
    */
-  async setMmiPortfolioCookie() {
+  async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
     const { identities } = this.preferencesController.store.getState();
