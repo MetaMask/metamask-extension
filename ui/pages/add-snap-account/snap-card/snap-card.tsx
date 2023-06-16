@@ -28,20 +28,13 @@ export default function SnapCard({
   iconUrl,
   snapTitle,
   snapSlug,
-  updateAvailable,
   isInstalled,
   website,
   id,
   onClickFunc,
 }: Pick<
   SnapCardProps,
-  | 'iconUrl'
-  | 'snapTitle'
-  | 'snapSlug'
-  | 'updateAvailable'
-  | 'isInstalled'
-  | 'website'
-  | 'id'
+  'iconUrl' | 'snapTitle' | 'snapSlug' | 'isInstalled' | 'website' | 'id'
 > & { onClickFunc: () => void }) {
   const t = useI18nContext();
   const history = useHistory();
@@ -122,11 +115,6 @@ export default function SnapCard({
       </Text>
 
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-        {updateAvailable && (
-          <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-            {t('snapUpdateAvailable')}
-          </Text>
-        )}
         <Icon
           name={IconName.Arrow2Right}
           color={IconColor.iconAlternative}

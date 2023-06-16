@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -14,6 +15,8 @@ import {
 import AddSnapAccountPopup from '../../../components/app/add-snap-account-popup/add-snap-account-popup';
 import SnapCard from '../snap-card/snap-card';
 import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import { getSnaps, getSnapsList } from '../../../selectors';
+import { Snap } from '@metamask/snaps-utils';
 
 export interface SnapDetails {
   id: string;
@@ -37,7 +40,8 @@ export interface SnapCardProps extends SnapDetails {
 
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
-  // TODO: this is currently a mock
+  const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
+  console.log(installedSnaps);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [snapList, setSnapList] = useState(KEY_MANAGEMENT_SNAPS);
   const [showPopup, setShowPopup] = useState(true);
@@ -82,13 +86,17 @@ export default function NewSnapAccountPage() {
         className="snap-account-cards"
       >
         {snapList.map((snap, index: number) => {
-          const mockInstalled = Math.round(Math.random()) === 0;
+          const foundSnap = Object.values(installedSnaps).find(
+            (installedSnap) => installedSnap.id === snap.snapId,
+          );
+
+          const isInstalled = Boolean(foundSnap);
+
           return (
             <SnapCard
               {...snap}
               key={index}
-              updateAvailable={mockInstalled}
-              isInstalled={mockInstalled}
+              isInstalled={isInstalled}
               onClickFunc={() => {
                 history.push(`/add-snap-account/${snap.id}`);
               }}
