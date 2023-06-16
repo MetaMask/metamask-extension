@@ -3893,7 +3893,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^v9.1.0":
+"@metamask/assets-controllers@npm:^9.1.0":
   version: 9.1.0
   resolution: "@metamask/assets-controllers@npm:9.1.0"
   dependencies:
@@ -24316,7 +24316,7 @@ __metadata:
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^3.1.0
-    "@metamask/assets-controllers": ^v9.1.0
+    "@metamask/assets-controllers": ^9.1.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/browser-passworder": ^4.1.0
