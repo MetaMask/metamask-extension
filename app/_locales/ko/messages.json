@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "커스텀 토큰 추가"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "토큰 추가"
+  },
+  "addTokenByContractAddress": {
+    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "주소"
@@ -547,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "거래를 $1하려면 가스비를 최소 10%를 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "~$1 비용으로 스왑 취소",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "무료로 스왑 취소"
   },
   "cancelled": {
     "message": "취소됨"
@@ -1199,9 +1192,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
-  },
-  "enableSmartTransactions": {
-    "message": "스마트 트랜잭션 활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
@@ -3239,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "본인은 본인의 비밀 복구 구문을 백업하지 않는 한 본인의 계정과 모든 자산을 잃을 수 있다는 사실을 이해합니다."
   },
-  "smartTransaction": {
-    "message": "스마트 트랜잭션"
-  },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3425,9 +3412,6 @@
   "strong": {
     "message": "강함"
   },
-  "stxAreHere": {
-    "message": "스마트 거래가 가능합니다!"
-  },
   "stxBenefit1": {
     "message": "거래 비용 최소화하기"
   },
@@ -3449,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
   },
-  "stxDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 거래를 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음을 도울 수 있습니다."
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "스마트 거래 자금 부족"
-  },
-  "stxErrorUnavailable": {
-    "message": "스마트 거래를 잠시 사용할 수 없습니다."
-  },
   "stxFailure": {
     "message": "스왑 실패"
   },
@@ -3470,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "스왑을 공개로 제출하는 중..."
-  },
-  "stxSubDescription": {
-    "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
   "stxSuccess": {
     "message": "스왑 완료!"

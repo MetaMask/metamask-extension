@@ -80,6 +80,7 @@ export default function Typography({
   marginLeft,
   boxProps = {},
   className,
+  testId,
   children,
 }) {
   let Tag = as ?? variant;
@@ -123,6 +124,7 @@ export default function Typography({
         <Tag
           className={classnames(boxClassName, computedClassName)}
           title={title}
+          data-testid={testId}
         >
           {children}
         </Tag>
@@ -188,6 +190,10 @@ Typography.propTypes = {
    * Title attribute to include on the element. Will show as tooltip on hover.
    */
   title: PropTypes.string,
+  /**
+   * Data test ID for the Tag component
+   */
+  testId: PropTypes.string,
   /**
    * The text content of the Typography component
    */
