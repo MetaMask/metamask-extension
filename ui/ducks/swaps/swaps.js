@@ -120,6 +120,7 @@ const initialState = {
   },
   currentSmartTransactionsError: '',
   swapsSTXLoading: false,
+  transactionSettingsOpened: false,
 };
 
 const slice = createSlice({
@@ -208,6 +209,9 @@ const slice = createSlice({
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
     },
+    setTransactionSettingsOpened: (state, action) => {
+      state.transactionSettingsOpened = Boolean(action.payload);
+    },
   },
 });
 
@@ -268,6 +272,9 @@ export const getSwapsFallbackGasPrice = (state) =>
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
 
+export const getTransactionSettingsOpened = (state) =>
+  state.swaps.transactionSettingsOpened;
+
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -323,6 +330,15 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
   return smartTransactionsEnabled && !currentSmartTransactionsError;
+};
+
+export const getSwapRedesignEnabled = (state) => {
+  const swapRedesign =
+    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
+  if (swapRedesign === undefined) {
+    return true; // By default show the redesign if we don't have feature flags returned yet.
+  }
+  return swapRedesign.extensionActive;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
@@ -478,6 +494,7 @@ const {
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
   setSwapsSTXSubmitLoading,
+  setTransactionSettingsOpened,
 } = actions;
 
 export {
@@ -497,6 +514,7 @@ export {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
+  setTransactionSettingsOpened,
 };
 
 export const navigateBackToBuildQuote = (history) => {
@@ -647,12 +665,7 @@ export const fetchQuotesAndSetQuoteState = (
       iconUrl: fromTokenIconUrl,
       balance: fromTokenBalance,
     } = selectedFromToken;
-    const {
-      address: toTokenAddress,
-      symbol: toTokenSymbol,
-      decimals: toTokenDecimals,
-      iconUrl: toTokenIconUrl,
-    } = selectedToToken;
+    const { address: toTokenAddress, symbol: toTokenSymbol } = selectedToToken;
     // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
@@ -663,24 +676,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const contractExchangeRates = getTokenExchangeRates(state);
 
-    let destinationTokenAddedForSwap = false;
-    if (
-      toTokenAddress &&
-      toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined &&
-      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
-    ) {
-      destinationTokenAddedForSwap = true;
-      await dispatch(
-        addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
-          true,
-        ),
-      );
-    }
     if (
       fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
@@ -749,7 +744,6 @@ export const fetchQuotesAndSetQuoteState = (
             destinationToken: toTokenAddress,
             value: inputValue,
             fromAddress: selectedAccount.address,
-            destinationTokenAddedForSwap,
             balanceError,
             sourceDecimals: fromTokenDecimals,
           },
@@ -835,6 +829,36 @@ export const fetchQuotesAndSetQuoteState = (
 
     dispatch(setFetchingQuotes(false));
   };
+};
+
+const addTokenTo = (dispatch, state) => {
+  const fetchParams = getFetchParams(state);
+  const swapsDefaultToken = getSwapsDefaultToken(state);
+  const contractExchangeRates = getTokenExchangeRates(state);
+  const selectedToToken =
+    getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
+  const {
+    address: toTokenAddress,
+    symbol: toTokenSymbol,
+    decimals: toTokenDecimals,
+    iconUrl: toTokenIconUrl,
+  } = selectedToToken;
+  if (
+    toTokenAddress &&
+    toTokenSymbol !== swapsDefaultToken.symbol &&
+    contractExchangeRates[toTokenAddress] === undefined &&
+    !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
+  ) {
+    dispatch(
+      addToken(
+        toTokenAddress,
+        toTokenSymbol,
+        toTokenDecimals,
+        toTokenIconUrl,
+        true,
+      ),
+    );
+  }
 };
 
 export const signAndSendSwapsSmartTransaction = ({
@@ -936,6 +960,7 @@ export const signAndSendSwapsSmartTransaction = ({
         dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
+      addTokenTo(dispatch, state);
       if (approveTxParams) {
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
@@ -1179,6 +1204,7 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
 
+    addTokenTo(dispatch, state);
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
         approveTxParams.maxFeePerGas = maxFeePerGas;

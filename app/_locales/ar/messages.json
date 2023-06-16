@@ -161,7 +161,7 @@
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "الاتصال بشبكة اختبار Linea Goerli"
   },
   "connectingToMainnet": {
@@ -406,7 +406,7 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبكة اختبار Linea Goerli"
   },
   "links": {

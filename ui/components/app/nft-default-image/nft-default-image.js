@@ -15,13 +15,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Text } from '../../component-library';
 import Box from '../../ui/box/box';
 
-export default function NftDefaultImage({ name, tokenId, clickable = false }) {
+export default function NftDefaultImage({
+  name,
+  tokenId,
+  className,
+  clickable = false,
+}) {
   const t = useI18nContext();
   return (
     <Box
       tabIndex={0}
       data-testid="nft-default-image"
-      className={classnames('nft-default', {
+      className={classnames(className, 'nft-default', {
         'nft-default--clickable': clickable,
       })}
       display={Display.Flex}
@@ -57,4 +62,8 @@ NftDefaultImage.propTypes = {
    * Controls the css class for the cursor hover
    */
   clickable: PropTypes.bool,
+  /**
+   * An additional className to apply to the NFT default image
+   */
+  className: PropTypes.string,
 };

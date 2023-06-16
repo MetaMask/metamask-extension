@@ -205,6 +205,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                     </span>
                     <div
                       class="info-tooltip"
+                      data-testid="info-tooltip"
                     >
                       <div>
                         <div
@@ -265,7 +266,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
               >
                 <div>
                   <h6
-                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--positive typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--negative typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
                   >
                     Unknown processing time
                   </h6>

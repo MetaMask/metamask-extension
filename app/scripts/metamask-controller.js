@@ -70,6 +70,7 @@ import {
 } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
@@ -79,7 +80,12 @@ import { SignatureController } from '@metamask/signature-controller';
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -351,6 +357,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
+      mmiConfigurationStore: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.tokensController = new TokensController({
@@ -399,7 +409,7 @@ export default class MetamaskController extends EventEmitter {
 
     const nftControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NftController',
-      allowedActions: ['ApprovalController:addRequest'],
+      allowedActions: [`${this.approvalController.name}:addRequest`],
     });
     this.nftController = new NftController(
       {
@@ -1280,22 +1290,28 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.swapsController = new SwapsController({
-      getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
-        this.txController.txGasUtil,
-      ),
-      networkController: this.networkController,
-      onNetworkStateChange: (listener) =>
-        this.networkController.store.subscribe(listener),
-      provider: this.provider,
-      getProviderConfig: () =>
-        this.networkController.store.getState().providerConfig,
-      getTokenRatesState: () => this.tokenRatesController.state,
-      getCurrentChainId: () =>
-        this.networkController.store.getState().providerConfig.chainId,
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-    });
+    this.swapsController = new SwapsController(
+      {
+        getBufferedGasLimit:
+          this.txController.txGasUtil.getBufferedGasLimit.bind(
+            this.txController.txGasUtil,
+          ),
+        networkController: this.networkController,
+        onNetworkStateChange: (listener) =>
+          this.networkController.store.subscribe(listener),
+        provider: this.provider,
+        getProviderConfig: () =>
+          this.networkController.store.getState().providerConfig,
+        getTokenRatesState: () => this.tokenRatesController.state,
+        getCurrentChainId: () =>
+          this.networkController.store.getState().providerConfig.chainId,
+        getEIP1559GasFeeEstimates:
+          this.gasFeeController.fetchGasFeeEstimates.bind(
+            this.gasFeeController,
+          ),
+      },
+      initState.SwapsController,
+    );
     this.smartTransactionsController = new SmartTransactionsController(
       {
         onNetworkStateChange: (cb) => {
@@ -3470,6 +3486,18 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  handleWatchAssetRequest = (asset, type, origin) => {
+    switch (type) {
+      case ERC20:
+        return this.tokensController.watchAsset(asset, type);
+      case ERC721:
+      case ERC1155:
+        return this.nftController.watchNft(asset, type, origin);
+      default:
+        throw new Error(`Asset type ${type} not supported`);
+    }
+  };
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -3849,9 +3877,7 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        handleWatchAssetRequest: this.tokensController.watchAsset.bind(
-          this.tokensController,
-        ),
+        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,
@@ -3916,7 +3942,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.mmiController.setMmiPortfolioCookie.bind(this),
+        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -3974,6 +4000,37 @@ export default class MetamaskController extends EventEmitter {
     engine.push(providerAsMiddleware(provider));
     return engine;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * This method is needed in preferences controller
+   * so it needs to be here and not in our controller because
+   * preferences controllers is initiated first
+   */
+  async handleMmiDashboardData() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+    const networks = [
+      ...this.preferencesController.getRpcMethodPreferences(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    return handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * TODO:LegacyProvider: Delete

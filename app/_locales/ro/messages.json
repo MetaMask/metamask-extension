@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Se conectează la rețeaua de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -396,7 +396,7 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rețea de test Linea Goerli"
   },
   "links": {

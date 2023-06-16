@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezovanje na testno omrežje Linea Goerli"
   },
   "connectingToMainnet": {
@@ -400,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testno omrežje Linea Goerli"
   },
   "links": {
