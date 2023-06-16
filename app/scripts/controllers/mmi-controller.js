@@ -14,9 +14,7 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -541,30 +539,6 @@ export default class MMIController extends EventEmitter {
       token,
       apiUrl,
       keyring,
-    });
-  }
-
-  async setMmiPortfolioCookie() {
-    await this.appStateController.getUnlockPromise(true);
-    const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const getAccountDetails = (address) =>
-      this.custodyController.getAccountDetails(address);
-    const extensionId = this.extension.runtime.id;
-    const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ];
-
-    handleMmiPortfolio({
-      keyringAccounts,
-      identities,
-      metaMetricsId,
-      networks,
-      getAccountDetails,
-      extensionId,
     });
   }
 

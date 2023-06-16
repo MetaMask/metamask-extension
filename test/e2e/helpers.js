@@ -546,9 +546,13 @@ async function waitForAccountRendered(driver) {
   );
 }
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const login = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
+};
+
+const logInWithBalanceValidation = async (driver, ganacheServer) => {
+  await login(driver);
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
 
@@ -579,6 +583,7 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  login,
   logInWithBalanceValidation,
   assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
