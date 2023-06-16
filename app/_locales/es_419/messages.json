@@ -581,9 +581,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteAccount": {
-    "message": "Eliminar cuenta"
-  },
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },

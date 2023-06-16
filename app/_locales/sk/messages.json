@@ -205,9 +205,6 @@
   "delete": {
     "message": "Odstrániť"
   },
-  "deleteAccount": {
-    "message": "Zmazať účet"
-  },
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
   },

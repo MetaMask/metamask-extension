@@ -202,9 +202,6 @@
   "delete": {
     "message": "ሰርዝ"
   },
-  "deleteAccount": {
-    "message": "መለያን ሰርዝ"
-  },
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
   },

@@ -406,9 +406,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
-  },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
   },

@@ -211,9 +211,6 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteAccount": {
-    "message": "Usuń konto"
-  },
   "deleteNetwork": {
     "message": "Usunąć sieć?"
   },

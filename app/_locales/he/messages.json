@@ -211,9 +211,6 @@
   "delete": {
     "message": "מחיקה"
   },
-  "deleteAccount": {
-    "message": "מחק חשבון"
-  },
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
   },

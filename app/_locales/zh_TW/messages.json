@@ -408,9 +408,6 @@
   "delete": {
     "message": "刪除"
   },
-  "deleteAccount": {
-    "message": "刪除帳戶"
-  },
   "deleteNetwork": {
     "message": "刪除網路？"
   },

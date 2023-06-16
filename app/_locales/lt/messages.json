@@ -211,9 +211,6 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteAccount": {
-    "message": "Šalinti paskyrą"
-  },
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
   },

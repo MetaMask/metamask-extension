@@ -211,9 +211,6 @@
   "delete": {
     "message": "Șterge"
   },
-  "deleteAccount": {
-    "message": "Ștergeți cont"
-  },
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
   },

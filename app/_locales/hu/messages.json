@@ -211,9 +211,6 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteAccount": {
-    "message": "Fiók törlése"
-  },
   "deleteNetwork": {
     "message": "Törli a hálózatot?"
   },

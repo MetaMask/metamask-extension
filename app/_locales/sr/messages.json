@@ -208,9 +208,6 @@
   "delete": {
     "message": "Избриши"
   },
-  "deleteAccount": {
-    "message": "Obriši nalog"
-  },
   "deleteNetwork": {
     "message": "Da li želite da obrišete mrežu?"
   },

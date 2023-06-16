@@ -911,9 +911,6 @@
   "delete": {
     "message": "Löschen"
   },
-  "deleteAccount": {
-    "message": "Konto löschen"
-  },
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
   },

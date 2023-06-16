@@ -911,9 +911,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteAccount": {
-    "message": "Διαγραφή Λογαριασμού"
-  },
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },

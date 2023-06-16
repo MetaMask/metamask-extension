@@ -211,9 +211,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteAccount": {
-    "message": "Izbriši račun"
-  },
   "deleteNetwork": {
     "message": "Izbrisati mrežu?"
   },
