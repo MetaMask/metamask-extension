@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "En az bir token seçilmeli."
   },
-  "myAccounts": {
-    "message": "Hesaplarım"
-  },
   "name": {
     "message": "Adı"
   },

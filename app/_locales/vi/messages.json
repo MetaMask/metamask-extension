@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "Phải chọn ít nhất 1 token."
   },
-  "myAccounts": {
-    "message": "Tài khoản của tôi"
-  },
   "name": {
     "message": "Tên"
   },
