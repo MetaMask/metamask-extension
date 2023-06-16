@@ -12,6 +12,8 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
+import { Text } from '../../../../components/component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -288,12 +290,9 @@ export default class SendAssetRow extends Component {
           <div className="send-v2__asset-dropdown__symbol">
             {nftCollection?.name || name}
           </div>
-          <div className="send-v2__asset-dropdown__name">
-            <span className="send-v2__asset-dropdown__name__label">
-              {`${t('tokenId')}:`}
-            </span>
-            {tokenId}
-          </div>
+          <Text variant={TextVariant.bodyXs} ellipsis>
+            {`${t('tokenId')}:${tokenId}`}
+          </Text>
         </div>
         {!insideDropdown && (
           <i className="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret" />
