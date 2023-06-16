@@ -100,13 +100,6 @@ async function defineAndRunBuildTasks() {
       'harden',
       'console',
       'Image', // Used by browser to generate notifications
-      // globals sentry needs to function
-      '__SENTRY__',
-      'appState',
-      'extra',
-      'stateHooks',
-      'sentryHooks',
-      'sentry',
       // globals chromedriver needs to function
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
       'performance',
@@ -125,6 +118,13 @@ async function defineAndRunBuildTasks() {
       'Promise',
       'JSON',
       'Date',
+      // globals sentry needs to function
+      '__SENTRY__',
+      'appState',
+      'extra',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
     ];
 
     if (
