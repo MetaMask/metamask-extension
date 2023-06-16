@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Csatlakozás a Linea Goerli teszthálózathoz"
   },
   "connectingToMainnet": {
@@ -402,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli teszthálózat"
   },
   "links": {

@@ -67,6 +67,20 @@ describe('AccountListItem', () => {
     });
   });
 
+  it('disables the connected sites item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeDisabled();
+    });
+  });
+
+  it('enables the connected sites item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
+    });
+  });
+
   it('expands metamask to tab when item is clicked', async () => {
     global.platform = { openExtensionInBrowser: jest.fn() };
 
