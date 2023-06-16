@@ -5,7 +5,6 @@ const {
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
-  unlockWallet,
   DEFAULT_GANACHE_OPTIONS,
   generateETHBalance,
   roundToXDecimalPlaces,
@@ -13,6 +12,7 @@ const {
   switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -329,7 +329,7 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
   });
 
-  it('Should lock wallet when a browser session ends (after turning off the extension', async function () {
+  it('Should lock wallet when a browser session ends (after turning off the extension)', async function () {
     await withFixtures(
       {
         dapp: true,

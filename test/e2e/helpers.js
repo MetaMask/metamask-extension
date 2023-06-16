@@ -548,15 +548,6 @@ const generateGanacheOptions = (overrides) => ({
   ...overrides,
 });
 
-const restartServiceWorker = async (driver) => {
-  const serviceWorkerElements = await driver.findElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[1].click();
-};
-
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
     '[data-testid="eth-overview__primary-currency"]',
@@ -570,20 +561,15 @@ const WINDOW_TITLES = Object.freeze({
   InstalledExtensions: 'Extensions',
 });
 
-const login = async (driver) => {
+const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
 };
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
-  await login(driver);
+  await unlockWallet(driver);
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
-
-async function unlockWallet(driver, walletPassword) {
-  await driver.fill('#password', walletPassword);
-  await driver.press('#password', driver.Key.ENTER);
-}
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
@@ -608,7 +594,7 @@ async function sleepSeconds(sec) {
 }
 
 async function terminateServiceWorker(driver) {
-  await driver.openNewPage('chrome://inspect/#service-workers/');
+  await driver.openNewPage(SERVICE_WORKER_URL);
 
   await driver.waitForSelector({
     text: 'Service workers',
@@ -619,10 +605,13 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  await driver.clickElement({
+  const serviceWorkerElements = await driver.findElements({
     text: 'terminate',
     tag: 'span',
   });
+
+  // 1st one is app-init.js; while 2nd one is service-worker.js
+  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
 
   const serviceWorkerTab = await switchToWindow(
     driver,
@@ -659,16 +648,14 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
-  login,
+  unlockWallet,
   logInWithBalanceValidation,
   assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
-  restartServiceWorker,
   waitForAccountRendered,
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
-  unlockWallet,
   DEFAULT_GANACHE_OPTIONS,
   generateETHBalance,
   roundToXDecimalPlaces,
