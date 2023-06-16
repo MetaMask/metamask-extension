@@ -492,11 +492,11 @@ export const sanitizeMessage = (msg, primaryType, types) => {
 };
 
 export function getAssetImageURL(image, ipfsGateway) {
-  if (!image || !ipfsGateway || typeof image !== 'string') {
+  if (!image || typeof image !== 'string') {
     return '';
   }
 
-  if (image.startsWith('ipfs://')) {
+  if (ipfsGateway && image.startsWith('ipfs://')) {
     return getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;

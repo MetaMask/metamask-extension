@@ -158,10 +158,6 @@
   "addCustomToken": {
     "message": "Aggiungi token personalizzato"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -203,6 +199,10 @@
   },
   "addToken": {
     "message": "Aggiungi Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Indirizzo"
@@ -418,13 +418,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Per $1 una transazione la commissione di gas deve crescere almeno del 10% per essere riconosciuto dalla rete.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Annulla scambio per ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Annulla scambio gratuitamente"
   },
   "cancelled": {
     "message": "Annullata"

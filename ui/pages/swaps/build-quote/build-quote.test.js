@@ -29,7 +29,6 @@ const createProps = (customProps = {}) => {
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
-  ignoreTokens: jest.fn(),
   setBackgroundSwapRouteState: jest.fn(),
   clearSwapsQuotes: jest.fn(),
   stopPollingForQuotes: jest.fn(),
