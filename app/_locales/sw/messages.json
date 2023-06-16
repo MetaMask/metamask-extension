@@ -423,9 +423,6 @@
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."
   },
-  "myAccounts": {
-    "message": "Akaunti zangu"
-  },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"

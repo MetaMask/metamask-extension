@@ -445,9 +445,6 @@
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
   },
-  "myAccounts": {
-    "message": "Мої облікові записи"
-  },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
     "description": "User is important an account and needs to add a file to continue"

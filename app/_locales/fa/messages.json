@@ -445,9 +445,6 @@
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
   },
-  "myAccounts": {
-    "message": "حساب های من"
-  },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"

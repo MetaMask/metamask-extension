@@ -445,9 +445,6 @@
   "mustSelectOne": {
     "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
   },
-  "myAccounts": {
-    "message": "ನನ್ನ ಖಾತೆಗಳು"
-  },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",
     "description": "User is important an account and needs to add a file to continue"

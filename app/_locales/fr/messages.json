@@ -1978,9 +1978,6 @@
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
   },
-  "myAccounts": {
-    "message": "Mes comptes"
-  },
   "name": {
     "message": "Nom"
   },

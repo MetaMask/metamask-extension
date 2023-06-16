@@ -861,9 +861,6 @@
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣。"
   },
-  "myAccounts": {
-    "message": "我的帳戶"
-  },
   "name": {
     "message": "名稱"
   },

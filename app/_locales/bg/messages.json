@@ -441,9 +441,6 @@
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
   },
-  "myAccounts": {
-    "message": "Моите акаунти"
-  },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
     "description": "User is important an account and needs to add a file to continue"

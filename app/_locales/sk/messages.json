@@ -420,9 +420,6 @@
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },
-  "myAccounts": {
-    "message": "Moje účty"
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"

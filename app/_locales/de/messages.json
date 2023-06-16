@@ -1978,9 +1978,6 @@
   "mustSelectOne": {
     "message": "Du musst mindestens 1 Token auswählen."
   },
-  "myAccounts": {
-    "message": "Meine Konten"
-  },
   "name": {
     "message": "Name"
   },

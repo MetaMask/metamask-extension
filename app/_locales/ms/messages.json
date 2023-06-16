@@ -428,9 +428,6 @@
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
   },
-  "myAccounts": {
-    "message": "Akaun Saya"
-  },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"

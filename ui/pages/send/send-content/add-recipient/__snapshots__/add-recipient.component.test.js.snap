@@ -11,7 +11,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       <p
         class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
       >
-        My accounts
+        Your accounts
       </p>
     </div>
     <div
@@ -447,7 +447,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
       <p
         class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
       >
-        My accounts
+        Your accounts
       </p>
     </div>
     <div

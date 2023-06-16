@@ -442,9 +442,6 @@
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
   },
-  "myAccounts": {
-    "message": "حساباتي"
-  },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
     "description": "User is important an account and needs to add a file to continue"

@@ -441,9 +441,6 @@
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."
   },
-  "myAccounts": {
-    "message": "Mani konti"
-  },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
     "description": "User is important an account and needs to add a file to continue"

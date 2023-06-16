@@ -445,9 +445,6 @@
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
   },
-  "myAccounts": {
-    "message": "Omat tilit"
-  },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
     "description": "User is important an account and needs to add a file to continue"

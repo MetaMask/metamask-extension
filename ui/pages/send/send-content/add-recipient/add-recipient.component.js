@@ -180,7 +180,7 @@ export default class AddRecipient extends Component {
             variant={TextVariant.bodyLgMedium}
             color={TextColor.textAlternative}
           >
-            {t('myAccounts')}
+            {t('yourAccounts')}
           </Text>
         </Box>
         <div className="send__select-recipient-wrapper__list">

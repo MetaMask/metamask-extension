@@ -436,9 +436,6 @@
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."
   },
-  "myAccounts": {
-    "message": "Moji nalozi"
-  },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
