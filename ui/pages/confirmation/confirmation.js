@@ -527,6 +527,23 @@ export default function ConfirmationPage({
                 </Callout>
               ))
           }
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          style={
+            isSnapDialog
+              ? {
+                  boxShadow:
+                    'var(--shadow-size-lg) var(--color-shadow-default)',
+                }
+              : {}
+          }
+          actionsStyle={
+            isSnapDialog
+              ? {
+                  borderTop: 0,
+                }
+              : {}
+          }
+          ///: END:ONLY_INCLUDE_IN
           onSubmit={handleSubmit}
           onCancel={templatedValues.onCancel}
           submitText={templatedValues.submitText}
