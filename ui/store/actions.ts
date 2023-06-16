@@ -1286,25 +1286,21 @@ export function removeSnap(
     const isKeyManagementSnap =
       KEY_MANAGEMENT_SNAPS.findIndex((snap) => snap.snapId === snapId) !== -1;
 
+    console.log('isKeyManagementSnap', isKeyManagementSnap);
+
     try {
       if (isKeyManagementSnap) {
         // find out origin of key management snap
-        const addressesInSnap: string[] = await submitRequestToBackground(
-          'handleSnapRequest',
-          [
-            {
-              snapId,
-              origin: 'metamask',
-              handler: HandlerType.OnRpcRequest,
-              request: {
-                jsonrpc: '2.0',
-                id: uuidv4(),
-                method: 'snap_manageAccounts',
-                params: ['read'],
-              },
-            },
-          ],
-        );
+        const addressesInSnap = (await handleSnapRequest({
+          snapId,
+          origin: 'metamask',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            jsonrpc: '2.0',
+            method: 'keyring_listAccounts',
+            params: [],
+          },
+        })) as unknown as string[];
         console.log(addressesInSnap);
         for (const address of addressesInSnap) {
           await removeAccount(address);
