@@ -15,7 +15,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-// import { HandlerType } from '@metamask/snaps-utils';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { HandlerType } from '@metamask/snaps-utils';
+import { v4 as uuidv4 } from 'uuid';
+import { KEY_MANAGEMENT_SNAPS } from '../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1279,43 +1283,33 @@ export function removeSnap(
     dispatch(showLoadingIndication());
 
     // find out if key management snap
-    // const isKeyManagementSnap = whiteListedKeyManagementSnaps.includes(snapId);
+    const isKeyManagementSnap =
+      KEY_MANAGEMENT_SNAPS.findIndex((snap) => snap.snapId === snapId) !== -1;
 
     try {
-      // if (isKeyManagementSnap) {
-      //   // find out origin of key management snap
-      //   const addressesInSnap: string[] = await submitRequestToBackground(
-      //     'handleSnapRequest',
-      //     [
-      //       {
-      //         snapId,
-      //         origin: 'metamask',
-      //         handler: HandlerType.OnRpcRequest,
-      //         request: {
-      //           jsonrpc: '2.0',
-      //           method: 'snap_manageAccounts',
-      //           params: ['read'],
-      //         },
-      //       },
-      //     ],
-      //   );
-      //   for (const address of addressesInSnap) {
-      //     // remove accounts if key management snap
-      //     // TODO: create removeAccounts method
-      //     await submitRequestToBackground('handleSnapRequest', [
-      //       {
-      //         snapId,
-      //         origin: 'metamask',
-      //         handler: HandlerType.OnRpcRequest,
-      //         request: {
-      //           jsonrpc: '2.0',
-      //           method: 'snap_manageAccounts',
-      //           params: ['delete', address],
-      //         },
-      //       },
-      //     ]);
-      //   }
-      // }
+      if (isKeyManagementSnap) {
+        // find out origin of key management snap
+        const addressesInSnap: string[] = await submitRequestToBackground(
+          'handleSnapRequest',
+          [
+            {
+              snapId,
+              origin: 'metamask',
+              handler: HandlerType.OnRpcRequest,
+              request: {
+                jsonrpc: '2.0',
+                id: uuidv4(),
+                method: 'snap_manageAccounts',
+                params: ['read'],
+              },
+            },
+          ],
+        );
+        console.log(addressesInSnap);
+        for (const address of addressesInSnap) {
+          await removeAccount(address);
+        }
+      }
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
