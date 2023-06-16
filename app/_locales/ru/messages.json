@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
   },
-  "myAccounts": {
-    "message": "Мои счета"
-  },
   "name": {
     "message": "Имя"
   },
