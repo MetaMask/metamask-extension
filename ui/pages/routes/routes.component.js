@@ -601,6 +601,8 @@ export default class Routes extends Component {
         return t('connectingToSepolia');
       case NETWORK_TYPES.LINEA_GOERLI:
         return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_MAINNET:
+        return t('connectingToLineaMainnet');
       default:
         return t('connectingTo', [providerId]);
     }

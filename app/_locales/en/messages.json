@@ -805,6 +805,9 @@
   "connectingToLineaGoerli": {
     "message": "Connecting to Linea Goerli test network"
   },
+  "connectingToLineaMainnet": {
+    "message": "Connecting to Linea Mainnet"
+  },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
   },
@@ -2137,6 +2140,9 @@
   },
   "lineaGoerli": {
     "message": "Linea Goerli test network"
+  },
+  "lineaMainnet": {
+    "message": "Linea Mainnet"
   },
   "link": {
     "message": "Link"
