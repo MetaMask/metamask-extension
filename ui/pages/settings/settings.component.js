@@ -267,6 +267,8 @@ class SettingsPage extends PureComponent {
         <Box
           className="settings-page__subheader"
           padding={4}
+          paddingLeft={6}
+          paddingRight={6}
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}

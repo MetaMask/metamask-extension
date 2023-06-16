@@ -186,10 +186,6 @@
         padding-top: 0;
       }
     }
-
-    .page-container__footer {
-      border-top: none;
-    }
   }
 
   &__add-contact {
@@ -197,10 +193,16 @@
     flex-flow: column nowrap;
     padding-bottom: 0 !important;
     height: 100%;
+    padding-top: 0;
 
     &__content {
       flex: 1 1 auto;
       height: 100%;
+      padding-top: 0;
+
+      &__username{
+        padding-top: 0;
+      }
     }
 
     &__error {

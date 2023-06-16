@@ -6,6 +6,7 @@ import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
 
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -28,7 +29,6 @@ function ViewContact({
   name,
   address,
   checkSummedAddress,
-  memo,
   editRoute,
   listRoute,
 }) {
@@ -42,10 +42,13 @@ function ViewContact({
   return (
     <div className="settings-page__content-row">
       <div className="settings-page__content-item">
-        <div className="settings-page__header address-book__header">
+        <Box
+          className="settings-page__header address-book__header"
+          paddingLeft={6}
+        >
           <Identicon address={address} diameter={60} />
           <div className="address-book__header__name">{name || address}</div>
-        </div>
+        </Box>
         <div className="address-book__view-contact__group">
           <Button
             type="secondary"
@@ -81,14 +84,6 @@ function ViewContact({
             </Tooltip>
           </div>
         </div>
-        <div className="address-book__view-contact__group">
-          <div className="address-book__view-contact__group__label--capitalized">
-            {t('memo')}
-          </div>
-          <div className="address-book__view-contact__group__static-address">
-            {memo}
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -99,7 +94,6 @@ ViewContact.propTypes = {
   address: PropTypes.string,
   history: PropTypes.object,
   checkSummedAddress: PropTypes.string,
-  memo: PropTypes.string,
   editRoute: PropTypes.string,
   listRoute: PropTypes.string.isRequired,
 };

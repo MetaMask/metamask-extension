@@ -9,6 +9,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../../shared/modules/hexstring-utils';
+import { Box } from '../../../../components/component-library';
 
 export default class EditContact extends PureComponent {
   static contextTypes = {
@@ -59,7 +60,11 @@ export default class EditContact extends PureComponent {
 
     return (
       <div className="settings-page__content-row address-book__edit-contact">
-        <div className="settings-page__header address-book__header--edit">
+        <Box
+          className="settings-page__header address-book__header--edit"
+          paddingLeft={6}
+          paddingRight={6}
+        >
           <Identicon address={address} diameter={60} />
           <Button
             type="link"
@@ -69,9 +74,9 @@ export default class EditContact extends PureComponent {
               history.push(listRoute);
             }}
           >
-            {t('deleteAccount')}
+            {t('deleteContact')}
           </Button>
-        </div>
+        </Box>
         <div className="address-book__edit-contact__content">
           <div className="address-book__view-contact__group">
             <div className="address-book__view-contact__group__label">
