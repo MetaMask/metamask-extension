@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "कस्टम टोकन जोड़ें"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "टोकन जोड़ें"
+  },
+  "addTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "पता"
@@ -547,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "किसी लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि की जानी चाहिए ताकि उसे नेटवर्क द्वारा मान्यता मिल सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "~$1 में स्वैप रद्द करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "मुफ्त में स्वैप रद्द करें"
   },
   "cancelled": {
     "message": "रद्द किया गया"
@@ -1199,9 +1192,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
-  },
-  "enableSmartTransactions": {
-    "message": "स्मार्ट लेनदेन को सक्षम करें"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
@@ -3239,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
   },
-  "smartTransaction": {
-    "message": "स्मार्ट लेनदेन"
-  },
   "snapContent": {
     "message": "यह सामग्री $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3425,9 +3412,6 @@
   "strong": {
     "message": "मजबूत"
   },
-  "stxAreHere": {
-    "message": "स्मार्ट लेनदेन यहां पर हैं!"
-  },
   "stxBenefit1": {
     "message": "लेनदेन लागतें मिनिमाइज़ करें"
   },
@@ -3449,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
   },
-  "stxDescription": {
-    "message": "MetaMask के स्वैप अब और अधिक स्मार्ट हो गए हैं! इन हेतु सहयता के लिए स्मार्ट लेनदेन को सक्षम करने से MetaMask आपके स्वैप को प्रोग्रामेटिक रूप से ऑप्टिमाइज़ कर पाएगा:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "एक स्मार्ट लेनदेन के लिए पर्याप्त फंड नहीं है।"
-  },
-  "stxErrorUnavailable": {
-    "message": "स्मार्ट लेनदेन अस्थाई तौर पर अनुपबल्ध हैं।"
-  },
   "stxFailure": {
     "message": "स्वैप विफल हुआ"
   },
@@ -3470,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "आपका स्वैप सार्वजनिक रूप से सबमिट किया जा रहा है..."
-  },
-  "stxSubDescription": {
-    "message": "* स्मार्ट लेनदेन आपके लेनदेन को निजी तौर पर, अनेक बार जमा करने का प्रयास करेंगे। यदि सभी प्रयास विफल हो जाते हैं, तो लेनदेन को सार्वजनिक रूप से प्रसारित किया जाएगा ताकि यह सुनिश्चित हो सके कि आपका स्वैप सफलतापूर्वक पूरा हो।"
   },
   "stxSuccess": {
     "message": "स्वैप पूरा हुआ!"

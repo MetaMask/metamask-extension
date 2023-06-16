@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Añadir token personalizado"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Esto permitirá que la red se utilice en MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Agregar token"
+  },
+  "addTokenByContractAddress": {
+    "message": "¿No encuentra un token? Puede agregar cualquier token si copia su dirección. Puede encontrar la dirección de contrato del token en $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Dirección"
@@ -547,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Para $1 una transacción, la tarifa de gas debe aumentar al menos un 10% para que sea reconocida por la red.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Cancelar el swap por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Cancelar el swap gratuitamente"
   },
   "cancelled": {
     "message": "Cancelado"
@@ -1199,9 +1192,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
-  },
-  "enableSmartTransactions": {
-    "message": "Habilitar transacciones inteligentes"
   },
   "enableToken": {
     "message": "activar $1",
@@ -3239,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Entiendo que hasta que no haga una copia de seguridad de mi frase secreta de recuperación, puedo perder mis cuentas y todos los activos asociados."
   },
-  "smartTransaction": {
-    "message": "Transacción inteligente"
-  },
   "snapContent": {
     "message": "Este contenido proviene de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3425,9 +3412,6 @@
   "strong": {
     "message": "Fuerte"
   },
-  "stxAreHere": {
-    "message": "¡Las transacciones inteligentes están aquí!"
-  },
   "stxBenefit1": {
     "message": "Minimizar los costos de transacción"
   },
@@ -3449,15 +3433,6 @@
   "stxCancelledSubDescription": {
     "message": "Intente su swap nuevamente. Estaremos aquí para protegerlo contra riesgos similares la próxima vez."
   },
-  "stxDescription": {
-    "message": "¡MetaMask Swaps ahora es mucho más inteligente! Habilitar transacciones inteligentes permitirá que MetaMask optimice mediante programación su swap para ayudar:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "No hay suficientes fondos para una transacción inteligente."
-  },
-  "stxErrorUnavailable": {
-    "message": "Las transacciones inteligentes no están disponibles temporalmente."
-  },
   "stxFailure": {
     "message": "Error al canjear"
   },
@@ -3470,9 +3445,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Enviando su swap de forma pública..."
-  },
-  "stxSubDescription": {
-    "message": "* Transacciones inteligentes intentará enviar su transacción de forma privada varias veces. Si todos los intentos fallan, la transacción se transmitirá públicamente para garantizar que su swap se realice con éxito."
   },
   "stxSuccess": {
     "message": "¡Swap finalizado!"

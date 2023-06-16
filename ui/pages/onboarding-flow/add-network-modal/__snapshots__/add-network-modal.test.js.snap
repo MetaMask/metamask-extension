@@ -119,6 +119,7 @@ exports[`Add Network Modal should render 1`] = `
               
               <div
                 class="info-tooltip"
+                data-testid="info-tooltip"
               >
                 <div>
                   <div
