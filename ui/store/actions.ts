@@ -1282,16 +1282,12 @@ export function removeSnap(
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
-    // find out if key management snap
-    const isKeyManagementSnap =
+    const isAccountsSnap =
       KEY_MANAGEMENT_SNAPS.findIndex((snap) => snap.snapId === snapId) !== -1;
 
-    console.log('isKeyManagementSnap', isKeyManagementSnap);
-
     try {
-      if (isKeyManagementSnap) {
-        // find out origin of key management snap
-        const addressesInSnap = (await handleSnapRequest({
+      if (isAccountsSnap) {
+        const accounts = (await handleSnapRequest({
           snapId,
           origin: 'metamask',
           handler: HandlerType.OnRpcRequest,
@@ -1300,12 +1296,12 @@ export function removeSnap(
             method: 'keyring_listAccounts',
             params: [],
           },
-        })) as unknown as string[];
-        console.log(addressesInSnap);
-        for (const address of addressesInSnap) {
-          await removeAccount(address);
+        })) as unknown as any[];
+        for (const account of accounts) {
+          dispatch(removeAccount(account.address));
         }
       }
+
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
