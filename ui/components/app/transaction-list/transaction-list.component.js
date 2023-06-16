@@ -111,14 +111,29 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
+  const renderDateStamp = (index, dateGroup) => {
+    return index === 0 ? (
+      <Text
+        paddingTop={4}
+        paddingInline={4}
+        variant={TextVariant.bodyMd}
+        color={TextColor.textDefault}
+        key={dateGroup.date}
+      >
+        {dateGroup.date}
+      </Text>
+    ) : null;
+  };
 
   const pendingTransactions = useMemo(
     () =>
-      getFilteredTransactionGroups(
-        unfilteredPendingTransactions,
-        hideTokenTransactions,
-        tokenAddress,
-        chainId,
+      groupTransactionsByDate(
+        getFilteredTransactionGroups(
+          unfilteredPendingTransactions,
+          hideTokenTransactions,
+          tokenAddress,
+          chainId,
+        ),
       ),
     [
       hideTokenTransactions,
@@ -153,48 +168,54 @@ export default function TransactionList({
 
   return (
     <Box className="transaction-list" paddingTop={4}>
-      <div className="transaction-list__transactions">
+      <Box className="transaction-list__transactions">
         {pendingTransactions.length > 0 && (
-          <div className="transaction-list__pending-transactions">
-            <div className="transaction-list__header">
-              {`${t('queue')} (${pendingTransactions.length})`}
-            </div>
+          <Box className="transaction-list__pending-transactions">
             {pendingTransactions
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               .sort(
                 (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
               )
               ///: END:ONLY_INCLUDE_IN
-              .map((transactionGroup, index) => {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                if (
-                  transactionGroup.initialTransaction.transactionType ===
-                  TransactionType.smart
-                ) {
-                  return (
-                    <SmartTransactionListItem
-                      isEarliestNonce={index === 0}
-                      smartTransaction={transactionGroup.initialTransaction}
-                      transactionGroup={transactionGroup}
-                      key={`${transactionGroup.nonce}:${index}`}
-                    />
-                  );
-                }
-                ///: END:ONLY_INCLUDE_IN
-                return (
-                  <TransactionListItem
-                    isEarliestNonce={index === 0}
-                    transactionGroup={transactionGroup}
-                    key={`${transactionGroup.nonce}:${index}`}
-                  />
+              .map((dateGroup) => {
+                return dateGroup.transactionGroups.map(
+                  (transactionGroup, index) => {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                    if (
+                      transactionGroup.initialTransaction.transactionType ===
+                      TransactionType.smart
+                    ) {
+                      return (
+                        <>
+                          {renderDateStamp(index, dateGroup)}
+                          <SmartTransactionListItem
+                            isEarliestNonce={index === 0}
+                            smartTransaction={
+                              transactionGroup.initialTransaction
+                            }
+                            transactionGroup={transactionGroup}
+                            key={`${transactionGroup.nonce}:${index}`}
+                          />
+                        </>
+                      );
+                    }
+                    ///: END:ONLY_INCLUDE_IN
+                    return (
+                      <>
+                        {renderDateStamp(index, dateGroup)}
+                        <TransactionListItem
+                          isEarliestNonce={index === 0}
+                          transactionGroup={transactionGroup}
+                          key={`${transactionGroup.nonce}:${index}`}
+                        />
+                      </>
+                    );
+                  },
                 );
               })}
-          </div>
+          </Box>
         )}
-        <div className="transaction-list__completed-transactions">
-          {pendingTransactions.length > 0 ? (
-            <div className="transaction-list__header">{t('history')}</div>
-          ) : null}
+        <Box className="transaction-list__completed-transactions">
           {completedTransactions.length > 0 ? (
             completedTransactions
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -208,16 +229,7 @@ export default function TransactionList({
                   (transactionGroup, index) => {
                     return (
                       <>
-                        {index === 0 && (
-                          <Text
-                            paddingTop={4}
-                            paddingInline={4}
-                            variant={TextVariant.bodyMd}
-                            color={TextColor.textDefault}
-                          >
-                            {dateGroup.date}
-                          </Text>
-                        )}
+                        {renderDateStamp(index, dateGroup)}
                         {transactionGroup.initialTransaction
                           ?.transactionType === 'smart' ? (
                           <SmartTransactionListItem
@@ -241,11 +253,11 @@ export default function TransactionList({
                 );
               })
           ) : (
-            <div className="transaction-list__empty">
-              <div className="transaction-list__empty-text">
+            <Box className="transaction-list__empty">
+              <Box className="transaction-list__empty-text">
                 {t('noTransactions')}
-              </div>
-            </div>
+              </Box>
+            </Box>
           )}
           {completedTransactions.length > limit && (
             <Button
@@ -256,8 +268,8 @@ export default function TransactionList({
               {t('viewMore')}
             </Button>
           )}
-        </div>
-      </div>
+        </Box>
+      </Box>
     </Box>
   );
 }

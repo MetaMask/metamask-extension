@@ -14,18 +14,20 @@ import {
 
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
-import SiteOrigin from '../../ui/site-origin';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
   AvatarNetwork,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
+  Box,
+  Text,
 } from '../../component-library';
 import {
   BackgroundColor,
   Display,
   Size,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
 
@@ -49,7 +51,6 @@ export default function SmartTransactionListItem({
     sourceTokenSymbol,
     destinationTokenSymbol,
   ]);
-  const subtitle = 'metamask';
   const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
@@ -90,24 +91,22 @@ export default function SmartTransactionListItem({
           </BadgeWrapper>
         }
         subtitle={
-          <h3>
+          <Text variant={TextVariant.headingMd}>
             <TransactionStatusLabel
               isPending
               isEarliestNonce={isEarliestNonce}
               date={date}
               status={displayedStatusKey}
             />
-            <SiteOrigin
-              className="transaction-list-item__origin"
-              siteOrigin={subtitle}
-              title={subtitle}
-            />
-          </h3>
+          </Text>
         }
       >
         {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
-            <div className="transaction-list-item__pending-actions">
+            <Box
+              paddingTop={4}
+              className="transaction-list-item__pending-actions"
+            >
               <CancelButton
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
@@ -116,7 +115,7 @@ export default function SmartTransactionListItem({
                   setCancelSwapLinkClicked(true);
                 }}
               />
-            </div>
+            </Box>
           )}
       </ActivityListItem>
       {showDetails && (

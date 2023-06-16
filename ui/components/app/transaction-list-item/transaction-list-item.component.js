@@ -319,7 +319,7 @@ function TransactionListItemInner({
                 {primaryCurrency}
               </Text>
               <Text
-                variant={TextVariant.bodySm}
+                variant={TextVariant.bodyMd}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
               >
