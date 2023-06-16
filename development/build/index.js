@@ -82,34 +82,38 @@ async function defineAndRunBuildTasks() {
     // scuttle on production/tests environment only
     const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
 
-    console.log(
-      `Building lavamoat runtime file`,
-      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
-    );
+    let scuttleGlobalThisExceptions = [
+      // globals used by different mm deps outside of lm compartment
+      'toString',
+      'getComputedStyle',
+      'addEventListener',
+      'removeEventListener',
+      'ShadowRoot',
+      'HTMLElement',
+      'Element',
+      'pageXOffset',
+      'pageYOffset',
+      'visualViewport',
+      'Reflect',
+      'Set',
+      'Object',
+      'navigator',
+      'harden',
+      'console',
+      'Image', // Used by browser to generate notifications
+      // globals sentry needs to function
+      '__SENTRY__',
+      'appState',
+      'extra',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
+    ];
 
-    // build lavamoat runtime file
-    await lavapack.buildRuntime({
-      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-      scuttleGlobalThisExceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'Image', // Used by browser to generate notifications
-        // globals chrome driver needs to function (test env)
+    if (entryTask === 'test') {
+      scuttleGlobalThisExceptions = [
+        ...scuttleGlobalThisExceptions,
+        // globals Chromedriver needs to function
         /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
         'performance',
         'parseFloat',
@@ -127,14 +131,20 @@ async function defineAndRunBuildTasks() {
         'Promise',
         'JSON',
         'Date',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-      ],
+        'Proxy',
+        'ret_nodes',
+      ];
+    }
+
+    console.log(
+      `Building lavamoat runtime file`,
+      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+    );
+
+    // build lavamoat runtime file
+    await lavapack.buildRuntime({
+      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
+      scuttleGlobalThisExceptions,
     });
   }
 
