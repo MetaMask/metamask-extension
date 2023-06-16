@@ -72,7 +72,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from '../helpers/utils/i18n-helper';
+} from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {

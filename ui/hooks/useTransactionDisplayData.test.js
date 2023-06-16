@@ -15,7 +15,7 @@ import {
   getNativeCurrency,
   getNfts,
 } from '../ducks/metamask/metamask';
-import { getMessage } from '../helpers/utils/i18n-helper';
+import { getMessage } from '../../shared/modules/i18n';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
 import { CHAIN_IDS } from '../../shared/constants/network';

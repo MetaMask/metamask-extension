@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import { getMessage } from '../../ui/helpers/utils/i18n-helper';
+import { getMessage } from '../../shared/modules/i18n';
 import * as en from '../../app/_locales/en/messages.json';
 
 export const I18nProvider = (props) => {
