@@ -277,6 +277,9 @@ export default class SendAssetRow extends Component {
     const nftCollection = this.props.collections.find(
       (collection) => collection.address === address,
     );
+
+    const label = nftCollection?.name || name;
+
     return (
       <div
         key={address}
@@ -287,11 +290,11 @@ export default class SendAssetRow extends Component {
           <Identicon address={address} diameter={36} image={image} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">
-            {nftCollection?.name || name}
+          <div className="send-v2__asset-dropdown__symbol" title={label}>
+            {label}
           </div>
-          <Text variant={TextVariant.bodyXs} ellipsis>
-            {`${t('tokenId')}:${tokenId}`}
+          <Text variant={TextVariant.bodyXs} ellipsis title={tokenId}>
+            {`${t('tokenId')}: ${tokenId}`}
           </Text>
         </div>
         {!insideDropdown && (
