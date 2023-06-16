@@ -97,13 +97,13 @@ const NetworksListItem = ({
           <UrlIcon
             className="networks-tab__content__icon-with-fallback"
             fallbackClassName="networks-tab__content__icon-with-fallback"
-            name={label}
+            name={label || getNetworkLabelKey(labelKey)}
           />
         )
       )}
       {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
         <UrlIcon
-          name={label || labelKey}
+          name={label || getNetworkLabelKey(labelKey)}
           fallbackClassName={classnames(
             'networks-tab__content__icon-with-fallback',
             {

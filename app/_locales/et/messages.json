@@ -435,9 +435,6 @@
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
   },
-  "myAccounts": {
-    "message": "Minu kontod"
-  },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
     "description": "User is important an account and needs to add a file to continue"

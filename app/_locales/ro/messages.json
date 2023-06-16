@@ -432,9 +432,6 @@
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
   },
-  "myAccounts": {
-    "message": "Conturile mele"
-  },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
