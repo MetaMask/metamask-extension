@@ -72,6 +72,7 @@ export default class AdvancedTab extends PureComponent {
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
+    autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
     showLedgerTransportWarning: false,
     showResultMessage: false,
@@ -379,11 +380,10 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <TextField
-              type="number"
               id="autoTimeout"
               data-testid="auto-lockout-time"
               placeholder="5"
-              value={this.state.autoLockTimeLimit}
+              value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
@@ -601,21 +601,41 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  handleLockChange(time) {
+  handleLockChange(autoLockTimeLimitBeforeNormalization) {
     const { t } = this.context;
-    const autoLockTimeLimit = Math.max(Number(time), 0);
 
-    this.setState(() => {
-      let lockTimeError = '';
+    if (autoLockTimeLimitBeforeNormalization === '') {
+      this.setState({
+        autoLockTimeLimitBeforeNormalization,
+        autoLockTimeLimit: '5',
+        lockTimeError: '',
+      });
+      return;
+    }
 
-      if (autoLockTimeLimit > 10080) {
-        lockTimeError = t('lockTimeTooGreat');
-      }
+    const autoLockTimeLimitAfterNormalization = Number(
+      autoLockTimeLimitBeforeNormalization,
+    );
 
-      return {
-        autoLockTimeLimit,
-        lockTimeError,
-      };
+    if (
+      Number.isNaN(autoLockTimeLimitAfterNormalization) ||
+      autoLockTimeLimitAfterNormalization < 0 ||
+      autoLockTimeLimitAfterNormalization > 10080
+    ) {
+      this.setState({
+        autoLockTimeLimitBeforeNormalization,
+        autoLockTimeLimit: null,
+        lockTimeError: t('lockTimeInvalid'),
+      });
+      return;
+    }
+
+    const autoLockTimeLimit = autoLockTimeLimitAfterNormalization;
+
+    this.setState({
+      autoLockTimeLimitBeforeNormalization,
+      autoLockTimeLimit,
+      lockTimeError: '',
     });
   }
 

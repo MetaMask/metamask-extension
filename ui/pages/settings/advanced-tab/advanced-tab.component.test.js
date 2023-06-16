@@ -36,9 +36,9 @@ describe('AdvancedTab Component', () => {
     const autoLockoutTime = queryByTestId('auto-lockout-time');
     const autoLockoutButton = queryByTestId('auto-lockout-button');
 
-    fireEvent.change(autoLockoutTime, { target: { value: 1440 } });
+    fireEvent.change(autoLockoutTime, { target: { value: '1440' } });
 
-    expect(autoLockoutTime).toHaveValue(1440);
+    expect(autoLockoutTime).toHaveValue('1440');
 
     fireEvent.click(autoLockoutButton);
 
