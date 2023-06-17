@@ -37,9 +37,16 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
 
-const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
+const UNREMOVABLE_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.LINEA_MAINNET,
+  ...TEST_CHAINS,
+];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -57,6 +64,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const networkListRef = useRef(null);
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
+
+  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   useEffect(() => {
     if (showTestNetworks && !showTestNetworksRef.current) {
@@ -76,6 +85,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
           {networks.map((network, index) => {
+            if (
+              !lineaMainnetReleased &&
+              network.providerType === 'linea-mainnet'
+            ) {
+              return null;
+            }
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
