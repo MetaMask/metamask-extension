@@ -183,10 +183,10 @@ export default class ExtensionPlatform {
     );
 
     const title = t('notificationTransactionSuccessTitle');
-    let message = t('notificationTransactionSuccessMessage', [nonce]);
+    let message = t('notificationTransactionSuccessMessage', nonce);
 
     if (url.length) {
-      message += ` ${t('notificationTransactionSuccessView', [view])}`;
+      message += ` ${t('notificationTransactionSuccessView', view)}`;
     }
 
     await this._showNotification(title, message, url);
@@ -194,13 +194,18 @@ export default class ExtensionPlatform {
 
   async _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
-    const title = 'Failed transaction';
-    let message = `Transaction ${nonce} failed! ${
-      errorMessage || txMeta.err.message
-    }`;
+    const title = t('notificationTransactionFailedTitle');
+    let message = t(
+      'notificationTransactionFailedMessage',
+      nonce,
+      errorMessage || txMeta.err.message,
+    );
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isNaN(nonce)) {
-      message = `Transaction failed! ${errorMessage || txMeta.err.message}`;
+      message = t(
+        'notificationTransactionFailedMessageMMI',
+        errorMessage || txMeta.err.message,
+      );
     }
     ///: END:ONLY_INCLUDE_IN
     await this._showNotification(title, message);
