@@ -64,8 +64,13 @@ import LedgerInstructionField from '../../components/app/ledger-instruction-fiel
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
 import { Text, Icon, IconName } from '../../components/component-library';
+import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
+import { getTokenAddressParam } from '../../helpers/utils/token-util';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
+const ALLOWED_CONTRACTS = [
+  '0x000000000022d473030f116ddee9f6b43ac78ba3', // PERMIT2
+];
 
 export default function TokenAllowance({
   origin,
@@ -99,7 +104,10 @@ export default function TokenAllowance({
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
   const { hostname } = new URL(origin);
-  const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
+  const approvalParams = parseStandardTokenTransactionData(data);
+  const spender = getTokenAddressParam(approvalParams);
+  const thisOriginIsAllowedToSkipFirstPage =
+    ALLOWED_HOSTS.includes(hostname) || ALLOWED_CONTRACTS.includes(spender);
 
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
