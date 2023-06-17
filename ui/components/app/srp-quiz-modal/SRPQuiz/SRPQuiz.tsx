@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
@@ -271,11 +271,11 @@ export default function SRPQuiz(props: any) {
     );
   }, []);
 
-  const quizContent = useMemo(() => {
+  useEffect(() => {
     trackEventSrp(`stage_${stage}`); // Call MetaMetrics based on the current stage
+  }, [stage]); // Only call this when the stage changes
 
-    return stages[stage](); // Pick the right stage from the JSXDict
-  }, [stage]);
+  const quizContent = stages[stage](); // Pick the content using the right stage from the JSXDict
 
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose}>

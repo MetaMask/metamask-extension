@@ -60,7 +60,7 @@ export default class SecurityTab extends PureComponent {
   state = {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
-    srpQuizPopoverVisible: false,
+    srpQuizModalVisible: false,
   };
 
   settingsRefCounter = 0;
@@ -98,6 +98,8 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
+  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
+
   renderSeedWords() {
     const { t } = this.context;
 
@@ -129,15 +131,15 @@ export default class SecurityTab extends PureComponent {
                   location: 'Settings',
                 },
               });
-              this.setState({ srpQuizPopoverVisible: true });
+              this.setState({ srpQuizModalVisible: true });
             }}
           >
             {t('revealSeedWords')}
           </Button>
-          {this.state.srpQuizPopoverVisible && (
+          {this.state.srpQuizModalVisible && (
             <SRPQuiz
-              isOpen={this.state.srpQuizPopoverVisible}
-              onClose={() => this.setState({ srpQuizPopoverVisible: false })}
+              isOpen={this.state.srpQuizModalVisible}
+              onClose={this.hideSrpQuizModal}
             />
           )}
         </div>
