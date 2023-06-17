@@ -9,8 +9,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Button, Text } from '../../../component-library';
-import Box from '../../../ui/box';
+import { Button, Text, Box } from '../../../component-library';
 import { IQuizInformationProps } from '../types';
 
 export default function QuizContent({
