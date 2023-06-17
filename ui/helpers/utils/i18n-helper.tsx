@@ -5,6 +5,7 @@ import {
   I18NSubstitution,
   getMessage as getMessageShared,
 } from '../../../shared/modules/i18n';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 
 /**
  * Returns a localized message for the given key
@@ -44,3 +45,13 @@ export const getMessage = (
     join,
   );
 };
+
+export function getNetworkLabelKey(network: string): string {
+  if (network === NETWORK_TYPES.LINEA_GOERLI) {
+    return 'lineaGoerli';
+  }
+  if (network === NETWORK_TYPES.LINEA_MAINNET) {
+    return 'lineaMainnet';
+  }
+  return network;
+}
