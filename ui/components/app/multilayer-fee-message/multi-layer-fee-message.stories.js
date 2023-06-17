@@ -26,7 +26,7 @@ export default {
     },
     layer2fee: '0x987654321',
     nativeCurrency: 'ETH',
-    plainStyle: 'true'
+    plainStyle: true,
   },
 };
 
