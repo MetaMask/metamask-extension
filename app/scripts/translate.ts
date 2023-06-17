@@ -14,7 +14,12 @@ export async function updateCurrentLocale(locale: string): Promise<void> {
     return;
   }
 
-  translations = await fetchLocale(locale);
+  if (locale === FALLBACK_LOCALE) {
+    translations = enTranslations;
+  } else {
+    translations = await fetchLocale(locale);
+  }
+
   currentLocale = locale;
 }
 

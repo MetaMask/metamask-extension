@@ -148,7 +148,7 @@ function applySubstitutions(
     const substituteIndex = Number(subMatch[1]) - 1;
     const substitution = substitutions[substituteIndex];
 
-    if (!substitution) {
+    if (substitution === null || substitution === undefined) {
       missingSubstitutionError(key, localeCode, onError);
     }
 
