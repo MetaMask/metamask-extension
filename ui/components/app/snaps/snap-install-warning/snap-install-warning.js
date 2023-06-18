@@ -14,13 +14,13 @@ import {
   JustifyContent,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import Popover from '../../../ui/popover';
 import {
   AvatarIcon,
   Text,
   IconName,
   Box,
   Button,
+  Modal,
 } from '../../../component-library';
 
 /**
@@ -73,7 +73,7 @@ export default function SnapInstallWarning({
   };
 
   return (
-    <Popover
+    <Modal
       className="snap-install-warning"
       footer={<SnapInstallWarningFooter />}
       headerProps={{ padding: [6, 6, 0] }}
@@ -140,7 +140,7 @@ export default function SnapInstallWarning({
           </label>
         </div>
       ))}
-    </Popover>
+    </Modal>
   );
 }
 
