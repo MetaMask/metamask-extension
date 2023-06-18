@@ -63,7 +63,7 @@ export default function SnapInstallWarning({
   }, []);
 
   return (
-    <Modal onClose={onCancel} isOpen={isOpen}>
+    <Modal className="snap-install-warning" onClose={onCancel} isOpen={isOpen}>
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
@@ -136,6 +136,7 @@ export default function SnapInstallWarning({
           ))}
         </Box>
         <Button
+          className="snap-install-warning__footer-button"
           size={BUTTON_SIZES.LG}
           disabled={!isAllChecked}
           onClick={onSubmit}
