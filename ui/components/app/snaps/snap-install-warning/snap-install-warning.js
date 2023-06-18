@@ -63,7 +63,11 @@ export default function SnapInstallWarning({
   }, []);
 
   return (
-    <Modal className="snap-install-warning" onClose={onCancel} isOpen={isOpen}>
+    <Modal
+      className="snap-install-warning__footer"
+      onClose={onCancel}
+      isOpen={isOpen}
+    >
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
