@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
   },
-  "myAccounts": {
-    "message": "マイアカウント"
-  },
   "name": {
     "message": "名前"
   },

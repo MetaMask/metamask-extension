@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "至少选择1种代币。"
   },
-  "myAccounts": {
-    "message": "我的账户"
-  },
   "name": {
     "message": "名称"
   },
