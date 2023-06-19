@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"
   },
-  "reviewSpendingCap": {
-    "message": "Επανεξετάστε το όριο δαπανών σας"
-  },
   "revokeAllTokensTitle": {
     "message": "Ανάκληση άδειας πρόσβασης σε όλα σας τα $1;",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3136,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "Έγκριση $1 χωρίς όριο δαπανών",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Ορίστε ένα ανώτατο όριο δαπανών για το $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Ρυθμίσεις"
@@ -4163,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
-  },
-  "useDefault": {
-    "message": "Χρήση προκαθορισμένου"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Μαζικά αιτήματα υπολοίπου λογαριασμού"

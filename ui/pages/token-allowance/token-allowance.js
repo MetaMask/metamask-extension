@@ -101,6 +101,9 @@ export default function TokenAllowance({
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
+  const [customTokenValue, setCustomTokenValue] = useState(
+    dappProposedTokenAmount,
+  );
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
@@ -122,9 +125,10 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  let customTokenAmount = useSelector(getCustomTokenAmount);
-  if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
-    customTokenAmount = dappProposedTokenAmount;
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+  if (!thisOriginIsAllowedToSkipFirstPage && !dappProposedTokenAmount) {
+    // customTokenAmount = dappProposedTokenAmount;
+    setCustomTokenValue(customTokenAmount);
   }
 
   const replaceCommaToDot = (inputValue) => {
@@ -132,14 +136,14 @@ export default function TokenAllowance({
   };
 
   let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
-    customTokenAmount,
+    customTokenValue,
   )
-    ? replaceCommaToDot(customTokenAmount).toString()
+    ? replaceCommaToDot(customTokenValue).toString()
     : '0';
 
   const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
-  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
-    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+  if (customTokenValue.length > 1 && Number(customTokenValue)) {
+    const customSpendLimitNumber = new BigNumber(customTokenValue);
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
       customPermissionAmount = 0;
     }
@@ -170,7 +174,7 @@ export default function TokenAllowance({
   const { balanceError } = useGasFeeContext();
 
   const disableNextButton =
-    isFirstPage && (customTokenAmount === '' || errorText !== '');
+    isFirstPage && (customTokenValue === '' || errorText !== '');
 
   const disableApproveButton = !isFirstPage && balanceError;
 
@@ -212,9 +216,9 @@ export default function TokenAllowance({
       fullTxData.originalApprovalAmount = dappProposedTokenAmount;
     }
 
-    if (customTokenAmount) {
-      fullTxData.customTokenAmount = customTokenAmount;
-      fullTxData.finalApprovalAmount = customTokenAmount;
+    if (customTokenValue) {
+      fullTxData.customTokenAmount = customTokenValue;
+      fullTxData.finalApprovalAmount = customTokenValue;
     } else if (dappProposedTokenAmount !== undefined) {
       fullTxData.finalApprovalAmount = dappProposedTokenAmount;
     }
@@ -255,7 +259,7 @@ export default function TokenAllowance({
     );
   };
 
-  const isEmpty = customTokenAmount === '';
+  const isEmpty = customTokenValue === '';
 
   const renderContractTokenValues = (
     <Box marginTop={4} key={tokenAddress}>
@@ -359,17 +363,12 @@ export default function TokenAllowance({
       <Box marginLeft={4} marginRight={4}>
         <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
           {isFirstPage ? (
-            t('setSpendingCap', [renderContractTokenValues])
+            t('spendingCapRequest', [renderContractTokenValues])
           ) : (
             <Box>
-              {customTokenAmount === '0' || isEmpty ? (
-                t('revokeSpendingCap', [renderContractTokenValues])
-              ) : (
-                <Box>
-                  {t('reviewSpendingCap')}
-                  {renderContractTokenValues}
-                </Box>
-              )}
+              {customTokenValue === '0' || isEmpty
+                ? t('revokeSpendingCap', [renderContractTokenValues])
+                : t('spendingCapRequest', [renderContractTokenValues])}
             </Box>
           )}
         </Text>
@@ -405,17 +404,21 @@ export default function TokenAllowance({
             passTheErrorText={(value) => setErrorText(value)}
             decimals={decimals}
             setInputChangeInProgress={setInputChangeInProgress}
+            customTokenValue={customTokenValue}
+            setCustomTokenValue={setCustomTokenValue}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
             currentTokenBalance={currentTokenBalance}
             tokenValue={
-              isNaN(parseFloat(customTokenAmount))
+              isNaN(parseFloat(customTokenValue))
                 ? dappProposedTokenAmount
-                : replaceCommaToDot(customTokenAmount)
+                : replaceCommaToDot(customTokenValue)
             }
             onEdit={() => handleBackClick()}
+            customTokenValue={customTokenValue}
+            setCustomTokenValue={setCustomTokenValue}
           />
         )}
       </Box>
