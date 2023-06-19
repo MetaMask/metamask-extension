@@ -17,11 +17,11 @@ import ContractDetailsModal from '../modals/contract-details-modal/contract-deta
 import {
   TextAlign,
   TextColor,
+  TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   Display,
   BlockSize,
-  TextVariant,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
@@ -33,11 +33,15 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
-import Box from '../../ui/box/box';
-///: END:ONLY_INCLUDE_IN
 
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Box,
+  Icon,
+  IconName,
+  ///: END:ONLY_INCLUDE_IN
+  Text,
+} from '../../component-library';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
