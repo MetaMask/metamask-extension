@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать эту сеть в MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Добавить токен"
+  },
+  "addTokenByContractAddress": {
+    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Адрес"
@@ -359,12 +359,6 @@
     "message": "Разрешить доступ ко всем вашим $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Одобрить и установить"
-  },
-  "approveAndUpdate": {
-    "message": "Утвердить и обновить"
-  },
   "approveButtonText": {
     "message": "Одобрить"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "Назад"
-  },
-  "backToAll": {
-    "message": "Назад ко всем"
   },
   "backup": {
     "message": "Резервное копирование"
@@ -557,13 +548,6 @@
     "message": "Чтобы $1 транзакции плата за газ должна быть увеличена как минимум на 10%. Это позволит обеспечить прием транзакции сетью.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Отменить обмен на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Отменить обмен бесплатно"
-  },
   "cancelled": {
     "message": "Отменено"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "Подключите счет или создайте новый"
   },
-  "connectHardwareWallet": {
-    "message": "Подключить аппаратный кошелек"
-  },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Подключение к тестовой сети Linea..."
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "Создать"
-  },
-  "createAccount": {
-    "message": "Создать счет"
   },
   "createNewWallet": {
     "message": "Создать новый кошелек"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
-  "enableSmartTransactions": {
-    "message": "Включить смарт-транзакции"
-  },
   "enableToken": {
     "message": "активирует для $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "Кто угодно может создать токен с любым именем, включая поддельные версии существующих токенов. Добавляйте и торгуйте на свой страх и риск!"
   },
-  "importTokens": {
-    "message": "импорт токенов"
-  },
   "importTokensCamelCase": {
     "message": "Импорт токенов"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестовая сеть Linea Goerli"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "Запросите здесь"
   },
-  "missingToken": {
-    "message": "Не видите свой токен?"
-  },
   "moreComingSoon": {
     "message": "Скоро появится больше..."
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
-  },
-  "myAccounts": {
-    "message": "Мои счета"
   },
   "name": {
     "message": "Имя"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "Недостаточно газа"
-  },
-  "notifications": {
-    "message": "Уведомления"
   },
   "notifications10ActionText": {
     "message": "Смотреть в настройках",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "Получить"
   },
-  "recents": {
-    "message": "Недавние"
-  },
   "recipientAddressPlaceholder": {
     "message": "Поиск, открытый адрес (0x) или ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "Выберите эту опцию, чтобы отобразить поле шестнадцатеричных данных на экране отправки"
   },
-  "showHide": {
-    "message": "Показать/скрыть"
-  },
   "showIncomingTransactions": {
     "message": "Показать входящие транзакции"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "Я понимаю, что, если я не создам резервную копию своей секретной фразы для восстановления, я могу потерять доступ ко всем своим счетам и всем средствам на них."
   },
-  "smartTransaction": {
-    "message": "Смарт-транзакция"
-  },
   "snapContent": {
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "Установить снап"
   },
   "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "Статус"
   },
-  "statusConnected": {
-    "message": "Подключено"
-  },
   "statusNotConnected": {
     "message": "Не подключено"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "Сильный"
   },
-  "stxAreHere": {
-    "message": "Появились смарт-транзакции!"
-  },
   "stxBenefit1": {
     "message": "Минимизируйте транзакционные издержки"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "Попробуйте обменять еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
   },
-  "stxDescription": {
-    "message": "Функция обмена в MetaMask стала намного умнее! Включение смарт-транзакций позволит MetaMask программно оптимизировать ваш обмен, чтобы помочь:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Недостаточно средств для смарт-транзакции."
-  },
-  "stxErrorUnavailable": {
-    "message": "Смарт-транзакции временно недоступны."
-  },
   "stxFailure": {
     "message": "Обмен не удался"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Публичная отправка вашей операции обмена..."
-  },
-  "stxSubDescription": {
-    "message": "* Смарт-транзакции попытаются несколько раз отправить вашу транзакцию в конфиденциальном порядке. Если все попытки не увенчаются успехом, транзакция будет показана публично, чтобы гарантировать успешное завершение вашего обмена."
   },
   "stxSuccess": {
     "message": "Обмен завершен!"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "Переключить запросы eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 тестовые сети",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Токен"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "Перевести"
   },
-  "transferBetweenAccounts": {
-    "message": "Перевод между моими счетами"
-  },
   "transferFrom": {
     "message": "Перевести с"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "У MetaMask возникли проблемы с запуском. Эта ошибка может быть непостоянной, поэтому попробуйте перезапустить расширение."
-  },
-  "troubleTokenBalances": {
-    "message": "У нас возникли проблемы с загрузкой вашего баланса токенов. Вы можете просмотреть их ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Давая разрешение, вы предоставляете следующему $1 доступ к вашим средствам."

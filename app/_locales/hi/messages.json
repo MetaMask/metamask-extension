@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "कस्टम टोकन जोड़ें"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "टोकन जोड़ें"
+  },
+  "addTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "पता"
@@ -359,12 +359,6 @@
     "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "स्वीकृत और इंस्टॉल करें"
-  },
-  "approveAndUpdate": {
-    "message": "स्वीकृत और अपडेट करें"
-  },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "वापस"
-  },
-  "backToAll": {
-    "message": "सभी पर वापस"
   },
   "backup": {
     "message": "बैकअप"
@@ -557,13 +548,6 @@
     "message": "किसी लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि की जानी चाहिए ताकि उसे नेटवर्क द्वारा मान्यता मिल सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "~$1 में स्वैप रद्द करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "मुफ्त में स्वैप रद्द करें"
-  },
   "cancelled": {
     "message": "रद्द किया गया"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "खाता कनेक्ट करें या नया बनाएं"
   },
-  "connectHardwareWallet": {
-    "message": "हार्डवेयर वॉलेट कनेक्ट करें"
-  },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "बनाएं"
-  },
-  "createAccount": {
-    "message": "अकाउंट बनाएं"
   },
   "createNewWallet": {
     "message": "एक नया वॉलेट बनाएं"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
-  "enableSmartTransactions": {
-    "message": "स्मार्ट लेनदेन को सक्षम करें"
-  },
   "enableToken": {
     "message": "$1 इनेबल करें",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "कोई भी किसी भी नाम के साथ एक टोकन बना सकता है, जिसमें मौजूदा टोकन के नकली संस्करण शामिल हैं। अपने जोखिम पर जोड़ें और व्यापार करें!"
   },
-  "importTokens": {
-    "message": "टोकन आयात करें"
-  },
   "importTokensCamelCase": {
     "message": "टोकन आयात करें"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli टेस्ट नेटवर्क"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "यहां अनुरोध करें"
   },
-  "missingToken": {
-    "message": "क्या अपना टोकन नहीं देख रहे हैं?"
-  },
   "moreComingSoon": {
     "message": "और अधिक जल्द ही आ रहा..."
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना होगा।"
-  },
-  "myAccounts": {
-    "message": "मेरे खाते"
   },
   "name": {
     "message": "नाम"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "पर्याप्त गैस नहीं"
-  },
-  "notifications": {
-    "message": "सूचनाएं"
   },
   "notifications10ActionText": {
     "message": "सेटिंग्स में जाएं",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recents": {
-    "message": "हाल ही के"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "भेजने की स्क्रीन पर हेक्स डेटा फील्ड दिखाने के लिए इसका चयन करें"
   },
-  "showHide": {
-    "message": "दिखाएं/छिपाएं"
-  },
   "showIncomingTransactions": {
     "message": "आने वाले लेन-देन दिखाएं"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
   },
-  "smartTransaction": {
-    "message": "स्मार्ट लेनदेन"
-  },
   "snapContent": {
     "message": "यह सामग्री $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "स्नैप इंस्टाल करें"
   },
   "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "स्टेटस"
   },
-  "statusConnected": {
-    "message": "कनेक्ट किया गया"
-  },
   "statusNotConnected": {
     "message": "कनेक्ट नहीं है"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "मजबूत"
   },
-  "stxAreHere": {
-    "message": "स्मार्ट लेनदेन यहां पर हैं!"
-  },
   "stxBenefit1": {
     "message": "लेनदेन लागतें मिनिमाइज़ करें"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
   },
-  "stxDescription": {
-    "message": "MetaMask के स्वैप अब और अधिक स्मार्ट हो गए हैं! इन हेतु सहयता के लिए स्मार्ट लेनदेन को सक्षम करने से MetaMask आपके स्वैप को प्रोग्रामेटिक रूप से ऑप्टिमाइज़ कर पाएगा:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "एक स्मार्ट लेनदेन के लिए पर्याप्त फंड नहीं है।"
-  },
-  "stxErrorUnavailable": {
-    "message": "स्मार्ट लेनदेन अस्थाई तौर पर अनुपबल्ध हैं।"
-  },
   "stxFailure": {
     "message": "स्वैप विफल हुआ"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "आपका स्वैप सार्वजनिक रूप से सबमिट किया जा रहा है..."
-  },
-  "stxSubDescription": {
-    "message": "* स्मार्ट लेनदेन आपके लेनदेन को निजी तौर पर, अनेक बार जमा करने का प्रयास करेंगे। यदि सभी प्रयास विफल हो जाते हैं, तो लेनदेन को सार्वजनिक रूप से प्रसारित किया जाएगा ताकि यह सुनिश्चित हो सके कि आपका स्वैप सफलतापूर्वक पूरा हो।"
   },
   "stxSuccess": {
     "message": "स्वैप पूरा हुआ!"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "Eth_sign अनुरोधों को टॉगल करें"
   },
-  "toggleTestNetworks": {
-    "message": "$1 परीक्षण नेटवर्क",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "टोकन"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "स्थानांतरण"
   },
-  "transferBetweenAccounts": {
-    "message": "मेरे खातों के बीच स्थानांतरित करें"
-  },
   "transferFrom": {
     "message": "इससे स्थानांतरित करें"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask को शुरू करने में परेशानी आई। यह त्रुटि रुक-रुक कर हो सकती है, इसलिए एक्सटेंशन को फिर से शुरू करके देखें।"
-  },
-  "troubleTokenBalances": {
-    "message": "हमें आपके टोकन की शेषराशि लोड करने में परेशानी हुई। आप उन्हें देख सकते हैं ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "अनुमति प्रदान करके, आप निम्नलिखित $1 को अपने फंड तक पहुंचने की इजाजत दे रहे हैं"

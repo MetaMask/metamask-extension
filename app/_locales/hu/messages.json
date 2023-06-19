@@ -93,9 +93,6 @@
   "back": {
     "message": "Vissza"
   },
-  "backToAll": {
-    "message": "Vissza az összeshez"
-  },
   "backupApprovalInfo": {
     "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Csatlakozás a Linea Goerli teszthálózathoz"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"
@@ -411,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli teszthálózat"
   },
   "links": {
@@ -446,9 +437,6 @@
   },
   "mustSelectOne": {
     "message": "Legalább 1 tokent ki kell választania."
-  },
-  "myAccounts": {
-    "message": "Fiókjaim"
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
@@ -573,9 +561,6 @@
   },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
-  },
-  "recents": {
-    "message": "Legutóbbiak"
   },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
@@ -797,15 +782,8 @@
   "transfer": {
     "message": "Átutalás"
   },
-  "transferBetweenAccounts": {
-    "message": "Fiókok közötti küldés"
-  },
   "transferFrom": {
     "message": "Átvezetés innen: "
-  },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Újra"

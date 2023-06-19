@@ -305,7 +305,8 @@
       "mainnet": "ok",
       "goerli": "ok",
       "sepolia": "ok",
-      "lineatestnet": "ok"
+      "lineaGoerli": "ok",
+      "lineaMainnet": "ok"
     }
   },
   "send": {

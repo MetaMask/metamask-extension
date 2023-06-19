@@ -38,9 +38,9 @@ describe('ViewSnap', () => {
 
     // Snap name & Snap authorship component
     expect(getByText('BIP-44 Test Snap')).toBeDefined();
-    expect(container.getElementsByClassName('snaps-authorship')?.length).toBe(
-      1,
-    );
+    expect(
+      container.getElementsByClassName('snaps-authorship-expanded')?.length,
+    ).toBe(1);
     // Snap description
     expect(
       getByText('An example Snap that signs messages using BLS.'),
@@ -48,7 +48,7 @@ describe('ViewSnap', () => {
     // Snap version info
     expect(getByText('v5.1.2')).toBeDefined();
     // Enable Snap
-    expect(getByText('Enable')).toBeDefined();
+    expect(getByText('Enabled')).toBeDefined();
     expect(container.getElementsByClassName('toggle-button')?.length).toBe(1);
     // Permissions
     expect(getByText('Permissions')).toBeDefined();

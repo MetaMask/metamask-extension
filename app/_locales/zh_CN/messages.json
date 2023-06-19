@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到。",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "这将允许在 MetaMask 中使用此网络。"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "添加代币"
+  },
+  "addTokenByContractAddress": {
+    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "地址"
@@ -359,12 +359,6 @@
     "message": "是否允许访问您的所有$1？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "批准并安装"
-  },
-  "approveAndUpdate": {
-    "message": "批准并更新"
-  },
   "approveButtonText": {
     "message": "批准"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "返回"
-  },
-  "backToAll": {
-    "message": "返回全部"
   },
   "backup": {
     "message": "备份"
@@ -557,13 +548,6 @@
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "以~$1取消兑换",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "免费取消兑换"
-  },
   "cancelled": {
     "message": "已取消"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "连接账户或创建新账户"
   },
-  "connectHardwareWallet": {
-    "message": "连接硬件钱包"
-  },
   "connectManually": {
     "message": "手动连接到当前站点"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "正在连接Linea测试网络"
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "创建"
-  },
-  "createAccount": {
-    "message": "创建账户"
   },
   "createNewWallet": {
     "message": "创建新钱包"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
-  "enableSmartTransactions": {
-    "message": "启用智能交易"
-  },
   "enableToken": {
     "message": "启用 $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
   },
-  "importTokens": {
-    "message": "添加资产"
-  },
   "importTokensCamelCase": {
     "message": "添加代币"
   },
@@ -1823,7 +1795,7 @@
     "message": "打开和解锁 Ledger Live 应用程序"
   },
   "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 Metamask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
+    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
     "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea测试网络"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "在这里请求"
   },
-  "missingToken": {
-    "message": "没有看到您的代币？"
-  },
   "moreComingSoon": {
     "message": "更多即将到来……"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
-  },
-  "myAccounts": {
-    "message": "我的账户"
   },
   "name": {
     "message": "名称"
@@ -2235,9 +2201,6 @@
   "notEnoughGas": {
     "message": "燃料不足"
   },
-  "notifications": {
-    "message": "通知"
-  },
   "notifications10ActionText": {
     "message": "在设置中访问",
     "description": "The 'call to action' on the button, or link, of the 'Visit in Settings' notification. Upon clicking, users will be taken to Settings page."
@@ -2337,7 +2300,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "在 Metamask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
+    "message": "在 MetaMask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "接收"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "搜索、公共地址 (0x) 或 ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "选择此项以在发送屏幕上显示十六进制数据字段"
   },
-  "showHide": {
-    "message": "显示/隐藏"
-  },
   "showIncomingTransactions": {
     "message": "显示传入的交易"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
   },
-  "smartTransaction": {
-    "message": "智能交易"
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "安装Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。"
+    "message": "请勾选选项框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。"
+    "message": "请勾选所有方框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "状态"
   },
-  "statusConnected": {
-    "message": "已连接"
-  },
   "statusNotConnected": {
     "message": "未连接"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "强"
   },
-  "stxAreHere": {
-    "message": "智能交易已推出！"
-  },
   "stxBenefit1": {
     "message": "将交易成本减至最低"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
-  "stxDescription": {
-    "message": "MetaMask Swap变得更加智能！启用智能交易将允许MetaMask从编程上优化您的交换，以帮助："
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "没有足够的资金进行智能交易。"
-  },
-  "stxErrorUnavailable": {
-    "message": "智能交易暂时不可用。"
-  },
   "stxFailure": {
     "message": "交换失败"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "正在公开提交您的Swap..."
-  },
-  "stxSubDescription": {
-    "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
   "stxSuccess": {
     "message": "交换完成！"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "切换eth_sign请求"
   },
-  "toggleTestNetworks": {
-    "message": "$1 测试网络",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "代币"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "转移"
   },
-  "transferBetweenAccounts": {
-    "message": "在我的账户之间转移"
-  },
   "transferFrom": {
     "message": "转移自"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
-  },
-  "troubleTokenBalances": {
-    "message": "我们在加载您的代币余额时遇到问题。您可以查看它们 ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "通过授予权限，您允许以下 $1 访问您的资金"

@@ -31,10 +31,10 @@ describe('Send NFT', function () {
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('.nfts-items__item-image');
+        await driver.clickElement('.nft-item__item-image');
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
         await driver.clickElement({ text: 'Next', tag: 'button' });
@@ -71,7 +71,7 @@ describe('Send NFT', function () {
 
         const sendNftItem = await driver.findElement({
           css: 'h2',
-          text: 'Send Test Dapp Collectibles',
+          text: 'Send Test Dapp NFTs',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
 

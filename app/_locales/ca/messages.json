@@ -93,9 +93,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backToAll": {
-    "message": "Torna a Tot"
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
@@ -151,16 +148,13 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
@@ -189,9 +183,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"
@@ -402,7 +393,7 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Xarxa de test Linea Goerli"
   },
   "links": {
@@ -437,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "
-  },
-  "myAccounts": {
-    "message": "Els meus Comptes"
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
@@ -779,15 +767,8 @@
   "transfer": {
     "message": "Transferència"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre els meus comptes"
-  },
   "transferFrom": {
     "message": "Transferir Des de"
-  },
-  "troubleTokenBalances": {
-    "message": "Hem tingut problemes en carregar el teu saldo de fitxes. Els pots veure",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Torna-ho a provar"
