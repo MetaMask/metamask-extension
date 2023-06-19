@@ -41,7 +41,6 @@ export interface SnapCardProps extends SnapDetails {
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
   const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
-  console.log(installedSnaps);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [snapList, setSnapList] = useState(KEY_MANAGEMENT_SNAPS);
   const [showPopup, setShowPopup] = useState(true);

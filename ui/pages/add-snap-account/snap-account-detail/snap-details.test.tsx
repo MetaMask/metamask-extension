@@ -68,7 +68,7 @@ describe('SnapAccountDetails', () => {
           'npm:@metamask/snap-simple-keyring': {
             id: 'npm:@metamask/snap-simple-keyring',
             origin: 'npm:@metamask/snap-simple-keyring',
-            version: '0.0.1',
+            version: '1.0.0',
             iconUrl: null,
             initialPermissions: {
               'endowment:manageAccount': {},

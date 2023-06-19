@@ -81,7 +81,7 @@ export const SnapDetailHeader = ({
             </Text>
             {isInstalled && (
               <Tag
-                label={t('snapDetailsInstalled')}
+                label={t('snapDetailsInstalled') as string}
                 labelProps={{
                   color: TextColor.textAlternative,
                 }}

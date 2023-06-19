@@ -75,6 +75,7 @@ exports[`NewSnapAccountPage should take a snapshot 1`] = `
         >
           <span
             class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+            data-testid="to-snap-detail"
             style="mask-image: url('./images/icons/arrow-2-right.svg');"
           />
         </div>
@@ -122,6 +123,7 @@ exports[`NewSnapAccountPage should take a snapshot 1`] = `
         >
           <span
             class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+            data-testid="to-snap-detail"
             style="mask-image: url('./images/icons/arrow-2-right.svg');"
           />
         </div>
@@ -169,6 +171,7 @@ exports[`NewSnapAccountPage should take a snapshot 1`] = `
         >
           <span
             class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+            data-testid="to-snap-detail"
             style="mask-image: url('./images/icons/arrow-2-right.svg');"
           />
         </div>
@@ -216,6 +219,7 @@ exports[`NewSnapAccountPage should take a snapshot 1`] = `
         >
           <span
             class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+            data-testid="to-snap-detail"
             style="mask-image: url('./images/icons/arrow-2-right.svg');"
           />
         </div>
