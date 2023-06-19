@@ -249,11 +249,7 @@ async function addEthereumChainHandler(
 
   const { id: approvalFlowId } = await startApprovalFlow();
 
-  console.log('APPROVAL FLOW STARTED');
-
   await new Promise((resolve) => setTimeout(resolve, 5000));
-
-  console.log('ISSUE ADD CHAIN');
 
   try {
     try {
@@ -268,8 +264,6 @@ async function addEthereumChainHandler(
           ticker,
         },
       });
-
-      console.log('USER APPROVED NEW CHAIN');
 
       networkConfigurationId = await upsertNetworkConfiguration(
         {
@@ -288,12 +282,8 @@ async function addEthereumChainHandler(
       return end(error);
     }
 
-    console.log('CHAIN ADDED');
-
     // Simulate original race condition
     await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    console.log('ISSUE SWITCH CHAIN');
 
     // Ask the user to switch the network
     try {
@@ -308,26 +298,24 @@ async function addEthereumChainHandler(
           networkConfigurationId,
         },
       });
-
-      console.log('USER APPROVED SWITCHING CHAIN');
-
-      await setActiveNetwork(networkConfigurationId);
     } catch (error) {
       // For the purposes of this method, it does not matter if the user
       // declines to switch the selected network. However, other errors indicate
       // that something is wrong.
-      console.log(
-        'ERROR SWITCHING CHAIN',
-        error.code,
-        errorCodes.provider.userRejectedRequest,
+      return end(
+        error.code === errorCodes.provider.userRejectedRequest
+          ? undefined
+          : error,
       );
-      if (error.code !== errorCodes.provider.userRejectedRequest) {
-        return end(error);
-      }
     }
   } finally {
-    console.log('END APPROVAL FLOW');
     endApprovalFlow(approvalFlowId);
+  }
+
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
   }
 
   return end();
