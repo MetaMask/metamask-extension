@@ -241,8 +241,6 @@ const TextField = ({
     inputProps.InputProps.inputProps['data-testid'] = dataTestId;
   }
 
-  // inputProps.InputProps.inputProps.step = '0.1';
-
   return (
     <MaterialTextField
       error={Boolean(error)}
