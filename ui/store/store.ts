@@ -69,6 +69,7 @@ interface TemporaryBackgroundState {
   networkId: string | null;
   networkStatus: NetworkStatus;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
+  approvalFlows: ApprovalControllerState['approvalFlows'];
   knownMethodData?: {
     [fourBytePrefix: string]: Record<string, unknown>;
   };
