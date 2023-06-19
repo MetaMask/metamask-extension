@@ -433,9 +433,6 @@
   "mustSelectOne": {
     "message": "Izbran mora biti vsaj 1 žeton."
   },
-  "myAccounts": {
-    "message": "Moji računi"
-  },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"

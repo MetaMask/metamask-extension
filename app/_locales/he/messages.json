@@ -442,9 +442,6 @@
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
   },
-  "myAccounts": {
-    "message": "החשבונות שלי"
-  },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
     "description": "User is important an account and needs to add a file to continue"
