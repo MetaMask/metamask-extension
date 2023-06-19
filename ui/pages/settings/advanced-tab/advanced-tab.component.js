@@ -22,6 +22,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { exportAsFile } from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -607,7 +608,7 @@ export default class AdvancedTab extends PureComponent {
     if (autoLockTimeLimitBeforeNormalization === '') {
       this.setState({
         autoLockTimeLimitBeforeNormalization,
-        autoLockTimeLimit: '0',
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT.toString(),
         lockTimeError: '',
       });
       return;
