@@ -249,8 +249,6 @@ async function addEthereumChainHandler(
 
   const { id: approvalFlowId } = await startApprovalFlow();
 
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   try {
     try {
       await requestUserApproval({
@@ -281,9 +279,6 @@ async function addEthereumChainHandler(
     } catch (error) {
       return end(error);
     }
-
-    // Simulate original race condition
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // Ask the user to switch the network
     try {
