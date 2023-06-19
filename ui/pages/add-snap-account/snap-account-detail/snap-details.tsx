@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useHistory, useParams } from 'react-router-dom';
-import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import semver from 'semver';
 import {

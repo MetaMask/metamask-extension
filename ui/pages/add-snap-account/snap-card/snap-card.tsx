@@ -49,6 +49,7 @@ export default function SnapCard({
       borderRadius={BorderRadius.SM}
       borderWidth={1}
       padding={[4, 4, 4, 4]}
+      data-testid="key-management-snap"
     >
       <Box
         display={Display.Flex}
@@ -87,6 +88,7 @@ export default function SnapCard({
         </Box>
         {isInstalled ? (
           <Button
+            data-testid="configure-snap-button"
             variant={BUTTON_VARIANT.SECONDARY}
             onClick={() => setShowConfigPopover(true)}
           >
@@ -94,6 +96,7 @@ export default function SnapCard({
           </Button>
         ) : (
           <Button
+            data-testid="install-snap-button"
             variant={BUTTON_VARIANT.SECONDARY}
             onClick={() => {
               history.push(`/add-snap-account/${id}`);

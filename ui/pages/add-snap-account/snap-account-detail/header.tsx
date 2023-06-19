@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -45,6 +46,7 @@ export const SnapDetailHeader = ({
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
+  const dispatch = useDispatch();
 
   return (
     <>
@@ -93,8 +95,8 @@ export const SnapDetailHeader = ({
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
                 marginRight={1}
-                onClick={async () => {
-                  await installSnapFromSnapAccounts(snapId);
+                onClick={() => {
+                  dispatch(installSnapFromSnapAccounts(snapId));
                 }}
               >
                 {t('snapUpdateAvailable')}
@@ -111,9 +113,8 @@ export const SnapDetailHeader = ({
             {!isInstalled && (
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
-                onClick={async () => {
-                  console.log('calling dispatch', snapId);
-                  await installSnapFromSnapAccounts(snapId);
+                onClick={() => {
+                  dispatch(installSnapFromSnapAccounts(snapId));
                 }}
               >
                 {t('snapInstall')}

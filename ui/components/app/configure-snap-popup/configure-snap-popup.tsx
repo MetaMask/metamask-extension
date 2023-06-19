@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Popover from '../../ui/popover';
-import { BUTTON_VARIANT, Button, Text } from '../../component-library';
+import { BUTTON_VARIANT, Button, Text, Box } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -9,7 +9,6 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box';
 
 export default function ConfigureSnapPopup({
   onClose,
