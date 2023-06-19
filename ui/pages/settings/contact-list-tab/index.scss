@@ -24,13 +24,7 @@
   &__header,
   &__header--edit {
     &__name {
-      @include H3;
-
-      margin-left: 24px;
-      max-width: 8em;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
+      margin-left: 16px;
     }
   }
 

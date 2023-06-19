@@ -2,20 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
-import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
 
 import {
+  AvatarAccount,
+  AvatarAccountSize,
   Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
 } from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 function quadSplit(address) {
   return `0x${address
@@ -29,6 +34,7 @@ function ViewContact({
   name,
   address,
   checkSummedAddress,
+  memo,
   editRoute,
   listRoute,
 }) {
@@ -46,8 +52,13 @@ function ViewContact({
           className="settings-page__header address-book__header"
           paddingLeft={6}
         >
-          <Identicon address={address} diameter={60} />
-          <div className="address-book__header__name">{name || address}</div>
+          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <Text
+            className="address-book__header__name"
+            variant={TextVariant.bodyLgMedium}
+          >
+            {name || address}
+          </Text>
         </Box>
         <div className="address-book__view-contact__group">
           <Button
@@ -84,6 +95,16 @@ function ViewContact({
             </Tooltip>
           </div>
         </div>
+        {memo.length > 0 ? (
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label--capitalized">
+              {t('memo')}
+            </div>
+            <div className="address-book__view-contact__group__static-address">
+              {memo}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -94,6 +115,7 @@ ViewContact.propTypes = {
   address: PropTypes.string,
   history: PropTypes.object,
   checkSummedAddress: PropTypes.string,
+  memo: PropTypes.string,
   editRoute: PropTypes.string,
   listRoute: PropTypes.string.isRequired,
 };
