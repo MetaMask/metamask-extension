@@ -365,7 +365,7 @@ class SettingsPage extends PureComponent {
           }
           if (
             key === CONTACT_LIST_ROUTE &&
-            currentPath.includes('/settings/contact-list/')
+            currentPath.includes(CONTACT_LIST_ROUTE)
           ) {
             return true;
           }
