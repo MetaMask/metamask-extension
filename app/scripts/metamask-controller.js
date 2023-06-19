@@ -721,9 +721,7 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (this.opts.overrides?.keyrings) {
-      additionalKeyrings = this.opts.overrides?.keyrings;
-    } else if (this.canUseHardwareWallets()) {
+    if (this.canUseHardwareWallets()) {
       const keyringBuilderFactoryWithBridge = (Keyring, Bridge) => {
         const builder = () =>
           new Keyring({
@@ -733,12 +731,11 @@ export default class MetamaskController extends EventEmitter {
         return builder;
       };
 
-      additionalKeyrings = [
+      additionalKeyrings.push(
         keyringBuilderFactoryWithBridge(TrezorKeyring, TrezorConnectBridge),
         keyringBuilderFactoryWithBridge(LedgerKeyring, LedgerIframeBridge),
         keyringBuilderFactory(LatticeKeyring),
-        keyringBuilderFactory(QRHardwareKeyring),
-      ];
+      );
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       for (const custodianType of Object.keys(CUSTODIAN_TYPES)) {
@@ -751,6 +748,15 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IN
     }
+
+    const keyringOverrides = this.opts.overrides?.keyrings;
+    additionalKeyrings = additionalKeyrings.map((keyring) => {
+      const keyringOverride = keyringOverrides?.find(
+        (override) => override.type === keyring.type,
+      );
+
+      return keyringOverride || keyring;
+    });
 
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
