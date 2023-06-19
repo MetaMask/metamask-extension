@@ -109,7 +109,10 @@ async function defineAndRunBuildTasks() {
       'sentry',
     ];
 
-    if (entryTask === 'test') {
+    if (
+      entryTask === BUILD_TARGETS.TEST ||
+      entryTask === BUILD_TARGETS.TEST_DEV
+    ) {
       scuttleGlobalThisExceptions = [
         ...scuttleGlobalThisExceptions,
         // globals Chromedriver needs to function
