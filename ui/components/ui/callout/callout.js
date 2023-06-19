@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
-import {
-  SEVERITIES,
-  TextColor,
-} from '../../../helpers/constants/design-system';
+import { Severity, TextColor } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
 import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
+
+/**
+ * @deprecated `<Callout />` has been deprecated in favor of the `<BannerAlert />`
+ * component in ./ui/components/component-library/banner-alert/banner-alert.js.
+ * See storybook documentation for BannerAlert here:
+ * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--default-story#banneralert}}
+ *
+ * Help to replace `Callout` with `BannerAlert` by submitting a PR
+ */
 
 export default function Callout({
   severity,
@@ -63,7 +69,7 @@ export default function Callout({
 }
 
 Callout.propTypes = {
-  severity: PropTypes.oneOf(Object.values(SEVERITIES)).isRequired,
+  severity: PropTypes.oneOf(Object.values(Severity)).isRequired,
   children: PropTypes.node.isRequired,
   dismiss: PropTypes.func,
   isFirst: PropTypes.bool,
