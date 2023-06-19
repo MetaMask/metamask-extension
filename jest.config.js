@@ -37,6 +37,8 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.test.js',
+    '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
@@ -46,7 +48,10 @@ module.exports = {
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/migrations/*.test.(js|ts)',
     '<rootDir>/app/scripts/platforms/*.test.js',
+<<<<<<< HEAD
     '<rootDir>/app/scripts/translate.test.ts',
+=======
+>>>>>>> 3590d76bf (replacing jest.config with original file)
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
