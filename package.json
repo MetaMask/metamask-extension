@@ -101,7 +101,7 @@
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch",
-    "@metamask/approval-controller": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch",
+    "@metamask/approval-controller": "^3.0.0",
     "@types/react": "^16.9.53",
     "analytics-node/axios": "^0.21.2",
     "ganache-core/lodash": "^4.17.21",
@@ -197,12 +197,7 @@
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/signature-controller@^3.0.0": "patch:@metamask/signature-controller@npm%3A3.0.0#./.yarn/patches/@metamask-signature-controller-npm-3.0.0-8771b6885e.patch",
-    "@metamask/approval-controller@^3.0.0": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch",
-    "@metamask/approval-controller@^2.1.1": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch",
-    "@metamask/approval-controller@^2.0.0": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch",
-    "@metamask/approval-controller@^3.1.0": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch",
-    "@metamask/approval-controller@^3.2.0": "patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch"
+    "@metamask/signature-controller@^3.0.0": "patch:@metamask/signature-controller@npm%3A3.0.0#./.yarn/patches/@metamask-signature-controller-npm-3.0.0-8771b6885e.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
@@ -233,7 +228,7 @@
     "@metamask-institutional/transaction-update": "^0.1.21",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
-    "@metamask/approval-controller": "^3.2.0",
+    "@metamask/approval-controller": "^3.3.0",
     "@metamask/assets-controllers": "^9.0.0",
     "@metamask/base-controller": "^3.0.0",
     "@metamask/browser-passworder": "^4.1.0",

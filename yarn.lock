@@ -3880,29 +3880,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:3.2.0":
-  version: 3.2.0
-  resolution: "@metamask/approval-controller@npm:3.2.0"
+"@metamask/approval-controller@npm:^3.0.0":
+  version: 3.3.0
+  resolution: "@metamask/approval-controller@npm:3.3.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: fdb9ee44f8e14ea870c80e6fe7cbb0c827763a44d243e71151bbefcfc58a5d61602c653d7a463109aae9e62437bb56652dccf7994a5334f14e61af0750d78d82
-  languageName: node
-  linkType: hard
-
-"@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.2.0
-  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.2.0#./.yarn/patches/@metamask-approval-controller-npm-3.2.0-664964237e.patch::version=3.2.0&hash=a5c8ff&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/utils": ^5.0.2
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: d6b6f16a9d4257ef2785b0449a8bfb4e4b7f45e7a492f094df37a86ae2c4fa35f51a5a0ffc54d0ba1711d0cc99f8119cb2dd99997b472f9619bcac626a0eb8e8
+  checksum: 1fa6111a897d6f4aa369fd1a669fb5e16558277019f9d6c61449aea0d7b2672a62c189e5b3d9e84ab6e4d5826932c78d2bdb0f05aafb184a4ff07903c46abf2c
   languageName: node
   linkType: hard
 
@@ -24328,7 +24315,7 @@ __metadata:
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
-    "@metamask/approval-controller": ^3.2.0
+    "@metamask/approval-controller": ^3.3.0
     "@metamask/assets-controllers": ^9.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
