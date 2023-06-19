@@ -224,13 +224,13 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
     act(() => {
-      const useSiteSuggestion = getByText('Use site suggestion');
+      const useSiteSuggestion = queryByText('Use site suggestion');
       expect(useSiteSuggestion).not.toBeInTheDocument();
     });
 
