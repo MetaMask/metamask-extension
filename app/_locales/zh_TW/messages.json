@@ -304,7 +304,7 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "連線到 Linea Goerli 測試網路"
   },
   "connectingToMainnet": {
@@ -803,7 +803,7 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 測試網路"
   },
   "links": {
@@ -860,9 +860,6 @@
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣。"
-  },
-  "myAccounts": {
-    "message": "我的帳戶"
   },
   "name": {
     "message": "名稱"

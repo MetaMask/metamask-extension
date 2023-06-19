@@ -183,9 +183,6 @@
   "mustSelectOne": {
     "message": "Moet ten minste één token selecteren."
   },
-  "myAccounts": {
-    "message": "Mijn accounts"
-  },
   "needImportFile": {
     "message": "U moet een bestand selecteren om te importeren.",
     "description": "User is important an account and needs to add a file to continue"
