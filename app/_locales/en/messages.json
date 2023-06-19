@@ -4735,9 +4735,6 @@
   "switcherTourDescription": {
     "message": "Click the icon to switch networks or add a new network"
   },
-  "switchingNetworksLoadingText": {
-    "message": "Prepare switching networks dialog"
-  },
   "switchingNetworksCancelsPendingConfirmations": {
     "message": "Switching networks will cancel all pending confirmations"
   },
