@@ -6,10 +6,10 @@ export default {
   component: NftOptions,
   argTypes: {
     onRemove: {
-      control: 'onRemove',
+      action: 'onRemove',
     },
     onViewOnOpensea: {
-      control: 'onViewOnOpensea',
+      action: 'onViewOnOpensea',
     },
   },
 };
