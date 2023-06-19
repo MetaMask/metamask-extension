@@ -54,36 +54,35 @@ export const CreateAccount = ({ onActionComplete }) => {
     }
   };
 
-  return (
-    <Box
-      as="form"
-      onSubmit={async (event) => {
-        event.preventDefault();
+  const onSubmit = async (event) => {
+    event.preventDefault();
 
-        try {
-          await onCreateAccount(newAccountName || defaultAccountName);
-          onActionComplete(true);
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.AccountAdded,
-            properties: {
-              account_type: MetaMetricsEventAccountType.Default,
-              location: 'Home',
-            },
-          });
-          history.push(mostRecentOverviewPage);
-        } catch (error) {
-          trackEvent({
-            category: MetaMetricsEventCategory.Accounts,
-            event: MetaMetricsEventName.AccountAddFailed,
-            properties: {
-              account_type: MetaMetricsEventAccountType.Default,
-              error: error.message,
-            },
-          });
-        }
-      }}
-    >
+    try {
+      await onCreateAccount(newAccountName || defaultAccountName);
+      onActionComplete(true);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAdded,
+        properties: {
+          account_type: MetaMetricsEventAccountType.Default,
+          location: 'Home',
+        },
+      });
+      history.push(mostRecentOverviewPage);
+    } catch (error) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.AccountAddFailed,
+        properties: {
+          account_type: MetaMetricsEventAccountType.Default,
+          error: error.message,
+        },
+      });
+    }
+  };
+
+  return (
+    <Box as="form" onSubmit={onSubmit}>
       <FormTextField
         autoFocus
         label={t('accountName')}
@@ -91,6 +90,11 @@ export const CreateAccount = ({ onActionComplete }) => {
         onChange={(event) => setNewAccountName(event.target.value)}
         helpText={errorMessage}
         error={!isValidAccountName}
+        onKeyPress={(e) => {
+          if (e.key === 'Enter') {
+            onSubmit(e);
+          }
+        }}
       />
       <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={() => onActionComplete()} block>

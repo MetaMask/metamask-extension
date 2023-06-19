@@ -23,6 +23,9 @@ export default {
     identity: {
       control: 'object',
     },
+    isOpen: {
+      control: 'boolean',
+    },
   },
   args: {
     anchorElement: null,
@@ -34,6 +37,7 @@ export default {
     },
     isRemovable: true,
     blockExplorerUrlSubTitle: 'etherscan.io',
+    isOpen: true,
   },
 };
 

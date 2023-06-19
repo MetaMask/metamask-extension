@@ -8,28 +8,41 @@ type ApprovalsMetaMaskState = {
   };
 };
 
+export function hasPendingApprovals(
+  state: ApprovalsMetaMaskState,
+  approvalType: ApprovalType,
+  predicate?: (
+    approval: ApprovalControllerState['pendingApprovals'][string],
+  ) => boolean,
+) {
+  const pendingApprovalRequests = Object.values(
+    state.metamask.pendingApprovals,
+  ).filter(({ type }) => type === approvalType);
+
+  if (predicate) {
+    return pendingApprovalRequests.some(predicate);
+  }
+
+  return pendingApprovalRequests.length > 0;
+}
+
 export const getApprovalRequestsByType = (
   state: ApprovalsMetaMaskState,
   approvalType: ApprovalType,
+  predicate?: (
+    approval: ApprovalControllerState['pendingApprovals'][string],
+  ) => boolean,
 ) => {
   const pendingApprovalRequests = Object.values(
     state.metamask.pendingApprovals,
   ).filter(({ type }) => type === approvalType);
 
+  if (predicate) {
+    return pendingApprovalRequests.filter(predicate);
+  }
+
   return pendingApprovalRequests;
 };
-
-export function hasPendingApprovals(
-  state: ApprovalsMetaMaskState,
-  approvalType: ApprovalType,
-) {
-  const pendingApprovalRequests = getApprovalRequestsByType(
-    state,
-    approvalType,
-  );
-
-  return pendingApprovalRequests.length > 0;
-}
 
 export function getPendingApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;

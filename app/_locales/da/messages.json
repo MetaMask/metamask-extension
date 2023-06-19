@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Opretter forbindelse til Linea Goerli Testnetværk"
   },
   "connectingToMainnet": {
@@ -399,7 +399,7 @@
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea-testnetværk"
   },
   "loadMore": {
@@ -428,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
-  },
-  "myAccounts": {
-    "message": "Mine Konti"
   },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",

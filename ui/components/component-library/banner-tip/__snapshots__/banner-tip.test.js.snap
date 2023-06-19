@@ -18,6 +18,7 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
     <div>
       <h5
         class="box mm-text mm-banner-base__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+        data-testid="mm-banner-base-title"
       >
         BannerTip test
       </h5>

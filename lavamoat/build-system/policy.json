@@ -1328,7 +1328,7 @@
         "@typescript-eslint/eslint-plugin>tsutils": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager>@typescript-eslint/visitor-keys": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
-        "eslint>is-glob": true,
+        "del>is-glob": true,
         "globby": true,
         "nock>debug": true,
         "semver": true,
@@ -1546,6 +1546,7 @@
     "brfs>static-module": {
       "packages": {
         "brfs>static-module>acorn-node": true,
+        "brfs>static-module>escodegen": true,
         "brfs>static-module>magic-string": true,
         "brfs>static-module>merge-source-map": true,
         "brfs>static-module>object-inspect": true,
@@ -1556,7 +1557,6 @@
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
         "browserify>has": true,
-        "jsdom>escodegen": true,
         "nyc>convert-source-map": true,
         "readable-stream": true
       }
@@ -1571,6 +1571,16 @@
     "brfs>static-module>acorn-node>acorn": {
       "globals": {
         "define": true
+      }
+    },
+    "brfs>static-module>escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "brfs>static-module>escodegen>estraverse": true,
+        "brfs>static-module>escodegen>source-map": true,
+        "eslint>esutils": true
       }
     },
     "brfs>static-module>magic-string": {
@@ -1647,7 +1657,17 @@
     },
     "brfs>static-module>static-eval": {
       "packages": {
-        "jsdom>escodegen": true
+        "brfs>static-module>static-eval>escodegen": true
+      }
+    },
+    "brfs>static-module>static-eval>escodegen": {
+      "globals": {
+        "sourceMap.SourceNode": true
+      },
+      "packages": {
+        "brfs>static-module>static-eval>escodegen>estraverse": true,
+        "brfs>static-module>static-eval>escodegen>source-map": true,
+        "eslint>esutils": true
       }
     },
     "brfs>static-module>through2": {
@@ -2059,9 +2079,9 @@
         "chokidar>fsevents": true,
         "chokidar>is-binary-path": true,
         "chokidar>normalize-path": true,
+        "del>is-glob": true,
         "depcheck>readdirp": true,
         "eslint>glob-parent": true,
-        "eslint>is-glob": true,
         "watchify>anymatch": true
       }
     },
@@ -2153,41 +2173,44 @@
     },
     "del": {
       "builtin": {
-        "path.resolve": true
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.platform": true
       },
       "packages": {
-        "del>globby": true,
+        "del>graceful-fs": true,
+        "del>is-glob": true,
         "del>is-path-cwd": true,
-        "del>is-path-in-cwd": true,
+        "del>is-path-inside": true,
         "del>p-map": true,
-        "del>pify": true,
-        "del>rimraf": true
+        "del>slash": true,
+        "globby": true,
+        "nyc>rimraf": true
       }
     },
-    "del>globby": {
-      "packages": {
-        "del>globby>array-union": true,
-        "del>globby>pify": true,
-        "del>globby>pinkie-promise": true,
-        "del>rimraf>glob": true,
-        "react>object-assign": true
-      }
-    },
-    "del>globby>array-union": {
-      "packages": {
-        "del>globby>array-union>array-uniq": true
-      }
-    },
-    "del>globby>pinkie-promise": {
-      "packages": {
-        "del>globby>pinkie-promise>pinkie": true
-      }
-    },
-    "del>globby>pinkie-promise>pinkie": {
+    "del>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
       "globals": {
+        "clearTimeout": true,
+        "console.error": true,
         "process": true,
-        "setImmediate": true,
         "setTimeout": true
+      }
+    },
+    "del>is-glob": {
+      "packages": {
+        "del>is-glob>is-extglob": true
       }
     },
     "del>is-path-cwd": {
@@ -2195,61 +2218,20 @@
         "path.resolve": true
       },
       "globals": {
-        "process.cwd": true
-      }
-    },
-    "del>is-path-in-cwd": {
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "del>is-path-in-cwd>is-path-inside": true
-      }
-    },
-    "del>is-path-in-cwd>is-path-inside": {
-      "builtin": {
-        "path.resolve": true
-      },
-      "packages": {
-        "serve-handler>path-is-inside": true
-      }
-    },
-    "del>rimraf": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "path.join": true
-      },
-      "globals": {
-        "process.platform": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "del>rimraf>glob": true
-      }
-    },
-    "del>rimraf>glob": {
-      "builtin": {
-        "assert": true,
-        "events.EventEmitter": true,
-        "fs": true,
-        "path.join": true,
-        "path.resolve": true,
-        "util": true
-      },
-      "globals": {
-        "console.error": true,
         "process.cwd": true,
-        "process.nextTick": true,
         "process.platform": true
-      },
+      }
+    },
+    "del>is-path-inside": {
+      "builtin": {
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true
+      }
+    },
+    "del>p-map": {
       "packages": {
-        "eslint>minimatch": true,
-        "gulp-watch>path-is-absolute": true,
-        "nyc>glob>fs.realpath": true,
-        "nyc>glob>inflight": true,
-        "pump>once": true,
-        "pumpify>inherits": true
+        "nyc>p-map>aggregate-error": true
       }
     },
     "depcheck>@babel/traverse": {
@@ -2427,6 +2409,8 @@
         "process": true
       },
       "packages": {
+        "del>is-glob": true,
+        "del>is-path-inside": true,
         "eslint>@eslint-community/eslint-utils": true,
         "eslint>@eslint-community/regexpp": true,
         "eslint>@eslint/eslintrc": true,
@@ -2446,8 +2430,6 @@
         "eslint>globals": true,
         "eslint>grapheme-splitter": true,
         "eslint>imurmurhash": true,
-        "eslint>is-glob": true,
-        "eslint>is-path-inside": true,
         "eslint>js-sdsl": true,
         "eslint>json-stable-stringify-without-jsonify": true,
         "eslint>levn": true,
@@ -2503,9 +2485,9 @@
       },
       "packages": {
         "brfs>resolve": true,
+        "del>is-glob": true,
         "eslint-import-resolver-typescript>glob": true,
         "eslint-plugin-import>tsconfig-paths": true,
-        "eslint>is-glob": true,
         "nock>debug": true
       }
     },
@@ -2545,6 +2527,7 @@
       },
       "packages": {
         "browserify>has": true,
+        "del>is-glob": true,
         "depcheck>is-core-module": true,
         "eslint": true,
         "eslint-plugin-import>array.prototype.flat": true,
@@ -2554,7 +2537,6 @@
         "eslint-plugin-import>tsconfig-paths": true,
         "eslint-plugin-react>array-includes": true,
         "eslint-plugin-react>object.values": true,
-        "eslint>is-glob": true,
         "eslint>minimatch": true,
         "typescript": true
       }
@@ -3197,7 +3179,7 @@
         "path.posix.dirname": true
       },
       "packages": {
-        "eslint>is-glob": true
+        "del>is-glob": true
       }
     },
     "eslint>import-fresh": {
@@ -3224,18 +3206,6 @@
         "module._resolveFilename": true,
         "path.join": true,
         "path.resolve": true
-      }
-    },
-    "eslint>is-glob": {
-      "packages": {
-        "eslint>is-glob>is-extglob": true
-      }
-    },
-    "eslint>is-path-inside": {
-      "builtin": {
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
       }
     },
     "eslint>levn": {
@@ -3356,9 +3326,9 @@
         "setTimeout": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "fs-extra>jsonfile": true,
-        "fs-extra>universalify": true,
-        "webpack>graceful-fs": true
+        "fs-extra>universalify": true
       }
     },
     "fs-extra>jsonfile": {
@@ -3369,7 +3339,19 @@
         "Buffer.isBuffer": true
       },
       "packages": {
-        "webpack>graceful-fs": true
+        "del>graceful-fs": true
+      }
+    },
+    "gh-pages>globby>pinkie-promise": {
+      "packages": {
+        "gh-pages>globby>pinkie-promise>pinkie": true
+      }
+    },
+    "gh-pages>globby>pinkie-promise>pinkie": {
+      "globals": {
+        "process": true,
+        "setImmediate": true,
+        "setTimeout": true
       }
     },
     "globalthis": {
@@ -3406,12 +3388,12 @@
         "process.cwd": true
       },
       "packages": {
+        "del>slash": true,
         "fast-glob": true,
         "globby>array-union": true,
         "globby>dir-glob": true,
         "globby>ignore": true,
-        "globby>merge2": true,
-        "globby>slash": true
+        "globby>merge2": true
       }
     },
     "globby>dir-glob": {
@@ -3945,6 +3927,7 @@
         "Buffer.from": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "gulp-sourcemaps>@gulp-sourcemaps/identity-map": true,
         "gulp-sourcemaps>@gulp-sourcemaps/map-sources": true,
         "gulp-sourcemaps>acorn": true,
@@ -3954,8 +3937,7 @@
         "gulp-sourcemaps>source-map": true,
         "gulp-sourcemaps>strip-bom-string": true,
         "gulp-sourcemaps>through2": true,
-        "nyc>convert-source-map": true,
-        "webpack>graceful-fs": true
+        "nyc>convert-source-map": true
       }
     },
     "gulp-sourcemaps>@gulp-sourcemaps/identity-map": {
@@ -4431,6 +4413,7 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "del>is-glob": true,
         "eslint>glob-parent": true,
         "eslint>is-glob": true,
         "gulp-watch>chokidar>anymatch": true,
@@ -4999,9 +4982,9 @@
         "setImmediate": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "gulp-watch>chokidar>readdirp>micromatch": true,
-        "readable-stream": true,
-        "webpack>graceful-fs": true
+        "readable-stream": true
       }
     },
     "gulp-watch>chokidar>readdirp>micromatch": {
@@ -5159,12 +5142,12 @@
         "process.cwd": true
       },
       "packages": {
-        "del>globby>pinkie-promise": true,
+        "del>graceful-fs": true,
+        "gh-pages>globby>pinkie-promise": true,
         "gulp-watch>vinyl-file>pify": true,
         "gulp-watch>vinyl-file>strip-bom": true,
         "gulp-watch>vinyl-file>strip-bom-stream": true,
-        "gulp-watch>vinyl-file>vinyl": true,
-        "webpack>graceful-fs": true
+        "gulp-watch>vinyl-file>vinyl": true
       }
     },
     "gulp-watch>vinyl-file>strip-bom": {
@@ -5525,8 +5508,8 @@
       },
       "packages": {
         "chokidar>normalize-path": true,
+        "del>is-glob": true,
         "eslint>glob-parent": true,
-        "eslint>is-glob": true,
         "gulp-watch>chokidar>async-each": true,
         "gulp-watch>path-is-absolute": true,
         "gulp>glob-watcher>anymatch": true,
@@ -5625,9 +5608,9 @@
         "setImmediate": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "gulp>glob-watcher>anymatch>micromatch": true,
-        "readable-stream": true,
-        "webpack>graceful-fs": true
+        "readable-stream": true
       }
     },
     "gulp>glob-watcher>chokidar>upath": {
@@ -5849,6 +5832,7 @@
         "process.nextTick": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "gulp>vinyl-fs>fs-mkdirp-stream": true,
         "gulp>vinyl-fs>glob-stream": true,
         "gulp>vinyl-fs>is-valid-glob": true,
@@ -5864,8 +5848,7 @@
         "gulp>vinyl-fs>value-or-function": true,
         "gulp>vinyl-fs>vinyl-sourcemap": true,
         "readable-stream": true,
-        "vinyl": true,
-        "webpack>graceful-fs": true
+        "vinyl": true
       }
     },
     "gulp>vinyl-fs>fs-mkdirp-stream": {
@@ -5877,8 +5860,8 @@
         "process.umask": true
       },
       "packages": {
-        "gulp>vinyl-fs>fs-mkdirp-stream>through2": true,
-        "webpack>graceful-fs": true
+        "del>graceful-fs": true,
+        "gulp>vinyl-fs>fs-mkdirp-stream>through2": true
       }
     },
     "gulp>vinyl-fs>fs-mkdirp-stream>through2": {
@@ -6142,13 +6125,13 @@
         "Buffer": true
       },
       "packages": {
+        "del>graceful-fs": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
         "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": true,
         "gulp>vinyl-fs>vinyl-sourcemap>normalize-path": true,
         "gulp>vinyl-fs>vinyl-sourcemap>now-and-later": true,
         "nyc>convert-source-map": true,
-        "vinyl": true,
-        "webpack>graceful-fs": true
+        "vinyl": true
       }
     },
     "gulp>vinyl-fs>vinyl-sourcemap>append-buffer": {
@@ -6180,16 +6163,6 @@
     "ini": {
       "globals": {
         "process": true
-      }
-    },
-    "jsdom>escodegen": {
-      "globals": {
-        "sourceMap.SourceNode": true
-      },
-      "packages": {
-        "eslint>esutils": true,
-        "jsdom>escodegen>estraverse": true,
-        "jsdom>escodegen>source-map": true
       }
     },
     "koa>is-generator-function>has-tostringtag": {
@@ -6559,27 +6532,8 @@
     },
     "mocha>log-symbols": {
       "packages": {
-        "madge>ora>is-unicode-supported": true,
-        "mocha>log-symbols>chalk": true
-      }
-    },
-    "mocha>log-symbols>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "mocha>log-symbols>chalk>supports-color": true
-      }
-    },
-    "mocha>log-symbols>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "sinon>supports-color>has-flag": true
+        "chalk": true,
+        "madge>ora>is-unicode-supported": true
       }
     },
     "mocha>minimatch>brace-expansion": {
@@ -6698,6 +6652,17 @@
       "packages": {
         "pump>once": true,
         "pump>once>wrappy": true
+      }
+    },
+    "nyc>p-map>aggregate-error": {
+      "packages": {
+        "@testing-library/jest-dom>redent>indent-string": true,
+        "nyc>p-map>aggregate-error>clean-stack": true
+      }
+    },
+    "nyc>p-map>aggregate-error>clean-stack": {
+      "builtin": {
+        "os.homedir": true
       }
     },
     "nyc>resolve-from": {
@@ -7821,14 +7786,6 @@
         "semver>lru-cache>yallist": true
       }
     },
-    "serve-handler>path-is-inside": {
-      "builtin": {
-        "path.sep": true
-      },
-      "globals": {
-        "process.platform": true
-      }
-    },
     "sinon>supports-color>has-flag": {
       "globals": {
         "process.argv": true
@@ -8001,10 +7958,11 @@
         "process.stdout.isTTY": true
       },
       "packages": {
+        "chalk": true,
+        "del>slash": true,
         "eslint>imurmurhash": true,
         "globby": true,
         "globby>ignore": true,
-        "globby>slash": true,
         "lodash": true,
         "mocha>log-symbols": true,
         "nock>debug": true,
@@ -8013,7 +7971,6 @@
         "stylelint>@stylelint/postcss-markdown": true,
         "stylelint>autoprefixer": true,
         "stylelint>balanced-match": true,
-        "stylelint>chalk": true,
         "stylelint>cosmiconfig": true,
         "stylelint>execall": true,
         "stylelint>file-entry-cache": true,
@@ -8186,25 +8143,6 @@
       "packages": {
         "stylelint>autoprefixer>picocolors": true,
         "stylelint>autoprefixer>postcss>source-map": true
-      }
-    },
-    "stylelint>chalk": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "stylelint>chalk>supports-color": true
-      }
-    },
-    "stylelint>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "sinon>supports-color>has-flag": true
       }
     },
     "stylelint>cosmiconfig": {
@@ -9082,23 +9020,6 @@
       "packages": {
         "eslint>eslint-scope>esrecurse": true,
         "webpack>eslint-scope>estraverse": true
-      }
-    },
-    "webpack>graceful-fs": {
-      "builtin": {
-        "assert.equal": true,
-        "constants.O_SYMLINK": true,
-        "constants.O_WRONLY": true,
-        "constants.hasOwnProperty": true,
-        "fs": true,
-        "stream.Stream.call": true,
-        "util": true
-      },
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "process": true,
-        "setTimeout": true
       }
     },
     "webpack>json-parse-even-better-errors": {
