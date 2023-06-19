@@ -3,8 +3,8 @@ import React, { useEffect } from 'react';
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
@@ -97,20 +97,14 @@ const CancelSpeedupPopover = () => {
       <div className="cancel-speedup-popover__wrapper">
         <Text
           alignItems={AlignItems.center}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           variant={TextVariant.bodySm}
           marginBottom={2}
           paddingBottom={2}
           className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
-            <Text
-              as="strong"
-              variant={TextVariant.bodySm}
-              key="cancelSpeedupCancel"
-            >
-              {t('replace')}
-            </Text>,
+            <strong key="cancelSpeedupCancel">{t('replace')}</strong>,
           ])}
           <InfoTooltip
             position="top"
@@ -135,17 +129,17 @@ const CancelSpeedupPopover = () => {
           />
         </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexDirection={FlexDirection.Column}
           marginTop={2}
         >
-          <Box className="cancel-speedup-popover__edit-gas-button">
+          <div className="cancel-speedup-popover__edit-gas-button">
             {!appIsLoading && <EditGasFeeButton />}
-          </Box>
-          <Box className="cancel-speedup-popover__gas-details">
+          </div>
+          <div className="cancel-speedup-popover__gas-details">
             <GasDetailsItem />
-          </Box>
+          </div>
         </Box>
         <Button onClick={submitTransactionChange}>{t('submit')}</Button>
       </div>
