@@ -7,9 +7,12 @@ import messages from '../../../../app/_locales/en/messages.json';
 import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import NewSnapAccountPage from './snap-account';
 
+const mockHistoryPush = jest.fn();
+
 jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: jest.fn(),
+    push: mockHistoryPush,
   }),
 }));
 
@@ -96,7 +99,16 @@ describe('NewSnapAccountPage', () => {
     );
   });
 
-  it('should go to snap detail page on click of snap carot', async () => {});
+  it('should go to snap detail page on click of snap carot', async () => {
+    const { getAllByTestId } = renderComponent();
+    const iconCarot = getAllByTestId('to-snap-detail')[0];
+
+    await fireEvent.click(iconCarot);
+
+    await waitFor(() => {
+      expect(mockHistoryPush).toHaveBeenCalled();
+    });
+  });
 
   it('should show configure button after clicking', async () => {
     const { getByTestId, getByText } = renderComponent();
@@ -110,7 +122,6 @@ describe('NewSnapAccountPage', () => {
       expect(configureSnapTitleInPopup).toBeInTheDocument();
     });
 
-    // test close button
     const closeButton = getByText(messages.getStarted.message);
     await fireEvent.click(closeButton);
 
@@ -120,23 +131,5 @@ describe('NewSnapAccountPage', () => {
       );
       expect(configureSnapTitleInPopup).toBeInTheDocument();
     });
-
-    // // test redirect link
-    // await fireEvent.click(configureButton);
-
-    // await waitFor(() => {
-    //   const configureSnapTitleInPopup = getByText(
-    //     messages.configureSnapPopupTitle.message,
-    //   );
-    //   expect(configureSnapTitleInPopup).toBeInTheDocument();
-    // });
-
-    // const redirectLink = getByText(messages.configureSnapPopupLink.message);
-
-    // fireEvent.click(redirectLink);
-
-    // console.log(global.platform);
-
-    // expect(global.platform.openTab).toHaveBeenCalled();
   });
 });

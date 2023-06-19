@@ -119,6 +119,7 @@ export default function SnapCard({
 
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Icon
+          data-testid="to-snap-detail"
           name={IconName.Arrow2Right}
           color={IconColor.iconAlternative}
           onClick={onClickFunc}
