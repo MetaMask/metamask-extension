@@ -19,11 +19,98 @@ jobs:
         run: ${{ steps.download-actionlint.outputs.executable }} -color
         shell: bash
 
+  prepare:
+    name: Prepare dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install Yarn dependencies
+        run: yarn --immutable
+
+  validate-allow-scripts:
+    name: Validate allow-scripts config
+    runs-on: ubuntu-latest
+    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Update allow-scripts config
+        run: yarn allow-scripts auto
+      - name: Verify that no changes are needed
+        run: ./development/check-working-tree.sh
+        shell: bash
+
+  validate-lavamoat-build-policy:
+    name: Validate LavaMoat build policy
+    runs-on: ubuntu-latest
+    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Update LavaMoat build policy
+        run: yarn lavamoat:build:auto
+      - name: Verify that no changes are needed
+        run: ./development/check-working-tree.sh
+        shell: bash
+
+  validate-lavamoat-webapp-policy:
+    strategy:
+      matrix:
+        build-type: [main, beta, flask, mmi, desktop]
+    name: Validate LavaMoat ${{ matrix.build-type }} application policy
+    runs-on: ubuntu-latest
+    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    needs:
+      - prepare
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+      - name: Install dependencies from cache
+        run: yarn --immutable --immutable-cache
+      - name: Update LavaMoat ${{ matrix.build-type }} policy
+        run: yarn lavamoat:webapp:auto:ci '--build-types=${{ matrix.build-type }}'
+        env:
+          INFURA_PROJECT_ID: 00000000000
+      - name: Verify that no changes are needed
+        run: ./development/check-working-tree.sh
+        shell: bash
+
   all-jobs-completed:
     name: All jobs completed
     runs-on: ubuntu-latest
     needs:
       - check-workflows
+      - validate-allow-scripts
+      - validate-lavamoat-build-policy
+      - validate-lavamoat-webapp-policy
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
     steps:
