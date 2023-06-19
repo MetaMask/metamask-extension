@@ -107,6 +107,26 @@ async function defineAndRunBuildTasks() {
       'stateHooks',
       'sentryHooks',
       'sentry',
+      // globals chromedriver needs to function
+      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+      'performance',
+      'parseFloat',
+      'innerWidth',
+      'innerHeight',
+      'Symbol',
+      'Math',
+      'DOMRect',
+      'Number',
+      'Array',
+      'crypto',
+      'Function',
+      'Uint8Array',
+      'String',
+      'Promise',
+      'JSON',
+      'Date',
+      'Proxy',
+      'ret_nodes',
     ];
 
     if (
@@ -115,24 +135,8 @@ async function defineAndRunBuildTasks() {
     ) {
       scuttleGlobalThisExceptions = [
         ...scuttleGlobalThisExceptions,
-        // globals Chromedriver needs to function
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        'JSON',
-        'Date',
+        // more globals chromedriver needs to function
+        // in the future, more of the globals above can be put in this list
         'Proxy',
         'ret_nodes',
       ];
