@@ -24,7 +24,6 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
-    setApprovalFlowLoadingText: true,
   },
 };
 export default addEthereumChain;
@@ -43,7 +42,6 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
-    setApprovalFlowLoadingText,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -249,9 +247,7 @@ async function addEthereumChainHandler(
   }
   let networkConfigurationId;
 
-  const { id: approvalFlowId } = await startApprovalFlow({
-    loadingText: 'addingCustomNetwork',
-  });
+  const { id: approvalFlowId } = await startApprovalFlow();
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
@@ -285,11 +281,6 @@ async function addEthereumChainHandler(
     } catch (error) {
       return end(error);
     }
-
-    setApprovalFlowLoadingText({
-      id: approvalFlowId,
-      loadingText: 'switchingNetworksLoadingText',
-    });
 
     // Simulate original race condition
     await new Promise((resolve) => setTimeout(resolve, 3000));
