@@ -121,7 +121,10 @@ async function withFixtures(options, testSuite) {
       driverProxy = new Proxy(driver, {
         get(target, prop, receiver) {
           const originalProperty = target[prop];
-          if (typeof originalProperty === 'function') {
+          if (
+            typeof originalProperty === 'function' &&
+            prop !== 'switchToFrame'
+          ) {
             return (...args) => {
               console.log(
                 `[driver] Called '${prop}' with arguments ${JSON.stringify(
