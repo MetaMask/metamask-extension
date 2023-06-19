@@ -31,7 +31,14 @@ describe('AdvancedTab Component', () => {
     expect(restoreFile).toBeInTheDocument();
   });
 
-  it('should update autoLockTimeLimit', () => {
+  it('should default the auto-lockout time to 0', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+    const autoLockoutTime = queryByTestId('auto-lockout-time');
+
+    expect(autoLockoutTime).toHaveValue('0');
+  });
+
+  it('should update the auto-lockout time', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
     const autoLockoutTime = queryByTestId('auto-lockout-time');
     const autoLockoutButton = queryByTestId('auto-lockout-button');

@@ -382,7 +382,7 @@ export default class AdvancedTab extends PureComponent {
             <TextField
               id="autoTimeout"
               data-testid="auto-lockout-time"
-              placeholder="5"
+              placeholder="0"
               value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
@@ -607,7 +607,7 @@ export default class AdvancedTab extends PureComponent {
     if (autoLockTimeLimitBeforeNormalization === '') {
       this.setState({
         autoLockTimeLimitBeforeNormalization,
-        autoLockTimeLimit: '5',
+        autoLockTimeLimit: '0',
         lockTimeError: '',
       });
       return;
