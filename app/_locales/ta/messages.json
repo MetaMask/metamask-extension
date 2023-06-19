@@ -249,9 +249,6 @@
   "mustSelectOne": {
     "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
   },
-  "myAccounts": {
-    "message": "எனது கணக்குகள்"
-  },
   "needImportFile": {
     "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
     "description": "User is important an account and needs to add a file to continue"

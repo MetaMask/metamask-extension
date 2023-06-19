@@ -228,6 +228,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineaMainnet'),
+    descriptionMessage: (t) => t('lineaMainnet'),
+    route: `${NETWORKS_ROUTE}#networks-linea-mainnet`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
     sectionMessage: (t) => t('goerli'),
     descriptionMessage: (t) => t('goerli'),
     route: `${NETWORKS_ROUTE}#networks-goerli`,
@@ -242,9 +249,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('lineatestnet'),
-    descriptionMessage: (t) => t('lineatestnet'),
-    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
+    sectionMessage: (t) => t('lineaGoerli'),
+    descriptionMessage: (t) => t('lineaGoerli'),
+    route: `${NETWORKS_ROUTE}#networks-linea-goerli`,
     icon: 'fa fa-plug',
   },
   {

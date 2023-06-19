@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezovanje na testno omrežje Linea Goerli"
   },
   "connectingToMainnet": {
@@ -400,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testno omrežje Linea Goerli"
   },
   "links": {
@@ -432,9 +432,6 @@
   },
   "mustSelectOne": {
     "message": "Izbran mora biti vsaj 1 žeton."
-  },
-  "myAccounts": {
-    "message": "Moji računi"
   },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
