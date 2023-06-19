@@ -90,7 +90,13 @@ export const SnapDetailHeader = ({
           </Box>
           <Box>
             {isInstalled && updateAvailable && (
-              <Button variant={BUTTON_VARIANT.PRIMARY} marginRight={1}>
+              <Button
+                variant={BUTTON_VARIANT.PRIMARY}
+                marginRight={1}
+                onClick={async () => {
+                  await installSnapFromSnapAccounts(snapId);
+                }}
+              >
                 {t('snapUpdateAvailable')}
               </Button>
             )}
@@ -102,7 +108,7 @@ export const SnapDetailHeader = ({
                 {t('snapConfigure')}
               </Button>
             )}
-            {isInstalled && (
+            {!isInstalled && (
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
                 onClick={async () => {

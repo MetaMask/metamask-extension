@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Snap } from '@metamask/snaps-utils';
 import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -15,8 +16,7 @@ import {
 import AddSnapAccountPopup from '../../../components/app/add-snap-account-popup/add-snap-account-popup';
 import SnapCard from '../snap-card/snap-card';
 import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
-import { getSnaps, getSnapsList } from '../../../selectors';
-import { Snap } from '@metamask/snaps-utils';
+import { getSnaps } from '../../../selectors';
 
 export interface SnapDetails {
   id: string;
@@ -85,7 +85,7 @@ export default function NewSnapAccountPage() {
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
-        {snapList.map((snap, index: number) => {
+        {Object.values(snapList).map((snap: SnapDetails, index: number) => {
           const foundSnap = Object.values(installedSnaps).find(
             (installedSnap) => installedSnap.id === snap.snapId,
           );

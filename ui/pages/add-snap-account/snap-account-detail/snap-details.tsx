@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { Snap } from '@metamask/snaps-utils';
+import { useSelector } from 'react-redux';
+import semver from 'semver';
 import {
   BlockSize,
   Display,
@@ -16,33 +19,40 @@ import {
   Text,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ADD_SNAP_ACCOUNT_ROUTE,
+  SNAPS_VIEW_ROUTE,
+} from '../../../helpers/constants/routes';
+import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import { getSnaps } from '../../../selectors';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
+
+interface RouteParams {
+  snapId: string;
+}
 
 const SnapDetailsPage = () => {
   const t = useI18nContext();
   const history = useHistory();
 
-  // TODO: replace with data from redux
+  const { snapId } = useParams<RouteParams>();
+  const installedSnaps = useSelector(getSnaps);
+  const currentSnap = Object.values(KEY_MANAGEMENT_SNAPS).find(
+    (snap) => snap.id === snapId,
+  );
 
-  const snapDetail = {
-    id: '1',
-    snapId: 'local:http://localhost:8080',
-    iconUrl: '/images/logo/metamask-fox.svg',
-    snapTitle: 'Metamask TSS',
-    snapSlug: 'Secure your account with MetaMask Mobile',
-    snapDescription:
-      'Threshold signature schemes (TSS) allow multiple collaborating participants to sign a message or transaction. The private key is shared between the participants using a technique called multi-party computation (MPC) which ensures that the entire private key is never exposed to any participant; the process for generating key shares is called distributed key generation (DKG). Before a signature can be generated all participants must generate key shares using DKG and store their key shares securely; the number of participants and threshold for signature generation must be decided in advance. Unlike other techniques such as Shamirs Secret Sharing (SSS) the entire private key is never revealed to any single participant and is therefore more secure as it does not have the trusted dealer problem.',
-    tags: ['MPC', 'Shared Custody'],
-    developer: 'Metamask',
-    website: 'https://tss.ac/',
-    auditUrls: ['auditUrl1', 'auditUrl2'],
-    version: '1.0.0',
-    lastUpdated: 'April 20, 2023',
-    updateAvailable: true,
-    isInstalled: true,
-  };
+  if (!currentSnap) {
+    history.push(ADD_SNAP_ACCOUNT_ROUTE);
+    return null;
+  }
+
+  const isInstalled = Boolean(installedSnaps[currentSnap.snapId]);
+
+  const updateAvailable = isInstalled
+    ? semver.gt(currentSnap.version, installedSnaps[currentSnap.snapId].version)
+    : false;
+
   return (
     <Box
       display={Display.Flex}
@@ -50,7 +60,11 @@ const SnapDetailsPage = () => {
       padding={[10, 10, 10, 10]}
       className="snap-details-page"
     >
-      <SnapDetailHeader {...snapDetail} />
+      <SnapDetailHeader
+        {...currentSnap}
+        updateAvailable={updateAvailable}
+        isInstalled={isInstalled}
+      />
       <Box display={Display.Flex}>
         <Box
           width={BlockSize.FourFifths}
@@ -62,10 +76,10 @@ const SnapDetailsPage = () => {
             marginBottom={2}
             color={TextColor.textAlternative}
           >
-            {snapDetail.snapSlug}
+            {currentSnap.snapSlug}
           </Text>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            {snapDetail.snapDescription}
+            {currentSnap.snapDescription}
           </Text>
         </Box>
         <Box
@@ -75,7 +89,7 @@ const SnapDetailsPage = () => {
           paddingLeft={4}
         >
           <Detail title={t('snapDetailTags')}>
-            {snapDetail.tags.map((tag, index) => {
+            {currentSnap.tags.map((tag, index) => {
               return (
                 <Tag
                   label={tag}
@@ -90,11 +104,11 @@ const SnapDetailsPage = () => {
             })}
           </Detail>
           <Detail title={t('snapDetailDeveloper')}>
-            <Text variant={TextVariant.bodyMd}>{snapDetail.developer}</Text>
+            <Text variant={TextVariant.bodyMd}>{currentSnap.developer}</Text>
           </Detail>
-          <Detail title={t('snapDetailWebsite')}>{snapDetail.website}</Detail>
+          <Detail title={t('snapDetailWebsite')}>{currentSnap.website}</Detail>
           <Detail title={t('snapDetailAudits')}>
-            {snapDetail.auditUrls.map((auditLink, index) => {
+            {currentSnap.auditUrls.map((auditLink, index) => {
               return (
                 <Text key={`audit-link-${index}`}>
                   <Button variant={BUTTON_VARIANT.LINK} href={auditLink}>
@@ -105,18 +119,20 @@ const SnapDetailsPage = () => {
             })}
           </Detail>
           <Detail title={t('snapDetailVersion')}>
-            <Text variant={TextVariant.bodyMd}>{snapDetail.version}</Text>
+            <Text variant={TextVariant.bodyMd}>{currentSnap.version}</Text>
           </Detail>
           <Detail title={t('snapDetailLastUpdated')}>
-            <Text variant={TextVariant.bodyMd}>{snapDetail.lastUpdated}</Text>
+            <Text variant={TextVariant.bodyMd}>{currentSnap.lastUpdated}</Text>
           </Detail>
-          {snapDetail.isInstalled && (
+          {isInstalled && (
             <Box>
               <Button
                 variant={BUTTON_VARIANT.LINK}
                 onClick={() =>
                   history.push(
-                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapDetail.id)}`,
+                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(
+                      currentSnap.snapId,
+                    )}`,
                   )
                 }
               >
