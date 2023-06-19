@@ -1,6 +1,7 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getSelectedIdentity, getAccountType } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
@@ -35,8 +36,11 @@ export function getConfiguredCustodians(state) {
 export function getCustodianIconForAddress(state, address) {
   let custodianIcon;
 
-  const checksummedAddress = toChecksumAddress(address);
-  if (state.metamask.custodyAccountDetails?.[checksummedAddress]) {
+  const checksummedAddress = address && toChecksumAddress(address);
+  if (
+    checksummedAddress &&
+    state.metamask.custodyAccountDetails?.[checksummedAddress]
+  ) {
     const { custodianName } =
       state.metamask.custodyAccountDetails[checksummedAddress];
     custodianIcon = state.metamask.mmiConfiguration?.custodians?.find(
@@ -59,7 +63,7 @@ export function getIsCustodianSupportedChain(state) {
 
   return supportedChains?.supportedChains
     ? supportedChains.supportedChains.includes(
-        Number(providerConfig.chainId).toString(),
+        hexToDecimal(providerConfig.chainId),
       )
     : true;
 }
@@ -77,4 +81,17 @@ export function getMMIConfiguration(state) {
 
 export function getInteractiveReplacementToken(state) {
   return state.metamask.interactiveReplacementToken || {};
+}
+
+export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {
+  let isNoteToTraderSupported = false;
+  if (state.metamask.custodyAccountDetails?.[fromChecksumHexAddress]) {
+    const { custodianName } =
+      state.metamask.custodyAccountDetails[fromChecksumHexAddress];
+
+    isNoteToTraderSupported = state.metamask.mmiConfiguration?.custodians?.find(
+      (custodian) => custodian.name === custodianName,
+    )?.isNoteToTraderSupported;
+  }
+  return isNoteToTraderSupported;
 }

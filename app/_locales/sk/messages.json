@@ -90,9 +90,6 @@
   "back": {
     "message": "Zpět"
   },
-  "backToAll": {
-    "message": "Späť na všetko"
-  },
   "backupApprovalInfo": {
     "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
@@ -148,16 +145,13 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectHardwareWallet": {
-    "message": "Pripojiť hardvérovú peňaženku"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pripája sa k testovacej sieti Linea Goerli"
   },
   "connectingToMainnet": {
@@ -186,9 +180,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "createPassword": {
     "message": "Vytvoriť heslo"
@@ -402,7 +393,7 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testovacia sieť Linea Goerli"
   },
   "links": {
@@ -428,9 +419,6 @@
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje účty"
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -552,9 +540,6 @@
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recents": {
-    "message": "Posledné"
   },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
@@ -773,15 +758,8 @@
   "transfer": {
     "message": "Prevod"
   },
-  "transferBetweenAccounts": {
-    "message": "Prevod medzi mojimi účtami"
-  },
   "transferFrom": {
     "message": "Presun z"
-  },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Skúsiť znova"

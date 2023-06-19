@@ -87,9 +87,6 @@
   "back": {
     "message": "ተመለስ"
   },
-  "backToAll": {
-    "message": "ወደ ሁሉም ተመለስ"
-  },
   "backupApprovalInfo": {
     "message": "መሳሪያዎ ቢጠፋ፣ የይለፍ ቃልዎን ቢረሱ፣ MetaMask እንደገና መጫን ቢያስፈልግዎ ወይም በሌላ መሳሪያ ወደ ቋትዎ ለመድረስ ቢፈልጉ ይህ ሚስጥራዊ ኮድ ቋትዎን መልሶ ለማግኘት ያስፈልጋል።"
   },
@@ -148,16 +145,13 @@
   "connect": {
     "message": "ይገናኙ"
   },
-  "connectHardwareWallet": {
-    "message": "ከሃርድዌር ቋት ጋር ይገናኙ"
-  },
   "connectingTo": {
     "message": "ከ $1ጋር መገናኘት"
   },
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToMainnet": {
@@ -186,9 +180,6 @@
   },
   "create": {
     "message": "ፍጠር"
-  },
-  "createAccount": {
-    "message": "መለያ ፍጠር"
   },
   "createPassword": {
     "message": "የይለፍ ቃል ፍጠር"
@@ -403,7 +394,7 @@
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {
@@ -438,9 +429,6 @@
   },
   "mustSelectOne": {
     "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
-  },
-  "myAccounts": {
-    "message": "የእኔ መለያዎች"
   },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
@@ -565,9 +553,6 @@
   },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
-  },
-  "recents": {
-    "message": "የቅርብ ጊዜያት"
   },
   "recipientAddressPlaceholder": {
     "message": "ፍለጋ፣ ለሕዝብ ክፍት የሆነ አድራሻ (0x), ወይም ENS"
@@ -792,15 +777,8 @@
   "transfer": {
     "message": "ያስተላልፉ"
   },
-  "transferBetweenAccounts": {
-    "message": "በመለያዎች መካከል አስተላልፍ"
-  },
   "transferFrom": {
     "message": "የማዛወሪያ ቅጽ"
-  },
-  "troubleTokenBalances": {
-    "message": "የተለዋጭ ስም ቀሪ ሂሳብዎን ስንጭን ችግር አጋጥሞናል። ማየት ይችላሉ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "እንደገና ሞክር"

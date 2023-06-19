@@ -18,17 +18,7 @@ import DropdownSearchList from '../dropdown-search-list';
 import SlippageButtons from '../slippage-buttons';
 import { getTokens, getConversionRate } from '../../../ducks/metamask/metamask';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import Popover from '../../../components/ui/popover';
-import Button from '../../../components/ui/button';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
-import Box from '../../../components/ui/box';
-import {
-  TextVariant,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FontWeight,
-  TextColor,
-} from '../../../helpers/constants/design-system';
 import {
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -94,7 +84,6 @@ import {
 
 import {
   resetSwapsPostFetchState,
-  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -111,7 +100,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
-import { Text } from '../../../components/component-library';
+import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -358,22 +347,12 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
-  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
-      if (destinationTokenAddedForSwap && token.address !== toAddress) {
-        dispatch(
-          ignoreTokens({
-            tokensToIgnore: toAddress,
-            dontShowLoadingIndicator: true,
-          }),
-        );
-      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, destinationTokenAddedForSwap, toAddress],
+    [dispatch],
   );
 
   const hideDropdownItemIf = useCallback(
@@ -585,82 +564,12 @@ export default function BuildQuote({
     <div className="build-quote">
       <div className="build-quote__content">
         {showSmartTransactionsOptInPopover && (
-          <Popover
-            title={t('stxAreHere')}
-            footer={
-              <>
-                <Button type="primary" onClick={onEnableSmartTransactionsClick}>
-                  {t('enableSmartTransactions')}
-                </Button>
-                <Box marginTop={1}>
-                  <Text variant={TextVariant.bodySm} as="h6">
-                    <Button
-                      type="link"
-                      onClick={onCloseSmartTransactionsOptInPopover}
-                      className="smart-transactions-popover__no-thanks-link"
-                    >
-                      {t('noThanksVariant2')}
-                    </Button>
-                  </Text>
-                </Box>
-              </>
+          <SmartTransactionsPopover
+            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+            onCloseSmartTransactionsOptInPopover={
+              onCloseSmartTransactionsOptInPopover
             }
-            footerClassName="smart-transactions-popover__footer"
-            className="smart-transactions-popover"
-          >
-            <Box
-              paddingRight={6}
-              paddingLeft={6}
-              paddingTop={0}
-              paddingBottom={0}
-              display={DISPLAY.FLEX}
-              className="smart-transactions-popover__content"
-            >
-              <Box
-                marginTop={0}
-                marginBottom={4}
-                display={DISPLAY.FLEX}
-                flexDirection={FLEX_DIRECTION.COLUMN}
-              >
-                <img
-                  src="./images/logo/smart-transactions-header.png"
-                  alt={t('swapSwapSwitch')}
-                />
-              </Box>
-              <Text variant={TextVariant.bodySm} as="h6" marginTop={0}>
-                {t('stxDescription')}
-              </Text>
-              <Text
-                as="ul"
-                variant={TextVariant.bodySm}
-                fontWeight={FontWeight.Bold}
-                marginTop={3}
-              >
-                <li>{t('stxBenefit1')}</li>
-                <li>{t('stxBenefit2')}</li>
-                <li>{t('stxBenefit3')}</li>
-                <li>
-                  {t('stxBenefit4')}
-                  <Text
-                    as="span"
-                    fontWeight={FontWeight.Normal}
-                    variant={TextVariant.bodySm}
-                  >
-                    {' *'}
-                  </Text>
-                </li>
-              </Text>
-              <Text
-                variant={TextVariant.bodyXs}
-                as="h6"
-                color={TextColor.textAlternative}
-                marginTop={3}
-              >
-                {t('stxSubDescription')}&nbsp;
-                <strong>{t('stxYouCanOptOut')}&nbsp;</strong>
-              </Text>
-            </Box>
-          </Popover>
+          />
         )}
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>

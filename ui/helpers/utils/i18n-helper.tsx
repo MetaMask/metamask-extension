@@ -4,6 +4,7 @@ import log from 'loglevel';
 import { Json } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -164,4 +165,14 @@ async function fetchRelativeTimeFormatData(languageTag: string): Promise<Json> {
     `./intl/${languageTag}/relative-time-format-data.json`,
   );
   return await response.json();
+}
+
+export function getNetworkLabelKey(network: string): string {
+  if (network === NETWORK_TYPES.LINEA_GOERLI) {
+    return 'lineaGoerli';
+  }
+  if (network === NETWORK_TYPES.LINEA_MAINNET) {
+    return 'lineaMainnet';
+  }
+  return network;
 }

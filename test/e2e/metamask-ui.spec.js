@@ -128,13 +128,13 @@ describe('MetaMask', function () {
 
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
 
       const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
+        '[data-testid="global-menu-lock"]',
       );
-      assert.equal(await lockButton.getText(), 'Lock');
+      assert.equal(await lockButton.getText(), 'Lock MetaMask');
       await lockButton.click();
       await driver.delay(regularDelayMs);
     });
@@ -163,7 +163,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       await driver.waitForSelector({
-        css: '[data-testid="wallet-balance"] .list-item__heading',
+        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
         text: '1000',
       });
       await driver.delay(regularDelayMs);
@@ -246,7 +246,7 @@ describe('MetaMask', function () {
 
     it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'import tokens', tag: 'a' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -282,7 +282,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
@@ -433,7 +433,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.asset-list-item__token-button',
+        css: '[data-testid="multichain-token-list-item-value"]',
         text: '7.5 TST',
       });
 

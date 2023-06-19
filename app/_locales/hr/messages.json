@@ -93,9 +93,6 @@
   "back": {
     "message": "Natrag"
   },
-  "backToAll": {
-    "message": "Natrag na sve"
-  },
   "backupApprovalInfo": {
     "message": "Ovaj je sigurnosni kôd potreban za obnavljanje novčanika ako izgubite svoj uređaj, zaboravite svoju lozinku, morate ponovno instalirati MetaMask ili želite pristupiti svojem novčaniku na drugom uređaju."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Povežite se"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži hardverski novčanik"
-  },
   "connectingTo": {
     "message": "Povezivanje na $1"
   },
   "connectingToGoerli": {
     "message": "Povezivanje na testnu mrežu Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezivanje na testnu mrežu Linea Goerli"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Stvori"
-  },
-  "createAccount": {
-    "message": "Stvori račun"
   },
   "createPassword": {
     "message": "Stvori lozinku"
@@ -411,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Želite li dodati ove tokene?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testna mreža Linea Goerli"
   },
   "links": {
@@ -446,9 +437,6 @@
   },
   "mustSelectOne": {
     "message": "Mora se odabrati barem jedan token."
-  },
-  "myAccounts": {
-    "message": "Moji računi"
   },
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",
@@ -573,9 +561,6 @@
   },
   "readdToken": {
     "message": "Ovaj token možete dodati kasnije odlaskom pod stavku „Dodaj token” u izborniku mogućnosti računa. "
-  },
-  "recents": {
-    "message": "Nedavno"
   },
   "recipientAddressPlaceholder": {
     "message": "Pretraži, javne adrese (0x) ili ENS"
@@ -797,15 +782,8 @@
   "transfer": {
     "message": "Prenesi"
   },
-  "transferBetweenAccounts": {
-    "message": "Prenesi između mojih računa"
-  },
   "transferFrom": {
     "message": "Prenesi od"
-  },
-  "troubleTokenBalances": {
-    "message": "Imamo problema s učitavanjem raspoloživog stanja vaših tokena. Možete ih vidjeti",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Pokušaj ponovo"

@@ -33,8 +33,10 @@ export const ValidColors = [
   Color.sepolia,
   Color.goerliInverse,
   Color.sepoliaInverse,
-  Color.lineaTestnet,
-  Color.lineaTestnetInverse,
+  Color.lineaGoerli,
+  Color.lineaGoerliInverse,
+  Color.lineaMainnet,
+  Color.lineaMainnetInverse,
 ];
 
 export const ValidTags = [
@@ -57,7 +59,7 @@ export const ValidTags = [
 ];
 
 /**
- * @deprecated `<Typography />` has been deprecated in favour of the `<Text />` component in ./ui/components/component-library/text/text.js
+ * @deprecated `<Typography />` has been deprecated in favor of the `<Text />` component in ./ui/components/component-library/text/text.js
  *
  * See storybook documentation for Text here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--default-story#text
  *
@@ -80,6 +82,7 @@ export default function Typography({
   marginLeft,
   boxProps = {},
   className,
+  testId,
   children,
 }) {
   let Tag = as ?? variant;
@@ -123,6 +126,7 @@ export default function Typography({
         <Tag
           className={classnames(boxClassName, computedClassName)}
           title={title}
+          data-testid={testId}
         >
           {children}
         </Tag>
@@ -188,6 +192,10 @@ Typography.propTypes = {
    * Title attribute to include on the element. Will show as tooltip on hover.
    */
   title: PropTypes.string,
+  /**
+   * Data test ID for the Tag component
+   */
+  testId: PropTypes.string,
   /**
    * The text content of the Typography component
    */

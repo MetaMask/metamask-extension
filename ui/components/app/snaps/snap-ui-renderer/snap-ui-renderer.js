@@ -4,11 +4,11 @@ import { isComponent } from '@metamask/snaps-ui';
 import { useSelector } from 'react-redux';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
-  OVERFLOW_WRAP,
+  TypographyVariant,
+  OverflowWrap,
+  FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
@@ -37,9 +37,9 @@ export const UI_MAPPING = {
     element: 'Typography',
     children: props.value,
     props: {
-      variant: TypographyVariant.H3,
-      fontWeight: FONT_WEIGHT.BOLD,
-      overflowWrap: OVERFLOW_WRAP.BREAK_WORD,
+      variant: TypographyVariant.H4,
+      fontWeight: FontWeight.Bold,
+      overflowWrap: OverflowWrap.BreakWord,
     },
   }),
   text: (props) => ({

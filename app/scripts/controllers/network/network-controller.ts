@@ -135,7 +135,14 @@ export type NetworkControllerGetProviderConfigAction = {
   handler: () => ProviderConfiguration;
 };
 
-export type NetworkControllerAction = NetworkControllerGetProviderConfigAction;
+export type NetworkControllerGetEthQueryAction = {
+  type: `NetworkController:getEthQuery`;
+  handler: () => EthQuery | undefined;
+};
+
+export type NetworkControllerAction =
+  | NetworkControllerGetProviderConfigAction
+  | NetworkControllerGetEthQueryAction;
 
 /**
  * The messenger that the NetworkController uses to publish events.
@@ -181,6 +188,10 @@ export type ProviderConfiguration = {
   rpcPrefs?: {
     blockExplorerUrl?: string;
   };
+  /**
+   * The ID of the network configuration used to build this provider config.
+   */
+  id?: NetworkConfigurationId;
 };
 
 /**
@@ -357,9 +368,7 @@ function buildDefaultNetworkStatusState(): NetworkStatus {
  */
 function buildDefaultNetworkDetailsState(): NetworkDetails {
   return {
-    EIPS: {
-      1559: undefined,
-    },
+    EIPS: {},
   };
 }
 
@@ -441,6 +450,8 @@ export class NetworkController extends EventEmitter {
 
   #blockTrackerProxy: SwappableProxy<PollingBlockTracker> | null;
 
+  #ethQuery: EthQuery | undefined;
+
   #infuraProjectId: NetworkControllerOptions['infuraProjectId'];
 
   #trackMetaMetricsEvent: NetworkControllerOptions['trackMetaMetricsEvent'];
@@ -484,8 +495,12 @@ export class NetworkController extends EventEmitter {
     }
     this.#infuraProjectId = infuraProjectId;
     this.#trackMetaMetricsEvent = trackMetaMetricsEvent;
+
     this.#messenger.registerActionHandler(`${name}:getProviderConfig`, () => {
       return this.store.getState().providerConfig;
+    });
+    this.#messenger.registerActionHandler(`${name}:getEthQuery`, () => {
+      return this.#ethQuery;
     });
   }
 
@@ -727,6 +742,7 @@ export class NetworkController extends EventEmitter {
       ticker: 'ticker' in network ? network.ticker : 'ETH',
       nickname: undefined,
       rpcPrefs: { blockExplorerUrl: network.blockExplorerUrl },
+      id: undefined,
     });
   }
 
@@ -911,9 +927,19 @@ export class NetworkController extends EventEmitter {
       }
       this.#configureStandardProvider(rpcUrl, chainId);
     } else {
-      throw new Error(
-        `NetworkController - #configureProvider - unknown type "${type}"`,
-      );
+      throw new Error(`Unrecognized network type: '${type}'`);
+    }
+  }
+
+  /**
+   * Creates a new instance of EthQuery that wraps the current provider and
+   * saves it for future usage.
+   */
+  #registerProvider() {
+    const { provider } = this.getProviderAndBlockTracker();
+
+    if (provider) {
+      this.#ethQuery = new EthQuery(provider);
     }
   }
 
@@ -940,7 +966,7 @@ export class NetworkController extends EventEmitter {
       infuraProjectId,
       type: NetworkClientType.Infura,
     });
-    this.#setProviderAndBlockTracker({ provider, blockTracker });
+    this.#updateProvider(provider, blockTracker);
   }
 
   /**
@@ -957,7 +983,27 @@ export class NetworkController extends EventEmitter {
       rpcUrl,
       type: NetworkClientType.Custom,
     });
-    this.#setProviderAndBlockTracker({ provider, blockTracker });
+    this.#updateProvider(provider, blockTracker);
+  }
+
+  /**
+   * Given a provider and a block tracker, updates any proxies pointing to
+   * these objects that have been previously set, or initializes any proxies
+   * that have not been previously set, then creates an instance of EthQuery
+   * that wraps the provider.
+   *
+   * @param provider - The provider.
+   * @param blockTracker - The block tracker.
+   */
+  #updateProvider(
+    provider: SafeEventEmitterProvider,
+    blockTracker: PollingBlockTracker,
+  ) {
+    this.#setProviderAndBlockTracker({
+      provider,
+      blockTracker,
+    });
+    this.#registerProvider();
   }
 
   /**

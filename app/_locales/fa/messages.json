@@ -93,9 +93,6 @@
   "back": {
     "message": "بازگشت"
   },
-  "backToAll": {
-    "message": "برگشت به همه"
-  },
   "backupApprovalInfo": {
     "message": "در صورت مفقود شدن دستگاه، فراموش شدن رمز عبور، لزوم نصب-دوباره MetaMask، یا اقدام دسترسی به کیف تان از دستگاه دیگر، کود مخفی جهت بازیابی کیف تان، لازم خواهد بود."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "اتصال کیف سخت افزار"
-  },
   "connectingTo": {
     "message": "در حال اتصال به 1$1"
   },
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "ایجاد"
-  },
-  "createAccount": {
-    "message": "ایجاد حساب"
   },
   "createPassword": {
     "message": "ایجاد رمز عبور"
@@ -415,7 +406,7 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {
@@ -453,9 +444,6 @@
   },
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
-  },
-  "myAccounts": {
-    "message": "حساب های من"
   },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
@@ -580,9 +568,6 @@
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."
-  },
-  "recents": {
-    "message": "واپسین"
   },
   "recipientAddressPlaceholder": {
     "message": "جستجو، آدرس عمومی (0x)، یا ENS"
@@ -807,15 +792,8 @@
   "transfer": {
     "message": "انتقال"
   },
-  "transferBetweenAccounts": {
-    "message": "انتقال میان حساب های من"
-  },
   "transferFrom": {
     "message": "انتقال از"
-  },
-  "troubleTokenBalances": {
-    "message": "ما در بارگیری صورت حساب های رمزیاب تان دچار مشکل شدیم. شما میتوانید آنها را مشاهده کنید",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "امتحان مجدد"

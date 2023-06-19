@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbage"
   },
-  "backToAll": {
-    "message": "Tilbage til Alle"
-  },
   "backupApprovalInfo": {
     "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectHardwareWallet": {
-    "message": "Forbind Hardwarepung"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Opretter forbindelse til Linea Goerli Testnetværk"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Opret"
-  },
-  "createAccount": {
-    "message": "Opret konto"
   },
   "createPassword": {
     "message": "Opret adgangskode"
@@ -408,7 +399,7 @@
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea-testnetværk"
   },
   "loadMore": {
@@ -437,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
-  },
-  "myAccounts": {
-    "message": "Mine Konti"
   },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
@@ -561,9 +549,6 @@
   },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
-  },
-  "recents": {
-    "message": "Seneste"
   },
   "recipientAddressPlaceholder": {
     "message": "Søg, offentlig adresse (0x) eller ENS"
@@ -776,15 +761,8 @@
   "transfer": {
     "message": "Overfør"
   },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellem konti"
-  },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi havde problemer med at indlæse dine tokenbalancer. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igen"
