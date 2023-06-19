@@ -35,7 +35,7 @@ jobs:
   validate-allow-scripts:
     name: Validate allow-scripts config
     runs-on: ubuntu-latest
-    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith('Version-v', github.ref_name))
     needs:
       - prepare
     steps:
@@ -57,7 +57,7 @@ jobs:
   validate-lavamoat-build-policy:
     name: Validate LavaMoat build policy
     runs-on: ubuntu-latest
-    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith('Version-v', github.ref_name))
     needs:
       - prepare
     steps:
@@ -82,7 +82,7 @@ jobs:
         build-type: [main, beta, flask, mmi, desktop]
     name: Validate LavaMoat ${{ matrix.build-type }} application policy
     runs-on: ubuntu-latest
-    #if: github.event_name === 'push' || (github.event_name === 'pull_request' && startsWith('Version-v', github.ref_name))
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && startsWith('Version-v', github.ref_name))
     needs:
       - prepare
     steps:
