@@ -363,6 +363,12 @@ class SettingsPage extends PureComponent {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
             return true;
           }
+          if (
+            key === CONTACT_LIST_ROUTE &&
+            currentPath.includes('/settings/contact-list/')
+          ) {
+            return true;
+          }
           return matchPath(currentPath, { exact: true, path: key });
         }}
         onSelect={(key) => history.push(key)}
