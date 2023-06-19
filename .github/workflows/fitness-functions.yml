@@ -1,8 +1,11 @@
 name: Fitness Functions CI
 
 on:
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
+  workflow_call:
+    inputs:
+      base_ref:
+        required: true
+        type: string
 
 jobs:
   build:
@@ -24,7 +27,7 @@ jobs:
 
       - name: Run fitness functions
         env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
+          BASE_REF: ${{ inputs.base_ref }}
         run: |
           # The following command generates a diff of changes between the common
           # ancestor of $BASE_REF and HEAD, and the current commit (HEAD), for
