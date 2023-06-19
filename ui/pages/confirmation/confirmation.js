@@ -32,7 +32,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
-  hasPendingApprovalFlows as hasPendingApprovalFlowsSelector,
   getPendingApprovalFlows,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
@@ -179,7 +178,6 @@ export default function ConfirmationPage({
     isEqual,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const hasPendingApprovalFlows = useSelector(hasPendingApprovalFlowsSelector);
   const pendingApprovalFlows = useSelector(getPendingApprovalFlows);
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
@@ -262,7 +260,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
-      !hasPendingApprovalFlows &&
+      pendingApprovalFlows.length === 0 &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -274,10 +272,10 @@ export default function ConfirmationPage({
     }
   }, [
     pendingConfirmations,
+    pendingApprovalFlows,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
-    hasPendingApprovalFlows,
   ]);
 
   useEffect(() => {
@@ -289,7 +287,7 @@ export default function ConfirmationPage({
   }, [pendingApprovalFlows]);
 
   if (!pendingConfirmation) {
-    if (hasPendingApprovalFlows) {
+    if (pendingApprovalFlows.length > 0) {
       return <Loading loadingMessage={t(approvalFlowLoadingText)} />;
     }
 

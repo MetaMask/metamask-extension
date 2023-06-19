@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { hasPendingApprovalFlows, hasPendingApprovals } from './approvals';
+import { getPendingApprovalFlows, hasPendingApprovals } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -28,6 +28,11 @@ describe('approval selectors', () => {
       approvalFlows: [
         {
           id: '1',
+          loadingText: 'loadingText1',
+        },
+        {
+          id: '2',
+          loadingText: 'loadingText2',
         },
       ],
     },
@@ -50,22 +55,11 @@ describe('approval selectors', () => {
     });
   });
 
-  describe('hasPendingApprovalFlows', () => {
-    it('should return true if there is at least one pending approval flow', () => {
-      const result = hasPendingApprovalFlows(mockedState);
+  describe('getPendingApprovalFlows', () => {
+    it('should return existing approval flows', () => {
+      const result = getPendingApprovalFlows(mockedState);
 
-      expect(result).toBe(true);
-    });
-
-    it('should return false if there are no pending approval flows', () => {
-      const result = hasPendingApprovalFlows({
-        metamask: {
-          ...mockedState.metamask,
-          approvalFlows: [],
-        },
-      });
-
-      expect(result).toBe(false);
+      expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
     });
   });
 });

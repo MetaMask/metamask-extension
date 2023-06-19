@@ -321,8 +321,6 @@ async function addEthereumChainHandler(
     endApprovalFlow({ id: approvalFlowId });
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-
   try {
     await setActiveNetwork(networkConfigurationId);
   } catch (error) {
