@@ -624,7 +624,8 @@
       "@metamask/eth-trezor-keyring>hdkey>secp256k1": false,
       "@storybook/addon-knobs>core-js": false,
       "@storybook/manager-webpack5>core-js": false,
-      "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false
+      "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
+      "@metamask/desktop>eciesjs>secp256k1": false
     }
   },
   "packageManager": "yarn@3.2.4"
