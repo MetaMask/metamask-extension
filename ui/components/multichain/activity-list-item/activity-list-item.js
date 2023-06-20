@@ -27,11 +27,9 @@ export const ActivityListItem = ({
   className,
   'data-testid': dataTestId,
 }) => {
-  const primaryClassName = classnames(
-    'activity-list-item',
-    className,
-    subtitle || children ? '' : 'activity-list-item--single-content-row',
-  );
+  const primaryClassName = classnames('activity-list-item', className, {
+    'activity-list-item--single-content-row': !(subtitle || children),
+  });
 
   return (
     <Box
