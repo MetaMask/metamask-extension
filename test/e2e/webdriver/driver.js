@@ -407,6 +407,11 @@ class Driver {
     await this.driver.close();
   }
 
+  async closeWindowHandle(windowHandle) {
+    await this.driver.switchTo().window(windowHandle);
+    await this.driver.close();
+  }
+
   // Close Alert Popup
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();

@@ -205,6 +205,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+import { updateCurrentLocale } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -358,6 +359,10 @@ export default class MetamaskController extends EventEmitter {
       handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
+    });
+
+    this.preferencesController.store.subscribe(async ({ currentLocale }) => {
+      await updateCurrentLocale(currentLocale);
     });
 
     this.tokensController = new TokensController({
