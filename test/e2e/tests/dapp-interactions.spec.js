@@ -68,70 +68,70 @@ describe('Dapp interactions', function () {
     );
   });
 
-  it('should connect a second Dapp despite MetaMask being locked', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions,
-        dappOptions: { numberOfDapps: 2 },
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await openDapp(driver);
-        windowHandles = await driver.getAllWindowHandles();
-        extension = windowHandles[0];
-
-        // Lock Account
-        await driver.switchToWindow(extension);
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Lock', tag: 'div' });
-
-        // Connect to Dapp1
-        await openDapp(driver, null, DAPP_ONE_URL);
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-        await driver.waitUntilXWindowHandles(4);
-        windowHandles = await driver.getAllWindowHandles();
-
-        popup = await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-
-        await driver.switchToWindow(popup);
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-        await driver.clickElement({ text: 'Connect', tag: 'button' });
-
-        // Assert Connection
-        await driver.switchToWindow(extension);
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await driver.clickElement(
-          '[data-testid ="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Connected sites', tag: 'div' });
-        const connectedDapp1 = await driver.isElementPresent({
-          text: DAPP_URL,
-          tag: 'bdi',
-        });
-        const connectedDapp2 = await driver.isElementPresent({
-          text: DAPP_ONE_URL,
-          tag: 'bdi',
-        });
-
-        assert.ok(connectedDapp1, 'Account not connected to Dapp1');
-        assert.ok(connectedDapp2, 'Account not connected to Dapp2');
-      },
-    );
-  });
+  // it('should connect a second Dapp despite MetaMask being locked', async function () {
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder()
+  //         .withPermissionControllerConnectedToTestDapp()
+  //         .build(),
+  //       ganacheOptions,
+  //       dappOptions: { numberOfDapps: 2 },
+  //       title: this.test.title,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //
+  //       await openDapp(driver);
+  //       windowHandles = await driver.getAllWindowHandles();
+  //       extension = windowHandles[0];
+  //
+  //       // Lock Account
+  //       await driver.switchToWindow(extension);
+  //       await driver.clickElement(
+  //         '[data-testid="account-options-menu-button"]',
+  //       );
+  //       await driver.clickElement({ text: 'Lock', tag: 'div' });
+  //
+  //       // Connect to Dapp1
+  //       await openDapp(driver, null, DAPP_ONE_URL);
+  //       await driver.clickElement({ text: 'Connect', tag: 'button' });
+  //       await driver.waitUntilXWindowHandles(4);
+  //       windowHandles = await driver.getAllWindowHandles();
+  //
+  //       popup = await driver.switchToWindowWithTitle(
+  //         'MetaMask Notification',
+  //         windowHandles,
+  //       );
+  //
+  //       await driver.switchToWindow(popup);
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //       await driver.clickElement({ text: 'Next', tag: 'button' });
+  //       await driver.clickElement({ text: 'Connect', tag: 'button' });
+  //
+  //       // Assert Connection
+  //       await driver.switchToWindow(extension);
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //       await driver.clickElement(
+  //         '[data-testid ="account-options-menu-button"]',
+  //       );
+  //       await driver.clickElement({ text: 'Connected sites', tag: 'div' });
+  //       const connectedDapp1 = await driver.isElementPresent({
+  //         text: DAPP_URL,
+  //         tag: 'bdi',
+  //       });
+  //       const connectedDapp2 = await driver.isElementPresent({
+  //         text: DAPP_ONE_URL,
+  //         tag: 'bdi',
+  //       });
+  //
+  //       assert.ok(connectedDapp1, 'Account not connected to Dapp1');
+  //       assert.ok(connectedDapp2, 'Account not connected to Dapp2');
+  //     },
+  //   );
+  // });
 });

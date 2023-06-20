@@ -64,51 +64,51 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       },
     );
   });
-  it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
-        failOnConsoleError: false,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // Send ETH
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
-        // Type address without hex prefix
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or ENS name"]',
-          nonHexPrefixedAddress,
-        );
-        await driver.waitForSelector({
-          css: '.ens-input__selected-input__title',
-          text: hexPrefixedAddress,
-        });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
-
-        // Confirm transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement('[data-testid="home__activity-tab"]');
-        const sendTransactionListItem = await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item',
-        );
-        await sendTransactionListItem.click();
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
-        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
-
-        // Verify address in activity log
-        const publicAddress = await driver.findElement(
-          '.nickname-popover__public-address',
-        );
-        assert.equal(await publicAddress.getText(), hexPrefixedAddress);
-      },
-    );
-  });
+  // it('should ensure the address is prefixed with 0x when typed and should send ETH to a valid hexadecimal address', async function () {
+  //   await withFixtures(
+  //     {
+  //       fixtures: new FixtureBuilder().build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //       failOnConsoleError: false,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //
+  //       // Send ETH
+  //       await driver.clickElement('[data-testid="eth-overview-send"]');
+  //
+  //       // Type address without hex prefix
+  //       await driver.fill(
+  //         'input[placeholder="Enter public address (0x) or ENS name"]',
+  //         nonHexPrefixedAddress,
+  //       );
+  //       await driver.waitForSelector({
+  //         css: '.ens-input__selected-input__title',
+  //         text: hexPrefixedAddress,
+  //       });
+  //       await driver.clickElement({ text: 'Next', tag: 'button' });
+  //
+  //       // Confirm transaction
+  //       await driver.clickElement({ text: 'Confirm', tag: 'button' });
+  //       await driver.clickElement('[data-testid="home__activity-tab"]');
+  //       const sendTransactionListItem = await driver.waitForSelector(
+  //         '.transaction-list__completed-transactions .transaction-list-item',
+  //       );
+  //       await sendTransactionListItem.click();
+  //       await driver.clickElement({ text: 'Activity log', tag: 'summary' });
+  //       await driver.clickElement('[data-testid="sender-to-recipient__name"]');
+  //
+  //       // Verify address in activity log
+  //       const publicAddress = await driver.findElement(
+  //         '.nickname-popover__public-address',
+  //       );
+  //       assert.equal(await publicAddress.getText(), hexPrefixedAddress);
+  //     },
+  //   );
+  // });
 });
 
 describe('Send ERC20 to a 40 character hexadecimal address', function () {

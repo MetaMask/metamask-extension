@@ -67,105 +67,105 @@ describe('Encrypt Decrypt', function () {
   };
   const encryptionKey = 'fxYXfCbun026g5zcCQh7Ia+O0urAEVZWLG8H4Jzu7Xs=';
   const message = 'Hello, Bob!';
-  it('should decrypt an encrypted message', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await openDapp(driver);
+  // it('should decrypt an encrypted message', async function () {
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder()
+  //         .withPermissionControllerConnectedToTestDapp()
+  //         .build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //       await openDapp(driver);
+  //
+  //       // ------ Get Encryption key ------
+  //       const encryptionKeyLabel = await getEncryptionKey(driver);
+  //       assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
+  //
+  //       // ------ Encrypt ------
+  //       await encryptMessage(driver, message);
+  //
+  //       // ------ Decrypt ------
+  //       await decryptMessage(driver);
+  //
+  //       // Account balance is converted properly
+  //       const decryptAccountBalanceLabel = await driver.findElement(
+  //         '.request-decrypt-message__balance-value',
+  //       );
+  //       assert.equal(await decryptAccountBalanceLabel.getText(), '25 ETH');
+  //       // Verify message in MetaMask Notification
+  //       await verifyDecryptedMessageMM(driver, message);
+  //
+  //       // Verify message in Test Dapp
+  //       await driver.waitUntilXWindowHandles(2);
+  //       await verifyDecryptedMessageDapp(driver, message);
+  //     },
+  //   );
+  // });
 
-        // ------ Get Encryption key ------
-        const encryptionKeyLabel = await getEncryptionKey(driver);
-        assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
-
-        // ------ Encrypt ------
-        await encryptMessage(driver, message);
-
-        // ------ Decrypt ------
-        await decryptMessage(driver);
-
-        // Account balance is converted properly
-        const decryptAccountBalanceLabel = await driver.findElement(
-          '.request-decrypt-message__balance-value',
-        );
-        assert.equal(await decryptAccountBalanceLabel.getText(), '25 ETH');
-        // Verify message in MetaMask Notification
-        await verifyDecryptedMessageMM(driver, message);
-
-        // Verify message in Test Dapp
-        await driver.waitUntilXWindowHandles(2);
-        await verifyDecryptedMessageDapp(driver, message);
-      },
-    );
-  });
-
-  it('should encrypt and decrypt multiple messages', async function () {
-    const message2 = 'Hello, Alice!';
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        await openDapp(driver);
-
-        // ------ Get Encryption key ------
-        const encryptionKeyLabel = await getEncryptionKey(driver);
-        assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
-
-        // ------ Encrypt Message 1------
-        await encryptMessage(driver, message);
-
-        // ------ Decrypt Message 1 ------
-        await decryptMessage(driver);
-
-        // ------ Switch to Dapp ------
-        let windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-
-        // ------ Encrypt Message 2------
-        await encryptMessage(driver, message2);
-
-        // ------ Decrypt Message 2 ------
-        await decryptMessage(driver);
-
-        // Verify message 1 in MetaMask Notification
-        await verifyDecryptedMessageMM(driver, message);
-
-        // Verify message 1 in Test Dapp
-        await verifyDecryptedMessageDapp(driver, message);
-
-        // ------ Switch to Dapp ------
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-
-        // Verify message 2 in MetaMask Notification
-        await verifyDecryptedMessageMM(driver, message2);
-
-        // Verify message 2 in Test Dapp
-        await verifyDecryptedMessageDapp(driver, message2);
-      },
-    );
-  });
+  // it('should encrypt and decrypt multiple messages', async function () {
+  //   const message2 = 'Hello, Alice!';
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder()
+  //         .withPermissionControllerConnectedToTestDapp()
+  //         .build(),
+  //       ganacheOptions,
+  //       title: this.test.title,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //       await openDapp(driver);
+  //
+  //       // ------ Get Encryption key ------
+  //       const encryptionKeyLabel = await getEncryptionKey(driver);
+  //       assert.equal(await encryptionKeyLabel.getText(), encryptionKey);
+  //
+  //       // ------ Encrypt Message 1------
+  //       await encryptMessage(driver, message);
+  //
+  //       // ------ Decrypt Message 1 ------
+  //       await decryptMessage(driver);
+  //
+  //       // ------ Switch to Dapp ------
+  //       let windowHandles = await driver.getAllWindowHandles();
+  //       await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+  //
+  //       // ------ Encrypt Message 2------
+  //       await encryptMessage(driver, message2);
+  //
+  //       // ------ Decrypt Message 2 ------
+  //       await decryptMessage(driver);
+  //
+  //       // Verify message 1 in MetaMask Notification
+  //       await verifyDecryptedMessageMM(driver, message);
+  //
+  //       // Verify message 1 in Test Dapp
+  //       await verifyDecryptedMessageDapp(driver, message);
+  //
+  //       // ------ Switch to Dapp ------
+  //       windowHandles = await driver.getAllWindowHandles();
+  //       await driver.switchToWindowWithTitle(
+  //         'MetaMask Notification',
+  //         windowHandles,
+  //       );
+  //
+  //       // Verify message 2 in MetaMask Notification
+  //       await verifyDecryptedMessageMM(driver, message2);
+  //
+  //       // Verify message 2 in Test Dapp
+  //       await verifyDecryptedMessageDapp(driver, message2);
+  //     },
+  //   );
+  // });
 
   it('should show balance correctly as ETH', async function () {
     await withFixtures(

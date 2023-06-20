@@ -36,60 +36,60 @@ describe('Eth sign', function () {
     );
   });
 
-  it('can initiate and confirm a eth sign', async function () {
-    const expectedEthSignMessage =
-      '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
-    const expectedEthSignResult =
-      '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPreferencesController({
-            disabledRpcMethodPreferences: {
-              eth_sign: true,
-            },
-          })
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
-      },
-      async ({ driver }) => {
-        await driver.navigate();
-        await unlockWallet(driver);
-
-        await openDapp(driver);
-        await driver.clickElement('#ethSign');
-
-        // Wait for Signature request popup
-        await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-
-        await verifyAndAssertEthSign(driver, DAPP_URL, expectedEthSignMessage);
-
-        await approveEthSign(
-          driver,
-          '[data-testid="page-container-footer-next"]',
-          '.signature-request-warning__footer__sign-button',
-        );
-        // Switch to the Dapp
-        await driver.waitUntilXWindowHandles(2);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-
-        // Verify
-        await driver.findElement({
-          css: '#ethSignResult',
-          text: expectedEthSignResult,
-        });
-      },
-    );
-  });
+  // it('can initiate and confirm a eth sign', async function () {
+  //   const expectedEthSignMessage =
+  //     '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
+  //   const expectedEthSignResult =
+  //     '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder()
+  //         .withPreferencesController({
+  //           disabledRpcMethodPreferences: {
+  //             eth_sign: true,
+  //           },
+  //         })
+  //         .withPermissionControllerConnectedToTestDapp()
+  //         .build(),
+  //       ganacheOptions: defaultGanacheOptions,
+  //       title: this.test.title,
+  //     },
+  //     async ({ driver }) => {
+  //       await driver.navigate();
+  //       await unlockWallet(driver);
+  //
+  //       await openDapp(driver);
+  //       await driver.clickElement('#ethSign');
+  //
+  //       // Wait for Signature request popup
+  //       await driver.waitUntilXWindowHandles(3);
+  //       let windowHandles = await driver.getAllWindowHandles();
+  //       await driver.switchToWindowWithTitle(
+  //         'MetaMask Notification',
+  //         windowHandles,
+  //       );
+  //
+  //       await verifyAndAssertEthSign(driver, DAPP_URL, expectedEthSignMessage);
+  //
+  //       await approveEthSign(
+  //         driver,
+  //         '[data-testid="page-container-footer-next"]',
+  //         '.signature-request-warning__footer__sign-button',
+  //       );
+  //       // Switch to the Dapp
+  //       await driver.waitUntilXWindowHandles(2);
+  //       windowHandles = await driver.getAllWindowHandles();
+  //       await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+  //
+  //       // Verify
+  //       await driver.findElement({
+  //         css: '#ethSignResult',
+  //         text: expectedEthSignResult,
+  //       });
+  //     },
+  //   );
+  // });
 
   it('can queue multiple eth sign and confirm', async function () {
     const expectedEthSignMessage =

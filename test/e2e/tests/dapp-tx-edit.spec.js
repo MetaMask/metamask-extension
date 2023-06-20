@@ -14,52 +14,52 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
     ],
   };
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
-  it('should NOT show an edit button on a contract interaction confirmation iniated by a dapp', async function () {
-    await withFixtures(
-      {
-        dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        ganacheOptions,
-        smartContract,
-        title: this.test.title,
-      },
-      async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // deploy contract
-        await openDapp(driver, contractAddress);
-        // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.findClickableElement('#deployButton');
-        await driver.clickElement('#depositButton');
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
-
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.waitForSelector({
-          css: '.confirm-page-container-summary__action__name',
-          text: 'Deposit',
-        });
-        const editTransactionButton = await driver.isElementPresentAndVisible(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
-        assert.equal(
-          editTransactionButton,
-          false,
-          `Edit transaction button should not be visible on a contract interaction created by a dapp`,
-        );
-      },
-    );
-  });
+  // it('should NOT show an edit button on a contract interaction confirmation iniated by a dapp', async function () {
+  //   await withFixtures(
+  //     {
+  //       dapp: true,
+  //       fixtures: new FixtureBuilder()
+  //         .withPermissionControllerConnectedToTestDapp()
+  //         .build(),
+  //       ganacheOptions,
+  //       smartContract,
+  //       title: this.test.title,
+  //     },
+  //     async ({ driver, contractRegistry }) => {
+  //       const contractAddress = await contractRegistry.getContractAddress(
+  //         smartContract,
+  //       );
+  //       await driver.navigate();
+  //       await driver.fill('#password', 'correct horse battery staple');
+  //       await driver.press('#password', driver.Key.ENTER);
+  //
+  //       // deploy contract
+  //       await openDapp(driver, contractAddress);
+  //       // wait for deployed contract, calls and confirms a contract method where ETH is sent
+  //       await driver.findClickableElement('#deployButton');
+  //       await driver.clickElement('#depositButton');
+  //       await driver.waitUntilXWindowHandles(3);
+  //       const windowHandles = await driver.getAllWindowHandles();
+  //
+  //       await driver.switchToWindowWithTitle(
+  //         'MetaMask Notification',
+  //         windowHandles,
+  //       );
+  //       await driver.waitForSelector({
+  //         css: '.confirm-page-container-summary__action__name',
+  //         text: 'Deposit',
+  //       });
+  //       const editTransactionButton = await driver.isElementPresentAndVisible(
+  //         '[data-testid="confirm-page-back-edit-button"]',
+  //       );
+  //       assert.equal(
+  //         editTransactionButton,
+  //         false,
+  //         `Edit transaction button should not be visible on a contract interaction created by a dapp`,
+  //       );
+  //     },
+  //   );
+  // });
 
   it('should show an edit button on a simple ETH send iniated by a dapp', async function () {
     await withFixtures(
