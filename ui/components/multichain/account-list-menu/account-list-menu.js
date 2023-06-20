@@ -101,6 +101,7 @@ export const AccountListMenu = ({ onClose }) => {
       centerTitle
       onClose={onClose}
       onBack={actionMode === '' ? null : () => setActionMode('')}
+      className="multichain-account-menu-popover"
     >
       {actionMode === 'add' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
@@ -129,7 +130,7 @@ export const AccountListMenu = ({ onClose }) => {
         </Box>
       ) : null}
       {actionMode === '' ? (
-        <Box className="multichain-account-menu">
+        <Box>
           {/* Search box */}
           {accounts.length > 1 ? (
             <Box
@@ -152,13 +153,13 @@ export const AccountListMenu = ({ onClose }) => {
             </Box>
           ) : null}
           {/* Account list block */}
-          <Box className="multichain-account-menu__list">
+          <Box className="multichain-account-menu-popover__list">
             {searchResults.length === 0 && searchQuery !== '' ? (
               <Text
                 paddingLeft={4}
                 paddingRight={4}
                 color={TextColor.textMuted}
-                data-testid="multichain-account-menu-no-results"
+                data-testid="multichain-account-menu-popover-no-results"
               >
                 {t('noAccountsFound')}
               </Text>
@@ -208,7 +209,7 @@ export const AccountListMenu = ({ onClose }) => {
                   });
                   setActionMode('add');
                 }}
-                data-testid="multichain-account-menu-add-account"
+                data-testid="multichain-account-menu-popover-add-account"
               >
                 {t('addAccount')}
               </ButtonLink>
