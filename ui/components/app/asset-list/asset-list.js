@@ -65,16 +65,12 @@ const AssetList = ({ onClickAsset }) => {
   const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-  const tokenList = useSelector(getTokenList);
-  const tokenData = Object.values(tokenList).find(
-    (token) => token.symbol === primaryCurrencyProperties.suffix,
-  );
-  const title = tokenData?.name || primaryCurrencyProperties.suffix;
+
   return (
     <>
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
-        title={title}
+        title={nativeCurrency}
         primary={
           primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
         }
