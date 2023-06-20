@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Προσθήκη Προσαρμοσμένου Token"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Αδυναμία εύρεσης token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε διακριτικό επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων Token μπορούν να βρεθούν στο $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Προσθήκη Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Αδυναμία εύρεσης token; Μπορείτε να προσθέσετε χειροκίνητα οποιοδήποτε διακριτικό επικολλώντας τη διεύθυνσή του. Οι διευθύνσεις συμβολαίων Token μπορούν να βρεθούν στο $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Διεύθυνση"
@@ -548,13 +548,6 @@
     "message": "Για να $1 τη συναλλαγή, τα τέλη συναλλαγής πρέπει να αυξηθούν κατά τουλάχιστον 10% ώστε να αναγνωριστούν από το δίκτυο.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Ακυρώστε τη συναλλαγή για ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Ακυρώστε τη συναλλαγή δωρεάν"
-  },
   "cancelled": {
     "message": "Ακυρώθηκε"
   },
@@ -689,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Σύνδεση στο Δίκτυο Δοκιμής Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Σύνδεση στο δίκτυο δοκιμών Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1200,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
-  "enableSmartTransactions": {
-    "message": "Ενεργοποίηση Έξυπνων Συναλλαγών"
-  },
   "enableToken": {
     "message": "ενεργοποίηση $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1572,6 +1562,12 @@
     "message": "αλλά οι απατεώνες μπορεί να το κάνουν.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Κρατήστε το πατημένο για να αποκαλυφθεί το ΜΦΑ"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Κρατήστε το ΜΦΑ σας ασφαλές"
+  },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
   },
@@ -1840,7 +1836,7 @@
   "likeToImportTokens": {
     "message": "Θέλετε να προσθέσετε αυτά τα token;"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Δίκτυο δοκιμών Linea Goerli"
   },
   "link": {
@@ -1977,9 +1973,6 @@
   },
   "mustSelectOne": {
     "message": "Πρέπει να επιλέξετε 1 τουλάχιστον διακριτικό."
-  },
-  "myAccounts": {
-    "message": "Οι Λογαριασμοί μου"
   },
   "name": {
     "message": "Όνομα"
@@ -3236,9 +3229,6 @@
   "skipAccountSecurityDetails": {
     "message": "Καταλαβαίνω ότι μέχρι να δημιουργήσω αντίγραφα ασφαλείας για τη Μυστική Φράση Ανάκτησής μου, μπορεί να χάσω τους λογαριασμούς μου και όλα τα περιουσιακά στοιχεία τους."
   },
-  "smartTransaction": {
-    "message": "Έξυπνη Συναλλαγή"
-  },
   "snapContent": {
     "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3346,11 +3336,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Η επικόλληση απέτυχε επειδή περιείχε περισσότερες από 24 λέξεις. Μια μυστική φράση ανάκτησης μπορεί να αποτελείται από το πολύ 24 λέξεις.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Μπορείτε να επικολλήσετε ολόκληρη τη μυστική φράση ανάκτησής σας σε οποιοδήποτε πεδίο",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Ξεκινήστε"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Για να σας αποκαλύψουμε τη Μυστική Φράση Ανάκτησης, πρέπει να απαντήσετε σωστά σε δύο ερωτήσεις"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Αν χάσετε τη Μυστική Φράση Ανάκτησης, το MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Δεν μπορεί να σας βοηθήσει"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Γράψτε την κάπου, χαράξτε την πάνω σε μέταλλο ή κρατήστε την σε πολλά μυστικά σημεία για να μην την χάσετε ποτέ. Αν την χάσετε, θα χαθεί για πάντα."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Σωστά! Κανείς δεν μπορεί να σας βοηθήσει να επαναφέρετε τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Μπορεί να την επαναφέρει για εσάς"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Αν χάσετε τη Μυστική Φράση Ανάκτησης, θα την χάσετε για πάντα. Κανείς δεν μπορεί να σας βοηθήσει να την επαναφέρετε, ό,τι κι αν σας πει."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Λάθος! Κανείς δεν μπορεί να σας βοηθήσει να επαναφέρετε τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Αν κάποιος, ακόμα και ένας τεχνικός υποστήριξης, σας ζητήσει τη Μυστική Φράση Ανάκτησης..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Σας έχουν εξαπατήσει"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Όποιος ισχυριστεί ότι χρειάζεται τη Μυστική Φράση Ανάκτησης, σας λέει ψέματα. Αν την μοιραστείτε μαζί του, θα κλέψει τα περιουσιακά σας στοιχεία."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Σωστά! Το να μοιράζεστε τη Μυστική Φράση Ανάκτησης δεν είναι καλή ιδέα"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Πρέπει να τους την δώσετε"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Όποιος ισχυριστεί ότι χρειάζεται τη Μυστική Φράση Ανάκτησης, σας λέει ψέματα. Αν την μοιραστείτε μαζί του, θα κλέψει τα περιουσιακά σας στοιχεία."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Όχι! Ποτέ μα ποτέ μην μοιραστείτε με κανέναν τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Κουίζ Ασφαλείας"
   },
   "srpToggleShow": {
     "message": "Εμφάνιση/Απόκρυψη αυτής της λέξης από τη μυστική φράση ανάκτησης",
@@ -3422,9 +3463,6 @@
   "strong": {
     "message": "Ισχυρός"
   },
-  "stxAreHere": {
-    "message": "Οι Έξυπνες Συναλλαγές είναι εδώ!"
-  },
   "stxBenefit1": {
     "message": "Ελαχιστοποίηση του κόστους συναλλαγής"
   },
@@ -3446,15 +3484,6 @@
   "stxCancelledSubDescription": {
     "message": "Προσπαθήστε ξανά να κάνετε ανταλλαγή. Θα είμαστε εδώ για να σας προστατεύσουμε από παρόμοιους κινδύνους και την επόμενη φορά."
   },
-  "stxDescription": {
-    "message": "Οι Ανταλλαγές MetaMask μόλις έγιναν πολύ πιο έξυπνες! Η ενεργοποίηση των Έξυπνων Συναλλαγών θα επιτρέψει στο MetaMask να βελτιώσει προγραμματικά τις Ανταλλαγές σας ώστε να απολαμβάνετε:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Δεν υπάρχουν αρκετοί πόροι για αυτή την έξυπνη συναλλαγή."
-  },
-  "stxErrorUnavailable": {
-    "message": "Οι Έξυπνες Συναλλαγές είναι προσωρινά μη διαθέσιμες."
-  },
   "stxFailure": {
     "message": "Η Ανταλλαγή απέτυχε"
   },
@@ -3467,9 +3496,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Δημόσια υποβολή της Ανταλλαγής σας..."
-  },
-  "stxSubDescription": {
-    "message": "* Οι Έξυπνες Συναλλαγές θα προσπαθήσουν να υποβάλουν τη συναλλαγή σας ιδιωτικά, πολλές φορές. Εάν όλες οι προσπάθειες αποτύχουν, η συναλλαγή θα μεταδοθεί δημόσια για να διασφαλιστεί η επιτυχής πραγματοποίηση της ανταλλαγής σας."
   },
   "stxSuccess": {
     "message": "Η ανταλλαγή ολοκληρώθηκε!"
