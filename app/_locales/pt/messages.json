@@ -1562,6 +1562,12 @@
     "message": "mas os phishers talvez solicitem.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Mantenha pressionado para revelar FRS"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Mantenha sua FRS protegida"
+  },
   "ignoreAll": {
     "message": "Ignorar tudo"
   },
@@ -3333,11 +3339,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "A função colar falhou porque continha mais de 24 palavras. Uma frase secreta de recuperação pode ter no máximo 24 palavras.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Você pode colar a sua frase secreta de recuperação inteira em qualquer campo",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Começar"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Para revelar sua Frase de Recuperação Secreta, você precisa responder corretamente duas perguntas"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Se você perder sua Frase de Recuperação Secreta, a MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Não poderá ajudar"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Anote-a, grave em metal ou guarde-a em diversos lugares secretos para que nunca a perca. Se perdê-la, é para sempre."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Certo! Ninguém pode ajudar a recuperar sua Frase de Recuperação Secreta"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Poderá recuperá-la para você"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Se você perder sua Frase de Recuperação Secreta, é para sempre. Ninguém consegue ajudar a recuperá-la, não importa o que digam."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Errado! Ninguém consegue recuperar sua Frase de Recuperação Secreta"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Se alguém, até mesmo um atendente do suporte, pedir sua Frase de Recuperação Secreta..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Você estará sendo vítima de um golpe"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Qualquer pessoa que afirme precisar da sua Frase de Recuperação Secreta está mentindo. Se você compartilhar com ela, seus ativos serão roubados."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Correto! Compartilhar sua Frase de Recuperação Secreta nunca é uma boa ideia"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Você deverá revelar"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Qualquer pessoa que afirme precisar da sua Frase de Recuperação Secreta está mentindo. Se você compartilhar com ela, seus ativos serão roubados."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Não! Não compartilhe sua Frase de Recuperação Secreta com ninguém, nunca"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Quiz de segurança"
   },
   "srpToggleShow": {
     "message": "Mostrar/Ocultar esta palavra da frase secreta de recuperação",
