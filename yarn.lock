@@ -4654,9 +4654,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/rate-limit-controller@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/rate-limit-controller@npm:2.0.0"
+"@metamask/rate-limit-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/rate-limit-controller@npm:3.0.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     eth-rpc-errors: ^4.0.2
