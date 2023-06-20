@@ -315,6 +315,7 @@ function TransactionListItemInner({
                 color={Color.textDefault}
                 title={primaryCurrency}
                 textAlign={TextAlign.Right}
+                className="transaction-list-item__primary-currency"
               >
                 {primaryCurrency}
               </Text>
@@ -322,6 +323,7 @@ function TransactionListItemInner({
                 variant={TextVariant.bodyMd}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
+                className="transaction-list-item__secondary-currency"
               >
                 {secondaryCurrency}
               </Text>
