@@ -96,7 +96,7 @@ export const SnapDetailHeader = ({
                 variant={BUTTON_VARIANT.PRIMARY}
                 marginRight={1}
                 onClick={() => {
-                  dispatch(installSnapFromSnapAccounts(snapId));
+                  dispatch(installSnapFromSnapAccounts(website, snapId));
                 }}
               >
                 {t('snapUpdateAvailable')}
@@ -114,7 +114,7 @@ export const SnapDetailHeader = ({
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
                 onClick={() => {
-                  dispatch(installSnapFromSnapAccounts(snapId));
+                  dispatch(installSnapFromSnapAccounts(website, snapId));
                 }}
               >
                 {t('snapInstall')}

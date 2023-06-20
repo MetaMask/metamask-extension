@@ -2440,10 +2440,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disable',
       ),
-      installSnaps: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:install',
-      ),
+      installorUpdateSnap: this.installOrUpdateSnap.bind(this),
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:enable',
@@ -4593,5 +4590,11 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
+  }
+
+  async installOrUpdateSnap(origin, snapId) {
+    await this.snapController.installSnaps(origin, {
+      [snapId]: {},
+    });
   }
 }

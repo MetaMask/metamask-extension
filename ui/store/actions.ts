@@ -1240,7 +1240,9 @@ export function removeSnap(
     dispatch(showLoadingIndication());
 
     const isAccountsSnap =
-      KEY_MANAGEMENT_SNAPS.findIndex((snap) => snap.snapId === snapId) !== -1;
+      Object.values(KEY_MANAGEMENT_SNAPS).findIndex(
+        (snap) => snap.snapId === snapId,
+      ) !== -1;
 
     try {
       if (isAccountsSnap) {
@@ -4636,15 +4638,12 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   };
 }
 
-export function installSnapFromSnapAccounts(snapId: string) {
+export function installSnapFromSnapAccounts(origin: string, snapId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.installSnaps`);
     try {
-      await submitRequestToBackground('installSnaps', [
-        'metamask',
-        { [snapId]: {} },
-      ]);
+      await submitRequestToBackground('installorUpdateSnap', [origin, snapId]);
     } catch (error) {
       console.error(error);
     } finally {
