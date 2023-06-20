@@ -30,10 +30,17 @@ async function main(): Promise<void> {
     // at most 20 PRs per run
     const prNumbers = response.data.items.map((item) => item.number);
 
-    for (let i = 0 ; i < prNumbers.length; i += 1) {
-      console.log(prNumbers[i]);
-      // await commentAndClosePR(octokit, prNumbers[i]);
-    }
+    const oldestPRFromTheLast20ThatWereUpdatedMoreThan60DaysAgo = prNumbers[prNumbers.length-1];
+    console.log(prNumbers[0]);
+    console.log(oldestPRFromTheLast20ThatWereUpdatedMoreThan60DaysAgo);
+
+    // Phase 1: Close up to 1 PRs a day and monitor
+    // await commentAndClosePR(octokit, oldestPRFromTheLast20ThatWereUpdatedMoreThan60DaysAgo);
+
+    // Phase 2: Close up to 20 PRs a day
+    // for (let i = 0 ; i < prNumbers.length; i += 1) {
+    //   await commentAndClosePR(octokit, prNumbers[i]);
+    // }
   } catch (error) {
     console.error(`Error processing PRs: ${error}`);
   }

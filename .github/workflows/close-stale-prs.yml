@@ -1,8 +1,13 @@
 name: Close stale PRs
 
+# For testing. Remove before merging
 on:
-  schedule:
-    - cron: '0 0 * * *'  # This will run the action every day at 00:00
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'  # This will run the action every day at 00:00
 
 jobs:
   close_stale_prs:
