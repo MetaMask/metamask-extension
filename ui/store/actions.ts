@@ -17,7 +17,6 @@ import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { HandlerType } from '@metamask/snaps-utils';
-import { v4 as uuidv4 } from 'uuid';
 import { KEY_MANAGEMENT_SNAPS } from '../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 ///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
