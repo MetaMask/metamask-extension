@@ -31,7 +31,6 @@ async function main(): Promise<void> {
     const prNumbers = response.data.items.map((item) => item.number);
 
     const oldestPRFromTheLast20ThatWereUpdatedMoreThan60DaysAgo = prNumbers[prNumbers.length-1];
-    console.log(prNumbers[0]);
     console.log(oldestPRFromTheLast20ThatWereUpdatedMoreThan60DaysAgo);
 
     // Phase 1: Close up to 1 PRs a day and monitor
@@ -47,9 +46,13 @@ async function main(): Promise<void> {
 }
 
 async function commentAndClosePR(octokit: InstanceType<typeof GitHub>, prNumber: number): Promise<void> {
-  const commentBody = `Thank you for your contribution to MetaMask Extension. In order to maintain a clean and relevant PR queue,
-we close all PRs after ${MAX_DAYS_OF_INACTIVITY} days of inactivity.
-Please reopen this PR once you have new changes to add.`;
+  const commentBody = `Thank you for your contribution to MetaMask Extension. We truly appreciate the time and effort you've put into this.
+
+In order to maintain an efficient and effective PR queue, any PRs that remain inactive for ${MAX_DAYS_OF_INACTIVITY} days are automatically closed.
+
+If you have any updates or new changes to add in the future, please feel free to reopen this PR. We're always happy to review new submissions.
+
+Thanks again for your understanding and contribution.`
 
   // Comment on the PR
   await octokit.rest.issues.createComment({
