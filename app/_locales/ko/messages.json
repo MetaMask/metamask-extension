@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
   },
-  "myAccounts": {
-    "message": "내 계정"
-  },
   "name": {
     "message": "이름"
   },

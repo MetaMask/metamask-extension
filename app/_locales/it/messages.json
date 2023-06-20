@@ -1150,9 +1150,6 @@
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
   },
-  "myAccounts": {
-    "message": "Miei Account"
-  },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"

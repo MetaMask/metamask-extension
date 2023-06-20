@@ -300,9 +300,6 @@
   "mustSelectOne": {
     "message": "Ou dwe chwazi omwen 1 token."
   },
-  "myAccounts": {
-    "message": "Kont mwen"
-  },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
     "description": "User is important an account and needs to add a file to continue"

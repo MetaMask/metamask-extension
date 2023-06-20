@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना होगा।"
   },
-  "myAccounts": {
-    "message": "मेरे खाते"
-  },
   "name": {
     "message": "नाम"
   },

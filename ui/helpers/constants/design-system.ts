@@ -48,6 +48,8 @@ export enum Color {
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
   lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   transparent = 'transparent',
   localhost = 'localhost',
   inherit = 'inherit',
@@ -78,6 +80,7 @@ export enum BackgroundColor {
   goerli = 'goerli',
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -104,6 +107,7 @@ export enum BorderColor {
   goerli = 'goerli',
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
   backgroundDefault = 'background-default', // exception for border color when element is meant to look "cut out"
@@ -129,6 +133,8 @@ export enum TextColor {
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
   lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
   transparent = 'transparent',
@@ -154,6 +160,8 @@ export enum IconColor {
   sepolia = 'sepolia',
   lineaGoerli = 'linea-goerli',
   lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
