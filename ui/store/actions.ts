@@ -16,7 +16,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import { ethErrors } from 'eth-rpc-errors';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
