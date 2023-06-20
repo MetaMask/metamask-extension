@@ -1,6 +1,6 @@
 import React from 'react';
 import sinon from 'sinon';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, act } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SignatureRequest from './signature-request.container';
@@ -90,6 +90,7 @@ describe('Signature Request', () => {
     clearConfirmTransaction: sinon.spy(),
     cancelMessage: sinon.spy(),
     cancel: sinon.stub().resolves(),
+    rejectPendingApproval: sinon.stub().resolves(),
     showRejectTransactionsConfirmationModal: sinon.stub().resolves(),
     cancelAll: sinon.stub().resolves(),
     providerConfig: {
@@ -97,6 +98,9 @@ describe('Signature Request', () => {
     },
     unapprovedMessagesCount: 2,
     sign: sinon.stub().resolves(),
+    cancelAllApprovals: sinon.stub().resolves(),
+    resolvePendingApproval: sinon.stub().resolves(),
+    completedTx: sinon.stub().resolves(),
     txData: {
       msgParams: {
         id: 1,
@@ -162,22 +166,24 @@ describe('Signature Request', () => {
       propsWithFiat.clearConfirmTransaction.resetHistory();
     });
 
-    it('cancel', () => {
+    it('cancel', async () => {
       const cancelButton = screen.getByTestId('page-container-footer-cancel');
-      fireEvent.click(cancelButton);
-      expect(propsWithFiat.cancel.calledOnce).toStrictEqual(true);
+      await act(() => {
+        fireEvent.click(cancelButton);
+      });
+      expect(propsWithFiat.rejectPendingApproval.calledOnce).toStrictEqual(
+        true,
+      );
     });
 
-    it('sign', () => {
+    it('sign', async () => {
       const signButton = screen.getByTestId('page-container-footer-next');
-      fireEvent.click(signButton);
-      expect(propsWithFiat.sign.calledOnce).toStrictEqual(true);
-    });
-
-    it('cancelAll', () => {
-      const cancelAll = screen.getByTestId('signature-request-reject-all');
-      fireEvent.click(cancelAll);
-      expect(propsWithFiat.cancelAll.calledOnce).toStrictEqual(false);
+      await act(() => {
+        fireEvent.click(signButton);
+      });
+      expect(propsWithFiat.resolvePendingApproval.calledOnce).toStrictEqual(
+        true,
+      );
     });
 
     it('have user warning', () => {

@@ -197,8 +197,7 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/signature-controller@^3.0.0": "patch:@metamask/signature-controller@npm%3A3.0.0#./.yarn/patches/@metamask-signature-controller-npm-3.0.0-8771b6885e.patch"
+    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
@@ -249,7 +248,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/logo": "^3.1.1",
-    "@metamask/message-manager": "^6.0.0",
+    "@metamask/message-manager": "^7.0.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
@@ -262,7 +261,7 @@
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.34.0-flask.1",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/signature-controller": "^3.0.0",
+    "@metamask/signature-controller": "^4.0.1",
     "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^3.1.0",
     "@metamask/snaps-controllers": "^0.32.2",

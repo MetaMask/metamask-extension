@@ -9,6 +9,7 @@ import {
   CombinedBackgroundAndReduxState,
   MetaMaskReduxState,
   TemporaryMessageDataType,
+  MessagesIndexedById,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
@@ -110,19 +111,16 @@ export function updateCustodyState(
 
 export function checkForUnapprovedTypedMessages(
   msgData: TemporaryMessageDataType['msgParams'],
-  newState: MetaMaskReduxState['metamask'],
+  unapprovedTypedMessages: MessagesIndexedById,
 ) {
-  const custodianUnapprovedMessages = Object.keys(
-    newState.unapprovedTypedMessages,
-  )
-    .map((key) => newState.unapprovedTypedMessages[key])
+  const custodianUnapprovedMessages = Object.keys(unapprovedTypedMessages)
+    .map((key) => unapprovedTypedMessages[key])
     .filter((message) => message.custodyId && message.status === 'unapproved');
 
   if (custodianUnapprovedMessages && custodianUnapprovedMessages.length > 0) {
     return {
       ...msgData,
-      custodyId:
-        newState.unapprovedTypedMessages[msgData.metamaskId]?.custodyId,
+      custodyId: unapprovedTypedMessages[msgData.metamaskId]?.custodyId,
     };
   }
 
