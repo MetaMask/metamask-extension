@@ -35,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Display a list of "Your accounts" if the user has more than one account
     - Display "Contacts" in alphabetical order after the final user's account
     - UI Updates in Contacts Page (AddressBook) in Settings Page
-- [FLASK] Update UI (for audit) (UI facelift) ([#19388](https://github.com/MetaMask/metamask-extension/19388))
+- [FLASK] Small UI improvements ([#19388](https://github.com/MetaMask/metamask-extension/pull/19388))
 - [FLASK] Limit notification count display to 99+ ([#19449](https://github.com/MetaMask/metamask-extension/19449))
 - [FLASK] Update snap tweaks ([#19410](https://github.com/MetaMask/metamask-extension/19410))
 - [FLASK] `snaps@0.34.0-flask.1` ([#19377](https://github.com/MetaMask/metamask-extension/19377))
