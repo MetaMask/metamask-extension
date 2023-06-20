@@ -261,6 +261,18 @@ class Driver {
       .perform();
   }
 
+  async holdMouseDownOnElement(rawLocator, ms) {
+    const locator = this.buildLocator(rawLocator);
+    const element = await this.findClickableElement(locator);
+    await this.driver
+      .actions()
+      .move({ origin: element, x: 1, y: 1 })
+      .press()
+      .pause(ms)
+      .release()
+      .perform();
+  }
+
   async scrollToElement(element) {
     await this.driver.executeScript(
       'arguments[0].scrollIntoView(true)',

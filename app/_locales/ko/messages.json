@@ -1562,6 +1562,12 @@
     "message": "오히려 피싱 사기꾼들이 요구할 수 있으니 주의가 필요합니다.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "눌러서 SRP 정보를 확인하세요"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "SRP 정보를 안전하게 보관하세요"
+  },
   "ignoreAll": {
     "message": "모두 무시"
   },
@@ -3333,11 +3339,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "단어가 24개를 초과하여 붙여넣기에 실패했습니다. 비밀 복구 구문은 24개 이하의 단어로 이루어집니다.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "비밀 복구 구문 전체를 아무 입력란에 붙여넣을 수 있습니다",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "시작하기"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "비밀 복구 구문을 찾으려면 두 가지 질문에 올바르게 답해야 합니다"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "비밀 복구 구문을 분실하시면 MetaMask가..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "도와드릴 수 없습니다"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "따라서 이를 적거나, 금속 등에 새기거나, 여러 비밀 장소에 보관하여 절대로 잃어버리지 않도록 하세요. 한 번 잃어버리면 영원히 찾을 수 없습니다."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "맞습니다! 아무도 본인의 비밀 복구 구문을 복구할 수 없습니다"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "찾아드릴 수 있습니다"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "비밀 복구 구문은 한 번 잃어버리면 영원히 찾을 수 없습니다. 누가 뭐라고 해도 아무도 이를 찾아드리지 못합니다."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "아닙니다! 아무도 본인의 비밀 복구 구문을 복구할 수 없습니다"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "누군가, 심지어 고객 센터 직원이라고 해도 여러분의 비밀 복구 구문을 물어본다면..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "이는 반드시 사기입니다"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "비밀 복구 구문이 필요하다고 하는 사람은 모두 거짓말쟁이입니다. 그런 자들과 비밀 복구 구문을 공유하면 자산을 도둑맞게 됩니다."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "맞습니다! 비밀 복구 구문은 아무와도 공유하면 안 됩니다"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "주어야 합니다"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "비밀 복구 구문이 필요하다고 하는 사람은 모두 거짓말쟁이입니다. 그런 자들과 비밀 복구 구문을 공유하면 자산을 도둑맞게 됩니다."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "맞습니다! 비밀 복구 구문은 절대로 아무와도 공유하면 안 됩니다"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "보안 퀴즈"
   },
   "srpToggleShow": {
     "message": "비밀 복구 구문 중에서 이 단어 공개하기/숨기기",
