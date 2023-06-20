@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { memoize } from 'lodash';
 import PropTypes from 'prop-types';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import LedgerInstructionField from '../ledger-instruction-field';
 import {
   sanitizeMessage,
@@ -69,14 +70,6 @@ export default class SignatureRequest extends PureComponent {
      */
     isHardwareWallet: PropTypes.bool,
     /**
-     * Handler for cancel button
-     */
-    cancel: PropTypes.func.isRequired,
-    /**
-     * Handler for sign button
-     */
-    sign: PropTypes.func.isRequired,
-    /**
      * Whether the hardware wallet requires a connection disables the sign button if true.
      */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
@@ -98,10 +91,14 @@ export default class SignatureRequest extends PureComponent {
     history: PropTypes.object,
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
-    cancelAll: PropTypes.func.isRequired,
+    cancelAllApprovals: PropTypes.func.isRequired,
+    resolvePendingApproval: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
+    completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: PropTypes.func,
     isNotification: PropTypes.bool,
+    mmiOnSignCallback: PropTypes.func,
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
@@ -157,18 +154,18 @@ export default class SignatureRequest extends PureComponent {
 
   handleCancelAll = () => {
     const {
-      cancelAll,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       unapprovedMessagesCount,
+      cancelAllApprovals,
     } = this.props;
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount: unapprovedMessagesCount,
       onSubmit: async () => {
-        await cancelAll();
+        await cancelAllApprovals();
         clearConfirmTransaction();
         history.push(mostRecentOverviewPage);
       },
@@ -181,10 +178,9 @@ export default class SignatureRequest extends PureComponent {
       txData: {
         msgParams: { data, origin, version },
         type,
+        id,
       },
       fromAccount: { address, balance, name },
-      cancel,
-      sign,
       isLedgerWallet,
       hardwareWalletRequiresConnection,
       isHardwareWallet,
@@ -196,6 +192,9 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      resolvePendingApproval,
+      rejectPendingApproval,
+      completedTx,
     } = this.props;
 
     const { t, trackEvent } = this.context;
@@ -230,8 +229,15 @@ export default class SignatureRequest extends PureComponent {
           .toBase(10)
           .toString();
 
-    const onSign = (event) => {
-      sign(event);
+    const onSign = async () => {
+      await resolvePendingApproval(id);
+      completedTx(id);
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      if (this.props.mmiOnSignCallback) {
+        await this.props.mmiOnSignCallback(txData);
+      }
+      ///: END:ONLY_INCLUDE_IN
+
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Confirm',
@@ -244,8 +250,11 @@ export default class SignatureRequest extends PureComponent {
       });
     };
 
-    const onCancel = (event) => {
-      cancel(event);
+    const onCancel = async () => {
+      await rejectPendingApproval(
+        id,
+        serializeError(ethErrors.provider.userRejectedRequest()),
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: 'Cancel',
