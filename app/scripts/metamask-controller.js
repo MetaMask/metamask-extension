@@ -2195,6 +2195,11 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      setSnapsAddSnapAccountModalDismissed:
+        preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
+          preferencesController,
+        ),
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 

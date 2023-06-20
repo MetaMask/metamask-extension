@@ -1,1 +1,1 @@
-export { default } from './add-snap-account.component';
+export { default } from './add-snap-account';

@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import ConfigureSnapPopup from '../../../components/app/configure-snap-popup';
 import {
-  Box,
   BUTTON_VARIANT,
+  Box,
   Button,
   Icon,
   IconName,
   Text,
 } from '../../../components/component-library';
-import { SnapCardProps } from '../snap-account/snap-account';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   BackgroundColor,
@@ -22,7 +21,8 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import ConfigureSnapPopup from '../../../components/app/configure-snap-popup';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 
 export default function SnapCard({
   iconUrl,

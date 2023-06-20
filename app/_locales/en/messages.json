@@ -269,11 +269,8 @@
   "addNewToken": {
     "message": "Add new token"
   },
-  "addSnapAccountPopupDescription": {
+  "addSnapAccountModalDescription": {
     "message": "Discover options to keep your account secure with MetaMask Snaps"
-  },
-  "addSnapAccountPopupTitle": {
-    "message": "Add snap account"
   },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"

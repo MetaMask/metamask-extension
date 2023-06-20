@@ -33,18 +33,19 @@ exports[`SnapCard should render 1`] = `
     <p
       class="box mm-text mm-text--body-sm box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
     >
-      Metamask Account Abstraction Snap
+      Metamask Simple Keyring
     </p>
     <h3
       class="box mm-text mm-text--heading-md box--margin-bottom-auto box--flex-direction-row box--color-text-default"
     >
-      Use account abstraction 4337
+      Secure your account with MetaMask Mobile
     </h3>
     <div
       class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
     >
       <span
         class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        data-testid="to-snap-detail"
         style="mask-image: url('./images/icons/arrow-2-right.svg');"
       />
     </div>

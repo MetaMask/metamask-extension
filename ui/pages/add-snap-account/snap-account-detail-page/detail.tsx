@@ -1,9 +1,9 @@
 import React from 'react';
+import { Box, Text } from '../../../components/component-library';
 import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../../components/component-library';
 
 const Detail = ({
   title,

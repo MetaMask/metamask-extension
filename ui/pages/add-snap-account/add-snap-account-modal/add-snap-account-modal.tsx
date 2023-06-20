@@ -1,25 +1,25 @@
 import React from 'react';
 import {
-  AlignItems,
-  TextVariant,
-  FlexDirection,
-  JustifyContent,
-  Display,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
-import {
-  Text,
-  Button,
   BUTTON_VARIANT,
+  Box,
+  Button,
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
-} from '../../component-library';
+  ModalOverlay,
+  Text,
+} from '../../../components/component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-export default function AddSnapAccountModa({
+export default function AddSnapAccountModal({
   onClose,
   isOpen,
 }: {
@@ -29,11 +29,11 @@ export default function AddSnapAccountModa({
   const t = useI18nContext();
 
   return (
-    <Modal className="add-snap-account-popup" isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
-          {t('addSnapAccountPopupTitle')}
+          {t('settingAddSnapAccount')}
         </ModalHeader>
         <Box
           display={Display.Flex}
@@ -50,7 +50,7 @@ export default function AddSnapAccountModa({
             textAlign={TextAlign.Center}
             marginBottom={4}
           >
-            {t('addSnapAccountPopupDescription')}
+            {t('addSnapAccountModalDescription')}
           </Text>
           <Button
             variant={BUTTON_VARIANT.PRIMARY}

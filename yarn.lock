@@ -4268,20 +4268,20 @@ __metadata:
 
 "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api":
   version: 0.1.0
-  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=12bed3376c73b162e6c9a067c0f65e04b16ebbb1"
+  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=2821fb629b2820382a09d9461000d3362e848d28"
   dependencies:
     "@ethereumjs/tx": ^4.1.2
     "@ethereumjs/util": ^8.0.5
     "@metamask/eth-sig-util": ^5.1.0
-    "@metamask/keyring-api": "ssh://git@github.com/MetaMask/keyring-api#main"
-    "@metamask/snaps-controllers": ^0.32.2
+    "@metamask/keyring-api": "ssh://git@github.com/MetaMask/keyring-api#prepack"
+    "@metamask/snaps-controllers": ^0.34.1-flask.1
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/utils": ^5.0.0
     "@types/uuid": ^9.0.1
     bn.js: ^5.2.1
     eth-rpc-errors: ^4.0.3
     uuid: ^9.0.0
-  checksum: a131b1912743f366d4ab46754eabd5b66eec38f55efedec14b7d9f78f090eb3c4628ed44c15b2635e47ad6f79e1fce410eeb427b405b8053e974c8fed8268c1b
+  checksum: e05c51b0f3bb953f2760cf0455918dd81bd273b486b36ea04fd61df36ed928f3a6db6b1415b90174bb1e263a13949ab533c9990bfffd9ed012a283edcec9788b
   languageName: node
   linkType: hard
 
@@ -4372,17 +4372,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#main":
+"@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#prepack":
   version: 0.1.0
-  resolution: "@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#commit=64e02b382fde9fd562eb0b51a597fc4fb2f2d411"
+  resolution: "@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#commit=0179b83c5ed90fb3651655145cc823f37fd4ec0e"
   dependencies:
     "@metamask/providers": ^11.0.0
-    "@metamask/snaps-controllers": ^0.32.2
-    "@metamask/snaps-utils": ^0.32.2
+    "@metamask/snaps-controllers": ^0.34.1-flask.1
+    "@metamask/snaps-utils": ^0.34.1-flask.1
     "@metamask/utils": ^5.0.2
     "@types/uuid": ^9.0.1
     uuid: ^9.0.0
-  checksum: 6e9392b372c01722a185f9592568c8b1a6a41e68ffe83fde02f2a8cb19e4bc554980a64f671c5f42b3e9636ea94d33980785bcf1fae7d5dfa98578a20a4762a5
+  checksum: 66b52b174958d16f027b862728143d4e6d7e0db844dc2dde4d6ff0612b4edf89c242420a681eadbb8c84f2b5139f527816783822b1c091b5307c909bfa125065
   languageName: node
   linkType: hard
 
@@ -4685,6 +4685,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/rpc-methods@npm:^0.34.1-flask.1":
+  version: 0.34.1-flask.1
+  resolution: "@metamask/rpc-methods@npm:0.34.1-flask.1"
+  dependencies:
+    "@metamask/key-tree": ^7.0.0
+    "@metamask/permission-controller": ^4.0.0
+    "@metamask/snaps-ui": ^0.34.1-flask.1
+    "@metamask/snaps-utils": ^0.34.1-flask.1
+    "@metamask/types": ^1.1.0
+    "@metamask/utils": ^6.0.0
+    "@noble/hashes": ^1.1.3
+    eth-rpc-errors: ^4.0.3
+    nanoid: ^3.1.31
+    superstruct: ^1.0.3
+  checksum: 66d187253f166087bb8c7bdf8a5cdf40c59013c90cb20076cdbd4dcdca7cf21a40635beece972f4bb8fc3aebf1320648832d3f14110dcb2a4eb6856b5592e866
+  languageName: node
+  linkType: hard
+
 "@metamask/safe-event-emitter@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/safe-event-emitter@npm:2.0.0"
@@ -4826,6 +4844,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-controllers@npm:^0.34.1-flask.1":
+  version: 0.34.1-flask.1
+  resolution: "@metamask/snaps-controllers@npm:0.34.1-flask.1"
+  dependencies:
+    "@metamask/approval-controller": ^3.0.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/object-multiplex": ^1.2.0
+    "@metamask/permission-controller": ^4.0.0
+    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/rpc-methods": ^0.34.1-flask.1
+    "@metamask/snaps-execution-environments": ^0.34.1-flask.1
+    "@metamask/snaps-registry": ^1.2.1
+    "@metamask/snaps-utils": ^0.34.1-flask.1
+    "@metamask/utils": ^6.0.0
+    "@xstate/fsm": ^2.0.0
+    concat-stream: ^2.0.0
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    gunzip-maybe: ^1.4.2
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    json-rpc-middleware-stream: ^4.2.0
+    nanoid: ^3.1.31
+    pump: ^3.0.0
+    readable-web-to-node-stream: ^3.0.2
+    tar-stream: ^2.2.0
+  checksum: bbbde0c12754a138f7169f0ed143e4f158a7edb683c2d8aa3530f1116aca7e3bdd28a584d732f021b6810dadf002b2d9975d32025c9d2c807b1eff60c0f577f3
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-execution-environments@npm:^0.32.2":
   version: 0.32.2
   resolution: "@metamask/snaps-execution-environments@npm:0.32.2"
@@ -4864,6 +4912,27 @@ __metadata:
     stream-browserify: ^3.0.0
     superstruct: ^1.0.3
   checksum: 384105334b3346fbdffca18eb9934391bb88e0c06022e17afdd235be91b0bc434ce26680ee3fb81bd99dd601e376b4e8448f02f7fdb379914d7bcbf4ce3a92e5
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-execution-environments@npm:^0.34.1-flask.1":
+  version: 0.34.1-flask.1
+  resolution: "@metamask/snaps-execution-environments@npm:0.34.1-flask.1"
+  dependencies:
+    "@metamask/object-multiplex": ^1.2.0
+    "@metamask/post-message-stream": ^6.1.2
+    "@metamask/providers": ^10.2.1
+    "@metamask/rpc-methods": ^0.34.1-flask.1
+    "@metamask/snaps-utils": ^0.34.1-flask.1
+    "@metamask/utils": ^6.0.0
+    eth-rpc-errors: ^4.0.3
+    json-rpc-engine: ^6.1.0
+    nanoid: ^3.1.31
+    pump: ^3.0.0
+    ses: ^0.18.1
+    stream-browserify: ^3.0.0
+    superstruct: ^1.0.3
+  checksum: 27d07ee0548169fa6cfddc04f15d0c562f1a6db05dabbd68a23dd35de826bc842194979ee1bb4314eeae4c21d3e2e04c058f761d73660fa07b45e527a777e7c4
   languageName: node
   linkType: hard
 
@@ -4926,6 +4995,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-ui@npm:^0.34.1-flask.1":
+  version: 0.34.1-flask.1
+  resolution: "@metamask/snaps-ui@npm:0.34.1-flask.1"
+  dependencies:
+    "@metamask/utils": ^6.0.0
+    superstruct: ^1.0.3
+  checksum: eecce7119146ff4984a8e88cc6be3b68445941a6e1e905084d02530bf264c97902deac1197bde462a2d516819ba82f97db9f1d1d2ab3213c1a896b9881824868
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-utils-flask@npm:@metamask/snaps-utils@0.34.0-flask.1, @metamask/snaps-utils@npm:^0.34.0-flask.1":
   version: 0.34.0-flask.1
   resolution: "@metamask/snaps-utils@npm:0.34.0-flask.1"
@@ -4951,6 +5030,34 @@ __metadata:
     superstruct: ^1.0.3
     validate-npm-package-name: ^5.0.0
   checksum: bc4ff9460dce673e00a0a82c81b61f7a9ddb1ca18331236a0d68f7ed07c14edb2c7bbdec5817b446970c7e3761ddbdcabf129721e1f1c5376c39e126cdf3221c
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-utils@npm:^0.34.1-flask.1":
+  version: 0.34.1-flask.1
+  resolution: "@metamask/snaps-utils@npm:0.34.1-flask.1"
+  dependencies:
+    "@babel/core": ^7.20.12
+    "@babel/types": ^7.18.7
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/permission-controller": ^4.0.0
+    "@metamask/providers": ^10.2.1
+    "@metamask/snaps-registry": ^1.2.1
+    "@metamask/snaps-ui": ^0.34.1-flask.1
+    "@metamask/utils": ^6.0.0
+    "@noble/hashes": ^1.1.3
+    "@scure/base": ^1.1.1
+    cron-parser: ^4.5.0
+    eth-rpc-errors: ^4.0.3
+    fast-deep-equal: ^3.1.3
+    fast-json-stable-stringify: ^2.1.0
+    is-svg: ^4.4.0
+    rfdc: ^1.3.0
+    semver: ^7.3.7
+    ses: ^0.18.1
+    superstruct: ^1.0.3
+    validate-npm-package-name: ^5.0.0
+  checksum: a4663a4858c92a656fd22007dff7c612e1a005eaeeb3563bcda0872bb028dc251a5dccb2a59e2c12cdffc12a560751b70484d98a8653ca2417aec0177880eeaa
   languageName: node
   linkType: hard
 

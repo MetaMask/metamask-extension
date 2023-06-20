@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import ConfigureSnapPopup from '../../../components/app/configure-snap-popup/configure-snap-popup';
+import {
+  BUTTON_VARIANT,
+  Box,
+  Button,
+  Icon,
+  IconName,
+  Tag,
+  Text,
+} from '../../../components/component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -10,19 +20,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  Button,
-  Tag,
-  BUTTON_VARIANT,
-  Icon,
-  IconName,
-} from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SnapCardProps } from '../snap-account/snap-account';
-import ConfigureSnapPopup from '../../../components/app/configure-snap-popup/configure-snap-popup';
 import { installSnapFromSnapAccounts } from '../../../store/actions';
+import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 
 export const SnapDetailHeader = ({
   updateAvailable,

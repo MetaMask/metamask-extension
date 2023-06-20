@@ -7,10 +7,10 @@ import {
   JustifyContent,
 } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
-import NewSnapAccountPage from './snap-account';
-import SnapAccountDetailPage from './snap-account-detail';
+import NewSnapAccountPage from './new-snap-account-page';
+import SnapAccountDetailPage from './snap-account-detail-page';
 
-const AddSnapAccountPage = () => {
+export default function AddSnapAccountPage() {
   return (
     <Box
       display={Display.Flex}
@@ -35,6 +35,4 @@ const AddSnapAccountPage = () => {
       </Switch>
     </Box>
   );
-};
-
-export default AddSnapAccountPage;
+}

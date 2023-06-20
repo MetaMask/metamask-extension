@@ -40,7 +40,7 @@ import OnboardingAppHeader from '../onboarding-flow/onboarding-app-header/onboar
 import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
-import AddSnapAccountPage from '../add-snap-account/add-snap-account.component';
+import AddSnapAccountPage from '../add-snap-account/add-snap-account';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';

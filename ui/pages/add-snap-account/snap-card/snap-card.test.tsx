@@ -1,10 +1,10 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import messages from '../../../../app/_locales/en/messages.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SnapCard from './snap-card';
 
 const mockHistoryPush = jest.fn();

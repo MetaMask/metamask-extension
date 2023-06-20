@@ -1,12 +1,12 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import mockState from '../../../../test/data/mock-state.json';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import messages from '../../../../app/_locales/en/messages.json';
-import SnapDetail from './snap-details';
+import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import mockState from '../../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import SnapAccountDetailPage from '.';
 
 const snap = Object.values(KEY_MANAGEMENT_SNAPS)[0];
 
@@ -29,7 +29,7 @@ jest.mock('react-router-dom', () => ({
 const renderComponent = (state, props = {}) => {
   const mockStore = configureMockStore([thunk])(state);
   return renderWithProvider(
-    <SnapDetail {...props} />,
+    <SnapAccountDetailPage {...props} />,
     mockStore,
     `/add-snap-account/${snap.id}`,
   );

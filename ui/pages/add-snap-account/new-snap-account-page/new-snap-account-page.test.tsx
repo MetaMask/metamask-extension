@@ -1,11 +1,10 @@
+import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import messages from '../../../../app/_locales/en/messages.json';
-
 import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
-import NewSnapAccountPage from './snap-account';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import NewSnapAccountPage from '.';
 
 const mockHistoryPush = jest.fn();
 
@@ -71,7 +70,7 @@ describe('NewSnapAccountPage', () => {
 
   it('should render the popup', async () => {
     const { getByText } = renderComponent();
-    const popupTitle = getByText(messages.addSnapAccountPopupTitle.message);
+    const popupTitle = getByText(messages.settingAddSnapAccount.message);
     expect(popupTitle).toBeInTheDocument();
 
     const closeButton = getByText(messages.getStarted.message);
@@ -84,10 +83,10 @@ describe('NewSnapAccountPage', () => {
   it('should render the texts', async () => {
     const { getByText } = renderComponent();
     expect(
-      getByText(messages.addSnapAccountPopupTitle.message),
+      getByText(messages.settingAddSnapAccount.message),
     ).toBeInTheDocument();
     expect(
-      getByText(messages.addSnapAccountPopupDescription.message),
+      getByText(messages.addSnapAccountModalDescription.message),
     ).toBeInTheDocument();
   });
 

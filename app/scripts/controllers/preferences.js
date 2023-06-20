@@ -69,6 +69,7 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      snapsAddSnapAccountModalDismissed: false,
       ...opts.initState,
     };
 
@@ -528,6 +529,10 @@ export default class PreferencesController {
 
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
+  }
+
+  setSnapsAddSnapAccountModalDismissed(value) {
+    this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

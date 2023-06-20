@@ -1,8 +1,15 @@
 import React from 'react';
-
-import { useHistory, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useHistory, useParams } from 'react-router-dom';
 import semver from 'semver';
+import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import {
+  BUTTON_VARIANT,
+  Box,
+  Button,
+  Tag,
+  Text,
+} from '../../../components/component-library';
 import {
   BlockSize,
   Display,
@@ -11,18 +18,10 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
-  BUTTON_VARIANT,
-  Button,
-  Tag,
-  Text,
-} from '../../../components/component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
   ADD_SNAP_ACCOUNT_ROUTE,
   SNAPS_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnaps } from '../../../selectors';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
@@ -31,7 +30,7 @@ interface RouteParams {
   snapId: string;
 }
 
-const SnapDetailsPage = () => {
+export default function SnapAccountDetailPage() {
   const t = useI18nContext();
   const history = useHistory();
 
@@ -143,6 +142,4 @@ const SnapDetailsPage = () => {
       </Box>
     </Box>
   );
-};
-
-export default SnapDetailsPage;
+}

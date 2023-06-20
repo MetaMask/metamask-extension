@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { Snap } from '@metamask/snaps-utils';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import { Box, Text } from '../../../components/component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   Display,
@@ -13,10 +13,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import AddSnapAccountPopup from '../../../components/app/add-snap-account-popup/add-snap-account-popup';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getPreferences, getSnaps } from '../../../selectors';
+import { submitRequestToBackground } from '../../../store/action-queue';
+import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
-import { getSnaps } from '../../../selectors';
 
 export interface SnapDetails {
   id: string;
@@ -48,11 +49,34 @@ export default function NewSnapAccountPage() {
 
   const hidePopup = () => {
     setShowPopup(false);
+    submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
   };
+
+  const mm = useSelector((state) => state.metamask);
+
+  const snapsAddSnapAccountModalDismissed = useSelector(
+    (state) => state.metamask.snapsAddSnapAccountModalDismissed,
+  );
+
+  const prefs = useSelector(getPreferences);
+
+  // console.log('mm', mm);
+  // console.log(
+  //   'snapsAddSnapAccountModalDismissed',
+  //   snapsAddSnapAccountModalDismissed,
+  // );
+  // console.log('prefs', prefs);
+
+  // prefs.setSnapsAddSnapAccountModalDismissed(true);
+
+  // submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [false]);
 
   return (
     <Box className="snap-account-page">
-      <AddSnapAccountPopup onClose={hidePopup} isOpen={showPopup} />
+      <AddSnapAccountModal
+        onClose={hidePopup}
+        isOpen={showPopup && !snapsAddSnapAccountModalDismissed}
+      />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
