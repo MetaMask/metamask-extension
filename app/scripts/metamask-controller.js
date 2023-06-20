@@ -74,9 +74,9 @@ import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard'
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
-// BEGIN:ONLY_INCLUDE_IN(build-flask);
+// BEGIN:ONLY_INCLUDE_IN(build-blockaid);
 import { PPOMController, createPPOMMiddleware } from '@metamask/ppom-validator';
-//  END:ONLY_INCLUDE_IN(build-flask);
+//  END:ONLY_INCLUDE_IN(build-blockaid);
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 // eslint-disable-next-line import/order
@@ -593,7 +593,7 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
 
-    // BEGIN:ONLY_INCLUDE_IN(build-flask);
+    // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
@@ -608,7 +608,7 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     });
-    // END:ONLY_INCLUDE_IN(build-flask)';
+    // END:ONLY_INCLUDE_IN(build-blockaid)';
 
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
@@ -1492,9 +1492,9 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
-      // BEGIN:ONLY_INCLUDE_IN(build-flask);
+      // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
       PPOMController: this.ppomController,
-      // END:ONLY_INCLUDE_IN(build-flask);
+      // END:ONLY_INCLUDE_IN(build-blockaid);
     };
 
     this.store.updateStructure({
@@ -1599,9 +1599,9 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
-      // BEGIN:ONLY_INCLUDE_IN(build-flask);
+      // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
       this.ppomController.clear.bind(this.ppomController),
-      // END:ONLY_INCLUDE_IN(build-flask);
+      // END:ONLY_INCLUDE_IN(build-blockaid);
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -3824,9 +3824,9 @@ export default class MetamaskController extends EventEmitter {
       engine.emit('notification', message),
     );
 
-    // BEGIN:ONLY_INCLUDE_IN(build-flask);
+    // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
     engine.push(createPPOMMiddleware(this.ppomController));
-    // END:ONLY_INCLUDE_IN(build-flask);
+    // END:ONLY_INCLUDE_IN(build-blockaid);
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
