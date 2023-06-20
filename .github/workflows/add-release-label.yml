@@ -25,9 +25,6 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
 
-      - name: Set execute permissions for script
-        run: chmod +x ./development/get-next-semver-version.sh
-
       - name: Get the next semver version
         id: get-next-semver-version
         env:
