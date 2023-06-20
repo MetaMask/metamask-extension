@@ -4254,9 +4254,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api":
+"@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring":
   version: 0.1.0
-  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=390353d1112d93fe92a61db6e58952140b3edb15"
+  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=5a65a9b4786dbad4a764427d336747b0fef52a45"
   dependencies:
     "@ethereumjs/tx": ^4.1.2
     "@ethereumjs/util": ^8.0.5
@@ -4269,7 +4269,7 @@ __metadata:
     bn.js: ^5.2.1
     eth-rpc-errors: ^4.0.3
     uuid: ^9.0.0
-  checksum: a131b1912743f366d4ab46754eabd5b66eec38f55efedec14b7d9f78f090eb3c4628ed44c15b2635e47ad6f79e1fce410eeb427b405b8053e974c8fed8268c1b
+  checksum: 8ccaf0f5b8fb34035d21b79090f8c5346ebbc8e43daf670f5d81dac7f2e73af1bf2f94ea3d2c13111cea6668d20c25519f994e29f44c6ffe62201deecd4b67f2
   languageName: node
   linkType: hard
 
@@ -24585,7 +24585,7 @@ __metadata:
     "@metamask/eth-json-rpc-provider": ^1.0.0
     "@metamask/eth-keyring-controller": ^10.0.1
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
-    "@metamask/eth-snap-keyring": "ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api"
+    "@metamask/eth-snap-keyring": "ssh://git@github.com/MetaMask/eth-snap-keyring"
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/eth-trezor-keyring": ^1.0.0
     "@metamask/etherscan-link": ^2.2.0
