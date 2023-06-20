@@ -62,6 +62,9 @@ function renderBackgroundColor(color) {
     case Color.lineaGoerliInverse:
       bgColor = BackgroundColor.lineaGoerli;
       break;
+    case Color.lineaMainnetInverse:
+      bgColor = BackgroundColor.lineaMainnet;
+      break;
     default:
       bgColor = null;
       break;
