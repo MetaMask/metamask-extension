@@ -1,6 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
+import { ApprovalType, ERC1155, ERC721 } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -29,9 +30,12 @@ import {
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
   ETH_TOKEN_IMAGE_URL,
-  LINEA_TESTNET_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
+  LINEA_GOERLI_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -543,7 +547,7 @@ export function getUnapprovedTxCount(state) {
 }
 
 export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals } = state.metamask;
+  const { pendingApprovals = {} } = state.metamask;
   return Object.values(pendingApprovals);
 }
 
@@ -551,6 +555,28 @@ export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
+  );
+}
+
+export function getSuggestedTokens(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId === undefined
+      );
+    }) || []
+  );
+}
+
+export function getSuggestedNfts(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        [ERC721, ERC1155].includes(requestData?.asset?.standard)
+      );
+    }) || []
   );
 }
 
@@ -967,6 +993,7 @@ function getAllowedAnnouncementIds(state) {
     18: true,
     19: true,
     20: currentKeyringIsLedger && isFirefox,
+    21: true,
   };
 }
 
@@ -1173,15 +1200,19 @@ export function getAllNetworks(state) {
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
     },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+    },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(
-      ({ chainId }) =>
-        ![
-          CHAIN_IDS.LOCALHOST,
-          // Linea gets added as a custom network configuration so
-          // we must ignore it here to display in test networks
-          CHAIN_IDS.LINEA_TESTNET,
-        ].includes(chainId),
+      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
     ),
     // Test networks
     {
@@ -1199,10 +1230,14 @@ export function getAllNetworks(state) {
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     },
     {
-      chainId: CHAIN_IDS.LINEA_TESTNET,
-      nickname: LINEA_TESTNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+      chainId: CHAIN_IDS.LINEA_GOERLI,
+      nickname: LINEA_GOERLI_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+      rpcPrefs: {
+        imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_GOERLI,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
