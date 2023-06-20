@@ -4268,20 +4268,20 @@ __metadata:
 
 "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#feat/use-keyring-api":
   version: 0.1.0
-  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=2821fb629b2820382a09d9461000d3362e848d28"
+  resolution: "@metamask/eth-snap-keyring@ssh://git@github.com/MetaMask/eth-snap-keyring#commit=390353d1112d93fe92a61db6e58952140b3edb15"
   dependencies:
     "@ethereumjs/tx": ^4.1.2
     "@ethereumjs/util": ^8.0.5
     "@metamask/eth-sig-util": ^5.1.0
-    "@metamask/keyring-api": "ssh://git@github.com/MetaMask/keyring-api#prepack"
-    "@metamask/snaps-controllers": ^0.34.1-flask.1
+    "@metamask/keyring-api": "ssh://git@github.com/MetaMask/keyring-api#main"
+    "@metamask/snaps-controllers": ^0.32.2
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/utils": ^5.0.0
     "@types/uuid": ^9.0.1
     bn.js: ^5.2.1
     eth-rpc-errors: ^4.0.3
     uuid: ^9.0.0
-  checksum: e05c51b0f3bb953f2760cf0455918dd81bd273b486b36ea04fd61df36ed928f3a6db6b1415b90174bb1e263a13949ab533c9990bfffd9ed012a283edcec9788b
+  checksum: a131b1912743f366d4ab46754eabd5b66eec38f55efedec14b7d9f78f090eb3c4628ed44c15b2635e47ad6f79e1fce410eeb427b405b8053e974c8fed8268c1b
   languageName: node
   linkType: hard
 
@@ -4372,17 +4372,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#prepack":
+"@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#main":
   version: 0.1.0
-  resolution: "@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#commit=0179b83c5ed90fb3651655145cc823f37fd4ec0e"
+  resolution: "@metamask/keyring-api@ssh://git@github.com/MetaMask/keyring-api#commit=6cab4d61ae2569c850ab7a77ccb4172547a79c87"
   dependencies:
     "@metamask/providers": ^11.0.0
     "@metamask/snaps-controllers": ^0.34.1-flask.1
     "@metamask/snaps-utils": ^0.34.1-flask.1
-    "@metamask/utils": ^5.0.2
+    "@metamask/utils": ^6.0.1
     "@types/uuid": ^9.0.1
+    superstruct: ^1.0.3
     uuid: ^9.0.0
-  checksum: 66b52b174958d16f027b862728143d4e6d7e0db844dc2dde4d6ff0612b4edf89c242420a681eadbb8c84f2b5139f527816783822b1c091b5307c909bfa125065
+  checksum: aa2e1f8689f20b2fd0ed3bb9ac71bbc76d1d8055831c0183d3765090773062e5a6bbc7f9dc2eeb9d68731882aa4342172eb6c2d48939c0596d543eab1453d775
   languageName: node
   linkType: hard
 
@@ -5129,6 +5130,19 @@ __metadata:
     semver: ^7.3.8
     superstruct: ^1.0.3
   checksum: 502a75c82af729f813a08382e8ca5e3bfab7903a377b375e781ffcd5541e3a57b468a0daf02bb8e5c5bcb9051408f51c1ffb7a92b90bfd89946e7691c1117ca9
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/utils@npm:6.0.1"
+  dependencies:
+    "@ethereumjs/tx": ^4.1.2
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    semver: ^7.3.8
+    superstruct: ^1.0.3
+  checksum: 6eeed00986866d4a674bf65c5f9e264fc133a368dbf0e28b9b090a7c04a89c3c543e8de8a752eff770d283b43a8e02648ba34b9077627dc7ee8c063b6167a2da
   languageName: node
   linkType: hard
 
