@@ -54,9 +54,8 @@ export default function CustomSpendingCap({
   const inputRef = useRef(null);
 
   const [error, setError] = useState('');
-  const [showUseDefaultButton, setShowUseDefaultButton] = useState(
-    customTokenValue !== String(dappProposedValue) && true,
-  );
+  const [showUseSiteSuggestionButton, setShowUseSiteSuggestionButton] =
+    useState(customTokenValue !== String(dappProposedValue) && true);
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const replaceCommaToDot = (inputValue) => {
@@ -167,9 +166,9 @@ export default function CustomSpendingCap({
 
   useEffect(() => {
     if (customTokenValue === String(dappProposedValue)) {
-      setShowUseDefaultButton(false);
+      setShowUseSiteSuggestionButton(false);
     } else {
-      setShowUseDefaultButton(true);
+      setShowUseSiteSuggestionButton(true);
     }
   }, [customTokenValue, dappProposedValue]);
 
@@ -260,12 +259,12 @@ export default function CustomSpendingCap({
               error={error}
               value={customTokenValue}
               titleDetail={
-                showUseDefaultButton && (
+                showUseSiteSuggestionButton && (
                   <ButtonLink
                     size={Size.auto}
                     onClick={(e) => {
                       e.preventDefault();
-                      setShowUseDefaultButton(false);
+                      setShowUseSiteSuggestionButton(false);
                       handleChange(dappProposedValue);
                     }}
                   >
