@@ -444,6 +444,13 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+/**
+ * @deprecated The `<Modal />` and the dispatch method of displaying modals has been deprecated in favor of local state and the `<Modal>` component from the component-library.
+ * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
+ * You can find documentation for the new Modal component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
+ * If you would like to help with the replacement of the old Modal component, please submit a pull request
+ */
 class Modal extends Component {
   static propTypes = {
     active: PropTypes.bool.isRequired,

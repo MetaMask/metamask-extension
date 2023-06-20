@@ -2,7 +2,7 @@ import EventEmitter from '@metamask/safe-event-emitter';
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak, toBuffer, isHexString } from 'ethereumjs-util';
 import EthQuery from 'ethjs-query';
-import { ethErrors } from 'eth-rpc-errors';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ApprovalType } from '@metamask/controller-utils';
@@ -202,7 +202,7 @@ export default class TransactionController extends EventEmitter {
         const approved = this.txStateManager.getApprovedTransactions();
         return [...pending, ...approved];
       },
-      approveTransaction: this.approveTransaction.bind(this),
+      approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
@@ -277,7 +277,12 @@ export default class TransactionController extends EventEmitter {
     // type will be one of our default network names or 'rpc'. the default
     // network names are sufficient configuration, simply pass the name as the
     // chain argument in the constructor.
-    if (type !== NETWORK_TYPES.RPC && type !== NETWORK_TYPES.SEPOLIA) {
+    if (
+      type !== NETWORK_TYPES.RPC &&
+      type !== NETWORK_TYPES.SEPOLIA &&
+      type !== NETWORK_TYPES.LINEA_GOERLI &&
+      type !== NETWORK_TYPES.LINEA_MAINNET
+    ) {
       return new Common({
         chain: type,
         hardfork,
@@ -347,7 +352,7 @@ export default class TransactionController extends EventEmitter {
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
     );
 
-    const initialTxMeta = await this.addUnapprovedTransaction(
+    const { txMeta: initialTxMeta, isExisting } = await this._createTransaction(
       opts.method,
       txParams,
       opts.origin,
@@ -356,58 +361,59 @@ export default class TransactionController extends EventEmitter {
       opts.id,
     );
 
-    // listen for tx completion (success, fail)
-    return new Promise((resolve, reject) => {
-      this.txStateManager.once(
-        `${initialTxMeta.id}:finished`,
-        (finishedTxMeta) => {
-          switch (finishedTxMeta.status) {
-            case TransactionStatus.submitted:
-              return resolve(finishedTxMeta.hash);
-            case TransactionStatus.rejected:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.provider.userRejectedRequest(
-                    'MetaMask Tx Signature: User denied transaction signature.',
-                  ),
-                ),
-              );
-            case TransactionStatus.failed:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.rpc.internal(finishedTxMeta.err.message),
-                ),
-              );
-            default:
-              return reject(
-                cleanErrorStack(
-                  ethErrors.rpc.internal(
-                    `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
-                      finishedTxMeta.txParams,
-                    )}`,
-                  ),
-                ),
-              );
-          }
-        },
-      );
-    });
+    const txId = initialTxMeta.id;
+    const isCompleted = this._isTransactionCompleted(initialTxMeta);
+
+    const finishedPromise = isCompleted
+      ? Promise.resolve(initialTxMeta)
+      : this._waitForTransactionFinished(txId);
+
+    if (!isExisting && !isCompleted) {
+      try {
+        await this._requestTransactionApproval(initialTxMeta);
+      } catch (error) {
+        // Errors generated from final status using finished event
+      }
+    }
+
+    const finalTxMeta = await finishedPromise;
+    const finalStatus = finalTxMeta?.status;
+
+    switch (finalStatus) {
+      case TransactionStatus.submitted:
+        return finalTxMeta.hash;
+      case TransactionStatus.rejected:
+        throw cleanErrorStack(
+          ethErrors.provider.userRejectedRequest(
+            'MetaMask Tx Signature: User denied transaction signature.',
+          ),
+        );
+      case TransactionStatus.failed:
+        throw cleanErrorStack(ethErrors.rpc.internal(finalTxMeta.err.message));
+      default:
+        throw cleanErrorStack(
+          ethErrors.rpc.internal(
+            `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
+              finalTxMeta?.txParams,
+            )}`,
+          ),
+        );
+    }
   }
 
   /**
    * Creates approvals for all unapproved transactions in the txStateManager.
-   *
-   * @returns {Promise<void>}
    */
-  async initApprovals() {
+  initApprovals() {
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-    return Promise.all(
-      Object.values(unapprovedTxs).map((txMeta) =>
-        this._requestApproval(txMeta, {
-          shouldShowRequest: false,
-        }),
-      ),
-    );
+
+    Object.values(unapprovedTxs).forEach((txMeta) => {
+      this._requestTransactionApproval(txMeta, {
+        shouldShowRequest: false,
+      }).catch((error) => {
+        log.error('Error during persisted transaction approval', error);
+      });
+    });
   }
 
   // ====================================================================================================================================================
@@ -607,81 +613,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * updates a swap approval transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
-   * @param {string} swapApprovalTransaction.type
-   * @param {string} swapApprovalTransaction.sourceTokenSymbol
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
-
-    let swapApprovalTransaction = { type, sourceTokenSymbol };
-    // only update what is defined
-    swapApprovalTransaction = pickBy(swapApprovalTransaction);
-
-    const note = `Update Swap Approval Transaction for ${txId}`;
-    this._updateTransaction(txId, swapApprovalTransaction, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates a swap transaction with provided metadata and source token symbol
-   *  if the transaction state is unapproved.
-   *
-   * @param {string} txId
-   * @param {object} swapTransaction - holds the metadata
-   * @param {string} swapTransaction.sourceTokenSymbol
-   * @param {string} swapTransaction.destinationTokenSymbol
-   * @param {string} swapTransaction.type
-   * @param {string} swapTransaction.destinationTokenDecimals
-   * @param {string} swapTransaction.destinationTokenAddress
-   * @param {string} swapTransaction.swapMetaData
-   * @param {string} swapTransaction.swapTokenValue
-   * @param {string} swapTransaction.estimatedBaseFee
-   * @param {string} swapTransaction.approvalTxId
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateSwapTransaction(
-    txId,
-    {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
-
-    let swapTransaction = {
-      sourceTokenSymbol,
-      destinationTokenSymbol,
-      type,
-      destinationTokenDecimals,
-      destinationTokenAddress,
-      swapMetaData,
-      swapTokenValue,
-      estimatedBaseFee,
-      approvalTxId,
-    };
-
-    // only update what is defined
-    swapTransaction = pickBy(swapTransaction);
-
-    const note = `Update Swap Transaction for ${txId}`;
-    this._updateTransaction(txId, swapTransaction, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
    * updates a transaction's user settings only if the transaction state is unapproved
    *
    * @param {string} txId
@@ -789,7 +720,7 @@ export default class TransactionController extends EventEmitter {
    * @param transactionType
    * @param sendFlowHistory
    * @param actionId
-   * @returns {txMeta}
+   * @param options
    */
   async addUnapprovedTransaction(
     txMethodType,
@@ -798,98 +729,30 @@ export default class TransactionController extends EventEmitter {
     transactionType,
     sendFlowHistory = [],
     actionId,
+    options,
   ) {
-    if (
-      transactionType !== undefined &&
-      !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(transactionType)
-    ) {
-      throw new Error(
-        `TransactionController - invalid transactionType value: ${transactionType}`,
-      );
-    }
-
-    // If a transaction is found with the same actionId, do not create a new speed-up transaction.
-    if (actionId) {
-      let existingTxMeta =
-        this.txStateManager.getTransactionWithActionId(actionId);
-      if (existingTxMeta) {
-        this.emit('newUnapprovedTx', existingTxMeta);
-        existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
-        this._requestApproval(existingTxMeta);
-        return existingTxMeta;
-      }
-    }
-
-    // validate
-    const normalizedTxParams = txUtils.normalizeTxParams(txParams);
-    const eip1559Compatibility = await this.getEIP1559Compatibility();
-
-    txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
-
-    /**
-     * `generateTxMeta` adds the default txMeta properties to the passed object.
-     * These include the tx's `id`. As we use the id for determining order of
-     * txes in the tx-state-manager, it is necessary to call the asynchronous
-     * method `determineTransactionType` after `generateTxMeta`.
-     */
-    let txMeta = this.txStateManager.generateTxMeta({
-      txParams: normalizedTxParams,
+    const { txMeta, isExisting } = await this._createTransaction(
+      txMethodType,
+      txParams,
       origin,
+      transactionType,
       sendFlowHistory,
-    });
-
-    // Add actionId to txMeta to check if same actionId is seen again
-    // IF request to create transaction with same actionId is submitted again, new transaction will not be added for it.
-    if (actionId) {
-      txMeta.actionId = actionId;
-    }
-
-    if (origin === ORIGIN_METAMASK) {
-      // Assert the from address is the selected address
-      if (normalizedTxParams.from !== this.getSelectedAddress()) {
-        throw ethErrors.rpc.internal({
-          message: `Internally initiated transaction is using invalid account.`,
-          data: {
-            origin,
-            fromAddress: normalizedTxParams.from,
-            selectedAddress: this.getSelectedAddress(),
-          },
-        });
-      }
-    } else {
-      // Assert that the origin has permissions to initiate transactions from
-      // the specified address
-      const permittedAddresses = await this.getPermittedAccounts(origin);
-      if (!permittedAddresses.includes(normalizedTxParams.from)) {
-        throw ethErrors.provider.unauthorized({ data: { origin } });
-      }
-    }
-
-    const { type } = await determineTransactionType(
-      normalizedTxParams,
-      this.query,
+      actionId,
+      options,
     );
-    txMeta.type = transactionType || type;
+    if (isExisting) {
+      const isCompleted = this._isTransactionCompleted(txMeta);
 
-    // ensure value
-    txMeta.txParams.value = txMeta.txParams.value
-      ? addHexPrefix(txMeta.txParams.value)
-      : '0x0';
-
-    if (txMethodType && this.securityProviderRequest) {
-      const securityProviderResponse = await this.securityProviderRequest(
-        txMeta,
-        txMethodType,
-      );
-
-      txMeta.securityProviderResponse = securityProviderResponse;
+      return isCompleted
+        ? txMeta
+        : await this._waitForTransactionFinished(txMeta.id);
     }
 
-    this.addTransaction(txMeta);
-    this.emit('newUnapprovedTx', txMeta);
-
-    txMeta = await this.addTransactionGasDefaults(txMeta);
-    this._requestApproval(txMeta);
+    if (options?.requireApproval === false) {
+      await this._updateAndApproveTransaction(txMeta, actionId);
+    } else {
+      await this._requestTransactionApproval(txMeta, { actionId });
+    }
 
     return txMeta;
   }
@@ -1260,7 +1123,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId, {
+    await this._approveTransaction(newTxMeta.id, actionId, {
       hasApprovalRequest: false,
     });
     return newTxMeta;
@@ -1320,9 +1183,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     this.addTransaction(newTxMeta);
-    await this.approveTransaction(newTxMeta.id, actionId, {
-      hasApprovalRequest: false,
-    });
+    await this._approveTransaction(newTxMeta.id, actionId);
     return newTxMeta;
   }
 
@@ -1336,113 +1197,6 @@ export default class TransactionController extends EventEmitter {
       txMeta,
       'confTx: user updated transaction',
     );
-  }
-
-  /**
-   * updates and approves the transaction
-   *
-   * @param {object} txMeta
-   * @param {string} actionId
-   */
-  async updateAndApproveTransaction(txMeta, actionId) {
-    this.txStateManager.updateTransaction(
-      txMeta,
-      'confTx: user approved transaction',
-    );
-    await this.approveTransaction(txMeta.id, actionId);
-  }
-
-  /**
-   * sets the tx status to approved
-   * auto fills the nonce
-   * signs the transaction
-   * publishes the transaction
-   * if any of these steps fails the tx status will be set to failed
-   *
-   * @param {number} txId - the tx's Id
-   * @param {string} actionId - actionId passed from UI
-   * @param opts - options object
-   * @param opts.hasApprovalRequest - whether the transaction has an approval request
-   */
-  async approveTransaction(txId, actionId, { hasApprovalRequest = true } = {}) {
-    // TODO: Move this safety out of this function.
-    // Since this transaction is async,
-    // we need to keep track of what is currently being signed,
-    // So that we do not increment nonce + resubmit something
-    // that is already being incremented & signed.
-    const txMeta = this.txStateManager.getTransaction(txId);
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    // MMI does not broadcast transactions, as that is the responsibility of the custodian
-    if (txMeta.custodyStatus) {
-      this.inProcessOfSigning.delete(txId);
-      await this.signTransaction(txId);
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    if (this.inProcessOfSigning.has(txId)) {
-      return;
-    }
-    this.inProcessOfSigning.add(txId);
-    let nonceLock;
-    try {
-      // approve
-      this.txStateManager.setTxStatusApproved(txId);
-      if (hasApprovalRequest) {
-        this._acceptApproval(txMeta);
-      }
-      // get next nonce
-      const fromAddress = txMeta.txParams.from;
-      // wait for a nonce
-      let { customNonceValue } = txMeta;
-      customNonceValue = Number(customNonceValue);
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
-      // add nonce to txParams
-      // if txMeta has previousGasParams then it is a retry at same nonce with
-      // higher gas settings and therefor the nonce should not be recalculated
-      const nonce = txMeta.previousGasParams
-        ? txMeta.txParams.nonce
-        : nonceLock.nextNonce;
-      const customOrNonce =
-        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
-
-      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
-      // add nonce debugging information to txMeta
-      txMeta.nonceDetails = nonceLock.nonceDetails;
-      if (customNonceValue) {
-        txMeta.nonceDetails.customNonceValue = customNonceValue;
-      }
-      this.txStateManager.updateTransaction(
-        txMeta,
-        'transactions#approveTransaction',
-      );
-      // sign transaction
-      const rawTx = await this.signTransaction(txId);
-      await this.publishTransaction(txId, rawTx, actionId);
-      this._trackTransactionMetricsEvent(
-        txMeta,
-        TransactionMetaMetricsEvent.approved,
-        actionId,
-      );
-      // must set transaction to submitted/failed before releasing lock
-      nonceLock.releaseLock();
-    } catch (err) {
-      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
-      try {
-        this._failTransaction(txId, err, actionId);
-      } catch (err2) {
-        log.error(err2);
-      }
-      // must set transaction to submitted/failed before releasing lock
-      if (nonceLock) {
-        nonceLock.releaseLock();
-      }
-      // continue with error chain
-      throw err;
-    } finally {
-      this.inProcessOfSigning.delete(txId);
-    }
   }
 
   async approveTransactionsWithSameNonce(listOfTxParams = []) {
@@ -1780,24 +1534,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Convenience method for the ui thats sets the transaction to rejected
-   *
-   * @param {number} txId - the tx's Id
-   * @param {string} actionId - actionId passed from UI
-   * @returns {Promise<void>}
-   */
-  async cancelTransaction(txId, actionId) {
-    const txMeta = this.txStateManager.getTransaction(txId);
-    this.txStateManager.setTxStatusRejected(txId);
-    this._rejectApproval(txMeta);
-    this._trackTransactionMetricsEvent(
-      txMeta,
-      TransactionMetaMetricsEvent.rejected,
-      actionId,
-    );
-  }
-
-  /**
    * Sets the txHas on the txMeta
    *
    * @param {number} txId - the tx's Id
@@ -1835,6 +1571,368 @@ export default class TransactionController extends EventEmitter {
   //
   //           PRIVATE METHODS
   //
+
+  _isTransactionCompleted(txMeta) {
+    return [
+      TransactionStatus.submitted,
+      TransactionStatus.rejected,
+      TransactionStatus.failed,
+      TransactionStatus.dropped,
+      TransactionStatus.confirmed,
+    ].includes(txMeta.status);
+  }
+
+  async _waitForTransactionFinished(txId) {
+    return new Promise((resolve) => {
+      this.txStateManager.once(`${txId}:finished`, (txMeta) => {
+        resolve(txMeta);
+      });
+    });
+  }
+
+  async _createTransaction(
+    txMethodType,
+    txParams,
+    origin,
+    transactionType,
+    sendFlowHistory = [],
+    actionId,
+    options,
+  ) {
+    if (
+      transactionType !== undefined &&
+      !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(transactionType)
+    ) {
+      throw new Error(
+        `TransactionController - invalid transactionType value: ${transactionType}`,
+      );
+    }
+
+    // If a transaction is found with the same actionId, do not create a new speed-up transaction.
+    if (actionId) {
+      let existingTxMeta =
+        this.txStateManager.getTransactionWithActionId(actionId);
+      if (existingTxMeta) {
+        existingTxMeta = await this.addTransactionGasDefaults(existingTxMeta);
+        return { txMeta: existingTxMeta, isExisting: true };
+      }
+    }
+
+    // validate
+    const normalizedTxParams = txUtils.normalizeTxParams(txParams);
+    const eip1559Compatibility = await this.getEIP1559Compatibility();
+
+    txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
+
+    /**
+     * `generateTxMeta` adds the default txMeta properties to the passed object.
+     * These include the tx's `id`. As we use the id for determining order of
+     * txes in the tx-state-manager, it is necessary to call the asynchronous
+     * method `determineTransactionType` after `generateTxMeta`.
+     */
+    let txMeta = this.txStateManager.generateTxMeta({
+      txParams: normalizedTxParams,
+      origin,
+      sendFlowHistory,
+    });
+
+    // Add actionId to txMeta to check if same actionId is seen again
+    // IF request to create transaction with same actionId is submitted again, new transaction will not be added for it.
+    if (actionId) {
+      txMeta.actionId = actionId;
+    }
+
+    if (origin === ORIGIN_METAMASK) {
+      // Assert the from address is the selected address
+      if (normalizedTxParams.from !== this.getSelectedAddress()) {
+        throw ethErrors.rpc.internal({
+          message: `Internally initiated transaction is using invalid account.`,
+          data: {
+            origin,
+            fromAddress: normalizedTxParams.from,
+            selectedAddress: this.getSelectedAddress(),
+          },
+        });
+      }
+    } else {
+      // Assert that the origin has permissions to initiate transactions from
+      // the specified address
+      const permittedAddresses = await this.getPermittedAccounts(origin);
+      if (!permittedAddresses.includes(normalizedTxParams.from)) {
+        throw ethErrors.provider.unauthorized({ data: { origin } });
+      }
+    }
+
+    const { type } = await determineTransactionType(
+      normalizedTxParams,
+      this.query,
+    );
+    txMeta.type = transactionType || type;
+
+    // ensure value
+    txMeta.txParams.value = txMeta.txParams.value
+      ? addHexPrefix(txMeta.txParams.value)
+      : '0x0';
+
+    if (txMethodType && this.securityProviderRequest) {
+      const securityProviderResponse = await this.securityProviderRequest(
+        txMeta,
+        txMethodType,
+      );
+
+      txMeta.securityProviderResponse = securityProviderResponse;
+    }
+
+    this.addTransaction(txMeta);
+
+    txMeta = await this.addTransactionGasDefaults(txMeta);
+
+    if (
+      [TransactionType.swap, TransactionType.swapApproval].includes(
+        transactionType,
+      )
+    ) {
+      txMeta = await this._createSwapsTransaction(
+        options?.swaps,
+        transactionType,
+        txMeta,
+      );
+    }
+
+    return { txMeta, isExisting: false };
+  }
+
+  async _createSwapsTransaction(swapOptions, transactionType, txMeta) {
+    // The simulationFails property is added if the estimateGas call fails. In cases
+    // when no swaps approval tx is required, this indicates that the swap will likely
+    // fail. There was an earlier estimateGas call made by the swaps controller,
+    // but it is possible that external conditions have change since then, and
+    // a previously succeeding estimate gas call could now fail. By checking for
+    // the `simulationFails` property here, we can reduce the number of swap
+    // transactions that get published to the blockchain only to fail and thereby
+    // waste the user's funds on gas.
+    if (
+      transactionType === TransactionType.swap &&
+      swapOptions?.hasApproveTx === false &&
+      txMeta.simulationFails
+    ) {
+      await this._cancelTransaction(txMeta.id);
+      throw new Error('Simulation failed');
+    }
+
+    const swapsMeta = swapOptions?.meta;
+
+    if (!swapsMeta) {
+      return txMeta;
+    }
+
+    if (transactionType === TransactionType.swapApproval) {
+      this.emit('newSwapApproval', txMeta);
+      return this._updateSwapApprovalTransaction(txMeta.id, swapsMeta);
+    }
+
+    if (transactionType === TransactionType.swap) {
+      this.emit('newSwap', txMeta);
+      return this._updateSwapTransaction(txMeta.id, swapsMeta);
+    }
+
+    return txMeta;
+  }
+
+  /**
+   * updates a swap approval transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapApprovalTransaction - holds the metadata and token symbol
+   * @param {string} swapApprovalTransaction.type
+   * @param {string} swapApprovalTransaction.sourceTokenSymbol
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  _updateSwapApprovalTransaction(txId, { type, sourceTokenSymbol }) {
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapApprovalTransaction');
+
+    let swapApprovalTransaction = { type, sourceTokenSymbol };
+    // only update what is defined
+    swapApprovalTransaction = pickBy(swapApprovalTransaction);
+
+    const note = `Update Swap Approval Transaction for ${txId}`;
+    this._updateTransaction(txId, swapApprovalTransaction, note);
+    return this._getTransaction(txId);
+  }
+
+  /**
+   * updates a swap transaction with provided metadata and source token symbol
+   *  if the transaction state is unapproved.
+   *
+   * @param {string} txId
+   * @param {object} swapTransaction - holds the metadata
+   * @param {string} swapTransaction.sourceTokenSymbol
+   * @param {string} swapTransaction.destinationTokenSymbol
+   * @param {string} swapTransaction.type
+   * @param {string} swapTransaction.destinationTokenDecimals
+   * @param {string} swapTransaction.destinationTokenAddress
+   * @param {string} swapTransaction.swapMetaData
+   * @param {string} swapTransaction.swapTokenValue
+   * @param {string} swapTransaction.estimatedBaseFee
+   * @param {string} swapTransaction.approvalTxId
+   * @returns {TransactionMeta} the txMeta of the updated transaction
+   */
+  _updateSwapTransaction(
+    txId,
+    {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    },
+  ) {
+    this._throwErrorIfNotUnapprovedTx(txId, 'updateSwapTransaction');
+
+    let swapTransaction = {
+      sourceTokenSymbol,
+      destinationTokenSymbol,
+      type,
+      destinationTokenDecimals,
+      destinationTokenAddress,
+      swapMetaData,
+      swapTokenValue,
+      estimatedBaseFee,
+      approvalTxId,
+    };
+
+    // only update what is defined
+    swapTransaction = pickBy(swapTransaction);
+
+    const note = `Update Swap Transaction for ${txId}`;
+    this._updateTransaction(txId, swapTransaction, note);
+    return this._getTransaction(txId);
+  }
+
+  /**
+   * updates and approves the transaction
+   *
+   * @param {object} txMeta
+   * @param {string} actionId
+   */
+  async _updateAndApproveTransaction(txMeta, actionId) {
+    this.txStateManager.updateTransaction(
+      txMeta,
+      'confTx: user approved transaction',
+    );
+    await this._approveTransaction(txMeta.id, actionId);
+  }
+
+  /**
+   * sets the tx status to approved
+   * auto fills the nonce
+   * signs the transaction
+   * publishes the transaction
+   * if any of these steps fails the tx status will be set to failed
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
+   */
+  async _approveTransaction(txId, actionId) {
+    // TODO: Move this safety out of this function.
+    // Since this transaction is async,
+    // we need to keep track of what is currently being signed,
+    // So that we do not increment nonce + resubmit something
+    // that is already being incremented & signed.
+    const txMeta = this.txStateManager.getTransaction(txId);
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // MMI does not broadcast transactions, as that is the responsibility of the custodian
+    if (txMeta.custodyStatus) {
+      this.inProcessOfSigning.delete(txId);
+      await this.signTransaction(txId);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    if (this.inProcessOfSigning.has(txId)) {
+      return;
+    }
+    this.inProcessOfSigning.add(txId);
+    let nonceLock;
+    try {
+      // approve
+      this.txStateManager.setTxStatusApproved(txId);
+      // get next nonce
+      const fromAddress = txMeta.txParams.from;
+      // wait for a nonce
+      let { customNonceValue } = txMeta;
+      customNonceValue = Number(customNonceValue);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      // add nonce to txParams
+      // if txMeta has previousGasParams then it is a retry at same nonce with
+      // higher gas settings and therefor the nonce should not be recalculated
+      const nonce = txMeta.previousGasParams
+        ? txMeta.txParams.nonce
+        : nonceLock.nextNonce;
+      const customOrNonce =
+        customNonceValue === 0 ? customNonceValue : customNonceValue || nonce;
+
+      txMeta.txParams.nonce = addHexPrefix(customOrNonce.toString(16));
+      // add nonce debugging information to txMeta
+      txMeta.nonceDetails = nonceLock.nonceDetails;
+      if (customNonceValue) {
+        txMeta.nonceDetails.customNonceValue = customNonceValue;
+      }
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#approveTransaction',
+      );
+      // sign transaction
+      const rawTx = await this.signTransaction(txId);
+      await this.publishTransaction(txId, rawTx, actionId);
+      this._trackTransactionMetricsEvent(
+        txMeta,
+        TransactionMetaMetricsEvent.approved,
+        actionId,
+      );
+      // must set transaction to submitted/failed before releasing lock
+      nonceLock.releaseLock();
+    } catch (err) {
+      // this is try-catch wrapped so that we can guarantee that the nonceLock is released
+      try {
+        this._failTransaction(txId, err, actionId);
+      } catch (err2) {
+        log.error(err2);
+      }
+      // must set transaction to submitted/failed before releasing lock
+      if (nonceLock) {
+        nonceLock.releaseLock();
+      }
+      // continue with error chain
+      throw err;
+    } finally {
+      this.inProcessOfSigning.delete(txId);
+    }
+  }
+
+  /**
+   * Convenience method for the ui thats sets the transaction to rejected
+   *
+   * @param {number} txId - the tx's Id
+   * @param {string} actionId - actionId passed from UI
+   * @returns {Promise<void>}
+   */
+  async _cancelTransaction(txId, actionId) {
+    const txMeta = this.txStateManager.getTransaction(txId);
+    this.txStateManager.setTxStatusRejected(txId);
+    this._trackTransactionMetricsEvent(
+      txMeta,
+      TransactionMetaMetricsEvent.rejected,
+      actionId,
+    );
+  }
+
   /** maps methods for convenience*/
   _mapMethods() {
     /** @returns {object} the state in transaction controller */
@@ -1923,7 +2021,7 @@ export default class TransactionController extends EventEmitter {
 
           // Line below will try to publish transaction which is in
           // APPROVED state at the time of controller bootup
-          this.approveTransaction(txMeta.id);
+          this._approveTransaction(txMeta.id);
 
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
@@ -2662,56 +2760,70 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  async _requestApproval(
+  // Approvals
+
+  async _requestTransactionApproval(
     txMeta,
+    { shouldShowRequest = true, actionId } = {},
+  ) {
+    let txId, result;
+
+    try {
+      txId = txMeta.id;
+      const { origin } = txMeta;
+
+      const approvalResult = await this._requestApproval(
+        String(txId),
+        origin,
+        { txId },
+        {
+          shouldShowRequest,
+        },
+      );
+
+      result = approvalResult.resultCallbacks;
+
+      const { value } = approvalResult;
+      const { txMeta: updatedTxMeta } = value;
+
+      await this._updateAndApproveTransaction(updatedTxMeta, actionId);
+
+      result?.success();
+    } catch (error) {
+      const transaction = this.txStateManager.getTransaction(txId);
+
+      if (transaction && !this._isTransactionCompleted(transaction)) {
+        if (error.code === errorCodes.provider.userRejectedRequest) {
+          await this._cancelTransaction(txId, actionId);
+        } else {
+          this._failTransaction(txId, error, actionId);
+        }
+      }
+
+      result?.error(error);
+
+      throw error;
+    }
+  }
+
+  async _requestApproval(
+    id,
+    origin,
+    requestData,
     { shouldShowRequest } = { shouldShowRequest: true },
   ) {
-    const id = this._getApprovalId(txMeta);
-    const { origin } = txMeta;
     const type = ApprovalType.Transaction;
-    const requestData = { txId: txMeta.id };
 
-    return this.messagingSystem
-      .call(
-        'ApprovalController:addRequest',
-        {
-          id,
-          origin,
-          type,
-          requestData,
-        },
-        shouldShowRequest,
-      )
-      .catch(() => {
-        // Intentionally ignored as promise not currently used
-      });
-  }
-
-  _acceptApproval(txMeta) {
-    const id = this._getApprovalId(txMeta);
-
-    try {
-      this.messagingSystem.call('ApprovalController:acceptRequest', id);
-    } catch (error) {
-      log.error('Failed to accept transaction approval request', error);
-    }
-  }
-
-  _rejectApproval(txMeta) {
-    const id = this._getApprovalId(txMeta);
-
-    try {
-      this.messagingSystem.call(
-        'ApprovalController:rejectRequest',
+    return this.messagingSystem.call(
+      'ApprovalController:addRequest',
+      {
         id,
-        new Error('Rejected'),
-      );
-    } catch (error) {
-      log.error('Failed to reject transaction approval request', error);
-    }
-  }
-
-  _getApprovalId(txMeta) {
-    return String(txMeta.id);
+        origin,
+        type,
+        requestData,
+        expectsResult: true,
+      },
+      shouldShowRequest,
+    );
   }
 }

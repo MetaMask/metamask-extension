@@ -29,13 +29,13 @@ import {
 } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
-  CurrencyRateController,
-  TokenListController,
-  TokensController,
-  TokenRatesController,
-  NftController,
   AssetsContractController,
+  CurrencyRateController,
+  NftController,
   NftDetectionController,
+  TokenListController,
+  TokenRatesController,
+  TokensController,
 } from '@metamask/assets-controllers';
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
@@ -69,6 +69,7 @@ import {
 } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
@@ -78,7 +79,12 @@ import { SignatureController } from '@metamask/signature-controller';
 import { DesktopController } from '@metamask/desktop/dist/controllers/desktop';
 ///: END:ONLY_INCLUDE_IN
 
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  ERC1155,
+  ERC20,
+  ERC721,
+} from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -316,27 +322,20 @@ export default class MetamaskController extends EventEmitter {
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
+      allowedEvents: [
+        'TokenListController:stateChange',
+        'NetworkController:stateChange',
+      ],
     });
 
     this.tokenListController = new TokenListController({
-      chainId: hexToDecimal(
-        this.networkController.store.getState().providerConfig.chainId,
-      ),
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
         ? initState.TokenListController.preventPollingOnNetworkRestart
         : true,
-      onNetworkStateChange: (cb) => {
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-              chainId: hexToDecimal(networkState.providerConfig.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        });
-      },
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       messenger: tokenListMessenger,
       state: initState.TokenListController,
     });
@@ -354,36 +353,31 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
+      mmiConfigurationStore: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     this.tokensController = new TokensController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       config: { provider: this.provider },
       state: initState.TokensController,
       messenger: this.controllerMessenger.getRestricted({
         name: 'TokensController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
+        allowedActions: [`${this.approvalController.name}:addRequest`],
       }),
     });
 
     this.assetsContractController = new AssetsContractController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
         // This handler is misnamed, and is a known issue that will be resolved
@@ -399,14 +393,7 @@ export default class MetamaskController extends EventEmitter {
             'NetworkController:networkDidChange',
             () => {
               const networkState = this.networkController.store.getState();
-              const modifiedNetworkState = {
-                ...networkState,
-                providerConfig: {
-                  ...networkState.providerConfig,
-                  chainId: hexToDecimal(networkState.providerConfig.chainId),
-                },
-              };
-              return cb(modifiedNetworkState);
+              return cb(networkState);
             },
           ),
       },
@@ -416,23 +403,21 @@ export default class MetamaskController extends EventEmitter {
       initState.AssetsContractController,
     );
 
+    const nftControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'NftController',
+      allowedActions: [`${this.approvalController.name}:addRequest`],
+    });
     this.nftController = new NftController(
       {
+        messenger: nftControllerMessenger,
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onPreferencesStateChange:
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
         getERC721AssetName:
           this.assetsContractController.getERC721AssetName.bind(
             this.assetsContractController,
@@ -478,21 +463,14 @@ export default class MetamaskController extends EventEmitter {
     this.nftController.setApiKey(process.env.OPENSEA_KEY);
 
     this.nftDetectionController = new NftDetectionController({
+      chainId: this.networkController.store.getState().providerConfig.chainId,
       onNftsStateChange: (listener) => this.nftController.subscribe(listener),
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: (cb) =>
-        this.networkController.store.subscribe((networkState) => {
-          const modifiedNetworkState = {
-            ...networkState,
-            providerConfig: {
-              ...networkState.providerConfig,
-              chainId: hexToDecimal(networkState.providerConfig.chainId),
-            },
-          };
-          return cb(modifiedNetworkState);
-        }),
+      onNetworkStateChange: this.networkController.store.subscribe.bind(
+        this.networkController.store,
+      ),
       getOpenSeaApiKey: () => this.nftController.openSeaApiKey,
       getBalancesInSingleCall:
         this.assetsContractController.getBalancesInSingleCall.bind(
@@ -544,10 +522,12 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getProviderAndBlockTracker().provider,
       // NOTE: This option is inaccurately named; it should be called
       // onNetworkDidChange
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
+      onNetworkStateChange: (eventHandler) => {
+        networkControllerMessenger.subscribe(
+          'NetworkController:networkDidChange',
+          () => eventHandler(this.networkController.store.getState()),
+        );
+      },
       getCurrentNetworkEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
@@ -561,11 +541,8 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.store.getState().providerConfig;
         return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
       },
-      getChainId: () => {
-        return process.env.IN_TEST
-          ? CHAIN_IDS.MAINNET
-          : this.networkController.store.getState().providerConfig.chainId;
-      },
+      getChainId: () =>
+        this.networkController.store.getState().providerConfig.chainId,
     });
 
     this.qrHardwareKeyring = new QRHardwareKeyring();
@@ -623,6 +600,7 @@ export default class MetamaskController extends EventEmitter {
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
+        chainId: this.networkController.store.getState().providerConfig.chainId,
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
         onCurrencyRateStateChange: (listener) =>
@@ -630,17 +608,9 @@ export default class MetamaskController extends EventEmitter {
             `${this.currencyRateController.name}:stateChange`,
             listener,
           ),
-        onNetworkStateChange: (cb) =>
-          this.networkController.store.subscribe((networkState) => {
-            const modifiedNetworkState = {
-              ...networkState,
-              providerConfig: {
-                ...networkState.providerConfig,
-                chainId: hexToDecimal(networkState.providerConfig.chainId),
-              },
-            };
-            return cb(modifiedNetworkState);
-          }),
+        onNetworkStateChange: this.networkController.store.subscribe.bind(
+          this.networkController.store,
+        ),
       },
       {
         disabled:
@@ -942,29 +912,39 @@ export default class MetamaskController extends EventEmitter {
         name: 'RateLimitController',
       }),
       implementations: {
-        showNativeNotification: (origin, message) => {
-          const subjectMetadataState = this.controllerMessenger.call(
-            'SubjectMetadataController:getState',
-          );
+        showNativeNotification: {
+          method: (origin, message) => {
+            const subjectMetadataState = this.controllerMessenger.call(
+              'SubjectMetadataController:getState',
+            );
 
-          const originMetadata = subjectMetadataState.subjectMetadata[origin];
+            const originMetadata = subjectMetadataState.subjectMetadata[origin];
 
-          this.platform
-            ._showNotification(originMetadata?.name ?? origin, message)
-            .catch((error) => {
-              log.error('Failed to create notification', error);
-            });
+            this.platform
+              ._showNotification(originMetadata?.name ?? origin, message)
+              .catch((error) => {
+                log.error('Failed to create notification', error);
+              });
 
-          return null;
+            return null;
+          },
+          // 2 calls per 5 minutes
+          rateLimitCount: 2,
+          rateLimitTimeout: 300000,
         },
-        showInAppNotification: (origin, message) => {
-          this.controllerMessenger.call(
-            'NotificationController:show',
-            origin,
-            message,
-          );
+        showInAppNotification: {
+          method: (origin, message) => {
+            this.controllerMessenger.call(
+              'NotificationController:show',
+              origin,
+              message,
+            );
 
-          return null;
+            return null;
+          },
+          // 5 calls per minute
+          rateLimitCount: 5,
+          rateLimitTimeout: 60000,
         },
       },
     });
@@ -1203,9 +1183,8 @@ export default class MetamaskController extends EventEmitter {
             getTokenValueParam(transactionData);
           const { allNfts } = this.nftController.state;
 
-          const chainIdAsDecimal = hexToDecimal(chainId);
           // check if its a known NFT
-          const knownNft = allNfts?.[userAddress]?.[chainIdAsDecimal]?.find(
+          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
             ({ address, tokenId }) =>
               isEqualCaseInsensitive(address, contractAddress) &&
               tokenId === transactionDataTokenId,
@@ -1216,7 +1195,7 @@ export default class MetamaskController extends EventEmitter {
             this.nftController.checkAndUpdateSingleNftOwnershipStatus(
               knownNft,
               false,
-              { userAddress, chainId: chainIdAsDecimal },
+              { userAddress, chainId },
             );
           }
         }
@@ -1323,22 +1302,28 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
-    this.swapsController = new SwapsController({
-      getBufferedGasLimit: this.txController.txGasUtil.getBufferedGasLimit.bind(
-        this.txController.txGasUtil,
-      ),
-      networkController: this.networkController,
-      onNetworkStateChange: (listener) =>
-        this.networkController.store.subscribe(listener),
-      provider: this.provider,
-      getProviderConfig: () =>
-        this.networkController.store.getState().providerConfig,
-      getTokenRatesState: () => this.tokenRatesController.state,
-      getCurrentChainId: () =>
-        this.networkController.store.getState().providerConfig.chainId,
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-    });
+    this.swapsController = new SwapsController(
+      {
+        getBufferedGasLimit:
+          this.txController.txGasUtil.getBufferedGasLimit.bind(
+            this.txController.txGasUtil,
+          ),
+        networkController: this.networkController,
+        onNetworkStateChange: (listener) =>
+          this.networkController.store.subscribe(listener),
+        provider: this.provider,
+        getProviderConfig: () =>
+          this.networkController.store.getState().providerConfig,
+        getTokenRatesState: () => this.tokenRatesController.state,
+        getCurrentChainId: () =>
+          this.networkController.store.getState().providerConfig.chainId,
+        getEIP1559GasFeeEstimates:
+          this.gasFeeController.fetchGasFeeEstimates.bind(
+            this.gasFeeController,
+          ),
+      },
+      initState.SwapsController,
+    );
     this.smartTransactionsController = new SmartTransactionsController(
       {
         onNetworkStateChange: (cb) => {
@@ -1369,6 +1354,14 @@ export default class MetamaskController extends EventEmitter {
       },
       initState.SmartTransactionsController,
     );
+
+    this.txController.on('newSwapApproval', (txMeta) => {
+      this.swapsController.setApproveTxId(txMeta.id);
+    });
+
+    this.txController.on('newSwap', (txMeta) => {
+      this.swapsController.setTradeTxId(txMeta.id);
+    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -2282,10 +2275,7 @@ export default class MetamaskController extends EventEmitter {
       exportAccount: this.exportAccount.bind(this),
 
       // txController
-      cancelTransaction: txController.cancelTransaction.bind(txController),
       updateTransaction: txController.updateTransaction.bind(txController),
-      updateAndApproveTransaction:
-        txController.updateAndApproveTransaction.bind(txController),
       approveTransactionsWithSameNonce:
         txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.createCancelTransaction.bind(this),
@@ -2304,11 +2294,6 @@ export default class MetamaskController extends EventEmitter {
         txController.updateTransactionGasFees.bind(txController),
       updateTransactionSendFlowHistory:
         txController.updateTransactionSendFlowHistory.bind(txController),
-
-      updateSwapApprovalTransaction:
-        txController.updateSwapApprovalTransaction.bind(txController),
-      updateSwapTransaction:
-        txController.updateSwapTransaction.bind(txController),
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
@@ -3525,6 +3510,18 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  handleWatchAssetRequest = (asset, type, origin) => {
+    switch (type) {
+      case ERC20:
+        return this.tokensController.watchAsset(asset, type);
+      case ERC721:
+      case ERC1155:
+        return this.nftController.watchNft(asset, type, origin);
+      default:
+        throw new Error(`Asset type ${type} not supported`);
+    }
+  };
+
   //=============================================================================
   // PASSWORD MANAGEMENT
   //=============================================================================
@@ -3904,9 +3901,7 @@ export default class MetamaskController extends EventEmitter {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),
-        handleWatchAssetRequest: this.tokensController.watchAsset.bind(
-          this.tokensController,
-        ),
+        handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
             this.approvalController,
@@ -3971,7 +3966,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.mmiController.setMmiPortfolioCookie.bind(this),
+        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -4029,6 +4024,37 @@ export default class MetamaskController extends EventEmitter {
     engine.push(providerAsMiddleware(provider));
     return engine;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * This method is needed in preferences controller
+   * so it needs to be here and not in our controller because
+   * preferences controllers is initiated first
+   */
+  async handleMmiDashboardData() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+    const networks = [
+      ...this.preferencesController.getRpcMethodPreferences(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    return handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * TODO:LegacyProvider: Delete
@@ -4517,9 +4543,9 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  resolvePendingApproval = (id, value) => {
+  resolvePendingApproval = async (id, value, options) => {
     try {
-      this.approvalController.accept(id, value);
+      await this.approvalController.accept(id, value, options);
     } catch (exp) {
       if (!(exp instanceof ApprovalRequestNotFoundError)) {
         throw exp;

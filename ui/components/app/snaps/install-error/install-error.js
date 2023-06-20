@@ -40,16 +40,18 @@ const InstallError = ({ title, error, description, iconName }) => {
         {title}
       </Text>
       {description && <Text textAlign={TextAlign.Center}>{description}</Text>}
-      <Box padding={2}>
-        <ActionableMessage type="danger" message={error} />
-      </Box>
+      {error && (
+        <Box padding={2}>
+          <ActionableMessage type="danger" message={error} />
+        </Box>
+      )}
     </Box>
   );
 };
 
 InstallError.propTypes = {
   title: PropTypes.node.isRequired,
-  error: PropTypes.string.isRequired,
+  error: PropTypes.string,
   description: PropTypes.string,
   iconName: PropTypes.string,
 };

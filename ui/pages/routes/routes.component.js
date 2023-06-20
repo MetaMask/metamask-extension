@@ -22,13 +22,14 @@ import ImportTokenPage from '../import-token';
 import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
-import CreateAccountPage from '../create-account';
+import CreateAccountPage from '../create-account/create-account.component';
+import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import {
-  AppHeader as MultichainAppHeader,
+  AppHeader,
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
@@ -60,6 +61,7 @@ import {
   IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -284,6 +286,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+          component={ConfirmAddSuggestedNftPage}
           exact
         />
         <Authenticated
@@ -548,7 +555,7 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() && <MultichainAppHeader location={location} />}
+        {!this.hideAppHeader() && <AppHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -602,8 +609,10 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('connectingToLineaTestnet');
+      case NETWORK_TYPES.LINEA_GOERLI:
+        return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_MAINNET:
+        return t('connectingToLineaMainnet');
       default:
         return t('connectingTo', [providerId]);
     }
