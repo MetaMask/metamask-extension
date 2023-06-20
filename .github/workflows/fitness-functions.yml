@@ -20,7 +20,7 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Run fitness functions
         env:
