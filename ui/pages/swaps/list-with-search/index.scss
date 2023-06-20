@@ -1,12 +1,12 @@
 .list-with-search {
   .searchable-item-list {
     &__list-container {
-      height: 320px;
+      max-height: 320px;
       overflow-y: auto;
       padding-right: 8px;
 
       @include screen-sm-min {
-        height: 600px;
+        max-height: 600px;
       }
     }
   }

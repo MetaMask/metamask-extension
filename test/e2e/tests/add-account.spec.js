@@ -216,7 +216,7 @@ describe('Add account', function () {
         );
 
         // Create 3rd account with private key
-        await driver.clickElement('.menu__background');
+        await driver.clickElement('.mm-text-field');
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.fill('#private-key-box', testPrivateKey);
 

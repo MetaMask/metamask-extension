@@ -280,7 +280,8 @@ export default class TransactionController extends EventEmitter {
     if (
       type !== NETWORK_TYPES.RPC &&
       type !== NETWORK_TYPES.SEPOLIA &&
-      type !== NETWORK_TYPES.LINEA_GOERLI
+      type !== NETWORK_TYPES.LINEA_GOERLI &&
+      type !== NETWORK_TYPES.LINEA_MAINNET
     ) {
       return new Common({
         chain: type,

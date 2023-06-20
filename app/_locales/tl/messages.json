@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
   },
-  "myAccounts": {
-    "message": "Mga Account Ko"
-  },
   "name": {
     "message": "Pangalan"
   },

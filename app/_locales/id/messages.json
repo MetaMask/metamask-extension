@@ -1968,9 +1968,6 @@
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
   },
-  "myAccounts": {
-    "message": "Akun saya"
-  },
   "name": {
     "message": "Nama"
   },

@@ -7,6 +7,14 @@ import {
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
+jest.mock('../../shared/modules/network.utils', () => {
+  const actual = jest.requireActual('../../shared/modules/network.utils');
+  return {
+    ...actual,
+    shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
+  };
+});
+
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
@@ -317,7 +325,7 @@ describe('Selectors', () => {
           },
         },
       });
-      expect(networks).toHaveLength(1);
+      expect(networks).toHaveLength(2);
     });
 
     it('returns networks with showTestNetworks on', () => {
@@ -328,7 +336,7 @@ describe('Selectors', () => {
           },
         },
       });
-      expect(networks.length).toBeGreaterThan(1);
+      expect(networks.length).toBeGreaterThan(2);
     });
   });
 
