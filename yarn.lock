@@ -4662,7 +4662,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:^4.0.0":
+"@metamask/signature-controller@npm:4.0.0":
   version: 4.0.0
   resolution: "@metamask/signature-controller@npm:4.0.0"
   dependencies:
@@ -4678,6 +4678,25 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^3.3.0
   checksum: 9131ce8313848fe28a4336f2482bad519364187fd014de4dbb57acada5fd65d984022f003e5cae02a50d08d9697cacb9db9f40d6265f0485d538616f8ea6b5f7
+  languageName: node
+  linkType: hard
+
+"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.0#./.yarn/patches/@metamask-signature-controller-npm-4.0.0-7f0b765e8e.patch::locator=metamask-crx%40workspace%3A.":
+  version: 4.0.0
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.0#./.yarn/patches/@metamask-signature-controller-npm-4.0.0-7f0b765e8e.patch::version=4.0.0&hash=4a0012&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/approval-controller": ^3.3.0
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/controller-utils": ^4.0.0
+    "@metamask/message-manager": ^7.0.0
+    "@metamask/utils": ^5.0.2
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    immer: ^9.0.6
+    lodash: ^4.17.21
+  peerDependencies:
+    "@metamask/approval-controller": ^3.3.0
+  checksum: 109e91be79a2302e33d9b37f9e8572a12a0945e9828d45dc92f3037912ef0ada7ebdac73d4e15c43399f8838c40df1fb74f2c54d10fb57d476ea8b5dcf982e2b
   languageName: node
   linkType: hard
 

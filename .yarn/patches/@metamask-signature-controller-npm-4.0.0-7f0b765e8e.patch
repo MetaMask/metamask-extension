@@ -1,0 +1,15 @@
+diff --git a/dist/SignatureController.js b/dist/SignatureController.js
+index 446f740f8257b3718d704a70f82bfd3074e69c26..4b0939ead19f522e0b07fe430c213d32795679cb 100644
+--- a/dist/SignatureController.js
++++ b/dist/SignatureController.js
+@@ -201,7 +201,9 @@ class SignatureController extends base_controller_1.BaseControllerV2 {
+      * @param signingOpts.parseJsonData - Whether to parse the JSON before signing.
+      * @returns Promise resolving to the raw data of the signature request.
+      */
+-    newUnsignedTypedMessage(messageParams, req, version, signingOpts) {
++    newUnsignedTypedMessage(messageParams, req, version, signingOpts = {
++        parseJsonData: true,
++    }) {
+         return __awaiter(this, void 0, void 0, function* () {
+             return __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_newUnsignedAbstractMessage).call(this, __classPrivateFieldGet(this, _SignatureController_typedMessageManager, "f"), controller_utils_1.ApprovalType.EthSignTypedData, 'Typed Message', __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_signTypedMessage).bind(this), messageParams, req, undefined, version, signingOpts);
+         });
