@@ -187,6 +187,7 @@ async function verifyEnglishLocale() {
       'shared/**/*.ts',
       'app/scripts/constants/**/*.js',
       'app/scripts/constants/**/*.ts',
+      'app/scripts/platforms/**/*.js',
     ],
     {
       ignore: [...globsToStrictSearch, testGlob],

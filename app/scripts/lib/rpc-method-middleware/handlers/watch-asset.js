@@ -35,8 +35,11 @@ async function watchAssetHandler(
   { handleWatchAssetRequest },
 ) {
   try {
-    const { options: asset, type } = req.params;
-    await handleWatchAssetRequest(asset, type);
+    const {
+      params: { options: asset, type },
+      origin,
+    } = req;
+    await handleWatchAssetRequest(asset, type, origin);
     res.result = true;
     return end();
   } catch (error) {

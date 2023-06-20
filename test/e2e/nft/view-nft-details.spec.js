@@ -38,19 +38,19 @@ describe('View NFT details', function () {
         const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
         assert.equal(
           await detailsPageTitle.getText(),
-          'Account 1 / TestDappCollectibles',
+          'Account 1 / TestDappNFTs',
         );
 
         // Check the displayed NFT details
         const nftName = await driver.findElement('.nft-details__info h4');
-        assert.equal(await nftName.getText(), 'Test Dapp Collectibles #1');
+        assert.equal(await nftName.getText(), 'Test Dapp NFTs #1');
 
         const nftDescription = await driver.findElement(
           '.nft-details__info h6:nth-of-type(2)',
         );
         assert.equal(
           await nftDescription.getText(),
-          'Test Dapp Collectibles for testing.',
+          'Test Dapp NFTs for testing.',
         );
 
         const nftImage = await driver.findElement('.nft-item__item-image');

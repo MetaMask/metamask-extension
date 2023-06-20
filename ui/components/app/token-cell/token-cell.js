@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { getTokenList } from '../../../selectors';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
-import { MultichainTokenListItem } from '../../multichain';
+import { TokenListItem } from '../../multichain';
 
 export default function TokenCell({ address, image, symbol, string, onClick }) {
   const tokenList = useSelector(getTokenList);
@@ -15,7 +15,7 @@ export default function TokenCell({ address, image, symbol, string, onClick }) {
   const formattedFiat = useTokenFiatAmount(address, string, symbol);
 
   return (
-    <MultichainTokenListItem
+    <TokenListItem
       onClick={() => onClick(address)}
       tokenSymbol={symbol}
       tokenImage={tokenImage}

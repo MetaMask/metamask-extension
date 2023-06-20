@@ -1,5 +1,5 @@
 import browser from 'webextension-polyfill';
-import { fetchLocale } from '../../ui/helpers/utils/i18n-helper';
+import { fetchLocale } from '../modules/i18n';
 import { SUPPORT_LINK } from './ui-utils';
 import {
   downloadDesktopApp,
@@ -12,7 +12,7 @@ import {
 } from './error-utils';
 import { openCustomProtocol } from './deep-linking';
 
-jest.mock('../../ui/helpers/utils/i18n-helper', () => ({
+jest.mock('../modules/i18n', () => ({
   fetchLocale: jest.fn(),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));

@@ -17,6 +17,7 @@ const DEFAULT_PROPS = {
   onClose: jest.fn(),
   onHide: jest.fn(),
   isRemovable: false,
+  isOpen: true,
 };
 
 const render = (props = {}) => {
