@@ -91,7 +91,7 @@ export default function SmartTransactionListItem({
           </BadgeWrapper>
         }
         subtitle={
-          <Text variant={TextVariant.headingMd}>
+          <Text variant={TextVariant.bodyMd}>
             <TransactionStatusLabel
               isPending
               isEarliestNonce={isEarliestNonce}
