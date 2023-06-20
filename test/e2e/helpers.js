@@ -500,10 +500,12 @@ const findAnotherAccountFromAccountList = async (
 ) => {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-  const acctName = await driver.findElement(
-    `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-  );
-  assert.equal(await acctName.getText(), accountName);
+
+  await driver.findElement({
+    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
+    text: accountName,
+  });
+
   return accountMenuItemSelector;
 };
 
