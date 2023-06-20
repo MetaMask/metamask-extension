@@ -89,7 +89,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
       setHasTriggeredUnlock(true);
       preventPropogation(e);
     },
-    [onLongPressed],
+    [onLongPressed, trackEvent],
   );
 
   /**

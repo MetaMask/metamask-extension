@@ -4024,11 +4024,65 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Get started"
+  },
+  "srpSecurityQuizImgAlt": {
+    "message": "An eye with a keyhole in the center, and three floating password fields"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "If you lose your Secret Recovery Phrase, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Can’t help you"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Write it down, engrave it on metal, or keep it in multiple secret spots so you never lose it. If you lose it, it’s gone forever."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Right! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Can get it back for you"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "If you lose your Secret Recovery Phrase, it’s gone forever. No one can help you get it back, no matter what they might say."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Wrong! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "If anyone, even a support agent, asks for your Secret Recovery Phrase..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "You’re being scammed"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Correct! Sharing your Secret Recovery Phrase is never a good idea"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "You should give it to them"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Nope! Never share your Secret Recovery Phrase with anyone, ever"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Security quiz"
   },
   "srpToggleShow": {
     "message": "Show/Hide this word of the secret recovery phrase",
