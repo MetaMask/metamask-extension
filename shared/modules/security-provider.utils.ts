@@ -1,5 +1,5 @@
 import { Json } from '@metamask/utils';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../ui/components/app/security-provider-banner-message/security-provider-banner-message.constants';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../constants/security-provider';
 
 export function isFlaggedSecurityProviderResponse(
   securityProviderResponse: Record<string, Json>,
@@ -7,7 +7,7 @@ export function isFlaggedSecurityProviderResponse(
   return (
     (securityProviderResponse?.flagAsDangerous !== undefined &&
       securityProviderResponse?.flagAsDangerous !==
-        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+        SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
     (securityProviderResponse &&
       Object.keys(securityProviderResponse).length === 0)
   );
