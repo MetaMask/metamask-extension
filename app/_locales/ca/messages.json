@@ -429,9 +429,6 @@
   "mustSelectOne": {
     "message": "Has de seleccionar "
   },
-  "myAccounts": {
-    "message": "Els meus Comptes"
-  },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"

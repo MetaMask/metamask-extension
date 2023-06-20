@@ -11,7 +11,7 @@ import {
   TextVariant,
   FontWeight,
   AlignItems,
-  DISPLAY,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import { Slippage } from '../../../../shared/constants/swaps';
@@ -201,9 +201,9 @@ export default function SlippageButtons({
               </div>
             )}
             {smartTransactionsEnabled && (
-              <Box marginTop={2} display={DISPLAY.FLEX}>
+              <Box marginTop={2} display={Display.Flex}>
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   alignItems={AlignItems.center}
                   paddingRight={3}
                 >

@@ -101,7 +101,7 @@ describe('AccountListMenu', () => {
     );
     expect(filteredListItems).toHaveLength(0);
     expect(
-      getByTestId('multichain-account-menu-no-results'),
+      getByTestId('multichain-account-menu-popover-no-results'),
     ).toBeInTheDocument();
   });
 

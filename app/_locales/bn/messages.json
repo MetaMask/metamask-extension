@@ -439,9 +439,6 @@
   "mustSelectOne": {
     "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
   },
-  "myAccounts": {
-    "message": "আমার অ্যাকাউন্টগুলি"
-  },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",
     "description": "User is important an account and needs to add a file to continue"

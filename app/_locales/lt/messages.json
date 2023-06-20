@@ -445,9 +445,6 @@
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."
   },
-  "myAccounts": {
-    "message": "Mano paskyros"
-  },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"

@@ -14,7 +14,7 @@ const difference = require('lodash/difference');
 const { intersection } = require('lodash');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const { TASKS } = require('./constants');
+const { BUILD_TARGETS, TASKS } = require('./constants');
 const {
   createTask,
   composeSeries,
@@ -28,7 +28,6 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { getBrowserVersionMap, getEnvironment } = require('./utils');
 const { getConfig } = require('./config');
-const { BUILD_TARGETS } = require('./constants');
 
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
@@ -76,11 +75,11 @@ async function defineAndRunBuildTasks() {
     platform,
   } = await parseArgv();
 
-  const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
+  const isRootTask = Object.values(BUILD_TARGETS).includes(entryTask);
 
   if (isRootTask) {
     // scuttle on production/tests environment only
-    const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+    const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
 
     console.log(
       `Building lavamoat runtime file`,
@@ -127,6 +126,7 @@ async function defineAndRunBuildTasks() {
         'Promise',
         'JSON',
         'Date',
+        'Proxy',
         // globals sentry needs to function
         '__SENTRY__',
         'appState',

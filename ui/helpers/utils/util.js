@@ -62,6 +62,7 @@ export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.LINEA_MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
     chainId === CHAIN_IDS.LINEA_GOERLI ||
