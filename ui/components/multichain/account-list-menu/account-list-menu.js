@@ -237,9 +237,13 @@ export const AccountListMenu = ({ onClose }) => {
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       dispatch(toggleAccountMenu());
-                      global.platform.openExtensionInBrowser(
-                        ADD_SNAP_ACCOUNT_ROUTE,
-                      );
+                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                        ? global.platform.openExtensionInBrowser(
+                            ADD_SNAP_ACCOUNT_ROUTE,
+                            null,
+                            true,
+                          )
+                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
                     }}
                   >
                     {t('settingAddSnapAccount')}
