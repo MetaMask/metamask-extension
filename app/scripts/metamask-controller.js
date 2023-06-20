@@ -208,7 +208,9 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+// BEGIN:ONLY_INCLUDE_IN(build-blockaid);
 import { IndexedDBBackend } from './lib/indexed-db-backend';
+//  END:ONLY_INCLUDE_IN(build-blockaid);
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
