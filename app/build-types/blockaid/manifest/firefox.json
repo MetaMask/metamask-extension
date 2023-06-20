@@ -11,6 +11,7 @@
     "activeTab",
     "webRequest",
     "*://*.eth/",
-    "notifications"
+    "notifications",
+    "https://storage.googleapis.com/"
   ]
 }
