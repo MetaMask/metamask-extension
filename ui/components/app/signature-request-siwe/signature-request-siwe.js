@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -25,27 +26,28 @@ import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
+  showModal,
+} from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { showModal, cancelMsgs } from '../../../store/actions';
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({
-  txData,
-  cancelPersonalMessage,
-  signPersonalMessage,
-}) {
+export default function SignatureRequestSIWE({ txData }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
-
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
 
@@ -59,6 +61,7 @@ export default function SignatureRequestSIWE({
       origin,
       siwe: { parsedMessage },
     },
+    id,
   } = txData;
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
@@ -82,27 +85,27 @@ export default function SignatureRequestSIWE({
     (txData?.securityProviderResponse &&
       Object.keys(txData.securityProviderResponse).length === 0);
 
-  const onSign = useCallback(
-    async (event) => {
-      try {
-        await signPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [signPersonalMessage],
-  );
+  const onSign = useCallback(async () => {
+    try {
+      await dispatch(resolvePendingApproval(id, null));
+      dispatch(completedTx(id));
+    } catch (e) {
+      log.error(e);
+    }
+  }, [id, dispatch]);
 
-  const onCancel = useCallback(
-    async (event) => {
-      try {
-        await cancelPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [cancelPersonalMessage],
-  );
+  const onCancel = useCallback(async () => {
+    try {
+      await dispatch(
+        rejectPendingApproval(
+          id,
+          serializeError(ethErrors.provider.userRejectedRequest()),
+        ),
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  }, []);
 
   const handleCancelAll = () => {
     const unapprovedTxCount = messagesCount;
@@ -112,7 +115,7 @@ export default function SignatureRequestSIWE({
         name: 'REJECT_TRANSACTIONS',
         unapprovedTxCount,
         onSubmit: async () => {
-          await dispatch(cancelMsgs(valuesFor(messagesList)));
+          await dispatch(rejectAllMessages(valuesFor(messagesList)));
           dispatch(clearConfirmTransaction());
           history.push(mostRecentOverviewPage);
         },
@@ -242,12 +245,4 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  /**
-   * Handler for cancel button
-   */
-  cancelPersonalMessage: PropTypes.func.isRequired,
-  /**
-   * Handler for sign button
-   */
-  signPersonalMessage: PropTypes.func.isRequired,
 };
