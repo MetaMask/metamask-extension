@@ -11,6 +11,7 @@ default: &default main
 # Declaration of build types
 # Each build type is composed of features, env variables and assets.
 # Also known as productFlavors in Android lingo
+# Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
 buildTypes:
   main:
     features:
