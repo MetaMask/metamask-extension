@@ -45,8 +45,8 @@ export default function CustomSpendingCap({
   passTheErrorText,
   decimals,
   setInputChangeInProgress,
-  customTokenValue,
-  setCustomTokenValue,
+  customSpendingCap,
+  setCustomSpendingCap,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -55,7 +55,7 @@ export default function CustomSpendingCap({
 
   const [error, setError] = useState('');
   const [showUseSiteSuggestionButton, setShowUseSiteSuggestionButton] =
-    useState(customTokenValue !== String(dappProposedValue) && true);
+    useState(customSpendingCap !== String(dappProposedValue) && true);
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const replaceCommaToDot = (inputValue) => {
@@ -101,7 +101,7 @@ export default function CustomSpendingCap({
   };
 
   const [customSpendingCapText, setCustomSpendingCapText] = useState(
-    getInputTextLogic(customTokenValue).description,
+    getInputTextLogic(customSpendingCap).description,
   );
 
   const handleChange = async (valueInput) => {
@@ -138,7 +138,7 @@ export default function CustomSpendingCap({
         setError(spendingCapError);
       }
     }
-    setCustomTokenValue(valueInput);
+    setCustomSpendingCap(valueInput);
     dispatch(setCustomTokenAmount(String(valueInput)));
 
     try {
@@ -165,12 +165,12 @@ export default function CustomSpendingCap({
   };
 
   useEffect(() => {
-    if (customTokenValue === String(dappProposedValue)) {
+    if (customSpendingCap === String(dappProposedValue)) {
       setShowUseSiteSuggestionButton(false);
     } else {
       setShowUseSiteSuggestionButton(true);
     }
-  }, [customTokenValue, dappProposedValue]);
+  }, [customSpendingCap, dappProposedValue]);
 
   useEffect(() => {
     passTheErrorText(error);
@@ -186,7 +186,7 @@ export default function CustomSpendingCap({
   }, [inputRef.current]);
 
   const chooseTooltipContentText = decConversionGreaterThan(
-    customTokenValue,
+    customSpendingCap,
     currentTokenBalance,
   )
     ? t('warningTooltipText', [
@@ -222,7 +222,7 @@ export default function CustomSpendingCap({
         >
           <label
             htmlFor={
-              decConversionGreaterThan(customTokenValue, currentTokenBalance)
+              decConversionGreaterThan(customSpendingCap, currentTokenBalance)
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
@@ -232,21 +232,21 @@ export default function CustomSpendingCap({
               dataTestId="custom-spending-cap-input"
               wrappingLabelProps={{ as: 'div' }}
               id={
-                decConversionGreaterThan(customTokenValue, currentTokenBalance)
+                decConversionGreaterThan(customSpendingCap, currentTokenBalance)
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
                   tooltipContentText={
-                    replaceCommaToDot(customTokenValue)
+                    replaceCommaToDot(customSpendingCap)
                       ? chooseTooltipContentText
                       : ''
                   }
                   tooltipIcon={
-                    replaceCommaToDot(customTokenValue)
+                    replaceCommaToDot(customSpendingCap)
                       ? decConversionGreaterThan(
-                          customTokenValue,
+                          customSpendingCap,
                           currentTokenBalance,
                         )
                       : ''
@@ -257,7 +257,7 @@ export default function CustomSpendingCap({
               titleText={t('customSpendingCap')}
               placeholder={t('enterANumber')}
               error={error}
-              value={customTokenValue}
+              value={customSpendingCap}
               titleDetail={
                 showUseSiteSuggestionButton && (
                   <ButtonLink
@@ -305,7 +305,7 @@ export default function CustomSpendingCap({
                 as="h6"
                 paddingTop={2}
               >
-                {replaceCommaToDot(customTokenValue)
+                {replaceCommaToDot(customSpendingCap)
                   ? customSpendingCapText
                   : inputLogicEmptyStateText}
               </Text>
@@ -361,9 +361,9 @@ CustomSpendingCap.propTypes = {
   /**
    * Custom token amount or The dapp suggested amount
    */
-  customTokenValue: PropTypes.string,
+  customSpendingCap: PropTypes.string,
   /**
    * State method to update the custom token value
    */
-  setCustomTokenValue: PropTypes.func.isRequired,
+  setCustomSpendingCap: PropTypes.func.isRequired,
 };

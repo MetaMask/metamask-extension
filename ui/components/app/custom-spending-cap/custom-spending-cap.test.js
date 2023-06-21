@@ -26,8 +26,8 @@ const props = {
   decimals: '4',
   passTheErrorText: () => undefined,
   setInputChangeInProgress: () => undefined,
-  customTokenValue: '7',
-  setCustomTokenValue: () => undefined,
+  customSpendingCap: '7',
+  setCustomSpendingCap: () => undefined,
 };
 
 describe('CustomSpendingCap', () => {
