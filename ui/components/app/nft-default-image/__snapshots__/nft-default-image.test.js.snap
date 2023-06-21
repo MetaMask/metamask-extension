@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFT Default Image should match snapshot with all provided props 1`] = `
+<div>
+  <div
+    class="box nft-default nft-default--clickable box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center box--flex-direction-row box--color-text-default"
+    >
+      NFT Name
+       
+      <br />
+       #
+      123
+    </h6>
+  </div>
+</div>
+`;
+
+exports[`NFT Default Image should match snapshot with missing clickable prop 1`] = `
+<div>
+  <div
+    class="box nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center box--flex-direction-row box--color-text-default"
+    >
+      NFT Name
+       
+      <br />
+       #
+      123
+    </h6>
+  </div>
+</div>
+`;
+
+exports[`NFT Default Image should render with no props 1`] = `
+<div>
+  <div
+    class="box nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    data-testid="nft-default-image"
+    tabindex="0"
+  >
+    <h6
+      class="box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center box--flex-direction-row box--color-text-default"
+    >
+      [unknownCollection]
+       
+      <br />
+       #
+    </h6>
+  </div>
+</div>
+`;

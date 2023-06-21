@@ -1,0 +1,44 @@
+.mm-text-field {
+  --text-field-height: var(--size, 40px);
+
+  &--size-sm {
+    --size: 32px;
+  }
+
+  &--size-md {
+    --size: 40px;
+  }
+
+  &--size-lg {
+    --size: 48px;
+  }
+
+  height: var(--text-field-height);
+  border-color: var(--color-border-default);
+
+  &--focused {
+    outline: 5px auto Highlight; // firefox
+    outline: 5px auto -webkit-focus-ring-color; // chrome
+  }
+
+  &--error {
+    border-color: var(--color-error-default);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    border-color: var(--color-border-default);
+  }
+
+  // truncates text with ellipsis
+  &--truncate .mm-text-field__input {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__input {
+    width: 100%;
+    flex-grow: 1;
+  }
+}

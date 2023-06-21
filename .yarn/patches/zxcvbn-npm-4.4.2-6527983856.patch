@@ -1,0 +1,13 @@
+diff --git a/lib/matching.js b/lib/matching.js
+index 3940bad18c864515899ae3cb69f173e42d494067..748da8b09f921f4eb6f0eed235f2734151b1dd78 100644
+--- a/lib/matching.js
++++ b/lib/matching.js
+@@ -13,7 +13,7 @@ build_ranked_dict = function(ordered_list) {
+   i = 1;
+   for (o = 0, len1 = ordered_list.length; o < len1; o++) {
+     word = ordered_list[o];
+-    result[word] = i;
++    Reflect.defineProperty(result, word, { value: i, configurable: true, enumerable: true, writable: true });
+     i += 1;
+   }
+   return result;

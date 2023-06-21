@@ -1,0 +1,60 @@
+.gas-display {
+  overflow-y: auto;
+  flex: 1;
+
+  .transaction-detail-rows {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+    margin: 16px 16px;
+
+    .transaction-detail-item {
+      &:not(:first-child) {
+        border-top: 1px solid var(--color-border-default);
+      }
+    }
+  }
+
+  &__title {
+    &__estimate {
+      font-size: 12px;
+      line-height: inherit;
+    }
+  }
+
+  &__gas-fee-warning {
+    color: var(--color-warning-default);
+  }
+
+  &__gas-fee-label {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  &__warning-message {
+    height: 120px;
+  }
+
+  &__total-amount,
+  &__total-value {
+    position: relative;
+  }
+
+  &__confirm-approve-content {
+    &__warning {
+      @media screen and (max-width: $break-small) {
+        padding: 0 32px 16px 16px;
+        position: fixed;
+        bottom: 80px;
+        // We set z-index above ".send-v2__hex-data__input" by 1 index. ".send-v2__hex-data__input"
+        // was set to `z-index: 1025;` 4 years ago from the time of this comment. This should be a temp fix.
+        // TODO: Refactor z-indexes
+        z-index: 1026;
+      }
+    }
+  }
+
+  &__link {
+    text-transform: lowercase;
+  }
+}

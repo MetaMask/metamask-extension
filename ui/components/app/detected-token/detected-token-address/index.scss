@@ -1,0 +1,7 @@
+.detected-token-address {
+  & &__copy-link {
+    @include H7;
+
+    padding: 4px 0;
+  }
+}

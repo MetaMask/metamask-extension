@@ -1,0 +1,45 @@
+.mm-icon {
+  --icon-size: var(--size, 16px);
+
+  font-size: var(--icon-size);
+  width: 1em;
+  height: 1em;
+  max-width: 1em;
+  flex: 0 0 1em;
+  background-color: currentColor; // inherits parent text color
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+
+  // Size
+
+  &--size-xs {
+    --size: 12px;
+  }
+
+  &--size-sm {
+    --size: 16px;
+  }
+
+  &--size-md {
+    --size: 20px;
+  }
+
+  &--size-lg {
+    --size: 24px;
+  }
+
+  &--size-xl {
+    --size: 32px;
+  }
+
+  &--size-inherit {
+    --size: 1em; // Inherits parent font-size
+
+    position: relative; // Fixes vertical alignment
+    top: 0.125em; // Fixes vertical alignment
+  }
+}

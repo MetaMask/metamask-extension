@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Gas timing renders nothing when gas is loading 1`] = `<div />`;

@@ -1,0 +1,214 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFT Details should match minimal props and state snapshot 1`] = `
+<div>
+  <div
+    class="asset-navigation"
+  >
+    <button
+      class="asset-breadcrumb"
+    >
+      <span
+        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-inherit"
+        data-testid="asset__back"
+        style="mask-image: url('./images/icons/arrow-left.svg');"
+      />
+      <span>
+        Test Account
+      </span>
+       / 
+      <span
+        class="asset-breadcrumb__asset"
+      >
+        Munk Generator
+      </span>
+    </button>
+    <div>
+      <button
+        aria-label="NFT Options"
+        class="box mm-button-icon mm-button-icon--size-lg nft-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
+        data-testid="nft-options__button"
+      >
+        <span
+          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+          style="mask-image: url('./images/icons/more-vertical.svg');"
+        />
+      </button>
+    </div>
+  </div>
+  <div
+    class="box nft-details box--flex-direction-row"
+  >
+    <div
+      class="box nft-details__top-section box--gap-6 box--flex-direction-column"
+    >
+      <div
+        class="box nft-details__nft-item box--flex-direction-row"
+      >
+        <button
+          class="box nft-item__container box--flex-direction-row"
+          data-testid="nft-item"
+        >
+          <div
+            class="box mm-badge-wrapper nft-item__badge-wrapper box--flex-direction-row"
+          >
+            <img
+              alt="MUNK #1 1"
+              class="box nft-item__item nft-item__item-image box--display-block box--flex-direction-row box--justify-content-center"
+              data-testid="nft-image"
+              src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+            />
+            <div
+              class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+              style="top: -4px; right: -4px;"
+            >
+              <div
+                class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-width-2 box--border-style-solid"
+                data-testid="nft-network-badge"
+              >
+                G
+              </div>
+            </div>
+          </div>
+        </button>
+      </div>
+      <div
+        class="box nft-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"
+      >
+        <div>
+          <h4
+            class="box mm-text mm-text--heading-sm mm-text--font-weight-bold box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+          >
+            MUNK #1
+          </h4>
+          <h5
+            class="box mm-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-muted"
+          >
+            #
+            1
+          </h5>
+        </div>
+        <div
+          class="box box--display-flex box--flex-direction-row box--width-1/2"
+        >
+          <button
+            class="button btn--rounded btn-primary nft-details__send-button"
+            data-testid="nft-send-button"
+            role="button"
+            tabindex="0"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="box box--margin-bottom-2 box--flex-direction-row"
+    >
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+        >
+          Last sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+          >
+            1/18/2023
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+        >
+          Last price sold
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+          >
+            0.0049 ETH
+          </h6>
+        </div>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+        >
+          Source
+        </h6>
+        <h6
+          class="box mm-text nft-details__image-source mm-text--body-sm box--margin-bottom-4 box--flex-direction-row box--color-primary-default"
+        >
+          <a
+            href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+            rel="noopener noreferrer"
+            target="_blank"
+            title="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+          >
+            https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link
+          </a>
+        </h6>
+      </div>
+      <div
+        class="box box--display-flex box--flex-direction-row"
+      >
+        <h6
+          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+        >
+          Contract address
+        </h6>
+        <div
+          class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
+        >
+          <h6
+            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+          >
+            0xDc7...6414
+          </h6>
+          <div
+            class="nft-details__tooltip-wrapper"
+          >
+            <div
+              aria-describedby="tippy-tooltip-1"
+              class=""
+              data-original-title="Copy to clipboard"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <button
+                aria-label="copy"
+                class="box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
+                data-testid="nft-address-copy"
+              >
+                <span
+                  class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                  style="mask-image: url('./images/icons/copy.svg');"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h6
+        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+      >
+        Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on.
+      </h6>
+    </div>
+  </div>
+</div>
+`;

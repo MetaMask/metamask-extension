@@ -1,0 +1,34 @@
+.show-hide-toggle {
+  position: relative;
+  display: inline-flex;
+
+  &__input {
+    appearance: none;
+
+    + .show-hide-toggle__label {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Focused when tabbing with keyboard */
+    &:focus,
+    &:focus-visible {
+      outline: none;
+
+      + .show-hide-toggle__label {
+        outline: Highlight auto 1px;
+      }
+    }
+
+    &:disabled {
+      + label {
+        opacity: 0.5;
+        cursor: auto;
+      }
+    }
+  }
+
+  &__icon {
+    color: var(--color-icon-default);
+  }
+}

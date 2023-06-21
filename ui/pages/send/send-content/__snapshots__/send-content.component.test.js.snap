@@ -1,0 +1,321 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendContent Component render should match snapshot 1`] = `
+<div>
+  <div
+    class="page-container__content"
+  >
+    <div
+      class="send-v2__form"
+    >
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Asset:
+        </div>
+        <div
+          class="send-v2__form-field"
+        >
+          <div
+            class="send-v2__asset-dropdown"
+          >
+            <div
+              class="send-v2__asset-dropdown__input-wrapper"
+            >
+              <div
+                class="send-v2__asset-dropdown__asset"
+              >
+                <div
+                  class="send-v2__asset-dropdown__asset-icon"
+                >
+                  <div
+                    class="identicon__image-border"
+                    style="height: 36px; width: 36px; border-radius: 18px;"
+                  />
+                </div>
+                <div
+                  class="send-v2__asset-dropdown__asset-data"
+                >
+                  <div
+                    class="send-v2__asset-dropdown__symbol"
+                  />
+                  <div
+                    class="send-v2__asset-dropdown__name"
+                  >
+                    <span
+                      class="send-v2__asset-dropdown__name__label"
+                    >
+                      Balance:
+                    </span>
+                    <div
+                      class="currency-display-component"
+                      title="0 ETH"
+                    >
+                      <span
+                        class="currency-display-component__prefix"
+                      />
+                      <span
+                        class="currency-display-component__text"
+                      >
+                        0
+                      </span>
+                      <span
+                        class="currency-display-component__suffix"
+                      >
+                        ETH
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <i
+                  class="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Amount:
+          <button
+            class="send-v2__amount-max"
+          >
+            <input
+              readonly=""
+              type="checkbox"
+            />
+            <div
+              class="send-v2__amount-max__button"
+            >
+              Max
+            </div>
+          </button>
+        </div>
+        <div
+          class="send-v2__form-field-container"
+        >
+          <div
+            class="send-v2__form-field"
+          >
+            <div
+              class="unit-input"
+            >
+              <div
+                class="unit-input__inputs"
+              >
+                <div
+                  class="unit-input__input-container"
+                >
+                  <input
+                    class="unit-input__input"
+                    data-testid="currency-input"
+                    dir="ltr"
+                    placeholder="0"
+                    style="width: 1.5ch;"
+                    type="number"
+                    value="1"
+                  />
+                  <div
+                    class="unit-input__suffix"
+                  >
+                    ETH
+                  </div>
+                </div>
+                <div
+                  class="currency-input__conversion-component"
+                >
+                  No conversion rate available
+                </div>
+              </div>
+              <button
+                class="currency-input__swap-component"
+                data-testid="currency-swap"
+              >
+                <i
+                  class="fa fa-retweet fa-lg"
+                />
+              </button>
+            </div>
+          </div>
+          <div />
+        </div>
+      </div>
+      <div
+        class="send-v2__form-row"
+      >
+        <div
+          class="send-v2__form-label"
+        >
+          Hex data:
+        </div>
+        <div
+          class="send-v2__form-field-container"
+        >
+          <div
+            class="send-v2__form-field"
+          >
+            <textarea
+              class="send-v2__hex-data__input"
+              placeholder="Optional"
+            />
+          </div>
+          <div />
+        </div>
+      </div>
+      <div
+        class="box gas-display box--flex-direction-row"
+      >
+        <div
+          class="transaction-detail"
+        >
+          <div
+            class="transaction-detail-rows"
+          >
+            <div
+              class="transaction-detail-item"
+            >
+              <div
+                class="transaction-detail-item__row"
+              >
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                >
+                  <div
+                    class="box box--display-flex box--flex-direction-row"
+                  >
+                    <div
+                      class="box box--margin-right-1 box--flex-direction-row"
+                    >
+                      Gas
+                    </div>
+                    <span
+                      class="gas-details-item-title__estimate"
+                    >
+                      (
+                      estimated
+                      )
+                    </span>
+                    <div
+                      class="info-tooltip"
+                      data-testid="info-tooltip"
+                    >
+                      <div>
+                        <div
+                          aria-describedby="tippy-tooltip-1"
+                          class="info-tooltip__tooltip-container"
+                          data-original-title="null"
+                          data-tooltipped=""
+                          style="display: inline;"
+                          tabindex="0"
+                        >
+                          <svg
+                            viewBox="0 0 10 10"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
+                              fill="var(--color-icon-alternative)"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </h6>
+                <div
+                  class="transaction-detail-item__detail-values"
+                >
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                  >
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="currency-display-component__suffix"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </h6>
+                </div>
+              </div>
+              <div
+                class="transaction-detail-item__row"
+              >
+                <div>
+                  <h6
+                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--negative typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+                  >
+                    Unknown processing time
+                  </h6>
+                </div>
+                <h6
+                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                >
+                  <div
+                    class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
+                  >
+                    <div
+                      class="box box--margin-right-1 box--flex-direction-row"
+                    >
+                      <strong>
+                        Max fee:
+                      </strong>
+                    </div>
+                    <div
+                      class="gas-details-item__currency-container"
+                    >
+                      <div
+                        class="currency-display-component"
+                        title="0.0000315 ETH"
+                      >
+                        <span
+                          class="currency-display-component__prefix"
+                        />
+                        <span
+                          class="currency-display-component__text"
+                        >
+                          0.0000315
+                        </span>
+                        <span
+                          class="currency-display-component__suffix"
+                        >
+                          ETH
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SendContent Component render should match snapshot 2`] = `<div />`;

@@ -1,0 +1,29 @@
+.transaction-alerts {
+  text-align: left;
+
+  & > *:first-of-type {
+    margin-top: 20px;
+  }
+
+  & > *:not(:first-of-type) {
+    margin-top: 12px;
+  }
+
+  & strong {
+    font-weight: bold;
+  }
+
+  &__pending-transactions {
+    & a {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__link {
+    background: transparent;
+    border: 0 transparent;
+    display: inline;
+    padding: 0;
+    font-size: $font-size-h7;
+  }
+}

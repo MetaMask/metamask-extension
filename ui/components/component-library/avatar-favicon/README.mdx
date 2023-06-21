@@ -1,0 +1,74 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { AvatarBase } from '../';
+
+import { AvatarFavicon } from './avatar-favicon';
+
+# AvatarFavicon
+
+The `AvatarFavicon` is an image component that renders an icon that is provided in the form of a URL.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarfavicon--default-story" />
+</Canvas>
+
+## Props
+
+The `AvatarFavicon` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+
+<ArgsTable of={AvatarFavicon} />
+
+`AvatarFavicon` accepts all [AvatarBase](components-componentlibrary-avatarbase--default-story))
+component props
+
+<ArgsTable of={AvatarBase} />
+
+### Size
+
+Use the `size` prop to set the size of the `AvatarFavicon`.
+
+Optional: `AVATAR_FAVICON_SIZES` from `./ui/components/component-library` object can be used instead of `Size`
+
+Possible sizes include:
+
+- `Size.XS` 16px
+- `Size.SM` 24px
+- `Size.MD` 32px
+- `Size.LG` 40px
+- `Size.XL` 48px
+
+Defaults to `Size.MD`
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarfavicon--size-story" />
+</Canvas>
+
+```jsx
+import { Size } from '../../../helpers/constants/design-system';
+import { AvatarFavicon } from '../ui/component-library';
+
+<AvatarFavicon size={Size.XS} />
+<AvatarFavicon size={Size.SM} />
+<AvatarFavicon size={Size.MD} />
+<AvatarFavicon size={Size.LG} />
+<AvatarFavicon size={Size.XL} />
+```
+
+### Src
+
+Use the `src` prop to set the image to be rendered of the `AvatarFavicon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-avatarfavicon--src" />
+</Canvas>
+
+```jsx
+import { AvatarFavicon } from '../ui/component-library';
+
+<AvatarFavicon src="https://uniswap.org/favicon.ico" />
+<AvatarFavicon src="https://1inch.exchange/assets/favicon/favicon-32x32.png" />
+```
+
+### Fallback Icon Props
+
+If there is no `src` then in that case an [icon](/docs/components-componentlibrary-icon--default-story) will be used as the fallback display and it can be customised via `fallbackIconProps`.

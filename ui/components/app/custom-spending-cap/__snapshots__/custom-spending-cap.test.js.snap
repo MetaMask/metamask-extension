@@ -1,0 +1,109 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustomSpendingCap should match snapshot 1`] = `
+<div>
+  <div
+    class="box custom-spending-cap box--padding-top-2 box--padding-right-6 box--padding-left-6 box--display-flex box--gap-2 box--flex-direction-column box--align-items-flex-start box--background-color-background-alternative box--rounded-sm"
+  >
+    <div
+      class="box custom-spending-cap__input box--display-block box--flex-direction-row box--justify-content-center"
+    >
+      <label
+        for="custom-spending-cap"
+      >
+        <div
+          class="form-field"
+        >
+          <div
+            class="box box--flex-direction-row"
+          >
+            <div
+              class="form-field__heading"
+            >
+              <div
+                class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              >
+                <h6
+                  class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                  for="custom-spending-cap"
+                  tag="label"
+                >
+                  Custom spending cap
+                </h6>
+                
+                <div
+                  class="box box--display-inline-block box--flex-direction-row"
+                >
+                  <div>
+                    <div
+                      aria-describedby="tippy-tooltip-1"
+                      class=""
+                      data-original-title="null"
+                      data-tooltipped=""
+                      style="display: inline;"
+                      tabindex="0"
+                    >
+                      <span
+                        class="box mm-icon mm-icon--size-inherit box--display-inline-block box--flex-direction-row box--color-inherit"
+                        style="mask-image: url('./images/icons/question.svg');"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="box form-field__heading-detail box--margin-bottom-2 box--flex-direction-row box--text-align-end"
+              >
+                <button
+                  class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                >
+                  Use default
+                </button>
+              </div>
+            </div>
+            <input
+              class="form-field__input"
+              data-testid="custom-spending-cap-input"
+              id="custom-spending-cap"
+              placeholder="Enter a number"
+              type="text"
+              value="10"
+            />
+            
+          </div>
+        </div>
+        <div
+          class="box custom-spending-cap__max box--margin-left-auto box--padding-right-4 box--padding-bottom-2 box--flex-direction-row box--text-align-end box--width-max"
+        >
+          <button
+            class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          >
+            Max
+          </button>
+        </div>
+        <div
+          class="box custom-spending-cap__description box--flex-direction-row"
+        >
+          <h6
+            class="box mm-text mm-text--body-sm box--padding-top-2 box--padding-bottom-2 box--flex-direction-row box--color-text-default"
+          >
+            <span>
+               
+              This allows the third party to spend 
+              <h6
+                class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              >
+                10
+                 
+                TST
+              </h6>
+               from your current balance.
+               
+            </span>
+          </h6>
+        </div>
+      </label>
+    </div>
+  </div>
+</div>
+`;

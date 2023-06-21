@@ -1,0 +1,51 @@
+.approve-content-card-container {
+  &__card,
+  &__card--no-border {
+    border-bottom: 1px solid var(--color-border-default);
+    position: relative;
+    padding-inline-start: 24px;
+    padding-inline-end: 24px;
+  }
+
+  &__card--no-border {
+    border-bottom: none;
+  }
+
+  &__card-header {
+    position: relative;
+
+    &__symbol {
+      width: auto;
+    }
+
+    &__symbol--aligned {
+      width: 100%;
+    }
+
+    &__title {
+      width: 100%;
+    }
+
+    &__title--aligned {
+      margin-inline-start: 27px;
+      position: absolute;
+      width: auto;
+    }
+  }
+
+  &__card-content--aligned {
+    margin-inline-start: 42px;
+  }
+
+  &__transaction-details-extra-content {
+    width: 100%;
+  }
+
+  &__data {
+    width: 100%;
+
+    &__data-block {
+      overflow-wrap: break-word;
+    }
+  }
+}

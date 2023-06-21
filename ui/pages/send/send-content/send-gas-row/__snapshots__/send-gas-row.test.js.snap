@@ -1,0 +1,127 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SendGasRow Component render should match snapshot 1`] = `
+<div>
+  <div
+    class="send-v2__form-row"
+  >
+    <div
+      class="send-v2__form-label"
+    />
+    <div
+      class="send-v2__form-field"
+    >
+      <div
+        class="advanced-gas-inputs__gas-edit-rows"
+      >
+        <div
+          class="advanced-gas-inputs__gas-edit-row"
+        >
+          <div
+            class="advanced-gas-inputs__gas-edit-row__label"
+          >
+            Gas price (GWEI)
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="advanced-gas-inputs__gas-edit-row__input-wrapper"
+          >
+            <input
+              class="advanced-gas-inputs__gas-edit-row__input"
+              data-testid="gas-price"
+              min="0"
+              type="number"
+              value="0"
+            />
+            <div
+              class="advanced-gas-inputs__gas-edit-row__input-arrows"
+            >
+              <div
+                class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+              >
+                <i
+                  class="fa fa-sm fa-angle-up"
+                />
+              </div>
+              <div
+                class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+              >
+                <i
+                  class="fa fa-sm fa-angle-down"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="advanced-gas-inputs__gas-edit-row"
+        >
+          <div
+            class="advanced-gas-inputs__gas-edit-row__label"
+          >
+            Gas limit
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="Gas limit is the maximum amount of units of gas you are willing to spend."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                <span
+                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  style="mask-image: url('./images/icons/info.svg');"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="advanced-gas-inputs__gas-edit-row__input-wrapper"
+          >
+            <input
+              class="advanced-gas-inputs__gas-edit-row__input"
+              data-testid="gas-limit"
+              min="0"
+              type="number"
+              value="21000"
+            />
+            <div
+              class="advanced-gas-inputs__gas-edit-row__input-arrows"
+            >
+              <div
+                class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+              >
+                <i
+                  class="fa fa-sm fa-angle-up"
+                />
+              </div>
+              <div
+                class="advanced-gas-inputs__gas-edit-row__input-arrows__i-wrap"
+              >
+                <i
+                  class="fa fa-sm fa-angle-down"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

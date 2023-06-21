@@ -1,0 +1,8 @@
+{
+  "content_security_policy": "frame-ancestors 'none'; script-src 'self'; object-src 'self'",
+  "externally_connectable": {
+    "matches": ["https://metamask.io/*"],
+    "ids": ["*"]
+  },
+  "minimum_chrome_version": "80"
+}

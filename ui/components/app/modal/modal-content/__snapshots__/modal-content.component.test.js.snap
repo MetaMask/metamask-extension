@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalContent Component should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-content"
+  >
+    <div
+      class="modal-content__title"
+    >
+      Modal Title
+    </div>
+    <div
+      class="modal-content__description"
+    >
+      Modal Description
+    </div>
+  </div>
+</div>
+`;

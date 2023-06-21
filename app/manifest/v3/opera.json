@@ -1,0 +1,9 @@
+{
+  "permissions": [
+    "storage",
+    "tabs",
+    "clipboardWrite",
+    "clipboardRead",
+    "http://localhost:8545/"
+  ]
+}

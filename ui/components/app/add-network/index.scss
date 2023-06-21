@@ -1,0 +1,92 @@
+.add-network {
+  &__networks-container {
+    padding-inline-end: 24px;
+
+    @include screen-sm-max {
+      padding: 0;
+    }
+  }
+
+  &__header {
+    border-bottom: 1px solid var(--color-border-default);
+
+    @include screen-sm-max {
+      padding-inline-start: 24px;
+      padding-inline-end: 24px;
+    }
+
+    &__subtitle {
+      margin-inline-start: 10px;
+      margin-inline-end: 10px;
+    }
+  }
+
+  &__main-container {
+    @include screen-sm-max {
+      padding-inline-start: 24px;
+      padding-inline-end: 24px;
+    }
+  }
+
+  &__list-of-networks {
+    @include screen-sm-min {
+      width: 75%;
+    }
+  }
+
+  &__warning-tooltip {
+    color: var(--color-text-alternative);
+    width: 180px;
+
+    a {
+      color: var(--color-primary-default);
+    }
+  }
+
+  &__add-icon {
+    color: var(--color-text-alternative);
+    margin-inline-start: auto;
+    margin-inline-end: 0;
+    cursor: pointer;
+  }
+
+  &__add-button.button {
+    color: var(--color-primary-default);
+    font-size: $font-size-h7;
+    margin-inline-start: 24px;
+  }
+
+  &__footer {
+    border-top: 1px solid var(--color-border-muted);
+    width: 100%;
+    padding-bottom: 8px;
+
+    @include screen-sm-max {
+      padding-inline-start: 24px !important;
+    }
+
+    & .btn-link {
+      display: initial;
+      padding: 0;
+    }
+
+    &__link {
+      color: var(--color-primary-default);
+    }
+
+    & .actionable-message--warning .actionable-message__message,
+    .actionable-message--warning .actionable-message__action {
+      color: var(--color-text-alternative);
+    }
+  }
+
+  &__edge-case-box {
+    border: 1px solid var(--color-border-muted);
+
+    &__link {
+      color: var(--color-info-default);
+      display: inline;
+      padding: 0;
+    }
+  }
+}

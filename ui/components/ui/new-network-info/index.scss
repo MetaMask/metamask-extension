@@ -1,0 +1,47 @@
+.new-network-info {
+  &__wrapper {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.214);
+    border-radius: 8px;
+
+    .popover-footer {
+      border-top: none;
+    }
+
+    .popover-header {
+      padding-bottom: 1px;
+    }
+
+    .popover-header__button {
+      color: var(--color-icon-default);
+    }
+  }
+
+  &__token-box {
+    align-self: center;
+    margin-top: 8px;
+    max-width: 245px;
+  }
+
+  &__bullet-paragraph {
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  &__token-show-up {
+    display: inline;
+  }
+
+  &__button {
+    display: initial;
+    padding: 0;
+  }
+
+  &__manually-add-tokens {
+    display: inline;
+  }
+}
+
+.chip--with-left-icon {
+  padding-left: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}

@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UserPreferencedCurrencyDisplay Component rendering should match snapshot 1`] = `
+<div>
+  <div
+    class="currency-display-component"
+    title="0 ETH"
+  >
+    <span
+      class="currency-display-component__prefix"
+    />
+    <span
+      class="currency-display-component__text"
+    >
+      0
+    </span>
+    <span
+      class="currency-display-component__suffix"
+    >
+      ETH
+    </span>
+  </div>
+</div>
+`;

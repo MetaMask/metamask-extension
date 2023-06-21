@@ -1,0 +1,27 @@
+.network-account-balance-header {
+  border-top: 1px solid var(--color-border-muted);
+  border-bottom: 1px solid var(--color-border-muted);
+
+  &__network-account {
+    &__ident-icon-ethereum,
+    &__ident-icon-ethereum--gray {
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      border: 1px solid var(--color-background-default);
+      background: var(--color-background-default);
+      margin-inline-start: -10px;
+      margin-top: -20px;
+
+      > span {
+        display: flex;
+        justify-content: center;
+        line-height: 18px;
+      }
+    }
+
+    &__ident-icon-ethereum--gray {
+      border: 1px solid var(--color-border-default);
+    }
+  }
+}

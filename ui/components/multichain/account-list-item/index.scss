@@ -1,0 +1,73 @@
+.multichain-account-list-item {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+
+  &:not(.account-list-item--selected) {
+    &:hover,
+    &:focus-within {
+      background: var(--color-background-default-hover);
+    }
+  }
+
+  &__account-name {
+    max-width: 160px;
+    min-width: 80px;
+
+    /* Prevent the normal hover effect on Buttons */
+    &__button {
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__asset {
+    max-width: 130px;
+    min-width: 60px;
+    align-self: self-end;
+  }
+
+  /* Prevent font-size resizing to avoid conflcits for long asset and token names */
+  &__account-name button,
+  &__asset,
+  &__tooltip {
+    font-size: 14px !important;
+  }
+
+  &__avatar {
+    margin-inline-end: 2px;
+  }
+
+  &__selected-indicator {
+    width: 4px;
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 4px;
+    left: 4px;
+  }
+
+  &__content {
+    overflow: hidden;
+    flex: 1;
+  }
+
+  &__tooltip {
+    display: inline;
+  }
+
+  .currency-display-component {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline;
+
+    &__prefix {
+      padding-right: unset;
+    }
+
+    &__suffix {
+      font-size: 12px !important;
+    }
+  }
+}

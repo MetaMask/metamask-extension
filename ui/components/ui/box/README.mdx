@@ -1,0 +1,420 @@
+import { Story, Canvas } from '@storybook/addon-docs';
+
+import { Severity } from '../../../helpers/constants/design-system';
+
+import { BannerAlert } from '../../component-library/banner-alert';
+
+<BannerAlert
+  severity={Severity.Warning}
+  title="Deprecated"
+  description="The JS version of <Box/> has been deprecated in favor of the TS version from component-library"
+  actionButtonLabel="See details"
+  actionButtonProps={{
+    href: 'https://github.com/MetaMask/metamask-extension/issues/19526',
+  }}
+  marginBottom={4}
+/>
+
+<br />
+
+import Box from '.';
+
+# Box (deprecated)
+
+Box is a utility component that can be used for layout or as a base for other UI components.
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--default-story" />
+</Canvas>
+
+## Props
+
+| Name               | Description                                                                                                                                                                                                                       | Default           |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| children           | The children of the Box component. If `function` type will render the child as the Box node instead of a child of the Box                                                                                                         | -                 |
+| className          | Additional className of the Box component                                                                                                                                                                                         | -                 |
+| margin             | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values [1, 2, 'auto'] for responsive props                                                                                                                                        | -                 |
+| marginTop          | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginBottom       | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginRight        | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginLeft         | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginInline       | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginInlineStart  | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| marginInlineEnd    | 0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto' or array of values for responsive props                                                                                                                                                       | -                 |
+| padding            | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingTop         | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingBottom      | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingRight       | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingLeft        | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingInline      | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingInlineStart | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| paddingInlineEnd   | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| display            | Display values or array of Display values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                 | -                 |
+| flexDirection      | FlexDirection values or array of FlexDirection values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)     | FlexDirection.Row |
+| flexWrap           | FlexWrap values or array of FlexWrap values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)               | -                 |
+| alignItems         | AlignItems values or array of AlignItems values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)           | -                 |
+| justifyContent     | JustifyContent values or array of JustifyContent values from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                        | -                 |
+| gap                | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| textAlign          | TextAlign values or array of TextAlign values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)             | -                 |
+| width              | BlockSize values or array of BlockSize values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)             | -                 |
+| height             | BlockSize values or array of BlockSize values for responsive props [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                  | -                 |
+| color              | Color values or array of Color values for responsive props [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)                          | -                 |
+| backgroundColor    | BackgroundColor values or array of BackgroundColor values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js) | -                 |
+| borderColor        | BorderColor values or array of BorderColor values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)         | -                 |
+| borderWidth        | 0, 1, 2, 4, 6, 8, 9, 10, 12 or array of numbers [1, 2] for responsive props                                                                                                                                                       | -                 |
+| borderRadius       | BorderRadius values or array of BorderRadius values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)       | -                 |
+| borderStyle        | BORDER_STYLE values or array of BORDER_STYLE values for responsive props from [../ui/helpers/constants/design-system.js](https://github.com/MetaMask/metamask-extension/blob/develop/ui/helpers/constants/design-system.js)       | -                 |
+| as                 | The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to 'div'                                                                                                                      | 'div'             |
+
+## Usage
+
+The following describes the props and example usage for this component.
+
+### Margin
+
+The margin props `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLeft`, `marginInline`, `marginInlineStart`, and `marginInlineEnd` can be used to set the margins of the `Box` component. All of the margin props accept [responsive props](#responsive-props) in the form of array props
+
+Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12, 'auto` or array of these values
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--margin" />
+</Canvas>
+
+```jsx
+<Box margin={4} />
+<Box marginTop={4} />
+<Box marginRight={4} />
+<Box marginBottom={4} />
+<Box marginLeft={'auto'} />
+<Box marginInline={4} />
+<Box marginInlineStart={4} />
+<Box marginInlineEnd={4} />
+
+// Responsive props
+<Box margin={[4, 8]} />
+<Box marginTop={[4, 8]} />
+<Box marginRight={[4, 8]} />
+<Box marginBottom={[4, 8]} />
+<Box marginLeft={['auto', 8]} />
+<Box marginInline={['auto', 8]} />
+<Box marginInlineStart={['auto', 8]} />
+<Box marginInlineEnd={['auto', 8]} />
+```
+
+### Padding
+
+The padding props work very similarly to margin. The padding props `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`, `paddingInline`, `paddingInlineStart`, and `paddingInlineEnd` can be used to set the paddings of the `Box` component. All of the padding props accept [responsive props](#responsive-props) in the form of array props
+
+Accepted props are: `0, 1, 2, 4, 6, 8, 9, 10, 12` or array of these values
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--padding" />
+</Canvas>
+
+```jsx
+<Box padding={4} />
+<Box paddingTop={4} />
+<Box paddingRight={4} />
+<Box paddingBottom={4} />
+<Box paddingLeft={4} />
+
+// Responsive props
+<Box padding={[4, 8]} />
+<Box paddingTop={[4, 8]} />
+<Box paddingRight={[4, 8]} />
+<Box paddingBottom={[4, 8]} />
+<Box paddingLeft={[4, 8]} />
+```
+
+### Display
+
+The `display` prop can be used to set the display of the `Box` component. All of the display props accept [responsive props](#responsive-props) in the form of array props.
+
+Accepted props imported from the design system `Display` const are:
+
+- `Display.Block`
+- `Display.Flex`
+- `Display.Grid`
+- `Display.InlineBlock`
+- `Display.InlineFlex`
+- `Display.InlineGrid`
+- `Display.Inline`
+- `Display.ListItem`
+- `Display.None`
+
+or array of these values.
+
+```jsx
+import { Display } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box display={Display.Block} />
+<Box display={Display.Flex} />
+<Box display={Display.Grid} />
+<Box display={Display.InlineBlock} />
+<Box display={Display.InlineFlex} />
+<Box display={Display.Inline} />
+<Box display={Display.None} />
+```
+
+### Color
+
+The `color` prop can be used to set the color of the content in Box component. The `color` prop accepts [responsive props](#responsive-props) in the form of array props. Defaults to `Color.textDefault`.
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--color-story" />
+</Canvas>
+
+Example of importing `TextColor` object with `Box` component
+
+```jsx
+import { TextColor } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box color={TextColor.textDefault}>Text goes here</Box>;
+```
+
+### Background Color
+
+Use the `backgroundColor` prop along with the `Color` or `BackgroundColor` object from `ui/helpers/constants/design-system.js` to change background color. The `backgroundColor` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--background-color-story" />
+</Canvas>
+
+Example of importing `BackgroundColor` object with `Box` component
+
+```jsx
+import {
+  BackgroundColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box backgroundColor={BackgroundColor.backgroundDefault}>
+  <Typography color={TextColor.textDefault}>
+    BackgroundColor.backgroundDefault
+  </Typography>
+</Box>;
+```
+
+### Border Color
+
+Use the `borderColor` prop along with the `Color` or `BorderColor` object from `ui/helpers/constants/design-system.js` to change border color. The `borderColor` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--border-color-story" />
+</Canvas>
+
+Example of importing `BorderColor` object with `Box` component
+
+```jsx
+import {
+  BackgroundColor,
+  BorderColor,
+  TextColor,
+} from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box
+  backgroundColor={BackgroundColor.backgroundDefault}
+  borderColor={BorderColor.borderDefault}
+>
+  <Typography color={TextColor.textDefault}>
+    BorderColor.borderDefault
+  </Typography>
+</Box>;
+```
+
+### Border Radius
+
+Use the `borderRadius` prop along with the `BorderRadius` object from `ui/helpers/constants/design-system.js` to change border radius. The `borderRadius` prop accepts [responsive props](#responsive-props) in the form of array props.
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--border-radius-story" />
+</Canvas>
+
+Example of importing `BorderRadius` object with `Box` component
+
+```jsx
+import { BorderRadius } from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box borderRadius={BorderRadius.none}>BorderRadius.none 0px</Box>
+<Box borderRadius={BorderRadius.XS}>BorderRadius.XS 2px</Box>
+<Box borderRadius={BorderRadius.SM}>BorderRadius.SM 4px</Box>
+<Box borderRadius={BorderRadius.MD}>BorderRadius.MD 6px</Box>
+<Box borderRadius={BorderRadius.LG}>BorderRadius.LG 8px</Box>
+<Box borderRadius={BorderRadius.XL}>BorderRadius.XL 12px</Box>
+<Box borderRadius={BorderRadius.pill}>BorderRadius.pill 9999px</Box>
+<Box borderRadius={BorderRadius.full}>BorderRadius.full 50%</Box>
+```
+
+### Responsive Props
+
+The box component provides a responsive props api in the form of array props. Array props are inspired by [styled-systems array props](https://styled-system.com/guides/array-props). The responsive props follow a mobile first methodology with the first item in the array applying the style to the base level size e.g. `0px` and up. The second item overwrites the first items styles at the next breakpoint.
+
+- All Box props accept the responsive props format
+- To skip a breakpoint use `null` as the skipped item's value e.g. `<Box display={['display', null, ;flex']} />`
+
+```
+// the responsive props
+<Box display={['block', 'flex']} />
+
+// is equivalent to the css
+.box {
+  display: block;
+
+  @media screen and (max-width: $breakpoint-sm) {
+    display: flex;
+  }
+}
+```
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--responsive-props" />
+</Canvas>
+
+```jsx
+import {
+  BorderColor,
+  BackgroundColor,
+} from '../../../helpers/constants/design-system';
+import Box from '../ui/box';
+
+<Box
+  padding={[2, 4]}
+  gap={[2, 4]}
+  display={['flex']}
+  flexDirection={['column', 'row']}
+  borderColor={BorderColor.borderDefault}
+>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
+  >
+    responsive
+  </Box>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
+  >
+    props
+  </Box>
+  <Box
+    padding={[4, 8]}
+    backgroundColor={BackgroundColor.backgroundAlternative}
+    borderColor={BorderColor.borderMuted}
+  >
+    example
+  </Box>
+</Box>;
+```
+
+### As
+
+The polymorphic `as` prop allows you to change the root HTML element of the Box component. Defaults to `'div'`
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--as" />
+</Canvas>
+
+```jsx
+import Box from '../../ui/box';
+
+<Box>div(default)</Box>
+<Box as="ul">ul</Box>
+<Box as="li">li</Box>
+<Box as="button">button</Box>
+<Box as="header">header</Box>
+```
+
+### Width
+
+Use the `width` prop to pass a singular `BlockSize` or for a responsive width pass an array up to 4 `BlockSize`
+
+Responsive widths go from smallest to largest screen sizes
+
+Example: [BlockSize.Half, BlockSize.ThreeFourths, BlockSize.OneFifth, BlockSize.ThreeSixths]
+
+- BlockSize.Half is the default width for `base screen size (0px)` and up
+- BlockSize.ThreeFourths is the width for `small screen size (576px) ` and up
+- BlockSize.OneFifth is the width for `medium screen size (768px)` and up
+- BlockSize.ThreeSixths is the width for `large screen size (1280px)` and up
+
+<Canvas>
+  <Story id="components-ui-box-deprecated--width" />
+</Canvas>
+
+```jsx
+import {
+  BlockSize,
+  Display,
+  FlexWrap,
+} from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+
+<>
+  <p>Static widths</p>
+
+  <Box display={Display.Flex}>
+    <Box width={BlockSize.Full}>BlockSize.Full</Box>
+    <Box width={BlockSize.Half}>BlockSize.Half</Box>
+    <Box width={BlockSize.Half}>BlockSize.Half</Box>
+    <Box width={BlockSize.OneThird}>BlockSize.OneThird</Box>
+    <Box width={BlockSize.OneThird}>BlockSize.OneThird</Box>
+    <Box width={BlockSize.OneThird}>BlockSize.OneThird</Box>
+    <Box width={BlockSize.OneFourth}>BlockSize.OneFourth</Box>
+    <Box width={BlockSize.OneFourth}>BlockSize.OneFourth</Box>
+    <Box width={BlockSize.OneFourth}>BlockSize.OneFourth</Box>
+    <Box width={BlockSize.OneFourth}>BlockSize.OneFourth</Box>
+  </Box>
+
+  <p>Responsive widths</p>
+
+  <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
+    <Box
+      width={[
+        BlockSize.Full,
+        BlockSize.Half,
+        BlockSize.OneThird,
+        BlockSize.OneFourth,
+      ]}
+    >
+      BlockSize.Full, BlockSize.Half, BlockSize.OneThird, BlockSize.OneFourth,
+    </Box>
+    <Box
+      width={[
+        BlockSize.Full,
+        BlockSize.Half,
+        BlockSize.OneThird,
+        BlockSize.OneFourth,
+      ]}
+    >
+      BlockSize.Full, BlockSize.Half, BlockSize.OneThird, BlockSize.OneFourth,
+    </Box>
+    <Box
+      width={[
+        BlockSize.Full,
+        BlockSize.Half,
+        BlockSize.OneThird,
+        BlockSize.OneFourth,
+      ]}
+    >
+      BlockSize.Full, BlockSize.Half, BlockSize.OneThird, BlockSize.OneFourth,
+    </Box>
+    <Box
+      width={[
+        BlockSize.Full,
+        BlockSize.Half,
+        BlockSize.OneThird,
+        BlockSize.OneFourth,
+      ]}
+    >
+      BlockSize.Full, BlockSize.Half, BlockSize.OneThird, BlockSize.OneFourth,
+    </Box>
+  </Box>
+</>;
+```

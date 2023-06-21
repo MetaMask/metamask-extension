@@ -1,0 +1,164 @@
+// Variables
+$circle-radius: 14px;
+$circle-diameter: $circle-radius * 2;
+// Circumference ~ (2*PI*R). We reduced the number a little to create a snappier interaction
+$circle-circumference: 82;
+$circle-stroke-width: 2px;
+
+// Keyframes
+@keyframes collapse {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(0);
+  }
+}
+
+@keyframes expand {
+  from {
+    transform: scale(0);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.hold-to-reveal-button {
+  // Shared styles
+  &__absolute-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  &__icon {
+    height: $circle-diameter;
+    width: $circle-diameter;
+  }
+
+  &__circle-shared {
+    fill: transparent;
+    stroke-width: $circle-stroke-width;
+  }
+
+  // Class styles
+  &__button-hold {
+    padding: 6px 13px 6px 9px !important;
+    transform: scale(1) !important;
+    transition: 0.5s transform !important;
+
+    &:active {
+      background-color: var(--color-primary-default) !important;
+      transform: scale(1.05) !important;
+
+      .hold-to-reveal-button__circle-foreground {
+        stroke-dashoffset: 0 !important;
+      }
+
+      .hold-to-reveal-button__lock-icon-container {
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  &__absolute-fill {
+    @extend .hold-to-reveal-button__absolute-fill;
+  }
+
+  &__icon-container {
+    @extend .hold-to-reveal-button__icon;
+
+    position: relative;
+  }
+
+  &__main-icon-show {
+    animation: 0.4s fadeIn 1.2s forwards;
+  }
+
+  &__invisible {
+    opacity: 0;
+  }
+
+  &__circle-svg {
+    @extend .hold-to-reveal-button__icon;
+
+    transform: rotate(-90deg);
+  }
+
+  &__circle-background {
+    @extend .hold-to-reveal-button__circle-shared;
+
+    stroke: var(--color-primary-alternative);
+  }
+
+  &__circle-foreground {
+    @extend .hold-to-reveal-button__circle-shared;
+
+    stroke: var(--color-primary-inverse);
+    stroke-dasharray: $circle-circumference;
+    stroke-dashoffset: $circle-circumference;
+    transition: 1s stroke-dashoffset;
+  }
+
+  &__lock-icon-container {
+    @extend .hold-to-reveal-button__absolute-fill;
+
+    transition: 0.3s opacity;
+    opacity: 1;
+  }
+
+  &__lock-icon {
+    width: 7.88px;
+    height: 9px;
+  }
+
+  &__unlock-icon-hide {
+    animation: 0.3s collapse 1s forwards;
+  }
+
+  &__circle-static-outer-container {
+    animation: 0.25s collapse forwards;
+  }
+
+  &__circle-static-outer {
+    fill: var(--color-primary-inverse);
+  }
+
+  &__circle-static-inner-container {
+    animation: 0.125s collapse forwards;
+  }
+
+  &__circle-static-inner {
+    fill: var(--color-primary-default);
+  }
+
+  &__unlock-icon-container {
+    @extend .hold-to-reveal-button__absolute-fill;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: scale(0);
+    animation: 0.175s expand 0.2s forwards;
+  }
+
+  &__unlock-icon {
+    width: 14px;
+    height: 11px;
+  }
+}

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SelectedAccount Component should match snapshot 1`] = `
+<div>
+  <div
+    class="selected-account"
+  >
+    <div
+      class="selected-account__tooltip-wrapper"
+    >
+      <div
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="Copy to clipboard"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <button
+          class="selected-account__clickable"
+          data-testid="selected-account-click"
+        >
+          <div
+            class="selected-account__name"
+          >
+            Test Account
+          </div>
+          <div
+            class="selected-account__address"
+          >
+            0x0DC...E7bc
+            <div
+              class="selected-account__copy"
+            >
+              <span
+                class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                style="mask-image: url('./images/icons/copy.svg');"
+              />
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,121 @@
+$card-width-break-large: 224px;
+$link-title-width: 160px;
+$spacer-break-large: 24px;
+$spacer-break-small: 16px;
+
+.nft-details {
+  padding: 0 $spacer-break-small;
+
+  @include screen-sm-min {
+    padding: 0 $spacer-break-large;
+  }
+
+  &__tooltip-wrapper {
+    width: 100%;
+  }
+
+  &__top-section {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: $spacer-break-small;
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    padding: $spacer-break-large;
+
+    @include screen-sm-min {
+      margin-bottom: $spacer-break-large;
+      flex-direction: row;
+    }
+  }
+
+  &__info {
+    @include screen-sm-min {
+      max-width:
+        calc(
+          100% - #{$card-width-break-large} - #{$spacer-break-large}
+        );
+      flex: 0 0 calc(100% - #{$card-width-break-large} - #{$spacer-break-large});
+    }
+  }
+
+  &__card {
+    overflow: hidden;
+    margin-bottom: $spacer-break-small;
+
+    @include screen-sm-min {
+      margin-right: $spacer-break-large;
+      margin-bottom: 0;
+      max-width: $card-width-break-large;
+      flex: 0 0 $card-width-break-large;
+      height: $card-width-break-large;
+    }
+  }
+
+  &__nft-item {
+    margin-bottom: $spacer-break-small;
+
+    @include screen-sm-min {
+      margin-right: $spacer-break-large;
+      margin-bottom: 0;
+      max-width: $card-width-break-large;
+      flex: 0 0 $card-width-break-large;
+      height: $card-width-break-large;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    object-fit: contain;
+  }
+
+  &__address {
+    overflow-wrap: break-word;
+  }
+
+  &__contract-wrapper {
+    max-width: calc(100% - #{$link-title-width});
+  }
+
+  &__contract-copy-button {
+    @include H6;
+
+    width: 80px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: transparent;
+    cursor: pointer;
+    color: var(--color-text-alternative);
+    border: 0;
+    margin-top: -4px;
+
+    &:active {
+      transform: scale(0.97);
+    }
+  }
+
+  &__contract-link {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__image-source {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 332px;
+  }
+
+  &__link-title {
+    flex: 0 0 $link-title-width;
+    max-width: 0 0 $link-title-width;
+  }
+
+  &__send-button {
+    margin-inline-end: 8px;
+
+    @include screen-sm-min {
+      max-width: 160px;
+    }
+  }
+}

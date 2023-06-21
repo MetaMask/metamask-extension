@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Breadcrumbs Component should match snapshot with multiple breakcumbs 1`] = `
+<div>
+  <div
+    class="breadcrumbs"
+  >
+    <div
+      class="breadcrumb"
+    />
+    <div
+      class="breadcrumb"
+    />
+    <div
+      class="breadcrumb"
+    />
+  </div>
+</div>
+`;

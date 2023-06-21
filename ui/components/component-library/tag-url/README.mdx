@@ -1,0 +1,132 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { TagUrl } from './tag-url';
+
+# Tag Url
+
+The `TagUrl` is a component used to display dApp information
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--default-story" />
+</Canvas>
+
+## Props
+
+The `TagUrl` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props.
+
+<ArgsTable of={TagUrl} />
+
+### Action Button Label
+
+If we want to have a button in `TagUrl` component. You can update the `ButtonLink` component props used for the action button using `actionButtonProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--action-button-label" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Permissions"
+/>
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Action"
+/>
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Click"
+/>
+```
+
+### Show Lock Icon
+
+Use the `showLockIcon` prop to render a lock icon next to the `label`. It's intended use is to display if the url uses `https`. This logic should be added during implementation and is not included in the component.
+
+Off(`undefined`) by default.
+
+Props for the lock icon can be changed using the `lockIconProps`
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--show-lock-icon" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library';
+
+<TagUrl
+  label="app.uniswap.org"
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  actionButtonLabel="Permissions"
+/>
+
+<TagUrl src="" label="http://notsecure.com" />
+```
+
+### Src
+
+Use the `src` prop with an image url to render the `AvatarFavicon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--src" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  src="https://uniswap.org/favicon.ico"
+  label="app.uniswap.org"
+  showLockIcon
+/>
+<TagUrl
+  src="https://peepeth.com/favicon-32x32.png"
+  label="peepeth.com"
+  showLockIcon
+/>
+<TagUrl
+  src="https://1inch.exchange/assets/favicon/favicon-32x32.png"
+  label="1inch.exchange"
+  showLockIcon
+/>
+<TagUrl label="fallback" src="" />
+```
+
+### Label
+
+Use the `label` prop for the text content of the `TagUrl` component
+
+Note: `TagUrl` doesn't not contain string manipulation logic to detect `https` or `http` it will display whatever is passed to `label`
+
+<Canvas>
+  <Story id="components-componentlibrary-tagurl--label" />
+</Canvas>
+
+```jsx
+import { TagUrl } from '../../ui/component-library/tag-url';
+
+<TagUrl
+  src="https://uniswap.org/favicon.ico"
+  showLockIcon
+  label="app.uniswap.org"
+/>
+<TagUrl
+  src="https://metamask.io/icons/icon-48x48.png?v=48400a28770e10dd52a8c0e539aeb282"
+  showLockIcon
+  label="metamask.io"
+/>
+<TagUrl
+  src=""
+  showLockIcon
+  label="metamask.github.io"
+/>
+```

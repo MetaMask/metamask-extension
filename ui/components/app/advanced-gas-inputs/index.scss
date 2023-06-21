@@ -1,0 +1,155 @@
+.advanced-gas-inputs {
+  &__gas-edit-rows {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
+  &__gas-edit-row {
+    display: flex;
+    flex-flow: column;
+    width: 47.5%;
+
+    &__label {
+      @include H7;
+
+      color: var(--color-text-alternative);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      @include screen-sm-max {
+        @include H8;
+      }
+
+      .info-circle {
+        cursor: pointer;
+      }
+
+      .info-circle:hover {
+        color: var(--color-icon-muted);
+      }
+    }
+
+    &__error-text {
+      @include H7;
+
+      color: var(--color-error-default);
+    }
+
+    &__warning-text {
+      @include H7;
+
+      color: var(--color-warning-default);
+    }
+
+    &__input-wrapper {
+      position: relative;
+    }
+
+    &__input {
+      /*rtl:ignore*/
+      @include Paragraph;
+
+      direction: ltr;
+      border: 1px solid var(--color-border-muted);
+      border-radius: 4px;
+      background: var(--color-background-default);
+      color: var(--color-text-alternative);
+      height: 24px;
+      width: 100%;
+      padding-left: 8px;
+      padding-top: 2px;
+      margin-top: 7px;
+    }
+
+    &__input--error {
+      border: 1px solid var(--color-error-default);
+    }
+
+    &__input--warning {
+      border: 1px solid var(--color-warning-default);
+    }
+
+    &__input-arrows {
+      @include H6;
+
+      position: absolute;
+      top: 7px;
+
+      /*rtl:ignore*/
+      right: 0;
+      width: 17px;
+      height: 24px;
+      border: 1px solid var(--color-border-muted);
+      border-top-right-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      color: var(--color-icon-muted);
+      border-bottom-right-radius: 4px;
+      cursor: pointer;
+
+      &__i-wrap {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      &__i-wrap:hover {
+        background: var(--color-primary-default);
+        color: var(--color-primary-inverse);
+      }
+
+      i:hover {
+        background: var(--color-primary-muted);
+      }
+
+      i {
+        font-size: $font-size-h8;
+      }
+
+      &--hidden {
+        display: none;
+      }
+    }
+
+    &__input-arrows--error {
+      border: 1px solid var(--color-error-default);
+    }
+
+    &__input-arrows--warning {
+      border: 1px solid var(--color-warning-default);
+    }
+
+    input[type="number"] {
+      -webkit-appearance: textfield;
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    input[type="number"]:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      display: none;
+    }
+
+    &__gwei-symbol {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      color: var(--color-text-muted);
+    }
+
+    &__custom-text {
+      @include H7;
+    }
+  }
+}

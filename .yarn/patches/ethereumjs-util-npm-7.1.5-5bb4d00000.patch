@@ -1,0 +1,48 @@
+diff --git a/dist/internal.js b/dist/internal.js
+index 01a90a00e666ff2af0e66fcab0016d58ffd13fd7..1bfdbeb9fc56ed7a13e7f4a52fa439455dc0e910 100644
+--- a/dist/internal.js
++++ b/dist/internal.js
+@@ -43,8 +43,9 @@ exports.isHexPrefixed = isHexPrefixed;
+  * @returns the string without 0x prefix
+  */
+ const stripHexPrefix = (str) => {
+-    if (typeof str !== 'string')
+-        throw new Error(`[stripHexPrefix] input must be type 'string', received ${typeof str}`);
++    if (typeof str !== 'string') {
++      return str;
++    }
+     return isHexPrefixed(str) ? str.slice(2) : str;
+ };
+ exports.stripHexPrefix = stripHexPrefix;
+diff --git a/dist.browser/internal.js b/dist.browser/internal.js
+index 9f3888b30098dd284a4cb80edbe6cfe4305241a2..68db592230ffb4e4c3938870931567cc51e78173 100644
+--- a/dist.browser/internal.js
++++ b/dist.browser/internal.js
+@@ -43,8 +43,9 @@ exports.isHexPrefixed = isHexPrefixed;
+  * @returns the string without 0x prefix
+  */
+ var stripHexPrefix = function (str) {
+-    if (typeof str !== 'string')
+-        throw new Error("[stripHexPrefix] input must be type 'string', received ".concat(typeof str));
++    if (typeof str !== 'string') {
++      return str;
++    }
+     return isHexPrefixed(str) ? str.slice(2) : str;
+ };
+ exports.stripHexPrefix = stripHexPrefix;
+diff --git a/src/internal.ts b/src/internal.ts
+index 52032f54caa0b6673c2bcebfc8d0f652d71976e7..8f6f5f80f3fe3a2656aacf21215120559b80d84a 100644
+--- a/src/internal.ts
++++ b/src/internal.ts
+@@ -42,8 +42,9 @@ export function isHexPrefixed(str: string): boolean {
+  * @returns the string without 0x prefix
+  */
+ export const stripHexPrefix = (str: string): string => {
+-  if (typeof str !== 'string')
+-    throw new Error(`[stripHexPrefix] input must be type 'string', received ${typeof str}`)
++  if (typeof str !== 'string') {
++    return str;
++  }
+ 
+   return isHexPrefixed(str) ? str.slice(2) : str
+ }

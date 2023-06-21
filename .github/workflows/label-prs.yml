@@ -1,0 +1,27 @@
+name: Label PR
+
+on:
+  pull_request:
+    types: [assigned, opened, edited, synchronize, reopened]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
+    - name: Install dependencies
+      run: yarn

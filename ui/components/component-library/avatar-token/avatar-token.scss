@@ -1,0 +1,23 @@
+.mm-avatar-token {
+  &--with-halo {
+    position: relative;
+  }
+
+  &__token-image {
+    width: 100%;
+
+    &--blurred {
+      filter: blur(20px);
+    }
+
+    &--size-reduced {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 62.5%;
+      height: 62.5%;
+      border-radius: 50%;
+    }
+  }
+}

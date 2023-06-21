@@ -1,0 +1,35 @@
+.snap-install-warning {
+  .popover-header {
+    padding-bottom: 0;
+  }
+
+  .checkbox-label {
+    @include H7;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 0 16px;
+    margin-top: 24px;
+
+    &--first {
+      margin-top: 0;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 100%;
+    max-height: 40px;
+  }
+
+  &__footer-button {
+    margin-right: 16px;
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}

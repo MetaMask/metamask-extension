@@ -1,0 +1,24 @@
+.review-spending-cap {
+  &__heading {
+    width: 100%;
+  }
+
+  &__heading-title {
+    &__tooltip {
+      width: 180px;
+
+      &__question-icon {
+        color: var(--color-icon-muted);
+      }
+    }
+  }
+
+  &__heading-detail {
+    flex-grow: 1;
+    align-self: center;
+  }
+
+  &__value {
+    word-break: break-word;
+  }
+}

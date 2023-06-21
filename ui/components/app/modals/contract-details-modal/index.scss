@@ -1,0 +1,16 @@
+.contract-details-modal {
+  width: 100% !important;
+  max-width: 408px;
+
+  &__content {
+    border-bottom: 1px solid var(--color-border-muted);
+
+    &__contract {
+      &__identicon {
+        margin: 16px;
+        box-shadow: none;
+        background: none;
+      }
+    }
+  }
+}

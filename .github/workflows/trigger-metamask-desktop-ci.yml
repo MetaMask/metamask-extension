@@ -1,0 +1,33 @@
+name: Trigger MetaMask Desktop CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  trigger-desktop-ci:
+    runs-on: ubuntu-latest
+    environment: desktop
+    if: ${{ (!github.event.pull_request.draft && startsWith(github.head_ref, 'Version-v')) || (!github.event.pull_request) }}
+    steps:
+      - name: Trigger MetaMask Desktop CI
+        env:
+          CI_TOKEN: ${{ secrets.DESKTOP_CI_TOKEN }}
+          DESKTOP_CI_URL: ${{ secrets.DESKTOP_CI_URL }}
+          EXTENSION_BRANCH: ${{ github.head_ref || github.event.base_ref }}
+          DESKTOP_BRANCH: app-stable
+        run: |
+          echo "Extension branch - $EXTENSION_BRANCH"
+          echo "Desktop branch - $DESKTOP_BRANCH"
+          curl --request POST \
+          --url "$DESKTOP_CI_URL" \
+          --header "Circle-Token: $CI_TOKEN" \
+          --header "content-type: application/json" \
+          --data '{"branch":"main","parameters":{"extension-release":true,"extension-release-branch":"'"$EXTENSION_BRANCH"'","app-stable-branch":"'"$DESKTOP_BRANCH"'"}}'

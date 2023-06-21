@@ -1,0 +1,78 @@
+{
+  "author": "https://metamask.io",
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "19": "images/icon-19.png",
+      "32": "images/icon-32.png",
+      "38": "images/icon-38.png",
+      "64": "images/icon-64.png",
+      "128": "images/icon-128.png",
+      "512": "images/icon-512.png"
+    },
+    "default_title": "MetaMask",
+    "default_popup": "popup.html"
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+M",
+        "mac": "Alt+Shift+M",
+        "chromeos": "Alt+Shift+M",
+        "linux": "Alt+Shift+M"
+      }
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["file://*/*", "http://*/*", "https://*/*"],
+      "js": [
+        "disable-console.js",
+        "globalthis.js",
+        "lockdown-install.js",
+        "lockdown-run.js",
+        "lockdown-more.js",
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    },
+    {
+      "matches": ["*://connect.trezor.io/*/popup.html"],
+      "js": ["vendor/trezor/content-script.js"]
+    }
+  ],
+  "default_locale": "en",
+  "description": "__MSG_appDescription__",
+  "icons": {
+    "16": "images/icon-16.png",
+    "19": "images/icon-19.png",
+    "32": "images/icon-32.png",
+    "38": "images/icon-38.png",
+    "48": "images/icon-48.png",
+    "64": "images/icon-64.png",
+    "128": "images/icon-128.png",
+    "512": "images/icon-512.png"
+  },
+  "manifest_version": 2,
+  "name": "__MSG_appName__",
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "clipboardWrite",
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://*.codefi.network/",
+    "https://chainid.network/chains.json",
+    "https://lattice.gridplus.io/*",
+    "activeTab",
+    "webRequest",
+    "*://*.eth/",
+    "notifications"
+  ],
+  "short_name": "__MSG_appName__"
+}
