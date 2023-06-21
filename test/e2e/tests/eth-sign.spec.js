@@ -5,6 +5,7 @@ const {
   DAPP_URL,
   defaultGanacheOptions,
   unlockWallet,
+  regularDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -36,7 +37,7 @@ describe('Eth sign', function () {
   });
 
   it('can initiate and confirm a eth sign', async function () {
-    const expectedPersonalMessage =
+    const expectedEthSignMessage =
       '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
     const expectedEthSignResult =
       '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
@@ -69,23 +70,11 @@ describe('Eth sign', function () {
           windowHandles,
         );
 
-        await driver.findElement({
-          css: '.request-signature__content__title',
-          text: 'Signature request',
-        });
+        await verifyAndAssertEthSign(driver, DAPP_URL, expectedEthSignMessage);
 
-        await driver.findElement({
-          css: '.request-signature__origin',
-          text: DAPP_URL,
-        });
-
-        await driver.findElement({
-          css: '.request-signature__row-value',
-          text: expectedPersonalMessage,
-        });
-
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement(
+        await approveEthSign(
+          driver,
+          '[data-testid="page-container-footer-next"]',
           '.signature-request-warning__footer__sign-button',
         );
         // Switch to the Dapp
@@ -103,7 +92,7 @@ describe('Eth sign', function () {
   });
 
   it('can queue multiple eth sign and confirm', async function () {
-    const expectedPersonalMessage =
+    const expectedEthSignMessage =
       '0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0';
     const expectedEthSignResult =
       '"0x816ab6c5d5356548cc4e004ef35a37fdfab916742a2bbeda756cd064c3d3789a6557d41d49549be1de249e1937a8d048996dfcc70d0552111605dc7cc471e8531b"';
@@ -150,29 +139,22 @@ describe('Eth sign', function () {
           tag: 'a',
         });
 
-        const title = await driver.findElement(
-          '.request-signature__content__title',
-        );
-        const origin = await driver.findElement('.request-signature__origin');
-        assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), DAPP_URL);
-
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, expectedPersonalMessage);
+        await verifyAndAssertEthSign(driver, DAPP_URL, expectedEthSignMessage);
 
         // Confirm first eth sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement(
+        await approveEthSign(
+          driver,
+          '[data-testid="page-container-footer-next"]',
           '.signature-request-warning__footer__sign-button',
         );
+
         // Confirm second eth sign
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.clickElement(
+        await approveEthSign(
+          driver,
+          '[data-testid="page-container-footer-next"]',
           '.signature-request-warning__footer__sign-button',
         );
+
         // Switch to the Dapp
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
@@ -185,3 +167,26 @@ describe('Eth sign', function () {
     );
   });
 });
+
+async function verifyAndAssertEthSign(driver, dappUrl, expectedMessage) {
+  await driver.findElement({
+    css: '.request-signature__content__title',
+    text: 'Signature request',
+  });
+
+  await driver.findElement({
+    css: '.request-signature__origin',
+    text: dappUrl,
+  });
+
+  await driver.findElement({
+    css: '.request-signature__row-value',
+    text: expectedMessage,
+  });
+}
+
+async function approveEthSign(driver, buttonTestId, signButtonClass) {
+  await driver.clickElement(buttonTestId);
+  await driver.clickElement(signButtonClass);
+  await driver.delay(regularDelayMs);
+}
