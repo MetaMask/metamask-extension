@@ -175,6 +175,7 @@ export const AppHeader = ({ location }) => {
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
+        marginBottom={disableAccountPicker && 4}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={
