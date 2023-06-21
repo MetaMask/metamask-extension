@@ -721,276 +721,6 @@ describe('NetworkController', () => {
     });
   });
 
-  describe('getEIP1559Compatibility', () => {
-    describe('if no provider has been set yet', () => {
-      it('does not make any state changes', async () => {
-        await withController(async ({ controller }) => {
-          const promiseForNoStateChanges = waitForStateChanges({
-            controller,
-            count: 0,
-            operation: async () => {
-              await controller.getEIP1559Compatibility();
-            },
-          });
-
-          expect(Boolean(promiseForNoStateChanges)).toBe(true);
-        });
-      });
-
-      it('returns false', async () => {
-        await withController(async ({ controller }) => {
-          const isEIP1559Compatible =
-            await controller.getEIP1559Compatibility();
-
-          expect(isEIP1559Compatible).toBe(false);
-        });
-      });
-    });
-
-    describe('if a provider has been set but networkDetails.EIPS in state already has a "1559" property', () => {
-      it('does not make any state changes', async () => {
-        await withController(
-          {
-            state: {
-              networkDetails: {
-                EIPS: {
-                  1559: true,
-                },
-              },
-            },
-          },
-          async ({ controller }) => {
-            setFakeProvider(controller, {
-              stubLookupNetworkWhileSetting: true,
-            });
-            const promiseForNoStateChanges = waitForStateChanges({
-              controller,
-              count: 0,
-              operation: async () => {
-                await controller.getEIP1559Compatibility();
-              },
-            });
-
-            expect(Boolean(promiseForNoStateChanges)).toBe(true);
-          },
-        );
-      });
-
-      it('returns the value of the "1559" property', async () => {
-        await withController(
-          {
-            state: {
-              networkDetails: {
-                EIPS: {
-                  1559: true,
-                },
-              },
-            },
-          },
-          async ({ controller }) => {
-            setFakeProvider(controller, {
-              stubLookupNetworkWhileSetting: true,
-            });
-            const isEIP1559Compatible =
-              await controller.getEIP1559Compatibility();
-
-            expect(isEIP1559Compatible).toBe(true);
-          },
-        );
-      });
-    });
-
-    describe('if a provider has been set and networkDetails.EIPS in state does not already have a "1559" property', () => {
-      describe('if the request for the latest block is successful', () => {
-        describe('if the latest block has a "baseFeePerGas" property', () => {
-          it('sets the "1559" property to true', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: POST_1559_BLOCK,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              await controller.getEIP1559Compatibility();
-
-              expect(
-                controller.store.getState().networkDetails.EIPS[1559],
-              ).toBe(true);
-            });
-          });
-
-          it('returns true', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: POST_1559_BLOCK,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              const isEIP1559Compatible =
-                await controller.getEIP1559Compatibility();
-
-              expect(isEIP1559Compatible).toBe(true);
-            });
-          });
-        });
-
-        describe('if the latest block does not have a "baseFeePerGas" property', () => {
-          it('sets the "1559" property to false', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: PRE_1559_BLOCK,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              await controller.getEIP1559Compatibility();
-
-              expect(
-                controller.store.getState().networkDetails.EIPS[1559],
-              ).toBe(false);
-            });
-          });
-
-          it('returns false', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: PRE_1559_BLOCK,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              const isEIP1559Compatible =
-                await controller.getEIP1559Compatibility();
-
-              expect(isEIP1559Compatible).toBe(false);
-            });
-          });
-        });
-
-        describe('if the request for the latest block responds with null', () => {
-          it('sets the "1559" property to false', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: null,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              await controller.getEIP1559Compatibility();
-
-              expect(
-                controller.store.getState().networkDetails.EIPS[1559],
-              ).toBe(false);
-            });
-          });
-
-          it('returns false', async () => {
-            await withController(async ({ controller }) => {
-              setFakeProvider(controller, {
-                stubs: [
-                  {
-                    request: {
-                      method: 'eth_getBlockByNumber',
-                      params: ['latest', false],
-                    },
-                    response: {
-                      result: null,
-                    },
-                  },
-                ],
-                stubLookupNetworkWhileSetting: true,
-              });
-
-              const isEIP1559Compatible =
-                await controller.getEIP1559Compatibility();
-
-              expect(isEIP1559Compatible).toBe(false);
-            });
-          });
-        });
-      });
-
-      describe('if the request for the latest block is unsuccessful', () => {
-        it('does not make any state changes', async () => {
-          await withController(async ({ controller }) => {
-            setFakeProvider(controller, {
-              stubs: [
-                {
-                  request: {
-                    method: 'eth_getBlockByNumber',
-                    params: ['latest', false],
-                  },
-                  error: GENERIC_JSON_RPC_ERROR,
-                },
-              ],
-              stubLookupNetworkWhileSetting: true,
-            });
-
-            const promiseForNoStateChanges = waitForStateChanges({
-              controller,
-              count: 0,
-              operation: async () => {
-                try {
-                  await controller.getEIP1559Compatibility();
-                } catch (error) {
-                  // ignore error
-                }
-              },
-            });
-
-            expect(Boolean(promiseForNoStateChanges)).toBe(true);
-          });
-        });
-      });
-    });
-  });
-
   describe('lookupNetwork', () => {
     describe('if a provider has not been set', () => {
       it('does not change network in state', async () => {
@@ -2774,6 +2504,146 @@ describe('NetworkController', () => {
     });
   });
 
+  describe('setProviderType', () => {
+    for (const {
+      networkType,
+      chainId,
+      ticker,
+      blockExplorerUrl,
+    } of INFURA_NETWORKS) {
+      describe(`given a network type of "${networkType}"`, () => {
+        refreshNetworkTests({
+          expectedProviderConfig: buildProviderConfig({
+            type: networkType,
+          }),
+          operation: async (controller) => {
+            await controller.setProviderType(networkType);
+          },
+        });
+      });
+
+      it(`overwrites the provider configuration using a predetermined chainId, ticker, and blockExplorerUrl for "${networkType}", clearing id, rpcUrl, and nickname`, async () => {
+        await withController(
+          {
+            state: {
+              providerConfig: {
+                type: 'rpc',
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: '0x1337',
+                nickname: 'test-chain',
+                ticker: 'TEST',
+                rpcPrefs: {
+                  blockExplorerUrl: 'https://test-block-explorer.com',
+                },
+              },
+            },
+          },
+          async ({ controller }) => {
+            const fakeProvider = buildFakeProvider();
+            const fakeNetworkClient = buildFakeClient(fakeProvider);
+            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
+
+            await controller.setProviderType(networkType);
+
+            expect(controller.store.getState().providerConfig).toStrictEqual({
+              type: networkType,
+              rpcUrl: undefined,
+              chainId,
+              ticker,
+              nickname: undefined,
+              rpcPrefs: { blockExplorerUrl },
+              id: undefined,
+            });
+          },
+        );
+      });
+    }
+
+    describe('given a network type of "rpc"', () => {
+      it('throws because there is no way to switch to a custom RPC endpoint using this method', async () => {
+        await withController(
+          {
+            state: {
+              providerConfig: {
+                type: NETWORK_TYPES.RPC,
+                rpcUrl: 'http://somethingexisting.com',
+                chainId: toHex(99999),
+                ticker: 'something existing',
+                nickname: 'something existing',
+              },
+            },
+          },
+          async ({ controller }) => {
+            await expect(() =>
+              controller.setProviderType(NETWORK_TYPES.RPC),
+            ).rejects.toThrow(
+              'NetworkController - cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"',
+            );
+          },
+        );
+      });
+
+      it("doesn't set a provider", async () => {
+        await withController(async ({ controller }) => {
+          const fakeProvider = buildFakeProvider();
+          const fakeNetworkClient = buildFakeClient(fakeProvider);
+          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+
+          try {
+            await controller.setProviderType(NETWORK_TYPES.RPC);
+          } catch {
+            // catch the rejection (it is tested above)
+          }
+
+          expect(createNetworkClientMock).not.toHaveBeenCalled();
+          expect(controller.getProviderAndBlockTracker().provider).toBeNull();
+        });
+      });
+
+      it('does not update networkDetails.EIPS in state', async () => {
+        await withController(async ({ controller }) => {
+          const fakeProvider = buildFakeProvider([
+            {
+              request: {
+                method: 'eth_getBlockByNumber',
+                params: ['latest', false],
+              },
+              response: {
+                result: {
+                  baseFeePerGas: '0x1',
+                },
+              },
+            },
+          ]);
+          const fakeNetworkClient = buildFakeClient(fakeProvider);
+          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+
+          try {
+            await controller.setProviderType(NETWORK_TYPES.RPC);
+          } catch {
+            // catch the rejection (it is tested above)
+          }
+
+          expect(
+            controller.store.getState().networkDetails.EIPS[1559],
+          ).toBeUndefined();
+        });
+      });
+    });
+
+    describe('given an invalid Infura network name', () => {
+      it('throws', async () => {
+        await withController(async ({ controller }) => {
+          await expect(() =>
+            controller.setProviderType('invalid-infura-network'),
+          ).rejects.toThrow(
+            new Error('Unknown Infura provider type "invalid-infura-network".'),
+          );
+        });
+      });
+    });
+  });
+
   describe('setActiveNetwork', () => {
     refreshNetworkTests({
       expectedProviderConfig: {
@@ -2991,141 +2861,271 @@ describe('NetworkController', () => {
     });
   });
 
-  describe('setProviderType', () => {
-    for (const {
-      networkType,
-      chainId,
-      ticker,
-      blockExplorerUrl,
-    } of INFURA_NETWORKS) {
-      describe(`given a network type of "${networkType}"`, () => {
-        refreshNetworkTests({
-          expectedProviderConfig: buildProviderConfig({
-            type: networkType,
-          }),
-          operation: async (controller) => {
-            await controller.setProviderType(networkType);
-          },
+  describe('getEIP1559Compatibility', () => {
+    describe('if no provider has been set yet', () => {
+      it('does not make any state changes', async () => {
+        await withController(async ({ controller }) => {
+          const promiseForNoStateChanges = waitForStateChanges({
+            controller,
+            count: 0,
+            operation: async () => {
+              await controller.getEIP1559Compatibility();
+            },
+          });
+
+          expect(Boolean(promiseForNoStateChanges)).toBe(true);
         });
       });
 
-      it(`overwrites the provider configuration using a predetermined chainId, ticker, and blockExplorerUrl for "${networkType}", clearing id, rpcUrl, and nickname`, async () => {
-        await withController(
-          {
-            state: {
-              providerConfig: {
-                type: 'rpc',
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: '0x1337',
-                nickname: 'test-chain',
-                ticker: 'TEST',
-                rpcPrefs: {
-                  blockExplorerUrl: 'https://test-block-explorer.com',
-                },
-              },
-            },
-          },
-          async ({ controller }) => {
-            const fakeProvider = buildFakeProvider();
-            const fakeNetworkClient = buildFakeClient(fakeProvider);
-            mockCreateNetworkClient().mockReturnValue(fakeNetworkClient);
-
-            await controller.setProviderType(networkType);
-
-            expect(controller.store.getState().providerConfig).toStrictEqual({
-              type: networkType,
-              rpcUrl: undefined,
-              chainId,
-              ticker,
-              nickname: undefined,
-              rpcPrefs: { blockExplorerUrl },
-              id: undefined,
-            });
-          },
-        );
-      });
-    }
-
-    describe('given a network type of "rpc"', () => {
-      it('throws because there is no way to switch to a custom RPC endpoint using this method', async () => {
-        await withController(
-          {
-            state: {
-              providerConfig: {
-                type: NETWORK_TYPES.RPC,
-                rpcUrl: 'http://somethingexisting.com',
-                chainId: toHex(99999),
-                ticker: 'something existing',
-                nickname: 'something existing',
-              },
-            },
-          },
-          async ({ controller }) => {
-            await expect(() =>
-              controller.setProviderType(NETWORK_TYPES.RPC),
-            ).rejects.toThrow(
-              'NetworkController - cannot call "setProviderType" with type "rpc". Use "setActiveNetwork"',
-            );
-          },
-        );
-      });
-
-      it("doesn't set a provider", async () => {
+      it('returns false', async () => {
         await withController(async ({ controller }) => {
-          const fakeProvider = buildFakeProvider();
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+          const isEIP1559Compatible =
+            await controller.getEIP1559Compatibility();
 
-          try {
-            await controller.setProviderType(NETWORK_TYPES.RPC);
-          } catch {
-            // catch the rejection (it is tested above)
-          }
-
-          expect(createNetworkClientMock).not.toHaveBeenCalled();
-          expect(controller.getProviderAndBlockTracker().provider).toBeNull();
-        });
-      });
-
-      it('does not update networkDetails.EIPS in state', async () => {
-        await withController(async ({ controller }) => {
-          const fakeProvider = buildFakeProvider([
-            {
-              request: {
-                method: 'eth_getBlockByNumber',
-                params: ['latest', false],
-              },
-              response: {
-                result: {
-                  baseFeePerGas: '0x1',
-                },
-              },
-            },
-          ]);
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
-
-          try {
-            await controller.setProviderType(NETWORK_TYPES.RPC);
-          } catch {
-            // catch the rejection (it is tested above)
-          }
-
-          expect(
-            controller.store.getState().networkDetails.EIPS[1559],
-          ).toBeUndefined();
+          expect(isEIP1559Compatible).toBe(false);
         });
       });
     });
 
-    describe('given an invalid Infura network name', () => {
-      it('throws', async () => {
-        await withController(async ({ controller }) => {
-          await expect(() =>
-            controller.setProviderType('invalid-infura-network'),
-          ).rejects.toThrow(
-            new Error('Unknown Infura provider type "invalid-infura-network".'),
-          );
+    describe('if a provider has been set but networkDetails.EIPS in state already has a "1559" property', () => {
+      it('does not make any state changes', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {
+                  1559: true,
+                },
+              },
+            },
+          },
+          async ({ controller }) => {
+            setFakeProvider(controller, {
+              stubLookupNetworkWhileSetting: true,
+            });
+            const promiseForNoStateChanges = waitForStateChanges({
+              controller,
+              count: 0,
+              operation: async () => {
+                await controller.getEIP1559Compatibility();
+              },
+            });
+
+            expect(Boolean(promiseForNoStateChanges)).toBe(true);
+          },
+        );
+      });
+
+      it('returns the value of the "1559" property', async () => {
+        await withController(
+          {
+            state: {
+              networkDetails: {
+                EIPS: {
+                  1559: true,
+                },
+              },
+            },
+          },
+          async ({ controller }) => {
+            setFakeProvider(controller, {
+              stubLookupNetworkWhileSetting: true,
+            });
+            const isEIP1559Compatible =
+              await controller.getEIP1559Compatibility();
+
+            expect(isEIP1559Compatible).toBe(true);
+          },
+        );
+      });
+    });
+
+    describe('if a provider has been set and networkDetails.EIPS in state does not already have a "1559" property', () => {
+      describe('if the request for the latest block is successful', () => {
+        describe('if the latest block has a "baseFeePerGas" property', () => {
+          it('sets the "1559" property to true', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: POST_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(true);
+            });
+          });
+
+          it('returns true', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: POST_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(true);
+            });
+          });
+        });
+
+        describe('if the latest block does not have a "baseFeePerGas" property', () => {
+          it('sets the "1559" property to false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: PRE_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(false);
+            });
+          });
+
+          it('returns false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: PRE_1559_BLOCK,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(false);
+            });
+          });
+        });
+
+        describe('if the request for the latest block responds with null', () => {
+          it('sets the "1559" property to false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: null,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              await controller.getEIP1559Compatibility();
+
+              expect(
+                controller.store.getState().networkDetails.EIPS[1559],
+              ).toBe(false);
+            });
+          });
+
+          it('returns false', async () => {
+            await withController(async ({ controller }) => {
+              setFakeProvider(controller, {
+                stubs: [
+                  {
+                    request: {
+                      method: 'eth_getBlockByNumber',
+                      params: ['latest', false],
+                    },
+                    response: {
+                      result: null,
+                    },
+                  },
+                ],
+                stubLookupNetworkWhileSetting: true,
+              });
+
+              const isEIP1559Compatible =
+                await controller.getEIP1559Compatibility();
+
+              expect(isEIP1559Compatible).toBe(false);
+            });
+          });
+        });
+      });
+
+      describe('if the request for the latest block is unsuccessful', () => {
+        it('does not make any state changes', async () => {
+          await withController(async ({ controller }) => {
+            setFakeProvider(controller, {
+              stubs: [
+                {
+                  request: {
+                    method: 'eth_getBlockByNumber',
+                    params: ['latest', false],
+                  },
+                  error: GENERIC_JSON_RPC_ERROR,
+                },
+              ],
+              stubLookupNetworkWhileSetting: true,
+            });
+
+            const promiseForNoStateChanges = waitForStateChanges({
+              controller,
+              count: 0,
+              operation: async () => {
+                try {
+                  await controller.getEIP1559Compatibility();
+                } catch (error) {
+                  // ignore error
+                }
+              },
+            });
+
+            expect(Boolean(promiseForNoStateChanges)).toBe(true);
+          });
         });
       });
     });
@@ -3229,6 +3229,729 @@ describe('NetworkController', () => {
 
         expect(ethQuery).toBeUndefined();
       });
+    });
+  });
+
+  describe('upsertNetworkConfiguration', () => {
+    it('adds the given network configuration when its rpcURL does not match an existing configuration', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'network-configuration-id-1');
+
+      await withController(async ({ controller }) => {
+        const rpcUrlNetwork = {
+          chainId: toHex(9999),
+          rpcUrl: 'https://test-rpc.com',
+          ticker: 'RPC',
+        };
+
+        expect(controller.store.getState().networkConfigurations).toStrictEqual(
+          {},
+        );
+
+        await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+          referrer: 'https://test-dapp.com',
+          source: 'dapp',
+        });
+
+        expect(
+          Object.values(controller.store.getState().networkConfigurations),
+        ).toStrictEqual(
+          expect.arrayContaining([
+            {
+              ...rpcUrlNetwork,
+              nickname: undefined,
+              rpcPrefs: undefined,
+              id: 'network-configuration-id-1',
+            },
+          ]),
+        );
+      });
+    });
+
+    it('update a network configuration when the configuration being added has an rpcURL that matches an existing configuration', async () => {
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              testNetworkConfigurationId: {
+                rpcUrl: 'https://rpc-url.com',
+                ticker: 'old_rpc_ticker',
+                nickname: 'old_rpc_nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1),
+                id: 'testNetworkConfigurationId',
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.upsertNetworkConfiguration(
+            {
+              rpcUrl: 'https://rpc-url.com',
+              ticker: 'new_rpc_ticker',
+              nickname: 'new_rpc_nickname',
+              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+              chainId: toHex(1),
+            },
+            { referrer: 'https://test-dapp.com', source: 'dapp' },
+          );
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual(
+            expect.arrayContaining([
+              {
+                rpcUrl: 'https://rpc-url.com',
+                nickname: 'new_rpc_nickname',
+                ticker: 'new_rpc_ticker',
+                rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+                chainId: toHex(1),
+                id: 'testNetworkConfigurationId',
+              },
+            ]),
+          );
+        },
+      );
+    });
+
+    it('throws if the given chain ID is not a 0x-prefixed hex number', async () => {
+      const invalidChainId = '1';
+      await withController(async ({ controller }) => {
+        await expect(async () =>
+          controller.upsertNetworkConfiguration(
+            {
+              // @ts-expect-error Intentionally invalid
+              chainId: invalidChainId,
+              nickname: 'RPC',
+              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+              rpcUrl: 'rpc_url',
+              ticker: 'RPC',
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          ),
+        ).rejects.toThrow(
+          new Error(
+            `Invalid chain ID "${invalidChainId}": invalid hex string.`,
+          ),
+        );
+      });
+    });
+
+    it('throws if the given chain ID is greater than the maximum allowed ID', async () => {
+      await withController(async ({ controller }) => {
+        await expect(async () =>
+          controller.upsertNetworkConfiguration(
+            {
+              chainId: '0xFFFFFFFFFFFFFFFF',
+              nickname: 'RPC',
+              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+              rpcUrl: 'rpc_url',
+              ticker: 'RPC',
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          ),
+        ).rejects.toThrow(
+          new Error(
+            'Invalid chain ID "0xFFFFFFFFFFFFFFFF": numerical value greater than max safe value.',
+          ),
+        );
+      });
+    });
+
+    it('throws if the no (or a falsy) rpcUrl is passed', async () => {
+      await withController(async ({ controller }) => {
+        await expect(() =>
+          controller.upsertNetworkConfiguration(
+            /* @ts-expect-error We are intentionally passing bad input. */
+            {
+              chainId: toHex(9999),
+              nickname: 'RPC',
+              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+              ticker: 'RPC',
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          ),
+        ).rejects.toThrow(
+          new Error(
+            'An rpcUrl is required to add or update network configuration',
+          ),
+        );
+      });
+    });
+
+    it('throws if rpcUrl passed is not a valid Url', async () => {
+      await withController(async ({ controller }) => {
+        await expect(async () =>
+          controller.upsertNetworkConfiguration(
+            {
+              chainId: toHex(9999),
+              nickname: 'RPC',
+              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+              ticker: 'RPC',
+              rpcUrl: 'test',
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          ),
+        ).rejects.toThrow(new Error('rpcUrl must be a valid URL'));
+      });
+    });
+
+    it('throws if the no (or a falsy) ticker is passed', async () => {
+      await withController(async ({ controller }) => {
+        await expect(async () =>
+          controller.upsertNetworkConfiguration(
+            // @ts-expect-error - we want to test the case where no ticker is present.
+            {
+              chainId: toHex(5),
+              nickname: 'RPC',
+              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+              rpcUrl: 'https://mock-rpc-url',
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          ),
+        ).rejects.toThrow(
+          new Error(
+            'A ticker is required to add or update networkConfiguration',
+          ),
+        );
+      });
+    });
+
+    it('throws if an options object is not passed as a second argument', async () => {
+      await withController(async ({ controller }) => {
+        await expect(async () =>
+          // @ts-expect-error - we want to test the case where no second arg is passed.
+          controller.upsertNetworkConfiguration({
+            chainId: toHex(5),
+            nickname: 'RPC',
+            rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
+            rpcUrl: 'https://mock-rpc-url',
+          }),
+        ).rejects.toThrow('Cannot read properties of undefined');
+      });
+    });
+
+    it('throws if referrer and source arguments are not passed', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      const trackEventSpy = jest.fn();
+      await withController(
+        {
+          state: {
+            providerConfig: {
+              type: NETWORK_TYPES.RPC,
+              rpcUrl: 'https://mock-rpc-url',
+              chainId: toHex(111),
+              ticker: 'TEST',
+              id: 'testNetworkConfigurationId',
+            },
+            networkConfigurations: {
+              testNetworkConfigurationId: {
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: toHex(111),
+                ticker: 'TEST',
+                id: 'testNetworkConfigurationId',
+                nickname: undefined,
+                rpcPrefs: undefined,
+              },
+            },
+          },
+          trackMetaMetricsEvent: trackEventSpy,
+        },
+        async ({ controller }) => {
+          const newNetworkConfiguration = {
+            rpcUrl: 'https://new-chain-rpc-url',
+            chainId: toHex(222),
+            ticker: 'NEW',
+            nickname: 'new-chain',
+            rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
+          };
+
+          await expect(async () =>
+            // @ts-expect-error - we want to test the case where the options object is empty.
+            controller.upsertNetworkConfiguration(newNetworkConfiguration, {}),
+          ).rejects.toThrow(
+            'referrer and source are required arguments for adding or updating a network configuration',
+          );
+        },
+      );
+    });
+
+    it('should add the given network if all required properties are present but nither rpcPrefs nor nickname properties are passed', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      await withController(
+        {
+          state: {
+            networkConfigurations: {},
+          },
+        },
+        async ({ controller }) => {
+          const rpcUrlNetwork = {
+            chainId: toHex(1),
+            rpcUrl: 'https://test-rpc-url',
+            ticker: 'test_ticker',
+          };
+
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual(
+            expect.arrayContaining([
+              {
+                ...rpcUrlNetwork,
+                nickname: undefined,
+                rpcPrefs: undefined,
+                id: 'networkConfigurationId',
+              },
+            ]),
+          );
+        },
+      );
+    });
+
+    it('adds new networkConfiguration to networkController store, but only adds valid properties (rpcUrl, chainId, ticker, nickname, rpcPrefs) and fills any missing properties from this list as undefined', async function () {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      await withController(
+        {
+          state: {
+            networkConfigurations: {},
+          },
+        },
+        async ({ controller }) => {
+          const rpcUrlNetwork = {
+            chainId: toHex(1),
+            rpcUrl: 'https://test-rpc-url',
+            ticker: 'test_ticker',
+            invalidKey: 'new-chain',
+            invalidKey2: {},
+          };
+
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual(
+            expect.arrayContaining([
+              {
+                chainId: toHex(1),
+                rpcUrl: 'https://test-rpc-url',
+                ticker: 'test_ticker',
+                nickname: undefined,
+                rpcPrefs: undefined,
+                id: 'networkConfigurationId',
+              },
+            ]),
+          );
+        },
+      );
+    });
+
+    it('should add the given network configuration if its rpcURL does not match an existing configuration without changing or overwriting other configurations', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId2');
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              networkConfigurationId: {
+                rpcUrl: 'https://test-rpc-url',
+                ticker: 'ticker',
+                nickname: 'nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1),
+                id: 'networkConfigurationId',
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          const rpcUrlNetwork = {
+            chainId: toHex(1),
+            nickname: 'RPC',
+            rpcPrefs: undefined,
+            rpcUrl: 'https://test-rpc-url-2',
+            ticker: 'RPC',
+          };
+
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual(
+            expect.arrayContaining([
+              {
+                rpcUrl: 'https://test-rpc-url',
+                ticker: 'ticker',
+                nickname: 'nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1),
+                id: 'networkConfigurationId',
+              },
+              { ...rpcUrlNetwork, id: 'networkConfigurationId2' },
+            ]),
+          );
+        },
+      );
+    });
+
+    it('should use the given configuration to update an existing network configuration that has a matching rpcUrl', async () => {
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              networkConfigurationId: {
+                rpcUrl: 'https://test-rpc-url',
+                ticker: 'old_rpc_ticker',
+                nickname: 'old_rpc_chainName',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1),
+                id: 'networkConfigurationId',
+              },
+            },
+          },
+        },
+
+        async ({ controller }) => {
+          const updatedConfiguration = {
+            rpcUrl: 'https://test-rpc-url',
+            ticker: 'new_rpc_ticker',
+            nickname: 'new_rpc_chainName',
+            rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+            chainId: toHex(1),
+          };
+          await controller.upsertNetworkConfiguration(updatedConfiguration, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual([
+            {
+              rpcUrl: 'https://test-rpc-url',
+              nickname: 'new_rpc_chainName',
+              ticker: 'new_rpc_ticker',
+              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+              chainId: toHex(1),
+              id: 'networkConfigurationId',
+            },
+          ]);
+        },
+      );
+    });
+
+    it('should use the given configuration to update an existing network configuration that has a matching rpcUrl without changing or overwriting other networkConfigurations', async () => {
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              networkConfigurationId: {
+                rpcUrl: 'https://test-rpc-url',
+                ticker: 'ticker',
+                nickname: 'nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1),
+                id: 'networkConfigurationId',
+              },
+              networkConfigurationId2: {
+                rpcUrl: 'https://test-rpc-url-2',
+                ticker: 'ticker-2',
+                nickname: 'nickname-2',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(9999),
+                id: 'networkConfigurationId2',
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.upsertNetworkConfiguration(
+            {
+              rpcUrl: 'https://test-rpc-url',
+              ticker: 'new-ticker',
+              nickname: 'new-nickname',
+              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+              chainId: toHex(1),
+            },
+            {
+              referrer: 'https://test-dapp.com',
+              source: 'dapp',
+            },
+          );
+
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual([
+            {
+              rpcUrl: 'https://test-rpc-url',
+              ticker: 'new-ticker',
+              nickname: 'new-nickname',
+              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
+              chainId: toHex(1),
+              id: 'networkConfigurationId',
+            },
+            {
+              rpcUrl: 'https://test-rpc-url-2',
+              ticker: 'ticker-2',
+              nickname: 'nickname-2',
+              rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+              chainId: toHex(9999),
+              id: 'networkConfigurationId2',
+            },
+          ]);
+        },
+      );
+    });
+
+    it('should add the given network and not set it to active if the setActive option is not passed (or a falsy value is passed)', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      const originalProvider = {
+        type: NETWORK_TYPES.RPC,
+        rpcUrl: 'https://mock-rpc-url',
+        chainId: toHex(111),
+        ticker: 'TEST',
+        id: 'testNetworkConfigurationId',
+      };
+      await withController(
+        {
+          state: {
+            providerConfig: originalProvider,
+            networkConfigurations: {
+              testNetworkConfigurationId: {
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: toHex(111),
+                ticker: 'TEST',
+                id: 'testNetworkConfigurationId',
+                nickname: undefined,
+                rpcPrefs: undefined,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          const rpcUrlNetwork = {
+            chainId: toHex(222),
+            rpcUrl: 'https://test-rpc-url',
+            ticker: 'test_ticker',
+          };
+
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(controller.store.getState().providerConfig).toStrictEqual(
+            originalProvider,
+          );
+        },
+      );
+    });
+
+    it('should add the given network and set it to active if the setActive option is passed as true', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      await withController(
+        {
+          state: {
+            providerConfig: {
+              type: NETWORK_TYPES.RPC,
+              rpcUrl: 'https://mock-rpc-url',
+              chainId: toHex(111),
+              ticker: 'TEST',
+              id: 'testNetworkConfigurationId',
+              nickname: undefined,
+              rpcPrefs: undefined,
+            },
+            networkConfigurations: {
+              testNetworkConfigurationId: {
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: toHex(111),
+                ticker: 'TEST',
+                id: 'testNetworkConfigurationId',
+                nickname: undefined,
+                rpcPrefs: undefined,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          const fakeProvider = buildFakeProvider();
+          const fakeNetworkClient = buildFakeClient(fakeProvider);
+          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
+          const rpcUrlNetwork = {
+            rpcUrl: 'https://test-rpc-url',
+            chainId: toHex(222),
+            ticker: 'test_ticker',
+          };
+
+          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
+            setActive: true,
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(controller.store.getState().providerConfig).toStrictEqual({
+            type: 'rpc',
+            rpcUrl: 'https://test-rpc-url',
+            chainId: toHex(222),
+            ticker: 'test_ticker',
+            id: 'networkConfigurationId',
+            nickname: undefined,
+            rpcPrefs: undefined,
+          });
+        },
+      );
+    });
+
+    it('adds new networkConfiguration to networkController store and calls to the metametrics event tracking with the correct values', async () => {
+      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
+      const trackEventSpy = jest.fn();
+      await withController(
+        {
+          state: {
+            providerConfig: {
+              type: NETWORK_TYPES.RPC,
+              rpcUrl: 'https://mock-rpc-url',
+              chainId: toHex(111),
+              ticker: 'TEST',
+              id: 'testNetworkConfigurationId',
+              nickname: undefined,
+              rpcPrefs: undefined,
+            },
+            networkConfigurations: {
+              testNetworkConfigurationId: {
+                rpcUrl: 'https://mock-rpc-url',
+                chainId: toHex(111),
+                ticker: 'TEST',
+                id: 'testNetworkConfigurationId',
+                nickname: undefined,
+                rpcPrefs: undefined,
+              },
+            },
+          },
+          trackMetaMetricsEvent: trackEventSpy,
+        },
+        async ({ controller }) => {
+          const newNetworkConfiguration = {
+            rpcUrl: 'https://new-chain-rpc-url',
+            chainId: toHex(222),
+            ticker: 'NEW',
+            nickname: 'new-chain',
+            rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
+          };
+
+          await controller.upsertNetworkConfiguration(newNetworkConfiguration, {
+            referrer: 'https://test-dapp.com',
+            source: 'dapp',
+          });
+
+          expect(
+            Object.values(controller.store.getState().networkConfigurations),
+          ).toStrictEqual([
+            {
+              rpcUrl: 'https://mock-rpc-url',
+              chainId: toHex(111),
+              ticker: 'TEST',
+              id: 'testNetworkConfigurationId',
+              nickname: undefined,
+              rpcPrefs: undefined,
+            },
+            {
+              ...newNetworkConfiguration,
+              id: 'networkConfigurationId',
+            },
+          ]);
+          expect(trackEventSpy).toHaveBeenCalledWith({
+            event: 'Custom Network Added',
+            category: 'Network',
+            referrer: {
+              url: 'https://test-dapp.com',
+            },
+            properties: {
+              chain_id: toHex(222),
+              symbol: 'NEW',
+              source: 'dapp',
+            },
+          });
+        },
+      );
+    });
+  });
+
+  describe('removeNetworkConfigurations', () => {
+    it('remove a network configuration', async () => {
+      const testNetworkConfigurationId = 'testNetworkConfigurationId';
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              [testNetworkConfigurationId]: {
+                rpcUrl: 'https://rpc-url.com',
+                ticker: 'old_rpc_ticker',
+                nickname: 'old_rpc_nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1337),
+                id: testNetworkConfigurationId,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          controller.removeNetworkConfiguration(testNetworkConfigurationId);
+          expect(
+            controller.store.getState().networkConfigurations,
+          ).toStrictEqual({});
+        },
+      );
+    });
+
+    it('throws if the networkConfigurationId it is passed does not correspond to a network configuration in state', async () => {
+      const testNetworkConfigurationId = 'testNetworkConfigurationId';
+      const invalidNetworkConfigurationId = 'invalidNetworkConfigurationId';
+      await withController(
+        {
+          state: {
+            networkConfigurations: {
+              [testNetworkConfigurationId]: {
+                rpcUrl: 'https://rpc-url.com',
+                ticker: 'old_rpc_ticker',
+                nickname: 'old_rpc_nickname',
+                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
+                chainId: toHex(1337),
+                id: testNetworkConfigurationId,
+              },
+            },
+          },
+        },
+        async ({ controller }) => {
+          expect(() =>
+            controller.removeNetworkConfiguration(
+              invalidNetworkConfigurationId,
+            ),
+          ).toThrow(
+            `networkConfigurationId ${invalidNetworkConfigurationId} does not match a configured networkConfiguration`,
+          );
+        },
+      );
     });
   });
 
@@ -4442,729 +5165,6 @@ describe('NetworkController', () => {
           },
         );
       });
-    });
-  });
-
-  describe('upsertNetworkConfiguration', () => {
-    it('adds the given network configuration when its rpcURL does not match an existing configuration', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'network-configuration-id-1');
-
-      await withController(async ({ controller }) => {
-        const rpcUrlNetwork = {
-          chainId: toHex(9999),
-          rpcUrl: 'https://test-rpc.com',
-          ticker: 'RPC',
-        };
-
-        expect(controller.store.getState().networkConfigurations).toStrictEqual(
-          {},
-        );
-
-        await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-          referrer: 'https://test-dapp.com',
-          source: 'dapp',
-        });
-
-        expect(
-          Object.values(controller.store.getState().networkConfigurations),
-        ).toStrictEqual(
-          expect.arrayContaining([
-            {
-              ...rpcUrlNetwork,
-              nickname: undefined,
-              rpcPrefs: undefined,
-              id: 'network-configuration-id-1',
-            },
-          ]),
-        );
-      });
-    });
-
-    it('update a network configuration when the configuration being added has an rpcURL that matches an existing configuration', async () => {
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              testNetworkConfigurationId: {
-                rpcUrl: 'https://rpc-url.com',
-                ticker: 'old_rpc_ticker',
-                nickname: 'old_rpc_nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1),
-                id: 'testNetworkConfigurationId',
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          await controller.upsertNetworkConfiguration(
-            {
-              rpcUrl: 'https://rpc-url.com',
-              ticker: 'new_rpc_ticker',
-              nickname: 'new_rpc_nickname',
-              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-              chainId: toHex(1),
-            },
-            { referrer: 'https://test-dapp.com', source: 'dapp' },
-          );
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual(
-            expect.arrayContaining([
-              {
-                rpcUrl: 'https://rpc-url.com',
-                nickname: 'new_rpc_nickname',
-                ticker: 'new_rpc_ticker',
-                rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-                chainId: toHex(1),
-                id: 'testNetworkConfigurationId',
-              },
-            ]),
-          );
-        },
-      );
-    });
-
-    it('throws if the given chain ID is not a 0x-prefixed hex number', async () => {
-      const invalidChainId = '1';
-      await withController(async ({ controller }) => {
-        await expect(async () =>
-          controller.upsertNetworkConfiguration(
-            {
-              // @ts-expect-error Intentionally invalid
-              chainId: invalidChainId,
-              nickname: 'RPC',
-              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-              rpcUrl: 'rpc_url',
-              ticker: 'RPC',
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          ),
-        ).rejects.toThrow(
-          new Error(
-            `Invalid chain ID "${invalidChainId}": invalid hex string.`,
-          ),
-        );
-      });
-    });
-
-    it('throws if the given chain ID is greater than the maximum allowed ID', async () => {
-      await withController(async ({ controller }) => {
-        await expect(async () =>
-          controller.upsertNetworkConfiguration(
-            {
-              chainId: '0xFFFFFFFFFFFFFFFF',
-              nickname: 'RPC',
-              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-              rpcUrl: 'rpc_url',
-              ticker: 'RPC',
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          ),
-        ).rejects.toThrow(
-          new Error(
-            'Invalid chain ID "0xFFFFFFFFFFFFFFFF": numerical value greater than max safe value.',
-          ),
-        );
-      });
-    });
-
-    it('throws if the no (or a falsy) rpcUrl is passed', async () => {
-      await withController(async ({ controller }) => {
-        await expect(() =>
-          controller.upsertNetworkConfiguration(
-            /* @ts-expect-error We are intentionally passing bad input. */
-            {
-              chainId: toHex(9999),
-              nickname: 'RPC',
-              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-              ticker: 'RPC',
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          ),
-        ).rejects.toThrow(
-          new Error(
-            'An rpcUrl is required to add or update network configuration',
-          ),
-        );
-      });
-    });
-
-    it('throws if rpcUrl passed is not a valid Url', async () => {
-      await withController(async ({ controller }) => {
-        await expect(async () =>
-          controller.upsertNetworkConfiguration(
-            {
-              chainId: toHex(9999),
-              nickname: 'RPC',
-              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-              ticker: 'RPC',
-              rpcUrl: 'test',
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          ),
-        ).rejects.toThrow(new Error('rpcUrl must be a valid URL'));
-      });
-    });
-
-    it('throws if the no (or a falsy) ticker is passed', async () => {
-      await withController(async ({ controller }) => {
-        await expect(async () =>
-          controller.upsertNetworkConfiguration(
-            // @ts-expect-error - we want to test the case where no ticker is present.
-            {
-              chainId: toHex(5),
-              nickname: 'RPC',
-              rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-              rpcUrl: 'https://mock-rpc-url',
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          ),
-        ).rejects.toThrow(
-          new Error(
-            'A ticker is required to add or update networkConfiguration',
-          ),
-        );
-      });
-    });
-
-    it('throws if an options object is not passed as a second argument', async () => {
-      await withController(async ({ controller }) => {
-        await expect(async () =>
-          // @ts-expect-error - we want to test the case where no second arg is passed.
-          controller.upsertNetworkConfiguration({
-            chainId: toHex(5),
-            nickname: 'RPC',
-            rpcPrefs: { blockExplorerUrl: 'test-block-explorer.com' },
-            rpcUrl: 'https://mock-rpc-url',
-          }),
-        ).rejects.toThrow('Cannot read properties of undefined');
-      });
-    });
-
-    it('throws if referrer and source arguments are not passed', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      const trackEventSpy = jest.fn();
-      await withController(
-        {
-          state: {
-            providerConfig: {
-              type: NETWORK_TYPES.RPC,
-              rpcUrl: 'https://mock-rpc-url',
-              chainId: toHex(111),
-              ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
-            },
-            networkConfigurations: {
-              testNetworkConfigurationId: {
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: toHex(111),
-                ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
-                nickname: undefined,
-                rpcPrefs: undefined,
-              },
-            },
-          },
-          trackMetaMetricsEvent: trackEventSpy,
-        },
-        async ({ controller }) => {
-          const newNetworkConfiguration = {
-            rpcUrl: 'https://new-chain-rpc-url',
-            chainId: toHex(222),
-            ticker: 'NEW',
-            nickname: 'new-chain',
-            rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
-          };
-
-          await expect(async () =>
-            // @ts-expect-error - we want to test the case where the options object is empty.
-            controller.upsertNetworkConfiguration(newNetworkConfiguration, {}),
-          ).rejects.toThrow(
-            'referrer and source are required arguments for adding or updating a network configuration',
-          );
-        },
-      );
-    });
-
-    it('should add the given network if all required properties are present but nither rpcPrefs nor nickname properties are passed', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      await withController(
-        {
-          state: {
-            networkConfigurations: {},
-          },
-        },
-        async ({ controller }) => {
-          const rpcUrlNetwork = {
-            chainId: toHex(1),
-            rpcUrl: 'https://test-rpc-url',
-            ticker: 'test_ticker',
-          };
-
-          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual(
-            expect.arrayContaining([
-              {
-                ...rpcUrlNetwork,
-                nickname: undefined,
-                rpcPrefs: undefined,
-                id: 'networkConfigurationId',
-              },
-            ]),
-          );
-        },
-      );
-    });
-
-    it('adds new networkConfiguration to networkController store, but only adds valid properties (rpcUrl, chainId, ticker, nickname, rpcPrefs) and fills any missing properties from this list as undefined', async function () {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      await withController(
-        {
-          state: {
-            networkConfigurations: {},
-          },
-        },
-        async ({ controller }) => {
-          const rpcUrlNetwork = {
-            chainId: toHex(1),
-            rpcUrl: 'https://test-rpc-url',
-            ticker: 'test_ticker',
-            invalidKey: 'new-chain',
-            invalidKey2: {},
-          };
-
-          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual(
-            expect.arrayContaining([
-              {
-                chainId: toHex(1),
-                rpcUrl: 'https://test-rpc-url',
-                ticker: 'test_ticker',
-                nickname: undefined,
-                rpcPrefs: undefined,
-                id: 'networkConfigurationId',
-              },
-            ]),
-          );
-        },
-      );
-    });
-
-    it('should add the given network configuration if its rpcURL does not match an existing configuration without changing or overwriting other configurations', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId2');
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              networkConfigurationId: {
-                rpcUrl: 'https://test-rpc-url',
-                ticker: 'ticker',
-                nickname: 'nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1),
-                id: 'networkConfigurationId',
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          const rpcUrlNetwork = {
-            chainId: toHex(1),
-            nickname: 'RPC',
-            rpcPrefs: undefined,
-            rpcUrl: 'https://test-rpc-url-2',
-            ticker: 'RPC',
-          };
-
-          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual(
-            expect.arrayContaining([
-              {
-                rpcUrl: 'https://test-rpc-url',
-                ticker: 'ticker',
-                nickname: 'nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1),
-                id: 'networkConfigurationId',
-              },
-              { ...rpcUrlNetwork, id: 'networkConfigurationId2' },
-            ]),
-          );
-        },
-      );
-    });
-
-    it('should use the given configuration to update an existing network configuration that has a matching rpcUrl', async () => {
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              networkConfigurationId: {
-                rpcUrl: 'https://test-rpc-url',
-                ticker: 'old_rpc_ticker',
-                nickname: 'old_rpc_chainName',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1),
-                id: 'networkConfigurationId',
-              },
-            },
-          },
-        },
-
-        async ({ controller }) => {
-          const updatedConfiguration = {
-            rpcUrl: 'https://test-rpc-url',
-            ticker: 'new_rpc_ticker',
-            nickname: 'new_rpc_chainName',
-            rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-            chainId: toHex(1),
-          };
-          await controller.upsertNetworkConfiguration(updatedConfiguration, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual([
-            {
-              rpcUrl: 'https://test-rpc-url',
-              nickname: 'new_rpc_chainName',
-              ticker: 'new_rpc_ticker',
-              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-              chainId: toHex(1),
-              id: 'networkConfigurationId',
-            },
-          ]);
-        },
-      );
-    });
-
-    it('should use the given configuration to update an existing network configuration that has a matching rpcUrl without changing or overwriting other networkConfigurations', async () => {
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              networkConfigurationId: {
-                rpcUrl: 'https://test-rpc-url',
-                ticker: 'ticker',
-                nickname: 'nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1),
-                id: 'networkConfigurationId',
-              },
-              networkConfigurationId2: {
-                rpcUrl: 'https://test-rpc-url-2',
-                ticker: 'ticker-2',
-                nickname: 'nickname-2',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(9999),
-                id: 'networkConfigurationId2',
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          await controller.upsertNetworkConfiguration(
-            {
-              rpcUrl: 'https://test-rpc-url',
-              ticker: 'new-ticker',
-              nickname: 'new-nickname',
-              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-              chainId: toHex(1),
-            },
-            {
-              referrer: 'https://test-dapp.com',
-              source: 'dapp',
-            },
-          );
-
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual([
-            {
-              rpcUrl: 'https://test-rpc-url',
-              ticker: 'new-ticker',
-              nickname: 'new-nickname',
-              rpcPrefs: { blockExplorerUrl: 'alternativetestchainscan.io' },
-              chainId: toHex(1),
-              id: 'networkConfigurationId',
-            },
-            {
-              rpcUrl: 'https://test-rpc-url-2',
-              ticker: 'ticker-2',
-              nickname: 'nickname-2',
-              rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-              chainId: toHex(9999),
-              id: 'networkConfigurationId2',
-            },
-          ]);
-        },
-      );
-    });
-
-    it('should add the given network and not set it to active if the setActive option is not passed (or a falsy value is passed)', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      const originalProvider = {
-        type: NETWORK_TYPES.RPC,
-        rpcUrl: 'https://mock-rpc-url',
-        chainId: toHex(111),
-        ticker: 'TEST',
-        id: 'testNetworkConfigurationId',
-      };
-      await withController(
-        {
-          state: {
-            providerConfig: originalProvider,
-            networkConfigurations: {
-              testNetworkConfigurationId: {
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: toHex(111),
-                ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
-                nickname: undefined,
-                rpcPrefs: undefined,
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          const rpcUrlNetwork = {
-            chainId: toHex(222),
-            rpcUrl: 'https://test-rpc-url',
-            ticker: 'test_ticker',
-          };
-
-          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(controller.store.getState().providerConfig).toStrictEqual(
-            originalProvider,
-          );
-        },
-      );
-    });
-
-    it('should add the given network and set it to active if the setActive option is passed as true', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      await withController(
-        {
-          state: {
-            providerConfig: {
-              type: NETWORK_TYPES.RPC,
-              rpcUrl: 'https://mock-rpc-url',
-              chainId: toHex(111),
-              ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
-              nickname: undefined,
-              rpcPrefs: undefined,
-            },
-            networkConfigurations: {
-              testNetworkConfigurationId: {
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: toHex(111),
-                ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
-                nickname: undefined,
-                rpcPrefs: undefined,
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          const fakeProvider = buildFakeProvider();
-          const fakeNetworkClient = buildFakeClient(fakeProvider);
-          createNetworkClientMock.mockReturnValue(fakeNetworkClient);
-          const rpcUrlNetwork = {
-            rpcUrl: 'https://test-rpc-url',
-            chainId: toHex(222),
-            ticker: 'test_ticker',
-          };
-
-          await controller.upsertNetworkConfiguration(rpcUrlNetwork, {
-            setActive: true,
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(controller.store.getState().providerConfig).toStrictEqual({
-            type: 'rpc',
-            rpcUrl: 'https://test-rpc-url',
-            chainId: toHex(222),
-            ticker: 'test_ticker',
-            id: 'networkConfigurationId',
-            nickname: undefined,
-            rpcPrefs: undefined,
-          });
-        },
-      );
-    });
-
-    it('adds new networkConfiguration to networkController store and calls to the metametrics event tracking with the correct values', async () => {
-      uuidV4Mock.mockImplementationOnce(() => 'networkConfigurationId');
-      const trackEventSpy = jest.fn();
-      await withController(
-        {
-          state: {
-            providerConfig: {
-              type: NETWORK_TYPES.RPC,
-              rpcUrl: 'https://mock-rpc-url',
-              chainId: toHex(111),
-              ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
-              nickname: undefined,
-              rpcPrefs: undefined,
-            },
-            networkConfigurations: {
-              testNetworkConfigurationId: {
-                rpcUrl: 'https://mock-rpc-url',
-                chainId: toHex(111),
-                ticker: 'TEST',
-                id: 'testNetworkConfigurationId',
-                nickname: undefined,
-                rpcPrefs: undefined,
-              },
-            },
-          },
-          trackMetaMetricsEvent: trackEventSpy,
-        },
-        async ({ controller }) => {
-          const newNetworkConfiguration = {
-            rpcUrl: 'https://new-chain-rpc-url',
-            chainId: toHex(222),
-            ticker: 'NEW',
-            nickname: 'new-chain',
-            rpcPrefs: { blockExplorerUrl: 'https://block-explorer' },
-          };
-
-          await controller.upsertNetworkConfiguration(newNetworkConfiguration, {
-            referrer: 'https://test-dapp.com',
-            source: 'dapp',
-          });
-
-          expect(
-            Object.values(controller.store.getState().networkConfigurations),
-          ).toStrictEqual([
-            {
-              rpcUrl: 'https://mock-rpc-url',
-              chainId: toHex(111),
-              ticker: 'TEST',
-              id: 'testNetworkConfigurationId',
-              nickname: undefined,
-              rpcPrefs: undefined,
-            },
-            {
-              ...newNetworkConfiguration,
-              id: 'networkConfigurationId',
-            },
-          ]);
-          expect(trackEventSpy).toHaveBeenCalledWith({
-            event: 'Custom Network Added',
-            category: 'Network',
-            referrer: {
-              url: 'https://test-dapp.com',
-            },
-            properties: {
-              chain_id: toHex(222),
-              symbol: 'NEW',
-              source: 'dapp',
-            },
-          });
-        },
-      );
-    });
-  });
-
-  describe('removeNetworkConfigurations', () => {
-    it('remove a network configuration', async () => {
-      const testNetworkConfigurationId = 'testNetworkConfigurationId';
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              [testNetworkConfigurationId]: {
-                rpcUrl: 'https://rpc-url.com',
-                ticker: 'old_rpc_ticker',
-                nickname: 'old_rpc_nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1337),
-                id: testNetworkConfigurationId,
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          controller.removeNetworkConfiguration(testNetworkConfigurationId);
-          expect(
-            controller.store.getState().networkConfigurations,
-          ).toStrictEqual({});
-        },
-      );
-    });
-
-    it('throws if the networkConfigurationId it is passed does not correspond to a network configuration in state', async () => {
-      const testNetworkConfigurationId = 'testNetworkConfigurationId';
-      const invalidNetworkConfigurationId = 'invalidNetworkConfigurationId';
-      await withController(
-        {
-          state: {
-            networkConfigurations: {
-              [testNetworkConfigurationId]: {
-                rpcUrl: 'https://rpc-url.com',
-                ticker: 'old_rpc_ticker',
-                nickname: 'old_rpc_nickname',
-                rpcPrefs: { blockExplorerUrl: 'testchainscan.io' },
-                chainId: toHex(1337),
-                id: testNetworkConfigurationId,
-              },
-            },
-          },
-        },
-        async ({ controller }) => {
-          expect(() =>
-            controller.removeNetworkConfiguration(
-              invalidNetworkConfigurationId,
-            ),
-          ).toThrow(
-            `networkConfigurationId ${invalidNetworkConfigurationId} does not match a configured networkConfiguration`,
-          );
-        },
-      );
     });
   });
 });
