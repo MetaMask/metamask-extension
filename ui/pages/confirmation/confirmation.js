@@ -289,7 +289,7 @@ export default function ConfirmationPage({
 
   if (!pendingConfirmation) {
     if (approvalFlows.length > 0) {
-      return <Loading loadingMessage={t(approvalFlowLoadingText)} />;
+      return <Loading loadingMessage={approvalFlowLoadingText} />;
     }
 
     return null;
