@@ -42,10 +42,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Bibigyang-daan nito na magamit ang network na ito sa MetaMask."
   },
@@ -74,6 +70,10 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "advanced": {
     "message": "Advanced"
@@ -160,9 +160,6 @@
   },
   "back": {
     "message": "Bumalik"
-  },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
   },
   "backupApprovalInfo": {
     "message": "Ang lihim na code na ito ay kinakailangan para ma-recover ang iyong wallet sakaling maiwala mo ang iyong device, makalimutan ang iyong password, kailanganin mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
@@ -252,9 +249,6 @@
   "connectAccountOrCreate": {
     "message": "Ikonekta ang account o gumawa ng bago"
   },
-  "connectHardwareWallet": {
-    "message": "Ikonekta ang Hardware Wallet"
-  },
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
@@ -311,7 +305,7 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -355,9 +349,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng Account"
   },
   "createPassword": {
     "message": "Gumawa ng Password"
@@ -804,7 +795,7 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli Test Network"
   },
   "links": {
@@ -864,9 +855,6 @@
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
-  },
-  "myAccounts": {
-    "message": "Mga Account Ko"
   },
   "name": {
     "message": "Pangalan"
@@ -1135,9 +1123,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recents": {
-    "message": "Mga Kamakailan"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },
@@ -1393,9 +1378,6 @@
   },
   "stateLogsDescription": {
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
-  },
-  "statusConnected": {
-    "message": "Nakakonekta"
   },
   "statusNotConnected": {
     "message": "Hindi nakakonekta"
@@ -1787,19 +1769,12 @@
   "transfer": {
     "message": "Mag-transfer"
   },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa iba't ibang account ko"
-  },
   "transferFrom": {
     "message": "Mag-transfer Mula Kay/Sa"
   },
   "troubleConnectingToWallet": {
     "message": "Nagkaproblema kami sa pagkonekta sa iyong $1, subukang suriin ang $2 at subukan ulit.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Nagkaproblema kami sa pag-load ng mga balanse ng iyong token. Puwede mong tingnan ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Subukan ulit"

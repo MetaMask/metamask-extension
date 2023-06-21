@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbake"
   },
-  "backToAll": {
-    "message": "Tilbake til alt"
-  },
   "backupApprovalInfo": {
     "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
@@ -151,16 +148,13 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectHardwareWallet": {
-    "message": "Koble til maskinvarelommebok"
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Oppretter forbindelse med Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -189,9 +183,6 @@
   },
   "create": {
     "message": "Opprett"
-  },
-  "createAccount": {
-    "message": "Opprett konto"
   },
   "createPassword": {
     "message": "Opprett passord "
@@ -438,9 +429,6 @@
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "
   },
-  "myAccounts": {
-    "message": "Mine kontoer "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -564,9 +552,6 @@
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
-  },
-  "recents": {
-    "message": "Nylige"
   },
   "recipientAddressPlaceholder": {
     "message": "Søk, offentlig adresse (0x) eller ENS"
@@ -782,15 +767,8 @@
   "transfer": {
     "message": "Overfør"
   },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellom kontoene mine"
-  },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi hadde problemer med å laste inn sjetongsaldoen din. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igjen"

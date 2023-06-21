@@ -11,7 +11,7 @@ import {
   Display,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   FlexDirection,
   FlexWrap,
 } from '../../../helpers/constants/design-system';
@@ -41,7 +41,7 @@ const sizeControlOptions = [
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
-  title: 'Components/UI/Box',
+  title: 'Components/UI/Box (deprecated)',
   component: Box,
   parameters: {
     docs: {
@@ -125,7 +125,7 @@ export default {
       table: { category: 'display' },
     },
     textAlign: {
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
       control: 'select',
       table: { category: 'text' },
     },

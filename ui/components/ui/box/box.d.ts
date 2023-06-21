@@ -179,6 +179,13 @@ export type BackgroundColorArray = [
   BackgroundColor?,
 ];
 
+/**
+ * @deprecated BoxProps have been deprecated in favor of the component-library Box types.
+ * This component should be migrated to use the component-library Box.
+ * import { Box } from '../../component-library';
+ *
+ * Help to migrate this component by submitting a PR
+ */
 export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   /**
    * The content of the Box component.
@@ -340,10 +347,10 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
   justifyContent?: JustifyContent | JustifyContentArray;
   /**
    * The text-align of the Box component.
-   * Use TEXT_ALIGN const from '../../../helpers/constants/design-system';
+   * Use TextAlign enum from '../../../helpers/constants/design-system';
    * Accepts responsive props in the form of an array.
    */
-  textAlign?: BoxTextAlign | BoxTextAlignArray;
+  textAlign?: BoxTextAlign | BoxTextAlignArray | TextAlign | TextAlignArray;
   /**
    * The display of the Box component.
    * Use DISPLAY const from '../../../helpers/constants/design-system';
@@ -391,6 +398,13 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
    */
   ref?: React.Ref<HTMLElement>;
 }
-
+/**
+ * @deprecated The JS version of `<Box />` has been deprecated in favor of the TS version in `ui/components/component-library/`.
+ * The component API should be the same, just update the import statement to:
+ * import { Box } from '../../component-library';
+ *
+ * Help to replace the JS `Box` with the TS `Box` by submitting a PR against
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
+ */
 declare const Box: React.FC<BoxProps>;
 export default Box;

@@ -11,7 +11,7 @@ import {
   TextColor,
   IconColor,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   FlexDirection,
   FlexWrap,
   BREAKPOINTS,
@@ -187,6 +187,15 @@ const generateClassNames = memoize(
   (type, value) => [type, value],
 );
 
+/**
+ * @deprecated The JS version of the <Box /> component has been deprecated in favor of the new TS version from the component-library.
+ * Please update your code to use the new <Box> component instead
+ * import { Box } from '../../component-library';
+ * The component API is the same so you should only have to update the import statement but you can find documentation for the new Box component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-box--docs}
+ * If you would like to help with the replacement of the old Button component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
+ */
 const Box = React.forwardRef(function Box(
   {
     padding,
@@ -369,8 +378,8 @@ Box.propTypes = {
   alignItems: MultipleAlignItems,
   justifyContent: MultipleJustifyContents,
   textAlign: PropTypes.oneOfType([
-    PropTypes.oneOf(Object.values(TEXT_ALIGN)),
-    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TEXT_ALIGN))),
+    PropTypes.oneOf(Object.values(TextAlign)),
+    PropTypes.arrayOf(PropTypes.oneOf(Object.values(TextAlign))),
   ]),
   display: PropTypes.oneOfType([
     PropTypes.oneOf(Object.values(Display)),

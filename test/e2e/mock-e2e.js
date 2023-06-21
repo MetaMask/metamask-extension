@@ -99,7 +99,7 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
-    .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
+    .forGet('https://gas-api.metaswap.codefi.network/networks/1337/gasPrices')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -130,7 +130,7 @@ async function setupMocking(server, testSpecificMock) {
 
   await server
     .forGet(
-      'https://gas-api.metaswap.codefi.network/networks/1/suggestedGasFees',
+      'https://gas-api.metaswap.codefi.network/networks/1337/suggestedGasFees',
     )
     .thenCallback(() => {
       return {
@@ -343,7 +343,7 @@ async function setupMocking(server, testSpecificMock) {
     });
 
   await server
-    .forGet('https://token-api.metaswap.codefi.network/token/0x539')
+    .forGet('https://token-api.metaswap.codefi.network/token/1337')
     .thenCallback(() => {
       return {
         statusCode: 200,

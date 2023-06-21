@@ -10,8 +10,17 @@ export default function AccountListItem({
   displayAddress = false,
   handleClick,
   icon = null,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  hideDefaultMismatchWarning = false,
+  ///: END:ONLY_INCLUDE_IN
 }) {
   const { name, address, balance } = account || {};
+
+  let showDefaultMismatchWarning = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  showDefaultMismatchWarning = !hideDefaultMismatchWarning;
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <div
@@ -34,9 +43,10 @@ export default function AccountListItem({
             {icon}
           </div>
         ) : null}
-        <AccountMismatchWarning address={address} />
+        {showDefaultMismatchWarning && (
+          <AccountMismatchWarning address={address} />
+        )}
       </div>
-
       {displayAddress && name && (
         <div className="account-list-item__account-address">
           {toChecksumHexAddress(address)}
@@ -71,4 +81,10 @@ AccountListItem.propTypes = {
    * Pass icon component to be displayed. Currently not used
    */
   icon: PropTypes.node,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  /**
+   * MMI Prop, will hide the default AccountMismatchWarning when needed
+   */
+  hideDefaultMismatchWarning: PropTypes.bool,
+  ///: END:ONLY_INCLUDE_IN
 };
