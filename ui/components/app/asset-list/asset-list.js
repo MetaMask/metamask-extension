@@ -10,7 +10,6 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getTokenList,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
