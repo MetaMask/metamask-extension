@@ -1562,6 +1562,12 @@
     "message": "ngunit maaring hingin ng mga phisher.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "I-hold para ipakita ang SRP"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Panatilihing ligtas ang iyong SRP"
+  },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
   },
@@ -3333,11 +3339,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Nabigong i-paste dahil naglalaman ito ng higit sa 24 na salita. Ang secret recovery phrase ay mayroong hanggang 24 na salita lamang.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Maaari mong i-paste ang iyong buong secret recovery phrase sa alinmang patlang",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Magsimula"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Upang ipakita ang iyong Secret Recovery Phrase, kailangan mong sagutin nang tama ang dalawang tanong"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Kung mawala mo ang iyong Secret Recovery Phrase, ang MetaMask ay..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Hindi ka matutulungan"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Isulat ito, iukit sa metal, o itago ito sa maraming lihim na lugar upang hindi ito mawala. Kung nawala mo ito, wala na ito ng tuluyan."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Tama! Walang makakatulong na maibalik ang iyong Secret Recovery Phrase"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Maaari itong ibalik para sa iyo"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Kung nawala mo ang iyong Secret Recovery Phrase mawawala na ito nang tuluyan. Walang makakatulong sa iyo na maibalik ito, anuman ang maaaring sabihin nila."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Mali! Walang makakatulong na maibalik ang iyong Secret Recovery Phrase"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Kung sinuman, kahit isang ahente ng suporta, ay humingi ng iyong Secret Recovery Phrase..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Niloloko ka"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Secret Recovery Phrase ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Tama! Ang pagbabahagi ng iyong Secret Recovery Phrase ay hindi kailanman isang magandang ideya"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Dapat mong ibigay sa kanila"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Secret Recovery Phrase ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Hindi! Huwag kailanman ibahagi ang iyong Secret Recovery Phrase sa sinuman, kailanman"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Pagsusulit sa seguridad"
   },
   "srpToggleShow": {
     "message": "Ipakita/Itago ang salitang ito ng secret recovery phrase",
