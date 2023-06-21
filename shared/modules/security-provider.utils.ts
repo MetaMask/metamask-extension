@@ -2,13 +2,16 @@ import { Json } from '@metamask/utils';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../constants/security-provider';
 
 export function isSuspiciousResponse(
-  securityProviderResponse: Record<string, Json>,
+  securityProviderResponse: Record<string, Json> | undefined,
 ): boolean {
+  if (!securityProviderResponse) {
+    return false;
+  }
+
   return (
-    (securityProviderResponse?.flagAsDangerous !== undefined &&
-      securityProviderResponse?.flagAsDangerous !==
+    (securityProviderResponse.flagAsDangerous !== undefined &&
+      securityProviderResponse.flagAsDangerous !==
         SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
-    (securityProviderResponse &&
-      Object.keys(securityProviderResponse).length === 0)
+    Object.keys(securityProviderResponse).length === 0
   );
 }
