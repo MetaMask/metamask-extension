@@ -250,68 +250,61 @@ async function addEthereumChainHandler(
   const { id: approvalFlowId } = await startApprovalFlow();
 
   try {
-    try {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.AddEthereumChain,
-        requestData: {
-          chainId: _chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-          chainName: _chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
-        },
-      });
+    await requestUserApproval({
+      origin,
+      type: ApprovalType.AddEthereumChain,
+      requestData: {
+        chainId: _chainId,
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        chainName: _chainName,
+        rpcUrl: firstValidRPCUrl,
+        ticker,
+      },
+    });
 
-      networkConfigurationId = await upsertNetworkConfiguration(
-        {
-          chainId: _chainId,
-          rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
-          nickname: _chainName,
-          rpcUrl: firstValidRPCUrl,
-          ticker,
-        },
-        { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
-      );
+    networkConfigurationId = await upsertNetworkConfiguration(
+      {
+        chainId: _chainId,
+        rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
+        nickname: _chainName,
+        rpcUrl: firstValidRPCUrl,
+        ticker,
+      },
+      { source: MetaMetricsNetworkEventSource.Dapp, referrer: origin },
+    );
 
-      // Once the network has been added, the requested is considered successful
-      res.result = null;
-    } catch (error) {
-      return end(error);
-    }
-
-    // Ask the user to switch the network
-    try {
-      await requestUserApproval({
-        origin,
-        type: ApprovalType.SwitchEthereumChain,
-        requestData: {
-          rpcUrl: firstValidRPCUrl,
-          chainId: _chainId,
-          nickname: _chainName,
-          ticker,
-          networkConfigurationId,
-        },
-      });
-    } catch (error) {
-      // For the purposes of this method, it does not matter if the user
-      // declines to switch the selected network. However, other errors indicate
-      // that something is wrong.
-      return end(
-        error.code === errorCodes.provider.userRejectedRequest
-          ? undefined
-          : error,
-      );
-    }
-  } finally {
-    endApprovalFlow({ id: approvalFlowId });
-  }
-
-  try {
-    await setActiveNetwork(networkConfigurationId);
+    // Once the network has been added, the requested is considered successful
+    res.result = null;
   } catch (error) {
+    endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
+  // Ask the user to switch the network
+  try {
+    await requestUserApproval({
+      origin,
+      type: ApprovalType.SwitchEthereumChain,
+      requestData: {
+        rpcUrl: firstValidRPCUrl,
+        chainId: _chainId,
+        nickname: _chainName,
+        ticker,
+        networkConfigurationId,
+      },
+    });
+
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    // For the purposes of this method, it does not matter if the user
+    // declines to switch the selected network. However, other errors indicate
+    // that something is wrong.
+    if (error.code !== errorCodes.provider.userRejectedRequest) {
+      endApprovalFlow({ id: approvalFlowId });
+      return end(error);
+    }
+  }
+
+  endApprovalFlow({ id: approvalFlowId });
   return end();
 }
