@@ -30,7 +30,9 @@ import {
   DISPLAY,
   TextColor,
   TextVariant,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   Size,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -39,7 +41,9 @@ import {
   IconName,
   Text,
   Box,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
 
 import {
