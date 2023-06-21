@@ -19,6 +19,7 @@ import {
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { Box, ButtonLink, IconName } from '../../component-library';
+import NftsDetectionNotice from '../nfts-detection-notice';
 
 export default function NftsTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -53,7 +54,9 @@ export default function NftsTab({ onAddNFT }) {
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
         />
-      ) : null}
+      ) : (
+        <>{isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}</>
+      )}
       <Box
         className="nfts-tab__buttons"
         display={Display.Flex}
