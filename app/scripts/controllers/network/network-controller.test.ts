@@ -5676,6 +5676,60 @@ function lookupNetworkTests({
               },
             );
           });
+
+          it('updates the network details', async () => {
+            await withController(
+              {
+                state: initialState,
+              },
+              async ({ controller }) => {
+                await setFakeProvider(controller, {
+                  stubs: [
+                    // Called during provider initialization
+                    {
+                      request: {
+                        method: 'net_version',
+                      },
+                      response: { result: networkId },
+                    },
+                    {
+                      request: {
+                        method: 'eth_getBlockByNumber',
+                      },
+                      response: {
+                        result: PRE_1559_BLOCK,
+                      },
+                    },
+                    // Called via `lookupNetwork` directly
+                    {
+                      request: {
+                        method: 'net_version',
+                      },
+                      response: { result: networkId },
+                    },
+                    {
+                      request: {
+                        method: 'eth_getBlockByNumber',
+                      },
+                      response: {
+                        result: POST_1559_BLOCK,
+                      },
+                    },
+                  ],
+                });
+
+                await operation(controller);
+
+                await expect(
+                  controller.store.getState().networkDetails,
+                ).toStrictEqual({
+                  EIPS: {
+                    1559: true,
+                  },
+                });
+              },
+            );
+          });
         });
       });
     }
@@ -5834,6 +5888,58 @@ function lookupNetworkTests({
           await operation(controller);
 
           expect(controller.store.getState().networkStatus).toBe('unavailable');
+        },
+      );
+    });
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: { method: 'net_version' },
+                response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: { method: 'net_version' },
+                error: ethErrors.rpc.limitExceeded('some error'),
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: POST_1559_BLOCK,
+                },
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
         },
       );
     });
@@ -6096,6 +6202,58 @@ function lookupNetworkTests({
         );
       });
     }
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: { method: 'net_version' },
+                response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: { method: 'net_version' },
+                error: BLOCKED_INFURA_JSON_RPC_ERROR,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: POST_1559_BLOCK,
+                },
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
+        },
+      );
+    });
   });
 
   describe('if an internal error is encountered while retrieving the version of the current network', () => {
@@ -6118,6 +6276,58 @@ function lookupNetworkTests({
           await operation(controller);
 
           expect(controller.store.getState().networkStatus).toBe('unknown');
+        },
+      );
+    });
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: { method: 'net_version' },
+                response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: { method: 'net_version' },
+                error: GENERIC_JSON_RPC_ERROR,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: POST_1559_BLOCK,
+                },
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
         },
       );
     });
@@ -6238,6 +6448,58 @@ function lookupNetworkTests({
       );
     });
 
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: { method: 'net_version' },
+                response: SUCCESSFUL_NET_VERSION_RESPONSE,
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: { method: 'net_version' },
+                response: { result: 'invalid' },
+              },
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: POST_1559_BLOCK,
+                },
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
+        },
+      );
+    });
+
     if (expectedProviderConfig.type === NetworkType.rpc) {
       it('emits infuraIsUnblocked', async () => {
         await withController(
@@ -6353,6 +6615,48 @@ function lookupNetworkTests({
           await operation(controller);
 
           expect(controller.store.getState().networkStatus).toBe('unavailable');
+        },
+      );
+    });
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                error: ethErrors.rpc.limitExceeded('some error'),
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
         },
       );
     });
@@ -6642,6 +6946,48 @@ function lookupNetworkTests({
         );
       });
     }
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                error: BLOCKED_INFURA_JSON_RPC_ERROR,
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
+        },
+      );
+    });
   });
 
   describe('if an internal error is encountered while retrieving the network details of the current network', () => {
@@ -6666,6 +7012,48 @@ function lookupNetworkTests({
           await operation(controller);
 
           expect(controller.store.getState().networkStatus).toBe('unknown');
+        },
+      );
+    });
+
+    it('resets the network details in state', async () => {
+      await withController(
+        {
+          state: initialState,
+        },
+        async ({ controller }) => {
+          await setFakeProvider(controller, {
+            stubs: [
+              // Called during provider initialization
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                response: {
+                  result: PRE_1559_BLOCK,
+                },
+              },
+              // Called when calling the operation directly
+              {
+                request: {
+                  method: 'eth_getBlockByNumber',
+                  params: ['latest', false],
+                },
+                error: GENERIC_JSON_RPC_ERROR,
+              },
+            ],
+          });
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {
+              1559: false,
+            },
+          });
+
+          await operation(controller);
+          expect(controller.store.getState().networkDetails).toStrictEqual({
+            EIPS: {},
+          });
         },
       );
     });
