@@ -429,6 +429,7 @@
     "@types/remote-redux-devtools": "^0.5.5",
     "@types/sass": "^1.43.1",
     "@types/sinon": "^10.0.13",
+    "@types/through2": "^2.0.38",
     "@types/w3c-web-hid": "^1.0.3",
     "@types/watchify": "^3.11.1",
     "@types/yargs": "^17.0.8",

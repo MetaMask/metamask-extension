@@ -8202,6 +8202,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/through2@npm:^2.0.38":
+  version: 2.0.38
+  resolution: "@types/through2@npm:2.0.38"
+  dependencies:
+    "@types/node": "*"
+  checksum: 5f8b6dbdeef84cdc4e2259234ae752fe09123021c39fc9319fa6f50a445c15451c9f643e5d3620c50e818c6f71207f978038e785b61bd87a64253ac0b06e2d73
+  languageName: node
+  linkType: hard
+
 "@types/tough-cookie@npm:*":
   version: 4.0.2
   resolution: "@types/tough-cookie@npm:4.0.2"
@@ -24454,6 +24463,7 @@ __metadata:
     "@types/remote-redux-devtools": ^0.5.5
     "@types/sass": ^1.43.1
     "@types/sinon": ^10.0.13
+    "@types/through2": ^2.0.38
     "@types/w3c-web-hid": ^1.0.3
     "@types/watchify": ^3.11.1
     "@types/yargs": ^17.0.8
