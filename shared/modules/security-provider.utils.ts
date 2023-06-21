@@ -8,10 +8,12 @@ export function isSuspiciousResponse(
     return false;
   }
 
-  return (
-    (securityProviderResponse.flagAsDangerous !== undefined &&
-      securityProviderResponse.flagAsDangerous !==
-        SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
-    Object.keys(securityProviderResponse).length === 0
-  );
+  const isFlagged =
+    securityProviderResponse.flagAsDangerous !== undefined &&
+    securityProviderResponse.flagAsDangerous !==
+      SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS;
+
+  const isNotVerified = Object.keys(securityProviderResponse).length === 0;
+
+  return isFlagged || isNotVerified;
 }
