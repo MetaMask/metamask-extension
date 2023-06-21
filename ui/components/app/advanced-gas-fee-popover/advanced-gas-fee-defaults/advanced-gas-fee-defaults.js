@@ -6,8 +6,8 @@ import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import CheckBox from '../../../ui/check-box';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -72,8 +72,8 @@ const AdvancedGasFeeDefaults = () => {
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.ROW}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
       marginTop={4}
       marginLeft={2}
       marginRight={2}
@@ -90,7 +90,6 @@ const AdvancedGasFeeDefaults = () => {
           variant={TextVariant.bodySm}
           as="h6"
           color={TextColor.textAlternative}
-          margin={0}
         >
           {isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')

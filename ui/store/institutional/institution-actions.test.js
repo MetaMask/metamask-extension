@@ -166,11 +166,9 @@ describe('#checkForUnapprovedTypedMessages', () => {
       status: 'unapproved',
     };
 
-    expect(
-      checkForUnapprovedTypedMessages(messageData, {
-        unapprovedTypedMessages: { msg: 'msg' },
-      }),
-    ).toBe(messageData);
+    expect(checkForUnapprovedTypedMessages(messageData, { msg: 'msg' })).toBe(
+      messageData,
+    );
   });
 });
 

@@ -3,8 +3,8 @@ const {
   withFixtures,
   openDapp,
   DAPP_URL,
-  login,
   defaultGanacheOptions,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -21,7 +21,7 @@ describe('Eth sign', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#ethSign');
@@ -56,7 +56,7 @@ describe('Eth sign', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#ethSign');
