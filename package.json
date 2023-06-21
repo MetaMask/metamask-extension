@@ -96,7 +96,8 @@
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
-    "label-prs": "ts-node ./.github/scripts/label-prs.ts"
+    "label-prs": "ts-node ./.github/scripts/label-prs.ts",
+    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts"
   },
   "resolutions": {
     "@babel/core": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
@@ -196,12 +197,9 @@
     "fast-json-patch@^3.1.1": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/signature-controller@^3.0.0": "patch:@metamask/signature-controller@npm%3A3.0.0#./.yarn/patches/@metamask-signature-controller-npm-3.0.0-8771b6885e.patch"
+    "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch"
   },
   "dependencies": {
-    "@actions/core": "^1.10.0",
-    "@actions/github": "^5.1.1",
     "@babel/runtime": "^7.18.9",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
@@ -229,7 +227,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.1.0",
-    "@metamask/assets-controllers": "^9.0.0",
+    "@metamask/assets-controllers": "^9.1.0",
     "@metamask/base-controller": "^3.0.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
@@ -249,7 +247,7 @@
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/key-tree": "^7.0.0",
     "@metamask/logo": "^3.1.1",
-    "@metamask/message-manager": "^6.0.0",
+    "@metamask/message-manager": "^7.0.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
@@ -262,7 +260,7 @@
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.34.0-flask.1",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/signature-controller": "^3.0.0",
+    "@metamask/signature-controller": "^4.0.1",
     "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^3.1.0",
     "@metamask/snaps-controllers": "^0.32.2",
@@ -318,7 +316,6 @@
     "fuse.js": "^3.2.0",
     "globalthis": "^1.0.1",
     "human-standard-token-abi": "^2.0.0",
-    "husky": "^8.0.3",
     "immer": "^9.0.6",
     "is-retry-allowed": "^2.2.0",
     "jest-junit": "^14.0.1",
@@ -368,6 +365,8 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
     "@babel/code-frame": "^7.12.13",
     "@babel/core": "^7.21.5",
     "@babel/eslint-parser": "^7.13.14",
