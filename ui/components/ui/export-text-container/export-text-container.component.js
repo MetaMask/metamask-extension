@@ -35,6 +35,7 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
         justifyContent={JustifyContent.CENTER}
         className="notranslate"
         variant={TextVariant.bodyLgMedium}
+        data-testid="srp_text"
       >
         {text}
       </Text>

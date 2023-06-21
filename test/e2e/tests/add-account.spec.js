@@ -8,7 +8,7 @@ const {
   waitForAccountRendered,
   convertToHexValue,
   regularDelayMs,
-  login,
+  unlockWallet,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
@@ -38,7 +38,7 @@ describe('Add account', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -173,7 +173,7 @@ describe('Add account', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
 
