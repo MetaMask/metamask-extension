@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Box from '../../ui/box';
 import Button from '../../ui/button';
 import Typography from '../../ui/typography/typography';
 import NftsDetectionNotice from '../nfts-detection-notice';
@@ -11,10 +10,12 @@ import {
   TypographyVariant,
   TextAlign,
   JustifyContent,
-  FLEX_DIRECTION,
+  FlexDirection,
   FontWeight,
   AlignItems,
   TextColor,
+  Size,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
@@ -25,6 +26,7 @@ import {
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Box, ButtonLink, IconName } from '../../component-library';
 
 export default function NftsTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -70,7 +72,7 @@ export default function NftsTab({ onAddNFT }) {
               marginTop={4}
               marginBottom={12}
               justifyContent={JustifyContent.center}
-              flexDirection={FLEX_DIRECTION.COLUMN}
+              flexDirection={FlexDirection.Column}
               className="nfts-tab__link"
             >
               <Typography
@@ -94,55 +96,49 @@ export default function NftsTab({ onAddNFT }) {
         </>
       )}
       <Box
-        marginBottom={4}
-        justifyContent={JustifyContent.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        className="nfts-tab__buttons"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        margin={4}
+        gap={4}
       >
-        <Typography
-          color={TextColor.textMuted}
-          variant={TypographyVariant.H5}
-          align={TextAlign.Center}
+        <ButtonLink
+          size={Size.MD}
+          data-testid="import-nft-button"
+          startIconName={IconName.Add}
+          onClick={onAddNFT}
         >
-          {t('missingNFT')}
-        </Typography>
-        <Box
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-        >
-          {!isMainnet && Object.keys(collections).length < 1 ? null : (
-            <>
-              <Box
-                className="nfts-tab__link"
-                justifyContent={JustifyContent.flexEnd}
-              >
-                {isMainnet && !useNftDetection ? (
-                  <Button type="link" onClick={onEnableAutoDetect}>
-                    {t('enableAutoDetect')}
-                  </Button>
-                ) : (
-                  <Button type="link" onClick={onRefresh}>
-                    {t('refreshList')}
-                  </Button>
-                )}
-              </Box>
-              <Typography
-                color={TextColor.textMuted}
-                variant={TypographyVariant.H6}
-                align={TextAlign.Center}
-              >
-                {t('or')}
-              </Typography>
-            </>
-          )}
-          <Box
-            justifyContent={JustifyContent.flexStart}
-            className="nfts-tab__link"
-          >
-            <Button type="link" onClick={onAddNFT}>
-              {t('importNFTs')}
-            </Button>
-          </Box>
-        </Box>
+          {t('importNFT')}
+        </ButtonLink>
+        {!isMainnet && Object.keys(collections).length < 1 ? null : (
+          <>
+            <Box
+              className="nfts-tab__link"
+              justifyContent={JustifyContent.flexEnd}
+            >
+              {isMainnet && !useNftDetection ? (
+                <ButtonLink
+                  size={Size.MD}
+                  startIconName={IconName.Setting}
+                  data-testid="refresh-list-button"
+                  onClick={onEnableAutoDetect}
+                >
+                  {t('enableAutoDetect')}
+                </ButtonLink>
+              ) : (
+                <ButtonLink
+                  size={Size.MD}
+                  startIconName={IconName.Refresh}
+                  data-testid="refresh-list-button"
+                  onClick={onRefresh}
+                >
+                  {t('refreshList')}
+                </ButtonLink>
+              )}
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );
