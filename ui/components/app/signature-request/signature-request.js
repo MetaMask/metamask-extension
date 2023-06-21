@@ -23,7 +23,6 @@ import {
   isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import {
-  getURLHostName,
   sanitizeMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountByAddress,
@@ -245,7 +244,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
         }
         <div className="signature-request__origin">
           <TagUrl
-            label={getURLHostName(origin) || origin}
+            label={origin}
             src={targetSubjectMetadata?.iconUrl}
           />
         </div>
