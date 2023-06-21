@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { SECONDARY } from '../../../helpers/constants/common';
 import {
   Color,
-  FONT_WEIGHT,
+  FontWeight,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { isNFTAssetStandard } from '../../../helpers/utils/transactions.util';
@@ -35,7 +35,7 @@ const ConfirmSubTitle = ({
     <Text
       as="h5"
       ellipsis
-      fontWeight={FONT_WEIGHT.NORMAL}
+      fontWeight={FontWeight.Normal}
       variant={TextVariant.bodyMd}
       color={Color.textAlternative}
     >
