@@ -32,7 +32,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
-  getPendingApprovalFlows,
+  getApprovalFlows,
+  hasPendingApprovals as hasPendingApprovalsSelector,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -178,7 +179,8 @@ export default function ConfirmationPage({
     isEqual,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
-  const pendingApprovalFlows = useSelector(getPendingApprovalFlows);
+  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const hasPendingApprovals = useSelector(hasPendingApprovalsSelector);
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
@@ -260,7 +262,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
-      pendingApprovalFlows.length === 0 &&
+      (approvalFlows.length === 0 || hasPendingApprovals) &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -272,22 +274,21 @@ export default function ConfirmationPage({
     }
   }, [
     pendingConfirmations,
-    pendingApprovalFlows,
+    approvalFlows,
+    hasPendingApprovals,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
 
   useEffect(() => {
-    setApprovalFlowLoadingText(
-      pendingApprovalFlows.length > 0
-        ? pendingApprovalFlows[pendingApprovalFlows.length - 1].loadingText
-        : null,
-    );
-  }, [pendingApprovalFlows]);
+    const childFlow = approvalFlows[approvalFlows.length - 1];
+
+    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
+  }, [approvalFlows]);
 
   if (!pendingConfirmation) {
-    if (pendingApprovalFlows.length > 0) {
+    if (approvalFlows.length > 0) {
       return <Loading loadingMessage={t(approvalFlowLoadingText)} />;
     }
 

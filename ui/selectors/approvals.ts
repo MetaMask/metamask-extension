@@ -44,6 +44,6 @@ export const getApprovalRequestsByType = (
   return pendingApprovalRequests;
 };
 
-export function getPendingApprovalFlows(state: ApprovalsMetaMaskState) {
+export function getApprovalFlows(state: ApprovalsMetaMaskState) {
   return state.metamask.approvalFlows;
 }

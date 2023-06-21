@@ -75,7 +75,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
-  hasPendingApprovalFlows,
+  hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   waitForConfirmDeepLinkDialog,
@@ -85,7 +85,7 @@ function shouldCloseNotificationPopup({
   let shouldCLose =
     isNotification &&
     totalUnapprovedCount === 0 &&
-    !hasPendingApprovalFlows &&
+    !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -132,7 +132,7 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
-    hasPendingApprovalFlows: PropTypes.bool.isRequired,
+    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
@@ -281,7 +281,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
-      hasPendingApprovalFlows,
+      hasApprovalFlows,
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -302,7 +302,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (hasWatchNftPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0 || hasPendingApprovalFlows) {
+    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

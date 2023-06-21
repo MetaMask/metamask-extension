@@ -36,7 +36,7 @@ import {
   getRemoveNftMessage,
   getSuggestedTokens,
   getSuggestedNfts,
-  getPendingApprovalFlows,
+  getApprovalFlows,
 } from '../../selectors';
 
 import {
@@ -138,7 +138,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
-    hasPendingApprovalFlows: getPendingApprovalFlows(state).length > 0,
+    hasApprovalFlows: getApprovalFlows(state).length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
