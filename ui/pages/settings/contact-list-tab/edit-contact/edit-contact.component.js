@@ -79,6 +79,7 @@ export default class EditContact extends PureComponent {
             <Text
               className="address-book__header__name"
               variant={TextVariant.bodyLgMedium}
+              marginInlineStart={4}
             >
               {name || address}
             </Text>

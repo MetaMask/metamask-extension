@@ -21,13 +21,6 @@
     align-items: center;
   }
 
-  &__header,
-  &__header--edit {
-    &__name {
-      margin-left: 16px;
-    }
-  }
-
   &__header--edit {
     display: flex;
     justify-content: space-between;
