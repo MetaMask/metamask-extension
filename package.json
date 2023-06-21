@@ -267,7 +267,7 @@
     "@metamask/snaps-controllers-flask": "npm:@metamask/snaps-controllers@0.34.0-flask.1",
     "@metamask/snaps-ui": "^0.32.2",
     "@metamask/snaps-ui-flask": "npm:@metamask/snaps-ui@0.34.0-flask.1",
-    "@metamask/snaps-utils": "^0.32.2",
+    "@metamask/snaps-utils": "0.34.1-flask.1",
     "@metamask/snaps-utils-flask": "npm:@metamask/snaps-utils@0.34.0-flask.1",
     "@metamask/subject-metadata-controller": "^2.0.0",
     "@metamask/swappable-obj-proxy": "^2.1.0",
