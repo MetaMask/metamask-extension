@@ -65,7 +65,7 @@ export default function NftsTab({ onAddNFT }) {
         <>
           {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
           <Box padding={12}>
-            <Box justifyContent={JustifyContent.center}>
+            <Box justifyContent={JustifyContent.center} display={Display.Flex}>
               <img src="./images/no-nfts.svg" />
             </Box>
             <Box
