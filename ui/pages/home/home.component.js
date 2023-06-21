@@ -865,6 +865,7 @@ export default class Home extends PureComponent {
                   startIconName={IconName.MessageQuestion}
                   data-testid="need-help-link"
                   href={SUPPORT_LINK}
+                  paddingLeft={4}
                   onClick={() => {
                     this.context.trackEvent(
                       {

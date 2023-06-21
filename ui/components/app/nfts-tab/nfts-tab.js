@@ -2,18 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
-import NftsDetectionNotice from '../nfts-detection-notice';
 import NftsItems from '../nfts-items';
 import {
-  TypographyVariant,
-  TextAlign,
   JustifyContent,
   FlexDirection,
-  FontWeight,
   AlignItems,
-  TextColor,
   Size,
   Display,
 } from '../../../helpers/constants/design-system';
@@ -25,7 +18,6 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { Box, ButtonLink, IconName } from '../../component-library';
 
 export default function NftsTab({ onAddNFT }) {
@@ -61,40 +53,7 @@ export default function NftsTab({ onAddNFT }) {
           collections={collections}
           previouslyOwnedCollection={previouslyOwnedCollection}
         />
-      ) : (
-        <>
-          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
-          <Box padding={12}>
-            <Box justifyContent={JustifyContent.center} display={Display.Flex}>
-              <img src="./images/no-nfts.svg" />
-            </Box>
-            <Box
-              marginTop={4}
-              marginBottom={12}
-              justifyContent={JustifyContent.center}
-              flexDirection={FlexDirection.Column}
-              className="nfts-tab__link"
-            >
-              <Typography
-                color={TextColor.textMuted}
-                variant={TypographyVariant.H4}
-                align={TextAlign.Center}
-                fontWeight={FontWeight.Bold}
-              >
-                {t('noNFTs')}
-              </Typography>
-              <Button
-                type="link"
-                target="_blank"
-                rel="noopener noreferrer"
-                href={ZENDESK_URLS.NFT_TOKENS}
-              >
-                {t('learnMoreUpperCase')}
-              </Button>
-            </Box>
-          </Box>
-        </>
-      )}
+      ) : null}
       <Box
         className="nfts-tab__buttons"
         display={Display.Flex}
