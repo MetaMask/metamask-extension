@@ -161,6 +161,7 @@ function defaultFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
@@ -187,6 +188,7 @@ function defaultFixture() {
         incomingTransactions: {},
         incomingTxLastFetchedBlockByChainId: {
           [CHAIN_IDS.MAINNET]: null,
+          [CHAIN_IDS.LINEA_MAINNET]: null,
           [CHAIN_IDS.GOERLI]: null,
           [CHAIN_IDS.SEPOLIA]: null,
           [CHAIN_IDS.LINEA_GOERLI]: null,
@@ -329,6 +331,7 @@ function onboardingFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },

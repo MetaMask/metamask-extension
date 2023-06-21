@@ -429,9 +429,6 @@
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
   },
-  "myAccounts": {
-    "message": "Mine Konti"
-  },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"

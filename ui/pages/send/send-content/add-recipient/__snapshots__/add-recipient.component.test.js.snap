@@ -11,7 +11,7 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
       <p
         class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
       >
-        My accounts
+        Your accounts
       </p>
     </div>
     <div
@@ -447,7 +447,7 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
       <p
         class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
       >
-        My accounts
+        Your accounts
       </p>
     </div>
     <div
@@ -714,6 +714,15 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
     <div
       class="send__select-recipient-wrapper__list"
     >
+      <div
+        class="box box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
+      >
+        <p
+          class="box mm-text mm-text--body-lg-medium box--flex-direction-row box--color-text-alternative"
+        >
+          Contacts
+        </p>
+      </div>
       <div
         class="send__select-recipient-wrapper__list"
       >

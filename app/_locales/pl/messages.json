@@ -442,9 +442,6 @@
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
   },
-  "myAccounts": {
-    "message": "Moje konta"
-  },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
     "description": "User is important an account and needs to add a file to continue"

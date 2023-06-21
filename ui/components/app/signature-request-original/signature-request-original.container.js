@@ -1,9 +1,14 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { goHome, cancelMsgs, showModal } from '../../../store/actions';
+import {
+  goHome,
+  showModal,
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
+} from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
@@ -65,44 +70,30 @@ function mapDispatchToProps(dispatch) {
         }),
       );
     },
-    cancelAll: (messagesList) => dispatch(cancelMsgs(messagesList)),
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
   };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const {
-    signPersonalMessage,
-    signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
+  const { txData } = ownProps;
 
   const { allAccounts, messagesList, ...otherStateProps } = stateProps;
 
   const {
-    type,
     msgParams: { from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
 
-  const { cancelAll: dispatchCancelAll } = dispatchProps;
-
-  let cancel;
-  let sign;
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    sign = signMessage;
-  }
+  const { cancelAllApprovals: dispatchCancelAllApprovals } = dispatchProps;
 
   return {
     ...ownProps,
@@ -110,9 +101,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...dispatchProps,
     fromAccount,
     txData,
-    cancel,
-    sign,
-    cancelAll: () => dispatchCancelAll(valuesFor(messagesList)),
+    cancelAllApprovals: () =>
+      dispatchCancelAllApprovals(valuesFor(messagesList)),
   };
 }
 

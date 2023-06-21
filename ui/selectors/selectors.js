@@ -34,6 +34,8 @@ import {
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -969,6 +971,7 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
+  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -991,7 +994,7 @@ function getAllowedAnnouncementIds(state) {
     18: true,
     19: true,
     20: currentKeyringIsLedger && isFirefox,
-    21: true,
+    21: isSwapsChain,
   };
 }
 
@@ -1197,6 +1200,16 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
     },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(

@@ -205,6 +205,7 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+import { updateCurrentLocale } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -355,9 +356,13 @@ export default class MetamaskController extends EventEmitter {
       tokenListController: this.tokenListController,
       provider: this.provider,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
+    });
+
+    this.preferencesController.store.subscribe(async ({ currentLocale }) => {
+      await updateCurrentLocale(currentLocale);
     });
 
     this.tokensController = new TokensController({
@@ -919,6 +924,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 2 calls per 5 minutes
+          rateLimitCount: 2,
+          rateLimitTimeout: 300000,
         },
         showInAppNotification: {
           method: (origin, message) => {
@@ -930,6 +938,9 @@ export default class MetamaskController extends EventEmitter {
 
             return null;
           },
+          // 5 calls per minute
+          rateLimitCount: 5,
+          rateLimitTimeout: 60000,
         },
       },
     });
@@ -1257,11 +1268,7 @@ export default class MetamaskController extends EventEmitter {
     this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
+        allowedActions: [`${this.approvalController.name}:addRequest`],
       }),
       keyringController: this.keyringController,
       isEthSignEnabled: () =>
@@ -2246,27 +2253,6 @@ export default class MetamaskController extends EventEmitter {
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
-
-      // signatureController
-      signMessage: this.signatureController.signMessage.bind(
-        this.signatureController,
-      ),
-      cancelMessage: this.signatureController.cancelMessage.bind(
-        this.signatureController,
-      ),
-      signPersonalMessage: this.signatureController.signPersonalMessage.bind(
-        this.signatureController,
-      ),
-      cancelPersonalMessage:
-        this.signatureController.cancelPersonalMessage.bind(
-          this.signatureController,
-        ),
-      signTypedMessage: this.signatureController.signTypedMessage.bind(
-        this.signatureController,
-      ),
-      cancelTypedMessage: this.signatureController.cancelTypedMessage.bind(
-        this.signatureController,
-      ),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
@@ -3910,7 +3896,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiPortfolio: this.setMmiPortfolioCookie.bind(this),
+        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -3975,7 +3961,7 @@ export default class MetamaskController extends EventEmitter {
    * so it needs to be here and not in our controller because
    * preferences controllers is initiated first
    */
-  async setMmiPortfolioCookie() {
+  async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
     const { identities } = this.preferencesController.store.getState();

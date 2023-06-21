@@ -1,46 +1,43 @@
-import React, { useState, useContext } from 'react';
-
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import Box from '../../../components/ui/box/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
+import { useHistory } from 'react-router-dom';
+import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
-  FONT_WEIGHT,
-  TextColor,
-  TypographyVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
-import {
-  setCompletedOnboarding,
-  setFeatureFlag,
-  setUseMultiAccountBalanceChecker,
-  setUsePhishDetect,
-  setUseTokenDetection,
-  showModal,
-  setIpfsGateway,
-  setUseCurrencyRateCheck,
-  toggleNetworkMenu,
-} from '../../../store/actions';
-import { getCurrentNetwork } from '../../../selectors';
-import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import {
-  TextField,
-  PickerNetwork,
-} from '../../../components/component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
+import {
+  PickerNetwork,
+  TextField,
+} from '../../../components/component-library';
+import Box from '../../../components/ui/box/box';
+import Button from '../../../components/ui/button';
+import Typography from '../../../components/ui/typography';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
+  FONT_WEIGHT,
+  TextColor,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
+import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentNetwork } from '../../../selectors';
+import {
+  setCompletedOnboarding,
+  setFeatureFlag,
+  setIpfsGateway,
+  setUseCurrencyRateCheck,
+  setUseMultiAccountBalanceChecker,
+  setUsePhishDetect,
+  setUseTokenDetection,
+  showModal,
+  toggleNetworkMenu,
+} from '../../../store/actions';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
