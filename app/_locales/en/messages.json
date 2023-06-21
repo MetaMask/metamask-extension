@@ -712,6 +712,12 @@
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this Snap."
   },
+  "configureSnapPopupInstallDescription": {
+    "message": "You're now leaving MetaMask to install this Snap."
+  },
+  "configureSnapPopupInstallTitle": {
+    "message": "Install snap"
+  },
   "configureSnapPopupLink": {
     "message": "Click this link to continue:"
   },

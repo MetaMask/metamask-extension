@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import ConfigureSnapPopup from '../../../components/app/configure-snap-popup/configure-snap-popup';
+import ConfigureSnapPopup, {
+  ConfigureSnapPopupType,
+} from '../../../components/app/configure-snap-popup/configure-snap-popup';
 import {
   BUTTON_VARIANT,
   Box,
@@ -21,7 +22,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { installSnapFromSnapAccounts } from '../../../store/actions';
 import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
 
 export const SnapDetailHeader = ({
@@ -32,7 +32,6 @@ export const SnapDetailHeader = ({
   developer,
   auditUrls,
   website,
-  snapId,
 }: Pick<
   SnapCardProps,
   | 'updateAvailable'
@@ -42,11 +41,11 @@ export const SnapDetailHeader = ({
   | 'developer'
   | 'auditUrls'
   | 'website'
-  | 'snapId'
 >) => {
   const t = useI18nContext();
   const [showConfigPopover, setShowConfigPopover] = useState(false);
-  const dispatch = useDispatch();
+  const [showConfigPopoverType, setShowConfigPopoverType] =
+    useState<ConfigureSnapPopupType>(ConfigureSnapPopupType.INSTALL);
 
   return (
     <>
@@ -96,7 +95,8 @@ export const SnapDetailHeader = ({
                 variant={BUTTON_VARIANT.PRIMARY}
                 marginRight={1}
                 onClick={() => {
-                  dispatch(installSnapFromSnapAccounts(website, snapId));
+                  setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
+                  setShowConfigPopover(true);
                 }}
               >
                 {t('snapUpdateAvailable')}
@@ -105,7 +105,10 @@ export const SnapDetailHeader = ({
             {isInstalled && (
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
-                onClick={() => setShowConfigPopover(true)}
+                onClick={() => {
+                  setShowConfigPopoverType(ConfigureSnapPopupType.CONFIGURE);
+                  setShowConfigPopover(true);
+                }}
               >
                 {t('snapConfigure')}
               </Button>
@@ -114,7 +117,8 @@ export const SnapDetailHeader = ({
               <Button
                 variant={BUTTON_VARIANT.PRIMARY}
                 onClick={() => {
-                  dispatch(installSnapFromSnapAccounts(website, snapId));
+                  setShowConfigPopoverType(ConfigureSnapPopupType.INSTALL);
+                  setShowConfigPopover(true);
                 }}
               >
                 {t('snapInstall')}
@@ -198,12 +202,12 @@ export const SnapDetailHeader = ({
           )}
         </Box>
       </Box>
-      {showConfigPopover && (
-        <ConfigureSnapPopup
-          onClose={() => setShowConfigPopover(false)}
-          link={website}
-        />
-      )}
+      <ConfigureSnapPopup
+        type={showConfigPopoverType}
+        isOpen={showConfigPopover}
+        onClose={() => setShowConfigPopover(false)}
+        link={website}
+      />
     </>
   );
 };

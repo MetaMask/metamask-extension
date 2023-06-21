@@ -4638,12 +4638,20 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   };
 }
 
-export function installSnapFromSnapAccounts(origin: string, snapId: string) {
+export function installSnapFromSnapAccounts(
+  origin: string,
+  snapId: string,
+  version: string,
+) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.installSnaps`);
     try {
-      await submitRequestToBackground('installorUpdateSnap', [origin, snapId]);
+      await submitRequestToBackground('installorUpdateSnap', [
+        origin,
+        snapId,
+        version,
+      ]);
     } catch (error) {
       console.error(error);
     } finally {

@@ -4592,9 +4592,15 @@ export default class MetamaskController extends EventEmitter {
     return null;
   }
 
-  async installOrUpdateSnap(origin, snapId) {
-    await this.snapController.installSnaps(origin, {
-      [snapId]: {},
-    });
+  async installOrUpdateSnap(origin, snapId, version) {
+    await this.snapController.installSnaps(
+      origin,
+      {
+        [snapId]: {
+          version,
+        },
+      },
+      true,
+    );
   }
 }

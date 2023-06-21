@@ -1,7 +1,15 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import Popover from '../../ui/popover';
-import { BUTTON_VARIANT, Button, Text, Box } from '../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Text,
+  Box,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -11,62 +19,80 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
+export enum ConfigureSnapPopupType {
+  CONFIGURE = 'configure',
+  INSTALL = 'install',
+}
+
 export default function ConfigureSnapPopup({
+  type,
+  isOpen,
   onClose,
   link,
 }: {
+  type: ConfigureSnapPopupType;
+  isOpen: boolean;
   onClose: () => void;
   link: string;
 }) {
   const t = useI18nContext();
-  const popoverRef = useRef();
 
   return (
-    <Popover
-      title={t('configureSnapPopupTitle')}
-      headerProps={{ padding: [4, 4, 4] }}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
       className="whats-new-popup__popover"
-      onClose={() => {
-        onClose();
-      }}
-      popoverRef={popoverRef}
-      centerTitle
     >
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.flexStart}
-        alignItems={AlignItems.center}
-      >
-        <img
-          src="images/logo/metamask-fox.svg"
-          width="53.68px"
-          height="49.5px"
-          style={{ marginBottom: '16px' }}
-        />
-        <Text variant={TextVariant.bodyLgMedium} marginBottom={5}>
-          {t('configureSnapPopupDescription')}
-        </Text>
-        <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
-          {t('configureSnapPopupLink')}
-        </Text>
-        <Button
-          variant={BUTTON_VARIANT.LINK}
-          marginBottom={8}
-          onClick={() => {
-            global.platform.openTab({
-              url: link,
-            });
-          }}
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
+          {type === ConfigureSnapPopupType.CONFIGURE
+            ? t('configureSnapPopupTitle')
+            : t('configureSnapPopupInstallTitle')}
+        </ModalHeader>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.flexStart}
+          alignItems={AlignItems.center}
         >
-          {link}
-        </Button>
-      </Box>
-    </Popover>
+          <img
+            src="images/logo/metamask-fox.svg"
+            width="53.68px"
+            height="49.5px"
+            style={{ marginBottom: '16px' }}
+          />
+          <Text variant={TextVariant.bodyLgMedium} marginBottom={5}>
+            {type === ConfigureSnapPopupType.CONFIGURE
+              ? t('configureSnapPopupDescription')
+              : t('configureSnapPopupInstallDescription')}
+          </Text>
+          <Text variant={TextVariant.bodyLgMedium} marginBottom={4}>
+            {t('configureSnapPopupLink')}
+          </Text>
+          <Button
+            variant={BUTTON_VARIANT.LINK}
+            marginBottom={8}
+            onClick={() => {
+              global.platform.openTab({
+                url: link,
+              });
+            }}
+          >
+            {link}
+          </Button>
+        </Box>
+      </ModalContent>
+    </Modal>
   );
 }
 
 ConfigureSnapPopup.propTypes = {
+  type: PropTypes.oneOf([
+    ConfigureSnapPopupType.CONFIGURE,
+    ConfigureSnapPopupType.INSTALL,
+  ]).isRequired,
+  isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   link: PropTypes.string.isRequired,
 };
