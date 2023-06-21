@@ -3533,6 +3533,13 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
 
+    // Let the contentscript know the connection is alive
+    const pingStream = mux.createStream('metamask-ping');
+    pingStream.on('data', (message) => {
+      console.log(`Got pingmessage: '${JSON.stringify(message)}'`);
+      pingStream.write({ id: message.id });
+    });
+
     // messages between inpage and background
     this.setupProviderConnection(
       mux.createStream('metamask-provider'),

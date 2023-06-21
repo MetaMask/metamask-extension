@@ -322,10 +322,11 @@ const setupPageStreams = () => {
 // The field below is used to ensure that replay is done only once for each restart.
 let METAMASK_EXTENSION_CONNECT_SENT = false;
 
+let extensionInterval;
 const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  extensionStream = new PortStream(extensionPort);
+  extensionStream = new PortStream(extensionPort, 'contentscript');
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -333,6 +334,35 @@ const setupExtensionStreams = () => {
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+
+  const pingChannel = extensionMux.createStream('metamask-ping');
+
+  const pendingTimeouts = {};
+  pingChannel.on('data', (message) => {
+    const id = message?.id;
+    if (id) {
+      console.log(`received response for id ${id}`);
+      clearTimeout(pendingTimeouts[id]);
+      delete pendingTimeouts[id];
+    } else {
+      throw new Error(`Invalid message: ${JSON.stringify(message)}`);
+    }
+  });
+
+  let counter = 0;
+  extensionInterval = setInterval(() => {
+    console.log('sending message');
+    counter += 1;
+    const messageId = counter;
+    pingChannel.write({ id: messageId });
+    const timeout = setTimeout(() => {
+      console.log(`ping timeout for message ${messageId}`);
+      // eslint-disable-next-line no-use-before-define
+      onDisconnectDestroyStreams();
+      extensionPort.disconnect();
+    }, 5000);
+    pendingTimeouts[messageId] = timeout;
+  }, 5000);
 
   pump(extensionMux, extensionStream, extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
@@ -487,6 +517,11 @@ const onMessageSetUpExtensionStreams = (msg) => {
  * so that streams may be re-established later when the extension port is reconnected.
  */
 const onDisconnectDestroyStreams = () => {
+  console.log('DISCONNECTING PORTTTT');
+  if (extensionInterval) {
+    clearInterval(extensionInterval);
+    extensionInterval = null;
+  }
   const err = checkForLastError();
 
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
@@ -502,9 +537,10 @@ const onDisconnectDestroyStreams = () => {
    * once the port and connections are ready. Delay time is arbitrary.
    */
   if (err) {
-    console.warn(`${err} Resetting the streams.`);
-    setTimeout(setupExtensionStreams, 1000);
+    console.error(err);
   }
+  console.warn(`Resetting the streams.`);
+  setTimeout(setupExtensionStreams, 1000);
 };
 
 /**

@@ -566,7 +566,11 @@ export function setupController(
 
     if (isMetaMaskInternalProcess) {
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new PortStream(
+          remotePort,
+          `background-${processName}-${senderUrl?.origin}`,
+        );
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -629,7 +633,11 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new PortStream(
+          remotePort,
+          `background-${processName}-${senderUrl?.origin}`,
+        );
       controller.setupPhishingCommunication({
         connectionStream: portStream,
       });
@@ -662,7 +670,11 @@ export function setupController(
     ///: END:ONLY_INCLUDE_IN
 
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new PortStream(
+        remotePort,
+        `background-external-${remotePort.sender?.url}`,
+      );
     controller.setupUntrustedCommunication({
       connectionStream: portStream,
       sender: remotePort.sender,
