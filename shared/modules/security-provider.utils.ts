@@ -1,7 +1,7 @@
 import { Json } from '@metamask/utils';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../constants/security-provider';
 
-export function isFlaggedSecurityProviderResponse(
+export function isSuspiciousResponse(
   securityProviderResponse: Record<string, Json>,
 ): boolean {
   return (

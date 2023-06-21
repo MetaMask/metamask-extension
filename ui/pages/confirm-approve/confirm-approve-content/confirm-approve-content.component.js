@@ -23,7 +23,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-import { isFlaggedSecurityProviderResponse } from '../../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
@@ -595,9 +595,7 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
-        {isFlaggedSecurityProviderResponse(
-          txData?.securityProviderResponse,
-        ) && (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />

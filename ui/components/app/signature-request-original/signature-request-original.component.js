@@ -13,7 +13,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
-import { isFlaggedSecurityProviderResponse } from '../../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
@@ -133,9 +133,7 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {isFlaggedSecurityProviderResponse(
-          txData?.securityProviderResponse,
-        ) && (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />

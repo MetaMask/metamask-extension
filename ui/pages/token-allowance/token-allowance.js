@@ -57,7 +57,7 @@ import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
-import { isFlaggedSecurityProviderResponse } from '../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -273,7 +273,7 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
-      {isFlaggedSecurityProviderResponse(txData?.securityProviderResponse) && (
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />

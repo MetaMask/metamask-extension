@@ -31,7 +31,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { Numeric } from '../../../../shared/modules/Numeric';
-import { isFlaggedSecurityProviderResponse } from '../../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
@@ -284,9 +284,7 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
-          {isFlaggedSecurityProviderResponse(
-            txData?.securityProviderResponse,
-          ) && (
+          {isSuspiciousResponse(txData?.securityProviderResponse) && (
             <SecurityProviderBannerMessage
               securityProviderResponse={txData.securityProviderResponse}
             />

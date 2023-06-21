@@ -19,7 +19,7 @@ import {
   unconfirmedMessagesHashSelector,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
-import { isFlaggedSecurityProviderResponse } from '../../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -78,7 +78,7 @@ export default function SignatureRequestSIWE({ txData }) {
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
-  const showSecurityProviderBanner = isFlaggedSecurityProviderResponse(
+  const showSecurityProviderBanner = isSuspiciousResponse(
     txData?.securityProviderResponse,
   );
 

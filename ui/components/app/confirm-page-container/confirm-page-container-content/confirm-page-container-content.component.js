@@ -10,7 +10,7 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
-import { isFlaggedSecurityProviderResponse } from '../../../../../shared/modules/security-provider.utils';
+import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -215,9 +215,7 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {isFlaggedSecurityProviderResponse(
-          txData?.securityProviderResponse,
-        ) && (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
