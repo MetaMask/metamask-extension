@@ -58,7 +58,7 @@ class Driver {
    * @param extensionUrl
    * @param {number} timeout
    */
-  constructor(driver, browser, extensionUrl, timeout = 10000) {
+  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
@@ -376,6 +376,7 @@ class Driver {
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.driver.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -389,7 +390,7 @@ class Driver {
     title,
     initialWindowHandles,
     delayStep = 1000,
-    timeout = 5000,
+    timeout = this.timeout,
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
@@ -409,6 +410,25 @@ class Driver {
     }
 
     throw new Error(`No window with title: ${title}`);
+  }
+
+  async getWindowTitles(delayStep = 1000, timeout = this.timeout) {
+    let windowHandles = await this.driver.getAllWindowHandles();
+    let timeElapsed = 0;
+    let titles = [];
+    while (timeElapsed <= timeout) {
+      for (const handle of windowHandles) {
+        await this.driver.switchTo().window(handle);
+        const handleTitle = await this.driver.getTitle();
+        titles.push(handleTitle);
+      }
+      await this.delay(delayStep);
+      timeElapsed += delayStep;
+
+      titles = [];
+      // refresh the window handles
+      windowHandles = await this.driver.getAllWindowHandles();
+    }
   }
 
   async closeWindow() {

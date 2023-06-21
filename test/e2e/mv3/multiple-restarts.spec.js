@@ -13,6 +13,7 @@ const {
   sleepSeconds,
   terminateServiceWorker,
   unlockWallet,
+  regularDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -257,11 +258,18 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await openDapp(driver);
 
+        await driver.getAllWindowHandles();
+        await driver.getWindowTitles();
+
         await clickSendButton(driver);
         await driver.waitUntilXWindowHandles(2);
 
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await terminateServiceWorker(driver);
+
+        await driver.getAllWindowHandles();
+        await driver.getWindowTitles();
+
         await driver.waitUntilXWindowHandles(2);
 
         await clickSendButton(driver);
@@ -318,14 +326,15 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
 
     async function assertNumberOfTransactionsInPopUp(driver, number) {
+      await sleepSeconds(regularDelayMs);
       await switchToWindow(driver, WINDOW_TITLES.Notification);
-      const navEl = await driver.findElement(
-        '.confirm-page-container-navigation__navtext',
-      );
 
-      const notificationProgress = await navEl.getText();
+      const foundElement = await driver.findElement({
+        css: '.confirm-page-container-navigation__navtext',
+        text: `1 of ${number}`,
+      });
 
-      assert.ok(notificationProgress, `1 of ${number}`);
+      assert.ok(foundElement, true);
     }
   });
 
