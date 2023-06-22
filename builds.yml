@@ -80,7 +80,7 @@ buildTypes:
     features:
       - build-blockaid
     isPrerelease: true
-    manifestOverrides: ./app/build-types/blockaid/manifest/
+    manifestOverrides: false
 
   mmi:
     features:
