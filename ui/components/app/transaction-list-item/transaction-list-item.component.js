@@ -288,22 +288,20 @@ function TransactionListItemInner({
           ///: END:ONLY_INCLUDE_IN
         }
         subtitle={
-          <Text>
-            <TransactionStatusLabel
-              statusOnly
-              isPending={isPending}
-              isEarliestNonce={isEarliestNonce}
-              error={err}
-              date={date}
-              status={displayedStatusKey}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
-              custodyStatusDisplayText={
-                transactionGroup.primaryTransaction.custodyStatusDisplayText
-              }
-              ///: END:ONLY_INCLUDE_IN
-            />
-          </Text>
+          <TransactionStatusLabel
+            statusOnly
+            isPending={isPending}
+            isEarliestNonce={isEarliestNonce}
+            error={err}
+            date={date}
+            status={displayedStatusKey}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+            custodyStatusDisplayText={
+              transactionGroup.primaryTransaction.custodyStatusDisplayText
+            }
+            ///: END:ONLY_INCLUDE_IN
+          />
         }
         rightContent={
           !isSignatureReq &&
