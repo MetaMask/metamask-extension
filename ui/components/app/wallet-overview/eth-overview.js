@@ -157,7 +157,7 @@ const EthOverview = ({ className }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
                 <ButtonIcon
                   className="eth-overview__portfolio-button"
                   data-testid="home__portfolio-site"
