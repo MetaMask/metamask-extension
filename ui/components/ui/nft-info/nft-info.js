@@ -8,7 +8,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
-import { Text, Button, Box } from '../../component-library';
+import { Text, Box, ButtonLink } from '../../component-library';
 
 export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
@@ -38,7 +38,7 @@ export default function NftInfo({ assetName, tokenAddress, tokenId }) {
         </Box>
       </Box>
       <Box marginTop={4} marginRight={4}>
-        <Button className="nft-info__button" type="link">
+        <ButtonLink className="nft-info__button">
           <Text
             variant={TextVariant.bodySm}
             as="h6"
@@ -46,7 +46,7 @@ export default function NftInfo({ assetName, tokenAddress, tokenId }) {
           >
             {t('view')}
           </Text>
-        </Button>
+        </ButtonLink>
       </Box>
     </Box>
   );
