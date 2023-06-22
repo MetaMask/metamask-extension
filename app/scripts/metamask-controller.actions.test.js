@@ -96,17 +96,6 @@ describe('MetaMaskController', function () {
         ]),
       );
     metamaskController = new MetaMaskController({
-      initState: {
-        NetworkController: {
-          providerConfig: {
-            type: 'rpc',
-            rpcUrl: 'http://localhost:8545',
-            chainId: '0x539',
-            nickname: 'Localhost 8545',
-            ticker: 'ETH',
-          },
-        },
-      },
       showUserConfirmation: noop,
       encryptor: {
         encrypt(_, object) {

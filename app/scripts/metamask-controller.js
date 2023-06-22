@@ -106,6 +106,7 @@ import {
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
+  TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
 } from '../../shared/constants/network';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
@@ -310,9 +311,34 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    let initialProviderConfig;
+    if (process.env.IN_TEST) {
+      initialProviderConfig = {
+        type: NETWORK_TYPES.RPC,
+        rpcUrl: 'http://localhost:8545',
+        chainId: '0x539',
+        nickname: 'Localhost 8545',
+        ticker: 'ETH',
+      };
+    } else if (
+      process.env.METAMASK_DEBUG ||
+      process.env.METAMASK_ENVIRONMENT === 'test'
+    ) {
+      initialProviderConfig = {
+        type: NETWORK_TYPES.GOERLI,
+        chainId: CHAIN_IDS.GOERLI,
+        ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+      };
+    }
+    const initialNetworkControllerState = initialProviderConfig
+      ? {
+          providerConfig: initialProviderConfig,
+          ...initState.NetworkController,
+        }
+      : initState.NetworkController;
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
-      state: initState.NetworkController,
+      state: initialNetworkControllerState,
       infuraProjectId: opts.infuraProjectId,
       trackMetaMetricsEvent: (...args) =>
         this.metaMetricsController.trackEvent(...args),
