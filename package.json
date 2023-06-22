@@ -357,7 +357,6 @@
     "reselect": "^3.0.1",
     "ses": "^0.18.4",
     "single-call-balance-checker-abi": "^1.0.0",
-    "swappable-obj-proxy": "^1.1.0",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
