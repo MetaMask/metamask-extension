@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -8,9 +8,9 @@ import { getRpcPrefsForCurrentProvider } from '../../../selectors';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '..';
-import Box from '../../ui/box/box';
 import {
   AvatarAccount,
+  Box,
   Text,
   AvatarFavicon,
   Tag,
@@ -24,13 +24,13 @@ import {
   Color,
   TextAlign,
   AlignItems,
-  DISPLAY,
   TextVariant,
-  FLEX_DIRECTION,
+  FlexDirection,
   BorderRadius,
   JustifyContent,
   Size,
   BorderColor,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -75,8 +75,13 @@ export const AccountListItem = ({
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
-  const ref = useRef(false);
+  const [accountListItemMenuElement, setAccountListItemMenuElement] =
+    useState();
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
+
+  const setAccountListItemMenuRef = (ref) => {
+    setAccountListItemMenuElement(ref);
+  };
 
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
@@ -91,7 +96,7 @@ export const AccountListItem = ({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       padding={4}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
       className={classnames('multichain-account-list-item', {
@@ -125,13 +130,13 @@ export const AccountListItem = ({
         marginInlineEnd={2}
       ></AvatarAccount>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         className="multichain-account-list-item__content"
       >
-        <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
             <Text
@@ -165,8 +170,8 @@ export const AccountListItem = ({
             <Text
               as="div"
               className="multichain-account-list-item__asset"
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
               ellipsis
               textAlign={TextAlign.End}
@@ -180,10 +185,10 @@ export const AccountListItem = ({
           </Box>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
-          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+          <Box display={Display.Flex} alignItems={AlignItems.center}>
             {connectedAvatar ? (
               <AvatarFavicon
                 size={Size.XS}
@@ -219,13 +224,14 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      <div ref={ref}>
-        <ButtonIcon
-          ariaLabel={`${identity.name} ${t('options')}`}
-          iconName={IconName.MoreVertical}
-          size={IconSize.Sm}
-          onClick={(e) => {
-            e.stopPropagation();
+      <ButtonIcon
+        ariaLabel={`${identity.name} ${t('options')}`}
+        iconName={IconName.MoreVertical}
+        size={IconSize.Sm}
+        ref={setAccountListItemMenuRef}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!accountOptionsMenuOpen) {
             trackEvent({
               event: MetaMetricsEventName.AccountDetailMenuOpened,
               category: MetaMetricsEventCategory.Navigation,
@@ -233,21 +239,20 @@ export const AccountListItem = ({
                 location: 'Account Options',
               },
             });
-            setAccountOptionsMenuOpen(true);
-          }}
-          data-testid="account-list-item-menu-button"
-        />
-        {accountOptionsMenuOpen ? (
-          <AccountListItemMenu
-            anchorElement={ref.current}
-            blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
-            identity={identity}
-            onClose={() => setAccountOptionsMenuOpen(false)}
-            isRemovable={keyring?.type !== KeyringType.hdKeyTree}
-            closeMenu={closeMenu}
-          />
-        ) : null}
-      </div>
+          }
+          setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+        }}
+        data-testid="account-list-item-menu-button"
+      />
+      <AccountListItemMenu
+        anchorElement={accountListItemMenuElement}
+        blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
+        identity={identity}
+        onClose={() => setAccountOptionsMenuOpen(false)}
+        isOpen={accountOptionsMenuOpen}
+        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+        closeMenu={closeMenu}
+      />
     </Box>
   );
 };

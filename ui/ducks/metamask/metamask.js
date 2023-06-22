@@ -15,6 +15,7 @@ import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 import { KeyringType } from '../../../shared/constants/keyring';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
@@ -37,7 +38,7 @@ const initialState = {
   currentLocale: '',
   currentBlockGasLimit: '',
   preferences: {
-    autoLockTimeLimit: undefined,
+    autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
@@ -425,4 +426,8 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
+}
+
+export function isLineaMainnetNetworkReleased(state) {
+  return state.metamask.isLineaMainnetReleased;
 }

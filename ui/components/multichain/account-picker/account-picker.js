@@ -13,7 +13,7 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   FontWeight,
   IconColor,
   Size,
@@ -31,7 +31,7 @@ export const AccountPicker = ({ address, name, onClick, disabled }) => {
       borderRadius={BorderRadius.LG}
       ellipsis
       textProps={{
-        display: DISPLAY.FLEX,
+        display: Display.Flex,
         gap: 2,
         alignItems: AlignItems.center,
       }}

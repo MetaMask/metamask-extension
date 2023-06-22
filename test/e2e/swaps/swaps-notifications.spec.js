@@ -1,8 +1,12 @@
 const { strict: assert } = require('assert');
-
 const { withFixtures } = require('../helpers');
-
-const { withFixturesOptions, loadExtension, buildQuote } = require('./shared');
+const {
+  withFixturesOptions,
+  loadExtension,
+  buildQuote,
+  reviewQuote,
+  checkNotification,
+} = require('./shared');
 
 describe('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer) {
@@ -65,33 +69,34 @@ describe('Swaps - notifications', function () {
           amount: 2,
           swapTo: 'INUINU',
         });
-        const reviewSwapButton = await driver.findElement(
-          '[data-testid="page-container-footer-next"]',
-        );
-        assert.equal(await reviewSwapButton.getText(), 'Review swap');
-        assert.equal(await reviewSwapButton.isEnabled(), false);
-        const continueButton = await driver.findClickableElement(
-          '.actionable-message__action-warning',
-        );
-        assert.equal(await continueButton.getText(), 'Continue');
-        await continueButton.click();
-        assert.equal(await reviewSwapButton.isEnabled(), true);
-        await reviewSwapButton.click();
-        await driver.waitForSelector({
-          css: '[class*="box--align-items-center"]',
-          text: 'Estimated gas fee',
+        await checkNotification(driver, {
+          title: 'Potentially inauthentic token',
+          text: 'INUINU is only verified on 1 source. Consider verifying it on Etherscan before proceeding.',
         });
-        const swapButton = await driver.findElement(
-          '[data-testid="page-container-footer-next"]',
-        );
-        assert.equal(await swapButton.isEnabled(), false);
-        await driver.clickElement({ text: 'I understand', tag: 'button' });
-        assert.equal(await swapButton.getText(), 'Swap');
+        await driver.clickElement({ text: 'Continue swapping', tag: 'button' });
+        await driver.waitForSelector({
+          text: 'Swap',
+          tag: 'button',
+        });
+        await checkNotification(driver, {
+          title: 'Check your rate before proceeding',
+          text: 'Price impact could not be determined due to lack of market price data.',
+        });
+        await driver.clickElement({ text: 'Swap anyway', tag: 'button' });
+        await reviewQuote(driver, {
+          amount: 2,
+          swapFrom: 'TESTETH',
+          swapTo: 'INUINU',
+          skipCounter: true,
+        });
+        const swapButton = await driver.findElement({
+          text: 'Swap',
+          tag: 'button',
+        });
         assert.equal(await swapButton.isEnabled(), true);
       },
     );
   });
-
   it('tests a notification for not enough balance', async function () {
     await withFixtures(
       {
@@ -104,30 +109,26 @@ describe('Swaps - notifications', function () {
           amount: 50,
           swapTo: 'USDC',
         });
-        const reviewSwapButton = await driver.findElement(
-          '[data-testid="page-container-footer-next"]',
-        );
-        assert.equal(await reviewSwapButton.getText(), 'Review swap');
-        assert.equal(await reviewSwapButton.isEnabled(), true);
-        await reviewSwapButton.click();
-        await driver.waitForSelector({
-          css: '[class*="box--align-items-center"]',
-          text: 'Estimated gas fee',
+        await checkNotification(driver, {
+          title: 'Insufficient balance',
+          text: 'You need 50 more TESTETH to complete this swap',
         });
-        await driver.waitForSelector({
-          css: '[class*="actionable-message__message"]',
-          text: 'You need 43.4467 more TESTETH to complete this swap',
+        await reviewQuote(driver, {
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+          amount: 50,
+          skipCounter: true,
         });
-        const swapButton = await driver.findElement(
-          '[data-testid="page-container-footer-next"]',
-        );
+        const swapButton = await driver.waitForSelector({
+          text: 'Swap',
+          tag: 'button',
+        });
         assert.equal(await swapButton.getText(), 'Swap');
         assert.equal(await swapButton.isEnabled(), false);
       },
     );
   });
-
-  it('tests notifications for verified token on 0 sources and high slippage', async function () {
+  it('tests notifications for token import', async function () {
     await withFixtures(
       {
         ...withFixturesOptions,
@@ -139,39 +140,51 @@ describe('Swaps - notifications', function () {
           amount: 2,
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
         });
-        await driver.waitForSelector({
-          css: '.popover-header',
-          text: 'Import token?',
-        });
         await driver.clickElement(
           '[data-testid="page-container__import-button"]',
         );
-        const reviewSwapButton = await driver.findElement(
-          '[data-testid="page-container-footer-next"]',
-        );
-        assert.equal(await reviewSwapButton.isEnabled(), false);
-        const continueButton = await driver.findClickableElement(
-          '.actionable-message__action-danger',
-        );
-        assert.equal(await continueButton.getText(), 'Continue');
-        await continueButton.click();
-        assert.equal(await reviewSwapButton.isEnabled(), true);
-        await driver.clickElement('[class="slippage-buttons__header-text"]');
-        await driver.clickElement({ text: 'custom', tag: 'button' });
-        await driver.fill(
-          'input[data-testid="slippage-buttons__custom-slippage"]',
-          '20',
-        );
-        await driver.waitForSelector({
-          css: '[class*="slippage-buttons__error-text"]',
-          text: 'Slippage amount is too high and will result in a bad rate. Please reduce your slippage tolerance to a value below 15%.',
+        await checkNotification(driver, {
+          title: 'Token added manually',
+          text: 'Verify this token on Etherscan and make sure it is the token you want to trade.',
         });
-        assert.equal(await reviewSwapButton.isEnabled(), false);
-        await driver.fill(
-          'input[data-testid="slippage-buttons__custom-slippage"]',
-          '4',
-        );
-        assert.equal(await reviewSwapButton.isEnabled(), true);
+      },
+    );
+  });
+  it('tests notifications for slippage', async function () {
+    await withFixtures(
+      {
+        ...withFixturesOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await loadExtension(driver);
+        await buildQuote(driver, {
+          amount: '.0001',
+          swapTo: 'DAI',
+        });
+        await driver.clickElement('[title="Transaction settings"]');
+        await driver.clickElement({ text: 'custom', tag: 'button' });
+        await driver.fill('input[data-testid*="slippage"]', '0');
+        await checkNotification(driver, {
+          title: 'Sourcing zero-slippage providers',
+          text: 'There are fewer zero-slippage quote providers which will result in a less competitive quote.',
+        });
+        await driver.fill('input[data-testid*="slippage"]', '1');
+        await checkNotification(driver, {
+          title: 'Increase slippage to avoid transaction failure',
+          text: 'Max slippage is too low which may cause your transaction to fail.',
+        });
+        await driver.fill('input[data-testid*="slippage"]', '15');
+        await checkNotification(driver, {
+          title: 'Very high slippage',
+          text: 'The slippage entered is considered very high and may result in a bad rate',
+        });
+        await driver.fill('input[data-testid*="slippage"]', '20');
+        await checkNotification(driver, {
+          title: 'Reduce slippage to continue',
+          text: 'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
+        });
+        await driver.fill('input[data-testid*="slippage"]', '4');
       },
     );
   });

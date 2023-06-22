@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TransactionSettings renders the component with initial props 1`] = `
+<div
+  class="button-group transaction-settings__button-group radio-button-group"
+  role="radiogroup"
+>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    data-testid="button-group__button0"
+    role="radio"
+  >
+    2%
+  </button>
+  <button
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
+    data-testid="button-group__button1"
+    role="radio"
+  >
+    3%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button transaction-settings__button-group-custom-button radio-button"
+    data-testid="button-group__button2"
+    role="radio"
+  >
+    custom
+  </button>
+</div>
+`;
+
+exports[`TransactionSettings renders the component with the smart transaction opt-in button available, opt into STX 1`] = `null`;
+
+exports[`TransactionSettings renders the component with the smart transaction opt-in button available, opt into STX 2`] = `
+<div
+  class="button-group transaction-settings__button-group radio-button-group"
+  role="radiogroup"
+>
+  <button
+    aria-checked="false"
+    class="button-group__button radio-button"
+    data-testid="button-group__button0"
+    role="radio"
+  >
+    2%
+  </button>
+  <button
+    aria-checked="true"
+    class="button-group__button radio-button button-group__button--active radio-button--active"
+    data-testid="button-group__button1"
+    role="radio"
+  >
+    3%
+  </button>
+  <button
+    aria-checked="false"
+    class="button-group__button transaction-settings__button-group-custom-button radio-button"
+    data-testid="button-group__button2"
+    role="radio"
+  >
+    custom
+  </button>
+</div>
+`;
