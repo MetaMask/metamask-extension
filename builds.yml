@@ -77,12 +77,6 @@ buildTypes:
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
 
-  blockaid:
-    features:
-      - build-blockaid
-    isPrerelease: true
-    manifestOverrides: false
-
   mmi:
     features:
       - build-mmi
