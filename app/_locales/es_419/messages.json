@@ -1269,9 +1269,6 @@
   "lock": {
     "message": "Bloquear"
   },
-  "lockTimeTooGreat": {
-    "message": "El tiempo de bloqueo es demasiado largo"
-  },
   "low": {
     "message": "Baja"
   },

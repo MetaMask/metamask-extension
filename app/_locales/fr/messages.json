@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "Déconnexion"
   },
-  "lockTimeTooGreat": {
-    "message": "Le temps de verrouillage est trop important"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
