@@ -371,7 +371,7 @@ export default class TransactionController extends EventEmitter {
               this.messagingSystem
                 .call('ApprovalController:showSuccess', {
                   message: 'Transaction submitted successfully',
-                  endFlow: approvalFlowId,
+                  flowToEnd: approvalFlowId,
                 })
                 .catch(() => undefined);
 
@@ -388,7 +388,7 @@ export default class TransactionController extends EventEmitter {
               this.messagingSystem
                 .call('ApprovalController:showError', {
                   error: finishedTxMeta.err.message,
-                  endFlow: approvalFlowId,
+                  flowToEnd: approvalFlowId,
                 })
                 .catch(() => undefined);
 

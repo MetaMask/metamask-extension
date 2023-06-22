@@ -253,11 +253,11 @@ async function addEthereumChainHandler(
   }
   let networkConfigurationId;
 
-  const { id: approvalFlowId } = await startApprovalFlow();
+  const { id: approvalFlowId } = await startApprovalFlow({
+    loadingText: 'Adding Network',
+  });
 
   try {
-    setApprovalFlowLoadingText('Adding Network');
-
     try {
       await requestUserApproval({
         origin,
@@ -293,7 +293,10 @@ async function addEthereumChainHandler(
 
     // Ask the user to switch the network
     try {
-      await setApprovalFlowLoadingText('Switching Network');
+      await setApprovalFlowLoadingText({
+        id: approvalFlowId,
+        loadingText: 'Switching Network',
+      });
 
       await requestUserApproval({
         origin,
@@ -332,6 +335,6 @@ async function addEthereumChainHandler(
 
     return end();
   } finally {
-    endApprovalFlow(approvalFlowId);
+    endApprovalFlow({ id: approvalFlowId });
   }
 }

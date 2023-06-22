@@ -19,8 +19,8 @@ import snapPrompt from './snaps/snap-prompt/snap-prompt';
 const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
-  success,
-  error,
+  result_success: success,
+  result_error: error,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,

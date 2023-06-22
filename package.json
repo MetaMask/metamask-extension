@@ -199,9 +199,9 @@
     "@metamask/rpc-methods@^0.32.2": "patch:@metamask/rpc-methods@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-rpc-methods-npm-0.33.1-flask.1-e1d0b30d76.patch",
     "@metamask/rpc-methods@^0.33.1-flask.1": "patch:@metamask/rpc-methods@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-rpc-methods-npm-0.33.1-flask.1-e1d0b30d76.patch",
     "@metamask/snaps-controllers@^0.32.2": "patch:@metamask/snaps-controllers@npm%3A0.33.1-flask.1#./.yarn/patches/@metamask-snaps-controllers-npm-0.33.1-flask.1-c5d7e8957b.patch",
-    "@metamask/approval-controller@^3.1.0": "patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch",
-    "@metamask/approval-controller@^2.1.1": "patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch",
-    "@metamask/approval-controller@^2.0.0": "patch:@metamask/approval-controller@npm%3A3.1.0#./.yarn/patches/@metamask-approval-controller-npm-3.1.0-bde9ecdc2b.patch"
+    "@metamask/approval-controller@^3.3.0": "patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch",
+    "@metamask/approval-controller@^2.1.1": "patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch",
+    "@metamask/approval-controller@^2.0.0": "patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch"
   },
   "dependencies": {
     "@actions/core": "^1.10.0",
@@ -231,7 +231,7 @@
     "@metamask-institutional/transaction-update": "^0.1.21",
     "@metamask/address-book-controller": "^2.0.0",
     "@metamask/announcement-controller": "^3.0.0",
-    "@metamask/approval-controller": "^3.1.0",
+    "@metamask/approval-controller": "^3.3.0",
     "@metamask/assets-controllers": "^7.0.0",
     "@metamask/base-controller": "^2.0.0",
     "@metamask/browser-passworder": "^4.1.0",

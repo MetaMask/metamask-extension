@@ -1,10 +1,20 @@
-import { UIComponent } from '@metamask/approval-controller';
+import { ResultComponent } from '@metamask/approval-controller';
+
+type TemplateRendererComponent = {
+  key: string;
+  element: string;
+  props?: Record<string, unknown>;
+  children?:
+    | string
+    | TemplateRendererComponent
+    | (string | TemplateRendererComponent)[];
+};
 
 export function processError(
-  input: undefined | string | UIComponent | UIComponent[],
+  input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
-): UIComponent | (string | UIComponent)[] {
-  let currentInput = input;
+): TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+  let currentInput = convertResultComponents(input);
 
   if (!currentInput) {
     currentInput = fallback;
@@ -22,10 +32,10 @@ export function processError(
 }
 
 export function processString(
-  input: undefined | string | UIComponent | UIComponent[],
+  input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
-): string | UIComponent | (string | UIComponent)[] {
-  let currentInput = input;
+): string | TemplateRendererComponent | (string | TemplateRendererComponent)[] {
+  let currentInput = convertResultComponents(input);
 
   if (!currentInput) {
     currentInput = fallback;
@@ -38,7 +48,9 @@ export function processString(
   return applyBold(currentInput);
 }
 
-export function applyBold(message: string): (string | UIComponent)[] {
+export function applyBold(
+  message: string,
+): (string | TemplateRendererComponent)[] {
   const boldPattern = /\*\*(.+?)\*\*/gu;
 
   return findMarkdown(message, boldPattern, (formattedText, index) => ({
@@ -51,8 +63,11 @@ export function applyBold(message: string): (string | UIComponent)[] {
 export function findMarkdown(
   text: string,
   pattern: RegExp,
-  getElement: (formattedText: string, index: number) => UIComponent,
-): (string | UIComponent)[] {
+  getElement: (
+    formattedText: string,
+    index: number,
+  ) => TemplateRendererComponent,
+): (string | TemplateRendererComponent)[] {
   let position = 0;
   let index = 0;
 
@@ -82,4 +97,31 @@ export function findMarkdown(
   }
 
   return elements;
+}
+
+function convertResultComponents(
+  input: undefined | string | ResultComponent | (string | ResultComponent)[],
+):
+  | undefined
+  | string
+  | TemplateRendererComponent
+  | (string | TemplateRendererComponent)[] {
+  if (input === undefined) {
+    return undefined;
+  }
+
+  if (typeof input === 'string') {
+    return input;
+  }
+
+  if (Array.isArray(input)) {
+    return input.map(convertResultComponents) as any;
+  }
+
+  return {
+    key: input.key,
+    element: input.name,
+    props: input.properties,
+    children: convertResultComponents(input.children),
+  };
 }

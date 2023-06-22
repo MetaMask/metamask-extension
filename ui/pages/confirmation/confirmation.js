@@ -181,6 +181,9 @@ export default function ConfirmationPage({
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const approvalFlowLoadingText = approvalFlows.length
+    ? approvalFlows.slice(-1)[0].loadingText
+    : undefined;
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
@@ -191,7 +194,6 @@ export default function ConfirmationPage({
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
   const hasPendingConfirmations = useSelector(hasPendingConfirmation);
-  const approvalFlowLoadingText = useSelector(getApprovalFlowLoadingText);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
