@@ -52,24 +52,9 @@ export default function NewSnapAccountPage() {
     submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
   };
 
-  const mm = useSelector((state) => state.metamask);
-
   const snapsAddSnapAccountModalDismissed = useSelector(
     (state) => state.metamask.snapsAddSnapAccountModalDismissed,
   );
-
-  const prefs = useSelector(getPreferences);
-
-  // console.log('mm', mm);
-  // console.log(
-  //   'snapsAddSnapAccountModalDismissed',
-  //   snapsAddSnapAccountModalDismissed,
-  // );
-  // console.log('prefs', prefs);
-
-  // prefs.setSnapsAddSnapAccountModalDismissed(true);
-
-  // submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [false]);
 
   return (
     <Box className="snap-account-page">
