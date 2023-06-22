@@ -15,19 +15,17 @@ import {
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
 import TransactionListItemDetails from '../transaction-list-item-details';
-import { ActivityListItem } from '../../multichain/activity-list-item';
+import { ActivityListItem } from '../../multichain';
 import {
   AvatarNetwork,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
-  Text,
 } from '../../component-library';
 import {
   BackgroundColor,
   Display,
   Size,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
 
@@ -91,14 +89,12 @@ export default function SmartTransactionListItem({
           </BadgeWrapper>
         }
         subtitle={
-          <Text variant={TextVariant.bodyMd}>
-            <TransactionStatusLabel
-              isPending
-              isEarliestNonce={isEarliestNonce}
-              date={date}
-              status={displayedStatusKey}
-            />
-          </Text>
+          <TransactionStatusLabel
+            isPending
+            isEarliestNonce={isEarliestNonce}
+            date={date}
+            status={displayedStatusKey}
+          />
         }
       >
         {displayedStatusKey === TransactionGroupStatus.pending &&

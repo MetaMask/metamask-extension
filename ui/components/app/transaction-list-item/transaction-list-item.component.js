@@ -61,7 +61,7 @@ import CancelSpeedupPopover from '../cancel-speedup-popover';
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ActivityListItem } from '../../multichain/activity-list-item';
+import { ActivityListItem } from '../../multichain';
 
 function TransactionListItemInner({
   transactionGroup,
