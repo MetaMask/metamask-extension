@@ -38,12 +38,6 @@ export const ActivityListItem = ({
       className={primaryClassName}
       onClick={onClick}
       data-testid={dataTestId}
-      tabIndex={0}
-      onKeyPress={(event) => {
-        if (event.key === 'Enter') {
-          onClick();
-        }
-      }}
       padding={4}
       display={Display.Flex}
       width={BlockSize.Full}
