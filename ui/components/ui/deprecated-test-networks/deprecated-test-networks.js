@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import Button from '../button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  DISPLAY,
+  Display,
   JustifyContent,
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
-import Box from '../box/box';
 import ActionableMessage from '../actionable-message/actionable-message';
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { Text, Icon, IconName, IconSize } from '../../component-library';
+import {
+  Text,
+  Icon,
+  IconName,
+  IconSize,
+  Box,
+  Button,
+} from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
@@ -41,19 +46,14 @@ export default function DeprecatedTestNetworks() {
         withRightButton
         message={
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             className="deprecated-test-networks__content"
           >
             <Box marginRight={2} color={Color.warningDefault}>
               <Icon name={IconName.Info} size={IconSize.Sm} />
             </Box>
             <Box justifyContent={JustifyContent.spaceBetween}>
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                marginTop={0}
-                marginBottom={0}
-              >
+              <Text variant={TextVariant.bodySm} as="h6">
                 {t('deprecatedTestNetworksMsg')}
 
                 <Button
@@ -70,7 +70,6 @@ export default function DeprecatedTestNetworks() {
               <Box
                 className="deprecated-test-networks__content__close"
                 marginLeft={2}
-                marginTop={0}
                 color={Color.iconAlternative}
                 onClick={() => setIsShowingWarning(false)}
               />

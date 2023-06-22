@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
-import Box from '../box/box';
 import {
   TextAlign,
-  DISPLAY,
+  Display,
   TextVariant,
   AlignItems,
   TextColor,
@@ -13,7 +11,7 @@ import {
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
 
 export default function FormField({
   dataTestId,
@@ -54,7 +52,7 @@ export default function FormField({
         <div className="form-field__heading">
           <Box
             className="form-field__heading-title"
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.baseline}
             {...titleHeadingWrapperProps}
           >
@@ -66,7 +64,7 @@ export default function FormField({
                   html
                   variant={TextVariant.bodySmBold}
                   as="h6"
-                  display={DISPLAY.INLINE_BLOCK}
+                  display={Display.InlineBlock}
                 >
                   {titleText}
                 </Text>
@@ -78,7 +76,7 @@ export default function FormField({
                   variant={TextVariant.bodySm}
                   as="h6"
                   color={TextColor.textAlternative}
-                  display={DISPLAY.INLINE_BLOCK}
+                  display={Display.InlineBlock}
                 >
                   {titleUnit}
                 </Text>
