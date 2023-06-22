@@ -3341,9 +3341,6 @@
   "publicAddress": {
     "message": "Public address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Queued"
   },
