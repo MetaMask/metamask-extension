@@ -4,7 +4,7 @@ const {
   withFixtures,
   regularDelayMs,
   openDapp,
-  login,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -95,7 +95,7 @@ async function validateContractDetails(driver) {
  *
  * @param {WebDriver} driver
  */
-async function clickSignButtonAndGetEventPayloads(driver) {
+async function clickSignOnSignatureConfirmation(driver) {
   await driver.clickElement({ text: 'Sign', tag: 'button' });
   await driver.waitUntilXWindowHandles(2);
   await driver.getAllWindowHandles();
@@ -141,14 +141,14 @@ describe('Signature Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV4');
         await switchToNotificationWindow(driver);
         await validateContractDetails(driver);
-        await clickSignButtonAndGetEventPayloads(driver);
+        await clickSignOnSignatureConfirmation(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           signature_type: 'eth_signTypedData_v4',
@@ -184,14 +184,14 @@ describe('Signature Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV3');
         await switchToNotificationWindow(driver);
         await validateContractDetails(driver);
-        await clickSignButtonAndGetEventPayloads(driver);
+        await clickSignOnSignatureConfirmation(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           signature_type: 'eth_signTypedData_v3',
@@ -227,13 +227,13 @@ describe('Signature Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');
         await switchToNotificationWindow(driver);
-        await clickSignButtonAndGetEventPayloads(driver);
+        await clickSignOnSignatureConfirmation(driver);
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           signature_type: 'eth_signTypedData',
@@ -269,16 +269,14 @@ describe('Signature Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#personalSign');
         await switchToNotificationWindow(driver);
-        const events = await clickSignButtonAndGetEventPayloads(
-          driver,
-          mockedEndpoints,
-        );
+        await clickSignOnSignatureConfirmation(driver);
+        const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {
           signature_type: 'personal_sign',
           category: 'inpage_provider',
@@ -318,7 +316,7 @@ describe('Signature Approved Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // creates a sign typed data signature request
