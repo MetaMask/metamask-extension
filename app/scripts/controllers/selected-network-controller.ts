@@ -32,7 +32,7 @@ const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
 
 const stateMetadata = {
   domains: { persist: true, anonymous: false },
-  queue: { persist: false, anonymous: false }
+  queue: { persist: false, anonymous: false },
 };
 
 const getDefaultState = () => ({
@@ -59,17 +59,15 @@ export type GetSelectedNetworkStateChange = {
 
 export type SelectedNetworkControllerActions = GetSelectedNetworkState;
 
-export type SelectedNetworkControllerEvents =
-  GetSelectedNetworkStateChange;
+export type SelectedNetworkControllerEvents = GetSelectedNetworkStateChange;
 
-export type SelectedNetworkControllerMessenger =
-  RestrictedControllerMessenger<
-    typeof controllerName,
-    SelectedNetworkControllerActions,
-    SelectedNetworkControllerEvents,
-    never,
-    never
-  >;
+export type SelectedNetworkControllerMessenger = RestrictedControllerMessenger<
+  typeof controllerName,
+  SelectedNetworkControllerActions,
+  SelectedNetworkControllerEvents,
+  never,
+  never
+>;
 
 type SwitchNetwork = (chainId: ChainId) => void;
 
@@ -87,7 +85,9 @@ export default class SelectedNetworkController extends BaseControllerV2<
   SelectedNetworkControllerMessenger
 > {
   private switchNetwork: SwitchNetwork;
+
   private requestQueue: RequestQueue = {};
+
   /**
    * Construct a EncryptionPublicKey controller.
    *
@@ -96,11 +96,9 @@ export default class SelectedNetworkController extends BaseControllerV2<
    * @param options.keyringController - An instance of a keyring controller used to extract the encryption public key.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
+   * @param options.switchNetwork
    */
-  constructor({
-    messenger,
-    switchNetwork,
-  }: SelectedNetworkControllerOptions) {
+  constructor({ messenger, switchNetwork }: SelectedNetworkControllerOptions) {
     super({
       name: controllerName,
       metadata: stateMetadata,
@@ -145,10 +143,10 @@ export default class SelectedNetworkController extends BaseControllerV2<
   }
 
   async waitForRequestQueue() {
-    console.log('request queue when starting to wait: ', this.requestQueue)
-    const domainQueues = Object.values(
-      this.requestQueue
-    ).map((domainQueue) => Promise.all(domainQueue))
+    console.log('request queue when starting to wait: ', this.requestQueue);
+    const domainQueues = Object.values(this.requestQueue).map((domainQueue) =>
+      Promise.all(domainQueue),
+    );
     await Promise.all(domainQueues);
     this.requestQueue = {};
     return true;
