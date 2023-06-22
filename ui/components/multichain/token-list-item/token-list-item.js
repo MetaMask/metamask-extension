@@ -44,6 +44,12 @@ export const TokenListItem = ({
   const dataTheme = document.documentElement.getAttribute('data-theme');
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+  const badgeWrapperImage =
+    title === 'LineaETH'
+      ? './images/linea-logo-testnet.png'
+      : primaryTokenImage;
+  const badgeTokenImage =
+    title === 'LineaETH' ? './images/linea-logo-testnet.png' : tokenImage;
 
   return (
     <Box
@@ -80,9 +86,9 @@ export const TokenListItem = ({
             <AvatarNetwork
               size={Size.XS}
               name={tokenSymbol}
-              src={primaryTokenImage}
+              src={badgeWrapperImage}
               borderColor={
-                primaryTokenImage
+                badgeWrapperImage
                   ? BorderColor.borderMuted
                   : BorderColor.borderDefault
               }
@@ -92,10 +98,12 @@ export const TokenListItem = ({
         >
           <AvatarToken
             name={tokenSymbol}
-            src={tokenImage}
+            src={badgeTokenImage}
             showHalo
             borderColor={
-              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
+              badgeTokenImage
+                ? BorderColor.transparent
+                : BorderColor.borderDefault
             }
           />
         </BadgeWrapper>
