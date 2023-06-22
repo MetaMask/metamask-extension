@@ -311,7 +311,7 @@ function TransactionListItemInner({
             <>
               <Text
                 variant={TextVariant.bodyLgMedium}
-                fontweight={FontWeight.Medium}
+                fontWeight={FontWeight.Medium}
                 color={Color.textDefault}
                 title={primaryCurrency}
                 textAlign={TextAlign.Right}
