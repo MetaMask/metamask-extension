@@ -81,6 +81,11 @@ async function defineAndRunBuildTasks() {
     // scuttle on production/tests environment only
     const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
 
+    console.log(
+      `Building lavamoat runtime file`,
+      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
+    );
+
     // build lavamoat runtime file
     await lavapack.buildRuntime({
       scuttleGlobalThis: applyLavaMoat && shouldScuttle,
@@ -132,13 +137,6 @@ async function defineAndRunBuildTasks() {
       ],
     });
   }
-
-    console.log(
-      `Building lavamoat runtime file`,
-      `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
-    );
-
-
 
   const browserPlatforms = platform ? [platform] : ['firefox', 'chrome'];
 
