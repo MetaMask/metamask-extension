@@ -4,7 +4,9 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import messages from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
-import ConfigureSnapPopup from './configure-snap-popup';
+import ConfigureSnapPopup, {
+  ConfigureSnapPopupType,
+} from './configure-snap-popup';
 
 const mockOnClose = jest.fn();
 const mockStore = configureMockStore([])(mockState);
@@ -12,15 +14,25 @@ describe('ConfigureSnapPopup', () => {
   global.platform = { openTab: jest.fn() };
   it('should take a snapshot', () => {
     const { container } = renderWithProvider(
-      <ConfigureSnapPopup onClose={mockOnClose} link={'mockLink'} />,
+      <ConfigureSnapPopup
+        onClose={mockOnClose}
+        isOpen
+        link={'mockLink'}
+        type={ConfigureSnapPopupType.CONFIGURE}
+      />,
       mockStore,
     );
     expect(container).toMatchSnapshot();
   });
 
-  it('should show popup title and description', async () => {
+  it('should show configure popup title and description', async () => {
     const { getByText } = renderWithProvider(
-      <ConfigureSnapPopup onClose={mockOnClose} link={'mockLink'} />,
+      <ConfigureSnapPopup
+        onClose={mockOnClose}
+        link={'mockLink'}
+        isOpen
+        type={ConfigureSnapPopupType.CONFIGURE}
+      />,
       mockStore,
     );
     expect(
@@ -31,9 +43,32 @@ describe('ConfigureSnapPopup', () => {
     ).toBeInTheDocument();
   });
 
+  it('should show install popup title and description', async () => {
+    const { getByText } = renderWithProvider(
+      <ConfigureSnapPopup
+        onClose={mockOnClose}
+        link={'mockLink'}
+        isOpen
+        type={ConfigureSnapPopupType.INSTALL}
+      />,
+      mockStore,
+    );
+    expect(
+      getByText(messages.configureSnapPopupInstallTitle.message),
+    ).toBeInTheDocument();
+    expect(
+      getByText(messages.configureSnapPopupInstallDescription.message),
+    ).toBeInTheDocument();
+  });
+
   it('should open link on click of link', async () => {
     const { getByText } = renderWithProvider(
-      <ConfigureSnapPopup onClose={mockOnClose} link={'mockLink'} />,
+      <ConfigureSnapPopup
+        onClose={mockOnClose}
+        link={'mockLink'}
+        isOpen
+        type={ConfigureSnapPopupType.CONFIGURE}
+      />,
       mockStore,
     );
     const link = getByText('mockLink');
