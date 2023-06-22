@@ -1,25 +1,12 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   regularDelayMs,
   openDapp,
   unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-
-/**
- * Shared Ganache options for every test in this suite.
- */
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -135,7 +122,7 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
@@ -178,7 +165,7 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
@@ -221,7 +208,7 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
@@ -263,7 +250,7 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
@@ -310,7 +297,7 @@ describe('Signature Approved Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
