@@ -9,13 +9,14 @@ const FixtureBuilder = require('../fixture-builder');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
-const stateLogsExist = async () => {
+const getStateLogsJson = async () => {
   try {
     const stateLogs = `${downloadsFolder}/MetaMask state logs.json`;
     await fs.access(stateLogs);
-    return true;
+    const contents = await fs.readFile(stateLogs);
+    return JSON.parse(contents.toString());
   } catch (e) {
-    return false;
+    return null;
   }
 };
 
@@ -44,7 +45,9 @@ describe('State logs', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Download state logs
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
@@ -53,12 +56,19 @@ describe('State logs', function () {
         });
 
         // Verify download
-        let fileExists;
+        let info;
         await driver.wait(async () => {
-          fileExists = await stateLogsExist();
-          return fileExists === true;
+          info = await getStateLogsJson();
+          return info !== null;
         }, 10000);
-        assert.equal(fileExists, true);
+        assert.notEqual(info, null);
+        // Verify Json
+        assert.equal(
+          info?.metamask?.identities[
+            '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          ].address,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
       },
     );
   });

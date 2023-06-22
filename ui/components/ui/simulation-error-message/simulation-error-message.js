@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import ActionableMessage from '../actionable-message';
+import { BannerAlert } from '../../component-library';
+import { SEVERITIES } from '../../../helpers/constants/design-system';
+
 import { I18nContext } from '../../../../.storybook/i18n';
 
 export default function SimulationErrorMessage({
@@ -9,21 +11,18 @@ export default function SimulationErrorMessage({
 }) {
   const t = useContext(I18nContext);
 
-  return (
-    <ActionableMessage
-      message={t('simulationErrorMessageV2')}
-      useIcon
-      iconFillColor="var(--color-error-default)"
-      type="danger"
-      primaryActionV2={
-        userAcknowledgedGasMissing === true
-          ? undefined
-          : {
-              label: t('proceedWithTransaction'),
-              onClick: setUserAcknowledgedGasMissing,
-            }
-      }
-    />
+  return userAcknowledgedGasMissing === true ? (
+    <BannerAlert severity={SEVERITIES.DANGER}>
+      {t('simulationErrorMessageV2')}
+    </BannerAlert>
+  ) : (
+    <BannerAlert
+      severity={SEVERITIES.DANGER}
+      actionButtonLabel={t('proceedWithTransaction')}
+      actionButtonOnClick={setUserAcknowledgedGasMissing}
+    >
+      {t('simulationErrorMessageV2')}
+    </BannerAlert>
   );
 }
 

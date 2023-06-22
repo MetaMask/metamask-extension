@@ -18,8 +18,8 @@ import Button from '../../components/ui/button';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ButtonIcon,
-  ICON_SIZES,
-  ICON_NAMES,
+  ButtonIconSize,
+  IconName,
 } from '../../components/component-library';
 import { Color } from '../../helpers/constants/design-system';
 
@@ -91,8 +91,8 @@ export default function Notifications() {
       <div className="notifications__header">
         <div className="notifications__header__title-container">
           <ButtonIcon
-            iconName={ICON_NAMES.ARROW_LEFT}
-            size={ICON_SIZES.LG}
+            iconName={IconName.ArrowLeft}
+            size={ButtonIconSize.Lg}
             color={Color.textDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}
           />

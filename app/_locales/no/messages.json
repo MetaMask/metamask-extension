@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbake"
   },
-  "backToAll": {
-    "message": "Tilbake til alt"
-  },
   "backupApprovalInfo": {
     "message": "Denne hemmelige koden behøves for å gjenopprette lommeboken din i tilfelle du mister enheten din, glemmer passordet ditt, trenger å re-installere MetaMask, eller ønsker å få tilgang til lommeboken din på en annen enhet."
   },
@@ -151,14 +148,14 @@
   "connect": {
     "message": "Koble til"
   },
-  "connectHardwareWallet": {
-    "message": "Koble til maskinvarelommebok"
-  },
   "connectingTo": {
     "message": "Forbinder til $1 "
   },
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Oppretter forbindelse med Linea Goerli Test Network"
   },
   "connectingToMainnet": {
     "message": "Forbinder med hoved-Ethereumnettverk "
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Opprett"
-  },
-  "createAccount": {
-    "message": "Opprett konto"
   },
   "createPassword": {
     "message": "Opprett passord "
@@ -435,9 +429,6 @@
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "
   },
-  "myAccounts": {
-    "message": "Mine kontoer "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -562,9 +553,6 @@
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
   },
-  "recents": {
-    "message": "Nylige"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søk, offentlig adresse (0x) eller ENS"
   },
@@ -656,12 +644,6 @@
   "settings": {
     "message": "Innstillinger"
   },
-  "showAdvancedGasInline": {
-    "message": "Avanserte datakraftskontroller"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Velg dette for å vise bensinpris og begrensningskontroller direkte på send- og bekreftskjermbildene."
-  },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "
   },
@@ -721,27 +703,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet må være 11 tegn eller færre."
-  },
-  "syncWithMobile": {
-    "message": "Synkroniser med mobil "
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pass på at ingen andre ser på skjermen din mens du skanner denne koden "
-  },
-  "syncWithMobileComplete": {
-    "message": "Dataene dine er blitt synkronisert med suksess. Kos deg med mobilappen for MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan synkronisere kontoene og informasjonen din med den mobile enheten din. Åpne mobilappen for MetaMask, gå til \"Innstillinger\" og trykk på \"Synkronisering fra nettleserutvidelse\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Hvis du åpner mobilappen for MetaMask for første gang, følger du bare trinnene på telefonen."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skann denne koden med din mobilapp for MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkronisér med mobil"
   },
   "terms": {
     "message": "Brukervilkår"
@@ -806,15 +767,8 @@
   "transfer": {
     "message": "Overfør"
   },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellom kontoene mine"
-  },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi hadde problemer med å laste inn sjetongsaldoen din. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igjen"

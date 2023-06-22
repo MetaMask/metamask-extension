@@ -1,4 +1,4 @@
-import EventEmitter from 'safe-event-emitter';
+import EventEmitter from '@metamask/safe-event-emitter';
 import log from 'loglevel';
 import EthQuery from 'ethjs-query';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
@@ -144,6 +144,13 @@ export default class PendingTransactionTracker extends EventEmitter {
       return undefined;
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Don't ever resubmit custodian transactions
+    if (txMeta.custodyId) {
+      return undefined;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) {
       return this.approveTransaction(txMeta.id);
@@ -180,7 +187,15 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     // extra check in case there was an uncaught error during the
     // signature and submission process
-    if (!txHash) {
+
+    let hasNoHash = !txHash;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Don't emit noTxHashErr for custodian transactions
+    hasNoHash ||= !txMeta.custodyId;
+    ///: END:ONLY_INCLUDE_IN
+
+    if (hasNoHash) {
       const noTxHashErr = new Error(
         'We had an error while submitting this transaction, please try again.',
       );

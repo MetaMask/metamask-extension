@@ -3,8 +3,8 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'flask/snaps-list-tab/index';
-@import 'flask/view-snap/index';
+@import 'snaps/snaps-list-tab/index';
+@import 'snaps/view-snap/index';
 
 .settings-page {
   position: relative;
@@ -23,34 +23,41 @@
   }
 
   &__header {
-    padding: 8px 24px 8px 24px;
-    position: relative;
-
-    @include screen-sm-max {
-      background: var(--color-background-alternative);
-    }
-
     &__title-container {
-      display: flex;
-      flex-flow: row nowrap;
+      display: grid;
       align-items: center;
-      flex: 0 0 auto;
+      grid-template-columns: 197px 1fr 1fr;
 
-      &__close-button {
-        margin-left: auto;
-      }
+      @include screen-sm-max {
+        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 0.5fr 2fr 0.5fr;
+        gap: 16px;
+        grid-template-areas:
+          'back title close'
+          'search search search';
 
-      &__close-button::after {
-        content: '\00D7';
-        font-size: 40px;
-        color: var(--color-icon-default);
-        cursor: pointer;
+        &__back-button {
+          grid-area: back;
+        }
+
+        &__title {
+          grid-area: title;
+          text-align: center;
+        }
+
+        &__close-button {
+          grid-area: close;
+        }
+
+        &__search {
+          grid-area: search;
+        }
       }
 
       &__title {
-        @include H3;
-
-        flex: 1 0 auto;
+        @include screen-sm-min {
+          width: 197px;
+        }
 
         @include screen-sm-max {
           text-overflow: ellipsis;
@@ -62,20 +69,7 @@
     }
 
     &__search {
-      @include screen-sm-max {
-        position: relative;
-      }
-
-      @include screen-sm-min {
-        position: absolute;
-        right: 57px;
-        top: 10px;
-        width: 300px;
-      }
-
-      @include screen-md-min {
-        width: 400px;
-      }
+      width: 330px;
 
       &__list {
         background: var(--color-background-default);
@@ -83,7 +77,7 @@
         box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
         border-radius: 6px;
         position: absolute;
-        width: 100%;
+        width: 330px;
         z-index: 10;
 
         > div {
@@ -140,20 +134,18 @@
         }
       }
     }
+
+    .app-header__logo-container {
+      display: flex;
+    }
+
+    .app-header__metafox-logo--icon {
+      height: 24px;
+    }
   }
 
   &__subheader,
   &__subheader--link {
-    @include H4;
-
-    padding: 16px 4px;
-    border-bottom: 1px solid var(--color-border-muted);
-    margin-right: 24px;
-    height: 72px;
-    align-items: center;
-    display: flex;
-    flex-flow: row nowrap;
-
     @include screen-sm-max {
       display: none;
     }
@@ -216,17 +208,11 @@
   }
 
   &__back-button {
-    display: none;
+    margin-right: 8px;
 
-    @include screen-sm-max {
-      display: block;
-      margin-right: 8px;
-      cursor: pointer;
-
-      [dir='rtl'] & {
-        margin: 0 0 0 8px;
-        transform: rotate(180deg);
-      }
+    [dir='rtl'] & {
+      margin: 0 0 0 8px;
+      transform: rotate(180deg);
     }
   }
 
@@ -235,7 +221,6 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    border-top: 1px solid var(--color-border-muted);
 
     &__tabs {
       display: flex;
@@ -245,12 +230,17 @@
       @include screen-sm-min {
         flex: 0 0 40%;
         max-width: 197px;
-        padding-top: 13px;
       }
 
       .tab-bar__tab {
         @include screen-sm-min {
           max-height: 50px;
+        }
+
+        &__caret {
+          @include screen-sm-min {
+            display: none;
+          }
         }
       }
     }
@@ -378,6 +368,11 @@
     @include screen-sm-max {
       max-width: 100%;
       width: 100%;
+    }
+
+    .eth-sign-toggle .toggle-button__status {
+      // for eth_sign we need to override the uppercase property of toggle button text
+      text-transform: capitalize;
     }
   }
 

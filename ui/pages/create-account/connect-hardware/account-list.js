@@ -9,7 +9,7 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 class AccountList extends Component {
   state = {
@@ -31,6 +31,10 @@ class AccountList extends Component {
 
   setPath(pathValue) {
     this.setState({ pathValue });
+  }
+
+  isFirstPage() {
+    return this.props.accounts[0]?.index === 0;
   }
 
   renderHdPathSelector() {
@@ -100,6 +104,7 @@ class AccountList extends Component {
             <div
               className="hw-account-list__item"
               key={account.address}
+              data-testid="hw-account-list__item"
               title={
                 accountAlreadyConnected
                   ? this.context.t('selectAnAccountAlreadyConnected')
@@ -137,7 +142,7 @@ class AccountList extends Component {
                     rpcPrefs,
                   );
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.ACCOUNTS,
+                    category: MetaMetricsEventCategory.Accounts,
                     event: 'Clicked Block Explorer Link',
                     properties: {
                       actions: 'Hardware Connect',
@@ -170,7 +175,9 @@ class AccountList extends Component {
       <div className="hw-list-pagination">
         <button
           className="hw-list-pagination__button"
+          disabled={this.isFirstPage()}
           onClick={this.goToPreviousPage}
+          data-testid="hw-list-pagination__prev-button"
         >
           {`< ${this.context.t('prev')}`}
         </button>

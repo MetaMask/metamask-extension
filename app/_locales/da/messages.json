@@ -93,9 +93,6 @@
   "back": {
     "message": "Tilbage"
   },
-  "backToAll": {
-    "message": "Tilbage til Alle"
-  },
   "backupApprovalInfo": {
     "message": "Den hemmelige kode er påkrævet for at gendanne din pung, hvis du mister din enhed, glemmer dit kodeord, er nødt til at geninstallere MetaMask eller ønsker adgang til din pung fra en anden enhed."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Få forbindelse"
   },
-  "connectHardwareWallet": {
-    "message": "Forbind Hardwarepung"
-  },
   "connectingTo": {
     "message": "Forbinder til $1"
   },
   "connectingToGoerli": {
     "message": "Opretter forbindelse til Goerli Testnetværk"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Opretter forbindelse til Linea Goerli Testnetværk"
   },
   "connectingToMainnet": {
     "message": "Forbinder til dit Primære Ethereum Netværk"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Opret"
-  },
-  "createAccount": {
-    "message": "Opret konto"
   },
   "createPassword": {
     "message": "Opret adgangskode"
@@ -405,6 +399,9 @@
   "likeToImportTokens": {
     "message": "Ønsker du at tilføje disse tokens?"
   },
+  "lineaGoerli": {
+    "message": "Linea-testnetværk"
+  },
   "loadMore": {
     "message": "Indlæs Mere"
   },
@@ -431,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Skal vælge mindst 1 token."
-  },
-  "myAccounts": {
-    "message": "Mine Konti"
   },
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
@@ -556,9 +550,6 @@
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
   },
-  "recents": {
-    "message": "Seneste"
-  },
   "recipientAddressPlaceholder": {
     "message": "Søg, offentlig adresse (0x) eller ENS"
   },
@@ -650,12 +641,6 @@
   "settings": {
     "message": "Indstillinger "
   },
-  "showAdvancedGasInline": {
-    "message": "Avanceret Gas-styring"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vælg dette for at vise brændstofprisen og begræns styringen direkte på afsendelses- og bekræftelseskærmene."
-  },
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på testnet"
   },
@@ -715,27 +700,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolet skal være mindst 11 tegn."
-  },
-  "syncWithMobile": {
-    "message": "Synkronisér med mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Sørg for at der ikke er nogen der kigger på din skærm, når du scanner denne kode"
-  },
-  "syncWithMobileComplete": {
-    "message": "Dine data er blevet synkroniseret korrekt. Nyd MetaMask-mobilappen!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Du kan synkronisere dine konti og informationer med din mobilenhed. Åbn MetaMask-mobilappen, gå til \"Indstillinger\" og tryk på \"Synkroniser fra browserudvidelse\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Hvis du netop har åbnet MetaMask-mobilappen for første gang, skal du blot følge trinnene på din telefon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scan denne kode med din MetaMask-mobilapp"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkroniser med mobil"
   },
   "terms": {
     "message": "Brugsbetingelser"
@@ -797,15 +761,8 @@
   "transfer": {
     "message": "Overfør"
   },
-  "transferBetweenAccounts": {
-    "message": "Overfør mellem konti"
-  },
   "transferFrom": {
     "message": "Overfør fra"
-  },
-  "troubleTokenBalances": {
-    "message": "Vi havde problemer med at indlæse dine tokenbalancer. Du kan se dem",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prøv igen"

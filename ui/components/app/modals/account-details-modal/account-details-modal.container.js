@@ -12,7 +12,13 @@ import {
   getCurrentChainId,
   getMetaMaskAccountsOrdered,
   getBlockExplorerLinkText,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getAccountType,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getCustodyAccountDetails } from '../../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import AccountDetailsModal from './account-details-modal.component';
 
 const mapStateToProps = (state) => {
@@ -23,6 +29,10 @@ const mapStateToProps = (state) => {
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     accounts: getMetaMaskAccountsOrdered(state),
     blockExplorerLinkText: getBlockExplorerLinkText(state, true),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType: getAccountType(state),
+    custodyAccountDetails: getCustodyAccountDetails(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

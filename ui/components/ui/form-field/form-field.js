@@ -2,19 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import Typography from '../typography/typography';
 import Box from '../box/box';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   DISPLAY,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
+import { Text } from '../../component-library';
 
 export default function FormField({
   dataTestId,
@@ -43,6 +42,7 @@ export default function FormField({
   id,
   inputProps,
   wrappingLabelProps,
+  inputRef,
 }) {
   return (
     <div
@@ -60,27 +60,28 @@ export default function FormField({
           >
             {TitleTextCustomComponent ||
               (titleText && (
-                <Typography
+                <Text
                   tag="label"
                   htmlFor={id}
                   html
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H6}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  variant={TextVariant.bodySmBold}
+                  as="h6"
+                  display={DISPLAY.INLINE_BLOCK}
                 >
                   {titleText}
-                </Typography>
+                </Text>
               ))}
             {TitleUnitCustomComponent ||
               (titleUnit && (
-                <Typography
-                  tag={TypographyVariant.H6}
-                  variant={TypographyVariant.H6}
+                <Text
+                  tag={TextVariant.bodySm}
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.textAlternative}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  display={DISPLAY.INLINE_BLOCK}
                 >
                   {titleUnit}
-                </Typography>
+                </Text>
               ))}
             {TooltipCustomComponent ||
               (tooltipText && (
@@ -90,7 +91,7 @@ export default function FormField({
           {titleDetail && (
             <Box
               className="form-field__heading-detail"
-              textAlign={TEXT_ALIGN.END}
+              textAlign={TextAlign.End}
               marginRight={2}
               {...titleDetailWrapperProps}
             >
@@ -110,6 +111,7 @@ export default function FormField({
             dataTestId={dataTestId}
             placeholder={placeholder}
             id={id}
+            inputRef={inputRef}
           />
         ) : (
           <input
@@ -125,44 +127,49 @@ export default function FormField({
             data-testid={dataTestId}
             placeholder={placeholder}
             id={id}
+            ref={inputRef}
             {...inputProps}
           />
         )}
         {error && (
-          <Typography
+          <Text
             color={TextColor.errorDefault}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__error"
           >
             {error}
-          </Typography>
+          </Text>
         )}
         {warning && (
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__warning"
           >
             {warning}
-          </Typography>
+          </Text>
         )}
         {passwordStrength && (
-          <Typography
+          <Text
             color={TextColor.textDefault}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__password-strength"
           >
             {passwordStrength}
-          </Typography>
+          </Text>
         )}
         {passwordStrengthText && (
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H8}
+            variant={TextVariant.bodyXs}
+            as="h6"
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}
-          </Typography>
+          </Text>
         )}
       </Box>
     </div>
@@ -285,4 +292,8 @@ FormField.propTypes = {
    * If used ensure the id prop is set on the input and a label element is present using htmlFor with the same id to ensure accessibility.
    */
   wrappingLabelProps: PropTypes.object,
+  /**
+   * ref for input component
+   */
+  inputRef: PropTypes.object,
 };

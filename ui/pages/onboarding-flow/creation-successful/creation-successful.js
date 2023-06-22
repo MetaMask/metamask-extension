@@ -18,7 +18,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
 import { getFirstTimeFlowType } from '../../../selectors';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
@@ -101,8 +104,8 @@ export default function CreationSuccessful() {
           rounded
           onClick={() => {
             trackEvent({
-              category: EVENT.CATEGORIES.ONBOARDING,
-              event: EVENT_NAMES.ONBOARDING_WALLET_CREATION_COMPLETE,
+              category: MetaMetricsEventCategory.Onboarding,
+              event: MetaMetricsEventName.OnboardingWalletCreationComplete,
               properties: {
                 method: firstTimeFlowType,
               },

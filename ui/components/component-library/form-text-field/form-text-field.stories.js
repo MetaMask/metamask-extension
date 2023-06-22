@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  Size,
-  DISPLAY,
+  Display,
   AlignItems,
   TextVariant,
   JustifyContent,
@@ -12,18 +11,18 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
-
 import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
   HelpText,
-  Icon,
-  ICON_NAMES,
   Label,
   Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  Icon,
+  IconName,
+  IconSize,
 } from '..';
 
 import { FormTextField } from './form-text-field';
@@ -370,11 +369,11 @@ export const FormExample = () => {
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
           helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
-        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+      <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -397,20 +396,18 @@ export const CustomLabelOrHelpText = () => (
       FormTextField component
     </Text>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexEnd}
     >
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
-        <Label htmlFor="custom-spending-cap" required>
-          Custom spending cap
-        </Label>
+        <Label htmlFor="custom-spending-cap">Custom spending cap</Label>
         <Icon
-          name={ICON_NAMES.INFO}
-          size={Size.SM}
+          name={IconName.Info}
+          size={IconSize.Sm}
           marginLeft={1}
           color={IconColor.iconAlternative}
         />
@@ -430,7 +427,7 @@ export const CustomLabelOrHelpText = () => (
       type={TEXT_FIELD_TYPES.NUMBER}
     />
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexStart}
       justifyContent={JustifyContent.spaceBetween}
     >

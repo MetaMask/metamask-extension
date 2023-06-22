@@ -1,3 +1,5 @@
+import { INVISIBLE_CHARACTER } from '../../components/component-library/text/deprecated';
+
 export function getAccountNameErrorMessage(
   accounts,
   context,
@@ -5,8 +7,10 @@ export function getAccountNameErrorMessage(
   defaultAccountName,
 ) {
   const isDuplicateAccountName = accounts.some(
-    (item) => item.name === newAccountName,
+    (item) => item.name.toLowerCase() === newAccountName.toLowerCase(),
   );
+
+  const isEmptyAccountName = newAccountName === '';
 
   const localizedWordForAccount = context
     .t('newAccountNumberName')
@@ -21,16 +25,18 @@ export function getAccountNameErrorMessage(
   const isReservedAccountName = reservedRegEx.test(newAccountName);
 
   const isValidAccountName =
-    newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
-    (!isDuplicateAccountName && !isReservedAccountName);
+    newAccountName.toLowerCase() === defaultAccountName.toLowerCase() || // What is written in the text field is the same as the placeholder
+    (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);
 
   let errorMessage;
   if (isValidAccountName) {
-    errorMessage = '\u200d'; // This is Unicode for an invisible character, so the spacing stays constant
+    errorMessage = INVISIBLE_CHARACTER; // Using an invisible character, so the spacing stays constant
   } else if (isDuplicateAccountName) {
     errorMessage = context.t('accountNameDuplicate');
   } else if (isReservedAccountName) {
     errorMessage = context.t('accountNameReserved');
+  } else if (isEmptyAccountName) {
+    errorMessage = context.t('required');
   }
 
   return { isValidAccountName, errorMessage };

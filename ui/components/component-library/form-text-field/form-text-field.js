@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  SEVERITIES,
+  Display,
+  FlexDirection,
+  Severity,
   Size,
 } from '../../../helpers/constants/design-system';
 
@@ -52,14 +52,13 @@ export const FormTextField = ({
       { 'mm-form-text-field--disabled': disabled },
       className,
     )}
-    display={DISPLAY.FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
     {...props}
   >
     {label && (
       <Label
         htmlFor={id}
-        required={required}
         {...labelProps}
         className={classnames(
           'mm-form-text-field__label',
@@ -103,8 +102,7 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
-        error={error}
-        severity={error && SEVERITIES.DANGER}
+        severity={error && Severity.Danger}
         marginTop={1}
         {...helpTextProps}
         className={classnames(

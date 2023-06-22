@@ -90,9 +90,6 @@
   "back": {
     "message": "Zpět"
   },
-  "backToAll": {
-    "message": "Späť na všetko"
-  },
   "backupApprovalInfo": {
     "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
@@ -148,14 +145,14 @@
   "connect": {
     "message": "Pripojenie"
   },
-  "connectHardwareWallet": {
-    "message": "Pripojiť hardvérovú peňaženku"
-  },
   "connectingTo": {
     "message": "Pripája sa k $1"
   },
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Pripája sa k testovacej sieti Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Připojuji se k Ethereum Mainnet"
@@ -183,9 +180,6 @@
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "createPassword": {
     "message": "Vytvoriť heslo"
@@ -399,6 +393,9 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
+  "lineaGoerli": {
+    "message": "Testovacia sieť Linea Goerli"
+  },
   "links": {
     "message": "Odkazy"
   },
@@ -422,9 +419,6 @@
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje účty"
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -547,9 +541,6 @@
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
-  "recents": {
-    "message": "Posledné"
-  },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
   },
@@ -644,12 +635,6 @@
   "settings": {
     "message": "Nastavení"
   },
-  "showAdvancedGasInline": {
-    "message": "Pokročilé ovládacie prvky GAS"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Vyberte túto možnosť vtedy, keď chcete priamo na obrazovke odosielania a potvrdenia zobraziť ceny za GAS a ovládacie prvky limitov."
-  },
   "showFiatConversionInTestnets": {
     "message": "Zobraziť konverziu na Testnets"
   },
@@ -709,27 +694,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbol musí být mezi 0 a 12 znaky."
-  },
-  "syncWithMobile": {
-    "message": "Synchronizácia s mobilom"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pri skenovaní tohto kódu sa uistite, že sa nikto iný nedíva na vašu obrazovku"
-  },
-  "syncWithMobileComplete": {
-    "message": "Vaše údaje boli úspešne synchronizované. Užite si mobilnú aplikáciu MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Svoje účty a informácie môžete synchronizovať so svojim mobilným zariadením. Otvorte mobilnú aplikáciu MetaMask, prejdite na „Nastavenia“ a kliknite na „Synchronizovať z rozšírenia prehliadača“."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ak otvoríte mobilnú aplikáciu MetaMask prvýkrát, postupujte podľa pokynov v telefóne."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Naskenujte tento kód pomocou mobilnej aplikácie MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synchronizácia s mobilom"
   },
   "terms": {
     "message": "Podmínky použití"
@@ -794,15 +758,8 @@
   "transfer": {
     "message": "Prevod"
   },
-  "transferBetweenAccounts": {
-    "message": "Prevod medzi mojimi účtami"
-  },
   "transferFrom": {
     "message": "Presun z"
-  },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Skúsiť znova"

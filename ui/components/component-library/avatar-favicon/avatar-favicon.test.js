@@ -6,7 +6,7 @@ import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
 
 describe('AvatarFavicon', () => {
   const args = {
-    src: './images/eth_logo.svg',
+    src: './images/eth_logo.png',
     name: 'test',
   };
 
@@ -104,5 +104,11 @@ describe('AvatarFavicon', () => {
       />,
     );
     expect(getByTestId('classname')).toHaveClass('mm-avatar-favicon--test');
+  });
+  it('should forward a ref to the root html element', () => {
+    const ref = React.createRef();
+    render(<AvatarFavicon name="test" ref={ref} />);
+    expect(ref.current).not.toBeNull();
+    expect(ref.current.nodeName).toBe('DIV');
   });
 });

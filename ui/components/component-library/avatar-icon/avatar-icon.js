@@ -14,22 +14,26 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { Icon, ICON_NAMES } from '../icon';
+import { IconName, Icon } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
 import { AVATAR_ICON_SIZES } from './avatar-icon.constants';
 
-export const AvatarIcon = ({
-  size = Size.MD,
-  color = TextColor.primaryDefault,
-  backgroundColor = BackgroundColor.primaryMuted,
-  className,
-  iconProps,
-  iconName,
-  ...props
-}) => {
-  return (
+export const AvatarIcon = React.forwardRef(
+  (
+    {
+      size = Size.MD,
+      color = TextColor.primaryDefault,
+      backgroundColor = BackgroundColor.primaryMuted,
+      className,
+      iconProps,
+      iconName,
+      ...props
+    },
+    ref,
+  ) => (
     <AvatarBase
+      ref={ref}
       size={size}
       display={DISPLAY.FLEX}
       alignItems={AlignItems.center}
@@ -47,19 +51,19 @@ export const AvatarIcon = ({
         {...iconProps}
       />
     </AvatarBase>
-  );
-};
+  ),
+);
 
 AvatarIcon.propTypes = {
   /**
    *
-   * The name of the icon to display. Should be one of ICON_NAMES
+   * The name of the icon to display. Should be one of IconName
    */
-  iconName: PropTypes.oneOf(Object.values(ICON_NAMES)).isRequired,
+  iconName: PropTypes.oneOf(Object.values(IconName)).isRequired,
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */
-  iconProps: PropTypes.shape(Icon.PropTypes),
+  iconProps: PropTypes.object,
   /**
    * The size of the AvatarIcon
    * Possible values could be 'SIZES.XS' 16px, 'SIZES.SM' 24px, 'SIZES.MD' 32px, 'SIZES.LG' 40px, 'SIZES.XL' 48px
@@ -70,12 +74,15 @@ AvatarIcon.propTypes = {
    * The background color of the AvatarIcon
    * Defaults to BackgroundColor.primaryMuted
    */
-  backgroundColor: Box.propTypes.backgroundColor,
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The color of the text inside the AvatarIcon
    * Defaults to TextColor.primaryDefault
    */
-  color: Box.propTypes.color,
+  color: PropTypes.oneOf([
+    ...Object.values(TextColor),
+    ...Object.values(IconColor),
+  ]),
   /**
    * Additional classNames to be added to the AvatarIcon
    */
@@ -86,3 +93,5 @@ AvatarIcon.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarIcon.displayName = 'AvatarIcon';

@@ -69,31 +69,6 @@
     margin-right: 8px;
   }
 
-  &__title-text {
-    @include H1;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__title-text-long {
-    @include H3;
-
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__subtitle {
-    @include H5;
-
-    color: var(--color-text-alternative);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   &--border {
     border-bottom: 1px solid var(--color-border-muted);
   }

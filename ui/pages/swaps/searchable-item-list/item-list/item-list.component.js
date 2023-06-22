@@ -12,7 +12,7 @@ import {
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
-import { EVENT } from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/swaps';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
@@ -59,6 +59,7 @@ export default function ItemList({
           listContainerClassName,
         )}
         ref={containerRef}
+        data-testid="searchable-item-list-list-container"
       >
         {results.slice(0, maxListItems).map((result, i) => {
           if (hideItemIf?.(result)) {
@@ -107,7 +108,10 @@ export default function ItemList({
               <div className="searchable-item-list__labels">
                 <div className="searchable-item-list__item-labels">
                   {primaryLabel ? (
-                    <span className="searchable-item-list__primary-label">
+                    <span
+                      className="searchable-item-list__primary-label"
+                      data-testid="searchable-item-list-primary-label"
+                    >
                       {primaryLabel}
                     </span>
                   ) : null}
@@ -134,7 +138,11 @@ export default function ItemList({
                 ) : null}
               </div>
               {result.notImported && (
-                <Button type="primary" onClick={onClick}>
+                <Button
+                  type="primary"
+                  onClick={onClick}
+                  data-testid="searchable-item-list-import-button"
+                >
                   {t('import')}
                 </Button>
               )}
@@ -148,14 +156,14 @@ export default function ItemList({
             key="searchable-item-list-item-last"
           >
             <ActionableMessage
-              message={t('addCustomTokenByContractAddress', [
+              message={t('addTokenByContractAddress', [
                 <a
                   key="searchable-item-list__etherscan-link"
                   onClick={() => {
                     /* istanbul ignore next */
                     trackEvent({
                       event: 'Clicked Block Explorer Link',
-                      category: EVENT.CATEGORIES.SWAPS,
+                      category: MetaMetricsEventCategory.Swaps,
                       properties: {
                         link_type: 'Token Tracker',
                         action: 'Verify Contract Address',

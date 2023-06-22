@@ -8,9 +8,9 @@ import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
 import {
@@ -168,14 +168,16 @@ export default function AwaitingSwap({
         onClick={() => {
           trackEvent(
             {
-              category: EVENT.CATEGORIES.SWAPS,
-              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Swaps,
+              event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_LINK,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
         }}
@@ -201,7 +203,7 @@ export default function AwaitingSwap({
       setTrackedQuotesExpiredEvent(true);
       trackEvent({
         event: 'Quotes Timed Out',
-        category: EVENT.CATEGORIES.SWAPS,
+        category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties,
       });
     }
@@ -228,6 +230,7 @@ export default function AwaitingSwap({
       <span
         key="swapOnceTransactionHasProcess-1"
         className="awaiting-swap__amount-and-symbol"
+        data-testid="awaiting-swap-amount-and-symbol"
       >
         {swapMetaData?.token_to}
       </span>,
@@ -276,8 +279,18 @@ export default function AwaitingSwap({
           />
         )}
         <div className="awaiting-swap__status-image">{statusImage}</div>
-        <div className="awaiting-swap__header">{headerText}</div>
-        <div className="awaiting-swap__main-description">{descriptionText}</div>
+        <div
+          className="awaiting-swap__header"
+          data-testid="awaiting-swap-header"
+        >
+          {headerText}
+        </div>
+        <div
+          className="awaiting-swap__main-description"
+          data-testid="awaiting-swap-main-description"
+        >
+          {descriptionText}
+        </div>
         {content}
       </div>
       {!errorKey && swapComplete ? (

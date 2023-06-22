@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { Switch, Route } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Switch, Route, useHistory } from 'react-router-dom';
 import {
   CONFIRM_APPROVE_PATH,
   CONFIRM_SAFE_TRANSFER_FROM_PATH,
@@ -9,18 +9,25 @@ import {
   CONFIRM_SET_APPROVAL_FOR_ALL_PATH,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_TRANSFER_FROM_PATH,
+  SEND_ROUTE,
 } from '../../helpers/constants/routes';
 import { transactionFeeSelector } from '../../selectors';
 import ConfirmApprove from '../confirm-approve';
 import ConfirmSendToken from '../confirm-send-token';
 import ConfirmTokenTransactionBase from '../confirm-token-transaction-base';
 import ConfirmTransactionSwitch from '../confirm-transaction-switch';
+import { editExistingTransaction } from '../../ducks/send';
+import { AssetType } from '../../../shared/constants/transaction';
+import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import { useAssetDetails } from '../../hooks/useAssetDetails';
 
 export default function ConfirmTokenTransactionSwitch({ transaction }) {
   const { txParams: { data, to: tokenAddress, from: userAddress } = {} } =
     transaction;
+
+  const dispatch = useDispatch();
+  const history = useHistory();
 
   const {
     assetStandard,
@@ -39,6 +46,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     fiatTransactionTotal,
     hexTransactionTotal,
     hexMaximumTransactionFee,
+    hexMinimumTransactionFee,
   } = useSelector((state) => transactionFeeSelector(state, transaction));
 
   return (
@@ -63,6 +71,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />
@@ -87,6 +96,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />
@@ -102,6 +112,14 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             decimals={decimals}
             image={tokenImage}
             tokenAddress={tokenAddress}
+            onEdit={async ({ txData }) => {
+              const { id } = txData;
+              await dispatch(
+                editExistingTransaction(AssetType.NFT, id.toString()),
+              );
+              dispatch(clearConfirmTransaction());
+              history.push(SEND_ROUTE);
+            }}
             toAddress={toAddress}
             tokenAmount={tokenAmount}
             tokenId={tokenId}

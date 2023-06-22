@@ -11,8 +11,13 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import Box from '../../ui/box/box';
+import { Icon, IconName, Text } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
+///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
@@ -52,10 +57,18 @@ export default class TransactionListItemDetails extends PureComponent {
     isCustomNetwork: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    getCustodianTransactionDeepLink: PropTypes.func,
+    selectedIdentity: PropTypes.object,
+    transactionNote: PropTypes.string,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
     justCopied: false,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    custodyTransactionDeepLink: null,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   handleBlockExplorerClick = () => {
@@ -76,7 +89,7 @@ export default class TransactionListItemDetails extends PureComponent {
       history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
-        category: EVENT.CATEGORIES.TRANSACTIONS,
+        category: MetaMetricsEventCategory.Transactions,
         event: 'Clicked Block Explorer Link',
         properties: {
           link_type: 'Transaction Block Explorer',
@@ -109,7 +122,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { hash } = transaction;
 
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.NAVIGATION,
+      category: MetaMetricsEventCategory.Navigation,
       event: 'Copied Transaction ID',
       properties: {
         action: 'Activity Log',
@@ -124,16 +137,57 @@ export default class TransactionListItemDetails extends PureComponent {
   };
 
   componentDidMount() {
-    const { recipientAddress, tryReverseResolveAddress } = this.props;
+    const {
+      recipientAddress,
+      tryReverseResolveAddress,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      selectedIdentity,
+      transactionGroup,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this._mounted = true;
+    const address = selectedIdentity?.address;
+    const custodyId = transactionGroup?.primaryTransaction?.custodyId;
+
+    if (this._mounted && address && custodyId) {
+      this.getCustodianTransactionDeepLink(address, custodyId);
+    }
+    ///: END:ONLY_INCLUDE_IN
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getCustodianTransactionDeepLink = async (address, custodyId) => {
+    const { getCustodianTransactionDeepLink } = this.props;
+
+    const custodyTransactionDeepLink = await getCustodianTransactionDeepLink(
+      address,
+      custodyId,
+    );
+
+    if (custodyTransactionDeepLink && this._mounted) {
+      this.setState({ custodyTransactionDeepLink });
+    }
+  };
+
+  componentWillUnmount() {
+    this._mounted = false;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   render() {
     const { t } = this.context;
-    const { justCopied } = this.state;
+    const {
+      justCopied,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      custodyTransactionDeepLink,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.state;
     const {
       transactionGroup,
       primaryCurrency,
@@ -152,6 +206,9 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      transactionNote,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -196,7 +253,10 @@ export default class TransactionListItemDetails extends PureComponent {
             </div>
           </div>
           <div className="transaction-list-item-details__header">
-            <div className="transaction-list-item-details__tx-status">
+            <div
+              className="transaction-list-item-details__tx-status"
+              data-testid="transaction-list-item-details-tx-status"
+            >
               <div>{t('status')}</div>
               <div>
                 <TransactionStatus />
@@ -229,6 +289,30 @@ export default class TransactionListItemDetails extends PureComponent {
                   </Button>
                 </Tooltip>
               </div>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                custodyTransactionDeepLink &&
+                  custodyTransactionDeepLink.url && (
+                    <Tooltip
+                      wrapperClassName="transaction-list-item-details__header-button"
+                      containerClassName="transaction-list-item-details__header-button-tooltip-container"
+                      title={t('viewinCustodianApp')}
+                    >
+                      <Button
+                        type="raised"
+                        onClick={() => {
+                          window.open(custodyTransactionDeepLink.url);
+                        }}
+                      >
+                        <Icon
+                          name={IconName.Custody}
+                          color={IconColor.primaryDefault}
+                        />
+                      </Button>
+                    </Tooltip>
+                  )
+                ///: END:ONLY_INCLUDE_IN
+              }
             </div>
           </div>
           <div className="transaction-list-item-details__body">
@@ -250,7 +334,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 senderAddress={senderAddress}
                 onRecipientClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "To" Address',
                     properties: {
                       action: 'Activity Log',
@@ -260,7 +344,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 }}
                 onSenderClick={() => {
                   this.context.trackEvent({
-                    category: EVENT.CATEGORIES.NAVIGATION,
+                    category: MetaMetricsEventCategory.Navigation,
                     event: 'Copied "From" Address',
                     properties: {
                       action: 'Activity Log',
@@ -281,6 +365,20 @@ export default class TransactionListItemDetails extends PureComponent {
                 primaryCurrency={primaryCurrency}
                 className="transaction-list-item-details__transaction-breakdown"
               />
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                transactionNote && transactionNote.length !== 0 && (
+                  <Box className="transaction-list-item-details__transaction-breakdown">
+                    <Text as="h4" className="transaction-breakdown__title">
+                      {t('transactionNote')}
+                    </Text>
+                    <Text as="p" className="transaction-breakdown__description">
+                      {transactionNote}
+                    </Text>
+                  </Box>
+                )
+                ///: END:ONLY_INCLUDE_IN
+              }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (
                 <Disclosure title={t('activityLog')} size="small">

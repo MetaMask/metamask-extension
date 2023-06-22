@@ -261,6 +261,18 @@ class Driver {
       .perform();
   }
 
+  async holdMouseDownOnElement(rawLocator, ms) {
+    const locator = this.buildLocator(rawLocator);
+    const element = await this.findClickableElement(locator);
+    await this.driver
+      .actions()
+      .move({ origin: element, x: 1, y: 1 })
+      .press()
+      .pause(ms)
+      .release()
+      .perform();
+  }
+
   async scrollToElement(element) {
     await this.driver.executeScript(
       'arguments[0].scrollIntoView(true)',
@@ -337,15 +349,22 @@ class Driver {
   }
 
   // Window management
+  async openNewURL(url) {
+    await this.driver.get(url);
+  }
 
   async openNewPage(url) {
     const newHandle = await this.driver.switchTo().newWindow();
-    await this.driver.get(url);
+    await this.openNewURL(url);
     return newHandle;
   }
 
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
+  }
+
+  async switchToNewWindow() {
+    await this.driver.switchTo().newWindow('window');
   }
 
   async switchToFrame(element) {
@@ -396,6 +415,15 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
+  async closeWindow() {
+    await this.driver.close();
+  }
+
+  async closeWindowHandle(windowHandle) {
+    await this.driver.switchTo().window(windowHandle);
+    await this.driver.close();
+  }
+
   // Close Alert Popup
   async closeAlertPopup() {
     return await this.driver.switchTo().alert().accept();
@@ -428,10 +456,6 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    const isPageError = await this.isElementPresent('.error-page__details');
-    if (isPageError) {
-      await this.clickElement('.error-page__details');
-    }
     const screenshot = await this.driver.takeScreenshot();
     await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
       encoding: 'base64',
@@ -482,20 +506,22 @@ class Driver {
       // 4Byte
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
+
     const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
     await this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
-        const eventDescription = event.args.filter(
+        const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
         );
-        const [{ description }] = eventDescription;
+
+        const [eventDescription] = eventDescriptions;
         const ignore = ignoredErrorMessages.some((message) =>
-          description.includes(message),
+          eventDescription?.description.includes(message),
         );
         if (!ignore) {
-          errors.push(description);
-          logBrowserError(failOnConsoleError, description);
+          errors.push(eventDescription?.description);
+          logBrowserError(failOnConsoleError, eventDescription?.description);
         }
       }
     });

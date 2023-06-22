@@ -5,7 +5,7 @@ import {
   Color,
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   OVERFLOW_WRAP,
 } from '../../../helpers/constants/design-system';
@@ -33,6 +33,10 @@ export const ValidColors = [
   Color.sepolia,
   Color.goerliInverse,
   Color.sepoliaInverse,
+  Color.lineaGoerli,
+  Color.lineaGoerliInverse,
+  Color.lineaMainnet,
+  Color.lineaMainnetInverse,
 ];
 
 export const ValidTags = [
@@ -55,7 +59,7 @@ export const ValidTags = [
 ];
 
 /**
- * @deprecated `<Typography />` has been deprecated in favour of the `<Text />` component in ./ui/components/component-library/text/text.js
+ * @deprecated `<Typography />` has been deprecated in favor of the `<Text />` component in ./ui/components/component-library/text/text.js
  *
  * See storybook documentation for Text here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-text--default-story#text
  *
@@ -78,6 +82,7 @@ export default function Typography({
   marginLeft,
   boxProps = {},
   className,
+  testId,
   children,
 }) {
   let Tag = as ?? variant;
@@ -121,6 +126,7 @@ export default function Typography({
         <Tag
           className={classnames(boxClassName, computedClassName)}
           title={title}
+          data-testid={testId}
         >
           {children}
         </Tag>
@@ -150,10 +156,10 @@ Typography.propTypes = {
    */
   fontStyle: PropTypes.oneOf(Object.values(FONT_STYLE)),
   /**
-   * The text-align of the Typography component. Should use the TEXT_ALIGN object from
+   * The text-align of the Typography component. Should use the TextAlign enum from
    * ./ui/helpers/constants/design-system.js
    */
-  align: PropTypes.oneOf(Object.values(TEXT_ALIGN)),
+  align: PropTypes.oneOf(Object.values(TextAlign)),
   /**
    * The overflow-wrap of the Typography component. Should use the OVERFLOW_WRAP object from
    * ./ui/helpers/constants/design-system.js
@@ -186,6 +192,10 @@ Typography.propTypes = {
    * Title attribute to include on the element. Will show as tooltip on hover.
    */
   title: PropTypes.string,
+  /**
+   * Data test ID for the Tag component
+   */
+  testId: PropTypes.string,
   /**
    * The text content of the Typography component
    */

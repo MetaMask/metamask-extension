@@ -20,8 +20,12 @@ const PENDING_TX_DROP_NOTICE = {
   },
 };
 
-async function getAlerts() {
-  return [PENDING_TX_DROP_NOTICE];
+async function getAlerts(_pendingApproval, state) {
+  const alerts = [];
+  if (state.unapprovedTxsCount > 0) {
+    alerts.push(PENDING_TX_DROP_NOTICE);
+  }
+  return alerts;
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -66,7 +70,7 @@ function getValues(pendingApproval, t, actions) {
           props: {
             newNetwork: {
               chainId: pendingApproval.requestData.chainId,
-              name: pendingApproval.requestData.nickname,
+              nickname: pendingApproval.requestData.nickname,
             },
           },
         },

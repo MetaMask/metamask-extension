@@ -3,7 +3,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
   ///: END:ONLY_INCLUDE_IN
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -19,6 +19,7 @@ import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
 } from '../../helpers/constants/routes';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -36,6 +37,10 @@ describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
       identities: {},
+      providerConfig: {
+        type: NETWORK_TYPES.GOERLI,
+        chainId: '0x0',
+      },
     },
     localeMessages: {
       currentLocale: 'en',

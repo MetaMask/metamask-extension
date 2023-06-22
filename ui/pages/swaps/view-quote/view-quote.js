@@ -97,7 +97,7 @@ import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
 import PulseLoader from '../../../components/ui/pulse-loader'; // TODO: Replace this with a different loading component.
 import Box from '../../../components/ui/box';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -201,6 +201,8 @@ export default function ViewQuote() {
   );
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const unsignedTransaction = usedQuote.trade;
+  const isSmartTransaction =
+    currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
   let gasFeeInputs;
   if (networkAndAccountSupports1559) {
@@ -210,8 +212,6 @@ export default function ViewQuote() {
       userFeeLevel: swapsUserFeeLevel || GasRecommendations.high,
     });
   }
-
-  const { isBestQuote } = usedQuote;
 
   const fetchParamsSourceToken = fetchParams?.sourceToken;
 
@@ -460,7 +460,7 @@ export default function ViewQuote() {
     : null;
 
   let ethBalanceNeededStx;
-  if (smartTransactionsError?.balanceNeededWei) {
+  if (isSmartTransaction && smartTransactionsError?.balanceNeededWei) {
     ethBalanceNeededStx = decWEIToDecETH(
       smartTransactionsError.balanceNeededWei -
         smartTransactionsError.currentBalanceWei,
@@ -469,7 +469,7 @@ export default function ViewQuote() {
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       if (insufficientTokens) {
         dispatch(setBalanceError(true));
       } else if (balanceError && !insufficientTokens) {
@@ -485,8 +485,7 @@ export default function ViewQuote() {
     insufficientEth,
     balanceError,
     dispatch,
-    currentSmartTransactionsEnabled,
-    smartTransactionsOptInStatus,
+    isSmartTransaction,
   ]);
 
   useEffect(() => {
@@ -522,10 +521,7 @@ export default function ViewQuote() {
     ethBalanceNeeded;
 
   // If it's a Smart Transaction and ETH balance is needed, we want to show a warning.
-  const isStxAndEthBalanceIsNeeded =
-    currentSmartTransactionsEnabled &&
-    smartTransactionsOptInStatus &&
-    ethBalanceNeededStx;
+  const isStxAndEthBalanceIsNeeded = isSmartTransaction && ethBalanceNeededStx;
 
   // Indicates if we should show to a user a warning about insufficient funds for swapping.
   const showInsufficientWarning =
@@ -578,7 +574,7 @@ export default function ViewQuote() {
   const trackAllAvailableQuotesOpened = () => {
     trackEvent({
       event: 'All Available Quotes Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -592,7 +588,7 @@ export default function ViewQuote() {
   const trackQuoteDetailsOpened = () => {
     trackEvent({
       event: 'Quote Details Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         other_quote_selected: usedQuote?.aggregator !== topQuote?.aggregator,
@@ -606,7 +602,7 @@ export default function ViewQuote() {
   const trackEditSpendLimitOpened = () => {
     trackEvent({
       event: 'Edit Spend Limit Opened',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         custom_spend_limit_set: originalApproveAmount === approveAmount,
@@ -618,7 +614,7 @@ export default function ViewQuote() {
   const trackBestQuoteReviewedEvent = useCallback(() => {
     trackEvent({
       event: 'Best Quote Reviewed',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         network_fees: feeInFiat,
@@ -628,7 +624,7 @@ export default function ViewQuote() {
   const trackViewQuotePageLoadedEvent = useCallback(() => {
     trackEvent({
       event: 'View Quote Page Loaded',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
         response_time: currentTimestamp - reviewSwapClickedTimestamp,
@@ -896,13 +892,12 @@ export default function ViewQuote() {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee({
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
@@ -927,14 +922,14 @@ export default function ViewQuote() {
   ]);
 
   useEffect(() => {
-    if (currentSmartTransactionsEnabled && smartTransactionsOptInStatus) {
+    if (isSmartTransaction) {
       // Removes a smart transactions error when the component loads.
       dispatch({
         type: SET_SMART_TRANSACTIONS_ERROR,
         payload: null,
       });
     }
-  }, [currentSmartTransactionsEnabled, smartTransactionsOptInStatus, dispatch]);
+  }, [isSmartTransaction, dispatch]);
 
   return (
     <div className="view-quote">
@@ -1037,7 +1032,6 @@ export default function ViewQuote() {
                 }
               }
               chainId={chainId}
-              isBestQuote={isBestQuote}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
                 maxPriorityFeePerGas,
               )}

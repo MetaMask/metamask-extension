@@ -7,15 +7,15 @@ import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ToggleButton from '../../../components/ui/toggle-button';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
+  FontWeight,
   AlignItems,
-  DISPLAY,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import { Slippage } from '../../../../shared/constants/swaps';
+import { Text } from '../../../components/component-library';
 
 export default function SlippageButtons({
   onSelect,
@@ -201,19 +201,20 @@ export default function SlippageButtons({
               </div>
             )}
             {smartTransactionsEnabled && (
-              <Box marginTop={2} display={DISPLAY.FLEX}>
+              <Box marginTop={2} display={Display.Flex}>
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   alignItems={AlignItems.center}
                   paddingRight={3}
                 >
-                  <Typography
-                    variant={TypographyVariant.H6}
-                    boxProps={{ paddingRight: 2 }}
-                    fontWeight={FONT_WEIGHT.BOLD}
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    paddingRight={2}
+                    fontWeight={FontWeight.Bold}
                   >
-                    {t('smartTransaction')}
-                  </Typography>
+                    {t('smartSwap')}
+                  </Text>
                   {currentSmartTransactionsError ? (
                     <InfoTooltip
                       position="top"

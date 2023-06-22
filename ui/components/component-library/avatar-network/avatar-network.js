@@ -14,70 +14,76 @@ import {
 } from '../../../helpers/constants/design-system';
 import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
-export const AvatarNetwork = ({
-  size = Size.MD,
-  name,
-  src,
-  showHalo,
-  color = TextColor.textDefault,
-  backgroundColor = BackgroundColor.backgroundAlternative,
-  borderColor = BorderColor.transparent,
-  className,
-  ...props
-}) => {
-  const [showFallback, setShowFallback] = useState(false);
+export const AvatarNetwork = React.forwardRef(
+  (
+    {
+      size = Size.MD,
+      name,
+      src,
+      showHalo,
+      color = TextColor.textDefault,
+      backgroundColor = BackgroundColor.backgroundAlternative,
+      borderColor = BorderColor.transparent,
+      className,
+      ...props
+    },
+    ref,
+  ) => {
+    const [showFallback, setShowFallback] = useState(false);
 
-  useEffect(() => {
-    setShowFallback(!src);
-  }, [src]);
+    useEffect(() => {
+      setShowFallback(!src);
+    }, [src]);
 
-  const fallbackString = name && name[0] ? name[0] : '?';
+    const fallbackString = name && name[0] ? name[0] : '?';
 
-  const handleOnError = () => {
-    setShowFallback(true);
-  };
+    const handleOnError = () => {
+      setShowFallback(true);
+    };
 
-  return (
-    <AvatarBase
-      size={size}
-      display={DISPLAY.FLEX}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      className={classnames(
-        'mm-avatar-network',
-        showHalo && 'mm-avatar-network--with-halo',
-        className,
-      )}
-      {...{ backgroundColor, borderColor, color, ...props }}
-    >
-      {showFallback ? (
-        fallbackString
-      ) : (
-        <>
-          {showHalo && (
+    return (
+      <AvatarBase
+        ref={ref}
+        size={size}
+        display={DISPLAY.FLEX}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        className={classnames(
+          'mm-avatar-network',
+          showHalo && 'mm-avatar-network--with-halo',
+          className,
+        )}
+        {...{ backgroundColor, borderColor, color, ...props }}
+      >
+        {showFallback ? (
+          fallbackString
+        ) : (
+          <>
+            {showHalo && (
+              <img
+                src={src}
+                className={
+                  showHalo ? 'mm-avatar-network__network-image--blurred' : ''
+                }
+                aria-hidden="true"
+              />
+            )}
             <img
-              src={src}
               className={
-                showHalo ? 'mm-avatar-network__network-image--blurred' : ''
+                showHalo
+                  ? 'mm-avatar-network__network-image--size-reduced'
+                  : 'mm-avatar-network__network-image'
               }
-              aria-hidden="true"
+              onError={handleOnError}
+              src={src}
+              alt={`${name} logo` || 'network logo'}
             />
-          )}
-          <img
-            className={
-              showHalo
-                ? 'mm-avatar-network__network-image--size-reduced'
-                : 'mm-avatar-network__network-image'
-            }
-            onError={handleOnError}
-            src={src}
-            alt={`${name} logo` || 'network logo'}
-          />
-        </>
-      )}
-    </AvatarBase>
-  );
-};
+          </>
+        )}
+      </AvatarBase>
+    );
+  },
+);
 
 AvatarNetwork.propTypes = {
   /**
@@ -102,17 +108,17 @@ AvatarNetwork.propTypes = {
    * The background color of the AvatarNetwork
    * Defaults to BackgroundColor.backgroundAlternative
    */
-  backgroundColor: Box.propTypes.backgroundColor,
+  backgroundColor: PropTypes.oneOf(Object.values(BackgroundColor)),
   /**
    * The background color of the AvatarNetwork
    * Defaults to BorderColor.borderDefault
    */
-  borderColor: Box.propTypes.borderColor,
+  borderColor: PropTypes.oneOf(Object.values(BorderColor)),
   /**
    * The color of the text inside the AvatarNetwork
    * Defaults to TextColor.textDefault
    */
-  color: Box.propTypes.color,
+  color: PropTypes.oneOf(Object.values(TextColor)),
   /**
    * Additional classNames to be added to the AvatarNetwork
    */
@@ -123,3 +129,5 @@ AvatarNetwork.propTypes = {
    */
   ...Box.propTypes,
 };
+
+AvatarNetwork.displayName = 'AvatarNetwork';

@@ -1,51 +1,55 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-
-import { MESSAGE_TYPE } from '../../../../shared/constants/app';
-import { goHome, cancelMsgs, showModal } from '../../../store/actions';
+import {
+  goHome,
+  showModal,
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
+} from '../../../store/actions';
 import {
   accountsWithSendEtherInfoSelector,
-  conversionRateSelector,
   getSubjectMetadata,
   doesAddressRequireLedgerHidConnection,
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getSelectedAccount,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import {
-  isAddressLedger,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import SignatureRequestOriginal from './signature-request-original.component';
 
 function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
-  const { provider } = state.metamask;
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
   const messagesList = unconfirmedMessagesHashSelector(state);
   const messagesCount = getTotalUnapprovedMessagesCount(state);
+
   return {
     requester: null,
     requesterAddress: null,
-    conversionRate: conversionRateSelector(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     hardwareWalletRequiresConnection,
     isLedgerWallet,
-    nativeCurrency: getNativeCurrency(state),
     // not passed to component
     allAccounts: accountsWithSendEtherInfoSelector(state),
     subjectMetadata: getSubjectMetadata(state),
     messagesList,
     messagesCount,
-    provider,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: getSelectedAccount(state),
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -66,44 +70,30 @@ function mapDispatchToProps(dispatch) {
         }),
       );
     },
-    cancelAll: (messagesList) => dispatch(cancelMsgs(messagesList)),
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
   };
 }
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
-  const {
-    signPersonalMessage,
-    signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
+  const { txData } = ownProps;
 
   const { allAccounts, messagesList, ...otherStateProps } = stateProps;
 
   const {
-    type,
     msgParams: { from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
 
-  const { cancelAll: dispatchCancelAll } = dispatchProps;
-
-  let cancel;
-  let sign;
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    sign = signMessage;
-  }
+  const { cancelAllApprovals: dispatchCancelAllApprovals } = dispatchProps;
 
   return {
     ...ownProps,
@@ -111,9 +101,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...dispatchProps,
     fromAccount,
     txData,
-    cancel,
-    sign,
-    cancelAll: () => dispatchCancelAll(valuesFor(messagesList)),
+    cancelAllApprovals: () =>
+      dispatchCancelAllApprovals(valuesFor(messagesList)),
   };
 }
 

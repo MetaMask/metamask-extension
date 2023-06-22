@@ -1,12 +1,13 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
+  BUILT_IN_INFURA_NETWORKS,
 } from '../../../../../shared/constants/network';
 import {
   isPrefixedFormattedHexString,
@@ -18,16 +19,20 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     getCurrentChainId: true,
-    findCustomRpcBy: true,
+    findNetworkConfigurationBy: true,
     setProviderType: true,
-    updateRpcTarget: true,
+    setActiveNetwork: true,
     requestUserApproval: true,
   },
 };
 export default switchEthereumChain;
 
-function findExistingNetwork(chainId, findCustomRpcBy) {
-  if (chainId in CHAIN_ID_TO_TYPE_MAP) {
+function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+  if (
+    Object.values(BUILT_IN_INFURA_NETWORKS)
+      .map(({ chainId: id }) => id)
+      .includes(chainId)
+  ) {
     return {
       chainId,
       ticker: CURRENCY_SYMBOLS.ETH,
@@ -37,7 +42,7 @@ function findExistingNetwork(chainId, findCustomRpcBy) {
     };
   }
 
-  return findCustomRpcBy({ chainId });
+  return findNetworkConfigurationBy({ chainId });
 }
 
 async function switchEthereumChainHandler(
@@ -47,9 +52,9 @@ async function switchEthereumChainHandler(
   end,
   {
     getCurrentChainId,
-    findCustomRpcBy,
+    findNetworkConfigurationBy,
     setProviderType,
-    updateRpcTarget,
+    setActiveNetwork,
     requestUserApproval,
   },
 ) {
@@ -95,7 +100,7 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = findExistingNetwork(_chainId, findCustomRpcBy);
+  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
     if (currentChainId === _chainId) {
@@ -105,16 +110,17 @@ async function switchEthereumChainHandler(
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
       if (
-        chainId in CHAIN_ID_TO_TYPE_MAP &&
-        approvedRequestData.type !== NETWORK_TYPES.LOCALHOST
+        Object.values(BUILT_IN_INFURA_NETWORKS)
+          .map(({ chainId: id }) => id)
+          .includes(chainId)
       ) {
-        setProviderType(approvedRequestData.type);
+        await setProviderType(approvedRequestData.type);
       } else {
-        await updateRpcTarget(approvedRequestData);
+        await setActiveNetwork(approvedRequestData.id);
       }
       res.result = null;
     } catch (error) {

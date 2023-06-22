@@ -81,9 +81,6 @@
   "create": {
     "message": "Vytvořit"
   },
-  "createAccount": {
-    "message": "Vytvořit účet"
-  },
   "customToken": {
     "message": "Vlastní token"
   },
@@ -208,9 +205,6 @@
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje účty"
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -363,10 +357,6 @@
   },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
-  },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "Zadejte své heslo"

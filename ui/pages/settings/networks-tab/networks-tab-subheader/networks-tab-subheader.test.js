@@ -6,7 +6,7 @@ import NetworksTabSubheader from '.';
 
 const mockState = {
   metamask: {
-    provider: {
+    providerConfig: {
       chainId: '0x539',
       nickname: '',
       rpcPrefs: {},
@@ -14,7 +14,7 @@ const mockState = {
       ticker: 'ETH',
       type: 'localhost',
     },
-    frequentRpcListDetail: [],
+    networkConfigurations: {},
   },
   appState: {
     networksTabSelectedRpcUrl: 'http://localhost:8545',

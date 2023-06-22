@@ -6,7 +6,7 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import { Icon, ICON_NAMES } from '../../../component-library';
+import { Icon, IconName } from '../../../component-library';
 
 const SignatureRequestSIWEIcon = () => {
   return (
@@ -17,7 +17,7 @@ const SignatureRequestSIWEIcon = () => {
       backgroundColor={Color.errorDefault}
       justifyContent={JustifyContent.center}
     >
-      <Icon name={ICON_NAMES.DANGER} color={Color.errorInverse} />
+      <Icon name={IconName.Danger} color={Color.errorInverse} />
     </Box>
   );
 };

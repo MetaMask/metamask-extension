@@ -8,6 +8,7 @@ import {
   setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
+import { createTestProviderTools } from '../../../../test/stub/provider';
 import {
   setSwapsFromToken,
   setSwapToToken,
@@ -28,7 +29,6 @@ const createProps = (customProps = {}) => {
 
 setBackgroundConnection({
   resetPostFetchState: jest.fn(),
-  ignoreTokens: jest.fn(),
   setBackgroundSwapRouteState: jest.fn(),
   clearSwapsQuotes: jest.fn(),
   stopPollingForQuotes: jest.fn(),
@@ -61,8 +61,27 @@ jest.mock('../swaps.util', () => {
   };
 });
 
+const providerResultStub = {
+  eth_getCode: '0x123',
+  eth_call:
+    '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+};
+const { provider } = createTestProviderTools({
+  scaffold: providerResultStub,
+  networkId: '5',
+  chainId: '5',
+});
+
 describe('BuildQuote', () => {
+  beforeAll(() => {
+    jest.clearAllMocks();
+  });
+
   beforeEach(() => {
+    global.ethereumProvider = provider;
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 

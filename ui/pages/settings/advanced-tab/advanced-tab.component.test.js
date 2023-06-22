@@ -48,7 +48,7 @@ describe('AdvancedTab Component', () => {
   it('should toggle show test networks', () => {
     const { queryAllByRole } = renderWithProvider(<AdvancedTab />, mockStore);
 
-    const testNetworkToggle = queryAllByRole('checkbox')[3];
+    const testNetworkToggle = queryAllByRole('checkbox')[2];
 
     fireEvent.click(testNetworkToggle);
 

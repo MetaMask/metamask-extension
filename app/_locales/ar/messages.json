@@ -97,9 +97,6 @@
   "back": {
     "message": "الرجوع إلى الوراء"
   },
-  "backToAll": {
-    "message": "العودة إلى الجميع"
-  },
   "backupApprovalInfo": {
     "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
   },
@@ -158,14 +155,14 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "ربط محفظة الأجهزة"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "الاتصال بشبكة اختبار Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "جارِ الاتصال بشبكة إيثيريوم الرئيسية"
@@ -193,9 +190,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAccount": {
-    "message": "إنشاء حساب"
   },
   "createPassword": {
     "message": "إنشاء كلمة مرور"
@@ -412,6 +406,9 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
+  "lineaGoerli": {
+    "message": "شبكة اختبار Linea Goerli"
+  },
   "links": {
     "message": "الروابط"
   },
@@ -444,9 +441,6 @@
   },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
-  "myAccounts": {
-    "message": "حساباتي"
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
@@ -572,9 +566,6 @@
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
   },
-  "recents": {
-    "message": "الحديث"
-  },
   "recipientAddressPlaceholder": {
     "message": "البحث، العنوان العام (0x)، أو ENS"
   },
@@ -669,12 +660,6 @@
   "settings": {
     "message": "الإعدادات"
   },
-  "showAdvancedGasInline": {
-    "message": "أدوات التحكم المتقدمة للغاز"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "حدد هذا لإظهار سعر عملة جاس والحد من الضوابط مباشرة على شاشات الإرسال والتأكيد."
-  },
   "showFiatConversionInTestnets": {
     "message": "عرض التحويل على Testnets"
   },
@@ -737,27 +722,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "يجب أن يكون الرمز 11 حرفًا أو أقل."
-  },
-  "syncWithMobile": {
-    "message": "مزامنة مع الهاتف المحمول"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "تأكد من عدم قيام أي شخص آخر بالنظر إلى شاشتك عند مسح هذا الرمز"
-  },
-  "syncWithMobileComplete": {
-    "message": "تمت مزامنة بياناتك بنجاح. استمتع بتطبيق MetaMask للهاتف المحمول!"
-  },
-  "syncWithMobileDesc": {
-    "message": "يمكنك مزامنة حساباتك ومعلوماتك مع جهازك المحمول. افتح تطبيق MetaMask على الجهاز المحمول وانتقل إلى \"الإعدادات\" ثم انقر على \"المزامنة من إضافة المتصفح\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "إذا قمت للتوّ بفتح تطبيق MetaMask للهواتف المحمولة لأول مرة، فاتبع الخطوات الموجودة في هاتفك."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "امسح هذا الرمز ضوئياً باستخدام تطبيق MetaMask للهواتف المحمولة"
-  },
-  "syncWithMobileTitle": {
-    "message": "المزامنة مع الجهاز المحمول"
   },
   "terms": {
     "message": "شروط الاستخدام"
@@ -825,15 +789,8 @@
   "transfer": {
     "message": "تحويل"
   },
-  "transferBetweenAccounts": {
-    "message": "التحويل بين حساباتي"
-  },
   "transferFrom": {
     "message": "التحويل من"
-  },
-  "troubleTokenBalances": {
-    "message": "واجهتنا مشكلة في تحميل أرصدتك من العملات الرمزية. يمكنك الاطلاع عليها",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "إعادة المحاولة"

@@ -8,7 +8,7 @@
   &__first-notification {
     display: flex;
     flex-direction: column;
-    margin: 0 24px 24px 24px;
+    margin: 0 16px 16px 16px;
     border-bottom: 1px solid var(--color-border-muted);
     position: relative;
   }
@@ -60,13 +60,6 @@
     cursor: pointer;
   }
 
-  &__notification-title {
-    @include H4;
-
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
-
   &__intersection-observable {
     bottom: 22px;
     position: absolute;
@@ -77,7 +70,7 @@
 
 .popover-wrap.whats-new-popup__popover {
   @include screen-sm-min {
-    max-height: 600px;
+    max-height: 750px;
     width: 500px;
   }
 

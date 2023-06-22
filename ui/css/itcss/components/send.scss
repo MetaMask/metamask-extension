@@ -607,6 +607,10 @@
       align-items: center;
       padding: 0 8px;
       cursor: pointer;
+
+      /* Prevents the contents of the asset from going outside the dropdown area  */
+      max-width: 100%;
+      overflow: hidden;
     }
 
     &__asset-icon {
@@ -620,6 +624,9 @@
       flex-flow: column nowrap;
       margin-left: 8px;
       flex-grow: 1;
+
+      /* Keeps the down arrow on screen */
+      overflow: hidden;
     }
 
     @include screen-sm-max {
@@ -640,8 +647,11 @@
     &__name {
       @include H7;
 
+      /* Prevents the token balance or NFT title from wrapping or silently truncating */
       display: flex;
-      flex-flow: row nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
 
       &__label {
         margin-right: 0.25rem;

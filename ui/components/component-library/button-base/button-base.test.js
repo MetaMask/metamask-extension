@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 
@@ -27,7 +27,23 @@ describe('ButtonBase', () => {
 
   it('should render anchor element correctly by href only being passed and href exists', () => {
     const { getByTestId, container } = render(
-      <ButtonBase href="https://www.test.com/" data-testid="button-base">
+      <ButtonBase href="/metamask" data-testid="button-base">
+        Button Base
+      </ButtonBase>,
+    );
+    expect(getByTestId('button-base')).toHaveClass('mm-button-base');
+    expect(getByTestId('button-base')).toHaveAttribute('href', '/metamask');
+    const anchor = container.getElementsByTagName('a').length;
+    expect(anchor).toBe(1);
+  });
+
+  it('should render anchor element correctly by href and externalLink, href target and rel exist', () => {
+    const { getByTestId, container } = render(
+      <ButtonBase
+        href="https://www.test.com/"
+        externalLink
+        data-testid="button-base"
+      >
         Button Base
       </ButtonBase>,
     );
@@ -35,9 +51,24 @@ describe('ButtonBase', () => {
     expect(getByTestId('button-base')).toHaveAttribute(
       'href',
       'https://www.test.com/',
+      'target',
+      '_blank',
+      'rel',
+      'noopener noreferrer',
+    );
+    expect(getByTestId('button-base')).toHaveAttribute(
+      'target',
+      '_blank',
+      'rel',
+      'noopener noreferrer',
+    );
+    expect(getByTestId('button-base')).toHaveAttribute(
+      'rel',
+      'noopener noreferrer',
     );
     const anchor = container.getElementsByTagName('a').length;
     expect(anchor).toBe(1);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render button as block', () => {
@@ -94,9 +125,9 @@ describe('ButtonBase', () => {
     const { getByTestId } = render(
       <ButtonBase
         data-testid="icon"
-        startIconName={ICON_NAMES.ADD_SQUARE}
+        startIconName={IconName.AddSquare}
         startIconProps={{ 'data-testid': 'start-button-icon' }}
-        endIconName={ICON_NAMES.ADD_SQUARE}
+        endIconName={IconName.AddSquare}
         endIconProps={{ 'data-testid': 'end-button-icon' }}
       />,
     );

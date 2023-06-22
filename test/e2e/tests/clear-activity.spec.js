@@ -34,22 +34,21 @@ describe('Clear account activity', function () {
 
         // Check send transaction and receive transaction history are all displayed
         await driver.clickElement('[data-testid="home__activity-tab"]');
-        await driver.waitForSelector(
-          { css: '.list-item__title', text: 'Send' },
-          { timeout: 10000 },
-        );
-        await driver.waitForSelector(
-          { css: '.list-item__title', text: 'Receive' },
-          { timeout: 10000 },
-        );
+        await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Send',
+        });
+        await driver.waitForSelector({
+          css: '.list-item__title',
+          text: 'Receive',
+        });
 
         // Clear activity and nonce data
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          css: '.tab-bar__tab__content__title',
-          text: 'Advanced',
-        });
+        await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
           text: 'Clear activity tab data',
           tag: 'button',

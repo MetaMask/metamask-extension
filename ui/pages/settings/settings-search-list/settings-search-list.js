@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { highlightSearchedText } from '../../../helpers/utils/settings-search';
 import { I18nContext } from '../../../contexts/i18n';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 import { Size } from '../../../helpers/constants/design-system';
 
 export default function SettingsSearchList({ results, onClickSetting }) {
@@ -45,7 +45,7 @@ export default function SettingsSearchList({ results, onClickSetting }) {
                   {tabMessage(t)}
                 </span>
                 <Icon
-                  name={ICON_NAMES.ARROW_RIGHT}
+                  name={IconName.ArrowRight}
                   size={Size.SM}
                   className="settings-page__header__search__list__item__caret"
                 />

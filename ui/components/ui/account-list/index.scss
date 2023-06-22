@@ -113,14 +113,11 @@
     }
   }
 
-  .fa-info-circle {
-    color: var(--color-icon-muted);
+  .info-circle {
     cursor: pointer;
-    margin-inline-start: 8px;
-    font-size: 0.9rem;
   }
 
-  .fa-info-circle:hover {
+  .info-circle:hover {
     color: var(--color-icon-default);
   }
 

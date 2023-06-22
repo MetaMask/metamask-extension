@@ -1,7 +1,10 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import { mmiActionsFactory } from '../../store/institutional/institution-background';
+///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -46,24 +49,38 @@ import {
   getIsGasEstimatesLoading,
   getNativeCurrency,
   getSendToAccounts,
+  getProviderConfig,
 } from '../../ducks/metamask/metamask';
-import { addHexPrefix } from '../../../app/scripts/lib/util';
+import {
+  addHexPrefix,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getEnvironmentType,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../app/scripts/lib/util';
 
 import {
   parseStandardTokenTransactionData,
   transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
-import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import {
+  isEmptyHexString,
+  toChecksumHexAddress,
+} from '../../../shared/modules/hexstring-utils';
 
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getAccountType } from '../../selectors/selectors';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
+import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
   TransactionType,
 } from '../../../shared/constants/transaction';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -94,6 +111,11 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const envType = getEnvironmentType();
+  const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
+  ///: END:ONLY_INCLUDE_IN
+
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
@@ -102,13 +124,11 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     identities,
     addressBook,
-    network,
+    networkId,
     unapprovedTxs,
     nextNonce,
-    allNftContracts,
-    selectedAddress,
-    provider: { chainId },
   } = metamask;
+  const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || Number(paramsTransactionId);
@@ -128,10 +148,13 @@ const mapStateToProps = (state, ownProps) => {
 
   const { balance } = accounts[fromAddress];
   const { name: fromName } = identities[fromAddress];
-  let toAddress = txParamsToAddress;
-  if (type !== TransactionType.simpleSend) {
-    toAddress = propsToAddress || tokenToAddress || txParamsToAddress;
-  }
+
+  const isSendingAmount =
+    type === TransactionType.simpleSend || !isEmptyHexString(amount);
+
+  const toAddress = isSendingAmount
+    ? txParamsToAddress
+    : propsToAddress || tokenToAddress || txParamsToAddress;
 
   const toAccounts = getSendToAccounts(state);
 
@@ -155,7 +178,6 @@ const mapStateToProps = (state, ownProps) => {
 
   const {
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     gasEstimationObject,
@@ -163,7 +185,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
+      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -184,12 +206,6 @@ const mapStateToProps = (state, ownProps) => {
     customTxParamsData,
   );
 
-  const isNftTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
-      return isEqualCaseInsensitive(contract.address, fullTxData.txParams.to);
-    }),
-  );
-
   customNonceValue = getCustomNonceValue(state);
   const isEthGasPrice = getIsEthGasPriceFetched(state);
   const noGasPrice = !supportsEIP1559 && getNoGasPriceFetched(state);
@@ -199,6 +215,14 @@ const mapStateToProps = (state, ownProps) => {
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const accountType = getAccountType(state, fromAddress);
+  const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
+  const isNoteToTraderSupported = getIsNoteToTraderSupported(
+    state,
+    fromChecksumHexAddress,
+  );
+  ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
@@ -215,7 +239,6 @@ const mapStateToProps = (state, ownProps) => {
     toName,
     toNickname,
     hexTransactionAmount,
-    hexMinimumTransactionFee,
     hexMaximumTransactionFee,
     hexTransactionTotal,
     txData: fullTxData,
@@ -235,7 +258,6 @@ const mapStateToProps = (state, ownProps) => {
     useNonceField: getUseNonceField(state),
     customNonceValue,
     insufficientBalance,
-    hideSubtitle: !getShouldShowFiat(state) && !isNftTransfer,
     hideFiatConversion: !getShouldShowFiat(state),
     type,
     nextNonce,
@@ -257,10 +279,18 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNoteToTraderSupported,
+    isNotification,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiActions = mmiActionsFactory();
+  ///: END:ONLY_INCLUDE_IN
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -291,13 +321,51 @@ export const mapDispatchToProps = (dispatch) => {
     updateTransactionGasFees: (gasFees) => {
       dispatch(updateGasFees({ ...gasFees, expectHexWei: true }));
     },
-    showBuyModal: () => dispatch(showModal({ name: 'DEPOSIT_ETHER' })),
     addToAddressBookIfNew: (newAddress, toAccounts, nickname = '') => {
       const hexPrefixedAddress = addHexPrefix(newAddress);
       if (addressIsNew(toAccounts, hexPrefixedAddress)) {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    getCustodianConfirmDeepLink: (id) =>
+      dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
+    showCustodyConfirmLink: ({ link, address, closeNotification, custodyId }) =>
+      dispatch(
+        mmiActions.showCustodyConfirmLink({
+          link,
+          address,
+          closeNotification,
+          custodyId,
+        }),
+      ),
+    showTransactionsFailedModal: (errorMessage, closeNotification) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+        }),
+      ),
+    showCustodianDeepLink: ({
+      txId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId,
+        fromAddress,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+      }),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -309,6 +377,14 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     updateTransactionGasFees: dispatchUpdateTransactionGasFees,
     ...otherDispatchProps
   } = dispatchProps;
+
+  let isMainBetaFlask = ownProps.isMainBetaFlask || false;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  if (ownProps.isMainBetaFlask === undefined) {
+    isMainBetaFlask = true;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   return {
     ...stateProps,
@@ -323,6 +399,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         transaction: txData,
       });
     },
+    isMainBetaFlask,
   };
 };
 

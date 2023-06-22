@@ -93,9 +93,6 @@
   "back": {
     "message": "Tagasi"
   },
-  "backToAll": {
-    "message": "Tagasi kõigile"
-  },
   "backupApprovalInfo": {
     "message": "See salakood on vajalik teie rahakoti taastamiseks, kui kaotate oma seadme, unustate parooli, peate MetaMaski uuesti alla laadima, või kui soovite avada oma rahakoti mõnel teisel seadmel."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectHardwareWallet": {
-    "message": "Ühendage riistvara rahakott"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
     "message": "Ühenduse loomine peamise Etherumi võrguga"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Loo"
-  },
-  "createAccount": {
-    "message": "Loo konto"
   },
   "createPassword": {
     "message": "Loo parool"
@@ -408,6 +402,9 @@
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
+  "lineaGoerli": {
+    "message": "Linea Goerli testvõrk"
+  },
   "links": {
     "message": "Lingid"
   },
@@ -437,9 +434,6 @@
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
-  },
-  "myAccounts": {
-    "message": "Minu kontod"
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
@@ -565,9 +559,6 @@
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
   },
-  "recents": {
-    "message": "Hiljutised"
-  },
   "recipientAddressPlaceholder": {
     "message": "Otsing, avalik aadress (0x) või ENS"
   },
@@ -662,12 +653,6 @@
   "settings": {
     "message": "Seaded"
   },
-  "showAdvancedGasInline": {
-    "message": "Täiustatud gaasijuhikud"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valige see, et kuvada gaasi hinda ja piirangut otse saatmise ning kinnitamise kuval."
-  },
   "showFiatConversionInTestnets": {
     "message": "Kuva teisendus Testnetsis"
   },
@@ -730,27 +715,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Sümbol peab olema 11 tähemärki või vähem."
-  },
-  "syncWithMobile": {
-    "message": "Mobiiliga sünkroonimine"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Veenduge, et keegi teine ei vaata selle koodi skannimisel teie ekraani"
-  },
-  "syncWithMobileComplete": {
-    "message": "Teie andmed on edukalt sünkroonitud. Nautige MetaMaski mobiilirakendust!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Saate sünkroonida oma kontod ja teabe oma mobiiliseadmega. Avage MetaMaski mobiilirakendus, avage \"Settings\" (Seaded) ja puudutage valikut \"Sync from Browser Extension\" (Sünkroonimine lehitseja laiendusest)"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Järgige MetaMaski mobiilirakenduse esmakordsel avamisel telefonis esitatud samme."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Skanneerige see kood MetaMaski mobiilirakendusega"
-  },
-  "syncWithMobileTitle": {
-    "message": "Mobiiliga sünkroonimine"
   },
   "terms": {
     "message": "Teenusetingimused"
@@ -818,15 +782,8 @@
   "transfer": {
     "message": "Ülekandmine"
   },
-  "transferBetweenAccounts": {
-    "message": "Ülekandmine minu kontode vahel"
-  },
   "transferFrom": {
     "message": "Ülekandmine asukohast"
-  },
-  "troubleTokenBalances": {
-    "message": "Teie loasaldode laadimisega oli probleem. Saate neid vaadata",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Proovi uuesti"

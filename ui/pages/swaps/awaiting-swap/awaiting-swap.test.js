@@ -97,7 +97,7 @@ describe('AwaitingSwap', () => {
       store,
     );
     expect(getByText('Swap failed')).toBeInTheDocument();
-    fireEvent.click(getByText('metamask-flask.zendesk.com'));
+    fireEvent.click(getByText('support.metamask.io'));
     expect(getByText('Try again')).toBeInTheDocument();
   });
 

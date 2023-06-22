@@ -123,23 +123,36 @@ export default function TransactionList({
             <div className="transaction-list__header">
               {`${t('queue')} (${pendingTransactions.length})`}
             </div>
-            {pendingTransactions.map((transactionGroup, index) =>
-              transactionGroup.initialTransaction.transactionType ===
-              TransactionType.smart ? (
-                <SmartTransactionListItem
-                  isEarliestNonce={index === 0}
-                  smartTransaction={transactionGroup.initialTransaction}
-                  transactionGroup={transactionGroup}
-                  key={`${transactionGroup.nonce}:${index}`}
-                />
-              ) : (
-                <TransactionListItem
-                  isEarliestNonce={index === 0}
-                  transactionGroup={transactionGroup}
-                  key={`${transactionGroup.nonce}:${index}`}
-                />
-              ),
-            )}
+            {pendingTransactions
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              .sort(
+                (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
+              )
+              ///: END:ONLY_INCLUDE_IN
+              .map((transactionGroup, index) => {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                if (
+                  transactionGroup.initialTransaction.transactionType ===
+                  TransactionType.smart
+                ) {
+                  return (
+                    <SmartTransactionListItem
+                      isEarliestNonce={index === 0}
+                      smartTransaction={transactionGroup.initialTransaction}
+                      transactionGroup={transactionGroup}
+                      key={`${transactionGroup.nonce}:${index}`}
+                    />
+                  );
+                }
+                ///: END:ONLY_INCLUDE_IN
+                return (
+                  <TransactionListItem
+                    isEarliestNonce={index === 0}
+                    transactionGroup={transactionGroup}
+                    key={`${transactionGroup.nonce}:${index}`}
+                  />
+                );
+              })}
           </div>
         )}
         <div className="transaction-list__completed-transactions">
@@ -148,6 +161,11 @@ export default function TransactionList({
           ) : null}
           {completedTransactions.length > 0 ? (
             completedTransactions
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              .sort(
+                (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
+              )
+              ///: END:ONLY_INCLUDE_IN
               .slice(0, limit)
               .map((transactionGroup, index) =>
                 transactionGroup.initialTransaction?.transactionType ===

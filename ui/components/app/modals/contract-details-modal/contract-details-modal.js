@@ -9,11 +9,10 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Identicon from '../../../ui/identicon';
 import { ellipsify } from '../../../../pages/send/send.utils';
 import Popover from '../../../ui/popover';
-import Typography from '../../../ui/typography';
 import {
-  FONT_WEIGHT,
-  TypographyVariant,
-  DISPLAY,
+  FontWeight,
+  TextVariant,
+  Display,
   Size,
   BorderStyle,
   BorderColor,
@@ -25,7 +24,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
-import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,
@@ -62,34 +61,36 @@ export default function ContractDetailsModal({
         paddingLeft={4}
         className="contract-details-modal__content"
       >
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
-          variant={TypographyVariant.H5}
-          display={DISPLAY.FLEX}
-          boxProps={{ marginTop: 0, marginBottom: 0 }}
+        <Text
+          fontWeight={FontWeight.Bold}
+          variant={TextVariant.bodyMd}
+          as="h5"
+          display={Display.Flex}
         >
           {t('contractTitle')}
-        </Typography>
-        <Typography
-          variant={TypographyVariant.H7}
-          display={DISPLAY.FLEX}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
+          display={Display.Flex}
           color={TextColor.textAlternative}
-          boxProps={{ marginTop: 2, marginBottom: 0 }}
+          marginTop={2}
         >
           {t('contractDescription')}
-        </Typography>
+        </Text>
         {!isContractRequestingSignature && (
           <>
-            <Typography
-              variant={TypographyVariant.H6}
-              display={DISPLAY.FLEX}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              display={Display.Flex}
               marginTop={4}
               marginBottom={2}
             >
               {nft ? t('contractNFT') : t('contractToken')}
-            </Typography>
+            </Text>
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               borderRadius={Size.SM}
               borderStyle={BorderStyle.solid}
               borderColor={BorderColor.borderDefault}
@@ -110,23 +111,24 @@ export default function ContractDetailsModal({
                 />
               )}
               <Box data-testid="recipient">
-                <Typography
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H5}
+                <Text
+                  fontWeight={FontWeight.Bold}
+                  variant={TextVariant.bodyMd}
+                  as="h5"
                   marginTop={4}
                 >
                   {tokenName || ellipsify(tokenAddress)}
-                </Typography>
+                </Text>
                 {tokenName && (
-                  <Typography
-                    variant={TypographyVariant.H6}
-                    display={DISPLAY.FLEX}
+                  <Text
+                    variant={TextVariant.bodySm}
+                    as="h6"
+                    display={Display.Flex}
                     color={TextColor.textAlternative}
-                    marginTop={0}
                     marginBottom={4}
                   >
                     {ellipsify(tokenAddress)}
-                  </Typography>
+                  </Text>
                 )}
               </Box>
               <Box
@@ -144,11 +146,9 @@ export default function ContractDetailsModal({
                   }
                 >
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     iconName={
-                      copiedTokenAddress
-                        ? ICON_NAMES.COPY_SUCCESS
-                        : ICON_NAMES.COPY
+                      copiedTokenAddress ? IconName.CopySuccess : IconName.Copy
                     }
                     onClick={() => handleCopyTokenAddress(tokenAddress)}
                     color={Color.iconMuted}
@@ -161,8 +161,8 @@ export default function ContractDetailsModal({
                 </Tooltip>
                 <Tooltip position="top" title={t('openInBlockExplorer')}>
                   <ButtonIcon
-                    display={DISPLAY.FLEX}
-                    iconName={ICON_NAMES.EXPORT}
+                    display={Display.Flex}
+                    iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
                       const blockExplorerTokenLink = getAccountLink(
@@ -184,9 +184,10 @@ export default function ContractDetailsModal({
             </Box>
           </>
         )}
-        <Typography
-          variant={TypographyVariant.H6}
-          display={DISPLAY.FLEX}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
+          display={Display.Flex}
           marginTop={4}
           marginBottom={2}
         >
@@ -195,9 +196,9 @@ export default function ContractDetailsModal({
           {!nft &&
             !isContractRequestingSignature &&
             t('contractRequestingSpendingCap')}
-        </Typography>
+        </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
@@ -209,23 +210,24 @@ export default function ContractDetailsModal({
             address={toAddress}
           />
           <Box data-testid="recipient">
-            <Typography
-              fontWeight={FONT_WEIGHT.BOLD}
-              variant={TypographyVariant.H5}
+            <Text
+              fontWeight={FontWeight.Bold}
+              variant={TextVariant.bodyMd}
+              as="h5"
               marginTop={4}
             >
               {addressBookEntry?.data?.name || ellipsify(toAddress)}
-            </Typography>
+            </Text>
             {addressBookEntry?.data?.name && (
-              <Typography
-                variant={TypographyVariant.H6}
-                display={DISPLAY.FLEX}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                display={Display.Flex}
                 color={TextColor.textAlternative}
-                marginTop={0}
                 marginBottom={4}
               >
                 {ellipsify(toAddress)}
-              </Typography>
+              </Text>
             )}
           </Box>
           <Box
@@ -241,9 +243,9 @@ export default function ContractDetailsModal({
               }
             >
               <ButtonIcon
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 iconName={
-                  copiedToAddress ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY
+                  copiedToAddress ? IconName.CopySuccess : IconName.Copy
                 }
                 onClick={() => handleCopyToAddress(toAddress)}
                 color={Color.iconMuted}
@@ -256,8 +258,8 @@ export default function ContractDetailsModal({
             </Tooltip>
             <Tooltip position="top" title={t('openInBlockExplorer')}>
               <ButtonIcon
-                display={DISPLAY.FLEX}
-                iconName={ICON_NAMES.EXPORT}
+                display={Display.Flex}
+                iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
                   const blockExplorerTokenLink = getAccountLink(
@@ -279,7 +281,7 @@ export default function ContractDetailsModal({
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         paddingTop={6}
         paddingRight={4}
         paddingBottom={6}

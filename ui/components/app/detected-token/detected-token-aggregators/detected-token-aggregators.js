@@ -5,12 +5,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../ui/box';
 import Button from '../../../ui/button';
-import Typography from '../../../ui/typography/typography';
 import {
   DISPLAY,
-  FONT_WEIGHT,
-  TypographyVariant,
+  FontWeight,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { Text } from '../../../component-library';
 
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
 
@@ -22,15 +22,13 @@ const DetectedTokenAggregators = ({ aggregators }) => {
 
   return (
     <Box display={DISPLAY.INLINE_FLEX} className="detected-token-aggregators">
-      <Typography
-        variant={TypographyVariant.H7}
-        fontWeight={FONT_WEIGHT.NORMAL}
-      >
+      <Text variant={TextVariant.bodySm} as="h6" fontWeight={FontWeight.Normal}>
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
-            <Typography
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.NORMAL}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-with-more"
             >
               {`${aggregators
@@ -44,18 +42,19 @@ const DetectedTokenAggregators = ({ aggregators }) => {
               >
                 {t('plusXMore', [numOfHiddenAggregators])}
               </Button>
-            </Typography>
+            </Text>
           ) : (
-            <Typography
-              variant={TypographyVariant.H7}
-              fontWeight={FONT_WEIGHT.NORMAL}
+            <Text
+              variant={TextVariant.bodySm}
+              as="h6"
+              fontWeight={FontWeight.Normal}
               key="detected-token-aggrgators-without-more"
             >
               {`${aggregators.join(', ')}.`}
-            </Typography>
+            </Text>
           ),
         ])}
-      </Typography>
+      </Text>
     </Box>
   );
 };

@@ -3,8 +3,8 @@ const {
   hstAbi,
   piggybankBytecode,
   piggybankAbi,
-  collectiblesAbi,
-  collectiblesBytecode,
+  nftsAbi,
+  nftsBytecode,
   erc1155Abi,
   erc1155Bytecode,
   failingContractAbi,
@@ -14,7 +14,7 @@ const {
 } = require('@metamask/test-dapp/dist/constants.json');
 
 const hstFactory = {
-  initialAmount: 100,
+  initialAmount: 10,
   tokenName: 'TST',
   decimalUnits: 4,
   tokenSymbol: 'TST',
@@ -23,8 +23,8 @@ const hstFactory = {
 };
 
 const nftsFactory = {
-  bytecode: collectiblesBytecode,
-  abi: collectiblesAbi,
+  bytecode: nftsBytecode,
+  abi: nftsAbi,
 };
 
 const erc1155Factory = {

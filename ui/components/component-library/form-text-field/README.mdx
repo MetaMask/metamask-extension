@@ -87,7 +87,7 @@ An example of a form using the `FormTextField` component.
 ```jsx
 import React, { useState, useEffect } from 'react';
 import {
-  DISPLAY,
+  Display,
   TextColor,
   AlignItems,
   TextVariant,
@@ -99,7 +99,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  ICON_NAMES,
+  IconName,
   Text,
 } from '../../component-library';
 
@@ -225,11 +225,11 @@ return (
         error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
         helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
       />
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
-    <ButtonSecondary icon={ICON_NAMES.CLOSE} onClick={handleClearForm} danger>
+    <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
       Clear form
     </ButtonSecondary>
     {submitted === FORM_STATE.SUCCESS && (
@@ -256,7 +256,7 @@ There will be times when you will want to use a custom `Label` or `HelpText`. Th
 ```jsx
 import {
   Size,
-  DISPLAY,
+  Display,
   IconColor,
   AlignItems,
   JustifyContent,
@@ -264,12 +264,11 @@ import {
 
 import Box from '../../ui/box/box';
 
+import { Icon, IconName } from '..'
 import {
   ButtonLink,
   FormTextField,
   HelpText,
-  ICON_NAMES,
-  Icon,
   Label,
   TEXT_FIELD_TYPES,
   Text,
@@ -280,22 +279,22 @@ import {
   FormTextField component
 </Text>
 <Box
-  display={DISPLAY.FLEX}
+  display={Display.Flex}
   justifyContent={JustifyContent.spaceBetween}
   alignItems={AlignItems.flexEnd}
 >
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+  <Box display={Display.Flex} alignItems={AlignItems.center}>
     {/**
       * If you need a custom label
       * or require adding some form of customization
       * import the Label component separately
       */}
-    <Label htmlFor="custom-spending-cap" required>
+    <Label htmlFor="custom-spending-cap">
       Custom spending cap
     </Label>
     <Icon
-      name={ICON_NAMES.INFO}
-      size={Size.SM}
+      name={IconName.Info}
+      size={IconSize.Sm}
       marginLeft={1}
       color={IconColor.iconAlternative}
     />
@@ -315,7 +314,7 @@ import {
   type={TEXT_FIELD_TYPES.NUMBER}
 />
 <Box
-  display={DISPLAY.FLEX}
+  display={Display.Flex}
   alignItems={AlignItems.flexStart}
   justifyContent={JustifyContent.spaceBetween}
   marginTop={1}
@@ -326,7 +325,7 @@ import {
     * import the HelpText component separately and handle the error
     * logic yourself
     */}
-  <HelpText htmlFor="chainId" required marginRight={2}>
+  <HelpText htmlFor="chainId" marginRight={2}>
     Only enter a number that you're comfortable with the contract accessing
     now or in the future. You can always increase the token limit later.
   </HelpText>

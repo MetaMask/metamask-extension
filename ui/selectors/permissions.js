@@ -1,4 +1,9 @@
+import { ApprovalType } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
+import { getApprovalRequestsByType } from './approvals';
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -97,6 +102,24 @@ export function getConnectedSubjectsForSelectedAddress(state) {
   return connectedSubjects;
 }
 
+export function getConnectedSubjectsForAllAddresses(state) {
+  const subjects = getPermissionSubjects(state);
+  const subjectMetadata = getSubjectMetadata(state);
+
+  const accountsToConnections = {};
+  Object.entries(subjects).forEach(([subjectKey, subjectValue]) => {
+    const exposedAccounts = getAccountsFromSubject(subjectValue);
+    exposedAccounts.forEach((address) => {
+      if (!accountsToConnections[address]) {
+        accountsToConnections[address] = [];
+      }
+      accountsToConnections[address].push(subjectMetadata[subjectKey] || {});
+    });
+  });
+
+  return accountsToConnections;
+}
+
 export function getSubjectsWithPermission(state, permissionName) {
   const subjects = getPermissionSubjects(state);
 
@@ -117,6 +140,28 @@ export function getSubjectsWithPermission(state, permissionName) {
   });
   return connectedSubjects;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+export function getSubjectsWithSnapPermission(state, snapId) {
+  const subjects = getPermissionSubjects(state);
+
+  return Object.entries(subjects)
+    .filter(
+      ([_origin, { permissions }]) =>
+        permissions[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value[snapId],
+    )
+    .map(([origin, _subject]) => {
+      const { extensionId, name, iconUrl } =
+        getTargetSubjectMetadata(state, origin) || {};
+      return {
+        extensionId,
+        origin,
+        name,
+        iconUrl,
+      };
+    });
+}
+///: END:ONLY_INCLUDE_IN
 
 /**
  * Returns an object mapping addresses to objects mapping origins to connected
@@ -280,12 +325,14 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
       ({ type }) =>
-        type === 'wallet_installSnap' || type === 'wallet_updateSnap',
+        type === 'wallet_installSnap' ||
+        type === 'wallet_updateSnap' ||
+        type === 'wallet_installSnapResult',
     )
     .map(({ requestData }) => requestData);
 }
@@ -296,9 +343,10 @@ export function getFirstSnapInstallOrUpdateRequest(state) {
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
-  return Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === 'wallet_requestPermissions')
-    .map(({ requestData }) => requestData);
+  return getApprovalRequestsByType(
+    state,
+    ApprovalType.WalletRequestPermissions,
+  )?.map(({ requestData }) => requestData);
 }
 
 export function getFirstPermissionRequest(state) {
@@ -308,4 +356,12 @@ export function getFirstPermissionRequest(state) {
 
 export function getPermissions(state, origin) {
   return getPermissionSubjects(state)[origin]?.permissions;
+}
+
+export function getRequestState(state, id) {
+  return state.metamask.pendingApprovals[id]?.requestState;
+}
+
+export function getRequestType(state, id) {
+  return state.metamask.pendingApprovals[id]?.type;
 }

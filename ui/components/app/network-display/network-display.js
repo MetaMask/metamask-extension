@@ -18,7 +18,9 @@ import {
 import Chip from '../../ui/chip/chip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
-import { Icon, ICON_NAMES, ICON_SIZES } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -28,14 +30,10 @@ export default function NetworkDisplay({
   onClick,
 }) {
   const networkIsLoading = useSelector(isNetworkLoading);
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
+  const providerConfig = useSelector(getProviderConfig);
   const t = useI18nContext();
 
-  const { nickname: networkNickname, type: networkType } =
-    targetNetwork ?? currentNetwork;
+  const { nickname, type: networkType } = targetNetwork ?? providerConfig;
 
   return (
     <Chip
@@ -67,14 +65,12 @@ export default function NetworkDisplay({
         </LoadingIndicator>
       }
       rightIcon={
-        onClick ? (
-          <Icon name={ICON_NAMES.ARROW_DOWN} size={ICON_SIZES.XS} />
-        ) : null
+        onClick ? <Icon name={IconName.ArrowDown} size={IconSize.Xs} /> : null
       }
       label={
         networkType === NETWORK_TYPES.RPC
-          ? networkNickname ?? t('privateNetwork')
-          : t(networkType)
+          ? nickname ?? t('privateNetwork')
+          : t(getNetworkLabelKey(networkType))
       }
       className={classnames('network-display', {
         'network-display--disabled': disabled,

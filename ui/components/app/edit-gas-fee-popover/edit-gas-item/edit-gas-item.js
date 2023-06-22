@@ -25,6 +25,8 @@ const getTitleAndIcon = (priorityLevel, editGasMode) => {
   let title = priorityLevel;
   if (priorityLevel === PriorityLevels.dAppSuggested) {
     title = 'dappSuggestedShortLabel';
+  } else if (priorityLevel === PriorityLevels.dappSuggestedHigh) {
+    title = 'dappSuggestedHighShortLabel';
   } else if (priorityLevel === PriorityLevels.tenPercentIncreased) {
     icon = null;
     title = 'tenPercentIncreased';

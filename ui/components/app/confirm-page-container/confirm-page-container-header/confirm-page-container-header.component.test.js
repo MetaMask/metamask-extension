@@ -11,11 +11,9 @@ jest.mock('../../../../../app/scripts/lib/util', () => ({
 
 describe('Confirm Detail Row Component', () => {
   const mockState = {
-    appState: {
-      isLoading: false,
-    },
     metamask: {
-      provider: {
+      networkStatus: 'available',
+      providerConfig: {
         type: 'rpc',
         chainId: '0x5',
       },

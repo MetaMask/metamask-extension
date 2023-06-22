@@ -93,9 +93,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backToAll": {
-    "message": "Înapoi la toate"
-  },
   "backupApprovalInfo": {
     "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectHardwareWallet": {
-    "message": "Conectare portofel hardware"
-  },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Se conectează la rețeaua de test Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Se conectează la rețeaua Ethereum principală"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Creați"
-  },
-  "createAccount": {
-    "message": "Creați cont"
   },
   "createPassword": {
     "message": "Creare parolă"
@@ -402,6 +396,9 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
+  "lineaGoerli": {
+    "message": "Rețea de test Linea Goerli"
+  },
   "links": {
     "message": "Link-uri"
   },
@@ -434,9 +431,6 @@
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
-  "myAccounts": {
-    "message": "Conturile mele"
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -562,9 +556,6 @@
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
   },
-  "recents": {
-    "message": "Recente"
-  },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
   },
@@ -659,12 +650,6 @@
   "settings": {
     "message": "Setări"
   },
-  "showAdvancedGasInline": {
-    "message": "Controale avansate pentru gas"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selectați aceasta pentru a arăta prețul gasului și comenzile de limitare direct pe ecranele de trimitere și confirmare."
-  },
   "showFiatConversionInTestnets": {
     "message": "Afișează conversiile pe rețelele de test (testnets)"
   },
@@ -728,27 +713,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "Simbolul trebuie să fie de 11 caractere sau mai puțin."
   },
-  "syncWithMobile": {
-    "message": "Sincronizați cu dispozitivul mobil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Asigurați-vă că nimeni altcineva nu poate vedea ecranul dvs. când scanați acest cod"
-  },
-  "syncWithMobileComplete": {
-    "message": "Datele dvs. au fost sincronizate cu succes. Bucurați-vă de aplicația mobilă MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Vă puteți sincroniza conturile și informațiile cu dispozitivul dvs. mobil. Deschideți aplicația mobilă MetaMask, mergeți la „Setări” și atingeți „Sincronizare de la extensia de browser”"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Dacă deschideți aplicația pentru mobil MetaMask pentru prima oară, urmați pașii afișați pe telefonul dvs."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Scanați acest cod folosind aplicația dvs. mobilă MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronizați cu mobilul"
-  },
   "terms": {
     "message": "Termeni și condiții"
   },
@@ -809,15 +773,8 @@
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
   },
-  "transferBetweenAccounts": {
-    "message": "Transferă între conturile mele"
-  },
   "transferFrom": {
     "message": "Transferați de la"
-  },
-  "troubleTokenBalances": {
-    "message": "Am avut dificultăți cu încărcarea soldurilor dvs. de tokenuri. Le puteți vizualiza",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Încearcă din nou"

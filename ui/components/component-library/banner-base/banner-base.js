@@ -2,17 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon, ButtonLink, ICON_NAMES, Text } from '..';
-
-import Box from '../../ui/box';
-
 import {
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ButtonLink, Text, IconName, ButtonIcon } from '..';
 
 export const BannerBase = ({
   className,
@@ -32,7 +32,7 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       gap={2}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.SM}
@@ -46,6 +46,7 @@ export const BannerBase = ({
           <Text
             className="mm-banner-base__title"
             variant={TextVariant.bodyLgMedium}
+            data-testid="mm-banner-base-title"
             as="h5"
             {...titleProps}
           >
@@ -72,7 +73,7 @@ export const BannerBase = ({
         <ButtonIcon
           className="mm-banner-base__close-button"
           marginLeft="auto"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}

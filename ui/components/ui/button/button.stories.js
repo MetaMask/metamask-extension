@@ -1,5 +1,8 @@
 import React from 'react';
 
+import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
+
 import IconTokenSearch from '../icon/icon-token-search';
 
 import README from './README.mdx';
@@ -7,7 +10,6 @@ import Button from '.';
 
 export default {
   title: 'Components/UI/Button',
-
   component: Button,
   parameters: {
     docs: {
@@ -56,7 +58,19 @@ export default {
 };
 
 export const DefaultStory = (args) => (
-  <Button {...args}>{args.children}</Button>
+  <>
+    <BannerAlert
+      marginBottom={4}
+      severity={SEVERITIES.WARNING}
+      title="Deprecated"
+      description="This version of Button has been deprecated in favor of the component-library version. Contribute to replacing old Button with new Button by submitting a PR to metamask-extension."
+      actionButtonLabel="See details"
+      actionButtonProps={{
+        href: 'https://github.com/MetaMask/metamask-extension/issues/18896',
+      }}
+    />
+    <Button {...args}>{args.children}</Button>
+  </>
 );
 
 DefaultStory.storyName = 'Default';

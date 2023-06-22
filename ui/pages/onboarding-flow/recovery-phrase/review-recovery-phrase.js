@@ -18,9 +18,12 @@ import {
   ThreeStepProgressBar,
   threeStepStages,
 } from '../../../components/app/step-progress-bar';
-import { EVENT_NAMES, EVENT } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Icon, ICON_NAMES } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
 import RecoveryPhraseChips from './recovery-phrase-chips';
 
 export default function RecoveryPhrase({ secretRecoveryPhrase }) {
@@ -120,7 +123,7 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
                 }}
                 icon={
                   <Icon
-                    name={copied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                    name={copied ? IconName.CopySuccess : IconName.Copy}
                     color={IconColor.primaryDefault}
                   />
                 }
@@ -136,9 +139,9 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
               className="recovery-phrase__footer--button"
               onClick={() => {
                 trackEvent({
-                  category: EVENT.CATEGORIES.ONBOARDING,
+                  category: MetaMetricsEventCategory.Onboarding,
                   event:
-                    EVENT_NAMES.ONBOARDING_WALLET_SECURITY_PHRASE_WRITTEN_DOWN,
+                    MetaMetricsEventName.OnboardingWalletSecurityPhraseWrittenDown,
                 });
                 history.push(
                   `${ONBOARDING_CONFIRM_SRP_ROUTE}${isFromReminderParam}`,
@@ -155,8 +158,9 @@ export default function RecoveryPhrase({ secretRecoveryPhrase }) {
             className="recovery-phrase__footer--button"
             onClick={() => {
               trackEvent({
-                category: EVENT.CATEGORIES.ONBOARDING,
-                event: EVENT_NAMES.ONBOARDING_WALLET_SECURITY_PHRASE_REVEALED,
+                category: MetaMetricsEventCategory.Onboarding,
+                event:
+                  MetaMetricsEventName.OnboardingWalletSecurityPhraseRevealed,
               });
               setPhraseRevealed(true);
             }}

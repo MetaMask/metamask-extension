@@ -9,7 +9,7 @@ const fetchWithCache =
 
 const state = {
   metamask: {
-    provider: {
+    providerConfig: {
       ticker: 'ETH',
       nickname: '',
       chainId: '0x1',
@@ -139,7 +139,7 @@ describe('NewNetworkInfo', () => {
       'https://token-api.metaswap.codefi.network/tokens/0x3',
     );
 
-    state.metamask.provider.ticker = null;
+    state.metamask.providerConfig.ticker = null;
 
     const store = configureMockStore()(
       state,

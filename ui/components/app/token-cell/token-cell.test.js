@@ -15,7 +15,7 @@ describe('Token Cell', () => {
       },
       conversionRate: 7.0,
       preferences: {},
-      provider: {
+      providerConfig: {
         chainId: '0x1',
         ticker: 'ETH',
         type: 'mainnet',
@@ -48,7 +48,7 @@ describe('Token Cell', () => {
       mockStore,
     );
 
-    fireEvent.click(queryByTestId('token-button'));
+    fireEvent.click(queryByTestId('multichain-token-list-button'));
 
     expect(props.onClick).toHaveBeenCalled();
   });

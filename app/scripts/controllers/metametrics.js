@@ -15,7 +15,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
-  TRAITS,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -356,7 +356,14 @@ export default class MetaMetricsController {
       currency: fragment.currency,
       environmentType: fragment.environmentType,
       actionId: fragment.actionId,
-      uniqueIdentifier: fragment.uniqueIdentifier,
+      // We append success or failure to the unique-identifier so that the
+      // messageId can still be idempotent, but so that it differs from the
+      // initial event fired. The initial event was preventing new events from
+      // making it to mixpanel because they were using the same unique ID as
+      // the events processed in other parts of the fragment lifecycle.
+      uniqueIdentifier: fragment.uniqueIdentifier
+        ? `${fragment.uniqueIdentifier}-${abandoned ? 'failure' : 'success'}`
+        : undefined,
     });
     const { fragments } = this.store.getState();
     delete fragments[id];
@@ -618,10 +625,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -651,6 +669,15 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     return {
       event,
       messageId: buildUniqueMessageId(rawPayload),
@@ -669,6 +696,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ...mmiProps,
+        ///: END:ONLY_INCLUDE_IN
       },
       context: this._buildContext(referrer, page),
     };
@@ -682,40 +712,59 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IN
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
-      [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
+      [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
-      [TRAITS.INSTALL_DATE_EXT]: traits[TRAITS.INSTALL_DATE_EXT] || '',
-      [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
-      [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
-        (rpc) => rpc.chainId,
-      ),
-      [TRAITS.NETWORKS_WITHOUT_TICKER]:
-        metamaskState.frequentRpcListDetail.reduce(
-          (networkList, currentNetwork) => {
-            if (!currentNetwork.ticker) {
-              networkList.push(currentNetwork.chainId);
-            }
-            return networkList;
-          },
-          [],
-        ),
-      [TRAITS.NFT_AUTODETECTION_ENABLED]: metamaskState.useNftDetection,
-      [TRAITS.NUMBER_OF_ACCOUNTS]: Object.values(metamaskState.identities)
-        .length,
-      [TRAITS.NUMBER_OF_NFT_COLLECTIONS]: this._getAllUniqueNFTAddressesLength(
+      [MetaMetricsUserTrait.InstallDateExt]:
+        traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      [MetaMetricsUserTrait.LedgerConnectionType]:
+        metamaskState.ledgerTransportType,
+      [MetaMetricsUserTrait.NetworksAdded]: Object.values(
+        metamaskState.networkConfigurations,
+      ).map((networkConfiguration) => networkConfiguration.chainId),
+      [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
+        metamaskState.networkConfigurations,
+      )
+        .filter(({ ticker }) => !ticker)
+        .map(({ chainId }) => chainId),
+      [MetaMetricsUserTrait.NftAutodetectionEnabled]:
+        metamaskState.useNftDetection,
+      [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
+        metamaskState.identities,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfNftCollections]:
+        this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+      [MetaMetricsUserTrait.NumberOfNfts]: this._getAllNFTsFlattened(
         metamaskState.allNfts,
-      ),
-      [TRAITS.NUMBER_OF_NFTS]: this._getAllNFTsFlattened(metamaskState.allNfts)
-        .length,
-      [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
-      [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
-      [TRAITS.THREE_BOX_ENABLED]: false, // deprecated, hard-coded as false
-      [TRAITS.THEME]: metamaskState.theme || 'default',
-      [TRAITS.TOKEN_DETECTION_ENABLED]: metamaskState.useTokenDetection,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfTokens]:
+        this._getNumberOfTokens(metamaskState),
+      [MetaMetricsUserTrait.OpenseaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
+      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
+      [MetaMetricsUserTrait.TokenDetectionEnabled]:
+        metamaskState.useTokenDetection,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      [MetaMetricsUserTrait.DesktopEnabled]:
+        metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
+      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
+      ///: END:ONLY_INCLUDE_IN
+      [MetaMetricsUserTrait.SecurityProviders]:
+        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
     };
 
     if (!previousUserTraits) {

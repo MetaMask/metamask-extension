@@ -16,7 +16,7 @@ describe('PermissionController specifications', () => {
   describe('caveat specifications', () => {
     it('getCaveatSpecifications returns the expected specifications object', () => {
       const caveatSpecifications = getCaveatSpecifications({});
-      expect(Object.keys(caveatSpecifications)).toHaveLength(7);
+      expect(Object.keys(caveatSpecifications)).toHaveLength(8);
       expect(
         caveatSpecifications[CaveatTypes.restrictReturnedAccounts].type,
       ).toStrictEqual(CaveatTypes.restrictReturnedAccounts);
@@ -39,11 +39,14 @@ describe('PermissionController specifications', () => {
       expect(caveatSpecifications.rpcOrigin.type).toStrictEqual(
         SnapCaveatType.RpcOrigin,
       );
+      expect(caveatSpecifications.snapIds.type).toStrictEqual(
+        SnapCaveatType.SnapIds,
+      );
     });
 
     describe('restrictReturnedAccounts', () => {
       describe('decorator', () => {
-        it('returns the first array member included in the caveat value', async () => {
+        it('only returns array members included in the caveat value', async () => {
           const getIdentities = jest.fn();
           const { decorator } = getCaveatSpecifications({ getIdentities })[
             CaveatTypes.restrictReturnedAccounts
@@ -52,10 +55,10 @@ describe('PermissionController specifications', () => {
           const method = async () => ['0x1', '0x2', '0x3'];
           const caveat = {
             type: CaveatTypes.restrictReturnedAccounts,
-            value: ['0x1', '0x2'],
+            value: ['0x1', '0x3'],
           };
           const decorated = decorator(method, caveat);
-          expect(await decorated()).toStrictEqual(['0x1']);
+          expect(await decorated()).toStrictEqual(['0x1', '0x3']);
         });
 
         it('returns an empty array if no array members are included in the caveat value', async () => {
@@ -141,7 +144,7 @@ describe('PermissionController specifications', () => {
       const permissionSpecifications = getPermissionSpecifications({});
       expect(Object.keys(permissionSpecifications)).toHaveLength(1);
       expect(
-        permissionSpecifications[RestrictedMethods.eth_accounts].targetKey,
+        permissionSpecifications[RestrictedMethods.eth_accounts].targetName,
       ).toStrictEqual(RestrictedMethods.eth_accounts);
     });
 

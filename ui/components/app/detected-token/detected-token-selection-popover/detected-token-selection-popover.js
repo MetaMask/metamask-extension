@@ -5,10 +5,14 @@ import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
-  EVENT,
-  EVENT_NAMES,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
-import { getDetectedTokensInCurrentNetwork } from '../../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+} from '../../../../selectors';
 
 import Popover from '../../../ui/popover';
 import Box from '../../../ui/box';
@@ -26,6 +30,8 @@ const DetectedTokenSelectionPopover = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const chainId = useSelector(getCurrentChainId);
+
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } =
     sortingBasedOnTokenSelection(tokensListDetected);
@@ -40,10 +46,11 @@ const DetectedTokenSelectionPopover = ({
       ({ address, symbol }) => `${symbol} - ${address}`,
     );
     trackEvent({
-      event: EVENT_NAMES.TOKEN_IMPORT_CANCELED,
-      category: EVENT.CATEGORIES.WALLET,
+      event: MetaMetricsEventName.TokenImportCanceled,
+      category: MetaMetricsEventCategory.Wallet,
       properties: {
-        source: EVENT.SOURCE.TOKEN.DETECTED,
+        source_connection_method: MetaMetricsTokenEventSource.Detected,
+        chain_id: chainId,
         tokens: eventTokensDetails,
       },
     });
@@ -62,6 +69,7 @@ const DetectedTokenSelectionPopover = ({
         className="detected-token-selection-popover__import-button"
         type="primary"
         onClick={onImport}
+        disabled={selectedTokens.length === 0}
       >
         {t('importWithCount', [numOfTokensImporting])}
       </Button>

@@ -7,14 +7,17 @@ import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
-import ColorIndicator from '../../ui/color-indicator';
-import { Color } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  Color,
+} from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
   getSelectedAddress,
 } from '../../../selectors';
+import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
@@ -36,32 +39,28 @@ export default function ConnectedStatusIndicator({ onClick }) {
     status = STATUS_NOT_CONNECTED;
   }
 
-  let indicatorType = ColorIndicator.TYPES.OUTLINE;
-  let indicatorColor = Color.iconDefault;
-
+  let globalMenuColor = Color.iconAlternative;
   if (status === STATUS_CONNECTED) {
-    indicatorColor = Color.successDefault;
-    indicatorType = ColorIndicator.TYPES.PARTIAL;
+    globalMenuColor = Color.successDefault;
   } else if (status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT) {
-    indicatorColor = Color.errorDefault;
+    globalMenuColor = BackgroundColor.backgroundDefault;
   }
 
-  const text =
+  const tooltipText =
     status === STATUS_CONNECTED
-      ? t('statusConnected')
-      : t('statusNotConnected');
+      ? t('tooltipSatusConnected')
+      : t('tooltipSatusNotConnected');
 
   return (
-    <button className="connected-status-indicator" onClick={onClick}>
-      <ColorIndicator color={indicatorColor} type={indicatorType} />
-      <div className="connected-status-indicator__text">{text}</div>
-    </button>
+    <ConnectedSiteMenu
+      status={status}
+      globalMenuColor={globalMenuColor}
+      text={tooltipText}
+      as="button"
+      onClick={onClick}
+    />
   );
 }
-
-ConnectedStatusIndicator.defaultProps = {
-  onClick: undefined,
-};
 
 ConnectedStatusIndicator.propTypes = {
   onClick: PropTypes.func,

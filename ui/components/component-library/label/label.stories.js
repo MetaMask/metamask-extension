@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  Size,
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box';
 
-import { Icon, ICON_NAMES, TextField } from '..';
+import { TextField, Icon, IconName, IconSize } from '..';
 
 import { Label } from './label';
 
@@ -27,9 +26,6 @@ export default {
   argTypes: {
     htmlFor: {
       control: 'text',
-    },
-    required: {
-      control: 'boolean',
     },
     children: {
       control: 'text',
@@ -59,8 +55,8 @@ export const Children = (args) => (
       Text and icon
       <Icon
         color={IconColor.iconAlternative}
-        name={ICON_NAMES.INFO}
-        size={Size.inherit}
+        name={IconName.Info}
+        size={IconSize.Inherit}
       />
     </Label>
     <Label
@@ -95,9 +91,4 @@ export const HtmlFor = (args) => {
 HtmlFor.args = {
   children: 'Network name',
   htmlFor: 'add-network',
-};
-
-export const Required = Template.bind({});
-Required.args = {
-  required: true,
 };

@@ -93,9 +93,6 @@
   "back": {
     "message": "Edellinen"
   },
-  "backToAll": {
-    "message": "Takaisin kaikkiin"
-  },
   "backupApprovalInfo": {
     "message": "Tämä salainen koodi vaaditaan kukkarosi palauttamiseen siinä tapauksessa, että kadotat laitteesi, unohdat salasanasi, joudut asentamaan MetaMaskin uudestaan tai haluat käyttää lompakkoasi jollakin toisella laitteella."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectHardwareWallet": {
-    "message": "Yhdistä laitteistokukkaro"
-  },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
   },
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Yhdistetään Linea Goerli testiverkostoon"
   },
   "connectingToMainnet": {
     "message": "Yhdistetään Ethereumin pääverkkoon"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Luo"
-  },
-  "createAccount": {
-    "message": "Luo tili"
   },
   "createPassword": {
     "message": "Luo salasana"
@@ -412,6 +406,9 @@
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
+  "lineaGoerli": {
+    "message": "Linea-testiverkko"
+  },
   "links": {
     "message": "Linkit"
   },
@@ -447,9 +444,6 @@
   },
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
-  },
-  "myAccounts": {
-    "message": "Omat tilit"
   },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
@@ -572,9 +566,6 @@
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
-  "recents": {
-    "message": "Viimeaikaiset"
-  },
   "recipientAddressPlaceholder": {
     "message": "Haku, julkinen osoite (0x) tai ENS"
   },
@@ -669,12 +660,6 @@
   "settings": {
     "message": "Asetukset"
   },
-  "showAdvancedGasInline": {
-    "message": "Bensan lisävalvonta"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Valitse tämä näyttääksesi gas-hinta ja rajoittaaksesi  säätimiä suoraan lähetä- ja vahvista-ruuduissa."
-  },
   "showFiatConversionInTestnets": {
     "message": "Näytä vaihtokurssi koeverkoissa"
   },
@@ -737,27 +722,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolin on oltava 11 merkkiä tai vähemmän."
-  },
-  "syncWithMobile": {
-    "message": "Synkronoi mobiililaitteelle"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Varmista, ettei kukaan muu katsele näyttöäsi, kun skannaat koodin"
-  },
-  "syncWithMobileComplete": {
-    "message": "Tietojesi synkronoiminen onnistui. Nauti MetaMask-mobiilisovelluksesta!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Voit synkronoida tilisi ja tietosi mobiililaitteidesi kesken. Avaa MetaMaskin mobiilisovellus, siirry \"Asetukset\"-osioon ja napauta \"Synkronoi selainlaajennuksesta\" -vaihtoehtoa"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jos avaat MetaMaskin mobiilisovelluksen vasta ensimmäistä kertaa, noudata vain puhelimesi ilmoittamia vaiheita."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Lue tämä koodi MetaMask-mobiilisovelluksellasi"
-  },
-  "syncWithMobileTitle": {
-    "message": "Synkronoi mobiililaitteen kanssa"
   },
   "terms": {
     "message": "Käyttöehdot"
@@ -825,15 +789,8 @@
   "transfer": {
     "message": "Siirrä"
   },
-  "transferBetweenAccounts": {
-    "message": "Siirrä tilieni välillä"
-  },
   "transferFrom": {
     "message": "Siirto kohteesta"
-  },
-  "troubleTokenBalances": {
-    "message": "Kohtasimme ongelmia ladatessamme tietuesaldojasi. Voit katsella niitä kohteessa",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Yritä uudelleen"

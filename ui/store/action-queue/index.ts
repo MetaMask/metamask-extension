@@ -1,5 +1,11 @@
 import pify from 'pify';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
+import { trackMetaMetricsEvent } from '../actions';
+
 // // A simplified pify maybe?
 // function pify(apiObject) {
 //   return Object.keys(apiObject).reduce((promisifiedAPI, key) => {
@@ -187,6 +193,20 @@ async function processActionRetryQueue() {
   }
   processingQueue = true;
   try {
+    if (actionRetryQueue.length > 0) {
+      const metametricsPayload = {
+        category: MetaMetricsEventCategory.ServiceWorkers,
+        event: MetaMetricsEventName.ServiceWorkerRestarted,
+        properties: {
+          service_worker_action_queue_methods: actionRetryQueue.map(
+            (action) => action.request.method,
+          ),
+        },
+      };
+
+      trackMetaMetricsEvent(metametricsPayload);
+    }
+
     while (
       background?.connectionStream.readable &&
       actionRetryQueue.length > 0

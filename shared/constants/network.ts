@@ -1,16 +1,16 @@
-import { capitalize } from 'lodash';
+import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
  * methods that add or manipulate networks in MetaMask state.
  */
-export type NetworkType = typeof NETWORK_TYPES[keyof typeof NETWORK_TYPES];
+export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 
 /**
  * A union type of all possible hard-coded chain ids. This type is not
  * exhaustive and cannot be used for typing chainId in areas where the user or
  * dapp may specify any chainId.
  */
-export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
+export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -18,13 +18,13 @@ export type ChainId = typeof CHAIN_IDS[keyof typeof CHAIN_IDS];
  * or dapp may supply their own symbol.
  */
 export type CurrencySymbol =
-  typeof CURRENCY_SYMBOLS[keyof typeof CURRENCY_SYMBOLS];
+  (typeof CURRENCY_SYMBOLS)[keyof typeof CURRENCY_SYMBOLS];
 /**
  * Test networks have special symbols that combine the network name and 'ETH'
  * so that they are distinct from mainnet and other networks that use 'ETH'.
  */
 export type TestNetworkCurrencySymbol =
-  typeof TEST_NETWORK_TICKER_MAP[keyof typeof TEST_NETWORK_TICKER_MAP];
+  (typeof TEST_NETWORK_TICKER_MAP)[keyof typeof TEST_NETWORK_TICKER_MAP];
 
 /**
  * An object containing preferences for an RPC definition
@@ -95,6 +95,8 @@ export const NETWORK_TYPES = {
   MAINNET: 'mainnet',
   RPC: 'rpc',
   SEPOLIA: 'sepolia',
+  LINEA_GOERLI: 'linea-goerli',
+  LINEA_MAINNET: 'linea-mainnet',
 } as const;
 
 /**
@@ -120,6 +122,8 @@ export const NETWORK_IDS = {
   GOERLI: '5',
   LOCALHOST: '1337',
   SEPOLIA: '11155111',
+  LINEA_GOERLI: '59140',
+  LINEA_MAINNET: '59144',
 } as const;
 
 /**
@@ -145,10 +149,13 @@ export const CHAIN_IDS = {
   HARMONY: '0x63564c40',
   PALM: '0x2a15c308d',
   SEPOLIA: '0xaa36a7',
+  LINEA_GOERLI: '0xe704',
+  LINEA_MAINNET: '0xe708',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
   MOONRIVER: '0x505',
+  CRONOS: '0x19',
 } as const;
 
 /**
@@ -160,6 +167,8 @@ export const MAX_SAFE_CHAIN_ID = 4503599627370476;
 export const MAINNET_DISPLAY_NAME = 'Ethereum Mainnet';
 export const GOERLI_DISPLAY_NAME = 'Goerli';
 export const SEPOLIA_DISPLAY_NAME = 'Sepolia';
+export const LINEA_GOERLI_DISPLAY_NAME = 'Linea Goerli';
+export const LINEA_MAINNET_DISPLAY_NAME = 'Linea Mainnet';
 export const LOCALHOST_DISPLAY_NAME = 'Localhost 8545';
 export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
@@ -189,6 +198,12 @@ export const MAINNET_RPC_URL = getRpcUrl({
 });
 export const GOERLI_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.GOERLI });
 export const SEPOLIA_RPC_URL = getRpcUrl({ network: NETWORK_TYPES.SEPOLIA });
+export const LINEA_GOERLI_RPC_URL = getRpcUrl({
+  network: NETWORK_TYPES.LINEA_GOERLI,
+});
+export const LINEA_MAINNET_RPC_URL = getRpcUrl({
+  network: NETWORK_TYPES.LINEA_MAINNET,
+});
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 
 /**
@@ -198,7 +213,7 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
-  AURORA: 'Aurora ETH',
+  AURORA_ETH: 'AURORA ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -214,9 +229,15 @@ export const CURRENCY_SYMBOLS = {
   USDT: 'USDT',
   WETH: 'WETH',
   OPTIMISM: 'OP',
+  CRONOS: 'CRO',
+  GLIMMER: 'GLMR',
+  MOONRIVER: 'MOVR',
+  ONE: 'ONE',
 } as const;
 
-export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.svg';
+export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
+export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
+export const LINEA_MAINNET_TOKEN_IMAGE_URL = './images/linea-logo-mainnet.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/black-eth-logo.svg';
 export const BNB_TOKEN_IMAGE_URL = './images/bnb.png';
 export const MATIC_TOKEN_IMAGE_URL = './images/matic-token.png';
@@ -233,11 +254,14 @@ export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
   NETWORK_TYPES.GOERLI,
   NETWORK_TYPES.SEPOLIA,
-];
+  NETWORK_TYPES.LINEA_GOERLI,
+  NETWORK_TYPES.LINEA_MAINNET,
+] as const;
 
 export const TEST_CHAINS = [
   CHAIN_IDS.GOERLI,
   CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
 ];
 
@@ -247,8 +271,8 @@ const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
 export const TEST_NETWORK_TICKER_MAP: {
   [K in Exclude<
     NetworkType,
-    'localhost' | 'mainnet' | 'rpc'
-  >]: `${Capitalize<K>}${typeof CURRENCY_SYMBOLS.ETH}`;
+    'localhost' | 'mainnet' | 'rpc' | 'linea-mainnet'
+  >]: string;
 } = {
   [NETWORK_TYPES.GOERLI]: `${typedCapitalize(NETWORK_TYPES.GOERLI)}${
     CURRENCY_SYMBOLS.ETH
@@ -256,6 +280,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.SEPOLIA]: `${typedCapitalize(NETWORK_TYPES.SEPOLIA)}${
     CURRENCY_SYMBOLS.ETH
   }`,
+  [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
 };
 
 /**
@@ -266,15 +291,29 @@ export const BUILT_IN_NETWORKS = {
     networkId: NETWORK_IDS.GOERLI,
     chainId: CHAIN_IDS.GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+    blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
   },
   [NETWORK_TYPES.SEPOLIA]: {
     networkId: NETWORK_IDS.SEPOLIA,
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+    blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
+  },
+  [NETWORK_TYPES.LINEA_GOERLI]: {
+    networkId: NETWORK_IDS.LINEA_GOERLI,
+    chainId: CHAIN_IDS.LINEA_GOERLI,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+    blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
+    blockExplorerUrl: `https://etherscan.io`,
+  },
+  [NETWORK_TYPES.LINEA_MAINNET]: {
+    networkId: NETWORK_IDS.LINEA_MAINNET,
+    chainId: CHAIN_IDS.LINEA_MAINNET,
+    blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {
     networkId: NETWORK_IDS.LOCALHOST,
@@ -282,20 +321,33 @@ export const BUILT_IN_NETWORKS = {
   },
 } as const;
 
+export const BUILT_IN_INFURA_NETWORKS = pick(
+  BUILT_IN_NETWORKS,
+  INFURA_PROVIDER_TYPES,
+);
+
+export type BuiltInInfuraNetwork = keyof typeof BUILT_IN_INFURA_NETWORKS;
+
 export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [NETWORK_TYPES.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
+  [NETWORK_TYPES.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [NETWORK_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
+  [NETWORK_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 } as const;
 
@@ -303,18 +355,24 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
+  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
 } as const;
 
 export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
+  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_RPC_URL,
   [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
   [CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
@@ -330,13 +388,17 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [NETWORK_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
   [NETWORK_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
+  [NETWORK_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
 } as const;
 
 export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
+  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_IDS.LINEA_GOERLI,
+  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_IDS.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
 } as const;
 
@@ -348,6 +410,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -376,6 +439,16 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
       CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
     }`,
     networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
+  },
+  [CHAIN_IDS.LINEA_GOERLI]: {
+    domain: 'lineascan.build',
+    subdomain: 'goerli',
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_GOERLI],
+  },
+  [CHAIN_IDS.LINEA_MAINNET]: {
+    domain: 'lineascan.build',
+    subdomain: defaultEtherscanSubdomainPrefix,
+    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_MAINNET],
   },
   [CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
@@ -444,27 +517,6 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   },
 };
 
-/**
- * Hardforks are points in the chain where logic is changed significantly
- * enough where there is a fork and the new fork becomes the active chain.
- * These constants are presented in chronological order starting with BERLIN
- * because when we first needed to track the hardfork we had launched support
- * for EIP-2718 (where transactions can have types and different shapes) and
- * EIP-2930 (optional access lists), which were included in BERLIN.
- *
- * BERLIN - forked at block number 12,244,000, included typed transactions and
- * optional access lists
- * LONDON - future, upcoming fork that introduces the baseFeePerGas, an amount
- * of the ETH transaction fees that will be burned instead of given to the
- * miner. This change necessitated the third type of transaction envelope to
- * specify maxFeePerGas and maxPriorityFeePerGas moving the fee bidding system
- * to a second price auction model.
- */
-export const HARDFORKS = {
-  BERLIN: 'berlin',
-  LONDON: 'london',
-} as const;
-
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
   [CHAIN_IDS.OPTIMISM]: 1,
   [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
@@ -490,25 +542,19 @@ export const BUYABLE_CHAINS_MAP: {
   [K in Exclude<
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
-    | typeof CHAIN_IDS.PALM
-    | typeof CHAIN_IDS.HARMONY
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
     | typeof CHAIN_IDS.FANTOM_TESTNET
-    | typeof CHAIN_IDS.MOONBEAM
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
-    | typeof CHAIN_IDS.MOONRIVER
-    | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.LINEA_GOERLI
+    | typeof CHAIN_IDS.LINEA_MAINNET
+    | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
-  },
-  [CHAIN_IDS.GOERLI]: {
-    nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
   [CHAIN_IDS.SEPOLIA]: {
@@ -543,6 +589,30 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
     network: 'arbitrum',
   },
+  [CHAIN_IDS.CRONOS]: {
+    nativeCurrency: CURRENCY_SYMBOLS.CRONOS,
+    network: 'cronos',
+  },
+  [CHAIN_IDS.MOONBEAM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.GLIMMER,
+    network: 'moonbeam',
+  },
+  [CHAIN_IDS.MOONRIVER]: {
+    nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
+    network: 'moonriver',
+  },
+  [CHAIN_IDS.AURORA]: {
+    nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
+    network: 'aurora',
+  },
+  [CHAIN_IDS.HARMONY]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ONE,
+    network: 'harmony',
+  },
+  [CHAIN_IDS.PALM]: {
+    nativeCurrency: CURRENCY_SYMBOLS.PALM,
+    network: 'palm',
+  },
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
@@ -560,7 +630,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     chainId: CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AURORA,
+    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://aurorascan.dev/',
       imageUrl: AURORA_TOKEN_IMAGE_URL,
@@ -647,3 +717,30 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
 ];
+
+/**
+ * Represents the availability state of the currently selected network.
+ */
+export enum NetworkStatus {
+  /**
+   * The network may or may not be able to receive requests, but either no
+   * attempt has been made to determine this, or an attempt was made but was
+   * unsuccessful.
+   */
+  Unknown = 'unknown',
+  /**
+   * The network is able to receive and respond to requests.
+   */
+  Available = 'available',
+  /**
+   * The network is unable to receive and respond to requests for unknown
+   * reasons.
+   */
+  Unavailable = 'unavailable',
+  /**
+   * The network is not only unavailable, but is also inaccessible for the user
+   * specifically based on their location. This state only applies to Infura
+   * networks.
+   */
+  Blocked = 'blocked',
+}

@@ -4,14 +4,9 @@
 
   &__summary {
     position: relative;
-    padding-left: 24px;
     padding-bottom: 10px;
     font-weight: bold;
-
-    i {
-      margin-inline-start: -20px;
-      margin-inline-end: 10px;
-    }
+    display: flex;
 
     &::-webkit-details-marker,
     &::marker {

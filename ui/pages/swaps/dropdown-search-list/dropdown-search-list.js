@@ -13,6 +13,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import SearchableItemList from '../searchable-item-list';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import UrlIcon from '../../../components/ui/url-icon';
+import {
+  Icon,
+  IconName,
+  IconSize,
+} from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import ImportToken from '../import-token';
 import {
@@ -29,7 +34,7 @@ import {
   getCurrentSmartTransactionsEnabled,
 } from '../../../ducks/swaps/swaps';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 
 export default function DropdownSearchList({
   searchListClassName,
@@ -95,7 +100,7 @@ export default function DropdownSearchList({
   const onImportTokenClick = () => {
     trackEvent({
       event: 'Token Imported',
-      category: EVENT.CATEGORIES.SWAPS,
+      category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         symbol: tokenForImport?.symbol,
         address: tokenForImport?.address,
@@ -210,7 +215,7 @@ export default function DropdownSearchList({
               </div>
             </div>
           </div>
-          <i className="fa fa-caret-down fa-lg dropdown-search-list__caret" />
+          <Icon name={IconName.ArrowDown} size={IconSize.Xs} marginRight={3} />
         </div>
       )}
       {isOpen && (
@@ -238,13 +243,13 @@ export default function DropdownSearchList({
                       key="searchable-item-list-item-last"
                     >
                       <ActionableMessage
-                        message={t('addCustomTokenByContractAddress', [
+                        message={t('addTokenByContractAddress', [
                           <a
                             key="dropdown-search-list__etherscan-link"
                             onClick={() => {
                               trackEvent({
                                 event: 'Clicked Block Explorer Link',
-                                category: EVENT.CATEGORIES.SWAPS,
+                                category: MetaMetricsEventCategory.Swaps,
                                 properties: {
                                   link_type: 'Token Tracker',
                                   action: 'Verify Contract Address',

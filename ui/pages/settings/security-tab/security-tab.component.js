@@ -1,31 +1,36 @@
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
-import ToggleButton from '../../../components/ui/toggle-button';
-import TextField from '../../../components/ui/text-field';
-import {
-  ADD_POPULAR_CUSTOM_NETWORK,
-  REVEAL_SEED_ROUTE,
-} from '../../../helpers/constants/routes';
-import Button from '../../../components/ui/button';
-import {
-  getNumberOfSettingsInSection,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
-import {
-  COINGECKO_LINK,
-  CRYPTOCOMPARE_LINK,
-  PRIVACY_POLICY_LINK,
-  AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
-  CONSENSYS_PRIVACY_LINK,
-  ETHERSCAN_PRIVACY_LINK,
-} from '../../../../shared/lib/ui-utils';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import {
   addUrlProtocolPrefix,
   getEnvironmentType,
 } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
+  AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
+  COINGECKO_LINK,
+  CONSENSYS_PRIVACY_LINK,
+  CRYPTOCOMPARE_LINK,
+  ETHERSCAN_PRIVACY_LINK,
+  PRIVACY_POLICY_LINK,
+} from '../../../../shared/lib/ui-utils';
+import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
+import {
+  BUTTON_SIZES,
+  Button,
+} from '../../../components/component-library/button';
+import TextField from '../../../components/ui/text-field';
+import ToggleButton from '../../../components/ui/toggle-button';
+import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -55,6 +60,7 @@ export default class SecurityTab extends PureComponent {
   state = {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
+    srpQuizModalVisible: false,
   };
 
   settingsRefCounter = 0;
@@ -82,7 +88,7 @@ export default class SecurityTab extends PureComponent {
 
   toggleSetting(value, eventName, eventAction, toggleMethod) {
     this.context.trackEvent({
-      category: EVENT.CATEGORIES.SETTINGS,
+      category: MetaMetricsEventCategory.Settings,
       event: eventName,
       properties: {
         action: eventAction,
@@ -92,39 +98,52 @@ export default class SecurityTab extends PureComponent {
     toggleMethod(!value);
   }
 
+  hideSrpQuizModal = () => this.setState({ srpQuizModalVisible: false });
+
   renderSeedWords() {
     const { t } = this.context;
-    const { history } = this.props;
 
     return (
-      <div ref={this.settingsRefs[0]} className="settings-page__content-row">
-        <div className="settings-page__content-item">
-          <span>{t('revealSeedWords')}</span>
+      <>
+        <div className="settings-page__security-tab-sub-header">
+          {t('secretRecoveryPhrase')}
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Button
-              data-testid="reveal-seed-words"
-              type="danger"
-              large
-              onClick={(event) => {
-                event.preventDefault();
-                this.context.trackEvent({
-                  category: EVENT.CATEGORIES.SETTINGS,
-                  event: EVENT_NAMES.KEY_EXPORT_SELECTED,
-                  properties: {
-                    key_type: EVENT.KEY_TYPES.SRP,
-                    location: 'Settings',
-                  },
-                });
-                history.push(REVEAL_SEED_ROUTE);
-              }}
-            >
-              {t('revealSeedWords')}
-            </Button>
-          </div>
+        <div className="settings-page__content-padded">
+          <Button
+            data-testid="reveal-seed-words"
+            type="danger"
+            size={BUTTON_SIZES.LG}
+            onClick={(event) => {
+              event.preventDefault();
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.KeyExportSelected,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                  location: 'Settings',
+                },
+              });
+              this.context.trackEvent({
+                category: MetaMetricsEventCategory.Settings,
+                event: MetaMetricsEventName.SrpRevealClicked,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                  location: 'Settings',
+                },
+              });
+              this.setState({ srpQuizModalVisible: true });
+            }}
+          >
+            {t('revealSeedWords')}
+          </Button>
+          {this.state.srpQuizModalVisible && (
+            <SRPQuiz
+              isOpen={this.state.srpQuizModalVisible}
+              onClose={this.hideSrpQuizModal}
+            />
+          )}
         </div>
-      </div>
+      </>
     );
   }
 
@@ -161,7 +180,10 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="showIncomingTransactions"
+          >
             <ToggleButton
               value={showIncomingTransactions}
               onToggle={(value) =>
@@ -189,7 +211,10 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="usePhishingDetection"
+          >
             <ToggleButton
               value={usePhishDetect}
               onToggle={(value) => setUsePhishDetect(!value)}
@@ -216,7 +241,10 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="participateInMetaMetrics"
+          >
             <ToggleButton
               value={participateInMetaMetrics}
               onToggle={(value) => setParticipateInMetaMetrics(!value)}
@@ -343,7 +371,7 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  renderAutoDectectTokensToggle() {
+  renderAutoDetectTokensToggle() {
     const { t } = this.context;
     const { useTokenDetection, setUseTokenDetection } = this.props;
 
@@ -370,14 +398,17 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="autoDetectTokens"
+          >
             <ToggleButton
               value={useTokenDetection}
               onToggle={(value) => {
                 this.toggleSetting(
                   value,
-                  EVENT_NAMES.KEY_AUTO_DETECT_TOKENS,
-                  EVENT_NAMES.KEY_AUTO_DETECT_TOKENS,
+                  MetaMetricsEventName.KeyAutoDetectTokens,
+                  MetaMetricsEventName.KeyAutoDetectTokens,
                   setUseTokenDetection,
                 );
               }}
@@ -404,14 +435,17 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useMultiAccountBalanceChecker"
+          >
             <ToggleButton
               value={useMultiAccountBalanceChecker}
               onToggle={(value) => {
                 this.toggleSetting(
                   value,
-                  EVENT_NAMES.KEY_BATCH_ACCOUNT_BALANCE_REQUESTS,
-                  EVENT_NAMES.KEY_BATCH_ACCOUNT_BALANCE_REQUESTS,
+                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
+                  MetaMetricsEventName.KeyBatchAccountBalanceRequests,
                   setUseMultiAccountBalanceChecker,
                 );
               }}
@@ -462,7 +496,10 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="currencyRateCheckToggle"
+          >
             <ToggleButton
               value={useCurrencyRateCheck}
               onToggle={(value) => setUseCurrencyRateCheck(!value)}
@@ -480,13 +517,11 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div className="settings-page__body">
-        {warning ? <div className="settings-tab__error">{warning}</div> : null}
+        {warning && <div className="settings-tab__error">{warning}</div>}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('security')}
         </span>
-        <div className="settings-page__content-padded">
-          {this.renderSeedWords()}
-        </div>
+        {this.renderSeedWords()}
         <span className="settings-page__security-tab-sub-header__bold">
           {this.context.t('privacy')}
         </span>
@@ -515,7 +550,7 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('tokenAutoDetection')}
         </span>
         <div className="settings-page__content-padded">
-          {this.renderAutoDectectTokensToggle()}
+          {this.renderAutoDetectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
         </div>
         <span className="settings-page__security-tab-sub-header">

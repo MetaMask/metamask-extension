@@ -4,7 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import Button from '../../ui/button';
 import CheckBox from '../../ui/check-box';
-import Typography from '../../ui/typography';
+import { Text } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
@@ -101,6 +101,7 @@ export default function CreateNewVault({
       <SrpInput onChange={setSeedPhrase} srpText={t('secretRecoveryPhrase')} />
       <div className="create-new-vault__create-password">
         <TextField
+          data-testid="create-vault-password"
           id="password"
           label={t('newPassword')}
           type="password"
@@ -112,6 +113,7 @@ export default function CreateNewVault({
           largeLabel
         />
         <TextField
+          data-testid="create-vault-confirm-password"
           id="confirm-password"
           label={t('confirmPassword')}
           type="password"
@@ -135,11 +137,12 @@ export default function CreateNewVault({
             className="create-new-vault__terms-label"
             htmlFor="create-new-vault__terms-checkbox"
           >
-            <Typography as="span">{termsOfUse}</Typography>
+            <Text as="span">{termsOfUse}</Text>
           </label>
         </div>
       ) : null}
       <Button
+        data-testid="create-new-vault-submit-button"
         className="create-new-vault__submit-button"
         type="primary"
         submit

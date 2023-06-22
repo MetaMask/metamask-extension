@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Permissions', function () {
@@ -13,7 +13,6 @@ describe('Permissions', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -21,12 +20,14 @@ describe('Permissions', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -54,9 +55,7 @@ describe('Permissions', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        await driver.clickElement(
-          '[data-testid="account-options-menu__connected-sites"]',
-        );
+        await driver.clickElement('.menu-item');
 
         await driver.findElement({
           text: 'Connected sites',

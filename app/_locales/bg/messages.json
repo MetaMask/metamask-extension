@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад към всички"
-  },
   "backupApprovalInfo": {
     "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Свързване"
   },
-  "connectHardwareWallet": {
-    "message": "Свържете хардуерен портфейл"
-  },
   "connectingTo": {
     "message": "Свързване с $1"
   },
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Свързване с тестова мрежа на Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Свързване с главната мрежа Ethereum"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Създаване"
-  },
-  "createAccount": {
-    "message": "Създай акаунт"
   },
   "createPassword": {
     "message": "Създаване на парола"
@@ -408,6 +402,9 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
+  "lineaGoerli": {
+    "message": "Тестова мрежа на Linea Goerli"
+  },
   "links": {
     "message": "Връзки"
   },
@@ -443,9 +440,6 @@
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
-  },
-  "myAccounts": {
-    "message": "Моите акаунти"
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
@@ -571,9 +565,6 @@
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
   },
-  "recents": {
-    "message": "Скорошни"
-  },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
   },
@@ -668,12 +659,6 @@
   "settings": {
     "message": "Настройки"
   },
-  "showAdvancedGasInline": {
-    "message": "Разширено управление на газа"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Изберете това, за да покажете цените на газа и ограничите контрола директно на екраните за изпращане и потвърждение."
-  },
   "showFiatConversionInTestnets": {
     "message": "Показване на преобразуването на Testnets"
   },
@@ -736,27 +721,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Символът трябва да е 11 символа или по-малко."
-  },
-  "syncWithMobile": {
-    "message": "Синхронизиране с мобилни устройства"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Уверете се, че никой друг не гледа екрана ви, когато сканирате този код"
-  },
-  "syncWithMobileComplete": {
-    "message": "Вашите данни са синхронизирани успешно. Насладете се на мобилното приложение MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Можете да синхронизирате вашите акаунти и информация с мобилното си устройство. Отворете мобилното приложение MetaMask, отидете на „Настройки“ и докоснете „Синхронизиране от разширението на браузъра“"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ако отворите приложението MetaMask Mobile за първи път, просто следвайте стъпките в телефона си."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Сканирайте този код с вашето мобилно приложение MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Синхронизиране с мобилни устройства"
   },
   "terms": {
     "message": "Условия за ползване"
@@ -824,15 +788,8 @@
   "transfer": {
     "message": "Трансфер"
   },
-  "transferBetweenAccounts": {
-    "message": "Прехвърляне между моите акаунти"
-  },
   "transferFrom": {
     "message": "Трансфер от"
-  },
-  "troubleTokenBalances": {
-    "message": "Имахме проблеми със зареждането на вашите символи. Можете да ги видите",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Нов опит"

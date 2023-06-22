@@ -48,34 +48,26 @@ describe('Test Snap TxInsights', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.clickElement(
-          {
-            text: 'Connect',
-            tag: 'button',
-          },
-          10000,
-        );
-
-        // delay for npm installation
-        await driver.delay(2000);
-
-        // switch to metamask extension
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-
-        // approve install of snap
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Connect',
           tag: 'button',
         });
 
-        await driver.delay(1000);
+        await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElement({
+          text: 'Install',
+          tag: 'button',
+        });
+
+        await driver.waitForSelector({ text: 'OK' });
+
+        await driver.clickElement({
+          text: 'OK',
+          tag: 'button',
+        });
 
         // switch to test-snaps page and get accounts
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#getAccounts');
         await driver.delay(1000);
@@ -108,7 +100,7 @@ describe('Test Snap TxInsights', function () {
           'MetaMask Notification',
           windowHandles,
         );
-        await driver.delay(2000);
+        await driver.delay(1000);
         await driver.clickElement({
           text: 'TxInsightsTest',
           tag: 'button',

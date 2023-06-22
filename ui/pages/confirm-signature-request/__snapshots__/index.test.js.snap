@@ -73,6 +73,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
     </div>
     <div
       class="request-signature__account"
+      data-testid="request-signature-account"
     >
       <div
         class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
@@ -141,12 +142,12 @@ exports[`Signature Request Component render should match snapshot 1`] = `
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box box--margin-top-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
             >
               Goerli test network
             </h6>
             <h6
-              class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
             >
               Account 1
             </h6>
@@ -156,12 +157,13 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box box--margin-top-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
-            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--align-end typography--color-text-default"
+            align="end"
+            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
           >
             9.107408
              
@@ -222,7 +224,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           <h6
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
           >
-            Verify contract details
+            Verify third-party details
           </h6>
         </a>
       </div>
@@ -367,7 +369,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xCD2...D826
                           </div>
@@ -443,7 +445,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                             </div>
                           </div>
                           <div
-                            class="address__name"
+                            class="tx-insight-component-address__name"
                           >
                             0xDea...beeF
                           </div>
@@ -578,7 +580,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xbBb...BBbB
                               </div>
@@ -654,7 +656,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...Ea57
                               </div>
@@ -730,7 +732,7 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="address__name"
+                                class="tx-insight-component-address__name"
                               >
                                 0xB0B...0000
                               </div>

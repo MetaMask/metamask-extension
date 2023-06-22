@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, ICON_NAMES } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import TabBar from '.';
 
 export default {
@@ -19,17 +19,17 @@ export default {
   args: {
     tabs: [
       {
-        icon: <Icon name={ICON_NAMES.SETTING} />,
+        icon: <Icon name={IconName.Setting} />,
         content: 'General',
         key: 'general',
       },
       {
-        icon: <Icon name={ICON_NAMES.BOOK} />,
+        icon: <Icon name={IconName.Book} />,
         content: 'Contacts',
         key: 'contacts',
       },
       {
-        icon: <i className="fa fa-flask" />,
+        icon: <Icon name={IconName.Snaps} />,
         content: 'Snaps',
         key: 'snaps',
       },
@@ -39,7 +39,7 @@ export default {
         key: 'securityAndPrivacy',
       },
       {
-        icon: <Icon name={ICON_NAMES.NOTIFICATION} />,
+        icon: <Icon name={IconName.Notification} />,
         content: 'Alerts',
         key: 'alerts',
       },
@@ -54,7 +54,7 @@ export default {
         key: 'experimental',
       },
       {
-        icon: <i className="fa fa-info-circle" />,
+        icon: <Icon name={IconName.Info} />,
         content: 'About',
         key: 'about',
       },

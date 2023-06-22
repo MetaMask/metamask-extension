@@ -12,6 +12,9 @@ const nft = {
   lastSale: {
     event_timestamp: '2023-01-18T21:51:23',
     total_price: '4900000000000000',
+    payment_token: {
+      symbol: 'ETH',
+    },
   },
 };
 

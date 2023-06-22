@@ -24,49 +24,45 @@ component props
 
 ### Size
 
-Use the `size` prop and the `Size` object from `./ui/helpers/constants/design-system.js` to change the size of `AvatarAccount`
-
-Optional: `AVATAR_ACCOUNT_SIZES` from `./ui/components/component-library` object can be used instead of `Size`
+Use the `size` prop and the `AvatarAccountSize` enum from `../../component-library` to change the size of `AvatarAccount`
 
 Possible sizes include:
 
-- `Size.XS` 16px
-- `Size.SM` 24px
-- `Size.MD` 32px
-- `Size.LG` 40px
-- `Size.XL` 48px
+- `AvatarAccountSize.Xs` 16px
+- `AvatarAccountSize.Sm` 24px
+- `AvatarAccountSize.Md` 32px
+- `AvatarAccountSize.Lg` 40px
+- `AvatarAccountSize.Xl` 48px
 
-Defaults to `Size.MD`
+Defaults to `AvatarAccountSize.MD`
 
 <Canvas>
-  <Story id="components-componentlibrary-avataraccount--size-story" />
+  <Story id="components-componentlibrary-avataraccount--size" />
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { AvatarAccount } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountSize } from '../ui/component-library';
 
-<AvatarAccount size={Size.XS} />
-<AvatarAccount size={Size.SM} />
-<AvatarAccount size={Size.MD} />
-<AvatarAccount size={Size.LG} />
-<AvatarAccount size={Size.XL} />
+<AvatarAccount size={AvatarAccountSize.Xs} />
+<AvatarAccount size={AvatarAccountSize.Sm} />
+<AvatarAccount size={AvatarAccountSize.Md} />
+<AvatarAccount size={AvatarAccountSize.Lg} />
+<AvatarAccount size={AvatarAccountSize.Xl} />
 ```
 
-### Type
+### Variant
 
-Use the `type` prop for the avatar to be rendered, it can either be a Jazzicon or a Blockie
+Use the `variant` prop and the `AvatarAccountVariant` enum from `../../component-library` to change between jazzicon and blockies variants.
 
 <Canvas>
-  <Story id="components-componentlibrary-avataraccount--type" />
+  <Story id="components-componentlibrary-avataraccount--variant" />
 </Canvas>
 
 ```jsx
-import { TYPES } from './avatar-account.constants';
-import { AvatarAccount } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountVariant } from '../ui/component-library';
 
-<AvatarAccount type={TYPES.JAZZICON} />
-<AvatarAccount type={TYPES.BLOCKIES} />
+<AvatarAccount variant={AvatarAccountVariant.Jazzicon} />
+<AvatarAccount variant={AvatarAccountVariant.Blockies} />
 ```
 
 ### Address
@@ -78,9 +74,8 @@ Use the required `address` for generating images
 </Canvas>
 
 ```jsx
-import { TYPES } from './avatar-account.constants';
-import { AvatarAccount } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountVariant } from '../ui/component-library';
 
-<AvatarAccount type={TYPES.JAZZICON} address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
-<AvatarAccount type={TYPES.BLOCKIES} address="0x0" />
+<AvatarAccount variant={AvatarAccountVariant.Jazzicon} address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
+<AvatarAccount variant={AvatarAccountVariant.Blockies} address="0x0" />
 ```

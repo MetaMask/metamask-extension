@@ -1,0 +1,9 @@
+.multichain-network-list-menu {
+  max-height: 200px;
+  overflow: auto;
+
+  /* Overrides the popover's default behavior */
+  &-content-wrapper {
+    border-radius: 0;
+  }
+}

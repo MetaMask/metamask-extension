@@ -20,13 +20,10 @@
   }
 
   &__container {
-    position: absolute;
-    top: 50%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    transform: translateY(-50%);
   }
 
   &__error-screen {

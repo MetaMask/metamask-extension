@@ -1,107 +1,67 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
-import { text } from '@storybook/addon-knobs';
-import { store, getNewState } from '../../../.storybook/preview';
-import { suggestedAssets as mockSuggestedAssets } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
-import { updateMetamaskState } from '../../store/actions';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { pendingTokenApprovals as mockPendingTokenApprovals } from '../../../.storybook/initial-states/approval-screens/add-suggested-token';
+
+import configureStore from '../../store/store';
+
+import mockState from '../../../.storybook/test-data';
+
 import ConfirmAddSuggestedToken from '.';
+
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: mockPendingTokenApprovals,
+    tokens: [],
+  },
+});
 
 export default {
   title: 'Pages/ConfirmAddSuggestedToken',
-
-  argTypes: {
-    tokens: {
-      control: 'array',
-      table: { category: 'Data' },
-    },
-    suggestedAssets: {
-      control: 'array',
-      table: { category: 'Data' },
-    },
-  },
+  decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-const { metamask: state } = store.getState();
-
-const PageSet = ({ children, suggestedAssets, tokens }) => {
-  const symbol = text('symbol', 'META');
-  const image = text('Icon URL', 'metamark.svg');
-
-  useEffect(() => {
-    if (!suggestedAssets?.length) {
-      return;
-    }
-
-    suggestedAssets[0].asset.image = image;
-    suggestedAssets[0].asset.symbol = symbol;
-
-    store.dispatch(
-      updateMetamaskState(
-        getNewState(state, {
-          suggestedAssets,
-        }),
-      ),
-    );
-  }, [image, suggestedAssets, symbol]);
-
-  useEffect(() => {
-    store.dispatch(
-      updateMetamaskState(
-        getNewState(state, {
-          tokens,
-        }),
-      ),
-    );
-  }, [tokens]);
-
-  return children;
-};
-
-export const DefaultStory = ({ suggestedAssets, tokens }) => {
-  return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
+export const DefaultStory = () => <ConfirmAddSuggestedToken />;
 DefaultStory.storyName = 'Default';
-DefaultStory.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [],
-};
 
-export const WithDuplicateAddress = ({ suggestedAssets, tokens }) => {
-  return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
-WithDuplicateAddress.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [
-    {
-      ...mockSuggestedAssets[0].asset,
-    },
-  ],
-};
+export const WithDuplicateAddress = () => <ConfirmAddSuggestedToken />;
+const WithDuplicateAddressStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: mockPendingTokenApprovals,
 
-export const WithDuplicateSymbolAndDifferentAddress = ({
-  suggestedAssets,
-  tokens,
-}) => {
-  return (
-    <PageSet suggestedAssets={suggestedAssets} tokens={tokens}>
-      <ConfirmAddSuggestedToken />
-    </PageSet>
-  );
-};
-WithDuplicateSymbolAndDifferentAddress.args = {
-  suggestedAssets: [...mockSuggestedAssets],
-  tokens: [
-    {
-      ...mockSuggestedAssets[0].asset,
-      address: '0xNonSuggestedAddress',
-    },
-  ],
-};
+    tokens: [
+      {
+        ...Object.values(mockPendingTokenApprovals)[0].asset,
+      },
+    ],
+  },
+});
+WithDuplicateAddress.decorators = [
+  (story) => <Provider store={WithDuplicateAddressStore}>{story()}</Provider>,
+];
+
+export const WithDuplicateSymbolAndDifferentAddress = () => (
+  <ConfirmAddSuggestedToken />
+);
+const WithDuplicateSymbolAndDifferentAddressStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: mockPendingTokenApprovals,
+
+    tokens: [
+      {
+        ...Object.values(mockPendingTokenApprovals)[0].asset,
+        address: '0xNonSuggestedAddress',
+      },
+    ],
+  },
+});
+WithDuplicateSymbolAndDifferentAddress.decorators = [
+  (story) => (
+    <Provider store={WithDuplicateSymbolAndDifferentAddressStore}>
+      {story()}
+    </Provider>
+  ),
+];

@@ -10,18 +10,22 @@ import {
   DEFAULT_ROUTE,
   NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setSelectedSettingsRpcUrl } from '../../../store/actions';
+import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import Button from '../../../components/ui/button';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
-  getFrequentRpcListDetail,
-  getNetworksTabSelectedRpcUrl,
-  getProvider,
+  getNetworkConfigurations,
+  getNetworksTabSelectedNetworkConfigurationId,
 } from '../../../selectors';
+import {
+  getProviderConfig,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
 import {
   NETWORK_TYPES,
   TEST_CHAINS,
+  BUILT_IN_NETWORKS,
 } from '../../../../shared/constants/network';
 import { defaultNetworksData } from './networks-tab.constants';
 import NetworksTabContent from './networks-tab-content';
@@ -47,30 +51,42 @@ const NetworksTab = ({ addNewNetwork }) => {
     Boolean(pathname.match(NETWORKS_FORM_ROUTE)) ||
     window.location.hash.split('#')[2] === 'blockExplorerUrl';
 
-  const frequentRpcListDetail = useSelector(getFrequentRpcListDetail);
-  const provider = useSelector(getProvider);
-  const networksTabSelectedRpcUrl = useSelector(getNetworksTabSelectedRpcUrl);
+  const networkConfigurations = useSelector(getNetworkConfigurations);
+  const providerConfig = useSelector(getProviderConfig);
+  const networksTabSelectedNetworkConfigurationId = useSelector(
+    getNetworksTabSelectedNetworkConfigurationId,
+  );
+  const isLineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
-  const frequentRpcNetworkListDetails = frequentRpcListDetail.map((rpc) => {
-    return {
-      label: rpc.nickname,
-      iconColor: 'var(--color-icon-alternative)',
-      providerType: NETWORK_TYPES.RPC,
-      rpcUrl: rpc.rpcUrl,
-      chainId: rpc.chainId,
-      ticker: rpc.ticker,
-      blockExplorerUrl: rpc.rpcPrefs?.blockExplorerUrl || '',
-      isATestNetwork: TEST_CHAINS.includes(rpc.chainId),
-    };
-  });
+  const networkConfigurationsList = Object.entries(networkConfigurations).map(
+    ([networkConfigurationId, networkConfiguration]) => {
+      return {
+        label: networkConfiguration.nickname,
+        iconColor: 'var(--color-icon-alternative)',
+        providerType: NETWORK_TYPES.RPC,
+        rpcUrl: networkConfiguration.rpcUrl,
+        chainId: networkConfiguration.chainId,
+        ticker: networkConfiguration.ticker,
+        blockExplorerUrl: networkConfiguration.rpcPrefs?.blockExplorerUrl || '',
+        isATestNetwork: TEST_CHAINS.includes(networkConfiguration.chainId),
+        networkConfigurationId,
+      };
+    },
+  );
 
-  const networksToRender = [
-    ...defaultNetworks,
-    ...frequentRpcNetworkListDetails,
-  ];
+  let networksToRender = [...defaultNetworks, ...networkConfigurationsList];
+  if (!isLineaMainnetReleased) {
+    networksToRender = networksToRender.filter(
+      (network) =>
+        network.chainId !==
+        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].chainId,
+    );
+  }
   let selectedNetwork =
     networksToRender.find(
-      (network) => network.rpcUrl === networksTabSelectedRpcUrl,
+      (network) =>
+        network.networkConfigurationId ===
+        networksTabSelectedNetworkConfigurationId,
     ) || {};
   const networkIsSelected = Boolean(selectedNetwork.rpcUrl);
 
@@ -79,9 +95,9 @@ const NetworksTab = ({ addNewNetwork }) => {
     selectedNetwork =
       networksToRender.find((network) => {
         return (
-          network.rpcUrl === provider.rpcUrl ||
+          network.rpcUrl === providerConfig.rpcUrl ||
           (network.providerType !== NETWORK_TYPES.RPC &&
-            network.providerType === provider.type)
+            network.providerType === providerConfig.type)
         );
       }) || {};
     networkDefaultedToProvider = true;
@@ -89,7 +105,7 @@ const NetworksTab = ({ addNewNetwork }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(setSelectedSettingsRpcUrl(''));
+      dispatch(setSelectedNetworkConfigurationId(''));
     };
   }, [dispatch]);
 
@@ -117,7 +133,7 @@ const NetworksTab = ({ addNewNetwork }) => {
               networkDefaultedToProvider={networkDefaultedToProvider}
               networkIsSelected={networkIsSelected}
               networksToRender={networksToRender}
-              providerUrl={provider.rpcUrl}
+              providerUrl={providerConfig.rpcUrl}
               selectedNetwork={selectedNetwork}
               shouldRenderNetworkForm={shouldRenderNetworkForm}
             />

@@ -62,7 +62,7 @@ export default class AccountTracker {
       accounts: {},
       currentBlockGasLimit: '',
     };
-    this.store = new ObservableStore(initState);
+    this.store = new ObservableStore({ ...initState, ...opts.initState });
 
     this.resetState = () => {
       this.store.updateState(initState);

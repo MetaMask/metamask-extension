@@ -93,9 +93,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToAll": {
-    "message": "Kembali kepada Semua"
-  },
   "backupApprovalInfo": {
     "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Sambung"
   },
-  "connectHardwareWallet": {
-    "message": "Sambungkan Dompet Perkakasan"
-  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Menyambung kepada Rangkaian Ethereum Utama"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAccount": {
-    "message": "Cipta Akaun"
   },
   "createPassword": {
     "message": "Cipta Kata Laluan"
@@ -401,6 +395,9 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
+  "lineaGoerli": {
+    "message": "Rangkaian Ujian Linea Goerli"
+  },
   "links": {
     "message": "Pautan"
   },
@@ -430,9 +427,6 @@
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
-  "myAccounts": {
-    "message": "Akaun Saya"
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -555,9 +549,6 @@
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
   },
-  "recents": {
-    "message": "Baru-baru ini"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat awam (0x), atau ENS"
   },
@@ -652,12 +643,6 @@
   "settings": {
     "message": "Tetapan"
   },
-  "showAdvancedGasInline": {
-    "message": "Kawalan gas lanjutan"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Pilih ini untuk menunjukkan harga gas dan kawalan had terus di skrin hantar dan sahkan."
-  },
   "showFiatConversionInTestnets": {
     "message": "Tunjukkan Penukaran di Testnets"
   },
@@ -720,27 +705,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "Simbol mestilah 11 aksara atau kurang."
-  },
-  "syncWithMobile": {
-    "message": "Segerakkan dengan telefon mudah alih"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Pastikan tiada orang lain melihat skrin anda ketika anda mengimbas kod ini"
-  },
-  "syncWithMobileComplete": {
-    "message": "Data anda berjaya disegerakkan. Nikmati aplikasi mudah alih MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Anda boleh menyegerakkan akaun dan maklumat anda dengan peranti mudah alih anda. Buka ap mudah alih MetaMask, pergi ke \"Tetapan\" dan ketik \"Segerakkan daripada Sambungan Pelayar\""
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Jika ini kali pertama anda membuka aplikasi mudah alih MetaMask, anda cuma perlu ikuti langkah-langkah di telefon anda."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Imbas kod ini dengan aplikasi mudah alih MetaMask anda"
-  },
-  "syncWithMobileTitle": {
-    "message": "Segerakkan dengan mudah alih"
   },
   "terms": {
     "message": "Syarat-syarat Penggunaan"
@@ -805,15 +769,8 @@
   "transfer": {
     "message": "Pindah"
   },
-  "transferBetweenAccounts": {
-    "message": "Pindahkan antara akaun saya"
-  },
   "transferFrom": {
     "message": "Pindah Daripada"
-  },
-  "troubleTokenBalances": {
-    "message": "Kami menghadapi masalah memuatkan baki token anda. Anda boleh melihatnya",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Cuba lagi"

@@ -8,25 +8,32 @@ export default function ConfirmationFooter({
   onCancel,
   submitText,
   cancelText,
+  loadingText,
   alerts,
+  loading,
+  submitAlerts,
+  actionsStyle,
+  style,
 }) {
   return (
-    <div className="confirmation-footer">
+    <div className="confirmation-footer" style={style}>
       {alerts}
-      <div className="confirmation-footer__actions">
+      {submitAlerts}
+      <div className="confirmation-footer__actions" style={actionsStyle}>
         {onCancel ? (
           <Button type="secondary" onClick={onCancel}>
             {cancelText}
           </Button>
         ) : null}
         <Button
+          disabled={Boolean(loading)}
           type="primary"
           onClick={onSubmit}
           className={classnames({
             centered: !onCancel,
           })}
         >
-          {submitText}
+          {loading ? loadingText : submitText}
         </Button>
       </div>
     </div>
@@ -39,4 +46,9 @@ ConfirmationFooter.propTypes = {
   cancelText: PropTypes.string,
   onSubmit: PropTypes.func.isRequired,
   submitText: PropTypes.string.isRequired,
+  loadingText: PropTypes.string,
+  loading: PropTypes.bool,
+  submitAlerts: PropTypes.node,
+  style: PropTypes.object,
+  actionsStyle: PropTypes.object,
 };

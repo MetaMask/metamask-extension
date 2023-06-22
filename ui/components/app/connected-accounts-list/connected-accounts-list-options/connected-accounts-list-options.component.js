@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import { Menu } from '../../../ui/menu';
-import { ButtonIcon, ICON_NAMES } from '../../../component-library';
+import { IconName, ButtonIcon } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const ConnectedAccountsListOptions = ({
@@ -16,7 +16,7 @@ const ConnectedAccountsListOptions = ({
   return (
     <div ref={ref}>
       <ButtonIcon
-        iconName={ICON_NAMES.MORE_VERTICAL}
+        iconName={IconName.MoreVertical}
         className="connected-accounts-options__button"
         onClick={onShowOptions}
         ariaLabel={t('options')}

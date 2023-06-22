@@ -376,7 +376,7 @@ $attributesToApplyExtraProperties: margin;
   @each $breakpoint, $min-width in $screen-sizes-map {
     @each $variant, $color in design-system.$color-map {
       @media screen and (min-width: $min-width) {
-        &--#{$breakpoint}\background-color-#{$variant} {
+        &--#{$breakpoint}\:background-color-#{$variant} {
           background-color: var($color);
         }
       }

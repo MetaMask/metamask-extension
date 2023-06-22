@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { errorCodes } = require('eth-rpc-errors');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask', function () {
@@ -24,12 +24,14 @@ describe('MetaMask', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         const networkDiv = await driver.waitForSelector({
           css: '#network',
           text: '1337',
@@ -44,7 +46,7 @@ describe('MetaMask', function () {
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindow(windowHandles[0]);
 
-        await driver.clickElement('.network-display');
+        await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
 
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
@@ -60,10 +62,7 @@ describe('MetaMask', function () {
 
         assert.equal(await switchedNetworkDiv.getText(), '0x1');
         assert.equal(await switchedChainIdDiv.getText(), '0x1');
-        assert.equal(
-          await accountsDiv.getText(),
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
+        assert.equal(await accountsDiv.getText(), publicAddress);
       },
     );
   });
@@ -84,7 +83,7 @@ describe('MetaMask', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         for (const unsupportedMethod of ['eth_signTransaction']) {
           assert.equal(
             await driver.executeAsyncScript(`

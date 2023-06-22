@@ -3,6 +3,8 @@ const {
   convertToHexValue,
   withFixtures,
   regularDelayMs,
+  openDapp,
+  DAPP_URL,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -17,7 +19,6 @@ describe('Sign Typed Data V4 Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -27,12 +28,14 @@ describe('Sign Typed Data V4 Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV4');
@@ -56,10 +59,10 @@ describe('Sign Typed Data V4 Signature Request', function () {
         );
 
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await origin.getText(), DAPP_URL);
 
         verifyContractDetailsButton.click();
-        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement({ text: 'Third-party details', tag: 'h5' });
         await driver.findElement('[data-testid="recipient"]');
         await driver.clickElement({ text: 'Got it', tag: 'button' });
 
@@ -97,7 +100,6 @@ describe('Sign Typed Data V3 Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -107,12 +109,14 @@ describe('Sign Typed Data V3 Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedDataV3');
@@ -137,10 +141,10 @@ describe('Sign Typed Data V3 Signature Request', function () {
         );
 
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await origin.getText(), DAPP_URL);
 
         verifyContractDetailsButton.click();
-        await driver.findElement({ text: 'Contract details', tag: 'h5' });
+        await driver.findElement({ text: 'Third-party details', tag: 'h5' });
         await driver.findElement('[data-testid="recipient"]');
         await driver.clickElement({ text: 'Got it', tag: 'button' });
 
@@ -178,7 +182,6 @@ describe('Sign Typed Data Signature Request', function () {
         },
       ],
     };
-    const publicAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
     await withFixtures(
       {
         dapp: true,
@@ -188,12 +191,14 @@ describe('Sign Typed Data Signature Request', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
+        const addresses = await ganacheServer.getAccounts();
+        const publicAddress = addresses[0];
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
 
         // creates a sign typed data signature request
         await driver.clickElement('#signTypedData');
@@ -213,7 +218,7 @@ describe('Sign Typed Data Signature Request', function () {
           '.request-signature__row-value',
         );
         assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), 'http://127.0.0.1:8080');
+        assert.equal(await origin.getText(), DAPP_URL);
         assert.equal(await message[0].getText(), 'Hi, Alice!');
         assert.equal(await message[1].getText(), '1337');
 

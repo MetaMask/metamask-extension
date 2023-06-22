@@ -1,12 +1,14 @@
 import React from 'react';
 import {
   AlignItems,
+  Color,
   DISPLAY,
   FLEX_DIRECTION,
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { ICON_NAMES, TEXT_DIRECTIONS } from '..';
+import { TextDirection, IconName } from '..';
+
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
@@ -57,11 +59,11 @@ export default {
     },
     startIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     endIconName: {
       control: 'select',
-      options: Object.values(ICON_NAMES),
+      options: Object.values(IconName),
     },
     loading: {
       control: 'boolean',
@@ -149,6 +151,15 @@ Href.args = {
   href: '/metamask',
 };
 
+export const ExternalLink = (args) => (
+  <ButtonBase {...args}>Anchor element with external link</ButtonBase>
+);
+
+ExternalLink.args = {
+  href: 'https://metamask.io',
+  externalLink: true,
+};
+
 export const Disabled = (args) => (
   <ButtonBase {...args}>Disabled Button</ButtonBase>
 );
@@ -166,13 +177,13 @@ Loading.args = {
 };
 
 export const StartIconName = (args) => (
-  <ButtonBase {...args} startIconName={ICON_NAMES.ADD_SQUARE}>
+  <ButtonBase {...args} startIconName={IconName.AddSquare}>
     Button
   </ButtonBase>
 );
 
 export const EndIconName = (args) => (
-  <ButtonBase {...args} endIconName={ICON_NAMES.ARROW_2_RIGHT}>
+  <ButtonBase {...args} endIconName={IconName.Arrow2Right}>
     Button
   </ButtonBase>
 );
@@ -181,20 +192,27 @@ export const Rtl = (args) => (
   <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
     <ButtonBase
       {...args}
-      startIconName={ICON_NAMES.ADD_SQUARE}
-      endIconName={ICON_NAMES.ARROW_2_RIGHT}
+      startIconName={IconName.AddSquare}
+      endIconName={IconName.Arrow2Right}
     >
       Button Demo
     </ButtonBase>
     <ButtonBase
       {...args}
-      startIconName={ICON_NAMES.ADD_SQUARE}
-      endIconName={ICON_NAMES.ARROW_2_RIGHT}
-      textProps={{
-        textDirection: TEXT_DIRECTIONS.RIGHT_TO_LEFT,
-      }}
+      startIconName={IconName.AddSquare}
+      endIconName={IconName.Arrow2Right}
+      textDirection={TextDirection.RightToLeft}
     >
       Button Demo
+    </ButtonBase>
+  </Box>
+);
+
+export const Ellipsis = (args) => (
+  <Box backgroundColor={Color.iconMuted} style={{ width: 150 }}>
+    <ButtonBase {...args}>Example without ellipsis</ButtonBase>
+    <ButtonBase {...args} ellipsis>
+      Example with ellipsis
     </ButtonBase>
   </Box>
 );

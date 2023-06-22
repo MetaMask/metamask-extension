@@ -4,9 +4,9 @@ import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import { SUPPORT_REQUEST_LINK } from '../../helpers/constants/common';
 import {
-  EVENT,
-  EVENT_NAMES,
-  CONTEXT_PROPS,
+  MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 
 class ErrorPage extends PureComponent {
@@ -50,14 +50,16 @@ class ErrorPage extends PureComponent {
         onClick={() => {
           this.context.trackEvent(
             {
-              category: EVENT.CATEGORIES.ERROR,
-              event: EVENT_NAMES.SUPPORT_LINK_CLICKED,
+              category: MetaMetricsEventCategory.Error,
+              event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: SUPPORT_REQUEST_LINK,
               },
             },
             {
-              contextPropsIntoEventProperties: [CONTEXT_PROPS.PAGE_TITLE],
+              contextPropsIntoEventProperties: [
+                MetaMetricsContextProp.PageTitle,
+              ],
             },
           );
         }}

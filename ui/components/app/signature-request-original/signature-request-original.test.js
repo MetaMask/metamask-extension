@@ -1,12 +1,24 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+  completedTx,
+} from '../../../store/actions';
 import SignatureRequestOriginal from '.';
+
+jest.mock('../../../store/actions', () => ({
+  resolvePendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
+  rejectPendingApproval: jest.fn().mockReturnValue({ type: 'test' }),
+  completedTx: jest.fn().mockReturnValue({ type: 'test' }),
+}));
 
 const MOCK_SIGN_DATA = JSON.stringify({
   domain: {
@@ -51,6 +63,9 @@ const props = {
     },
     type: MESSAGE_TYPE.ETH_SIGN,
   },
+  selectedAccount: {
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  },
 };
 
 const render = (txData = props.txData) => {
@@ -89,12 +104,30 @@ describe('SignatureRequestOriginal', () => {
     expect(screen.getByText('Signature request')).toBeInTheDocument();
   });
 
-  it('should render warning for eth sign when sign button clicked', () => {
+  it('should render warning for eth sign when sign button clicked', async () => {
     render();
     const signButton = screen.getByTestId('page-container-footer-next');
 
     fireEvent.click(signButton);
     expect(screen.getByText('Your funds may be at risk')).toBeInTheDocument();
+
+    const secondSignButton = screen.getByTestId(
+      'signature-warning-sign-button',
+    );
+    await act(async () => {
+      fireEvent.click(secondSignButton);
+    });
+    expect(resolvePendingApproval).toHaveBeenCalledTimes(1);
+    expect(completedTx).toHaveBeenCalledTimes(1);
+  });
+
+  it('should cancel approval when user reject signing', async () => {
+    render();
+    const rejectButton = screen.getByTestId('page-container-footer-cancel');
+    await act(async () => {
+      fireEvent.click(rejectButton);
+    });
+    expect(rejectPendingApproval).toHaveBeenCalledTimes(1);
   });
 
   it('should escape RTL character in label or value', () => {
@@ -130,9 +163,7 @@ describe('SignatureRequestOriginal', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText('This is based on information from'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('OpenSea')).toBeInTheDocument();
   });
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
@@ -147,6 +178,6 @@ describe('SignatureRequestOriginal', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeNull();
-    expect(screen.queryByText('This is based on information from')).toBeNull();
+    expect(screen.queryByText('OpenSea')).toBeNull();
   });
 });

@@ -7,7 +7,7 @@ exports[`Tag should render the label inside the tag and match snapshot 1`] = `
     data-testid="tag"
   >
     <p
-      class="box mm-text mm-text--body-sm mm-text--color-text-default box--flex-direction-row"
+      class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
     >
       Imported
     </p>

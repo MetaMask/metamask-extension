@@ -7,7 +7,12 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { getSnapPrefix } from '@metamask/snaps-utils';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { isObject } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IN
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -19,8 +24,11 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import {
+  SNAPS_DERIVATION_PATHS,
+  SNAPS_METADATA,
+} from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
@@ -54,8 +62,10 @@ export function isDefaultMetaMaskChain(chainId) {
   if (
     !chainId ||
     chainId === CHAIN_IDS.MAINNET ||
+    chainId === CHAIN_IDS.LINEA_MAINNET ||
     chainId === CHAIN_IDS.GOERLI ||
     chainId === CHAIN_IDS.SEPOLIA ||
+    chainId === CHAIN_IDS.LINEA_GOERLI ||
     chainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
@@ -483,11 +493,11 @@ export const sanitizeMessage = (msg, primaryType, types) => {
 };
 
 export function getAssetImageURL(image, ipfsGateway) {
-  if (!image || !ipfsGateway || typeof image !== 'string') {
+  if (!image || typeof image !== 'string') {
     return '';
   }
 
-  if (image.startsWith('ipfs://')) {
+  if (ipfsGateway && image.startsWith('ipfs://')) {
     return getFormattedIpfsUrl(ipfsGateway, image, true);
   }
   return image;
@@ -532,7 +542,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -547,6 +557,37 @@ export function getSnapDerivationPathName(path, curve) {
 
   return pathMetadata?.name ?? null;
 }
+
+export const removeSnapIdPrefix = (snapId) =>
+  snapId?.replace(getSnapPrefix(snapId), '');
+
+export const getSnapName = (snapId, subjectMetadata) => {
+  if (SNAPS_METADATA[snapId]?.name) {
+    return SNAPS_METADATA[snapId].name;
+  }
+
+  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
+export const getDedupedSnaps = (request, permissions) => {
+  const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
+  const requestedSnaps = permission?.caveats[0].value;
+  const currentSnaps =
+    permissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+
+  if (!isObject(currentSnaps) && requestedSnaps) {
+    return Object.keys(requestedSnaps);
+  }
+
+  const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+  const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+  const dedupedSnaps = requestedSnapKeys.filter(
+    (snapId) => !currentSnapKeys.includes(snapId),
+  );
+
+  return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
+};
+
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -563,5 +604,20 @@ export const sanitizeString = (value) => {
     return value;
   }
   const regex = /\u202E/giu;
-  return value.replaceAll(regex, '\\u202E');
+  return value.replace(regex, '\\u202E');
+};
+
+/**
+ * This method checks current provider type and returns its string representation
+ *
+ * @param {*} provider
+ * @param {*} t
+ * @returns
+ */
+
+export const getNetworkNameFromProviderType = (providerName) => {
+  if (providerName === NETWORK_TYPES.RPC) {
+    return '';
+  }
+  return providerName;
 };

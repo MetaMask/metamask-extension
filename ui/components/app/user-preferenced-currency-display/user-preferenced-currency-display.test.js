@@ -7,7 +7,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
   describe('rendering', () => {
     const mockState = {
       metamask: {
-        provider: {
+        providerConfig: {
           chainId: '0x99',
         },
         preferences: {

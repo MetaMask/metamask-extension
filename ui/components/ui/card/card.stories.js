@@ -7,7 +7,7 @@ import {
   BorderStyle,
   DISPLAY,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import README from './README.mdx';
@@ -17,7 +17,6 @@ const sizeOptions = [undefined, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
 export default {
   title: 'Components/UI/Card',
-
   component: Card,
   parameters: {
     docs: {
@@ -69,7 +68,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
     },
     margin: {
       control: {
@@ -158,13 +157,3 @@ export default {
 export const DefaultStory = (args) => <Card {...args}>{args.children}</Card>;
 
 DefaultStory.storyName = 'Default';
-
-DefaultStory.args = {
-  padding: 4,
-  border: true,
-  borderWidth: 1,
-  borderColor: BorderColor.borderDefault,
-  borderStyle: BorderStyle.solid,
-  backgroundColor: BackgroundColor.backgroundDefault,
-  display: DISPLAY.BLOCK,
-};

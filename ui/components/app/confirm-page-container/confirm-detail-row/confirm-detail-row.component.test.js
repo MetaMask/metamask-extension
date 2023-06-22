@@ -7,7 +7,7 @@ import ConfirmDetailRow from '.';
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'rpc',
         chainId: '0x5',
       },

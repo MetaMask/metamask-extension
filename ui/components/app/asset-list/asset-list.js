@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import ImportTokenLink from '../import-token-link';
 import TokenList from '../token-list';
-import AssetListItem from '../asset-list-item';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
 import {
@@ -12,26 +10,24 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getTokenList,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
-import Typography from '../../ui/typography/typography';
 import Box from '../../ui/box/box';
-import {
-  Color,
-  TypographyVariant,
-  FONT_WEIGHT,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { EVENT, EVENT_NAMES } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import DetectedToken from '../detected-token/detected-token';
-import DetectedTokensLink from './detetcted-tokens-link/detected-tokens-link';
+import {
+  DetectedTokensBanner,
+  TokenListItem,
+  ImportTokenLink,
+} from '../../multichain';
 
 const AssetList = ({ onClickAsset }) => {
-  const t = useI18nContext();
-
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
 
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
@@ -69,26 +65,29 @@ const AssetList = ({ onClickAsset }) => {
   const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-
+  const tokenList = useSelector(getTokenList);
+  const tokenData = Object.values(tokenList).find(
+    (token) => token.symbol === primaryCurrencyProperties.suffix,
+  );
+  const title = tokenData?.name || primaryCurrencyProperties.suffix;
   return (
     <>
-      <AssetListItem
+      <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
-        data-testid="wallet-balance"
+        title={title}
         primary={
           primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
         }
         tokenSymbol={primaryCurrencyProperties.suffix}
         secondary={showFiat ? secondaryCurrencyDisplay : undefined}
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
-        identiconBorder
       />
       <TokenList
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
           trackEvent({
-            event: EVENT_NAMES.TOKEN_SCREEN_OPENED,
-            category: EVENT.CATEGORIES.NAVIGATION,
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
             properties: {
               token_symbol: primaryCurrencyProperties.suffix,
               location: 'Home',
@@ -97,20 +96,14 @@ const AssetList = ({ onClickAsset }) => {
         }}
       />
       {detectedTokens.length > 0 &&
-        !istokenDetectionInactiveOnNonMainnetSupportedNetwork && (
-          <DetectedTokensLink setShowDetectedTokens={setShowDetectedTokens} />
-        )}
+      !istokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+        <DetectedTokensBanner
+          actionButtonOnClick={() => setShowDetectedTokens(true)}
+          margin={4}
+        />
+      ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <Box justifyContent={JustifyContent.center}>
-          <Typography
-            color={Color.textAlternative}
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
-          >
-            {t('missingToken')}
-          </Typography>
-        </Box>
-        <ImportTokenLink />
+        <ImportTokenLink margin={4} />
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

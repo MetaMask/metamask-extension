@@ -127,10 +127,6 @@ chrome.runtime.onMessage.addListener(() => {
   return false;
 });
 
-chrome.runtime.onStartup.addListener(() => {
-  globalThis.isFirstTimeProfileLoaded = true;
-});
-
 /*
  * This content script is injected programmatically because
  * MAIN world injection does not work properly via manifest

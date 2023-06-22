@@ -10,7 +10,7 @@ const FixtureBuilder = require('../fixture-builder');
 
 const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
 
-const backupExists = async () => {
+const getBackupJson = async () => {
   const date = new Date();
 
   const prependZero = (num, maxLength) => {
@@ -31,9 +31,10 @@ const backupExists = async () => {
   try {
     const backup = `${downloadsFolder}/${userDataFileName}`;
     await fs.access(backup);
-    return true;
+    const contents = await fs.readFile(backup);
+    return JSON.parse(contents.toString());
   } catch (e) {
-    return false;
+    return null;
   }
 };
 
@@ -69,7 +70,9 @@ describe('Backup and Restore', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Download user settings
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
@@ -78,12 +81,17 @@ describe('Backup and Restore', function () {
         });
 
         // Verify download
-        let fileExists;
+        let info;
         await driver.wait(async () => {
-          fileExists = await backupExists();
-          return fileExists === true;
+          info = await getBackupJson();
+          return info !== null;
         }, 10000);
-        assert.equal(fileExists, true);
+        assert.notEqual(info, null);
+        // Verify Json
+        assert.equal(
+          Object.values(info?.network?.networkConfigurations)?.[0].chainId,
+          '0x539',
+        );
       },
     );
   });
@@ -101,7 +109,9 @@ describe('Backup and Restore', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Restore
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         const restore = await driver.findElement('#restore-file');

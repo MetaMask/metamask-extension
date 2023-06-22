@@ -93,9 +93,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backToAll": {
-    "message": "Torna a Tot"
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
@@ -151,14 +148,14 @@
   "connect": {
     "message": "Connecta"
   },
-  "connectHardwareWallet": {
-    "message": "Connectar Moneder Hardaware"
-  },
   "connectingTo": {
     "message": "Connectant a $1 "
   },
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
     "message": "Connectant a Xarxa Principal Ethereum"
@@ -186,9 +183,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea "
   },
   "createPassword": {
     "message": "Crear Contrasenya"
@@ -399,6 +393,9 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
+  "lineaGoerli": {
+    "message": "Xarxa de test Linea Goerli"
+  },
   "links": {
     "message": "Enllaços"
   },
@@ -431,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "
-  },
-  "myAccounts": {
-    "message": "Els meus Comptes"
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
@@ -650,12 +644,6 @@
   "settings": {
     "message": "Configuració"
   },
-  "showAdvancedGasInline": {
-    "message": "Controls de gas avançats"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Selecciona això per a mostrar el preu del gas i els controls de límit directament a les pantalles d'enviament i confirmació."
-  },
   "showFiatConversionInTestnets": {
     "message": "Mostra Conversió a Testnets"
   },
@@ -719,27 +707,6 @@
   "symbolBetweenZeroTwelve": {
     "message": "El símbol ha de tenir com a mínim 11 caràcters."
   },
-  "syncWithMobile": {
-    "message": "Sincronitza amb el mòbil"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Assegura't que no hi ha ningú mirant la teva pantalla quan escanegis aquest codi"
-  },
-  "syncWithMobileComplete": {
-    "message": "Les teves dades s'han sincronitzat amb èxit. Disfruta de l'app mòbil de MetaMask!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Pots sincronitzar els teus comptes i la teva informació amb el teu dispositiu mòbil. Obre l'app mòbil de MetaTask, ves a \"Configuració\" i \"Sincronitzar desde l"
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Si acabes d'obrir l'app mòbil MetaMask per primer cop, tan sols has de seguir els passos del teu telèfon."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Escaneja aquest codi amb la teva aplicació mòbil de MetaMask"
-  },
-  "syncWithMobileTitle": {
-    "message": "Sincronitzar amb mòbil"
-  },
   "terms": {
     "message": "Condicions d'ús"
   },
@@ -800,15 +767,8 @@
   "transfer": {
     "message": "Transferència"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre els meus comptes"
-  },
   "transferFrom": {
     "message": "Transferir Des de"
-  },
-  "troubleTokenBalances": {
-    "message": "Hem tingut problemes en carregar el teu saldo de fitxes. Els pots veure",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Torna-ho a provar"

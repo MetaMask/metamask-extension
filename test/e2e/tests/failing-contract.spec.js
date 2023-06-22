@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -34,9 +34,7 @@ describe('Failing contract interaction ', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
 
@@ -53,9 +51,7 @@ describe('Failing contract interaction ', function () {
         // display warning when transaction is expected to fail
         const warningText =
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.';
-        const warning = await driver.findElement(
-          '.actionable-message__message',
-        );
+        const warning = await driver.findElement('.mm-banner-alert .mm-text');
         const confirmButton = await driver.findElement(
           '[data-testid="page-container-footer-next"]',
         );
@@ -73,7 +69,6 @@ describe('Failing contract interaction ', function () {
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // display the transaction status
@@ -117,9 +112,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
+        await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         // waits for deployed contract and calls failing contract method
@@ -141,9 +134,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         // display warning when transaction is expected to fail
         const warningText =
           'We were not able to estimate gas. There might be an error in the contract and this transaction may fail.';
-        const warning = await driver.findElement(
-          '.actionable-message__message',
-        );
+        const warning = await driver.findElement('.mm-banner-alert .mm-text');
         const confirmButton = await driver.findElement(
           '[data-testid="page-container-footer-next"]',
         );
@@ -161,7 +152,6 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
-          { timeout: 10000 },
         );
 
         // display the transaction status

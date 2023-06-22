@@ -21,48 +21,39 @@ describe('View NFT details', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
       },
-      async ({ driver, _, contractRegistry }) => {
-        const contractAddress =
-          contractRegistry.getContractAddress(smartContract);
+      async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // After login, go to NFTs tab and import an NFT
-        await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
-
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
         // Click to open the NFT details page and check title
-        await driver.clickElement('.nfts-items__item-image');
+        await driver.clickElement('[data-testid="home__nfts-tab"]');
+        await driver.clickElement('.nft-item__item-image');
 
         const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
         assert.equal(
           await detailsPageTitle.getText(),
-          'Account 1 / TestDappCollectibles',
+          'Account 1 / TestDappNFTs',
         );
 
         // Check the displayed NFT details
         const nftName = await driver.findElement('.nft-details__info h4');
-        assert.equal(await nftName.getText(), 'Test Dapp Collectibles #1');
+        assert.equal(await nftName.getText(), 'Test Dapp NFTs #1');
 
         const nftDescription = await driver.findElement(
           '.nft-details__info h6:nth-of-type(2)',
         );
         assert.equal(
           await nftDescription.getText(),
-          'Test Dapp Collectibles for testing.',
+          'Test Dapp NFTs for testing.',
         );
 
-        const nftImage = await driver.findElement('.nft-details__image');
+        const nftImage = await driver.findElement('.nft-item__item-image');
         assert.equal(await nftImage.isDisplayed(), true);
 
         const nftImageSource = await driver.findElement(

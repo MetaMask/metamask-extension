@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import abi from 'human-standard-token-abi';
-import { Json } from '@metamask/controller-utils';
+import { Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
@@ -213,17 +212,6 @@ export async function fetchTokenPrice(address: string): Promise<any> {
     { cacheRefreshTime: 60000 },
   );
   return prices?.[address]?.eth;
-}
-
-export async function fetchTokenBalance(
-  address: string,
-  userAddress: string,
-): Promise<any> {
-  const tokenContract = (global as any).eth.contract(abi).at(address);
-  const tokenBalancePromise = tokenContract
-    ? tokenContract.balanceOf(userAddress)
-    : Promise.resolve();
-  return await tokenBalancePromise;
 }
 
 export async function fetchSwapsGasPrices(chainId: any): Promise<
@@ -565,6 +553,21 @@ export function formatSwapsValueForDisplay(destinationAmount: string): string {
   return amountToDisplay;
 }
 
+export const getClassNameForCharLength = (
+  num: string,
+  classNamePrefix: string,
+): string => {
+  let modifier;
+  if (!num || num.length <= 10) {
+    modifier = 'lg';
+  } else if (num.length > 10 && num.length <= 13) {
+    modifier = 'md';
+  } else {
+    modifier = 'sm';
+  }
+  return `${classNamePrefix}--${modifier}`;
+};
+
 /**
  * Checks whether a contract address is valid before swapping tokens.
  *
@@ -683,11 +686,11 @@ export const getTranslatedStxErrorMessage = (
   switch (errorType) {
     case StxErrorTypes.unavailable:
     case StxErrorTypes.regularTxPending:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
     case StxErrorTypes.notEnoughFunds:
-      return t('stxErrorNotEnoughFunds');
+      return t('smartSwapsErrorNotEnoughFunds');
     default:
-      return t('stxErrorUnavailable');
+      return t('smartSwapsErrorUnavailable');
   }
 };
 

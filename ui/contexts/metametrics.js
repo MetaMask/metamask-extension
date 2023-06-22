@@ -17,7 +17,7 @@ import { captureException, captureMessage } from '@sentry/browser';
 import { omit } from 'lodash';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
 import { PATH_NAME_MAP } from '../helpers/constants/routes';
-import { CONTEXT_PROPS } from '../../shared/constants/metametrics';
+import { MetaMetricsContextProp } from '../../shared/constants/metametrics';
 import { useSegmentContext } from '../hooks/useSegmentContext';
 
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
@@ -67,8 +67,9 @@ export function MetaMetricsProvider({ children }) {
     if (!payload.properties) {
       payload.properties = {};
     }
-    if (fields.includes(CONTEXT_PROPS.PAGE_TITLE)) {
-      payload.properties[CONTEXT_PROPS.PAGE_TITLE] = context.page?.title;
+    if (fields.includes(MetaMetricsContextProp.PageTitle)) {
+      payload.properties[MetaMetricsContextProp.PageTitle] =
+        context.page?.title;
     }
   };
 

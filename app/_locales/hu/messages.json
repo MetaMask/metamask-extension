@@ -93,9 +93,6 @@
   "back": {
     "message": "Vissza"
   },
-  "backToAll": {
-    "message": "Vissza az összeshez"
-  },
   "backupApprovalInfo": {
     "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
   },
@@ -154,14 +151,14 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
+  },
+  "connectingToLineaGoerli": {
+    "message": "Csatlakozás a Linea Goerli teszthálózathoz"
   },
   "connectingToMainnet": {
     "message": "Csatlakozás a fő Ethereum hálózathoz"
@@ -189,9 +186,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"
@@ -408,6 +402,9 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
+  "lineaGoerli": {
+    "message": "Linea Goerli teszthálózat"
+  },
   "links": {
     "message": "Linkek"
   },
@@ -440,9 +437,6 @@
   },
   "mustSelectOne": {
     "message": "Legalább 1 tokent ki kell választania."
-  },
-  "myAccounts": {
-    "message": "Fiókjaim"
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
@@ -568,9 +562,6 @@
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
   },
-  "recents": {
-    "message": "Legutóbbiak"
-  },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
   },
@@ -665,12 +656,6 @@
   "settings": {
     "message": "Beállítások"
   },
-  "showAdvancedGasInline": {
-    "message": "Speciális gázszabályzók"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Jelöld meg ezt a gázárak és korlátozásellenőrzés mutatásához közvetlenül a küldési és megerősítési képernyőkön."
-  },
   "showFiatConversionInTestnets": {
     "message": "Konverzió mutatása Testnetsen"
   },
@@ -733,27 +718,6 @@
   },
   "symbolBetweenZeroTwelve": {
     "message": "A szimbólum 0 és 12 karakter között kell legyen."
-  },
-  "syncWithMobile": {
-    "message": "Szinkronizálás telefonnal"
-  },
-  "syncWithMobileBeCareful": {
-    "message": "Győződjön meg arról, hogy senki nem látja a képernyőt, amikor beolvassa ezt a kódot"
-  },
-  "syncWithMobileComplete": {
-    "message": "Adatai szinkronizálása sikerült. Élvezze a MetaMask mobilalkalmazást!"
-  },
-  "syncWithMobileDesc": {
-    "message": "Szinkronizálhatja fiókjait és adatait a mobilkészülékkel. Nyissa meg a MetaMask mobilalkalmazást, lépjen a \"Beállítások\" elemre, majd koppintson a \"Szinkronizálás a böngésző bővítményéből\" elemre."
-  },
-  "syncWithMobileDescNewUsers": {
-    "message": "Ha most először nyitja meg a MetaMask mobilalkalmazást, kövesse a telefonon megadott lépéseket."
-  },
-  "syncWithMobileScanThisCode": {
-    "message": "Olvasd be ezt a kódot MetaMask mobilalkalmazásoddal"
-  },
-  "syncWithMobileTitle": {
-    "message": "Szinkronizálás mobillal"
   },
   "terms": {
     "message": "Használati feltételek"
@@ -818,15 +782,8 @@
   "transfer": {
     "message": "Átutalás"
   },
-  "transferBetweenAccounts": {
-    "message": "Fiókok közötti küldés"
-  },
   "transferFrom": {
     "message": "Átvezetés innen: "
-  },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Újra"

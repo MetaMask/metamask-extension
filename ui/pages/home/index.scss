@@ -23,7 +23,7 @@
   // TODO: fix style import order so this isn't required to override specificity of `tab` class
   &__main-view &__tabs {
     border: none;
-    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    padding: 0 16px;
   }
 
   &__main-view &__tab {
@@ -39,7 +39,7 @@
   }
 
   &__main-view &__tab button {
-    padding: 16px 8px;
+    padding: 8px;
   }
 
   &__connect-status-text {

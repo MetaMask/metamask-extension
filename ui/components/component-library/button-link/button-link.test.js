@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { Size } from '../../../helpers/constants/design-system';
-import { ICON_NAMES } from '..';
+import { IconName } from '..';
 import { ButtonLink } from './button-link';
 import { BUTTON_LINK_SIZES } from './button-link.constants';
 
@@ -82,7 +82,7 @@ describe('ButtonLink', () => {
   });
   it('should render with icon', () => {
     const { container } = render(
-      <ButtonLink data-testid="icon" startIconName={ICON_NAMES.ADD_SQUARE} />,
+      <ButtonLink data-testid="icon" startIconName={IconName.AddSquare} />,
     );
 
     const icons = container.getElementsByClassName('mm-icon').length;
