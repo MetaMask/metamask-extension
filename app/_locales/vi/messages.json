@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "Khóa"
   },
-  "lockTimeTooGreat": {
-    "message": "Thời gian khóa quá lớn"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"

@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "I-lock"
   },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
-  },
   "logo": {
     "message": "$1 logo",
     "description": "$1 is the name of the ticker"
