@@ -25,8 +25,8 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-.snap-account-color-text{
-    background-image: -webkit-linear-gradient(.45deg,#F6851B, #43AEFC);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.snap-account-color-text {
+  background-image: -webkit-linear-gradient(0.45deg, #f6851b, #43aefc);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
