@@ -4,7 +4,7 @@
   Object.defineProperty(window.top, 'SCUTTLER', {
     value: (realm, scuttle) => {
       window.top.SNOW((win) => {
-        log('Snow detected a new realm creation attempt in MetaMask:', win, '. Performing scuttling on new realm.');
+        log('Snow detected a new realm creation attempt in MetaMask. Performing scuttling on new realm.', win);
         scuttle(win);
       }, realm);
     },
