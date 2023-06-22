@@ -2171,8 +2171,8 @@
   "lockMetaMask": {
     "message": "Lock MetaMask"
   },
-  "lockTimeTooGreat": {
-    "message": "Lock time is too great"
+  "lockTimeInvalid": {
+    "message": "Lock time must be a number between 0 and 10080"
   },
   "logo": {
     "message": "$1 logo",

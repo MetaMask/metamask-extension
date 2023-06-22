@@ -31,7 +31,7 @@ export default class BackupController {
     }
 
     if (network) {
-      this.networkController.store.updateState(network);
+      this.networkController.loadBackup(network);
     }
 
     if (preferences || addressBook || network) {
@@ -48,7 +48,7 @@ export default class BackupController {
       addressBook: { ...this.addressBookController.state },
       network: {
         networkConfigurations:
-          this.networkController.store.getState().networkConfigurations,
+          this.networkController.state.networkConfigurations,
       },
     };
 

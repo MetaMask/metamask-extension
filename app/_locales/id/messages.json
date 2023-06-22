@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockTimeTooGreat": {
-    "message": "Lock time terlalu besar"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
