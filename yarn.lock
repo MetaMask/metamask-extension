@@ -3450,13 +3450,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@json-rpc-specification/meta-schema@npm:^1.0.6":
-  version: 1.0.6
-  resolution: "@json-rpc-specification/meta-schema@npm:1.0.6"
-  checksum: 2eb9c6c6c73bb38350c7180d1ad3c5b8462406926cae753741895b457d7b1b9f0b74148daf3462bb167cef39efdd1d9090308edf4d4938956863acb643c146eb
-  languageName: node
-  linkType: hard
-
 "@juggle/resize-observer@npm:^3.3.1":
   version: 3.4.0
   resolution: "@juggle/resize-observer@npm:3.4.0"
@@ -4142,7 +4135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^8.0.0, @metamask/eth-json-rpc-infura@npm:^8.1.0":
+"@metamask/eth-json-rpc-infura@npm:^8.0.0":
   version: 8.1.0
   resolution: "@metamask/eth-json-rpc-infura@npm:8.1.0"
   dependencies:
@@ -7737,15 +7730,6 @@ __metadata:
   dependencies:
     "@types/istanbul-lib-report": "*"
   checksum: 286a18cff19c4dac4321b9ea406a3560faf577fb2a4df5abf9d577fa81ba831c9baa7d40d03f1daf7fe613d468546b731c00b844b72fad9834c583311a35bb7b
-  languageName: node
-  linkType: hard
-
-"@types/jest-when@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "@types/jest-when@npm:3.5.2"
-  dependencies:
-    "@types/jest": "*"
-  checksum: 106230dd71ee266bbd7620ab339a7305054e56ba7638f0eff9f222e67a959df0ad68a7f0108156c50f7005881bae59cd5c38b3760c101d060cdb3dac9cd77ee2
   languageName: node
   linkType: hard
 
@@ -21963,15 +21947,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-when@npm:^3.5.2":
-  version: 3.5.2
-  resolution: "jest-when@npm:3.5.2"
-  peerDependencies:
-    jest: ">= 25"
-  checksum: 9ad95552d377ef4d517c96a14c38bd8626d6856f518e7efc8a01d76a45a39d3c52281392c98da781c302114c78cd1ea17556c7f638d49d15971fcce9d58306e8
-  languageName: node
-  linkType: hard
-
 "jest-worker@npm:^27.4.5":
   version: 27.5.1
   resolution: "jest-worker@npm:27.5.1"
@@ -24309,7 +24284,6 @@ __metadata:
     "@ethersproject/providers": ^5.7.2
     "@formatjs/intl-relativetimeformat": ^5.2.6
     "@fortawesome/fontawesome-free": ^5.13.0
-    "@json-rpc-specification/meta-schema": ^1.0.6
     "@keystonehq/bc-ur-registry-eth": ^0.19.1
     "@keystonehq/metamask-airgapped-keyring": ^0.13.1
     "@lavamoat/allow-scripts": ^2.0.3
@@ -24340,9 +24314,7 @@ __metadata:
     "@metamask/eslint-config-mocha": ^9.0.0
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
-    "@metamask/eth-json-rpc-infura": ^8.1.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/eth-json-rpc-provider": ^1.0.0
     "@metamask/eth-keyring-controller": ^10.0.1
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
     "@metamask/eth-token-tracker": ^4.0.0
@@ -24355,6 +24327,7 @@ __metadata:
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^7.0.0
     "@metamask/metamask-eth-abis": ^3.0.0
+    "@metamask/network-controller": ^10.1.0
     "@metamask/notification-controller": ^3.0.0
     "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^4.0.0
@@ -24377,7 +24350,6 @@ __metadata:
     "@metamask/snaps-utils": ^0.32.2
     "@metamask/snaps-utils-flask": "npm:@metamask/snaps-utils@0.34.0-flask.1"
     "@metamask/subject-metadata-controller": ^2.0.0
-    "@metamask/swappable-obj-proxy": ^2.1.0
     "@metamask/test-dapp": ^7.0.0
     "@metamask/utils": ^5.0.0
     "@ngraveio/bc-ur": ^1.1.6
@@ -24421,7 +24393,6 @@ __metadata:
     "@types/gulp-sass": ^5.0.0
     "@types/gulp-sourcemaps": ^0.0.35
     "@types/jest": ^29.1.2
-    "@types/jest-when": ^3.5.2
     "@types/madge": ^5.0.0
     "@types/node": ^17.0.21
     "@types/pify": ^5.0.1
@@ -24486,7 +24457,6 @@ __metadata:
     eslint-plugin-react: ^7.23.1
     eslint-plugin-react-hooks: ^4.2.0
     eslint-plugin-storybook: ^0.6.12
-    eth-block-tracker: ^7.0.0
     eth-ens-namehash: ^2.0.8
     eth-json-rpc-filters: ^6.0.0
     eth-lattice-keyring: ^0.12.4
@@ -24537,7 +24507,6 @@ __metadata:
     jest-canvas-mock: ^2.3.1
     jest-environment-jsdom: ^29.1.2
     jest-junit: ^14.0.1
-    jest-when: ^3.5.2
     js-yaml: ^4.1.0
     jsdom: ^11.2.0
     json-rpc-engine: ^6.1.0
