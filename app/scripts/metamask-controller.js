@@ -2,8 +2,7 @@ import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine } from 'json-rpc-engine';
-import { createAsyncMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce } from 'lodash';
@@ -1366,7 +1365,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.selectedNetworkController = new SelectedNetworkController({
       messenger: this.controllerMessenger,
-      switchNetwork: (a) => { }
+      switchNetwork: (a) => {},
     });
 
     // ensure accountTracker updates balances after network change
@@ -3798,71 +3797,97 @@ export default class MetamaskController extends EventEmitter {
     const engine = new JsonRpcEngine();
     const { blockTracker, provider } = this;
 
-    const providerConfig = this.networkController.store.getState().providerConfig;
+    const { providerConfig } = this.networkController.store.getState();
 
-    if (this.selectedNetworkController.getChainForDomain(origin) === undefined) {
-      console.log('setting default chain id for ', origin, 'to ', providerConfig.chainId);
+    if (
+      this.selectedNetworkController.getChainForDomain(origin) === undefined
+    ) {
+      console.log(
+        'setting default chain id for ',
+        origin,
+        'to ',
+        providerConfig.chainId,
+      );
       this.selectedNetworkController.setChainForDomain(
         origin,
-        providerConfig.chainId
+        providerConfig.chainId,
       );
     }
 
     console.log('providerConfig.chainId', providerConfig.chainId);
-    console.log('chainForDomain', origin, 'is ', this.selectedNetworkController.getChainForDomain(origin));
-
+    console.log(
+      'chainForDomain',
+      origin,
+      'is ',
+      this.selectedNetworkController.getChainForDomain(origin),
+    );
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
     // add some middleware that will switch chain on each request (as needed)
-    engine.push(createAsyncMiddleware(async (req, res, next) => {
-      if (req.method === 'wallet_switchEthereumChain') {
-        console.log('switch ethereum chain called with', req.params[0].chainId);
-        await next();
-        console.log('setting selected network', req.params[0].chainId);
-        this.selectedNetworkController.setChainForDomain(
-          origin,
-          req.params[0].chainId
-        );
-        return;
-      }
-
-      const chainIdForRequest = this.selectedNetworkController.getChainForDomain(
-        req.origin
-      );
-      console.log('chainIdForRequest', chainIdForRequest);
-
-      // if queue has anything in it && method call depends on chainId
-      const sameChainAsCurrent = chainIdForRequest === this.networkController.store.getState().providerConfig.chainId;
-      if (this.selectedNetworkController.hasQueuedRequests() && !sameChainAsCurrent) {
-        // if the chain id for the request origin is the same as the current chain id, dont wait for queue before calling next
-
-        console.log('waiting for queued requests to complete');
-        await this.selectedNetworkController.waitForRequestQueue();
-        console.log('queued requests complete');
-      }
-      // await all promises in the queue
-      // then continue
-
-      if (chainIdForRequest !== this.networkController.store.getState().providerConfig.chainId) {
-        console.log('SHOULD SWITCH NETWORK');
-        const type = CHAIN_ID_TO_TYPE_MAP[chainIdForRequest];
-        if (type) {
-          this.networkController.setProviderType(type);
-        } else {
-          const networkConfigId = this.networkController.getNetworkConfigurationForChainId(chainIdForRequest);
-          this.networkController.setActiveNetwork(networkConfigId);
+    engine.push(
+      createAsyncMiddleware(async (req, res, next) => {
+        if (req.method === 'wallet_switchEthereumChain') {
+          console.log(
+            'switch ethereum chain called with',
+            req.params[0].chainId,
+          );
+          await next();
+          console.log('setting selected network', req.params[0].chainId);
+          this.selectedNetworkController.setChainForDomain(
+            origin,
+            req.params[0].chainId,
+          );
+          return;
         }
-      }
 
-      // if method call depends on chainId
-      // Add 'next' promise to a queue
-      this.selectedNetworkController.enqueueRequest(
-        chainIdForRequest,
-        next()
-      );
-    }));
+        const chainIdForRequest =
+          this.selectedNetworkController.getChainForDomain(req.origin);
+        console.log('chainIdForRequest', chainIdForRequest);
+
+        // if queue has anything in it && method call depends on chainId
+        const sameChainAsCurrent =
+          chainIdForRequest ===
+          this.networkController.store.getState().providerConfig.chainId;
+        if (
+          this.selectedNetworkController.hasQueuedRequests() &&
+          !sameChainAsCurrent
+        ) {
+          // if the chain id for the request origin is the same as the current chain id, dont wait for queue before calling next
+
+          console.log('waiting for queued requests to complete');
+          await this.selectedNetworkController.waitForRequestQueue();
+          console.log('queued requests complete');
+        }
+        // await all promises in the queue
+        // then continue
+
+        if (
+          chainIdForRequest !==
+          this.networkController.store.getState().providerConfig.chainId
+        ) {
+          console.log('SHOULD SWITCH NETWORK');
+          const type = CHAIN_ID_TO_TYPE_MAP[chainIdForRequest];
+          if (type) {
+            this.networkController.setProviderType(type);
+          } else {
+            const networkConfigId =
+              this.networkController.getNetworkConfigurationForChainId(
+                chainIdForRequest,
+              );
+            this.networkController.setActiveNetwork(networkConfigId);
+          }
+        }
+
+        // if method call depends on chainId
+        // Add 'next' promise to a queue
+        this.selectedNetworkController.enqueueRequest(
+          chainIdForRequest,
+          next(),
+        );
+      }),
+    );
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
