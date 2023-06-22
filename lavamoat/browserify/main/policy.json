@@ -158,7 +158,7 @@
       },
       "packages": {
         "@ethereumjs/tx>@chainsafe/ssz>@chainsafe/as-sha256": true,
-        "@metamask/key-tree>@noble/hashes": true
+        "@metamask/snaps-ui>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/rlp": {
@@ -187,7 +187,7 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@metamask/key-tree>@noble/hashes": true
+        "@metamask/snaps-ui>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>micro-ftch": {
@@ -214,7 +214,7 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true
+        "@metamask/snaps-ui>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -222,7 +222,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true
+        "@metamask/snaps-ui>@noble/hashes": true
       }
     },
     "@ethersproject/abi": {
@@ -841,20 +841,6 @@
         "immer": true
       }
     },
-    "@metamask/browser-passworder": {
-      "globals": {
-        "btoa": true,
-        "crypto.getRandomValues": true,
-        "crypto.subtle.decrypt": true,
-        "crypto.subtle.deriveKey": true,
-        "crypto.subtle.encrypt": true,
-        "crypto.subtle.exportKey": true,
-        "crypto.subtle.importKey": true
-      },
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
@@ -985,12 +971,26 @@
     },
     "@metamask/eth-keyring-controller": {
       "packages": {
-        "@metamask/browser-passworder": true,
+        "@metamask/eth-keyring-controller>@metamask/browser-passworder": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/eth-keyring-controller>obs-store": true,
         "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
         "browserify>events": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/browser-passworder": {
+      "globals": {
+        "btoa": true,
+        "crypto.getRandomValues": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.importKey": true
+      },
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
@@ -1033,7 +1033,7 @@
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/secp256k1": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": true,
-        "@metamask/key-tree>@scure/base": true
+        "@metamask/snaps-ui>@scure/base": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": {
@@ -1511,10 +1511,10 @@
       "packages": {
         "@metamask/key-tree>@metamask/utils": true,
         "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/scure-bip39": true
+        "@metamask/scure-bip39": true,
+        "@metamask/snaps-ui>@noble/hashes": true,
+        "@metamask/snaps-ui>@scure/base": true
       }
     },
     "@metamask/key-tree>@metamask/utils": {
@@ -1537,24 +1537,12 @@
         "browserify>browser-resolve": true
       }
     },
-    "@metamask/key-tree>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
     "@metamask/key-tree>@noble/secp256k1": {
       "globals": {
         "crypto": true
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/key-tree>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@metamask/logo": {
@@ -1669,7 +1657,7 @@
     "@metamask/rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
-        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/snaps-ui>@noble/hashes": true,
         "@metamask/utils": true,
         "superstruct": true
       }
@@ -1697,8 +1685,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@scure/base": true,
-        "@metamask/scure-bip39>@noble/hashes": true
+        "@metamask/scure-bip39>@noble/hashes": true,
+        "@metamask/snaps-ui>@scure/base": true
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
@@ -1722,75 +1710,9 @@
         "lodash": true
       }
     },
-    "@metamask/smart-transactions-controller": {
-      "globals": {
-        "URLSearchParams": true,
-        "clearInterval": true,
-        "console.error": true,
-        "console.log": true,
-        "fetch": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers": true,
-        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
-        "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
-        "fast-json-patch": true,
-        "lodash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/smart-transactions-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/smart-transactions-controller>isomorphic-fetch": {
-      "globals": {
-        "fetch.bind": true
-      },
-      "packages": {
-        "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true,
-        "define": true,
-        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -1801,6 +1723,18 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-ui>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/snaps-ui>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/subject-metadata-controller": {
