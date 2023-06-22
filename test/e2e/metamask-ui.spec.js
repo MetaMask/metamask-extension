@@ -19,7 +19,6 @@ const dappPort = 8080;
 
 describe('MetaMask', function () {
   let driver;
-  let fixtureServer;
   let dappServer;
   let tokenAddress;
 
@@ -63,7 +62,6 @@ describe('MetaMask', function () {
     if (process.env.E2E_LEAVE_RUNNING === 'true' && failed) {
       return;
     }
-    await fixtureServer.stop();
     await ganacheServer.quit();
     await driver.quit();
     await new Promise((resolve, reject) => {
