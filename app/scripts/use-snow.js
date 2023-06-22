@@ -5,7 +5,7 @@
   Object.defineProperty(top, 'SCUTTLER', {
     value: (realm, scuttle) => {
       top.SNOW((win) => {
-        log(msg, win, win?.frameElement);
+        log(msg, win);
         scuttle(win);
       }, realm);
     }
