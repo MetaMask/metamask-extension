@@ -20,19 +20,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
         run: yarn --immutable
-
-      - name: Set execute permissions for script
-        run: chmod +x ./development/get-next-semver-version.sh
 
       - name: Get the next semver version
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./development/get-next-semver-version.sh $FORCE_NEXT_SEMVER_VERSION
+        run: ./development/get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
 
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues
