@@ -211,6 +211,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
 import { IndexedDBBackend } from './lib/indexed-db-backend';
 //  END:ONLY_INCLUDE_IN(build-blockaid);
+import { updateCurrentLocale } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -364,6 +365,10 @@ export default class MetamaskController extends EventEmitter {
       handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
       mmiConfigurationStore: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
+    });
+
+    this.preferencesController.store.subscribe(async ({ currentLocale }) => {
+      await updateCurrentLocale(currentLocale);
     });
 
     this.tokensController = new TokensController({
@@ -1286,11 +1291,7 @@ export default class MetamaskController extends EventEmitter {
     this.signatureController = new SignatureController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SignatureController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-        ],
+        allowedActions: [`${this.approvalController.name}:addRequest`],
       }),
       keyringController: this.keyringController,
       isEthSignEnabled: () =>
@@ -2281,27 +2282,6 @@ export default class MetamaskController extends EventEmitter {
 
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
-
-      // signatureController
-      signMessage: this.signatureController.signMessage.bind(
-        this.signatureController,
-      ),
-      cancelMessage: this.signatureController.cancelMessage.bind(
-        this.signatureController,
-      ),
-      signPersonalMessage: this.signatureController.signPersonalMessage.bind(
-        this.signatureController,
-      ),
-      cancelPersonalMessage:
-        this.signatureController.cancelPersonalMessage.bind(
-          this.signatureController,
-        ),
-      signTypedMessage: this.signatureController.signTypedMessage.bind(
-        this.signatureController,
-      ),
-      cancelTypedMessage: this.signatureController.cancelTypedMessage.bind(
-        this.signatureController,
-      ),
 
       // decryptMessageController
       decryptMessage: this.decryptMessageController.decryptMessage.bind(
