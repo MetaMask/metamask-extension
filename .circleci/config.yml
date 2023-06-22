@@ -30,6 +30,12 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
+rc_or_master_branch_only: &rc_or_master_branch_only
+  filters:
+    branches:
+      only:
+        - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+
 workflows:
   test_and_release:
     jobs:
@@ -50,11 +56,19 @@ workflows:
       - test-yarn-dedupe:
           requires:
             - prep-deps
-      - validate-lavamoat-config:
-          filters:
-            branches:
-              only:
-                - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
+      - validate-lavamoat-allow-scripts:
+          <<: *rc_or_master_branch_only
+          requires:
+            - prep-deps
+      - validate-lavamoat-policy-build:
+          <<: *rc_or_master_branch_only
+          requires:
+            - prep-deps
+      - validate-lavamoat-policy-webapp:
+          <<: *rc_or_master_branch_only
+          matrix:
+            parameters:
+              build-type: [main, beta, flask, mmi, desktop]
           requires:
             - prep-deps
       - prep-build:
@@ -162,7 +176,9 @@ workflows:
             - prep-build-flask
       - all-tests-pass:
           requires:
-            - validate-lavamoat-config
+            - validate-lavamoat-allow-scripts
+            - validate-lavamoat-policy-build
+            - validate-lavamoat-policy-webapp
             - test-lint
             - test-lint-shellcheck
             - test-lint-lockfile
@@ -329,7 +345,7 @@ jobs:
             - node_modules
             - build-artifacts
 
-  validate-lavamoat-config:
+  validate-lavamoat-allow-scripts:
     executor: node-browsers-medium-plus
     steps:
       - checkout
@@ -337,12 +353,39 @@ jobs:
           at: .
       - run:
           name: Validate allow-scripts config
-          command: |
-            .circleci/scripts/validate-allow-scripts.sh
+          command: yarn allow-scripts auto
       - run:
-          name: Validate LavaMoat policy
-          command: |
-            .circleci/scripts/validate-lavamoat-policy.sh
+          name: Check working tree
+          command: .circleci/scripts/check-working-tree.sh
+
+  validate-lavamoat-policy-build:
+    executor: node-browsers-medium-plus
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate LavaMoat build policy
+          command: yarn lavamoat:build:auto
+      - run:
+          name: Check working tree
+          command: .circleci/scripts/check-working-tree.sh
+
+  validate-lavamoat-policy-webapp:
+    executor: node-browsers-medium-plus
+    parameters:
+      build-type:
+        type: string
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Validate LavaMoat << parameters.build-type >>  policy
+          command: yarn lavamoat:webapp:auto:ci '--build-types=<< parameters.build-type >>'
+      - run:
+          name: Check working tree
+          command: .circleci/scripts/check-working-tree.sh
 
   prep-build:
     executor: node-browsers-medium-plus

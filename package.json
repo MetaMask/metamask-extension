@@ -85,7 +85,6 @@
     "lavamoat:webapp:auto": "node ./development/generate-lavamoat-policies.js --devMode=true",
     "lavamoat:webapp:auto:ci": "node ./development/generate-lavamoat-policies.js --parallel=false",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto",
-    "lavamoat:auto:ci": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto:ci",
     "ts-migration:dashboard:build": "ts-node development/ts-migration-dashboard/scripts/build-app.ts",
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build/final --remote ts-migration-dashboard",
     "ts-migration:dashboard:watch": "yarn ts-migration:dashboard:build --watch",
