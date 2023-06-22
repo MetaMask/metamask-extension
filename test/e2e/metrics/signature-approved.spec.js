@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
+  switchToNotificationWindow,
   withFixtures,
   regularDelayMs,
   openDapp,
@@ -41,19 +42,6 @@ async function mockSegment(mockServer) {
         };
       }),
   ];
-}
-
-/**
- * This method assumes the extension is open, the dapp is open and waits for a
- * third window handle to open (the notification window). Once it does it
- * switches to the new window.
- *
- * @param {WebDriver} driver
- */
-async function switchToNotificationWindow(driver) {
-  await driver.waitUntilXWindowHandles(3);
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
 }
 
 /**
