@@ -487,7 +487,7 @@ describe('TokenAllowancePage', () => {
         selectedAddress: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
       },
     };
-    const newStore = configureMockStore()(newState);
+    const newStore = configureMockStore([thunk])(newState);
     const { queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       newStore,
