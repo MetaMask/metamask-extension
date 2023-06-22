@@ -77,6 +77,7 @@ export const ActivityListItem = ({
               textAlign={TextAlign.Left}
               variant={TextVariant.bodyLgMedium}
               fontWeight={FontWeight.Medium}
+              data-testid="activity-list-item-action"
             >
               {title}
             </Text>

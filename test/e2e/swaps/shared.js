@@ -122,11 +122,9 @@ const waitForTransactionToComplete = async (driver, options) => {
 
 const checkActivityTransaction = async (driver, options) => {
   await driver.clickElement('[data-testid="home__activity-tab"]');
-  await driver.waitForSelector('[data-testid="list-item-title"]');
+  await driver.waitForSelector('.activity-list-item');
 
-  const transactionList = await driver.findElements(
-    '[data-testid="list-item-title"]',
-  );
+  const transactionList = await driver.findElements('[data-testid="activity-list-item-action"]');
   const transactionText = await transactionList[options.index].getText();
   assert.equal(
     transactionText,
@@ -135,7 +133,7 @@ const checkActivityTransaction = async (driver, options) => {
   );
 
   await driver.findElement({
-    css: '[data-testid="list-item-right-content"]',
+    css: '.transaction-list-item__primary-currency',
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
@@ -143,8 +141,8 @@ const checkActivityTransaction = async (driver, options) => {
   await driver.delay(regularDelayMs);
 
   await driver.findElement({
-    css: '[data-testid="transaction-list-item-details-tx-status"]',
-    text: `Confirmed`,
+    css: '.transaction-status-label',
+    text: 'Confirmed',
   });
 
   await driver.findElement({
