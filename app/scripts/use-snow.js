@@ -1,13 +1,12 @@
 // eslint-disable-next-line import/unambiguous
 (function () {
   const log = console.log.bind(console);
-  const msg = 'SNOW INTERCEPTED NEW WINDOW CREATION IN METAMASK APP: ';
-  Object.defineProperty(top, 'SCUTTLER', {
+  Object.defineProperty(window.top, 'SCUTTLER', {
     value: (realm, scuttle) => {
-      top.SNOW((win) => {
-        log(msg, win);
+      window.top.SNOW((win) => {
+        log('Snow detected a new realm creation attempt in MetaMask:', win, '. Performing scuttling on new realm.');
         scuttle(win);
       }, realm);
-    }
+    },
   });
 })();
