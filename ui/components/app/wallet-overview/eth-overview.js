@@ -96,7 +96,7 @@ const EthOverview = ({ className }) => {
       <>
         <IconButton
           className="eth-overview__button"
-          Icon={<Icon name={IconName.Stake} color={IconColor.primaryDefault} />}
+          Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
           onClick={() => {
             stakingEvent();
@@ -109,7 +109,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
+              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
             label={t('portfolio')}
             onClick={() => {
