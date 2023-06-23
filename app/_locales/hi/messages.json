@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "लॉक"
   },
-  "lockTimeTooGreat": {
-    "message": "लॉक समय बहुत अधिक है"
-  },
   "logo": {
     "message": "$1 लोगो",
     "description": "$1 is the name of the ticker"
