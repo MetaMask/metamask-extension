@@ -3806,10 +3806,6 @@ export default class MetamaskController extends EventEmitter {
       engine.emit('notification', message),
     );
 
-    // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
-    engine.push(createPPOMMiddleware(this.ppomController));
-    // END:ONLY_INCLUDE_IN(build-blockaid);
-
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
     }
@@ -3825,6 +3821,10 @@ export default class MetamaskController extends EventEmitter {
     // logging
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
+
+    // BEGIN:ONLY_INCLUDE_IN(build-blockaid);
+    engine.push(createPPOMMiddleware(this.ppomController));
+    // END:ONLY_INCLUDE_IN(build-blockaid);
 
     engine.push(
       createRPCMethodTrackingMiddleware({
