@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
 import React from 'react';
 
+import { Box } from '..';
 import README from './README.mdx';
 import { Checkbox } from '.';
 
@@ -52,8 +53,60 @@ IsChecked.args = {
   isChecked: true,
 };
 
-export const IsIndeterminate = (args) => {
-  return <Checkbox {...args} label="isIndeterminate Demo" />;
+export const IsIndeterminate = () => {
+  const [isTopCheckboxChecked, setTopCheckboxChecked] = React.useState<
+    boolean | 'indeterminate'
+  >('indeterminate');
+  const [checkboxes, setCheckboxes] = React.useState<boolean[]>([
+    false,
+    true,
+    false,
+  ]);
+
+  const handleTopCheckboxChange = () => {
+    if (isTopCheckboxChecked === true) {
+      setTopCheckboxChecked(false);
+      setCheckboxes([false, false, false]);
+    } else {
+      setTopCheckboxChecked(true);
+      setCheckboxes([true, true, true]);
+    }
+  };
+
+  const handleCheckboxChange = (index: number) => {
+    const newCheckboxes = [...checkboxes];
+    newCheckboxes[index] = !newCheckboxes[index];
+    setCheckboxes(newCheckboxes);
+
+    if (newCheckboxes.every((checkbox) => checkbox === true)) {
+      setTopCheckboxChecked(true);
+    } else if (newCheckboxes.every((checkbox) => checkbox === false)) {
+      setTopCheckboxChecked(false);
+    } else {
+      setTopCheckboxChecked('indeterminate');
+    }
+  };
+
+  return (
+    <div>
+      <Checkbox
+        label="Demo with isIndeterminate"
+        isChecked={isTopCheckboxChecked === true}
+        isIndeterminate={isTopCheckboxChecked === 'indeterminate'}
+        onChange={() => handleTopCheckboxChange()}
+      />
+      <Box marginLeft={2}>
+        {checkboxes.map((isChecked, index) => (
+          <Checkbox
+            key={index}
+            label={`Checkbox ${index + 1}`}
+            isChecked={isChecked}
+            onChange={() => handleCheckboxChange(index)}
+          />
+        ))}
+      </Box>
+    </div>
+  );
 };
 
 IsIndeterminate.args = {
@@ -96,4 +149,22 @@ export const IsRequired = (args) => {
 IsRequired.args = {
   isRequired: true,
   isChecked: true,
+};
+
+export const Title = (args) => {
+  return <Checkbox {...args} />;
+};
+
+Title.args = {
+  title: 'Apples',
+  label: 'Title Demo',
+};
+
+export const Name = (args) => {
+  return <Checkbox {...args} />;
+};
+
+Name.args = {
+  name: 'Pineapple',
+  label: 'Name Demo',
 };
