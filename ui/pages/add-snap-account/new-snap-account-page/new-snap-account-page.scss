@@ -26,7 +26,7 @@
 }
 
 .snap-account-color-text {
-  background-image: -webkit-linear-gradient(0.45deg, #f6851b, #43aefc);
+  background-image: linear-gradient(0.45deg, #f6851b, #43aefc);
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
