@@ -2,6 +2,8 @@
 @import 'awaiting-signatures/index';
 @import 'smart-transaction-status/index';
 @import 'build-quote/index';
+@import 'prepare-swap-page/index';
+@import 'notification-page/index';
 @import 'countdown-timer/index';
 @import 'dropdown-input-pair/index';
 @import 'dropdown-search-list/index';
@@ -17,6 +19,10 @@
 @import 'import-token/index';
 @import 'create-new-swap/index';
 @import 'view-on-block-explorer/index';
+@import 'transaction-settings/index';
+@import 'list-with-search/index';
+@import 'popover-custom-background/index';
+@import 'mascot-background-animation/index';
 
 .swaps {
   display: flex;
@@ -49,9 +55,10 @@
     @include screen-sm-min {
       width: 460px;
       background: var(--color-background-default);
-      border: 1px solid var(--color-border-muted);
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
-      border-radius: 8px;
+      border: 1px solid var(--color-border-muted);
+      border-top: 0;
+      border-radius: 0 0 8px 8px;
       height: 620px;
     }
   }
@@ -73,6 +80,12 @@
     @include screen-sm-min {
       width: 348px;
     }
+
+    &--redesign-enabled {
+      @include screen-sm-min {
+        width: 100%;
+      }
+    }
   }
 
   &__title {
@@ -90,16 +103,18 @@
     flex-flow: column;
     justify-content: center;
     align-items: center;
-    padding-top: 0;
-    padding-bottom: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
     background: var(--color-background-alternative);
     width: 100%;
-    position: relative;
     flex-direction: row;
+    position: sticky;
+    top: 0;
+    z-index: 1;
 
     @include screen-sm-min {
-      padding-top: 8px;
-      padding-bottom: 8px;
+      padding-top: 12px;
+      padding-bottom: 12px;
       height: 66px;
     }
   }
@@ -145,5 +160,19 @@
   &__notification-title {
     font-weight: bold;
     margin-right: 14px;
+  }
+}
+
+.mm-modal {
+  &__custom-scrollbar {
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      -webkit-border-radius: 10px;
+      border-radius: 10px;
+      background: var(--color-icon-muted);
+    }
   }
 }

@@ -23,8 +23,8 @@ import {
 import DetectedToken from '../detected-token/detected-token';
 import {
   DetectedTokensBanner,
-  MultichainTokenListItem,
-  MultichainImportTokenLink,
+  TokenListItem,
+  ImportTokenLink,
 } from '../../multichain';
 
 const AssetList = ({ onClickAsset }) => {
@@ -72,7 +72,7 @@ const AssetList = ({ onClickAsset }) => {
   const title = tokenData?.name || primaryCurrencyProperties.suffix;
   return (
     <>
-      <MultichainTokenListItem
+      <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
         title={title}
         primary={
@@ -103,7 +103,7 @@ const AssetList = ({ onClickAsset }) => {
         />
       ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <MultichainImportTokenLink margin={4} />
+        <ImportTokenLink margin={4} />
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

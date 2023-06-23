@@ -29,7 +29,7 @@ export interface TemporaryMessageDataType {
   ///: END:ONLY_INCLUDE_IN
 }
 
-interface MessagesIndexedById {
+export interface MessagesIndexedById {
   [id: string]: TemporaryMessageDataType;
 }
 

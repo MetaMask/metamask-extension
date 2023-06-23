@@ -17,10 +17,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version-file: '.nvmrc'
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Run fitness functions
         env:

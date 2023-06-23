@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ansluter till Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -396,7 +396,7 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testnätverk"
   },
   "links": {
@@ -428,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
-  },
-  "myAccounts": {
-    "message": "Mina konton"
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",

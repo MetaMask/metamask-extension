@@ -15,12 +15,10 @@ import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 import { KeyringType } from '../../../shared/constants/keyring';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
-import {
-  decGWEIToHexWEI,
-  hexToDecimal,
-} from '../../../shared/modules/conversion.utils';
+import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
   isInitialized: false,
@@ -40,7 +38,7 @@ const initialState = {
   currentLocale: '',
   currentBlockGasLimit: '',
   preferences: {
-    autoLockTimeLimit: undefined,
+    autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
@@ -263,9 +261,7 @@ export const getNfts = (state) => {
   } = state;
   const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNfts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNfts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export const getNftContracts = (state) => {
@@ -274,9 +270,7 @@ export const getNftContracts = (state) => {
   } = state;
   const { chainId } = getProviderConfig(state);
 
-  const chainIdAsDecimal = hexToDecimal(chainId);
-
-  return allNftContracts?.[selectedAddress]?.[chainIdAsDecimal] ?? [];
+  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {
@@ -432,4 +426,8 @@ export function doesUserHaveALedgerAccount(state) {
   return state.metamask.keyrings.some((kr) => {
     return kr.type === KeyringType.ledger;
   });
+}
+
+export function isLineaMainnetNetworkReleased(state) {
+  return state.metamask.isLineaMainnetReleased;
 }

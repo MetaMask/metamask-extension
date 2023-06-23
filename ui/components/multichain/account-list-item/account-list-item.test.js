@@ -68,7 +68,9 @@ describe('AccountListItem', () => {
     );
     expect(optionsButton).toBeInTheDocument();
     fireEvent.click(optionsButton);
-    expect(document.querySelector('.menu__background')).toBeInTheDocument();
+    expect(
+      document.querySelector('.multichain-account-list-item-menu__popover'),
+    ).toBeInTheDocument();
   });
 
   it('executes the action when the item is clicked', () => {

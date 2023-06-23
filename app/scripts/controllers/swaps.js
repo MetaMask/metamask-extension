@@ -104,23 +104,34 @@ const initialState = {
 };
 
 export default class SwapsController {
-  constructor({
-    getBufferedGasLimit,
-    networkController,
-    provider,
-    getProviderConfig,
-    getTokenRatesState,
-    fetchTradesInfo = defaultFetchTradesInfo,
-    getCurrentChainId,
-    getEIP1559GasFeeEstimates,
-    onNetworkStateChange,
-  }) {
+  constructor(
+    {
+      getBufferedGasLimit,
+      networkController,
+      provider,
+      getProviderConfig,
+      getTokenRatesState,
+      fetchTradesInfo = defaultFetchTradesInfo,
+      getCurrentChainId,
+      getEIP1559GasFeeEstimates,
+      onNetworkStateChange,
+    },
+    state,
+  ) {
     this.store = new ObservableStore({
-      swapsState: { ...initialState.swapsState },
+      swapsState: {
+        ...initialState.swapsState,
+        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+      },
     });
 
     this.resetState = () => {
-      this.store.updateState({ swapsState: { ...initialState.swapsState } });
+      this.store.updateState({
+        swapsState: {
+          ...initialState.swapsState,
+          swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        },
+      });
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
@@ -136,9 +147,9 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetworkId = networkController.store.getState().networkId;
+    this._currentNetworkId = networkController.state.networkId;
     onNetworkStateChange(() => {
-      const { networkId, networkStatus } = networkController.store.getState();
+      const { networkId, networkStatus } = networkController.state;
       if (
         networkStatus === NetworkStatus.Available &&
         networkId !== this._currentNetworkId
@@ -662,6 +673,7 @@ export default class SwapsController {
         swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
           swapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: swapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);

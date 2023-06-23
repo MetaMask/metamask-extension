@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   assertAccountBalanceForDOM,
+  logInWithBalanceValidation,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -27,10 +28,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -120,10 +118,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        await assertAccountBalanceForDOM(driver, ganacheServer);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -417,8 +412,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
           smartContract,
         );
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
@@ -431,10 +425,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         await inputAmount.fill('1');
 
         // Continue to next screen
-        await driver.findClickableElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Next', tag: 'button' });
-
-        await driver.findClickableElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // Go back to home screen to check txn
