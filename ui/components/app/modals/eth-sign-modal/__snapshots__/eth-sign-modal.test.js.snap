@@ -63,7 +63,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
         type="checkbox"
       />
       <label
-        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
         for="eth-sign__checkbox"
       >
         <span
