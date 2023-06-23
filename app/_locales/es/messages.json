@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "Bloquear"
   },
-  "lockTimeTooGreat": {
-    "message": "El tiempo de bloqueo es demasiado largo"
-  },
   "logo": {
     "message": "Logo de $1",
     "description": "$1 is the name of the ticker"
