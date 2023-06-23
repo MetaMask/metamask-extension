@@ -46,6 +46,12 @@ aliases:
       set -u
       set -o pipefail
 
+      # This Shallow Git Clone code is adapted from what the standard CircleCI `checkout` command does for the case of an external PR (specifically pull/19693):
+      ### git clone --no-checkout "$CIRCLE_REPOSITORY_URL" .
+      ### git fetch --force origin +refs/pull/18748/head:refs/remotes/origin/pull/18748
+      ### git checkout --force -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
+      ### git --no-pager log --no-color -n 1 --format='HEAD is now at %h %s'
+
       # Set up SSH access
       # This SSH key is the current github.com SSH key as of June 2023, but it will need to be changed whenever github changes their key (probably every few years)
       GITHUB_SSH_KEY="AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
@@ -57,11 +63,12 @@ aliases:
         # tag
         git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
         git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
-        git reset --hard "$CIRCLE_SHA1"
-        git checkout -q "$CIRCLE_TAG"
+        git checkout --force -q "$CIRCLE_TAG" "$CIRCLE_SHA1"
       elif [[ "$CIRCLE_BRANCH" =~ ^pull\/* ]]; then
         # pull request
-        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" --origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}" .
+        git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
+        git fetch --depth 1 --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
+        git checkout --force -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       else
         # normal case
         git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
