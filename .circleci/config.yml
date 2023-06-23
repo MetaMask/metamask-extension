@@ -61,10 +61,7 @@ aliases:
         git checkout -q "$CIRCLE_TAG"
       elif [[ "$CIRCLE_BRANCH" =~ ^pull\/* ]]; then
         # pull request
-        git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
-        git fetch --depth 1 --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
-        git reset --hard "$CIRCLE_SHA1"
-        git checkout -q -B "$CIRCLE_BRANCH"
+        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" --origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}" .
       else
         # normal case
         git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
@@ -395,7 +392,7 @@ jobs:
   validate-lavamoat-policy-build:
     executor: node-browsers-medium-plus
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -411,7 +408,7 @@ jobs:
       build-type:
         type: string
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
