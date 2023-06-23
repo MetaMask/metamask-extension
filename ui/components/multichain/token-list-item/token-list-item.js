@@ -29,6 +29,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { LINEA_GOERLI_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -45,11 +46,9 @@ export const TokenListItem = ({
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
   const badgeWrapperImage =
-    title === 'LineaETH'
-      ? './images/linea-logo-testnet.png'
-      : primaryTokenImage;
+    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : primaryTokenImage;
   const badgeTokenImage =
-    title === 'LineaETH' ? './images/linea-logo-testnet.png' : tokenImage;
+    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : tokenImage;
 
   return (
     <Box
