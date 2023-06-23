@@ -2,6 +2,10 @@ import { Meta } from '@storybook/react';
 import React from 'react';
 
 import { Box } from '..';
+import {
+  FontWeight,
+  TextColor,
+} from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { Checkbox } from '.';
 
@@ -39,6 +43,20 @@ export const Label = (args) => {
     <Checkbox
       {...args}
       label="Checkbox Label"
+      onChange={() => setIsChecked(!isChecked)}
+      isChecked={isChecked}
+    />
+  );
+};
+
+export const TextProps = (args) => {
+  const [isChecked, setIsChecked] = React.useState(false);
+
+  return (
+    <Checkbox
+      {...args}
+      label="Checkbox Label with textProps"
+      textProps={{ color: TextColor.errorDefault, fontWeight: FontWeight.Bold }}
       onChange={() => setIsChecked(!isChecked)}
       isChecked={isChecked}
     />
