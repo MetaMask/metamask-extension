@@ -43,7 +43,17 @@ export const AccountDetailsDisplay = ({
 
   const keyrings = useSelector(getMetaMaskKeyrings);
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
-  const exportPrivateKeyFeatureEnabled = !isHardwareKeyring(keyring?.type);
+  let exportPrivateKeyFeatureEnabled = true;
+  // This feature is disabled for hardware wallets
+  if (isHardwareKeyring(keyring?.type)) {
+    exportPrivateKeyFeatureEnabled = false;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  if (keyring?.type.includes('Snap')) {
+    exportPrivateKeyFeatureEnabled = false;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
