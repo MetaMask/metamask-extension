@@ -2,7 +2,7 @@ import { permissionRpcMethods } from '@metamask/permission-controller';
 import {
   selectHooks,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  permittedMethods as permittedSnapMethods
+  permittedMethods as permittedSnapMethods,
   ///: END:ONLY_INCLUDE_IN
 } from '@metamask/rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
