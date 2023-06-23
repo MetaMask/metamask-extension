@@ -124,7 +124,9 @@ const checkActivityTransaction = async (driver, options) => {
   await driver.clickElement('[data-testid="home__activity-tab"]');
   await driver.waitForSelector('.activity-list-item');
 
-  const transactionList = await driver.findElements('[data-testid="activity-list-item-action"]');
+  const transactionList = await driver.findElements(
+    '[data-testid="activity-list-item-action"]',
+  );
   const transactionText = await transactionList[options.index].getText();
   assert.equal(
     transactionText,

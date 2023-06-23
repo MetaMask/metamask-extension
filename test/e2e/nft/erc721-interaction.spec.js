@@ -266,7 +266,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction
@@ -405,7 +405,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // Verify transaction

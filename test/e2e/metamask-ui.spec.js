@@ -466,7 +466,7 @@ describe('MetaMask', function () {
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(
-          '.transaction-list__pending-transactions .transaction-list-item',
+          '.transaction-list__pending-transactions .activity-list-item',
         );
         return pendingTxes.length === 1;
       }, 10000);
@@ -475,7 +475,7 @@ describe('MetaMask', function () {
         css: '.transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item');
+      await driver.clickElement('.activity-list-item');
       await driver.delay(regularDelayMs);
     });
 
@@ -489,12 +489,12 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .activity-list-item .list-item__heading',
         text: 'Send TST',
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .activity-list-item .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
