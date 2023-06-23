@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import ConfigureSnapPopup from '../../../components/app/configure-snap-popup';
+import ConfigureSnapPopup, {
+  ConfigureSnapPopupType,
+} from '../../../components/app/configure-snap-popup';
 import {
   BUTTON_VARIANT,
   Box,
@@ -126,12 +128,12 @@ export default function SnapCard({
           marginLeft="auto"
         />
       </Box>
-      {showConfigPopover && (
-        <ConfigureSnapPopup
-          onClose={() => setShowConfigPopover(false)}
-          link={website}
-        />
-      )}
+      <ConfigureSnapPopup
+        isOpen={showConfigPopover}
+        type={ConfigureSnapPopupType.CONFIGURE}
+        onClose={() => setShowConfigPopover(false)}
+        link={website}
+      />
     </Box>
   );
 }
