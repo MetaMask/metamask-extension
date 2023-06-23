@@ -4,6 +4,7 @@ const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
+const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
@@ -384,6 +385,56 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await driver.navigate();
+  await driver.fill('#password', 'correct horse battery staple');
+  await driver.press('#password', driver.Key.ENTER);
+
+  // navigate settings to reveal SRP
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement({ text: 'Settings', tag: 'div' });
+  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
+  await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const completeSRPRevealQuiz = async (driver) => {
+  // start quiz
+  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
+
+  // tap correct answer 1
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 1
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+
+  // tap correct answer 2
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 2
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+};
+
+const tapAndHoldToRevealSRP = async (driver) => {
+  await driver.holdMouseDownOnElement(
+    {
+      text: tEn('holdToRevealSRP'),
+      tag: 'span',
+    },
+    2000,
+  );
+};
+
+const closeSRPReveal = async (driver) => {
+  await driver.clickElement({
+    text: tEn('close'),
+    tag: 'button',
+  });
+  await driver.findVisibleElement({
+    text: tEn('tokens'),
+    tag: 'button',
+  });
+};
+
 const DAPP_URL = 'http://127.0.0.1:8080';
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
@@ -500,10 +551,12 @@ const findAnotherAccountFromAccountList = async (
 ) => {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-  const acctName = await driver.findElement(
-    `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-  );
-  assert.equal(await acctName.getText(), accountName);
+
+  await driver.findElement({
+    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
+    text: accountName,
+  });
+
   return accountMenuItemSelector;
 };
 
@@ -530,27 +583,109 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     text: `${balance} ETH`,
   });
 };
+const DEFAULT_PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+const WALLET_PASSWORD = 'correct horse battery staple';
 
-const restartServiceWorker = async (driver) => {
-  const serviceWorkerElements = await driver.findElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[1].click();
+const DEFAULT_GANACHE_OPTIONS = {
+  accounts: [
+    {
+      secretKey: DEFAULT_PRIVATE_KEY,
+      balance: generateETHBalance(25),
+    },
+  ],
 };
+
+const generateGanacheOptions = (overrides) => ({
+  ...DEFAULT_GANACHE_OPTIONS,
+  ...overrides,
+});
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+});
 
-const logInWithBalanceValidation = async (driver, ganacheServer) => {
+const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
+};
+
+const logInWithBalanceValidation = async (driver, ganacheServer) => {
+  await unlockWallet(driver);
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
+
+function roundToXDecimalPlaces(number, decimalPlaces) {
+  return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
+}
+
+function generateRandNumBetween(x, y) {
+  const min = Math.min(x, y);
+  const max = Math.max(x, y);
+  const randomNumber = Math.random() * (max - min) + min;
+
+  return randomNumber;
+}
+
+async function switchToWindow(driver, windowTitle) {
+  const windowHandles = await driver.getAllWindowHandles();
+
+  return await driver.switchToWindowWithTitle(windowTitle, windowHandles);
+}
+
+async function sleepSeconds(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+async function terminateServiceWorker(driver) {
+  await driver.openNewPage(SERVICE_WORKER_URL);
+
+  await driver.waitForSelector({
+    text: 'Service workers',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: 'Service workers',
+    tag: 'button',
+  });
+
+  const serviceWorkerElements = await driver.findElements({
+    text: 'terminate',
+    tag: 'span',
+  });
+
+  // 1st one is app-init.js; while 2nd one is service-worker.js
+  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
+
+  const serviceWorkerTab = await switchToWindow(
+    driver,
+    WINDOW_TITLES.ServiceWorkerSettings,
+  );
+
+  await driver.closeWindowHandle(serviceWorkerTab);
+}
+
+/**
+ * This method assumes the extension is open, the dapp is open and waits for a
+ * third window handle to open (the notification window). Once it does it
+ * switches to the new window.
+ *
+ * @param {WebDriver} driver
+ */
+async function switchToNotificationWindow(driver) {
+  await driver.waitUntilXWindowHandles(3);
+  const windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+}
 
 module.exports = {
   DAPP_URL,
@@ -570,6 +705,10 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  passwordUnlockOpenSRPRevealQuiz,
+  completeSRPRevealQuiz,
+  closeSRPReveal,
+  tapAndHoldToRevealSRP,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
@@ -579,9 +718,20 @@ module.exports = {
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  unlockWallet,
   logInWithBalanceValidation,
   assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
-  restartServiceWorker,
   waitForAccountRendered,
+  generateGanacheOptions,
+  WALLET_PASSWORD,
+  WINDOW_TITLES,
+  DEFAULT_GANACHE_OPTIONS,
+  generateETHBalance,
+  roundToXDecimalPlaces,
+  generateRandNumBetween,
+  switchToWindow,
+  sleepSeconds,
+  terminateServiceWorker,
+  switchToNotificationWindow,
 };

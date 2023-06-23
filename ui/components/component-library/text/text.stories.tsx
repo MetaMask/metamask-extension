@@ -59,8 +59,11 @@ function renderBackgroundColor(color) {
     case Color.sepoliaInverse:
       bgColor = BackgroundColor.sepolia;
       break;
-    case Color.lineaTestnetInverse:
-      bgColor = BackgroundColor.lineaTestnet;
+    case Color.lineaGoerliInverse:
+      bgColor = BackgroundColor.lineaGoerli;
+      break;
+    case Color.lineaMainnetInverse:
+      bgColor = BackgroundColor.lineaMainnet;
       break;
     default:
       bgColor = null;

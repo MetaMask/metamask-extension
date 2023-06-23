@@ -56,3 +56,7 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
 function isSafeInteger(value: unknown): value is number {
   return Number.isSafeInteger(value);
 }
+
+export function shouldShowLineaMainnet(): boolean {
+  return new Date().getTime() > Date.UTC(2023, 6, 11, 18);
+}

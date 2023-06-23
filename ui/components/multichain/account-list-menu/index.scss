@@ -1,4 +1,8 @@
-.multichain-account-menu {
+.multichain-account-menu-popover {
+  .popover-content {
+    border-radius: 0;
+  }
+
   &__list {
     max-height: 200px;
     overflow: auto;

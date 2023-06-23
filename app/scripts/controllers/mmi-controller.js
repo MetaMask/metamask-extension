@@ -14,9 +14,7 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -544,30 +542,6 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async setMmiPortfolioCookie() {
-    await this.appStateController.getUnlockPromise(true);
-    const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const getAccountDetails = (address) =>
-      this.custodyController.getAccountDetails(address);
-    const extensionId = this.extension.runtime.id;
-    const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ];
-
-    handleMmiPortfolio({
-      keyringAccounts,
-      identities,
-      metaMetricsId,
-      networks,
-      getAccountDetails,
-      extensionId,
-    });
-  }
-
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
     const selectedAddress = this.preferencesController.getSelectedAddress();
@@ -575,22 +549,25 @@ export default class MMIController extends EventEmitter {
       this.preferencesController.setSelectedAddress(address);
     }
     const selectedChainId = parseInt(
-      this.networkController.getCurrentChainId(),
+      this.networkController.state.providerConfig.chainId,
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {
-      this.networkController.setProviderType('mainnet');
+      await this.networkController.setProviderType('mainnet');
     } else if (selectedChainId !== chainId) {
-      const network = this.preferencesController
-        .getFrequentRpcListDetail()
-        .find((item) => parseInt(item.chainId, 16) === chainId);
-      this.networkController.setRpcTarget(
-        network.rpcUrl,
-        network.chainId,
-        network.ticker,
-        network.nickname,
-      );
+      const foundNetworkConfiguration = Object.values(
+        this.networkController.state.networkConfigurations,
+      ).find((networkConfiguration) => {
+        return parseInt(networkConfiguration.chainId, 16) === chainId;
+      });
+
+      if (foundNetworkConfiguration !== undefined) {
+        await this.networkConfiguration.setActiveNetwork(
+          foundNetworkConfiguration.id,
+        );
+      }
     }
+
     getPermissionBackgroundApiMethods(
       this.permissionController,
     ).addPermittedAccount(origin, address);
