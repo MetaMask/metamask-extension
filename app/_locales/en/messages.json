@@ -3899,7 +3899,7 @@
     "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
-  "snapCreatedByMetamask": {
+  "snapCreatedByMetaMask": {
     "message": "By MetaMask"
   },
   "snapDetailAudits": {
