@@ -193,11 +193,13 @@ export default class PermissionPageContainer extends Component {
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <>
-            <SnapPrivacyWarning
-              isOpen={this.state.isShowingSnapsPrivacyWarning}
-              onAccepted={() => confirmSnapsPrivacyWarning()}
-              onCanceled={() => this.onCancel()}
-            />
+            {this.state.isShowingSnapsPrivacyWarning && (
+              <SnapPrivacyWarning
+                isOpen
+                onAccepted={() => confirmSnapsPrivacyWarning()}
+                onCanceled={() => this.onCancel()}
+              />
+            )}
           </>
           ///: END:ONLY_INCLUDE_IN
         }

@@ -196,14 +196,16 @@ export default function SnapsConnect({
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
     >
-      <SnapPrivacyWarning
-        isOpen={isShowingSnapsPrivacyWarning}
-        onAccepted={() => {
-          setIsShowingSnapsPrivacyWarning(false);
-          setSnapsInstallPrivacyWarningShownStatus(true);
-        }}
-        onCanceled={onCancel}
-      />
+      {isShowingSnapsPrivacyWarning && (
+        <SnapPrivacyWarning
+          isOpen
+          onAccepted={() => {
+            setIsShowingSnapsPrivacyWarning(false);
+            setSnapsInstallPrivacyWarningShownStatus(true);
+          }}
+          onCanceled={onCancel}
+        />
+      )}
       <Box
         className="snaps-connect__header"
         flexDirection={FlexDirection.Column}
