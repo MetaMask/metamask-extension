@@ -30,12 +30,6 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-rc_or_master_branch_only: &rc_or_master_branch_only
-  filters:
-    branches:
-      only:
-        - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
-
 workflows:
   test_and_release:
     jobs:
@@ -57,15 +51,12 @@ workflows:
           requires:
             - prep-deps
       - validate-lavamoat-allow-scripts:
-          <<: *rc_or_master_branch_only
           requires:
             - prep-deps
       - validate-lavamoat-policy-build:
-          <<: *rc_or_master_branch_only
           requires:
             - prep-deps
       - validate-lavamoat-policy-webapp:
-          <<: *rc_or_master_branch_only
           matrix:
             parameters:
               build-type: [main, beta, flask, mmi, desktop]
