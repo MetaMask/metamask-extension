@@ -549,22 +549,25 @@ export default class MMIController extends EventEmitter {
       this.preferencesController.setSelectedAddress(address);
     }
     const selectedChainId = parseInt(
-      this.networkController.getCurrentChainId(),
+      this.networkController.state.providerConfig.chainId,
       16,
     );
     if (selectedChainId !== chainId && chainId === 1) {
-      this.networkController.setProviderType('mainnet');
+      await this.networkController.setProviderType('mainnet');
     } else if (selectedChainId !== chainId) {
-      const network = this.preferencesController
-        .getFrequentRpcListDetail()
-        .find((item) => parseInt(item.chainId, 16) === chainId);
-      this.networkController.setRpcTarget(
-        network.rpcUrl,
-        network.chainId,
-        network.ticker,
-        network.nickname,
-      );
+      const foundNetworkConfiguration = Object.values(
+        this.networkController.state.networkConfigurations,
+      ).find((networkConfiguration) => {
+        return parseInt(networkConfiguration.chainId, 16) === chainId;
+      });
+
+      if (foundNetworkConfiguration !== undefined) {
+        await this.networkConfiguration.setActiveNetwork(
+          foundNetworkConfiguration.id,
+        );
+      }
     }
+
     getPermissionBackgroundApiMethods(
       this.permissionController,
     ).addPermittedAccount(origin, address);

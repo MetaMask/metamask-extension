@@ -81,6 +81,65 @@ async function defineAndRunBuildTasks() {
     // scuttle on production/tests environment only
     const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
 
+    let scuttleGlobalThisExceptions = [
+      // globals used by different mm deps outside of lm compartment
+      'toString',
+      'getComputedStyle',
+      'addEventListener',
+      'removeEventListener',
+      'ShadowRoot',
+      'HTMLElement',
+      'Element',
+      'pageXOffset',
+      'pageYOffset',
+      'visualViewport',
+      'Reflect',
+      'Set',
+      'Object',
+      'navigator',
+      'harden',
+      'console',
+      'Image', // Used by browser to generate notifications
+      // globals chromedriver needs to function
+      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+      'performance',
+      'parseFloat',
+      'innerWidth',
+      'innerHeight',
+      'Symbol',
+      'Math',
+      'DOMRect',
+      'Number',
+      'Array',
+      'crypto',
+      'Function',
+      'Uint8Array',
+      'String',
+      'Promise',
+      'JSON',
+      'Date',
+      // globals sentry needs to function
+      '__SENTRY__',
+      'appState',
+      'extra',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
+    ];
+
+    if (
+      entryTask === BUILD_TARGETS.TEST ||
+      entryTask === BUILD_TARGETS.TEST_DEV
+    ) {
+      scuttleGlobalThisExceptions = [
+        ...scuttleGlobalThisExceptions,
+        // more globals chromedriver needs to function
+        // in the future, more of the globals above can be put in this list
+        'Proxy',
+        'ret_nodes',
+      ];
+    }
+
     console.log(
       `Building lavamoat runtime file`,
       `(scuttling is ${shouldScuttle ? 'on' : 'off'})`,
@@ -89,52 +148,7 @@ async function defineAndRunBuildTasks() {
     // build lavamoat runtime file
     await lavapack.buildRuntime({
       scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-      scuttleGlobalThisExceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'Image', // Used by browser to generate notifications
-        // globals chrome driver needs to function (test env)
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        'JSON',
-        'Date',
-        'Proxy',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-      ],
+      scuttleGlobalThisExceptions,
     });
   }
 
