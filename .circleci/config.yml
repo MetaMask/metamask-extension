@@ -73,6 +73,7 @@ aliases:
         # normal case
         git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
       fi
+      #testing a forked PR
 
 workflows:
   test_and_release:
