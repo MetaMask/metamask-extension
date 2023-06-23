@@ -1958,9 +1958,6 @@
   "install": {
     "message": "Install"
   },
-  "install": {
-    "message": "Install"
-  },
   "installOrigin": {
     "message": "Install origin"
   },
@@ -3901,9 +3898,6 @@
   "snapCreateAccountTitle2": {
     "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "By MetaMask"
   },
   "snapCreatedByMetamask": {
     "message": "By MetaMask"
