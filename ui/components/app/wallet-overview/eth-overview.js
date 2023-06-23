@@ -36,7 +36,6 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
@@ -44,12 +43,7 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -156,42 +150,6 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <ButtonIcon
-                  className="eth-overview__portfolio-button"
-                  data-testid="home__portfolio-site"
-                  color={IconColor.primaryDefault}
-                  iconName={IconName.Diagram}
-                  ariaLabel={t('portfolio')}
-                  size={ButtonIconSize.Lg}
-                  onClick={() => {
-                    const portfolioUrl = getPortfolioUrl(
-                      '',
-                      'ext',
-                      metaMetricsId,
-                    );
-                    global.platform.openTab({
-                      url: portfolioUrl,
-                    });
-                    trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.PortfolioLinkClicked,
-                        properties: {
-                          url: portfolioUrl,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
