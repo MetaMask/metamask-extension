@@ -147,8 +147,11 @@ async function defineAndRunBuildTasks() {
 
     // build lavamoat runtime file
     await lavapack.buildRuntime({
-      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-      scuttleGlobalThisExceptions,
+      scuttleGlobalThis: {
+        enabled: applyLavaMoat && shouldScuttle,
+        scuttlerName: 'SCUTTLER',
+        exceptions: scuttleGlobalThisExceptions,
+      },
     });
   }
 
