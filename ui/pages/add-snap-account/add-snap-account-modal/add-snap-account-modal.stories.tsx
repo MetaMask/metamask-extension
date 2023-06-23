@@ -4,7 +4,7 @@ import React from 'react';
 import { BUTTON_VARIANT, Button } from '../../../components/component-library';
 import AddSnapAccountModal from '.';
 
-export default {
+const AddSnapAccountModalStory = {
   title: 'Components/App/AddSnapAccountModal',
   component: AddSnapAccountModal,
   argTypes: {},
@@ -32,3 +32,5 @@ export const DefaultStory: StoryFn<typeof AddSnapAccountModal> = () => {
 };
 
 DefaultStory.storyName = 'Default';
+
+export default AddSnapAccountModalStory;
