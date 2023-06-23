@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref, ChangeEvent } from 'react';
+import React, { forwardRef, Ref, ChangeEvent, KeyboardEvent } from 'react';
 import classnames from 'classnames';
 import { Box, Icon, IconName, Text } from '..';
 import {
@@ -26,6 +26,12 @@ export const Checkbox = forwardRef(function Checkbox(
   }: CheckboxProps,
   ref: Ref<HTMLInputElement>,
 ) {
+  const handleCheckboxKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      onChange?.(event as unknown as ChangeEvent<HTMLInputElement>);
+    }
+  };
+
   const CheckboxComponent = (
     <Box className="mm-checkbox__wrapper">
       <Box
@@ -41,12 +47,13 @@ export const Checkbox = forwardRef(function Checkbox(
         checked={isChecked}
         disabled={isDisabled}
         readOnly={isReadOnly}
+        required={isRequired}
         data-indeterminate={isIndeterminate}
         ref={ref}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
-          console.log('onChange');
           onChange?.(event);
         }}
+        onKeyDown={handleCheckboxKeyDown}
         {...props}
         margin={0}
         backgroundColor={
