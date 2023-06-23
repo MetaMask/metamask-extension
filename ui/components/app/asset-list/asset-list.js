@@ -11,6 +11,7 @@ import {
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getTokenList,
+  getCurrentChainId,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -26,6 +27,7 @@ import {
   TokenListItem,
   ImportTokenLink,
 } from '../../multichain';
+import { isTokenDetectionEnabledForNetwork } from '../../../../shared/modules/network.utils';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -35,7 +37,10 @@ const AssetList = ({ onClickAsset }) => {
   const showFiat = useSelector(getShouldShowFiat);
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
+  const chainId = useSelector(getCurrentChainId);
   const balanceIsLoading = !balance;
+
+  const showImportLink = isTokenDetectionEnabledForNetwork(chainId);
 
   const {
     currency: primaryCurrency,
@@ -102,9 +107,11 @@ const AssetList = ({ onClickAsset }) => {
           margin={4}
         />
       ) : null}
-      <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} />
-      </Box>
+      {showImportLink ? (
+        <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
+          <ImportTokenLink margin={4} />
+        </Box>
+      ) : null}
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />
       )}
