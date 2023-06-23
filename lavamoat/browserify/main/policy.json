@@ -10,11 +10,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@blockaid/ppom-mock>ppom": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "@download/blockies": {
       "globals": {
         "document.createElement": true
@@ -1545,96 +1540,221 @@
     },
     "@metamask/network-controller": {
       "globals": {
-        "URL": true,
-        "btoa": true,
-        "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/utils": true,
-        "browserify>assert": true,
-        "eth-query": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "uuid": true
+        "@metamask/network-controller>@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/controller-utils": true,
+        "@metamask/network-controller>eth-json-rpc-infura": true,
+        "@metamask/network-controller>web3-provider-engine": true,
+        "eth-json-rpc-filters>async-mutex": true,
+        "eth-query": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura": {
-      "globals": {
-        "setTimeout": true
-      },
+    "@metamask/network-controller>@metamask/base-controller": {
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "node-fetch": true
+        "immer": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": {
+    "@metamask/network-controller>@metamask/controller-utils": {
       "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
-      "globals": {
-        "URL": true,
-        "btoa": true,
         "console.error": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
-        "@metamask/safe-event-emitter": true,
-        "browserify>browser-resolve": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
+        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/network-controller>eth-json-rpc-infura": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "@metamask/network-controller>eth-json-rpc-infura>eth-rpc-errors": true,
+        "@metamask/network-controller>eth-json-rpc-infura>json-rpc-engine": true,
+        "node-fetch": true
+      }
+    },
+    "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-token-tracker>safe-event-emitter": true,
+        "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware>eth-rpc-errors": true,
+        "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware>json-rpc-engine": true,
+        "browserify>url": true,
         "lavamoat>json-stable-stringify": true,
+        "node-fetch": true,
+        "source-map-explorer>btoa": true,
         "vinyl>clone": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
+    "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware>eth-rpc-errors": {
       "packages": {
-        "@metamask/safe-event-emitter": true,
-        "json-rpc-engine": true
+        "eth-rpc-errors>fast-safe-stringify": true
       }
     },
-    "@metamask/network-controller>eth-block-tracker": {
+    "@metamask/network-controller>eth-json-rpc-infura>eth-rpc-errors": {
+      "packages": {
+        "eth-rpc-errors>fast-safe-stringify": true
+      }
+    },
+    "@metamask/network-controller>eth-json-rpc-infura>json-rpc-engine": {
+      "packages": {
+        "@metamask/eth-token-tracker>safe-event-emitter": true,
+        "@metamask/network-controller>eth-json-rpc-infura>eth-rpc-errors": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine": {
+      "globals": {
+        "WebSocket": true,
+        "console": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/network-controller>eth-json-rpc-infura": true,
+        "@metamask/network-controller>eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx": true,
+        "@metamask/network-controller>web3-provider-engine>backoff": true,
+        "@metamask/network-controller>web3-provider-engine>eth-block-tracker": true,
+        "@metamask/network-controller>web3-provider-engine>eth-sig-util": true,
+        "@metamask/network-controller>web3-provider-engine>ethereumjs-util": true,
+        "@metamask/network-controller>web3-provider-engine>semaphore": true,
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>events": true,
+        "browserify>util": true,
+        "eth-json-rpc-filters": true,
+        "lavamoat>json-stable-stringify": true,
+        "mockttp>portfinder>async": true,
+        "watchify>xtend": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx": {
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common": true,
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>ethereumjs-util": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common": {
+      "packages": {
+        "@ethereumjs/common>crc-32": true,
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common>ethereumjs-util": true,
+        "browserify>buffer": true,
+        "browserify>events": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common>ethereumjs-util": {
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common>ethereumjs-util>bn.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-util>rlp": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>@ethereumjs/common>ethereumjs-util>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>ethereumjs-util": {
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>ethereumjs-util>bn.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "browserify>insert-module-globals>is-buffer": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-util>rlp": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>@ethereumjs/tx>ethereumjs-util>bn.js": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>backoff": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>backoff>precond": true,
+        "browserify>events": true,
+        "browserify>util": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>backoff>precond": {
+      "packages": {
+        "browserify>util": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>eth-block-tracker": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
         "setTimeout": true
       },
       "packages": {
-        "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": true,
-        "@metamask/network-controller>eth-block-tracker>pify": true,
-        "@metamask/utils": true,
+        "@metamask/network-controller>web3-provider-engine>eth-block-tracker>pify": true,
+        "@metamask/safe-event-emitter": true,
         "eth-query>json-rpc-random-id": true
       }
     },
-    "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": {
+    "@metamask/network-controller>web3-provider-engine>eth-sig-util": {
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>ethereumjs-util": true,
+        "ethereumjs-abi": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>ethereumjs-util": {
+      "packages": {
+        "@metamask/network-controller>web3-provider-engine>ethereumjs-util>ethjs-util": true,
+        "bn.js": true,
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-util>rlp": true,
+        "ethereumjs-wallet>safe-buffer": true,
+        "ganache>secp256k1>elliptic": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>ethereumjs-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "@metamask/network-controller>web3-provider-engine>semaphore": {
       "globals": {
+        "define": true,
         "setTimeout": true
       },
       "packages": {
-        "browserify>events": true
+        "browserify>process": true
       }
     },
     "@metamask/notification-controller>nanoid": {
@@ -3946,6 +4066,16 @@
         "Intl": true
       }
     },
+    "mockttp>portfinder>async": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true,
+        "browserify>timers-browserify": true,
+        "lodash": true
+      }
+    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4490,6 +4620,11 @@
     "sinon>nise>path-to-regexp": {
       "packages": {
         "sinon>nise>path-to-regexp>isarray": true
+      }
+    },
+    "source-map-explorer>btoa": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "string.prototype.matchall>call-bind": {
