@@ -1,0 +1,54 @@
+.mm-checkbox {
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+
+  &:hover {
+    background-color: var(--color-background-default-hover);
+  }
+
+  &:focus {
+    border-color: var(--color-primary-default);
+  }
+
+  &__wrapper {
+    position: relative;
+    // display: inline-block;
+
+    // // width: 20px;
+    // // height: 20px;
+  }
+
+  &__icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  &--disabled {
+    opacity: var(--opacity-disabled);
+  }
+
+  &--checked:hover,
+  &--indeterminate:hover {
+    border-color: var(--color-primary-alternative);
+    background-color: var(--color-primary-alternative);
+  }
+
+
+  &--checked#{&}--readonly,
+  &--checked#{&}--readonly:hover,
+  &--indeterminate#{&}--readonly,
+  &--indeterminate#{&}--readonly:hover {
+    border-color: var(--color-icon-alternative);
+    background-color: var(--color-icon-alternative);
+  }
+
+  &:disabled {
+    color: var(--color-icon-muted);
+    cursor: not-allowed;
+  }
+}

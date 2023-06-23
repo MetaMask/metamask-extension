@@ -17,8 +17,29 @@ export default {
   args: {},
 } as Meta<typeof Checkbox>;
 
-export const DefaultStory = (args) => <Checkbox {...args} />;
+export const DefaultStory = (args) => {
+  const [isChecked, setIsChecked] = React.useState(false);
+
+  return (
+    <Checkbox
+      {...args}
+      onChange={() => setIsChecked(!isChecked)}
+      isChecked={isChecked}
+    />
+  );
+};
 
 DefaultStory.storyName = 'Default';
 
-export const Test = () => <Checkbox />;
+export const Label = (args) => {
+  const [isChecked, setIsChecked] = React.useState(false);
+
+  return (
+    <Checkbox
+      {...args}
+      label="Checkbox Label"
+      onChange={() => setIsChecked(!isChecked)}
+      isChecked={isChecked}
+    />
+  );
+};
