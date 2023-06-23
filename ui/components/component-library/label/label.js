@@ -19,7 +19,7 @@ export const Label = ({ htmlFor, className, children, ...props }) => (
     as="label"
     htmlFor={htmlFor}
     variant={TextVariant.bodyMd}
-    fontWeight={FONT_WEIGHT.BOLD}
+    fontWeight={FONT_WEIGHT.MEDIUM}
     display={DISPLAY.INLINE_FLEX}
     alignItems={AlignItems.center}
     {...props}
