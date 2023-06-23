@@ -59,10 +59,9 @@ export default function FormField({
             {TitleTextCustomComponent ||
               (titleText && (
                 <Text
-                  tag="label"
+                  as="label"
                   htmlFor={id}
                   variant={TextVariant.bodySmBold}
-                  as="h6"
                   display={Display.InlineBlock}
                 >
                   {titleText}

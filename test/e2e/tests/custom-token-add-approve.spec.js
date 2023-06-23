@@ -163,7 +163,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         const defaultSpendingCup = await driver.findElement({
           text: '7 TST',
-          css: '.box--flex-direction-row > h6',
+          tag: 'h6',
         });
 
         assert.equal(
@@ -255,7 +255,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         let spendingCup = await driver.findElement({
           text: '5 TST',
-          css: '.box--flex-direction-row > h6',
+          tag: 'h6',
         });
 
         assert.equal(
@@ -287,7 +287,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         await driver.waitForSelector(
           {
-            css: '.box--flex-direction-row > h6',
+            tag: 'h6',
             text: '0.0006 ETH',
           },
           { timeout: 15000 },
@@ -311,7 +311,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         spendingCup = await driver.findElement({
           text: '9 TST',
-          css: '.box--flex-direction-row > h6',
+          tag: 'h6',
         });
         assert.equal(
           await spendingCup.getText(),
@@ -401,7 +401,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         const maxSpendingCap = await driver.findElement({
           text: '10 TST',
-          css: '.box--flex-direction-row > h6',
+          tag: 'h6',
         });
 
         assert.equal(
