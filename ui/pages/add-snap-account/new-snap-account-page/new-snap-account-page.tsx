@@ -14,8 +14,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSnaps } from '../../../selectors';
-import { submitRequestToBackground } from '../../../store/action-queue';
+import {
+  getSnaps,
+  getsnapsAddSnapAccountModalDismissed,
+} from '../../../selectors';
+import { setSnapsAddSnapAccountModalDismissed } from '../../../store/actions';
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
 
@@ -59,11 +62,11 @@ export default function NewSnapAccountPage() {
 
   const hidePopup = () => {
     setShowPopup(false);
-    submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
+    setSnapsAddSnapAccountModalDismissed();
   };
 
   const snapsAddSnapAccountModalDismissed = useSelector(
-    (state) => state.metamask.snapsAddSnapAccountModalDismissed,
+    getsnapsAddSnapAccountModalDismissed,
   );
 
   return (

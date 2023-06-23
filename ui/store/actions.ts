@@ -4398,4 +4398,10 @@ export function installSnapFromSnapAccounts(
     }
   };
 }
+
+export function setSnapsAddSnapAccountModalDismissed() {
+  return async () => {
+    submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
+  };
+}
 ///: END:ONLY_INCLUDE_IN
