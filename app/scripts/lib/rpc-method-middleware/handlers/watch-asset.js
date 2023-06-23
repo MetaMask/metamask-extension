@@ -46,7 +46,7 @@ async function watchAssetHandler(
 
     if (
       [ERC721, ERC1155].includes(type) &&
-      tokenId &&
+      tokenId !== undefined &&
       typeof tokenId !== 'string'
     ) {
       return end(
