@@ -821,9 +821,6 @@
   "lock": {
     "message": "鎖定"
   },
-  "lockTimeTooGreat": {
-    "message": "鎖定時間過長"
-  },
   "mainnet": {
     "message": "以太坊 主網路"
   },

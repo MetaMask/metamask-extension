@@ -816,9 +816,6 @@
   "lock": {
     "message": "I-lock"
   },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
-  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
