@@ -10,11 +10,11 @@ import SnapAccountDetailPage from '.';
 
 const snap = Object.values(KEY_MANAGEMENT_SNAPS)[0];
 
-const mockInstallSnapFromSnapAccounts = jest.fn();
+// const mockInstallSnapFromSnapAccounts = jest.fn();
 
-jest.mock('../../../store/actions.ts', () => ({
-  installSnapFromSnapAccounts: () => mockInstallSnapFromSnapAccounts,
-}));
+// jest.mock('../../../store/actions.ts', () => ({
+//   installSnapFromSnapAccounts: () => mockInstallSnapFromSnapAccounts,
+// }));
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -115,7 +115,7 @@ describe('SnapAccountDetails', () => {
   });
 
   it('it should render install if snap is not installed', async () => {
-    const { queryByText, getByText } = renderComponent(mockState);
+    const { queryByText, getByText, getAllByText } = renderComponent(mockState);
     expect(
       queryByText(messages.snapUpdateAvailable.message),
     ).not.toBeInTheDocument();
@@ -127,7 +127,12 @@ describe('SnapAccountDetails', () => {
 
     fireEvent.click(installButton);
 
-    expect(mockInstallSnapFromSnapAccounts).toHaveBeenCalledTimes(1);
+    // expect(mockInstallSnapFromSnapAccounts).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(
+        getAllByText(messages.configureSnapPopupInstallTitle.message).length,
+      ).toBe(2);
+    });
   });
 
   it('it should render update if snap update is available', async () => {
@@ -185,7 +190,10 @@ describe('SnapAccountDetails', () => {
     fireEvent.click(configureButton);
 
     await waitFor(() => {
-      expect(mockInstallSnapFromSnapAccounts).toHaveBeenCalledTimes(1);
+      expect(
+        getByText(messages.configureSnapPopupTitle.message),
+      ).toBeInTheDocument();
+      // expect(mockInstallSnapFromSnapAccounts).toHaveBeenCalledTimes(1);
     });
   });
 });

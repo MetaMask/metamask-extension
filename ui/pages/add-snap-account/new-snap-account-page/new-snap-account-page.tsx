@@ -14,8 +14,11 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPreferences, getSnaps } from '../../../selectors';
-import { submitRequestToBackground } from '../../../store/action-queue';
+import {
+  getSnaps,
+  getsnapsAddSnapAccountModalDismissed,
+} from '../../../selectors';
+import { setSnapsAddSnapAccountModalDismissed } from '../../../store/actions';
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
 
@@ -39,37 +42,32 @@ export interface SnapCardProps extends SnapDetails {
   updateAvailable: boolean;
 }
 
+function getShuffledSnapList(arr: SnapDetails[]): SnapDetails[] {
+  return [...arr].map((_, i, arrCopy) => {
+    const rand = i + Math.floor(Math.random() * (arrCopy.length - i));
+    [arrCopy[rand], arrCopy[i]] = [arrCopy[i], arrCopy[rand]];
+    return arrCopy[i];
+  });
+}
+
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
   const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [snapList, setSnapList] = useState(KEY_MANAGEMENT_SNAPS);
+  const [snapList, setSnapList] = useState(
+    getShuffledSnapList(Object.values(KEY_MANAGEMENT_SNAPS)),
+  );
   const [showPopup, setShowPopup] = useState(true);
   const history = useHistory();
 
   const hidePopup = () => {
     setShowPopup(false);
-    submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
+    setSnapsAddSnapAccountModalDismissed();
   };
 
-  const mm = useSelector((state) => state.metamask);
-
   const snapsAddSnapAccountModalDismissed = useSelector(
-    (state) => state.metamask.snapsAddSnapAccountModalDismissed,
+    getsnapsAddSnapAccountModalDismissed,
   );
-
-  const prefs = useSelector(getPreferences);
-
-  // console.log('mm', mm);
-  // console.log(
-  //   'snapsAddSnapAccountModalDismissed',
-  //   snapsAddSnapAccountModalDismissed,
-  // );
-  // console.log('prefs', prefs);
-
-  // prefs.setSnapsAddSnapAccountModalDismissed(true);
-
-  // submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [false]);
 
   return (
     <Box className="snap-account-page">
@@ -108,7 +106,7 @@ export default function NewSnapAccountPage() {
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
-        {Object.values(snapList).map((snap: SnapDetails, index: number) => {
+        {snapList.map((snap: SnapDetails, index: number) => {
           const foundSnap = Object.values(installedSnaps).find(
             (installedSnap) => installedSnap.id === snap.snapId,
           );

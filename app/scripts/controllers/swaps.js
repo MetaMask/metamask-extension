@@ -147,9 +147,9 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetworkId = networkController.store.getState().networkId;
+    this._currentNetworkId = networkController.state.networkId;
     onNetworkStateChange(() => {
-      const { networkId, networkStatus } = networkController.store.getState();
+      const { networkId, networkStatus } = networkController.state;
       if (
         networkStatus === NetworkStatus.Available &&
         networkId !== this._currentNetworkId

@@ -16,6 +16,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -62,7 +63,11 @@ export default function ConfigureSnapPopup({
             height="49.5px"
             style={{ marginBottom: '16px' }}
           />
-          <Text variant={TextVariant.bodyLgMedium} marginBottom={5}>
+          <Text
+            variant={TextVariant.bodyLgMedium}
+            textAlign={TextAlign.Center}
+            marginBottom={5}
+          >
             {type === ConfigureSnapPopupType.CONFIGURE
               ? t('configureSnapPopupDescription')
               : t('configureSnapPopupInstallDescription')}

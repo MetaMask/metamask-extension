@@ -1,1 +1,1 @@
-export { default } from './configure-snap-popup';
+export { default, ConfigureSnapPopupType } from './configure-snap-popup';

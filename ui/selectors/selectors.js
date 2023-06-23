@@ -1536,4 +1536,10 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
+
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
 ///: END:ONLY_INCLUDE_IN

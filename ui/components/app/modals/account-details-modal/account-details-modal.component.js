@@ -71,6 +71,12 @@ export default class AccountDetailsModal extends Component {
       exportPrivateKeyFeatureEnabled = false;
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    if (keyring?.type.includes('Snap')) {
+      exportPrivateKeyFeatureEnabled = false;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (keyring?.type?.search('Custody') !== -1) {
       exportPrivateKeyFeatureEnabled = false;
