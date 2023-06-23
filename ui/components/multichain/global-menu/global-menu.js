@@ -9,6 +9,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  COMPLIANCE_FEATURE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -20,7 +23,12 @@ import {
 } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ENVIRONMENT_TYPE_POPUP,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -33,6 +41,12 @@ import {
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+} from '../../../selectors/institutional/selectors';
+///: END:ONLY_INCLUDE_IN
 import {
   getMetaMetricsId,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -61,6 +75,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const hasUnapprovedTransactions = useSelector(
     (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
   );
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
+  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
@@ -93,34 +111,83 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('connectedSites')}
       </MenuItem>
-      <MenuItem
-        iconName={IconName.Diagram}
-        onClick={() => {
-          const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
-          global.platform.openTab({
-            url: portfolioUrl,
-          });
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.PortfolioLinkClicked,
-              properties: {
-                url: portfolioUrl,
-                location: 'Global Menu',
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        <>
+          {mmiPortfolioEnabled && (
+            <MenuItem
+              iconName={IconName.Diagram}
+              onClick={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.UserClickedPortfolioButton,
+                });
+                window.open(mmiPortfolioUrl, '_blank');
+                closeMenu();
+              }}
+              data-testid="global-menu-mmi-portfolio"
+            >
+              {t('portfolioDashboard')}
+            </MenuItem>
+          )}
+
+          <MenuItem
+            iconName={IconName.Compliance}
+            onClick={() => {
+              trackEvent({
+                category: MetaMetricsEventCategory.Navigation,
+                event: MetaMetricsEventName.UserClickedCompliance,
+              });
+              if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                global.platform.openExtensionInBrowser(
+                  COMPLIANCE_FEATURE_ROUTE,
+                );
+              } else {
+                history.push(COMPLIANCE_FEATURE_ROUTE);
+              }
+            }}
+            data-testid="global-menu-mmi-compliance"
+          >
+            {t('compliance')}
+          </MenuItem>
+        </>
+        ///: END:ONLY_INCLUDE_IN
+      }
+
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        <MenuItem
+          iconName={IconName.Diagram}
+          onClick={() => {
+            const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
+            global.platform.openTab({
+              url: portfolioUrl,
+            });
+            trackEvent(
+              {
+                category: MetaMetricsEventCategory.Home,
+                event: MetaMetricsEventName.PortfolioLinkClicked,
+                properties: {
+                  url: portfolioUrl,
+                  location: 'Global Menu',
+                },
               },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
-        data-testid="global-menu-portfolio"
-      >
-        {t('portfolioView')}
-      </MenuItem>
+              {
+                contextPropsIntoEventProperties: [
+                  MetaMetricsContextProp.PageTitle,
+                ],
+              },
+            );
+            closeMenu();
+          }}
+          data-testid="global-menu-portfolio"
+        >
+          {t('portfolioView')}
+        </MenuItem>
+        ///: END:ONLY_INCLUDE_IN
+      }
+
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

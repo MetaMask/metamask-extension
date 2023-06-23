@@ -72,6 +72,7 @@ async function main() {
       ...(await getTestPathsForTestDir(testDir)),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
 
