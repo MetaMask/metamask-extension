@@ -63,7 +63,6 @@ export default function FormField({
                 <Text
                   tag="label"
                   htmlFor={id}
-                  html
                   variant={TextVariant.bodySmBold}
                   as="h6"
                   display={DISPLAY.INLINE_BLOCK}
