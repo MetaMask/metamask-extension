@@ -158,7 +158,7 @@
       },
       "packages": {
         "@ethereumjs/tx>@chainsafe/ssz>@chainsafe/as-sha256": true,
-        "@metamask/snaps-ui>@noble/hashes": true
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/rlp": {
@@ -187,7 +187,7 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@metamask/snaps-ui>@noble/hashes": true
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>micro-ftch": {
@@ -214,7 +214,7 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/snaps-ui>@noble/hashes": true
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -222,7 +222,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/snaps-ui>@noble/hashes": true
+        "@metamask/key-tree>@noble/hashes": true
       }
     },
     "@ethersproject/abi": {
@@ -1204,7 +1204,7 @@
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/secp256k1": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": true,
-        "@metamask/snaps-ui>@scure/base": true
+        "@metamask/key-tree>@scure/base": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": {
@@ -1678,28 +1678,6 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/key-tree": {
-      "packages": {
-        "@metamask/key-tree>@metamask/utils": true,
-        "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/snaps-ui>@noble/hashes": true,
-        "@metamask/snaps-ui>@scure/base": true
-      }
-    },
-    "@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
     "@metamask/key-tree>@noble/ed25519": {
       "globals": {
         "crypto": true
@@ -1708,12 +1686,24 @@
         "browserify>browser-resolve": true
       }
     },
+    "@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
     "@metamask/key-tree>@noble/secp256k1": {
       "globals": {
         "crypto": true
       },
       "packages": {
         "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/key-tree>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@metamask/logo": {
@@ -1919,12 +1909,45 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
-    "@metamask/rpc-methods": {
+    "@metamask/rpc-methods-flask": {
       "packages": {
-        "@metamask/key-tree": true,
-        "@metamask/snaps-ui>@noble/hashes": true,
-        "@metamask/utils": true,
+        "@metamask/rpc-methods-flask>@metamask/key-tree": true,
+        "@metamask/rpc-methods-flask>@metamask/utils": true,
+        "@metamask/rpc-methods-flask>@noble/hashes": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@metamask/key-tree": {
+      "packages": {
+        "@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/key-tree>@noble/secp256k1": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/rpc-methods-flask>@metamask/key-tree>@noble/hashes": true,
+        "@metamask/rpc-methods-flask>@metamask/utils": true,
+        "@metamask/scure-bip39": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@metamask/key-tree>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
         "superstruct": true
+      }
+    },
+    "@metamask/rpc-methods-flask>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/rpc-methods-flask>nanoid": {
@@ -1950,8 +1973,8 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/scure-bip39>@noble/hashes": true,
-        "@metamask/snaps-ui>@scure/base": true
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/scure-bip39>@noble/hashes": true
       }
     },
     "@metamask/scure-bip39>@noble/hashes": {
@@ -1988,18 +2011,6 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
-      }
-    },
-    "@metamask/snaps-ui>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/snaps-ui>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
       }
     },
     "@metamask/subject-metadata-controller": {
@@ -4643,12 +4654,6 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
-      }
-    },
-    "superstruct": {
-      "globals": {
-        "console.warn": true,
-        "define": true
       }
     },
     "uuid": {
