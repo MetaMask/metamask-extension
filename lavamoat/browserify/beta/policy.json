@@ -4424,6 +4424,12 @@
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
       }
     },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "uuid": {
       "globals": {
         "crypto": true,

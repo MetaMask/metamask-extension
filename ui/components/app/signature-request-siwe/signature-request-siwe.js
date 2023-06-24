@@ -19,6 +19,7 @@ import {
   unconfirmedMessagesHashSelector,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -35,7 +36,6 @@ import {
 } from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import LedgerInstructionField from '../ledger-instruction-field';
@@ -78,12 +78,9 @@ export default function SignatureRequestSIWE({ txData }) {
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
-  const showSecurityProviderBanner =
-    (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-      txData?.securityProviderResponse?.flagAsDangerous !==
-        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-    (txData?.securityProviderResponse &&
-      Object.keys(txData.securityProviderResponse).length === 0);
+  const showSecurityProviderBanner = isSuspiciousResponse(
+    txData?.securityProviderResponse,
+  );
 
   const onSign = useCallback(async () => {
     try {
