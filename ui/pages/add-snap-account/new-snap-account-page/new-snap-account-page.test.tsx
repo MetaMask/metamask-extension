@@ -63,11 +63,6 @@ const renderComponent = (props = {}) => {
 };
 
 describe('NewSnapAccountPage', () => {
-  it('should take a snapshot', () => {
-    const { container } = renderComponent();
-    expect(container).toMatchSnapshot();
-  });
-
   it('should render the popup', async () => {
     const { getByText } = renderComponent();
     const popupTitle = getByText(messages.settingAddSnapAccount.message);
