@@ -7,6 +7,11 @@ import {
   RestrictedMethods,
 } from './permissions';
 
+// Temporarily replace the snaps packages with the Flask versions.
+jest.mock('@metamask/rpc-methods', () =>
+  jest.requireActual('@metamask/rpc-methods-flask'),
+);
+
 describe('EndowmentPermissions', () => {
   it('has the expected permission keys', () => {
     // Since long-running is fenced out this causes problems with the test, we re-add it here.
