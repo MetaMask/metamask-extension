@@ -3,7 +3,7 @@
 exports[`ListItem should match snapshot with no props 1`] = `
 <div>
   <div
-    class="list-item list-item--single-content-row list-item-border"
+    class="list-item list-item--single-content-row"
     role="button"
     tabindex="0"
   >
@@ -12,6 +12,7 @@ exports[`ListItem should match snapshot with no props 1`] = `
     >
       <h2
         class="list-item__title"
+        data-testid="list-item-title"
       />
     </div>
   </div>
@@ -21,7 +22,7 @@ exports[`ListItem should match snapshot with no props 1`] = `
 exports[`ListItem should match snapshot with props 1`] = `
 <div>
   <div
-    class="list-item list-item-test list-item-border"
+    class="list-item list-item-test"
     data-testid="test-id"
     role="button"
     tabindex="0"
@@ -55,6 +56,7 @@ exports[`ListItem should match snapshot with props 1`] = `
     >
       <h2
         class="list-item__title"
+        data-testid="list-item-title"
       >
         Hello World
       </h2>
@@ -125,6 +127,7 @@ exports[`ListItem should match snapshot with props 1`] = `
     </div>
     <div
       class="list-item__right-content"
+      data-testid="list-item-right-content"
     >
       <p>
         Content rendered to the right

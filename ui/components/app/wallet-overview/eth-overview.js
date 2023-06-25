@@ -11,7 +11,6 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 
-import Identicon from '../../ui/identicon';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -28,7 +27,6 @@ import {
   getIsSwapsChain,
   getIsBridgeChain,
   getIsBuyableChain,
-  getNativeCurrencyImage,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
   getMetaMetricsId,
@@ -38,7 +36,6 @@ import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
@@ -46,12 +43,7 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
@@ -71,7 +63,6 @@ const EthOverview = ({ className }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
-  const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
@@ -99,7 +90,7 @@ const EthOverview = ({ className }) => {
       <>
         <IconButton
           className="eth-overview__button"
-          Icon={<Icon name={IconName.Stake} color={IconColor.primaryDefault} />}
+          Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
           onClick={() => {
             stakingEvent();
@@ -112,7 +103,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
+              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
             label={t('portfolio')}
             onClick={() => {
@@ -130,7 +121,6 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
-      loading={!balance}
       balance={
         <Tooltip
           position="top"
@@ -160,44 +150,6 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                process.env.MULTICHAIN ? null : (
-                  <ButtonIcon
-                    className="eth-overview__portfolio-button"
-                    data-testid="home__portfolio-site"
-                    color={IconColor.primaryDefault}
-                    iconName={IconName.Diagram}
-                    ariaLabel={t('portfolio')}
-                    size={ButtonIconSize.Lg}
-                    onClick={() => {
-                      const portfolioUrl = getPortfolioUrl(
-                        '',
-                        'ext',
-                        metaMetricsId,
-                      );
-                      global.platform.openTab({
-                        url: portfolioUrl,
-                      });
-                      trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Home,
-                          event: MetaMetricsEventName.PortfolioLinkClicked,
-                          properties: {
-                            url: portfolioUrl,
-                          },
-                        },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  />
-                )
-                ///: END:ONLY_INCLUDE_IN
-              }
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -308,6 +260,7 @@ const EthOverview = ({ className }) => {
               }
             }}
             label={t('swap')}
+            data-testid="token-overview-button-swap"
             tooltipRender={
               isSwapsChain
                 ? null
@@ -370,10 +323,42 @@ const EthOverview = ({ className }) => {
             />
             ///: END:ONLY_INCLUDE_IN
           }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            <IconButton
+              className="eth-overview__button"
+              data-testid="eth-overview-portfolio"
+              Icon={
+                <Icon
+                  name={IconName.Diagram}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              onClick={() => {
+                const url = getPortfolioUrl(
+                  '',
+                  'ext_portfolio_button',
+                  metaMetricsId,
+                );
+                global.platform.openTab({ url });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.PortfolioLinkClicked,
+                  properties: {
+                    location: 'Home',
+                    text: 'Portfolio',
+                    chain_id: chainId,
+                    token_symbol: 'ETH',
+                  },
+                });
+              }}
+            />
+            ///: END:ONLY_INCLUDE_IN
+          }
         </>
       }
       className={className}
-      icon={<Identicon diameter={32} image={primaryTokenImage} />}
     />
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  DISPLAY,
+  Display,
   BackgroundColor,
   BorderColor,
   FontWeight,
@@ -10,8 +10,8 @@ import {
   TextAlign,
   OverflowWrap,
   TextTransform,
-  FRACTIONS,
-  FLEX_DIRECTION,
+  BlockSize,
+  FlexDirection,
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
@@ -30,7 +30,7 @@ export default {
       page: README,
     },
   },
-} as ComponentMeta<typeof Text>;
+} as Meta<typeof Text>;
 
 function renderBackgroundColor(color) {
   let bgColor;
@@ -59,8 +59,11 @@ function renderBackgroundColor(color) {
     case Color.sepoliaInverse:
       bgColor = BackgroundColor.sepolia;
       break;
-    case Color.lineaTestnetInverse:
-      bgColor = BackgroundColor.lineaTestnet;
+    case Color.lineaGoerliInverse:
+      bgColor = BackgroundColor.lineaGoerli;
+      break;
+    case Color.lineaMainnetInverse:
+      bgColor = BackgroundColor.lineaMainnet;
       break;
     default:
       bgColor = null;
@@ -70,7 +73,7 @@ function renderBackgroundColor(color) {
   return bgColor;
 }
 
-const Template: ComponentStory<typeof Text> = (args) => (
+const Template: StoryFn<typeof Text> = (args) => (
   <Text {...args}>{args.children}</Text>
 );
 
@@ -92,7 +95,7 @@ export const Variant = (args) => (
   </>
 );
 
-export const ColorStory: ComponentStory<typeof Text> = (args) => {
+export const ColorStory: StoryFn<typeof Text> = (args) => {
   // Index of last valid color in TextColor array
   return (
     <>
@@ -113,7 +116,7 @@ export const ColorStory: ComponentStory<typeof Text> = (args) => {
 };
 ColorStory.storyName = 'Color';
 
-export const FontWeightStory: ComponentStory<typeof Text> = (args) => (
+export const FontWeightStory: StoryFn<typeof Text> = (args) => (
   <>
     {Object.values(FontWeight).map((weight) => (
       <Text {...args} fontWeight={weight} key={weight}>
@@ -125,7 +128,7 @@ export const FontWeightStory: ComponentStory<typeof Text> = (args) => (
 
 FontWeightStory.storyName = 'Font Weight';
 
-export const FontStyleStory: ComponentStory<typeof Text> = (args) => (
+export const FontStyleStory: StoryFn<typeof Text> = (args) => (
   <>
     {Object.values(FontStyle).map((style) => (
       <Text {...args} fontStyle={style} key={style}>
@@ -137,7 +140,7 @@ export const FontStyleStory: ComponentStory<typeof Text> = (args) => (
 
 FontStyleStory.storyName = 'Font Style';
 
-export const TextTransformStory: ComponentStory<typeof Text> = (args) => (
+export const TextTransformStory: StoryFn<typeof Text> = (args) => (
   <>
     {Object.values(TextTransform).map((transform) => (
       <Text {...args} textTransform={transform} key={transform}>
@@ -149,7 +152,7 @@ export const TextTransformStory: ComponentStory<typeof Text> = (args) => (
 
 TextTransformStory.storyName = 'Text Transform';
 
-export const TextAlignStory: ComponentStory<typeof Text> = (args) => (
+export const TextAlignStory: StoryFn<typeof Text> = (args) => (
   <>
     {Object.values(TextAlign).map((align) => (
       <Text {...args} textAlign={align} key={align}>
@@ -161,10 +164,10 @@ export const TextAlignStory: ComponentStory<typeof Text> = (args) => (
 
 TextAlignStory.storyName = 'Text Align';
 
-export const OverflowWrapStory: ComponentStory<typeof Text> = (args) => (
+export const OverflowWrapStory: StoryFn<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.warningDefault}
-    display={DISPLAY.BLOCK}
+    display={Display.Block}
     style={{ width: 200 }}
   >
     <Text {...args} overflowWrap={OverflowWrap.Normal}>
@@ -178,11 +181,11 @@ export const OverflowWrapStory: ComponentStory<typeof Text> = (args) => (
 
 OverflowWrapStory.storyName = 'Overflow Wrap';
 
-export const Ellipsis: ComponentStory<typeof Text> = (args) => (
+export const Ellipsis: StoryFn<typeof Text> = (args) => (
   <Box
     borderColor={BorderColor.primaryDefault}
-    display={DISPLAY.BLOCK}
-    width={FRACTIONS.ONE_THIRD}
+    display={Display.Block}
+    width={BlockSize.OneThird}
   >
     <Text {...args} ellipsis>
       Ellipsis: 0x39013f961c378f02c2b82a6e1d31e9812786fd9d
@@ -193,7 +196,7 @@ export const Ellipsis: ComponentStory<typeof Text> = (args) => (
   </Box>
 );
 
-export const As: ComponentStory<typeof Text> = (args) => (
+export const As: StoryFn<typeof Text> = (args) => (
   <>
     {Object.keys(ValidTag).map((tag) => {
       if (ValidTag[tag] === ValidTag.Input) {
@@ -217,11 +220,11 @@ export const As: ComponentStory<typeof Text> = (args) => (
   </>
 );
 
-export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
+export const TextDirectionStory: StoryFn<typeof Text> = (args) => (
   <Box
     style={{ maxWidth: 300 }}
-    display={DISPLAY.FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
     gap={4}
   >
     <Text {...args} textDirection={TextDirection.LeftToRight}>
@@ -237,7 +240,7 @@ export const TextDirectionStory: ComponentStory<typeof Text> = (args) => (
   </Box>
 );
 
-export const Strong: ComponentStory<typeof Text> = (args) => (
+export const Strong: StoryFn<typeof Text> = (args) => (
   <>
     <Text {...args} as="strong">
       This is an as="strong" demo.

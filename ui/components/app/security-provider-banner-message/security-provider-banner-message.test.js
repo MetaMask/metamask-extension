@@ -2,8 +2,8 @@ import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerMessage from './security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from './security-provider-banner-message.constants';
 
 describe('Security Provider Banner Message', () => {
   const store = configureMockStore()({});
@@ -12,7 +12,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly when flagAsDangerous is malicious', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.MALICIOUS,
       reason:
         'Approval is to an unverified smart contract known for stealing NFTs in the past.',
       reason_header: 'This could be a scam',
@@ -34,7 +34,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly when flagAsDangerous is not safe', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_SAFE,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_SAFE,
       reason: 'Some reason...',
       reason_header: 'Some reason header...',
     };
@@ -99,7 +99,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should navigate to the OpenSea web page when clicked on the OpenSea button', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_SAFE,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_SAFE,
       reason: 'Some reason...',
       reason_header: 'Some reason header...',
     };
@@ -122,7 +122,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly, with predefined reason message, when a request is malicious and there is no reason given', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.MALICIOUS,
       reason: '',
       reason_header: 'Some reason header...',
     };
@@ -145,7 +145,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly, with predefined reason_header message, when a request is malicious and there is no reason header given', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.MALICIOUS,
       reason: 'Some reason...',
       reason_header: '',
     };
@@ -166,7 +166,7 @@ describe('Security Provider Banner Message', () => {
 
   it('should render SecurityProviderBannerMessage component properly, with predefined reason and reason_header messages, when a request is malicious and there are no reason and reason header given', () => {
     const securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.MALICIOUS,
       reason: '',
       reason_header: '',
     };

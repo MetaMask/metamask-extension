@@ -10,9 +10,9 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
+import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
-import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -57,11 +57,11 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    openBuyCryptoInPdapp: PropTypes.func,
     txData: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     noteComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IN
-    metaMetricsId: PropTypes.string,
   };
 
   renderContent() {
@@ -196,8 +196,8 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      openBuyCryptoInPdapp,
       txData,
-      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
@@ -215,15 +215,11 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
@@ -261,15 +257,7 @@ export default class ConfirmPageContainerContent extends Component {
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => {
-                          global.platform.openTab({
-                            url: getPortfolioUrl(
-                              'buy',
-                              'ext_buy_button',
-                              metaMetricsId,
-                            ),
-                          });
-                        }}
+                        onClick={openBuyCryptoInPdapp}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}

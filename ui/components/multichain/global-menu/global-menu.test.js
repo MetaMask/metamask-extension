@@ -2,13 +2,13 @@ import React from 'react';
 import { renderWithProvider, fireEvent, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { GlobalMenu } from '.';
 
-const render = () => {
+const render = (metamaskStateChanges = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...metamaskStateChanges,
     },
   });
   return renderWithProvider(
@@ -49,9 +49,35 @@ describe('AccountListItem', () => {
     const { getByTestId } = render();
     fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: SUPPORT_LINK,
-      });
+      expect(global.platform.openTab).toHaveBeenCalled();
+    });
+  });
+
+  it('disables the settings item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeDisabled();
+    });
+  });
+
+  it('enables the settings item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeEnabled();
+    });
+  });
+
+  it('disables the connected sites item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeDisabled();
+    });
+  });
+
+  it('enables the connected sites item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
     });
   });
 

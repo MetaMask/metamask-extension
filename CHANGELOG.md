@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.32.0]
+### Added
+- Enable token detection for the Aurora network ([#19009](https://github.com/MetaMask/metamask-extension/pull/19009))
+- Add reveal UI to export private key flow ([#18170](https://github.com/MetaMask/metamask-extension/pull/18170))
+
+### Changed
+- [FLASK] **BREAKING:** Block `wallet_requestPermissions` (#18913)
+- [FLASK] Fix issues with installing specific versions of snaps (#18913)
+
+### Fixed
+- [FLASK] Fix an issue with submitting an empty Snaps UI prompt (#19227)
+- Display contract address as recipient when value is included with standard token transactions (#18855)
+- Fix the display of token count in SetApprovalForAll screen  (#18863)
+- Disable Previous Button on First Page of hardware wallet account selection flow (#17610)
+- [Flask] Prevent lavamoat errors in the console caused by attempting to inject the provider to snaps iframe (#19096)
+- Fix to ensure popover scroll button is correctly shown and hidden in the WhatsNewPopup (#19017)
+- Fix: Show network picker when locked (#19063)
+
+## [10.31.1]
+### Fixed
+- Fix signature requests for Keystone Hardware Wallet users ([#19349](https://github.com/MetaMask/metamask-extension/pull/19349))
+
 ## [10.31.0]
 ### Added
 - Add extra friction to enable eth_sign in advanced settings ([#18848](https://github.com/MetaMask/metamask-extension/pull/18848))
@@ -3757,7 +3779,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...HEAD
+[10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...v10.32.0
+[10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
 [10.31.0]: https://github.com/MetaMask/metamask-extension/compare/v10.30.4...v10.31.0
 [10.30.4]: https://github.com/MetaMask/metamask-extension/compare/v10.30.3...v10.30.4
 [10.30.3]: https://github.com/MetaMask/metamask-extension/compare/v10.30.2...v10.30.3

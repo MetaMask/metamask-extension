@@ -13,6 +13,7 @@ import {
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
 } from '../../../shared/constants/app';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 
 export default class AppStateController extends EventEmitter {
   /**
@@ -32,7 +33,7 @@ export default class AppStateController extends EventEmitter {
 
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore({
-      timeoutMinutes: 0,
+      timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
       connectedStatusPopoverHasBeenShown: true,
       defaultHomeActiveTabName: null,
       browserEnvironment: {},
@@ -182,6 +183,20 @@ export default class AppStateController extends EventEmitter {
       termsOfUseLastAgreed: lastAgreed,
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  /**
+   * Record if popover for snaps privacy warning has been shown
+   * on the first install of a snap.
+   *
+   * @param {boolean} shown - shown status
+   */
+  setSnapsInstallPrivacyWarningShownStatus(shown) {
+    this.store.updateState({
+      snapsInstallPrivacyWarningShown: shown,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Record the timestamp of the last time the user has seen the outdated browser warning

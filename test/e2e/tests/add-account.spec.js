@@ -1,18 +1,24 @@
 const { strict: assert } = require('assert');
 const {
   TEST_SEED_PHRASE,
-  convertToHexValue,
   withFixtures,
-  regularDelayMs,
   completeImportSRPOnboardingFlow,
   sendTransaction,
   findAnotherAccountFromAccountList,
+  waitForAccountRendered,
+  convertToHexValue,
+  regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
-const enLocaleMessages = require('../../../app/_locales/en/messages.json');
+
 const FixtureBuilder = require('../fixture-builder');
+const { shortenAddress } = require('../../../ui/helpers/utils/util');
 
 describe('Add account', function () {
   const testPassword = 'correct horse battery staple';
+  const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
+  const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
+
   const ganacheOptions = {
     accounts: [
       {
@@ -22,8 +28,6 @@ describe('Add account', function () {
       },
     ],
   };
-  const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
-  const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
@@ -34,19 +38,19 @@ describe('Add account', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-add-account"]',
+        );
+
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
-
-        const accountName = await driver.waitForSelector({
-          css: '.selected-account__name',
-          text: '2nd',
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: '2nd account',
         });
-        assert.equal(await accountName.getText(), '2nd account');
       },
     );
   });
@@ -70,70 +74,77 @@ describe('Add account', function () {
         );
 
         // Check address of 1st account
-        const firstAccountPublicAddress = await checkAccountDetails(driver);
-        assert.equal(firstAccountPublicAddress, firstAccount);
-        await driver.delay(regularDelayMs);
+        await waitForAccountRendered(driver);
+        await driver.findElement({
+          css: '.multichain-address-copy-button',
+          text: shortenAddress(firstAccount),
+        });
 
-        // Create a new account
-        await driver.findClickableElement('.account-menu__icon');
+        // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-add-account"]',
+        );
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
+        await waitForAccountRendered(driver);
 
         // Check address of 2nd account
-        const secondAccountPublicAddress = await checkAccountDetails(driver);
-        assert.strictEqual(secondAccountPublicAddress, secondAccount);
-        await driver.delay(regularDelayMs);
+        await waitForAccountRendered(driver);
+        await driver.findElement({
+          css: '.multichain-address-copy-button',
+          text: shortenAddress(secondAccount),
+        });
 
-        // Give 2nd locally account some balance so it will not be removed after recovering SRP
+        // Log into the account with balance(account 1)
+        // and transfer some balance to 2nd account
+        // so they will not be removed after recovering SRP
         const accountOneSelector = await findAnotherAccountFromAccountList(
           driver,
           1,
           'Account 1',
         );
+        await waitForAccountRendered(driver);
         await driver.clickElement(accountOneSelector);
         await sendTransaction(driver, secondAccount, '2.8');
 
         // Lock the account
-        await driver.clickElement('.account-menu__icon');
-        await driver.delay(regularDelayMs);
-
-        const lockButton = await driver.findClickableElement(
-          '.account-menu__lock-button',
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
         );
-        await lockButton.click();
+
         await driver.delay(regularDelayMs);
+        await driver.waitForSelector('[data-testid="global-menu-lock"]');
+        await driver.clickElement('[data-testid="global-menu-lock"]');
+        await driver.waitForSelector('[data-testid="unlock-page"]');
 
         // Recover via SRP in "forget password" option
         const restoreSeedLink = await driver.findClickableElement(
           '.unlock-page__link',
         );
-
         await restoreSeedLink.click();
-        await driver.delay(regularDelayMs);
-
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
           TEST_SEED_PHRASE,
         );
-
         await driver.fill('#password', 'correct horse battery staple');
         await driver.fill('#confirm-password', 'correct horse battery staple');
-        await driver.clickElement({
-          text: enLocaleMessages.restore.message,
-          tag: 'button',
-        });
+
+        await driver.delay(regularDelayMs);
+        await driver.clickElement(
+          '[data-testid="create-new-vault-submit-button"]',
+        );
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
+        await waitForAccountRendered(driver);
 
         // Check address of 1st account
-        const restoredFirstAccountPublicAddress = await checkAccountDetails(
-          driver,
-        );
-        assert.equal(restoredFirstAccountPublicAddress, firstAccount);
-        await driver.delay(regularDelayMs);
+        await driver.findElement({
+          css: '.multichain-address-copy-button',
+          text: shortenAddress(firstAccount),
+        });
+
         // Check address of 2nd account
         const accountTwoSelector = await findAnotherAccountFromAccountList(
           driver,
@@ -141,15 +152,16 @@ describe('Add account', function () {
           'Account 2',
         );
         await driver.clickElement(accountTwoSelector);
-        const restoredSecondAccountPublicAddress = await checkAccountDetails(
-          driver,
-        );
-        assert.equal(restoredSecondAccountPublicAddress, secondAccount);
+
+        await driver.findElement({
+          css: '.multichain-address-copy-button',
+          text: shortenAddress(secondAccount),
+        });
       },
     );
   });
 
-  it('It should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
+  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
     const testPrivateKey =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
@@ -161,67 +173,65 @@ describe('Add account', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
-        await driver.delay(regularDelayMs);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
 
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Create account', tag: 'div' });
-        await driver.fill('.new-account-create-form input', '2nd account');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-add-account"]',
+        );
+        await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
 
+        // Wait for 2nd account to be created
+        await waitForAccountRendered(driver);
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: '2nd account',
+        });
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+
+        const menuItems = await driver.findElements(
+          '.multichain-account-list-item',
+        );
+        assert.equal(menuItems.length, 2);
+
+        // User cannot delete 2nd account generated from the SRP imported in onboarding
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+        );
+        await driver.waitForElementNotPresent(
+          '[data-testid="account-list-menu-remove"]',
         );
 
-        const menuItems = await driver.findElements('.menu-item');
-        assert.equal(menuItems.length, 3);
-
-        // click out of menu
-        await driver.clickElement('.menu__background');
-
-        // import with private key
-        await driver.clickElement('.account-menu__icon');
-        await driver.clickElement({ text: 'Import account', tag: 'div' });
-
-        // enter private key',
+        // Create 3rd account with private key
+        await driver.clickElement('.mm-text-field');
+        await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.fill('#private-key-box', testPrivateKey);
-        await driver.clickElement({ text: 'Import', tag: 'button' });
-
-        // should show the correct account name
-        const importedAccountName = await driver.findElement(
-          '.selected-account__name',
-        );
-        assert.equal(await importedAccountName.getText(), 'Account 3');
 
         await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
+          '[data-testid="import-account-confirm-button"]',
         );
 
-        const menuItems2 = await driver.findElements('.menu-item');
-        assert.equal(menuItems2.length, 4);
+        // Wait for 3rd account to be created
+        await waitForAccountRendered(driver);
+        await driver.findElement({
+          css: '[data-testid="account-menu-icon"]',
+          text: 'Account 3',
+        });
 
-        await driver.findElement(
-          '[data-testid="account-options-menu__remove-account"]',
+        // User can delete 3rd account imported with a private key
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        const importedMenuItems = await driver.findElements(
+          '.multichain-account-list-item',
         );
+        assert.equal(importedMenuItems.length, 3);
+        await driver.clickElement(
+          '.multichain-account-list-item--selected [data-testid="account-list-item-menu-button"]',
+        );
+        await driver.findElement('[data-testid="account-list-menu-remove"]');
       },
     );
   });
 });
-
-async function checkAccountDetails(driver) {
-  await driver.clickElement('[data-testid="account-options-menu-button"]');
-  await driver.clickElement(
-    '[data-testid="account-options-menu__account-details"]',
-  );
-
-  await driver.findVisibleElement('.account-details-modal');
-  // get the public address for the "second account"
-  const accountDOM = await driver.findElement('.qr-code__address');
-  const accountAddress = await accountDOM.getText();
-  await driver.clickElement('.account-modal__close');
-  await driver.waitForElementNotPresent('.account-details-modal ');
-
-  return accountAddress;
-}

@@ -1,38 +1,59 @@
 import React, { useCallback, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
+import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
+  getTotalUnapprovedMessagesCount,
+  unconfirmedMessagesHashSelector,
 } from '../../../selectors';
-import { getAccountByAddress } from '../../../helpers/utils/util';
+import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
+import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
+
 import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
+  showModal,
+} from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import LedgerInstructionField from '../ledger-instruction-field';
+
+import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({
-  txData,
-  cancelPersonalMessage,
-  signPersonalMessage,
-}) {
+export default function SignatureRequestSIWE({ txData }) {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const t = useContext(I18nContext);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
+
+  const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
+  const messagesList = useSelector(unconfirmedMessagesHashSelector);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
   const {
     msgParams: {
@@ -40,14 +61,13 @@ export default function SignatureRequestSIWE({
       origin,
       siwe: { parsedMessage },
     },
+    id,
   } = txData;
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
   const fromAccount = getAccountByAddress(allAccounts, from);
   const targetSubjectMetadata = subjectMetadata[origin];
-
-  const t = useContext(I18nContext);
 
   const isMatchingAddress =
     from.toLowerCase() === parsedMessage.address.toLowerCase();
@@ -58,37 +78,56 @@ export default function SignatureRequestSIWE({
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
-  const showSecurityProviderBanner =
-    (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-      txData?.securityProviderResponse?.flagAsDangerous !==
-        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-    (txData?.securityProviderResponse &&
-      Object.keys(txData.securityProviderResponse).length === 0);
-
-  const onSign = useCallback(
-    async (event) => {
-      try {
-        await signPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [signPersonalMessage],
+  const showSecurityProviderBanner = isSuspiciousResponse(
+    txData?.securityProviderResponse,
   );
 
-  const onCancel = useCallback(
-    async (event) => {
-      try {
-        await cancelPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [cancelPersonalMessage],
-  );
+  const onSign = useCallback(async () => {
+    try {
+      await dispatch(resolvePendingApproval(id, null));
+      dispatch(completedTx(id));
+    } catch (e) {
+      log.error(e);
+    }
+  }, [id, dispatch]);
+
+  const onCancel = useCallback(async () => {
+    try {
+      await dispatch(
+        rejectPendingApproval(
+          id,
+          serializeError(ethErrors.provider.userRejectedRequest()),
+        ),
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  }, []);
+
+  const handleCancelAll = () => {
+    const unapprovedTxCount = messagesCount;
+
+    dispatch(
+      showModal({
+        name: 'REJECT_TRANSACTIONS',
+        unapprovedTxCount,
+        onSubmit: async () => {
+          await dispatch(rejectAllMessages(valuesFor(messagesList)));
+          dispatch(clearConfirmTransaction());
+          history.push(mostRecentOverviewPage);
+        },
+      }),
+    );
+  };
+
+  const rejectNText = t('rejectRequestsN', [messagesCount]);
 
   return (
     <div className="signature-request-siwe">
+      <div className="request-signature__navigation">
+        <ConfirmPageContainerNavigation />
+      </div>
+      <SignatureRequestHeader txData={txData} />
       <Header
         fromAccount={fromAccount}
         domain={origin}
@@ -146,6 +185,18 @@ export default function SignatureRequestSIWE({
         submitText={t('signin')}
         submitButtonType={isSIWEDomainValid ? 'primary' : 'danger-primary'}
       />
+      {messagesCount > 1 ? (
+        <Button
+          type="link"
+          className="request-signature__container__reject"
+          onClick={(e) => {
+            e.preventDefault();
+            handleCancelAll();
+          }}
+        >
+          {rejectNText}
+        </Button>
+      ) : null}
       {isShowingDomainWarning && (
         <Popover
           onClose={() => setIsShowingDomainWarning(false)}
@@ -191,12 +242,4 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  /**
-   * Handler for cancel button
-   */
-  cancelPersonalMessage: PropTypes.func.isRequired,
-  /**
-   * Handler for sign button
-   */
-  signPersonalMessage: PropTypes.func.isRequired,
 };

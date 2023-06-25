@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад към всички"
-  },
   "backupApprovalInfo": {
     "message": "Този секретен код е необходим за възстановяване на портфейла ви, в случай че загубите устройството си, забравите паролата си, трябва да инсталирате отново MetaMask или искате да получите достъп до портфейла си на друго устройство."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Свързване"
   },
-  "connectHardwareWallet": {
-    "message": "Свържете хардуерен портфейл"
-  },
   "connectingTo": {
     "message": "Свързване с $1"
   },
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Свързване с тестова мрежа на Linea Goerli"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Създаване"
-  },
-  "createAccount": {
-    "message": "Създай акаунт"
   },
   "createPassword": {
     "message": "Създаване на парола"
@@ -411,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестова мрежа на Linea Goerli"
   },
   "links": {
@@ -449,9 +440,6 @@
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
-  },
-  "myAccounts": {
-    "message": "Моите акаунти"
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
@@ -576,9 +564,6 @@
   },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."
-  },
-  "recents": {
-    "message": "Скорошни"
   },
   "recipientAddressPlaceholder": {
     "message": "Търсене, публичен адрес (0x) или ENS"
@@ -803,15 +788,8 @@
   "transfer": {
     "message": "Трансфер"
   },
-  "transferBetweenAccounts": {
-    "message": "Прехвърляне между моите акаунти"
-  },
   "transferFrom": {
     "message": "Трансфер от"
-  },
-  "troubleTokenBalances": {
-    "message": "Имахме проблеми със зареждането на вашите символи. Можете да ги видите",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Нов опит"

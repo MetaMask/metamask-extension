@@ -1,0 +1,13 @@
+diff --git a/dist/squirrelly.cjs.js b/dist/squirrelly.cjs.js
+index b87580be5da8a9a5af4cf60c8c5acf910c8f9ed2..e037b8a986d331f7075bbd448c80104de8a3453c 100644
+--- a/dist/squirrelly.cjs.js
++++ b/dist/squirrelly.cjs.js
+@@ -5,7 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
+ // TODO: allow '-' to trim up until newline. Use [^\S\n\r] instead of \s
+ // TODO: only include trimLeft polyfill if not in ES6
+ /* END TYPES */
+-var promiseImpl = new Function('return this')().Promise;
++var promiseImpl = globalThis.Promise;
+ var asyncFunc = false;
+ try {
+     asyncFunc = new Function('return (async function(){}).constructor')();

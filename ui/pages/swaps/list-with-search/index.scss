@@ -1,0 +1,23 @@
+.list-with-search {
+  .searchable-item-list {
+    &__list-container {
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 8px;
+
+      @include screen-sm-min {
+        max-height: 600px;
+      }
+    }
+  }
+
+  &__text-search {
+    outline: none;
+  }
+
+  .mm-button-icon {
+    .mm-icon--size-lg {
+      --size: 20px;
+    }
+  }
+}
