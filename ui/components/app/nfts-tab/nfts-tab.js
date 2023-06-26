@@ -89,7 +89,7 @@ export default function NftsTab({ onAddNFT }) {
                 {t('noNFTs')}
               </Text>
               <ButtonLink
-                size={Size.SM}
+                size={Size.MD}
                 data-testid="import-nft-button"
                 href={ZENDESK_URLS.NFT_TOKENS}
                 externalLink
