@@ -2430,6 +2430,9 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      updateInterfaceState: this.interfaceController.updateInterfaceState.bind(
+        this.interfaceController,
+      ),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       // Desktop
