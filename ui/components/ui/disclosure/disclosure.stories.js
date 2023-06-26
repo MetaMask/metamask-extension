@@ -14,6 +14,9 @@ export default {
     size: {
       control: 'text',
     },
+    isArrowSummary: {
+      control: 'boolean',
+    },
   },
   args: {
     title: 'title',

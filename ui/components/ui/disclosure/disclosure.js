@@ -3,9 +3,33 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Icon, IconName, IconSize } from '../../component-library';
 
-const Disclosure = ({ children, title, size }) => {
+const Disclosure = ({ children, title, size, isArrowSummary }) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
+
+  const renderArrowSummary = () => (
+    <summary className="disclosure__summary is-arrow">
+      {title}
+      <Icon
+        className="disclosure__summary--icon"
+        name={IconName.ArrowUp}
+        size={IconSize.Sm}
+        marginInlineStart={2}
+      />
+    </summary>
+  );
+
+  const renderPlusSummary = () => (
+    <summary className="disclosure__summary">
+      <Icon
+        className="disclosure__summary--icon"
+        name={IconName.Add}
+        size={IconSize.Sm}
+        marginInlineEnd={2}
+      />
+      {title}
+    </summary>
+  );
 
   const scrollToBottom = () => {
     disclosureFooterEl &&
@@ -23,15 +47,8 @@ const Disclosure = ({ children, title, size }) => {
     <div className="disclosure" onClick={() => setOpen((state) => !state)}>
       {title ? (
         <details>
-          <summary className="disclosure__summary">
-            <Icon
-              className="disclosure__summary--icon"
-              name={IconName.Add}
-              size={IconSize.Sm}
-              marginInlineEnd={2}
-            />
-            {title}
-          </summary>
+          {isArrowSummary ? renderArrowSummary() : renderPlusSummary()}
+
           <div className={classnames('disclosure__content', size)}>
             {children}
           </div>
@@ -48,9 +65,11 @@ Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   size: PropTypes.string,
+  isArrowSummary: PropTypes.bool,
 };
 
 Disclosure.defaultProps = {
+  isArrowSummary: false,
   size: 'normal',
   title: null,
 };

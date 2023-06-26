@@ -23,4 +23,26 @@
       font-size: 12px;
     }
   }
+
+  // Arrow Summary
+
+  details[open] {
+    .disclosure__summary.is-arrow .disclosure__summary--icon {
+      transform: rotateX(0deg);
+    }
+  }
+
+  &__summary.is-arrow {
+    color: var(--color-primary-default);
+    font-weight: normal;
+
+    &:hover {
+      opacity: 0.5
+    }
+
+    .disclosure__summary--icon {
+      transform: rotateX(180deg);
+      transition: 0.1s transform;
+    }
+  }
 }
