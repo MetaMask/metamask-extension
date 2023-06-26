@@ -1101,8 +1101,8 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteAccount": {
-    "message": "Delete account"
+  "deleteContact": {
+    "message": "Delete contact"
   },
   "deleteNetwork": {
     "message": "Delete network?"

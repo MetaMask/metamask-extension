@@ -70,6 +70,7 @@ jest.mock('@metamask/rpc-methods', () => {
 
 const CURRENT_NETWORK_ID = '5';
 const CURRENT_CHAIN_ID = '5';
+
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';

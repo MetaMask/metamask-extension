@@ -716,9 +716,6 @@
   "delete": {
     "message": "Elimina"
   },
-  "deleteAccount": {
-    "message": "Cancella account"
-  },
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },

@@ -911,9 +911,6 @@
   "delete": {
     "message": "Excluir"
   },
-  "deleteAccount": {
-    "message": "Excluir conta"
-  },
   "deleteNetwork": {
     "message": "Excluir rede?"
   },

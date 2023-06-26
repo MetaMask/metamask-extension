@@ -57,8 +57,7 @@
       background: var(--color-background-default);
       box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
       border: 1px solid var(--color-border-muted);
-      border-top: 0;
-      border-radius: 0 0 8px 8px;
+      border-radius: 8px;
       height: 620px;
     }
   }
