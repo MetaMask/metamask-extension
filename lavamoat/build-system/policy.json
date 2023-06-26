@@ -168,9 +168,13 @@
     },
     "@babel/eslint-parser": {
       "builtin": {
-        "path": true
+        "module": true,
+        "path": true,
+        "worker_threads": true
       },
       "globals": {
+        "__dirname": true,
+        "process.cwd": true,
         "process.versions": true
       },
       "packages": {
@@ -980,7 +984,6 @@
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>are-we-there-yet": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "nyc>yargs>set-blocking": true
       }
@@ -1009,9 +1012,6 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>aproba": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>has-unicode": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>wide-align": true,
@@ -1049,17 +1049,18 @@
       "globals": {
         "__dirname": true,
         "__filename.slice": true,
+        "console.warn": true,
         "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
+        "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
-        "nyc>convert-source-map": true,
+        "lavamoat>lavamoat-core": true,
         "through2": true
       }
     },
@@ -1086,26 +1087,12 @@
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "path.extname": true,
-        "path.join": true
-      },
+    "@lavamoat/lavapack>convert-source-map": {
       "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -1147,21 +1134,6 @@
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": {
-      "builtin": {
-        "os.type": true
-      },
-      "globals": {
-        "process.env.LANG": true,
-        "process.env.LC_ALL": true,
-        "process.env.LC_CTYPE": true
-      }
-    },
-    "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": {
-      "packages": {
-        "yargs>string-width": true
       }
     },
     "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": {
@@ -2884,12 +2856,12 @@
         "eslint-plugin-react>estraverse": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint-plugin-react>object.entries": true,
+        "eslint-plugin-react>object.fromentries": true,
         "eslint-plugin-react>object.hasown": true,
         "eslint-plugin-react>object.values": true,
         "eslint-plugin-react>resolve": true,
         "eslint-plugin-react>semver": true,
         "eslint>minimatch": true,
-        "lavamoat>object.fromentries": true,
         "prop-types": true,
         "string.prototype.matchall": true
       }
@@ -2943,6 +2915,13 @@
       }
     },
     "eslint-plugin-react>object.entries": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract": true
+      }
+    },
+    "eslint-plugin-react>object.fromentries": {
       "packages": {
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
@@ -3010,6 +2989,9 @@
         "util": true
       },
       "globals": {
+        "__filename": true,
+        "process.cwd": true,
+        "process.emitWarning": true,
         "process.platform": true
       },
       "packages": {
@@ -4895,18 +4877,7 @@
       },
       "packages": {
         "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": true,
-        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
-      }
-    },
-    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": {
-      "builtin": {
-        "os.homedir": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.getuid": true,
-        "process.platform": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": {
@@ -4930,32 +4901,7 @@
         "setTimeout": true
       },
       "packages": {
-        "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf>glob": true,
         "nyc>glob": true
-      }
-    },
-    "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf>glob": {
-      "builtin": {
-        "assert": true,
-        "events.EventEmitter": true,
-        "fs": true,
-        "path.join": true,
-        "path.resolve": true,
-        "util": true
-      },
-      "globals": {
-        "console.error": true,
-        "process.cwd": true,
-        "process.nextTick": true,
-        "process.platform": true
-      },
-      "packages": {
-        "eslint>minimatch": true,
-        "gulp-watch>path-is-absolute": true,
-        "nyc>glob>fs.realpath": true,
-        "nyc>glob>inflight": true,
-        "pump>once": true,
-        "pumpify>inherits": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": {
@@ -6203,8 +6149,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@lavamoat/lavapack": true,
         "duplexify": true,
-        "lavamoat-browserify>@lavamoat/lavapack": true,
         "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
@@ -6212,37 +6158,6 @@
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack": {
-      "builtin": {
-        "assert": true,
-        "buffer.Buffer.from": true,
-        "fs.promises.readFile": true,
-        "fs.promises.writeFile": true,
-        "fs.readFileSync": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.cwd": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>umd": true,
-        "browserify>JSONStream": true,
-        "lavamoat-browserify>@lavamoat/lavapack>through2": true,
-        "lavamoat-browserify>readable-stream": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "nyc>convert-source-map": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack>through2": {
-      "packages": {
-        "lavamoat-browserify>readable-stream": true
       }
     },
     "lavamoat-browserify>browser-resolve": {
@@ -6381,8 +6296,7 @@
       "packages": {
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "lavamoat>lavamoat-tofu": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {
@@ -6456,13 +6370,6 @@
       "packages": {
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/traverse": true
-      }
-    },
-    "lavamoat>object.fromentries": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract": true
       }
     },
     "lodash": {
@@ -8678,6 +8585,12 @@
         "jsdom>request>is-typedarray": true
       }
     },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "terser": {
       "globals": {
         "Buffer": true,
@@ -9036,6 +8949,7 @@
       },
       "globals": {
         "Error": true,
+        "__dirname": true,
         "console": true,
         "process": true
       },
@@ -9050,6 +8964,9 @@
       }
     },
     "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true,

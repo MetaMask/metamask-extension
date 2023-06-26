@@ -11,16 +11,15 @@ import {
   getComplianceTenantSubdomain,
 } from '../../../ducks/institutional/institutional';
 import { formatDate } from '../../../helpers/utils/util';
-import Box from '../../ui/box';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
 import {
   TextColor,
   TextVariant,
   JustifyContent,
   AlignItems,
-  BLOCK_SIZES,
-  DISPLAY,
-  FLEX_DIRECTION,
+  BlockSize,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
 const ComplianceDetails = ({ address, onClose, onGenerate }) => {
@@ -50,17 +49,17 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       paddingLeft={4}
       paddingRight={4}
       className="compliance-details"
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
-        height={BLOCK_SIZES.TWO_THIRDS}
+        height={BlockSize.TwoThirds}
         paddingTop={4}
         paddingBottom={4}
         className="compliance-details__row"
@@ -69,16 +68,16 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
         <Text variant={TextVariant.bodyXs}>{address}</Text>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
-        height={BLOCK_SIZES.TWO_THIRDS}
+        height={BlockSize.TwoThirds}
         paddingTop={4}
         paddingBottom={4}
         className="compliance-details__row"
       >
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           marginBottom={1}
           color={TextColor.textAlternative}
@@ -103,16 +102,16 @@ const ComplianceDetails = ({ address, onClose, onGenerate }) => {
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
-        height={BLOCK_SIZES.TWO_THIRDS}
+        height={BlockSize.TwoThirds}
         paddingTop={4}
         paddingBottom={4}
         className="compliance-details__row"
       >
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           color={TextColor.textAlternative}
         >
