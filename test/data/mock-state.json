@@ -139,6 +139,10 @@
       {
         "type": "Simple Key Pair",
         "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+      },
+      {
+        "type": "Snap Keyring",
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       }
     ],
     "identities": {
