@@ -4582,6 +4582,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/providers@npm:^11.1.0":
+  version: 11.1.0
+  resolution: "@metamask/providers@npm:11.1.0"
+  dependencies:
+    "@metamask/object-multiplex": ^1.1.0
+    "@metamask/safe-event-emitter": ^3.0.0
+    detect-browser: ^5.2.0
+    eth-rpc-errors: ^4.0.2
+    extension-port-stream: ^2.0.1
+    fast-deep-equal: ^2.0.1
+    is-stream: ^2.0.0
+    json-rpc-engine: ^6.1.0
+    json-rpc-middleware-stream: ^4.2.1
+    pump: ^3.0.0
+    webextension-polyfill: ^0.10.0
+  checksum: fe62112c650d0bc2c012fcb48b6d18709866448d5ded289c85c96d683a263b63a9f60c171fb4bc2cdffc00a6c72b27343611680d72274b5778243f1366be7256
+  languageName: node
+  linkType: hard
+
 "@metamask/rate-limit-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/rate-limit-controller@npm:3.0.0"
@@ -24352,7 +24371,7 @@ __metadata:
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/providers": ^10.2.1
+    "@metamask/providers": ^11.1.0
     "@metamask/rate-limit-controller": ^3.0.0
     "@metamask/rpc-methods": ^0.32.2
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.34.0-flask.1"
