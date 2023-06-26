@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -31,7 +32,7 @@ import { Icon, IconName } from '../../../component-library';
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;
 
-const ConfirmLegacyGasDisplay = () => {
+const ConfirmLegacyGasDisplay = ({ 'data-testid': dataTestId } = {}) => {
   const t = useI18nContext();
 
   // state selectors
@@ -55,6 +56,7 @@ const ConfirmLegacyGasDisplay = () => {
     return [
       <TransactionDetailItem
         key="legacy-total-item"
+        data-testid={dataTestId}
         detailTitle={t('transactionDetailLayer2GasHeading')}
         detailTotal={
           <UserPreferencedCurrencyDisplay
@@ -88,6 +90,7 @@ const ConfirmLegacyGasDisplay = () => {
   return (
     <TransactionDetailItem
       key="legacy-gas-details"
+      data-testid={dataTestId}
       detailTitle={
         dappSuggestedGasFees ? (
           <>
@@ -184,6 +187,10 @@ const ConfirmLegacyGasDisplay = () => {
       }
     />
   );
+};
+
+ConfirmLegacyGasDisplay.propTypes = {
+  'data-testid': PropTypes.string,
 };
 
 export default ConfirmLegacyGasDisplay;
