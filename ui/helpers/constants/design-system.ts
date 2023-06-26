@@ -215,13 +215,37 @@ export enum BorderStyle {
 }
 
 export enum BorderRadius {
+  /**
+   * 2px
+   */
   XS = 'xs',
+  /**
+   * 4px
+   */
   SM = 'sm',
+  /**
+   * 6px
+   */
   MD = 'md',
+  /**
+   * 8px
+   */
   LG = 'lg',
+  /**
+   * 12px
+   */
   XL = 'xl',
+  /**
+   * 0
+   */
   none = 'none',
+  /**
+   * 9999px
+   */
   pill = 'pill',
+  /**
+   * 50%
+   */
   full = 'full',
 }
 
