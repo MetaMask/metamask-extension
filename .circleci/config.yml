@@ -30,12 +30,6 @@ rc_branch_only: &rc_branch_only
       only:
         - /^Version-v(\d+)[.](\d+)[.](\d+)/
 
-rc_or_master_branch_only: &rc_or_master_branch_only
-  filters:
-    branches:
-      only:
-        - /^Version-v(\d+)[.](\d+)[.](\d+)|master/
-
 aliases:
   # Shallow Git Clone
   - &shallow-git-clone
@@ -46,7 +40,8 @@ aliases:
       set -u
       set -o pipefail
 
-      # This Shallow Git Clone code is adapted from what the standard CircleCI `checkout` command does for the case of an external PR (specifically pull/19693):
+      # This Shallow Git Clone code is adapted from what the standard CircleCI `checkout` command does for the case of an external PR (link to example below):
+      # https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/49817/workflows/dc195ea6-ac06-4de1-9edf-4c949427b5fb/jobs/1430976/parallel-runs/0/steps/0-101
       ### git clone --no-checkout "$CIRCLE_REPOSITORY_URL" .
       ### git fetch --force origin +refs/pull/18748/head:refs/remotes/origin/pull/18748
       ### git checkout --force -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
