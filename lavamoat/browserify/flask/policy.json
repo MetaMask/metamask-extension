@@ -5148,6 +5148,12 @@
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
       }
     },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "terser>source-map-support>buffer-from": {
       "packages": {
         "browserify>buffer": true
