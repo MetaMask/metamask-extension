@@ -674,6 +674,19 @@ async function terminateServiceWorker(driver) {
   await driver.closeWindowHandle(serviceWorkerTab);
 }
 
+/**
+ * This method assumes the extension is open, the dapp is open and waits for a
+ * third window handle to open (the notification window). Once it does it
+ * switches to the new window.
+ *
+ * @param {WebDriver} driver
+ */
+async function switchToNotificationWindow(driver) {
+  await driver.waitUntilXWindowHandles(3);
+  const windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -720,4 +733,5 @@ module.exports = {
   switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
+  switchToNotificationWindow,
 };
