@@ -21,7 +21,9 @@ import {
 import {
   getIsTokenDetectionSupported,
   getIsTokenDetectionInactiveOnMainnet,
+  getCurrentChainId,
 } from '../../../selectors';
+import { isTokenDetectionEnabledForNetwork } from '../../../../shared/modules/network.utils';
 
 export const ImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -32,6 +34,9 @@ export const ImportTokenLink = ({ className, ...props }) => {
   const isTokenDetectionInactiveOnMainnet = useSelector(
     getIsTokenDetectionInactiveOnMainnet,
   );
+
+  const chainId = useSelector(getCurrentChainId);
+  const showRefreshLink = isTokenDetectionEnabledForNetwork(chainId);
 
   const isTokenDetectionAvailable =
     isTokenDetectionSupported ||
@@ -64,20 +69,22 @@ export const ImportTokenLink = ({ className, ...props }) => {
               t('importTokensCamelCase').slice(1)}
         </ButtonLink>
       </Box>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingBottom={4}
-        paddingTop={4}
-      >
-        <ButtonLink
-          startIconName={IconName.Refresh}
-          data-testid="refresh-list-button"
-          onClick={() => detectNewTokens()}
+      {showRefreshLink ? (
+        <Box
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          paddingBottom={4}
+          paddingTop={4}
         >
-          {t('refreshList')}
-        </ButtonLink>
-      </Box>
+          <ButtonLink
+            startIconName={IconName.Refresh}
+            data-testid="refresh-list-button"
+            onClick={() => detectNewTokens()}
+          >
+            {t('refreshList')}
+          </ButtonLink>
+        </Box>
+      ) : null}
     </Box>
   );
 };
