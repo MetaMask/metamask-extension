@@ -30,6 +30,7 @@ import {
   DISPLAY,
   TextColor,
   TextVariant,
+
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   Size,
   JustifyContent,
@@ -754,6 +755,7 @@ export default class Home extends PureComponent {
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
     // The style in activity screen for support is different
     const activitySupportDisplayStyle =
       defaultHomeActiveTabName === 'activity'
@@ -769,7 +771,7 @@ export default class Home extends PureComponent {
             marginTop: 0,
             marginBottom: 4,
           };
-
+    ///: END:ONLY_INCLUDE_IN
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
