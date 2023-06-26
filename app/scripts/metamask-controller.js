@@ -633,12 +633,11 @@ export default class MetamaskController extends EventEmitter {
       storageBackend: new IndexedDBBackend('PPOMDB', 1),
       provider: this.provider,
       state: initState.PPOMController,
-      chainId: this.networkController.store.getState().providerConfig.chainId,
-      onNetworkChange: (cb) => {
-        this.networkController.store.subscribe((networkState) => {
-          return cb(networkState.providerConfig.chainId);
-        });
-      },
+      chainId: this.networkController.state.providerConfig.chainId,
+      onNetworkChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
     });
     // END:ONLY_INCLUDE_IN(build-blockaid)';
 
