@@ -128,7 +128,7 @@ const renderDescription = (description) => {
   );
 };
 
-const renderFirstNotification = (
+const renderFirstNotification = ({
   notification,
   idRefMap,
   history,
@@ -139,7 +139,7 @@ const renderFirstNotification = (
   seenNotifications,
   onClose,
   ///: END:ONLY_INCLUDE_IN
-) => {
+}) => {
   const {
     id,
     date,
@@ -233,12 +233,12 @@ const renderFirstNotification = (
   );
 };
 
-const renderSubsequentNotification = (
+const renderSubsequentNotification = ({
   notification,
   idRefMap,
   history,
   isLast,
-) => {
+}) => {
   const { id, date, title, description, actionText } = notification;
 
   const actionFunction = getActionFunctionById(id, history);
@@ -396,7 +396,7 @@ export default function WhatsNewPopup({
           renderNotification = renderFirstNotification;
           ///: END:ONLY_INCLUDE_IN
 
-          return renderNotification(
+          return renderNotification({
             notification,
             idRefMap,
             history,
@@ -407,7 +407,7 @@ export default function WhatsNewPopup({
             seenNotifications,
             onClose,
             ///: END:ONLY_INCLUDE_IN
-          );
+          });
         })}
       </div>
     </Popover>
