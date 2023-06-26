@@ -30,6 +30,7 @@ const mapStateToProps = (state, ownProps) => {
     addressBook: getAddressBook(state),
     selectedAddress: pathNameTailIsAddress ? pathNameTail : '',
     hideAddressBook,
+    currentPath: pathname,
   };
 };
 

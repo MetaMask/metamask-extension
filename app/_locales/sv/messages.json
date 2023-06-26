@@ -205,9 +205,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteAccount": {
-    "message": "Radera konto"
-  },
   "deleteNetwork": {
     "message": "Radera nätverk?"
   },

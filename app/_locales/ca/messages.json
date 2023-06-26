@@ -208,9 +208,6 @@
   "delete": {
     "message": "Suprimeix"
   },
-  "deleteAccount": {
-    "message": "Elimina el compte"
-  },
   "deleteNetwork": {
     "message": "Esborrar Xarxa?"
   },
