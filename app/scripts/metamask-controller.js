@@ -49,12 +49,12 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
 import {
   CronjobController,
   JsonSnapsRegistry,
