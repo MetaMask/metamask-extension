@@ -64,7 +64,7 @@ export default function NativeAsset({ nativeCurrency }) {
           />
         }
       />
-      <EthOverview className="asset__overview" />
+      <EthOverview className="asset__overview" showAddress={false} />
       <TransactionList hideTokenTransactions />
     </>
   );

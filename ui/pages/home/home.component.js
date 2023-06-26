@@ -778,12 +778,13 @@ export default class Home extends PureComponent {
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview />
+                <EthOverview showAddress />
                 ///: END:ONLY_INCLUDE_IN
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <EthOverview
+                  showAddress
                   mmiPortfolioEnabled={mmiPortfolioEnabled}
                   mmiPortfolioUrl={mmiPortfolioUrl}
                 />
