@@ -9,6 +9,9 @@ import {
   AlignItems,
   Size,
   Display,
+  TextAlign,
+  TextVariant,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
@@ -18,8 +21,9 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { Box, ButtonLink, IconName } from '../../component-library';
+import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NftsDetectionNotice from '../nfts-detection-notice';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function NftsTab({ onAddNFT }) {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -55,7 +59,46 @@ export default function NftsTab({ onAddNFT }) {
           previouslyOwnedCollection={previouslyOwnedCollection}
         />
       ) : (
-        <>{isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}</>
+        <>
+          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}{' '}
+          <Box
+            padding={12}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
+            <Box justifyContent={JustifyContent.center}>
+              <img src="./images/no-nfts.svg" />
+            </Box>
+            <Box
+              marginTop={4}
+              marginBottom={12}
+              display={Display.Flex}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
+              className="nfts-tab__link"
+            >
+              <Text
+                color={TextColor.textMuted}
+                variant={TextVariant.headingSm}
+                align={TextAlign.Center}
+                as="h4"
+              >
+                {t('noNFTs')}
+              </Text>
+              <ButtonLink
+                size={Size.SM}
+                data-testid="import-nft-button"
+                href={ZENDESK_URLS.NFT_TOKENS}
+                externalLink
+              >
+                {t('learnMoreUpperCase')}
+              </ButtonLink>
+            </Box>
+          </Box>
+        </>
       )}
       <Box
         className="nfts-tab__buttons"

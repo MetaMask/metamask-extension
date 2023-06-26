@@ -2502,6 +2502,9 @@
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
   },
+  "noNFTs": {
+    "message": "No NFTs yet"
+  },
   "noReport": {
     "message": "No Report"
   },
