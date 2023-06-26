@@ -206,12 +206,13 @@ exports[`Signature Request Component render should match snapshot when we are us
         </div>
       </div>
       <h3
-        class="box box--margin-top-4 box--margin-bottom-1 box--flex-direction-row typography signature-request__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="box mm-text signature-request__content__title mm-text--heading-md box--margin-top-4 box--flex-direction-row box--color-text-default"
       >
         Signature request
       </h3>
       <h6
-        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+        align="center"
+        class="box mm-text request-signature__content__subtitle mm-text--body-sm box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -223,7 +224,7 @@ exports[`Signature Request Component render should match snapshot when we are us
           tabindex="0"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
           >
             Verify third-party details
           </h6>
@@ -237,7 +238,7 @@ exports[`Signature Request Component render should match snapshot when we are us
         class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <p
-          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-message__title typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text mm-text--body-md mm-text--font-weight-bold box--margin-left-4 box--flex-direction-row box--color-text-default"
         >
           Mail
         </p>
@@ -982,12 +983,13 @@ exports[`Signature Request Component render should match snapshot when we want t
         </div>
       </div>
       <h3
-        class="box box--margin-top-4 box--margin-bottom-1 box--flex-direction-row typography signature-request__content__title typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+        class="box mm-text signature-request__content__title mm-text--heading-md box--margin-top-4 box--flex-direction-row box--color-text-default"
       >
         Signature request
       </h3>
       <h6
-        class="box box--margin-12 box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography request-signature__content__subtitle typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+        align="center"
+        class="box mm-text request-signature__content__subtitle mm-text--body-sm box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -999,7 +1001,7 @@ exports[`Signature Request Component render should match snapshot when we want t
           tabindex="0"
         >
           <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-primary-default"
+            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
           >
             Verify third-party details
           </h6>
@@ -1013,7 +1015,7 @@ exports[`Signature Request Component render should match snapshot when we want t
         class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <p
-          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-message__title typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+          class="box mm-text mm-text--body-md mm-text--font-weight-bold box--margin-left-4 box--flex-direction-row box--color-text-default"
         >
           Mail
         </p>
