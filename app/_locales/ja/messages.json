@@ -1860,9 +1860,6 @@
   "lock": {
     "message": "ロック"
   },
-  "lockTimeTooGreat": {
-    "message": "ロック時間が長すぎます"
-  },
   "logo": {
     "message": "$1 ロゴ",
     "description": "$1 is the name of the ticker"

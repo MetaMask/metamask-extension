@@ -1,9 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/constants/error-utils.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.ts',
-    '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.ts',
@@ -40,8 +37,6 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',

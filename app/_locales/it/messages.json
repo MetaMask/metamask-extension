@@ -1117,9 +1117,6 @@
   "lock": {
     "message": "Disconnetti"
   },
-  "lockTimeTooGreat": {
-    "message": "Tempo di inattività troppo lungo"
-  },
   "mainnet": {
     "message": "Rete Ethereum Principale"
   },

@@ -10,7 +10,7 @@ then
 fi
 
 # Get the highest version from release branches
-VERSION_BRANCHES=$(git branch -r | grep -o 'release/[0-9]*\.[0-9]*\.[0-9]*' | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sort --version-sort | tail -n 1)
+VERSION_BRANCHES=$(git branch -r | grep -o 'Version-v[0-9]*\.[0-9]*\.[0-9]*' | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sort --version-sort | tail -n 1)
 
 # Get the highest version from tags
 VERSION_TAGS=$(git tag | grep -o 'v[0-9]*\.[0-9]*\.[0-9]*' | grep -o '[0-9]*\.[0-9]*\.[0-9]*' | sort --version-sort | tail -n 1)
