@@ -250,7 +250,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^3.0.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/providers": "^10.2.1",
+    "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^1.0.0-prerelease.1",
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.35.2-flask.1",
