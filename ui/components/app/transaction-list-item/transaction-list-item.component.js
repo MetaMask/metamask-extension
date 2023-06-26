@@ -271,8 +271,8 @@ function TransactionListItemInner({
                   className="activity-tx__network-badge"
                   data-testid="activity-tx-network-badge"
                   size={Size.XS}
-                  name={currentChain.nickname}
-                  src={currentChain.rpcPrefs?.imageUrl}
+                  name={currentChain?.nickname}
+                  src={currentChain?.rpcPrefs?.imageUrl}
                   borderWidth={1}
                   borderColor={BackgroundColor.backgroundDefault}
                 />

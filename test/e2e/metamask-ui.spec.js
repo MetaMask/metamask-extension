@@ -344,7 +344,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
@@ -420,7 +420,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
@@ -489,7 +489,7 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css: '.transaction-list__completed-transactions .activity-list-item .list-item__heading',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
 
