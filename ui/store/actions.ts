@@ -4713,6 +4713,9 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
     );
   };
 }
+
+export const updateInterfaceState = async (state: ComponentState) =>
+  submitRequestToBackground('updateInterfaceState', [state]);
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

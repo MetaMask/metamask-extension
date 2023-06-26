@@ -3135,6 +3135,9 @@ export default class MetamaskController extends EventEmitter {
 
         return phishingController.test(website);
       },
+      updateInterfaceState: this.interfaceController.updateInterfaceState.bind(
+        this.interfaceController,
+      ),
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       // Desktop
