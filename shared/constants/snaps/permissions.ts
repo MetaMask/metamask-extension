@@ -23,6 +23,8 @@ export const ExcludedSnapPermissions = Object.freeze({
 
 export const ExcludedSnapEndowments = Object.freeze({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  'endowment:keyring':
+    'This endowment is still in development therefore not available.',
   'endowment:long-running':
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
   ///: END:ONLY_INCLUDE_IN
