@@ -535,13 +535,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
-      getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const { chainId } =
-          this.networkController.store.getState().providerConfig;
-        return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
-      },
+      getCurrentNetworkLegacyGasAPICompatibility: () => false,
       getChainId: () =>
         this.networkController.store.getState().providerConfig.chainId,
     });
