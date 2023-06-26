@@ -911,9 +911,6 @@
   "delete": {
     "message": "削除"
   },
-  "deleteAccount": {
-    "message": "アカウントを削除"
-  },
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },

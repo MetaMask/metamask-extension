@@ -911,9 +911,6 @@
   "delete": {
     "message": "Sil"
   },
-  "deleteAccount": {
-    "message": "Hesabı Sil"
-  },
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
