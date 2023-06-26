@@ -156,11 +156,7 @@ export default class SignatureRequestOriginal extends Component {
                 color={IconColor.infoDefault}
                 marginRight={2}
               />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h7"
-              >
+              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
                 {this.context.t('mismatchAccount', [
                   shortenAddress(this.props.selectedAccount.address),
                   shortenAddress(this.props.fromAccount.address),
