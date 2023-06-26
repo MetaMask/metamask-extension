@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "잠금"
   },
-  "lockTimeTooGreat": {
-    "message": "잠금 시간이 너무 깁니다"
-  },
   "logo": {
     "message": "$1 로고",
     "description": "$1 is the name of the ticker"
