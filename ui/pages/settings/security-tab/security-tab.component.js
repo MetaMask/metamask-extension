@@ -105,7 +105,10 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <>
-        <div className="settings-page__security-tab-sub-header">
+        <div
+          ref={this.settingsRefs[0]}
+          className="settings-page__security-tab-sub-header"
+        >
           {t('secretRecoveryPhrase')}
         </div>
         <div className="settings-page__content-padded">
@@ -262,7 +265,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
       >
@@ -345,7 +348,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="setting-ipfs-gateway"
       >
@@ -377,7 +380,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
       >
@@ -427,7 +430,7 @@ export default class SecurityTab extends PureComponent {
       this.props;
 
     return (
-      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[7]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
@@ -463,7 +466,7 @@ export default class SecurityTab extends PureComponent {
     const { useCurrencyRateCheck, setUseCurrencyRateCheck } = this.props;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[8]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('currencyRateCheckToggle')}</span>
           <div className="settings-page__content-description">
