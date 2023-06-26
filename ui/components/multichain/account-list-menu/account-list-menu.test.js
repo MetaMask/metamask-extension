@@ -1,11 +1,28 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { fireEvent, renderWithProvider } from '../../../../test/jest';
+import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+import messages from '../../../../app/_locales/en/messages.json';
+import {
+  CONNECT_HARDWARE_ROUTE,
+  ADD_SNAP_ACCOUNT_ROUTE,
+} from '../../../helpers/constants/routes';
 import { AccountListMenu } from '.';
+
+const mockToggleAccountMenu = jest.fn();
+const mockGetEnvironmentType = jest.fn();
+
+jest.mock('../../../store/actions.ts', () => ({
+  ...jest.requireActual('../../../store/actions.ts'),
+  toggleAccountMenu: () => mockToggleAccountMenu,
+}));
+
+jest.mock('../../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../../app/scripts/lib/util'),
+  getEnvironmentType: () => mockGetEnvironmentType,
+}));
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -137,4 +154,32 @@ describe('AccountListMenu', () => {
     const searchBox = document.querySelector('input[type=search]');
     expect(searchBox).toBeInTheDocument();
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  it('renders the add snap account button', async () => {
+    const { getByText } = render();
+    const addSnapAccountButton = getByText(
+      messages.settingAddSnapAccount.message,
+    );
+    expect(addSnapAccountButton).toBeInTheDocument();
+
+    fireEvent.click(addSnapAccountButton);
+
+    await waitFor(() => {
+      expect(mockToggleAccountMenu).toHaveBeenCalled();
+    });
+  });
+
+  it('pushes history when clicking add snap account from extended view', async () => {
+    const { getByText } = render();
+    mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
+    const addSnapAccountButton = getByText(
+      messages.settingAddSnapAccount.message,
+    );
+    fireEvent.click(addSnapAccountButton);
+    await waitFor(() => {
+      expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
+    });
+  });
+  ///: END:ONLY_INCLUDE_IN
 });
