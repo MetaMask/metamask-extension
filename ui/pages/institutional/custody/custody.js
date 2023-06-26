@@ -20,22 +20,22 @@ import {
   IconSize,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  Box,
 } from '../../../components/component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  Display,
+  FlexDirection,
+  FontWeight,
   Color,
   JustifyContent,
   BorderRadius,
   BorderColor,
-  BLOCK_SIZES,
+  BlockSize,
   TextColor,
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
@@ -88,8 +88,8 @@ const CustodyPage = () => {
       custodianItems.push(
         <Box
           key={uuidv4()}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.FLEX}
+          flexDirection={FlexDirection.ROW}
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           borderColor={BorderColor.borderDefault}
@@ -97,7 +97,7 @@ const CustodyPage = () => {
           padding={[3, 4]}
           marginBottom={4}
         >
-          <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+          <Box display={Display.FLEX} alignItems={AlignItems.center}>
             {custodian.iconUrl && (
               <img
                 width={32}
@@ -322,13 +322,13 @@ const CustodyPage = () => {
   return (
     <Box>
       {connectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+        <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {connectError}
         </Text>
       )}
 
       {selectError && (
-        <Text textAlign={TEXT_ALIGN.CENTER} marginTop={3} padding={[2, 7, 5]}>
+        <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {selectError}
         </Text>
       )}
@@ -336,8 +336,8 @@ const CustodyPage = () => {
       {!accounts && !selectedCustodianType ? (
         <Box
           padding={[0, 7, 2]}
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
         >
           <ButtonIcon
             ariaLabel={t('back')}
@@ -345,7 +345,7 @@ const CustodyPage = () => {
             size={IconSize.Sm}
             color={Color.iconDefault}
             onClick={() => history.push(DEFAULT_ROUTE)}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
           />
           <Text
             as="h4"
@@ -364,7 +364,7 @@ const CustodyPage = () => {
             {t('connectCustodialAccountMsg')}
           </Text>
           <Box>
-            <ul width={BLOCK_SIZES.FULL}>{custodianButtons}</ul>
+            <ul width={BlockSize.Full}>{custodianButtons}</ul>
           </Box>
         </Box>
       ) : null}
@@ -373,8 +373,8 @@ const CustodyPage = () => {
         <>
           <Box
             padding={[0, 7, 2]}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
           >
             <ButtonIcon
               ariaLabel={t('back')}
@@ -382,10 +382,10 @@ const CustodyPage = () => {
               size={IconSize.Sm}
               color={Color.iconAlternative}
               onClick={() => cancelConnectCustodianToken()}
-              display={[DISPLAY.FLEX]}
+              display={[Display.Flex]}
             />
             <Text as="h4">
-              <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+              <Box display={Display.Flex} alignItems={AlignItems.center}>
                 {selectedCustodianImage && (
                   <img
                     width={32}
@@ -401,7 +401,7 @@ const CustodyPage = () => {
               {t('enterCustodianToken', [selectedCustodianDisplayName])}
             </Text>
           </Box>
-          <Box paddingTop={7} paddingBottom={7}>
+          <Box paddingBottom={7}>
             <JwtUrlForm
               jwtList={jwtList}
               currentJwt={currentJwt}
@@ -412,17 +412,18 @@ const CustodyPage = () => {
               onUrlChange={(url) => setApiUrl(url)}
             />
             <Box
-              display={DISPLAY.FLEX}
-              flexDirection={FLEX_DIRECTION.ROW}
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.center}
               padding={[4, 0]}
             >
               <Button
-                type={BUTTON_VARIANT.SECONDARY}
+                variant={BUTTON_VARIANT.SECONDARY}
                 marginRight={4}
                 onClick={() => {
                   cancelConnectCustodianToken();
                 }}
+                block
               >
                 {t('cancel')}
               </Button>
@@ -432,6 +433,7 @@ const CustodyPage = () => {
                 disabled={
                   !selectedCustodianName || (addNewTokenClicked && !currentJwt)
                 }
+                block
               >
                 {t('connect')}
               </Button>
@@ -445,7 +447,7 @@ const CustodyPage = () => {
           <Box
             borderColor={BorderColor.borderDefault}
             padding={[5, 7, 2]}
-            width={BLOCK_SIZES.FULL}
+            width={BlockSize.Full}
           >
             <Text as="h4">{t('selectAnAccount')}</Text>
             <Text marginTop={2} marginBottom={5}>
@@ -454,8 +456,8 @@ const CustodyPage = () => {
           </Box>
           <Box
             padding={[5, 7, 0]}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.ROW}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.flexStart}
             alignItems={AlignItems.center}
           >
@@ -561,7 +563,7 @@ const CustodyPage = () => {
         >
           <Text
             marginBottom={2}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
             color={TextColor.textDefault}
             variant={TextVariant.bodySm}
           >
