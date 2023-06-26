@@ -158,7 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Additional incoming transactions support ([#14219](https://github.com/MetaMask/metamask-extension/pull/14219))
 
 ### Changed
-- UX: Loaclize the avatar-favicon description text ([#18132](https://github.com/MetaMask/metamask-extension/pull/18132))
+- UX: Localize the avatar-favicon description text ([#18132](https://github.com/MetaMask/metamask-extension/pull/18132))
 - 17921 Update TransactionAlerts with BannerAlert ([#17940](https://github.com/MetaMask/metamask-extension/pull/17940))
 - Part of 17670: Replace Typography with Text confirm-approve-content.component.js and home.component.js ([#18049](https://github.com/MetaMask/metamask-extension/pull/18049))
 - UX: Icon: Update buy icon ([#18123](https://github.com/MetaMask/metamask-extension/pull/18123))
