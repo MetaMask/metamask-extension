@@ -1,13 +1,11 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../.storybook/i18n';
-import Box from '../../ui/box';
-import { Text, ButtonLink } from '../../component-library';
+import { Box, ButtonLink, Text } from '../../component-library';
 import {
   AlignItems,
   BorderRadius,
-  DISPLAY,
-  FONT_WEIGHT,
+  Display,
   JustifyContent,
   Size,
   TextVariant,
@@ -22,7 +20,7 @@ export default function CustomNonce({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       marginBottom={4}
       paddingTop={3}
       paddingRight={3}
@@ -34,14 +32,11 @@ export default function CustomNonce({
     >
       <Box
         className="custom-nonce__header"
+        display={Display.InlineFlex}
         justifyContent={JustifyContent.flexStart}
         alignItems={AlignItems.center}
       >
-        <Text
-          variant={TextVariant.bodySm}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          as="h6"
-        >
+        <Text variant={TextVariant.bodySm} as="h6">
           {t('nonce')}
         </Text>
         <ButtonLink

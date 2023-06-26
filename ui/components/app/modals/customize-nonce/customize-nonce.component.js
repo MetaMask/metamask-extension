@@ -8,7 +8,6 @@ import {
   BlockSize,
   Display,
 } from '../../../../helpers/constants/design-system';
-// import Box from '../../../ui/box';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
