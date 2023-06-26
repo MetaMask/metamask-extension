@@ -63,7 +63,8 @@ export default function NftsTab({ onAddNFT }) {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
         margin={4}
-        gap={4}
+        gap={2}
+        marginBottom={2}
       >
         <ButtonLink
           size={Size.MD}

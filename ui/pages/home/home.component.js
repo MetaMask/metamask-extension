@@ -32,6 +32,8 @@ import {
   TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   Size,
+  JustifyContent,
+  Display,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
@@ -752,6 +754,22 @@ export default class Home extends PureComponent {
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
 
+    // The style in activity screen for support is different
+    const activitySupportDisplayStyle =
+      defaultHomeActiveTabName === 'activity'
+        ? {
+            justifyContent: JustifyContent.center,
+            paddingLeft: 0,
+            marginTop: 4,
+            marginBottom: 4,
+          }
+        : {
+            justifyContent: JustifyContent.flexStart,
+            paddingLeft: 4,
+            marginTop: 0,
+            marginBottom: 4,
+          };
+
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -869,7 +887,11 @@ export default class Home extends PureComponent {
                   startIconName={IconName.MessageQuestion}
                   data-testid="need-help-link"
                   href={SUPPORT_LINK}
-                  paddingLeft={4}
+                  display={Display.Flex}
+                  justifyContent={activitySupportDisplayStyle.justifyContent}
+                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
+                  marginBottom={activitySupportDisplayStyle.marginBottom}
+                  marginTop={activitySupportDisplayStyle.marginTop}
                   onClick={() => {
                     this.context.trackEvent(
                       {
