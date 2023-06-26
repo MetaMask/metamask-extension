@@ -9,11 +9,7 @@ import {
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 
@@ -77,28 +73,6 @@ const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
-function getMockNetworkController() {
-  let state = {
-    providerConfig: {
-      type: NETWORK_TYPES.GOERLI,
-      chainId: FAKE_CHAIN_ID,
-    },
-    network: 'loading',
-  };
-  const onNetworkDidChange = sinon.stub();
-  const updateState = (newState) => {
-    state = { ...state, ...newState };
-    onNetworkDidChange.getCall(0).args[0]();
-  };
-  return {
-    store: {
-      getState: () => state,
-      updateState,
-    },
-    onNetworkDidChange,
-  };
-}
-
 function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   let preferencesStore = {
     currentLocale,
@@ -142,15 +116,16 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
-  networkController = getMockNetworkController(),
+  getCurrentChainId = () => FAKE_CHAIN_ID,
+  onNetworkDidChange = () => {
+    // do nothing
+  },
   segmentInstance,
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId: () =>
-      networkController.store.getState().providerConfig.chainId,
-    onNetworkDidChange:
-      networkController.onNetworkDidChange.bind(networkController),
+    getCurrentChainId,
+    onNetworkDidChange,
     preferencesStore,
     version: '0.0.1',
     environment: 'test',
@@ -166,6 +141,7 @@ function getMetaMetricsController({
     extension: MOCK_EXTENSION,
   });
 }
+
 describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
@@ -213,17 +189,20 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', function () {
-      const networkController = getMockNetworkController();
+      let chainId = '0x111';
+      let networkDidChangeListener;
+      const onNetworkDidChange = (listener) => {
+        networkDidChangeListener = listener;
+      };
       const metaMetricsController = getMetaMetricsController({
-        networkController,
+        getCurrentChainId: () => chainId,
+        onNetworkDidChange,
       });
-      networkController.store.updateState({
-        providerConfig: {
-          type: 'NEW_NETWORK',
-          chainId: '0xaab',
-        },
-      });
-      assert.strictEqual(metaMetricsController.chainId, '0xaab');
+
+      chainId = '0x222';
+      networkDidChangeListener();
+
+      assert.strictEqual(metaMetricsController.chainId, '0x222');
     });
 
     it('should update when preferences changes', function () {

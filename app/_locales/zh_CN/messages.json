@@ -1863,9 +1863,6 @@
   "lock": {
     "message": "注销"
   },
-  "lockTimeTooGreat": {
-    "message": "锁定时间过长"
-  },
   "logo": {
     "message": "$1标志",
     "description": "$1 is the name of the ticker"
