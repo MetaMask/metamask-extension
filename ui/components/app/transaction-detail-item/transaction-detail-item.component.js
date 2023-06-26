@@ -14,6 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
+  'data-testid': dataTestId,
   detailTitle = '',
   detailText,
   detailTitleColor = Color.textDefault,
@@ -24,7 +25,7 @@ export default function TransactionDetailItem({
   flexWidthValues = false,
 }) {
   return (
-    <div className="transaction-detail-item">
+    <div className="transaction-detail-item" data-testid={dataTestId}>
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
@@ -91,6 +92,10 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
+  /**
+   * An identifier for use in end-to-end tests.
+   */
+  'data-testid': PropTypes.string,
   /**
    * Detail title text wrapped in Typography component.
    */
