@@ -12,13 +12,13 @@ export const EndowmentPermissions = Object.freeze({
 
 // Methods / permissions in external packages that we are temporarily excluding.
 export const ExcludedSnapPermissions = Object.freeze({
+  snap_manageAccounts:
+    'This permission is still in development and therefore not available.',
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
 });
 
 export const ExcludedSnapEndowments = Object.freeze({
-  'endowment:keyring':
-    'This endowment is still in development therefore not available.',
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   'endowment:long-running':
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
