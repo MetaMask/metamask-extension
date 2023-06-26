@@ -49,7 +49,7 @@ import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
-const EthOverview = ({ className }) => {
+const EthOverview = ({ className, showAddress }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
@@ -121,6 +121,7 @@ const EthOverview = ({ className }) => {
 
   return (
     <WalletOverview
+      showAddress={showAddress}
       balance={
         <Tooltip
           position="top"
@@ -365,10 +366,7 @@ const EthOverview = ({ className }) => {
 
 EthOverview.propTypes = {
   className: PropTypes.string,
-};
-
-EthOverview.defaultProps = {
-  className: undefined,
+  showAddress: PropTypes.bool,
 };
 
 export default EthOverview;
