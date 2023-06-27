@@ -124,6 +124,9 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { UI_INSTITUTIONAL_NOTIFICATIONS } from '../../shared/notifications/institutional';
+///: END:ONLY_INCLUDE_IN
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -640,9 +643,16 @@ export default class MetamaskController extends EventEmitter {
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
     });
+
+    let allAnnouncements = UI_NOTIFICATIONS;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    allAnnouncements = UI_INSTITUTIONAL_NOTIFICATIONS;
+    ///: END:ONLY_INCLUDE_IN
+
     this.announcementController = new AnnouncementController({
       messenger: announcementMessenger,
-      allAnnouncements: UI_NOTIFICATIONS,
+      allAnnouncements,
       state: initState.AnnouncementController,
     });
 

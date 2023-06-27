@@ -755,10 +755,17 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          {showWhatsNew ? (
+            <WhatsNewPopup
+              onClose={hideWhatsNewPopup}
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              mmiPortfolioUrl={mmiPortfolioUrl}
+              ///: END:ONLY_INCLUDE_IN
+            />
+          ) : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           }
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
