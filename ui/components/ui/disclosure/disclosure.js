@@ -2,34 +2,45 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Icon, IconName, IconSize } from '../../component-library';
+import { DISCLOSURE_TYPES } from './disclosure.constants';
 
-const Disclosure = ({ children, title, size, isArrowSummary }) => {
+/**
+ * @param {string} type
+ * @param {string} title
+ * @returns {JSX.Element}
+ */
+const renderSummaryByType = (type, title) => {
+  switch (type) {
+    case DISCLOSURE_TYPES.ARROW:
+      return (
+        <summary className="disclosure__summary is-arrow">
+          {title}
+          <Icon
+            className="disclosure__summary--icon"
+            name={IconName.ArrowUp}
+            size={IconSize.Sm}
+            marginInlineStart={2}
+          />
+        </summary>
+      );
+    default:
+      return (
+        <summary className="disclosure__summary">
+          <Icon
+            className="disclosure__summary--icon"
+            name={IconName.Add}
+            size={IconSize.Sm}
+            marginInlineEnd={2}
+          />
+          {title}
+        </summary>
+      );
+  }
+};
+
+const Disclosure = ({ children, title, size, type }) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
-
-  const renderArrowSummary = () => (
-    <summary className="disclosure__summary is-arrow">
-      {title}
-      <Icon
-        className="disclosure__summary--icon"
-        name={IconName.ArrowUp}
-        size={IconSize.Sm}
-        marginInlineStart={2}
-      />
-    </summary>
-  );
-
-  const renderPlusSummary = () => (
-    <summary className="disclosure__summary">
-      <Icon
-        className="disclosure__summary--icon"
-        name={IconName.Add}
-        size={IconSize.Sm}
-        marginInlineEnd={2}
-      />
-      {title}
-    </summary>
-  );
 
   const scrollToBottom = () => {
     disclosureFooterEl &&
@@ -47,7 +58,7 @@ const Disclosure = ({ children, title, size, isArrowSummary }) => {
     <div className="disclosure" onClick={() => setOpen((state) => !state)}>
       {title ? (
         <details>
-          {isArrowSummary ? renderArrowSummary() : renderPlusSummary()}
+          {renderSummaryByType(type, title)}
 
           <div className={classnames('disclosure__content', size)}>
             {children}
@@ -65,13 +76,13 @@ Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
   title: PropTypes.string,
   size: PropTypes.string,
-  isArrowSummary: PropTypes.bool,
+  type: PropTypes.string,
 };
 
 Disclosure.defaultProps = {
-  isArrowSummary: false,
   size: 'normal',
   title: null,
+  type: DISCLOSURE_TYPES.DEFAULT,
 };
 
 export default Disclosure;

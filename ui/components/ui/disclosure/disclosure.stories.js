@@ -1,4 +1,5 @@
 import React from 'react';
+import { DISCLOSURE_TYPES } from './disclosure.constants';
 import Disclosure from '.';
 
 export default {
@@ -14,14 +15,18 @@ export default {
     size: {
       control: 'text',
     },
-    isArrowSummary: {
-      control: 'boolean',
+    type: {
+      control: {
+        type: 'select',
+      },
+      options: [...Object.values(DISCLOSURE_TYPES)],
     },
   },
   args: {
     title: 'title',
     children: 'hello world',
     size: 'normal',
+    type: DISCLOSURE_TYPES.DEFAULT,
   },
 };
 
