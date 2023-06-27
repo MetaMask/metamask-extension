@@ -172,7 +172,7 @@ describe('SnapAccountDetails', () => {
             snapDescription:
               'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
             tags: ['EOA'],
-            developer: 'Metamask',
+            developer: 'MetaMask',
             website: 'https://www.consensys.net/',
             auditUrls: ['auditUrl1', 'auditUrl2'],
             version: '1.0.0',
