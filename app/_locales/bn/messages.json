@@ -208,9 +208,6 @@
   "delete": {
     "message": "মুছুন"
   },
-  "deleteAccount": {
-    "message": "অ্যাকাউন্ট মুছুন"
-  },
   "deleteNetwork": {
     "message": "নেটওয়ার্ক মুছবেন?"
   },

@@ -1101,8 +1101,8 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteAccount": {
-    "message": "Delete account"
+  "deleteContact": {
+    "message": "Delete contact"
   },
   "deleteNetwork": {
     "message": "Delete network?"
@@ -1884,9 +1884,6 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
-  "importNFTs": {
-    "message": "Import NFTs"
-  },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
   },
@@ -2272,9 +2269,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
-  },
-  "missingNFT": {
-    "message": "Don't see your NFT?"
   },
   "missingSetting": {
     "message": "Can't find a setting?"
@@ -5161,6 +5155,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewPortfolioDashboard": {
+    "message": "View Portfolio Dashboard"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"
