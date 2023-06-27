@@ -1761,7 +1761,7 @@
         "eslint>optionator>fast-levenshtein": true
       }
     },
-    "@metamask/rpc-methods-flask": {
+    "@metamask/rpc-methods": {
       "packages": {
         "@metamask/browser-passworder": true,
         "@metamask/key-tree": true,
