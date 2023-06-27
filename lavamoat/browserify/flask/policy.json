@@ -1852,37 +1852,6 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "fetch": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/ppom-validator>@blockaid/ppom-mock": true,
-        "await-semaphore": true
-      }
-    },
-    "@metamask/ppom-validator>@blockaid/ppom-mock": {
-      "globals": {
-        "Request": true,
-        "Response": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "WebAssembly.instantiate": true,
-        "WebAssembly.instantiateStreaming": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "fetch": true
-      }
-    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
