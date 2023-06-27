@@ -8,7 +8,6 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 // eslint-disable-next-line import/no-duplicates
 import { getURLHostName } from '../../../../helpers/utils/util';
-import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 // eslint-disable-next-line import/no-duplicates
 import { isAbleToExportAccount } from '../../../../helpers/utils/util';
