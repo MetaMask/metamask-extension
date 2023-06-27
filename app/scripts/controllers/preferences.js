@@ -1,14 +1,12 @@
+import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
-///: END:ONLY_INCLUDE_IN
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
-export default class PreferencesController {
+export default class PreferencesController extends EventEmitter {
   /**
    *
    * @typedef {object} PreferencesController
@@ -25,6 +23,8 @@ export default class PreferencesController {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts = {}) {
+    super();
+
     const initState = {
       useBlockie: false,
       useNonceField: false,
@@ -80,14 +80,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.handleMmiDashboardData = opts.handleMmiDashboardData;
-
-    if (!process.env.IN_TEST) {
-      this.mmiConfigurationStore = opts.mmiConfigurationStore.getState();
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     this._subscribeToInfuraAvailability();
 
@@ -262,7 +254,7 @@ export default class PreferencesController {
     }, {});
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
+    this.emit('update-mmi-portfolio');
     ///: END:ONLY_INCLUDE_IN
 
     this.store.updateState({ identities });
@@ -291,7 +283,7 @@ export default class PreferencesController {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
+    this.emit('update-mmi-portfolio');
     ///: END:ONLY_INCLUDE_IN
 
     return address;
@@ -351,7 +343,7 @@ export default class PreferencesController {
     this.addAddresses(addresses);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
+    this.emit('update-mmi-portfolio');
     ///: END:ONLY_INCLUDE_IN
 
     // If the selected account is no longer valid,
@@ -533,21 +525,6 @@ export default class PreferencesController {
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      try {
-        const mmiDashboardData = await this.handleMmiDashboardData();
-        const cookieSetUrls =
-          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls;
-        setDashboardCookie(mmiDashboardData, cookieSetUrls);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   //
   // PRIVATE METHODS

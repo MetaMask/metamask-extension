@@ -382,10 +382,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
-      mmiConfigurationStore: this.mmiConfigurationController.store,
-      ///: END:ONLY_INCLUDE_IN
     });
 
     this.preferencesController.store.subscribe(async ({ currentLocale }) => {

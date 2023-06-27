@@ -14,6 +14,7 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
+import { handleMmiPortfolio, setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import {
   BUILD_QUOTE_ROUTE,
@@ -69,6 +70,9 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
+
+    this.preferencesController.on('update-mmi-portfolio', () => this.prepareMmiPortfolio());
+
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -540,6 +544,44 @@ export default class MMIController extends EventEmitter {
       apiUrl,
       keyring,
     });
+  }
+
+  async setMmiPortfolioCookie() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+
+    const networks = [
+      ...this.preferencesController.getRpcMethodPreferences(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+
+  async prepareMmiPortfolio() {
+    if (!process.env.IN_TEST) {
+      try {
+        const mmiDashboardData = await this.setMmiPortfolioCookie();
+        const cookieSetUrls =
+        this.mmiConfigurationController.store.mmiConfiguration?.portfolio?.cookieSetUrls;
+        setDashboardCookie(mmiDashboardData, cookieSetUrls);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 
   async setAccountAndNetwork(origin, address, chainId) {
