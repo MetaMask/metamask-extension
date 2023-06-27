@@ -34,6 +34,7 @@ import {
   hasTransactionPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
+  getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -1125,9 +1126,12 @@ export function removeSnap(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
+    const subjects = getPermissionSubjects(getState()) as {
+      [k: string]: { permissions: Record<string, any> };
+    };
+
     const isAccountsSnap =
-      getState().metamask?.subjects?.[snapId]?.permissions
-        ?.snap_manageAccounts !== undefined;
+      subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
 
     try {
       if (isAccountsSnap) {
