@@ -12,7 +12,7 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
         class="box note-header box--display-flex box--flex-direction-row box--justify-content-space-between"
       >
         <label
-          class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-bold box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+          class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
           for="transaction-note"
         >
           Transaction note

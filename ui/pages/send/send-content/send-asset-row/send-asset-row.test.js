@@ -59,7 +59,7 @@ describe('SendAssetRow', () => {
         mockStore,
       );
 
-      expect(getByText('Token ID:')).toBeInTheDocument();
+      expect(getByText('Token ID: 2')).toBeInTheDocument();
     });
   });
 });

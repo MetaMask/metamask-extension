@@ -64,13 +64,9 @@ export const ImportTokenLink = ({ className, ...props }) => {
               t('importTokensCamelCase').slice(1)}
         </ButtonLink>
       </Box>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingBottom={4}
-        paddingTop={4}
-      >
+      <Box display={Display.Flex} alignItems={AlignItems.center} paddingTop={2}>
         <ButtonLink
+          size={Size.MD}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
           onClick={() => detectNewTokens()}

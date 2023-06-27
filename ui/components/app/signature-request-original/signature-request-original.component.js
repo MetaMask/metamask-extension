@@ -13,6 +13,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
@@ -32,7 +33,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
@@ -133,15 +133,11 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
 
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -160,11 +156,7 @@ export default class SignatureRequestOriginal extends Component {
                 color={IconColor.infoDefault}
                 marginRight={2}
               />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h7"
-              >
+              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
                 {this.context.t('mismatchAccount', [
                   shortenAddress(this.props.selectedAccount.address),
                   shortenAddress(this.props.fromAccount.address),

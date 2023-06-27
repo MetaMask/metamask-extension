@@ -911,9 +911,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteAccount": {
-    "message": "Διαγραφή Λογαριασμού"
-  },
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Ένα αναγνωριστικό του συλλεκτικού είναι ένα μοναδικό αναγνωριστικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
   },
-  "importNFTs": {
-    "message": "Εισαγωγή NFT"
-  },
   "importSelectedTokens": {
     "message": "Εισαγωγή επιλεγμένων token;"
   },
@@ -1863,9 +1857,6 @@
   "lock": {
     "message": "Αποσύνδεση"
   },
-  "lockTimeTooGreat": {
-    "message": "Ο χρόνος κλειδώματος είναι πολύ μεγάλος"
-  },
   "logo": {
     "message": "Λογότυπο $1",
     "description": "$1 is the name of the ticker"
@@ -1958,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Σύμφωνα με τις καταχωρήσεις μας, η τιμή RPC URL που υποβλήθηκε δεν ταιριάζει με κάποιον γνωστό πάροχο για αυτό το αναγνωριστικό αλυσίδας."
-  },
-  "missingNFT": {
-    "message": "Δεν βλέπετε το NFT σας;"
   },
   "missingSetting": {
     "message": "Δεν μπορείτε να βρείτε μια ρύθμιση;"
@@ -2167,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
-  },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"

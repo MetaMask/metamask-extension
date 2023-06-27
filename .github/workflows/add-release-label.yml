@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
 
       - name: Install dependencies
         run: yarn --immutable
@@ -29,7 +30,7 @@ jobs:
         id: get-next-semver-version
         env:
           FORCE_NEXT_SEMVER_VERSION: ${{ vars.FORCE_NEXT_SEMVER_VERSION }}
-        run: ./development/get-next-semver-version.sh $FORCE_NEXT_SEMVER_VERSION
+        run: ./development/get-next-semver-version.sh "$FORCE_NEXT_SEMVER_VERSION"
 
       - name: Add release label to PR and linked issues
         id: add-release-label-to-pr-and-linked-issues
