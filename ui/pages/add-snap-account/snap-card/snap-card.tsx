@@ -84,7 +84,7 @@ export default function SnapCard({
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
             >
-              <Text>{snapTitle ? snapTitle[0] : 'M'}</Text>
+              <Text>{snapTitle ? snapTitle[0] : '?'}</Text>
             </Box>
           )}
         </Box>
