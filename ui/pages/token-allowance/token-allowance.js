@@ -29,7 +29,6 @@ import {
   transactionFeeSelector,
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
-  getCustomTokenAmount,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
@@ -125,10 +124,6 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const customTokenAmount = useSelector(getCustomTokenAmount);
-  if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
-    setCustomSpendingCap(customTokenAmount);
-  }
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -416,8 +411,6 @@ export default function TokenAllowance({
                 : replaceCommaToDot(customSpendingCap)
             }
             onEdit={() => handleBackClick()}
-            customSpendingCap={customSpendingCap}
-            setCustomSpendingCap={setCustomSpendingCap}
           />
         )}
       </Box>
