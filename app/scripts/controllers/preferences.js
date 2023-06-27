@@ -7,6 +7,8 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
+import { SNAP_REGISTRY_URL } from '../../../shared/constants/app';
 
 export default class PreferencesController {
   /**
@@ -68,6 +70,7 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
+      snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -540,6 +543,13 @@ export default class PreferencesController {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
+  }
+
+  async updateSnapRegistry() {
+    const snapRegistry = await fetchWithCache(SNAP_REGISTRY_URL, {
+      method: 'GET',
+    });
+    this.store.updateState({ snapRegistryList: snapRegistry });
   }
   ///: END:ONLY_INCLUDE_IN
 

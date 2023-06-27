@@ -1542,4 +1542,9 @@ export function getsnapsAddSnapAccountModalDismissed(state) {
 
   return snapsAddSnapAccountModalDismissed;
 }
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
+}
 ///: END:ONLY_INCLUDE_IN

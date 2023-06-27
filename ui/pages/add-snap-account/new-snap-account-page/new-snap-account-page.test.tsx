@@ -2,7 +2,6 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import messages from '../../../../app/_locales/en/messages.json';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import NewSnapAccountPage from '.';
 
@@ -17,6 +16,23 @@ jest.mock('react-router-dom', () => ({
 
 const mockState = {
   metamask: {
+    snapRegistryList: {
+      'a51ea3a8-f1b0-4613-9440-b80e2236713b': {
+        id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
+        snapId: 'npm:@metamask/snap-simple-keyring',
+        iconUrl: '',
+        snapTitle: 'Metamask Simple Keyring',
+        snapSlug: 'Secure your account with MetaMask Mobile',
+        snapDescription:
+          'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
+        tags: ['EOA'],
+        developer: 'Metamask',
+        website: 'https://www.consensys.net/',
+        auditUrls: ['auditUrl1', 'auditUrl2'],
+        version: '1.0.0',
+        lastUpdated: 'April 20, 2023',
+      },
+    },
     snaps: {
       'npm:@metamask/snap-simple-keyring': {
         id: 'npm:@metamask/snap-simple-keyring',
@@ -89,7 +105,7 @@ describe('NewSnapAccountPage', () => {
     const { getAllByTestId } = renderComponent();
     const keymanagementSnaps = getAllByTestId('key-management-snap');
     expect(keymanagementSnaps.length).toBe(
-      Object.values(KEY_MANAGEMENT_SNAPS).length,
+      Object.values(mockState.metamask.snapRegistryList).length,
     );
   });
 

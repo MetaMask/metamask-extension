@@ -69,6 +69,9 @@ export const SNAP_DIALOG_TYPES = {
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
 };
+
+export const SNAP_REGISTRY_URL =
+  'https://metamask.github.io/keyring-snaps-registry/registry.json';
 ///: END:ONLY_INCLUDE_IN
 
 /**

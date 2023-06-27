@@ -2434,7 +2434,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disable',
       ),
-      installorUpdateSnap: this.installOrUpdateSnap.bind(this),
+      installOrUpdateSnap: this.installOrUpdateSnap.bind(this),
+      updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
+        preferencesController,
+      ),
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:enable',
@@ -4511,6 +4514,18 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  async installOrUpdateSnap(origin, snapId, version) {
+    await this.snapController.installSnaps(
+      origin,
+      {
+        [snapId]: {
+          version,
+        },
+      },
+      true,
+    );
+  }
   ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {
@@ -4581,17 +4596,5 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
-  }
-
-  async installOrUpdateSnap(origin, snapId, version) {
-    await this.snapController.installSnaps(
-      origin,
-      {
-        [snapId]: {
-          version,
-        },
-      },
-      true,
-    );
   }
 }

@@ -133,7 +133,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(snap)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
   [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
   ///: END:ONLY_INCLUDE_IN

@@ -1,8 +1,7 @@
 import { Snap } from '@metamask/snaps-utils';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import { Box, Text } from '../../../components/component-library';
 import {
   AlignItems,
@@ -17,8 +16,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getSnaps,
   getsnapsAddSnapAccountModalDismissed,
+  getSnapRegistry,
 } from '../../../selectors';
-import { setSnapsAddSnapAccountModalDismissed } from '../../../store/actions';
+import {
+  setSnapsAddSnapAccountModalDismissed,
+  updateSnapRegistry,
+} from '../../../store/actions';
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
 
@@ -53,12 +56,16 @@ function getShuffledSnapList(arr: SnapDetails[]): SnapDetails[] {
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
   const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [snapList, setSnapList] = useState(
-    getShuffledSnapList(Object.values(KEY_MANAGEMENT_SNAPS)),
-  );
+  const snapRegistryList: Record<string, SnapDetails> =
+    useSelector(getSnapRegistry);
+  const snapList = getShuffledSnapList(Object.values(snapRegistryList));
+
   const [showPopup, setShowPopup] = useState(true);
   const history = useHistory();
+
+  useEffect(() => {
+    updateSnapRegistry();
+  }, []);
 
   const hidePopup = () => {
     setShowPopup(false);

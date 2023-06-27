@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import semver from 'semver';
-import { KEY_MANAGEMENT_SNAPS } from '../../../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 import {
   BUTTON_VARIANT,
   Box,
@@ -22,7 +21,8 @@ import {
   SNAPS_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getSnaps } from '../../../selectors';
+import { getSnapRegistry, getSnaps } from '../../../selectors';
+import { SnapDetails } from '../new-snap-account-page';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
 
@@ -36,7 +36,9 @@ export default function SnapAccountDetailPage() {
 
   const { snapId } = useParams<RouteParams>();
   const installedSnaps = useSelector(getSnaps);
-  const currentSnap = Object.values(KEY_MANAGEMENT_SNAPS).find(
+  const snapRegistryList: Record<string, SnapDetails> =
+    useSelector(getSnapRegistry);
+  const currentSnap = Object.values(snapRegistryList).find(
     (snap) => snap.id === snapId,
   );
 

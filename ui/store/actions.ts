@@ -18,7 +18,6 @@ import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { HandlerType } from '@metamask/snaps-utils';
-import { KEY_MANAGEMENT_SNAPS } from '../../app/scripts/controllers/permissions/snaps/keyManagementSnaps';
 ///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -106,6 +105,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { SnapDetails } from 'ui/pages/add-snap-account/new-snap-account-page';
 
 export function goHome() {
   return {
@@ -1124,11 +1124,15 @@ export function enableSnap(
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch, state: MetaMaskReduxState) => {
     dispatch(showLoadingIndication());
 
+    const {
+      snapRegistryList,
+    }: { snapRegistryList: Record<string, SnapDetails> } = state().metamask;
+
     const isAccountsSnap =
-      Object.values(KEY_MANAGEMENT_SNAPS).findIndex(
+      Object.values(snapRegistryList).findIndex(
         (snap) => snap.snapId === snapId,
       ) !== -1;
 
@@ -4403,5 +4407,9 @@ export function setSnapsAddSnapAccountModalDismissed() {
   return async () => {
     submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
   };
+}
+
+export function updateSnapRegistry() {
+  submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN
