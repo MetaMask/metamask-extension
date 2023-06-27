@@ -27,7 +27,13 @@ jobs:
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -44,6 +50,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -72,6 +83,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -99,7 +115,8 @@ jobs:
     # Ensure forks don't get access to the LavaMoat update token
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
