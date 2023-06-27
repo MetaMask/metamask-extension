@@ -13,10 +13,11 @@ export const EndowmentPermissions = Object.freeze({
 // Methods / permissions in external packages that we are temporarily excluding.
 export const ExcludedSnapPermissions = Object.freeze({
   // TODO: Enable in Flask
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-  snap_manageAccounts:
-    'This permission is still in development and therefore not available.',
-  ///: END:ONLY_INCLUDE_IN
+  // TODO: Need to fix fences for jest to test permissions that differ in @metamask/rpc-methods and @metamask/rpc-methods-flask
+  // ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  // snap_manageAccounts:
+  //   'This permission is still in development and therefore not available.',
+  // ///: END:ONLY_INCLUDE_IN
   eth_accounts:
     'eth_accounts is disabled. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/990.',
 });

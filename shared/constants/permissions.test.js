@@ -7,7 +7,8 @@ import {
   RestrictedMethods,
 } from './permissions';
 
-// Temporarily replace the snaps packages with the Flask versions.
+// Kept here because code fences are not supported in jest.
+// rpc methods flask has more restricted endowment permission builders
 jest.mock('@metamask/rpc-methods', () =>
   jest.requireActual('@metamask/rpc-methods-flask'),
 );
