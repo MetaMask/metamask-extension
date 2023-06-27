@@ -259,12 +259,6 @@ export const AccountListMenu = ({ onClose }) => {
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       dispatch(toggleAccountMenu());
-                      console.log(111, getEnvironmentType());
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        console.log(1111);
-                      } else {
-                        console.log(2222);
-                      }
                       getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
                         ? global.platform.openExtensionInBrowser(
                             ADD_SNAP_ACCOUNT_ROUTE,
