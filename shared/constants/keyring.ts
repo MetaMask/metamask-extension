@@ -8,7 +8,7 @@ export enum InternalKeyringType {
   imported = 'Simple Key Pair',
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export enum SnapKeyringType {
   snap = 'Snap Keyring',
 }
@@ -20,7 +20,7 @@ export enum SnapKeyringType {
 export const KeyringType = {
   ...HardwareKeyringType,
   ...InternalKeyringType,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ...SnapKeyringType,
   ///: END:ONLY_INCLUDE_IN
 };

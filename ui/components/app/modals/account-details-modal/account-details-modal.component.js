@@ -6,8 +6,13 @@ import AccountModalContainer from '../account-modal-container';
 import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
+// eslint-disable-next-line import/no-duplicates
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { isHardwareKeyring } from '../../../../helpers/utils/hardware';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+// eslint-disable-next-line import/no-duplicates
+import { isAbleToExportAccount } from '../../../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import CustodyLabels from '../../../institutional/custody-labels/custody-labels';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
@@ -66,16 +71,10 @@ export default class AccountDetailsModal extends Component {
     });
 
     let exportPrivateKeyFeatureEnabled = true;
-    // This feature is disabled for hardware wallets
-    if (isHardwareKeyring(keyring?.type)) {
+    // This feature is disabled for hardware wallets and snap accounts
+    if (isAbleToExportAccount(keyring?.type)) {
       exportPrivateKeyFeatureEnabled = false;
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    if (keyring?.type.includes('Snap')) {
-      exportPrivateKeyFeatureEnabled = false;
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (keyring?.type?.search('Custody') !== -1) {

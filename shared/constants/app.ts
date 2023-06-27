@@ -63,15 +63,17 @@ export const MESSAGE_TYPE = {
   ///: END:ONLY_INCLUDE_IN
 } as const;
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export const KEYRING_SNAPS_REGISTRY_URL =
+  'https://metamask.github.io/keyring-snaps-registry/registry.json';
+///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
 };
-
-export const SNAP_REGISTRY_URL =
-  'https://metamask.github.io/keyring-snaps-registry/registry.json';
 ///: END:ONLY_INCLUDE_IN
 
 /**

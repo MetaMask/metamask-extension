@@ -54,13 +54,16 @@ import SmartTransactionsController from '@metamask/smart-transactions-controller
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
+
 import {
   CronjobController,
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -776,7 +779,7 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     additionalKeyrings.push(
       (() => {
         const builder = () => new SnapKeyring(this.snapController);
@@ -1693,8 +1696,7 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   /**
    * Initialize the snap keyring if it is not present.
    */
@@ -1712,6 +1714,9 @@ export default class MetamaskController extends EventEmitter {
     }
     return this.snapKeyring;
   }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
   /**
    * Constructor helper for getting Snap permission specifications.
@@ -1768,6 +1773,7 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
         saveSnapKeyring: async (removedAddress) => {
           if (removedAddress) {
@@ -1777,6 +1783,7 @@ export default class MetamaskController extends EventEmitter {
           await this.keyringController._updateMemStoreKeyrings();
           await this.keyringController.fullUpdate();
         },
+        ///: END:ONLY_INCLUDE_IN
       }),
     };
   }
@@ -2209,10 +2216,12 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
           preferencesController,
         ),
+      ///: END:ONLY_INCLUDE_IN
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
@@ -2440,10 +2449,12 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disable',
       ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       installOrUpdateSnap: this.installOrUpdateSnap.bind(this),
       updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
         preferencesController,
       ),
+      ///: END:ONLY_INCLUDE_IN
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:enable',
@@ -4504,6 +4515,20 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  async installOrUpdateSnap(origin, snapId, version) {
+    await this.snapController.installSnaps(
+      origin,
+      {
+        [snapId]: {
+          version,
+        },
+      },
+      true,
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   updateCaveat = (origin, target, caveatType, caveatValue) => {
     try {
@@ -4520,18 +4545,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
-
-  async installOrUpdateSnap(origin, snapId, version) {
-    await this.snapController.installSnaps(
-      origin,
-      {
-        [snapId]: {
-          version,
-        },
-      },
-      true,
-    );
-  }
   ///: END:ONLY_INCLUDE_IN
 
   rejectPermissionsRequest = (requestId) => {

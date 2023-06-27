@@ -621,3 +621,9 @@ export const getNetworkNameFromProviderType = (providerName) => {
   }
   return providerName;
 };
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export const isAbleToExportAccount = (keyringType = '') => {
+  return keyringType.includes('Hardware') || keyringType.includes('Snap');
+};
+///: END:ONLY_INCLUDE_IN

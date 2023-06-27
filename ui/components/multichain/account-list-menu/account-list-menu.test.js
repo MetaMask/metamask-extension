@@ -4,13 +4,16 @@ import reactRouterDom from 'react-router-dom';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import messages from '../../../../app/_locales/en/messages.json';
 import {
   CONNECT_HARDWARE_ROUTE,
   ADD_SNAP_ACCOUNT_ROUTE,
 } from '../../../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IN
 import { AccountListMenu } from '.';
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 const mockToggleAccountMenu = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 
@@ -23,6 +26,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
+///: END:ONLY_INCLUDE_IN
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -155,7 +159,7 @@ describe('AccountListMenu', () => {
     expect(searchBox).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   it('renders the add snap account button', async () => {
     const { getByText } = render();
     const addSnapAccountButton = getByText(

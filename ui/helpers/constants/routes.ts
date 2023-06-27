@@ -49,6 +49,8 @@ const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
@@ -133,7 +135,7 @@ const PATH_NAME_MAP = {
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
   [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
   ///: END:ONLY_INCLUDE_IN
@@ -253,6 +255,8 @@ export {
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,

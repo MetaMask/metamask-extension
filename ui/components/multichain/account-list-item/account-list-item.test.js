@@ -103,7 +103,7 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   it('renders the snap label for snap accounts', () => {
     const { getByText } = render({
       identity: {

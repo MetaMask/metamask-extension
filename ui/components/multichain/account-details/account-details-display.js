@@ -11,7 +11,7 @@ import {
   getHardwareWalletType,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
   BUTTON_SECONDARY_SIZES,
   ButtonSecondary,
@@ -45,15 +45,9 @@ export const AccountDetailsDisplay = ({
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
   let exportPrivateKeyFeatureEnabled = true;
   // This feature is disabled for hardware wallets
-  if (isHardwareKeyring(keyring?.type)) {
+  if (isAbleToExportAccount(keyring?.type)) {
     exportPrivateKeyFeatureEnabled = false;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  if (keyring?.type.includes('Snap')) {
-    exportPrivateKeyFeatureEnabled = false;
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);

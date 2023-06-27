@@ -13,6 +13,8 @@ export const RestrictedMethods = Object.freeze({
   snap_getBip44Entropy: 'snap_getBip44Entropy',
   snap_getEntropy: 'snap_getEntropy',
   wallet_snap: 'wallet_snap',
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   snap_manageAccounts: 'snap_manageAccounts',
   ///: END:ONLY_INCLUDE_IN
 } as const);
