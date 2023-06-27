@@ -10,12 +10,6 @@ import SnapAccountDetailPage from '.';
 
 const snap = Object.values(KEY_MANAGEMENT_SNAPS)[0];
 
-// const mockInstallSnapFromSnapAccounts = jest.fn();
-
-// jest.mock('../../../store/actions.ts', () => ({
-//   installSnapFromSnapAccounts: () => mockInstallSnapFromSnapAccounts,
-// }));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
@@ -193,7 +187,6 @@ describe('SnapAccountDetails', () => {
       expect(
         getByText(messages.configureSnapPopupTitle.message),
       ).toBeInTheDocument();
-      // expect(mockInstallSnapFromSnapAccounts).toHaveBeenCalledTimes(1);
     });
   });
 });

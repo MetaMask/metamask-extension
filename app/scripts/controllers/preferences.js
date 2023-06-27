@@ -536,6 +536,7 @@ export default class PreferencesController {
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });

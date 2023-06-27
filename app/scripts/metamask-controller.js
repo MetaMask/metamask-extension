@@ -1694,11 +1694,9 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSnapKeyring() {
     if (!this.snapKeyring) {
-      // perform lookup
       let [snapKeyring] = this.keyringController.getKeyringsByType(
         KeyringType.snap,
       );
-      // if still missing, create
       if (!snapKeyring) {
         snapKeyring = await this.keyringController.addNewKeyring(
           KeyringType.snap,
@@ -1769,7 +1767,6 @@ export default class MetamaskController extends EventEmitter {
           if (removedAddress) {
             this.keyringController.emit('removedAccount', removedAddress);
           }
-          // TODO[muji]: add a save() method to KeyringController
           await this.keyringController.persistAllKeyrings();
           await this.keyringController._updateMemStoreKeyrings();
           await this.keyringController.fullUpdate();
