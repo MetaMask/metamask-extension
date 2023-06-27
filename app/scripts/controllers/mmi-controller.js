@@ -14,8 +14,12 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import { handleMmiPortfolio, setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
+import {
+  handleMmiPortfolio,
+  setDashboardCookie,
+} from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -71,8 +75,9 @@ export default class MMIController extends EventEmitter {
       });
     }
 
-    this.preferencesController.on('update-mmi-portfolio', () => this.prepareMmiPortfolio());
-
+    this.preferencesController.on('update-mmi-portfolio', () =>
+      this.prepareMmiPortfolio(),
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -575,7 +580,8 @@ export default class MMIController extends EventEmitter {
       try {
         const mmiDashboardData = await this.handleMmiDashboardData();
         const cookieSetUrls =
-        this.mmiConfigurationController.store.mmiConfiguration?.portfolio?.cookieSetUrls;
+          this.mmiConfigurationController.store.mmiConfiguration?.portfolio
+            ?.cookieSetUrls;
         setDashboardCookie(mmiDashboardData, cookieSetUrls);
       } catch (error) {
         console.error(error);
