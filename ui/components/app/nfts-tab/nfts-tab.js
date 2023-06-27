@@ -2,18 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import Box from '../../ui/box';
-import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
-import NftsDetectionNotice from '../nfts-detection-notice';
 import NftsItems from '../nfts-items';
 import {
-  TypographyVariant,
-  TextAlign,
   JustifyContent,
-  FLEX_DIRECTION,
-  FontWeight,
+  FlexDirection,
   AlignItems,
+  Size,
+  Display,
+  TextAlign,
+  TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -24,6 +21,8 @@ import {
   detectNfts,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { Box, ButtonLink, IconName, Text } from '../../component-library';
+import NftsDetectionNotice from '../nfts-detection-notice';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 export default function NftsTab({ onAddNFT }) {
@@ -61,88 +60,91 @@ export default function NftsTab({ onAddNFT }) {
         />
       ) : (
         <>
-          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
-          <Box padding={12}>
+          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}{' '}
+          <Box
+            padding={12}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
             <Box justifyContent={JustifyContent.center}>
               <img src="./images/no-nfts.svg" />
             </Box>
             <Box
               marginTop={4}
               marginBottom={12}
+              display={Display.Flex}
               justifyContent={JustifyContent.center}
-              flexDirection={FLEX_DIRECTION.COLUMN}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
               className="nfts-tab__link"
             >
-              <Typography
+              <Text
                 color={TextColor.textMuted}
-                variant={TypographyVariant.H4}
+                variant={TextVariant.headingSm}
                 align={TextAlign.Center}
-                fontWeight={FontWeight.Bold}
+                as="h4"
               >
                 {t('noNFTs')}
-              </Typography>
-              <Button
-                type="link"
-                target="_blank"
-                rel="noopener noreferrer"
+              </Text>
+              <ButtonLink
+                size={Size.MD}
+                data-testid="import-nft-button"
                 href={ZENDESK_URLS.NFT_TOKENS}
+                externalLink
               >
                 {t('learnMoreUpperCase')}
-              </Button>
+              </ButtonLink>
             </Box>
           </Box>
         </>
       )}
       <Box
-        marginBottom={4}
-        justifyContent={JustifyContent.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        className="nfts-tab__buttons"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        margin={4}
+        gap={2}
+        marginBottom={2}
       >
-        <Typography
-          color={TextColor.textMuted}
-          variant={TypographyVariant.H5}
-          align={TextAlign.Center}
+        <ButtonLink
+          size={Size.MD}
+          data-testid="import-nft-button"
+          startIconName={IconName.Add}
+          onClick={onAddNFT}
         >
-          {t('missingNFT')}
-        </Typography>
-        <Box
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-        >
-          {!isMainnet && Object.keys(collections).length < 1 ? null : (
-            <>
-              <Box
-                className="nfts-tab__link"
-                justifyContent={JustifyContent.flexEnd}
-              >
-                {isMainnet && !useNftDetection ? (
-                  <Button type="link" onClick={onEnableAutoDetect}>
-                    {t('enableAutoDetect')}
-                  </Button>
-                ) : (
-                  <Button type="link" onClick={onRefresh}>
-                    {t('refreshList')}
-                  </Button>
-                )}
-              </Box>
-              <Typography
-                color={TextColor.textMuted}
-                variant={TypographyVariant.H6}
-                align={TextAlign.Center}
-              >
-                {t('or')}
-              </Typography>
-            </>
-          )}
-          <Box
-            justifyContent={JustifyContent.flexStart}
-            className="nfts-tab__link"
-          >
-            <Button type="link" onClick={onAddNFT}>
-              {t('importNFTs')}
-            </Button>
-          </Box>
-        </Box>
+          {t('importNFT')}
+        </ButtonLink>
+        {!isMainnet && Object.keys(collections).length < 1 ? null : (
+          <>
+            <Box
+              className="nfts-tab__link"
+              justifyContent={JustifyContent.flexEnd}
+            >
+              {isMainnet && !useNftDetection ? (
+                <ButtonLink
+                  size={Size.MD}
+                  startIconName={IconName.Setting}
+                  data-testid="refresh-list-button"
+                  onClick={onEnableAutoDetect}
+                >
+                  {t('enableAutoDetect')}
+                </ButtonLink>
+              ) : (
+                <ButtonLink
+                  size={Size.MD}
+                  startIconName={IconName.Refresh}
+                  data-testid="refresh-list-button"
+                  onClick={onRefresh}
+                >
+                  {t('refreshList')}
+                </ButtonLink>
+              )}
+            </Box>
+          </>
+        )}
       </Box>
     </Box>
   );
