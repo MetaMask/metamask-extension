@@ -70,7 +70,9 @@ export default class PreferencesController {
         : LedgerTransportTypes.u2f,
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsAddSnapAccountModalDismissed: false,
+      ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
       ...opts.initState,
     };
@@ -534,10 +536,11 @@ export default class PreferencesController {
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
-
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   async prepareMmiPortfolio() {
