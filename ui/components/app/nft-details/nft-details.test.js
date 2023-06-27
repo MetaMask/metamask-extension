@@ -159,7 +159,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/goerli/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -191,7 +191,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://opensea.io/assets/ethereum/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -258,7 +258,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/sepolia/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
