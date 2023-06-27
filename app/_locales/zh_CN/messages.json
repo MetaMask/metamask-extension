@@ -911,9 +911,6 @@
   "delete": {
     "message": "删除"
   },
-  "deleteAccount": {
-    "message": "删除账户"
-  },
   "deleteNetwork": {
     "message": "删除网络？"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importNFTs": {
-    "message": "添加收藏品"
-  },
   "importSelectedTokens": {
     "message": "要导入所选代币吗？"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
   },
-  "missingNFT": {
-    "message": "找不到您的 NFT？"
-  },
   "missingSetting": {
     "message": "找不到设置吗？"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
-  },
-  "noNFTs": {
-    "message": "尚无 NFT"
   },
   "noSnaps": {
     "message": "没有安装Snap"

@@ -14,34 +14,35 @@ import {
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import SiteOrigin from '../../ui/site-origin';
 import Button from '../../ui/button';
-import Typography from '../../ui/typography/typography';
 import ContractDetailsModal from '../modals/contract-details-modal/contract-details-modal';
 import {
-  TypographyVariant,
-  FontWeight,
   TextAlign,
   TextColor,
+  TextVariant,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
-  DISPLAY,
-  BLOCK_SIZES,
-  TextVariant,
+  Display,
+  BlockSize,
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
-import Box from '../../ui/box/box';
-///: END:ONLY_INCLUDE_IN
 
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Box,
+  Icon,
+  IconName,
+  ///: END:ONLY_INCLUDE_IN
+  Text,
+} from '../../component-library';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 
@@ -284,23 +285,19 @@ export default class SignatureRequest extends PureComponent {
           />
         </div>
         <div className="signature-request-content">
-          {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-            txData?.securityProviderResponse?.flagAsDangerous !==
-              SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-          (txData?.securityProviderResponse &&
-            Object.keys(txData.securityProviderResponse).length === 0) ? (
+          {isSuspiciousResponse(txData?.securityProviderResponse) && (
             <SecurityProviderBannerMessage
               securityProviderResponse={txData.securityProviderResponse}
             />
-          ) : null}
+          )}
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             this.props.selectedAccount.address === address ? null : (
               <Box
                 className="request-signature__mismatch-info"
-                display={DISPLAY.FLEX}
-                width={BLOCK_SIZES.FULL}
+                display={Display.Flex}
+                width={BlockSize.Full}
                 padding={4}
                 marginBottom={4}
                 backgroundColor={BackgroundColor.primaryMuted}
@@ -313,7 +310,6 @@ export default class SignatureRequest extends PureComponent {
                 <Text
                   variant={TextVariant.bodyXs}
                   color={TextColor.textDefault}
-                  as="h7"
                 >
                   {this.context.t('mismatchAccount', [
                     shortenAddress(this.props.selectedAccount.address),
@@ -334,26 +330,25 @@ export default class SignatureRequest extends PureComponent {
             />
           </div>
 
-          <Typography
+          <Text
             className="signature-request__content__title"
-            variant={TypographyVariant.H3}
-            fontWeight={FontWeight.Bold}
-            boxProps={{
-              marginTop: 4,
-            }}
+            variant={TextVariant.headingMd}
+            as="h3"
+            marginTop={4}
           >
             {this.context.t('sigRequest')}
-          </Typography>
-          <Typography
+          </Text>
+          <Text
             className="request-signature__content__subtitle"
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
             align={TextAlign.Center}
             margin={12}
             marginTop={3}
           >
             {this.context.t('signatureRequestGuidance')}
-          </Typography>
+          </Text>
           {verifyingContract ? (
             <div>
               <Button
@@ -362,12 +357,13 @@ export default class SignatureRequest extends PureComponent {
                 className="signature-request-content__verify-contract-details"
                 data-testid="verify-contract-details"
               >
-                <Typography
-                  variant={TypographyVariant.H7}
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
                   color={TextColor.primaryDefault}
                 >
                   {this.context.t('verifyContractDetails')}
-                </Typography>
+                </Text>
               </Button>
             </div>
           ) : null}

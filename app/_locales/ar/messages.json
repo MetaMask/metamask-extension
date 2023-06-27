@@ -215,9 +215,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteAccount": {
-    "message": "حذف الحساب"
-  },
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
   },

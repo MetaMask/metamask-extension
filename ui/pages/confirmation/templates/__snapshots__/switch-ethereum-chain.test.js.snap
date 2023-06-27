@@ -241,7 +241,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           />
         </svg>
         <p
-          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography callout__content typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+          class="box mm-text callout__content mm-text--body-md box--flex-direction-row box--color-text-default"
         >
           <span>
             Switching networks will cancel all pending confirmations

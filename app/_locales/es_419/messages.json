@@ -581,9 +581,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteAccount": {
-    "message": "Eliminar cuenta"
-  },
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
@@ -1073,9 +1070,6 @@
   "importMyWallet": {
     "message": "Importar Mi cartera"
   },
-  "importNFTs": {
-    "message": "Importar NFT"
-  },
   "importTokenQuestion": {
     "message": "¿Desea importar el token?"
   },
@@ -1333,9 +1327,6 @@
     "message": "verifique los detalles de la red",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "missingNFT": {
-    "message": "¿No ve su NFT?"
-  },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
   },
@@ -1467,9 +1458,6 @@
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
-  },
-  "noNFTs": {
-    "message": "Aún no hay NFT"
   },
   "noTransactions": {
     "message": "No tiene transacciones"

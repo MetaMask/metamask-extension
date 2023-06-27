@@ -911,9 +911,6 @@
   "delete": {
     "message": "हटाएँ"
   },
-  "deleteAccount": {
-    "message": "अकाउंट हटाएं"
-  },
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "किसी एनएफटी की आईडी एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो एनएफटी एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
   },
-  "importNFTs": {
-    "message": "NFT आयात करें"
-  },
   "importSelectedTokens": {
     "message": "चयनित टोकन आयात करें?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "हमारे रिकॉर्ड के अनुसार, सबमिट किया गया RPC-URL मान इस चेन आईडी के लिए किसी ज्ञात प्रदाता से मेल नहीं खाता।"
   },
-  "missingNFT": {
-    "message": "अपना NFT नहीं देख रहे हैं?"
-  },
   "missingSetting": {
     "message": "सेटिंग नहीं मिल पाया?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "कोई भी रूपांतरण दर उपलब्ध नहीं है"
-  },
-  "noNFTs": {
-    "message": "अभी तक कोई NFT नहीं"
   },
   "noSnaps": {
     "message": "कोई स्नैप इंस्टाल नहीं किया गया"

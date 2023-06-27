@@ -911,9 +911,6 @@
   "delete": {
     "message": "Löschen"
   },
-  "deleteAccount": {
-    "message": "Konto löschen"
-  },
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Die ID eines NFTs ist eine eindeutige Kennung, da keine zwei NFTs gleich sind. Auch diese Nummer finden Sie in OpenSea unter „Details“. Notieren Sie diese oder kopieren Sie sie in Ihre Zwischenablage."
   },
-  "importNFTs": {
-    "message": "NFTs importieren"
-  },
   "importSelectedTokens": {
     "message": "Ausgewählte Token importieren?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Laut unseren Aufzeichnungen stimmt der angegebene RPC-URL-Wert nicht mit einem bekannten Provider für diese Chain-ID überein."
   },
-  "missingNFT": {
-    "message": "Sie sehen Ihr NFT nicht?"
-  },
   "missingSetting": {
     "message": "Sie können eine Einstellung nicht finden?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
-  },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
   },
   "noSnaps": {
     "message": "Keine Snaps installiert"

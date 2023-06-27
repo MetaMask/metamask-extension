@@ -121,6 +121,9 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/permissions';
 import { UI_NOTIFICATIONS } from '../../shared/notifications';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { UI_INSTITUTIONAL_NOTIFICATIONS } from '../../shared/notifications/institutional';
+///: END:ONLY_INCLUDE_IN
 import { MILLISECOND, SECOND } from '../../shared/constants/time';
 import {
   ORIGIN_METAMASK,
@@ -568,12 +571,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
-      legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
-      getCurrentNetworkLegacyGasAPICompatibility: () => {
-        const { chainId } = this.networkController.state.providerConfig;
-        return process.env.IN_TEST || chainId === CHAIN_IDS.MAINNET;
-      },
+      getCurrentNetworkLegacyGasAPICompatibility: () => false,
       getChainId: () => this.networkController.state.providerConfig.chainId,
     });
 
@@ -622,9 +621,16 @@ export default class MetamaskController extends EventEmitter {
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
     });
+
+    let allAnnouncements = UI_NOTIFICATIONS;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    allAnnouncements = UI_INSTITUTIONAL_NOTIFICATIONS;
+    ///: END:ONLY_INCLUDE_IN
+
     this.announcementController = new AnnouncementController({
       messenger: announcementMessenger,
-      allAnnouncements: UI_NOTIFICATIONS,
+      allAnnouncements,
       state: initState.AnnouncementController,
     });
 

@@ -911,9 +911,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
-  },
   "deleteNetwork": {
     "message": "I-delete ang network?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importNFTs": {
-    "message": "I-import ang mga NFT"
-  },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Ayon sa aming mga talaan, ang isinumiteng RPC URL value ay hindi tumutugma sa isang kilalang provider para sa chain ID na ito."
   },
-  "missingNFT": {
-    "message": "Hindi makita ang NFT mo?"
-  },
   "missingSetting": {
     "message": "Hindi makahanap ng setting?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng conversion"
-  },
-  "noNFTs": {
-    "message": "Wala pang mga NFT"
   },
   "noSnaps": {
     "message": "Walang mga Snap na naka-install"
