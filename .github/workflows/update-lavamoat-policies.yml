@@ -20,6 +20,28 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
 
+  react-to-comment:
+    name: React to the comment
+    runs-on: ubuntu-latest
+    needs: is-fork-pull-request
+    # Early exit if this is a fork, since later steps are skipped for forks
+    if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: React to the comment
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
+            -f content='+1'
+        env:
+          COMMENT_ID: ${{ github.event.comment.id }}
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          REPO: ${{ github.repository }}
+
   prepare:
     name: Prepare dependencies
     runs-on: ubuntu-latest
