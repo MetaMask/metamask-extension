@@ -303,7 +303,7 @@ describe('NFT Items', () => {
         onAddNFT: onAddNFTStub,
       });
       expect(onAddNFTStub).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Import NFTs'));
+      fireEvent.click(screen.queryByText('Import NFT'));
       expect(onAddNFTStub).toHaveBeenCalledTimes(1);
     });
   });

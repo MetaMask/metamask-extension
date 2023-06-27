@@ -911,9 +911,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteAccount": {
-    "message": "Hapus akun"
-  },
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importNFTs": {
-    "message": "Impor NFT"
-  },
   "importSelectedTokens": {
     "message": "Impor token yang dipilih?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Menurut catatan kami, nilai URL RPC yang dikirimkan tidak sesuai dengan penyedia yang dikenal untuk ID rantai ini."
   },
-  "missingNFT": {
-    "message": "Tidak melihat NFT Anda?"
-  },
   "missingSetting": {
     "message": "Tidak dapat menemukan pengaturan?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noSnaps": {
     "message": "Belum ada Snap yang diinstal"
