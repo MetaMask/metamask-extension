@@ -9,6 +9,7 @@ describe('DetectedTokensBanner', () => {
     description: 'Find your connected accounts and manage permissions here.',
     currentStep: '1',
     totalSteps: '3',
+    closeMenu: jest.fn(),
   };
   it('should render correctly', () => {
     const { getByTestId } = render(
