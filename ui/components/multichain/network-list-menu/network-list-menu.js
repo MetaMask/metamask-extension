@@ -21,7 +21,7 @@ import {
 import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
@@ -140,7 +140,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box
           padding={4}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
           <Text>{t('showTestnetNetworks')}</Text>
