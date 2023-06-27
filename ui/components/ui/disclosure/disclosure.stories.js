@@ -9,10 +9,10 @@ export default {
     children: {
       control: 'text',
     },
-    title: {
+    size: {
       control: 'text',
     },
-    size: {
+    title: {
       control: 'text',
     },
     type: {
@@ -23,9 +23,9 @@ export default {
     },
   },
   args: {
-    title: 'title',
     children: 'hello world',
     size: 'normal',
+    title: 'title',
     type: DISCLOSURE_TYPES.DEFAULT,
   },
 };

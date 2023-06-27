@@ -74,8 +74,8 @@ const Disclosure = ({ children, title, size, type }) => {
 
 Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
-  title: PropTypes.string,
   size: PropTypes.string,
+  title: PropTypes.string,
   type: PropTypes.string,
 };
 
