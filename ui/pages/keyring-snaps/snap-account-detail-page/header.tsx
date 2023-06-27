@@ -23,6 +23,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SnapCardProps } from '../new-snap-account-page/new-snap-account-page';
+import { METAMASK_DEVELOPER } from '../constants';
 
 export const SnapDetailHeader = ({
   updateAvailable,
@@ -147,7 +148,7 @@ export const SnapDetailHeader = ({
           >
             <img src={iconUrl} className="snap-detail-icon" />
           </Box>
-          {developer === 'Metamask' && (
+          {developer.toLowerCase() === METAMASK_DEVELOPER && (
             <Tag
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
