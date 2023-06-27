@@ -30,7 +30,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                 >
                   Custom spending cap
                 </h6>
-
+                
                 <div
                   class="box box--display-inline-block box--flex-direction-row"
                 >
@@ -60,7 +60,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               type="text"
               value="7"
             />
-
+            
           </div>
         </div>
         <div
@@ -79,17 +79,17 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
             class="box mm-text mm-text--body-sm box--padding-top-2 box--flex-direction-row box--color-text-default"
           >
             <span>
-
-              This allows the third party to spend
+               
+              This allows the third party to spend 
               <h6
                 class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
               >
                 7
-
+                 
                 TST
               </h6>
                from your current balance.
-
+               
             </span>
           </h6>
           <a
