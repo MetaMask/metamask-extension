@@ -462,10 +462,8 @@ describe('MetaMask', function () {
       });
 
       await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
 
       await driver.wait(async () => {
-        await driver.delay(regularDelayMs);
         const pendingTxes = await driver.findElements(
           '.transaction-list__pending-transactions .activity-list-item',
         );
