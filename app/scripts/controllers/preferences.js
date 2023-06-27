@@ -7,8 +7,10 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 
 export default class PreferencesController {
   /**
