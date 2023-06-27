@@ -1,6 +1,10 @@
 import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
+  APPROVAL_TYPE_RESULT_ERROR,
+  APPROVAL_TYPE_RESULT_SUCCESS,
+} from '@metamask/approval-controller';
+import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
@@ -8,6 +12,8 @@ import {
 } from '../../../store/actions';
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
+import success from './success';
+import error from './error';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
@@ -17,6 +23,9 @@ import snapPrompt from './snaps/snap-prompt/snap-prompt';
 const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
+  // Use ApprovalType from utils controller
+  [APPROVAL_TYPE_RESULT_SUCCESS]: success,
+  [APPROVAL_TYPE_RESULT_ERROR]: error,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,

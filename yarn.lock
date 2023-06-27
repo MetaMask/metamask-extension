@@ -3857,7 +3857,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.3.0":
+"@metamask/approval-controller@npm:3.3.0":
   version: 3.3.0
   resolution: "@metamask/approval-controller@npm:3.3.0"
   dependencies:
@@ -3870,9 +3870,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@metamask/assets-controllers@npm:9.0.0"
+"@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch::locator=metamask-crx%40workspace%3A.":
+  version: 3.3.0
+  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch::version=3.3.0&hash=be1fe6&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/base-controller": ^3.0.0
+    "@metamask/utils": ^5.0.2
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    nanoid: ^3.1.31
+  checksum: faf6c58b42cad95efc63d174e1ded24c2237dce5bb2003f208f67925cb1b1a755ba5b9cb441f17e281e7655d9b2a6a2cbd8e6df10a7c4210ba1496231894dfc6
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@npm:^9.1.0":
+  version: 9.1.0
+  resolution: "@metamask/assets-controllers@npm:9.1.0"
   dependencies:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0

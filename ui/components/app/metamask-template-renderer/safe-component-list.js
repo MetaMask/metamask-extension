@@ -12,6 +12,8 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
+import { AvatarIcon } from '../../component-library';
+import ActionableMessage from '../../ui/actionable-message/actionable-message';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
@@ -40,6 +42,8 @@ export const safeComponentList = {
   TruncatedDefinitionList,
   Typography,
   UrlIcon,
+  AvatarIcon,
+  ActionableMessage,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   SnapDelineator,
   Copyable,
