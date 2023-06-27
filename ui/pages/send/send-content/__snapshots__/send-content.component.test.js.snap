@@ -181,6 +181,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
           >
             <div
               class="transaction-detail-item"
+              data-testid="confirm-gas-display"
             >
               <div
                 class="transaction-detail-item__row"
