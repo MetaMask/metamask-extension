@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
@@ -12,6 +13,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
@@ -31,7 +33,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
@@ -49,18 +50,19 @@ export default class SignatureRequestOriginal extends Component {
       address: PropTypes.string.isRequired,
       name: PropTypes.string,
     }).isRequired,
-    cancel: PropTypes.func.isRequired,
     clearConfirmTransaction: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     mostRecentOverviewPage: PropTypes.string.isRequired,
-    sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
-    cancelAll: PropTypes.func.isRequired,
+    cancelAllApprovals: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
+    resolvePendingApproval: PropTypes.func.isRequired,
+    completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     selectedAccount: PropTypes.object,
     ///: END:ONLY_INCLUDE_IN
@@ -131,15 +133,11 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
 
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -158,11 +156,7 @@ export default class SignatureRequestOriginal extends Component {
                 color={IconColor.infoDefault}
                 marginRight={2}
               />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h7"
-              >
+              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
                 {this.context.t('mismatchAccount', [
                   shortenAddress(this.props.selectedAccount.address),
                   shortenAddress(this.props.fromAccount.address),
@@ -230,33 +224,48 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
-  onSubmit = async (event) => {
-    const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
-      this.props;
+  onSubmit = async () => {
+    const {
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      resolvePendingApproval,
+      completedTx,
+      txData: { id },
+    } = this.props;
 
-    await sign(event);
+    await resolvePendingApproval(id);
+    completedTx(id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
 
-  onCancel = async (event) => {
-    const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
-      this.props;
+  onCancel = async () => {
+    const {
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      rejectPendingApproval,
+      txData: { id },
+    } = this.props;
 
-    await cancel(event);
+    await rejectPendingApproval(
+      id,
+      serializeError(ethErrors.provider.userRejectedRequest()),
+    );
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
 
   renderFooter = () => {
     const {
-      cancel,
-      sign,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      txData: { type },
+      txData: { type, id },
       hardwareWalletRequiresConnection,
+      rejectPendingApproval,
+      resolvePendingApproval,
     } = this.props;
     const { t } = this.context;
 
@@ -264,16 +273,19 @@ export default class SignatureRequestOriginal extends Component {
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={t('sign')}
-        onCancel={async (event) => {
-          await cancel(event);
+        onCancel={async () => {
+          await rejectPendingApproval(
+            id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
         }}
-        onSubmit={async (event) => {
+        onSubmit={async () => {
           if (type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            await sign(event);
+            await resolvePendingApproval(id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }
@@ -285,19 +297,19 @@ export default class SignatureRequestOriginal extends Component {
 
   handleCancelAll = () => {
     const {
-      cancelAll,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       messagesCount,
+      cancelAllApprovals,
     } = this.props;
     const unapprovedTxCount = messagesCount;
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount,
       onSubmit: async () => {
-        await cancelAll();
+        await cancelAllApprovals();
         clearConfirmTransaction();
         history.push(mostRecentOverviewPage);
       },

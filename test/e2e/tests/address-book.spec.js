@@ -171,7 +171,7 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete account', tag: 'a' });
+        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
         // it checks if account is deleted
         const contact = await driver.findElement(
           '.send__select-recipient-wrapper__group-item',

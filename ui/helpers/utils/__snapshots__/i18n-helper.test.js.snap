@@ -1,64 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`i18n helper getMessage should return the correct message when a single react substitution is made 1`] = `
+exports[`I18N Helper getMessage renders substitutions inside span if substitutions include React components 1`] = `
 <div>
   <span>
      
-    Testing a react substitution 
-    <div
-      style="color: red;"
-    >
-      TEST_SUBSTITUTION_1
-    </div>
-    .
-     
-  </span>
-</div>
-`;
-
-exports[`i18n helper getMessage should return the correct message when substituting a mix of react elements and strings 1`] = `
-<div>
-  <span>
-     
-    Testing a mix 
-    TEST_SUBSTITUTION_1
-     of react substitutions 
     <div
       style="color: orange;"
     >
-      TEST_SUBSTITUTION_3
+      a1
     </div>
-     and string substitutions 
-    TEST_SUBSTITUTION_2
-     + 
     <div
       style="color: pink;"
     >
-      TEST_SUBSTITUTION_4
+      b2
     </div>
-    .
-     
-  </span>
-</div>
-`;
-
-exports[`i18n helper getMessage should return the correct message when two react substitutions are made 1`] = `
-<div>
-  <span>
-     
-    Testing a react substitution 
-    <div
-      style="color: red;"
-    >
-      TEST_SUBSTITUTION_1
-    </div>
-     and another 
-    <div
-      style="color: blue;"
-    >
-      TEST_SUBSTITUTION_2
-    </div>
-    .
+    c3
      
   </span>
 </div>

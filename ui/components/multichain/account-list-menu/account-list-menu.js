@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '../../ui/box/box';
 import {
   IconName,
   ButtonLink,
   TextFieldSearch,
   Text,
+  Box,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -19,12 +19,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import Popover from '../../ui/popover';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
@@ -41,7 +35,6 @@ import {
   CONNECT_HARDWARE_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  COMPLIANCE_FEATURE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -57,11 +50,6 @@ export const AccountListMenu = ({ onClose }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const inputRef = useRef();
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState('');
@@ -101,6 +89,7 @@ export const AccountListMenu = ({ onClose }) => {
       centerTitle
       onClose={onClose}
       onBack={actionMode === '' ? null : () => setActionMode('')}
+      className="multichain-account-menu-popover"
     >
       {actionMode === 'add' ? (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
@@ -129,7 +118,7 @@ export const AccountListMenu = ({ onClose }) => {
         </Box>
       ) : null}
       {actionMode === '' ? (
-        <Box className="multichain-account-menu">
+        <Box>
           {/* Search box */}
           {accounts.length > 1 ? (
             <Box
@@ -152,13 +141,13 @@ export const AccountListMenu = ({ onClose }) => {
             </Box>
           ) : null}
           {/* Account list block */}
-          <Box className="multichain-account-menu__list">
+          <Box className="multichain-account-menu-popover__list">
             {searchResults.length === 0 && searchQuery !== '' ? (
               <Text
                 paddingLeft={4}
                 paddingRight={4}
                 color={TextColor.textMuted}
-                data-testid="multichain-account-menu-no-results"
+                data-testid="multichain-account-menu-popover-no-results"
               >
                 {t('noAccountsFound')}
               </Text>
@@ -208,7 +197,7 @@ export const AccountListMenu = ({ onClose }) => {
                   });
                   setActionMode('add');
                 }}
-                data-testid="multichain-account-menu-add-account"
+                data-testid="multichain-account-menu-popover-add-account"
               >
                 {t('addAccount')}
               </ButtonLink>
@@ -232,7 +221,7 @@ export const AccountListMenu = ({ onClose }) => {
                 {t('importAccount')}
               </ButtonLink>
             </Box>
-            <Box>
+            <Box marginBottom={4}>
               <ButtonLink
                 size={Size.SM}
                 startIconName={IconName.Hardware}
@@ -257,71 +246,34 @@ export const AccountListMenu = ({ onClose }) => {
               >
                 {t('hardwareWallet')}
               </ButtonLink>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <>
-                  <ButtonLink
-                    size={Size.SM}
-                    startIconName={IconName.Custody}
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event:
-                          MetaMetricsEventName.UserClickedConnectCustodialAccount,
-                      });
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        global.platform.openExtensionInBrowser(
-                          CUSTODY_ACCOUNT_ROUTE,
-                        );
-                      } else {
-                        history.push(CUSTODY_ACCOUNT_ROUTE);
-                      }
-                    }}
-                  >
-                    {t('connectCustodialAccountMenu')}
-                  </ButtonLink>
-                  {mmiPortfolioEnabled && (
-                    <ButtonLink
-                      size={Size.SM}
-                      startIconName={IconName.MmmiPortfolioDashboard}
-                      onClick={() => {
-                        dispatch(toggleAccountMenu());
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event:
-                            MetaMetricsEventName.UserClickedPortfolioButton,
-                        });
-                        window.open(mmiPortfolioUrl, '_blank');
-                      }}
-                    >
-                      {t('portfolioDashboard')}
-                    </ButtonLink>
-                  )}
-                  <ButtonLink
-                    size={Size.SM}
-                    startIconName={IconName.Compliance}
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.UserClickedCompliance,
-                      });
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        global.platform.openExtensionInBrowser(
-                          COMPLIANCE_FEATURE_ROUTE,
-                        );
-                      } else {
-                        history.push(COMPLIANCE_FEATURE_ROUTE);
-                      }
-                    }}
-                  >
-                    {t('compliance')}
-                  </ButtonLink>
-                </>
-                ///: END:ONLY_INCLUDE_IN
-              }
             </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              <Box>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Custody}
+                  onClick={() => {
+                    dispatch(toggleAccountMenu());
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event:
+                        MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        CUSTODY_ACCOUNT_ROUTE,
+                      );
+                    } else {
+                      history.push(CUSTODY_ACCOUNT_ROUTE);
+                    }
+                  }}
+                >
+                  {t('connectCustodialAccountMenu')}
+                </ButtonLink>
+              </Box>
+              ///: END:ONLY_INCLUDE_IN
+            }
           </Box>
         </Box>
       ) : null}
