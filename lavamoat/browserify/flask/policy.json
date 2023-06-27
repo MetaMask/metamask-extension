@@ -186,8 +186,14 @@
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@metamask/key-tree>@noble/hashes": true
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>micro-ftch": {
@@ -214,7 +220,7 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -222,7 +228,19 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/curves>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethersproject/abi": {
@@ -1914,6 +1932,7 @@
         "document.createElement": true
       },
       "packages": {
+        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
         "@metamask/rpc-methods-flask>@metamask/utils": true,
@@ -2113,6 +2132,7 @@
         "document.createElement": true
       },
       "packages": {
+        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
@@ -2324,6 +2344,7 @@
         "document.createElement": true
       },
       "packages": {
+        "@metamask/key-tree": true,
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true,
         "@metamask/snaps-utils-flask>@metamask/utils": true,
