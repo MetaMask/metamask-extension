@@ -141,7 +141,6 @@ export default class SendAssetRow extends Component {
       tokens,
       nfts,
     } = this.props;
-    console.log(type, 'type');
 
     if (type === AssetType.token) {
       const token = tokens.find(({ address }) =>
@@ -187,14 +186,8 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const {
-      accounts,
-      selectedAddress,
-      nativeCurrency,
-      nativeCurrencyImage,
-      sendAsset,
-    } = this.props;
-    console.log(nativeCurrencyImage, sendAsset, 'nativeCurrencyImage');
+    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
+      this.props;
     const { sendableTokens, sendableNfts } = this.state;
 
     const balanceValue = accounts[selectedAddress]
