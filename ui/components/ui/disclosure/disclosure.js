@@ -51,30 +51,6 @@ const Disclosure = ({ children, title, size, variant }) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
 
-  const renderArrowSummary = () => (
-    <summary className="disclosure__summary is-arrow">
-      {title}
-      <Icon
-        className="disclosure__summary--icon"
-        name={IconName.ArrowUp}
-        size={IconSize.Sm}
-        marginInlineStart={2}
-      />
-    </summary>
-  );
-
-  const renderPlusSummary = () => (
-    <summary className="disclosure__summary">
-      <Icon
-        className="disclosure__summary--icon"
-        name={IconName.Add}
-        size={IconSize.Sm}
-        marginInlineEnd={2}
-      />
-      {title}
-    </summary>
-  );
-
   const scrollToBottom = () => {
     disclosureFooterEl &&
       disclosureFooterEl.current &&
