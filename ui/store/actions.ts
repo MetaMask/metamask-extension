@@ -1126,15 +1126,11 @@ export function removeSnap(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, state: MetaMaskReduxState) => {
     dispatch(showLoadingIndication());
-
-    const {
-      snapRegistryList,
-    }: { snapRegistryList: Record<string, SnapDetails> } = state().metamask;
+    const { snaps } = state().metamask;
 
     const isAccountsSnap =
-      Object.values(snapRegistryList).findIndex(
-        (snap) => snap.snapId === snapId,
-      ) !== -1;
+      snaps[snapId]?.manifest?.initialPermissions.snap_manageAccounts !==
+      undefined;
 
     try {
       if (isAccountsSnap) {
