@@ -456,11 +456,11 @@ describe('MetaMask', function () {
 
       await driver.switchToWindow(dapp);
 
-      await driver.clickElement({
+      const transferButton = await driver.findElement({
         text: 'Transfer Tokens Without Gas',
         tag: 'button',
       });
-
+      await driver.clickElement(transferButton);
       await driver.switchToWindow(extension);
       await driver.delay(regularDelayMs);
 
