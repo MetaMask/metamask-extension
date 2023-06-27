@@ -46,6 +46,7 @@ buildTypes:
       - snaps
       - desktop
       - build-flask
+      - build-blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
