@@ -37,9 +37,6 @@ module.exports = {
     config.resolve.alias['webextension-polyfill'] = require.resolve(
       '../ui/__mocks__/webextension-polyfill.js',
     );
-    config.resolve.alias['@metamask/snaps-controllers'] = require.resolve(
-      '@metamask/snaps-controllers-flask',
-    );
     config.resolve.fallback = {
       child_process: false,
       constants: false,
