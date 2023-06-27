@@ -4386,7 +4386,7 @@ export function installSnapFromSnapAccounts(
     dispatch(showLoadingIndication());
     log.debug(`background.installSnaps`);
     try {
-      await submitRequestToBackground('installorUpdateSnap', [
+      await submitRequestToBackground('installOrUpdateSnap', [
         origin,
         snapId,
         version,
