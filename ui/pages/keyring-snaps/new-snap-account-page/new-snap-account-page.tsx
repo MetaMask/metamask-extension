@@ -115,24 +115,26 @@ export default function NewSnapAccountPage() {
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
-        {snapRegistryList.map((snap: SnapDetails, index: number) => {
-          const foundSnap = Object.values(installedSnaps).find(
-            (installedSnap) => installedSnap.id === snap.snapId,
-          );
+        {Object.values(snapRegistryList).map(
+          (snap: SnapDetails, index: number) => {
+            const foundSnap = Object.values(installedSnaps).find(
+              (installedSnap) => installedSnap.id === snap.snapId,
+            );
 
-          const isInstalled = Boolean(foundSnap);
+            const isInstalled = Boolean(foundSnap);
 
-          return (
-            <SnapCard
-              {...snap}
-              key={index}
-              isInstalled={isInstalled}
-              onClickFunc={() => {
-                history.push(`/add-snap-account/${snap.id}`);
-              }}
-            />
-          );
-        })}
+            return (
+              <SnapCard
+                {...snap}
+                key={index}
+                isInstalled={isInstalled}
+                onClickFunc={() => {
+                  history.push(`/add-snap-account/${snap.id}`);
+                }}
+              />
+            );
+          },
+        )}
       </Box>
     </Box>
   );
