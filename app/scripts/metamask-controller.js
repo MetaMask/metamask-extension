@@ -634,6 +634,11 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      securityAlertsEnabled:
+        this.preferencesController.store.getState().securityAlertsEnabled,
+      onPreferencesChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -1524,9 +1529,6 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      PPOMController: this.ppomController,
-      ///: END:ONLY_INCLUDE_IN
     };
 
     this.store.updateStructure({
@@ -1568,6 +1570,9 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalFeaturesController:
         this.institutionalFeaturesController.store,
       MmiConfigurationController: this.mmiConfigurationController.store,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
@@ -1631,9 +1636,6 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      this.ppomController.clear.bind(this.ppomController),
-      ///: END:ONLY_INCLUDE_IN
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -2126,6 +2128,12 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      setSecurityAlertsEnabled:
+        preferencesController.setSecurityAlertsEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),

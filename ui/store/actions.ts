@@ -4295,6 +4295,16 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+export function setSecurityAlertsEnabled(val: boolean): void {
+  try {
+    submitRequestToBackground('setTransactionSecurityCheckEnabled', [[val]]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }
