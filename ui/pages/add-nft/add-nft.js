@@ -33,6 +33,7 @@ import NftsDetectionNotice from '../../components/app/nfts-detection-notice';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import {
+  MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
@@ -100,19 +101,19 @@ export default function AddNft() {
     const tokenDetails = await getTokenStandardAndDetails(
       nftAddress,
       null,
-      tokenId.toString(),
+      tokenId.toString(), // this should already be a string?
     );
 
     trackEvent({
-      event: MetaMetricsEventName.TokenAdded,
-      category: 'Wallet',
+      event: MetaMetricsEventName.NftAdded,
+      category: MetaMetricsEventCategory.Wallet,
       sensitiveProperties: {
         token_contract_address: nftAddress,
         token_symbol: tokenDetails?.symbol,
-        tokenId: tokenId.toString(),
-        asset_type: AssetType.NFT,
+        token_id: tokenId.toString(), // This should already be a string?
         token_standard: tokenDetails?.standard,
-        source_connection_method: MetaMetricsTokenEventSource.Custom,
+        asset_type: AssetType.NFT,
+        source: MetaMetricsTokenEventSource.Custom,
       },
     });
 
