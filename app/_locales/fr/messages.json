@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Ajouter un jeton personnalisé"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Vous ne trouvez pas de jeton ? Vous pouvez ajouter manuellement n’importe quel jeton avec son adresse par copier-coller. Les adresses des contrats de jetons sont disponibles sur $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Cela permettra d’utiliser ce réseau dans MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Ajouter le jeton"
+  },
+  "addTokenByContractAddress": {
+    "message": "Vous ne trouvez pas de jeton ? Vous pouvez ajouter manuellement n’importe quel jeton avec son adresse par copier-coller. Les adresses des contrats de jetons sont disponibles sur $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Adresse"
@@ -423,9 +423,6 @@
   "back": {
     "message": "Retour"
   },
-  "backToAll": {
-    "message": "Retour à Tous"
-  },
   "backup": {
     "message": "Sauvegarder"
   },
@@ -550,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Pour $1 la transaction, les gas fees doivent être augmentés d’au moins 10 % pour être reconnus par le réseau.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Annuler le swap pour ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Annuler le swap gratuitement"
   },
   "cancelled": {
     "message": "Annulé"
@@ -692,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Connexion au testnet Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connexion au réseau de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -920,9 +910,6 @@
   },
   "delete": {
     "message": "Supprimer"
-  },
-  "deleteAccount": {
-    "message": "Supprimer le compte"
   },
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
@@ -1202,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
-  },
-  "enableSmartTransactions": {
-    "message": "Activer les transactions intelligentes"
   },
   "enableToken": {
     "message": "activer $1",
@@ -1575,6 +1559,12 @@
     "message": "mais les hameçonneurs pourraient le faire.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Appuyez longuement pour révéler PSR"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Protégez votre PSR"
+  },
   "ignoreAll": {
     "message": "Ignorer tout"
   },
@@ -1608,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
-  },
-  "importNFTs": {
-    "message": "Importer des NFT"
   },
   "importSelectedTokens": {
     "message": "Voulez-vous importer les jetons sélectionnés ?"
@@ -1843,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Souhaitez-vous ajouter ces jetons ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Réseau de test Linea Goerli"
   },
   "link": {
@@ -1869,9 +1856,6 @@
   },
   "lock": {
     "message": "Déconnexion"
-  },
-  "lockTimeTooGreat": {
-    "message": "Le temps de verrouillage est trop important"
   },
   "logo": {
     "message": "Logo $1",
@@ -1966,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
   },
-  "missingNFT": {
-    "message": "Vous ne voyez pas votre NFT ?"
-  },
   "missingSetting": {
     "message": "Vous ne trouvez pas un paramètre ?"
   },
@@ -1980,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "Vous devez sélectionner au moins 1 jeton."
-  },
-  "myAccounts": {
-    "message": "Mes comptes"
   },
   "name": {
     "message": "Nom"
@@ -2177,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
-  },
-  "noNFTs": {
-    "message": "Aucun NFT pour le moment"
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
@@ -2796,9 +2771,6 @@
   "receive": {
     "message": "Recevoir"
   },
-  "recents": {
-    "message": "Récents"
-  },
   "recipientAddressPlaceholder": {
     "message": "Recherche, adresse publique (0x) ou ENS"
   },
@@ -3245,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "Je suis conscient(e) que tant que je n’aurai pas sauvegardé ma phrase secrète de récupération, je risque de perdre mes comptes et tous leurs actifs."
   },
-  "smartTransaction": {
-    "message": "Transaction intelligente"
-  },
   "snapContent": {
     "message": "Ce contenu provient de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3260,10 +3229,12 @@
     "message": "Installer Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Cochez la case pour confirmer que vous avez compris."
+    "message": "Cochez la case pour confirmer que vous avez compris.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Veuillez confirmer que vous avez bien compris en cochant toutes les cases."
+    "message": "Veuillez confirmer que vous avez bien compris en cochant toutes les cases.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
@@ -3353,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Le collage a échoué parce que la phrase contenait plus de 24 mots. Une phrase secrète de récupération peut contenir un maximum de 24 mots.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Vous pouvez coller toute votre phrase de récupération secrète dans n’importe quel champ",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Commencer"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Pour révéler votre Phrase secrète de récupération, vous devez répondre correctement à deux questions"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Si vous perdez votre Phrase secrète de récupération, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Ne pourra pas vous aider"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Gravez-la sur une plaque en métal ou inscrivez-la sur plusieurs bouts de papier et cachez-les dans différents endroits secrets pour ne jamais la perdre. Si vous la perdez, il n'y a aucun moyen de la récupérer."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "En effet ! Personne ne peut vous aider à récupérer votre Phrase secrète de récupération."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Pourra la récupérer pour vous"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Personne ne peut vous aider à récupérer votre phrase secrète de récupération si jamais vous la perdez."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "C'est faux ! Personne ne peut vous aider à récupérer votre Phrase secrète de récupération."
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Si un membre du service d'assistance ou toute autre personne vous demande votre Phrase secrète de récupération..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Ne la lui fournissez pas, car cette personne essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Toute personne qui vous demande votre phrase secrète de récupération, que ce soit pour des raisons de sécurité ou autre, essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "C'est exact ! Vous ne devez jamais partager votre Phrase secrète de récupération avec qui que ce soit."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Vous devez la lui fournir"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Toute personne qui vous demande votre phrase secrète de récupération, que ce soit pour des raisons de sécurité ou autre, essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "C'est faux ! Vous ne devez jamais partager votre Phrase secrète de récupération avec qui que ce soit."
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Quiz sur la sécurité"
   },
   "srpToggleShow": {
     "message": "Afficher / Masquer ce mot de la phrase de récupération secrète",
@@ -3429,9 +3451,6 @@
   "strong": {
     "message": "Robuste"
   },
-  "stxAreHere": {
-    "message": "Les transactions intelligentes sont là !"
-  },
   "stxBenefit1": {
     "message": "Minimise les frais de transaction"
   },
@@ -3453,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "Réessayez le swap. Nous serons là pour vous protéger contre des risques similaires la prochaine fois."
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps vient de devenir beaucoup plus intelligent ! Si vous activez les transactions intelligentes, MetaMask pourra optimiser programmatiquement votre swap pour vous aider à :"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Fonds insuffisants pour une transaction intelligente."
-  },
-  "stxErrorUnavailable": {
-    "message": "Les transactions intelligentes sont temporairement indisponibles."
-  },
   "stxFailure": {
     "message": "Échec du swap"
   },
@@ -3474,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Soumission publique de votre Swap..."
-  },
-  "stxSubDescription": {
-    "message": "* Avec les transactions intelligentes, votre transaction sera soumise plusieurs fois en privé. Si toutes les tentatives échouent, la transaction sera diffusée publiquement pour s’assurer de la réussite de votre swap."
   },
   "stxSuccess": {
     "message": "Swap terminé !"
@@ -4061,9 +4068,6 @@
   },
   "transfer": {
     "message": "Transfert"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfert entre mes comptes"
   },
   "transferFrom": {
     "message": "Transfert depuis"

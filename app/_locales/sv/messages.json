@@ -93,9 +93,6 @@
   "back": {
     "message": "Bakåt"
   },
-  "backToAll": {
-    "message": "Tillbaka till Alla"
-  },
   "backupApprovalInfo": {
     "message": "Den hemliga koden krävs för att komma åt din plånbok ifall du tappar bort din enhet, glömmer ditt lösenord, behöver installera om MetaMask eller om du vill komma åt din plånbok på en annan enhet."
   },
@@ -154,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ansluter till Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -207,9 +204,6 @@
   },
   "delete": {
     "message": "Radera"
-  },
-  "deleteAccount": {
-    "message": "Radera konto"
   },
   "deleteNetwork": {
     "message": "Radera nätverk?"
@@ -399,7 +393,7 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testnätverk"
   },
   "links": {
@@ -431,9 +425,6 @@
   },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
-  },
-  "myAccounts": {
-    "message": "Mina konton"
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
@@ -558,9 +549,6 @@
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
-  },
-  "recents": {
-    "message": "Senaste"
   },
   "recipientAddressPlaceholder": {
     "message": "Sök, allmän adress (0x) eller ENS"
@@ -775,9 +763,6 @@
   },
   "transfer": {
     "message": "Överföring"
-  },
-  "transferBetweenAccounts": {
-    "message": "Överför mellan mina konton"
   },
   "transferFrom": {
     "message": "Överför från"

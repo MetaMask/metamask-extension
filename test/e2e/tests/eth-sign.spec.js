@@ -1,21 +1,12 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   openDapp,
   DAPP_URL,
+  defaultGanacheOptions,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
 
 describe('Eth sign', function () {
   it('will detect if eth_sign is disabled', async function () {
@@ -25,13 +16,12 @@ describe('Eth sign', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#ethSign');
@@ -61,13 +51,12 @@ describe('Eth sign', function () {
           })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#ethSign');
@@ -80,18 +69,20 @@ describe('Eth sign', function () {
           windowHandles,
         );
 
-        const title = await driver.findElement(
-          '.request-signature__content__title',
-        );
-        const origin = await driver.findElement('.request-signature__origin');
-        assert.equal(await title.getText(), 'Signature request');
-        assert.equal(await origin.getText(), DAPP_URL);
+        await driver.findElement({
+          css: '.request-signature__content__title',
+          text: 'Signature request',
+        });
 
-        const personalMessageRow = await driver.findElement(
-          '.request-signature__row-value',
-        );
-        const personalMessage = await personalMessageRow.getText();
-        assert.equal(personalMessage, expectedPersonalMessage);
+        await driver.findElement({
+          css: '.request-signature__origin',
+          text: DAPP_URL,
+        });
+
+        await driver.findElement({
+          css: '.request-signature__row-value',
+          text: expectedPersonalMessage,
+        });
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
         await driver.clickElement(
@@ -103,8 +94,10 @@ describe('Eth sign', function () {
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
 
         // Verify
-        const result = await driver.findElement('#ethSignResult');
-        assert.equal(await result.getText(), expectedEthSignResult);
+        await driver.findElement({
+          css: '#ethSignResult',
+          text: expectedEthSignResult,
+        });
       },
     );
   });

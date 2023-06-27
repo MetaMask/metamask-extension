@@ -93,9 +93,6 @@
   "back": {
     "message": "Enrere"
   },
-  "backToAll": {
-    "message": "Torna a Tot"
-  },
   "backupApprovalInfo": {
     "message": "Aquest codi secret es requereix per recuperar el teu moneder en cas que perdis el dispositiu, oblidis la teva contrasenya, hagis de reinstal·lar MetaMask, o vulguis accedir al teu moneder des d'un altre dispositiu."
   },
@@ -157,7 +154,7 @@
   "connectingToGoerli": {
     "message": "Connectant a Xarxa de Prova Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connectant a Xarxa de Prova Linea Goerli"
   },
   "connectingToMainnet": {
@@ -210,9 +207,6 @@
   },
   "delete": {
     "message": "Suprimeix"
-  },
-  "deleteAccount": {
-    "message": "Elimina el compte"
   },
   "deleteNetwork": {
     "message": "Esborrar Xarxa?"
@@ -396,7 +390,7 @@
   "likeToImportTokens": {
     "message": "T'agradaria afegir aquestes fitxes?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Xarxa de test Linea Goerli"
   },
   "links": {
@@ -431,9 +425,6 @@
   },
   "mustSelectOne": {
     "message": "Has de seleccionar "
-  },
-  "myAccounts": {
-    "message": "Els meus Comptes"
   },
   "needImportFile": {
     "message": "Has de seleccionar un arxiu per a importar.",
@@ -772,9 +763,6 @@
   },
   "transfer": {
     "message": "Transferència"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre els meus comptes"
   },
   "transferFrom": {
     "message": "Transferir Des de"

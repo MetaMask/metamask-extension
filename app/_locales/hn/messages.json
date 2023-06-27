@@ -189,9 +189,6 @@
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना आवश्यक है।"
   },
-  "myAccounts": {
-    "message": "मेरे खाते"
-  },
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
     "description": "User is important an account and needs to add a file to continue"

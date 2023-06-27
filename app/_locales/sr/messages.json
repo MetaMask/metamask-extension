@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Povratak na Sve"
-  },
   "backupApprovalInfo": {
     "message": "Potreban je tajni kôd za oporavak vašeg novčanika u slučaju da izgubite uređaj, zaboravite lozinku, morate ponovo da instalirate MetaMask ili želite da pristupite novčaniku sa drugog uređaja."
   },
@@ -157,7 +154,7 @@
   "connectingToGoerli": {
     "message": "Povezuje se sa test mrežom Goerli "
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezuje se sa test mrežom Linea Goerli"
   },
   "connectingToMainnet": {
@@ -210,9 +207,6 @@
   },
   "delete": {
     "message": "Избриши"
-  },
-  "deleteAccount": {
-    "message": "Obriši nalog"
   },
   "deleteNetwork": {
     "message": "Da li želite da obrišete mrežu?"
@@ -406,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Želite li da dodate ove tokene?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Test mreža Linea Goerli"
   },
   "links": {
@@ -438,9 +432,6 @@
   },
   "mustSelectOne": {
     "message": "Morate izabrati najmanje 1 token."
-  },
-  "myAccounts": {
-    "message": "Moji nalozi"
   },
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
@@ -565,9 +556,6 @@
   },
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."
-  },
-  "recents": {
-    "message": "Skorašnje"
   },
   "recipientAddressPlaceholder": {
     "message": "Pretraga, javna adresa (0x) ili ENS"
@@ -788,9 +776,6 @@
   },
   "transfer": {
     "message": "Prenos"
-  },
-  "transferBetweenAccounts": {
-    "message": "Prenos između mojih naloga"
   },
   "transferFrom": {
     "message": "Prebacite iz"

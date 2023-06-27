@@ -26,7 +26,7 @@ import {
 } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
-import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
+import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../../../helpers/utils/util';
 
 export default function SnapResult({
@@ -44,7 +44,10 @@ export default function SnapResult({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
-  const snapName = getSnapName(targetSubjectMetadata.origin);
+  const snapName = getSnapName(
+    targetSubjectMetadata.origin,
+    targetSubjectMetadata,
+  );
 
   function getSuccessScreen(requestType, snapNameToRender) {
     let successScreenTitle;
@@ -140,17 +143,20 @@ export default function SnapResult({
       borderStyle={BorderStyle.none}
       flexDirection={FLEX_DIRECTION.COLUMN}
     >
+      <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
-        className="snap-result__header"
+        className="snap-result__content"
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        style={{
+          overflowY: 'auto',
+        }}
       >
-        <SnapAuthorship snapId={targetSubjectMetadata.origin} />
         {isLoading && (
           <Box
-            className="snap-result__header__loader-container"
+            className="snap-result__content__loader-container"
             flexDirection={FLEX_DIRECTION.COLUMN}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
@@ -167,6 +173,9 @@ export default function SnapResult({
         className="snap-result__footer"
         alignItems={AlignItems.center}
         flexDirection={FLEX_DIRECTION.COLUMN}
+        style={{
+          boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        }}
       >
         <PageContainerFooter
           hideCancel

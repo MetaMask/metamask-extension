@@ -93,9 +93,6 @@
   "back": {
     "message": "חזור"
   },
-  "backToAll": {
-    "message": "חזרה אל 'הכל'"
-  },
   "backupApprovalInfo": {
     "message": "קוד סודי זה נדרש כדי לשחזר את הארנק שלך במקרה שתאבד/י את מכשירך, תשכח/י את הססמה, תצטרכ/י להתקין מחדש את MetaMask או שתרצה/י לגשת לארנק שלך במכשיר אחר."
   },
@@ -160,7 +157,7 @@
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "מתחבר ל-Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -213,9 +210,6 @@
   },
   "delete": {
     "message": "מחיקה"
-  },
-  "deleteAccount": {
-    "message": "מחק חשבון"
   },
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
@@ -409,7 +403,7 @@
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
@@ -444,9 +438,6 @@
   },
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
-  },
-  "myAccounts": {
-    "message": "החשבונות שלי"
   },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
@@ -571,9 +562,6 @@
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
-  },
-  "recents": {
-    "message": "אחרונים"
   },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
@@ -797,9 +785,6 @@
   },
   "transfer": {
     "message": "העברה"
-  },
-  "transferBetweenAccounts": {
-    "message": "בצע העברה בין חשבונותיי"
   },
   "transferFrom": {
     "message": "העברה מ-"

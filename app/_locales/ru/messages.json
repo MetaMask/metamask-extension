@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Добавить пользовательский токен"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Это позволит использовать эту сеть в MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Добавить токен"
+  },
+  "addTokenByContractAddress": {
+    "message": "Не можете найти токен? Можно вручную добавить любой токен, вставив его адрес. Адреса контракта токена можно найти на $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Адрес"
@@ -423,9 +423,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Назад ко всем"
-  },
   "backup": {
     "message": "Резервное копирование"
   },
@@ -550,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Чтобы $1 транзакции плата за газ должна быть увеличена как минимум на 10%. Это позволит обеспечить прием транзакции сетью.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Отменить обмен на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Отменить обмен бесплатно"
   },
   "cancelled": {
     "message": "Отменено"
@@ -692,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Подключение к тестовой сети Goerli..."
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Подключение к тестовой сети Linea..."
   },
   "connectingToMainnet": {
@@ -920,9 +910,6 @@
   },
   "delete": {
     "message": "Удалить"
-  },
-  "deleteAccount": {
-    "message": "Удалить счет"
   },
   "deleteNetwork": {
     "message": "Удалить сеть?"
@@ -1202,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
-  },
-  "enableSmartTransactions": {
-    "message": "Включить смарт-транзакции"
   },
   "enableToken": {
     "message": "активирует для $1",
@@ -1575,6 +1559,12 @@
     "message": "но злоумышленники-фишеры могут.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Удерживайте, чтобы показать СФВ"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Храните СФВ в безопасности"
+  },
   "ignoreAll": {
     "message": "Игнорировать все"
   },
@@ -1608,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Идентификатор коллекционного актива является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
-  },
-  "importNFTs": {
-    "message": "Импорт NFT"
   },
   "importSelectedTokens": {
     "message": "Импортировать выбранные токены?"
@@ -1843,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестовая сеть Linea Goerli"
   },
   "link": {
@@ -1869,9 +1856,6 @@
   },
   "lock": {
     "message": "Заблокировать"
-  },
-  "lockTimeTooGreat": {
-    "message": "Время блокировки слишком велико"
   },
   "logo": {
     "message": "логотип $1",
@@ -1966,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Согласно нашим записям, отправленное значение URL-адреса RPC не соответствует известному поставщику для этого идентификатора блокчейна."
   },
-  "missingNFT": {
-    "message": "Не видите свои NFT?"
-  },
   "missingSetting": {
     "message": "Не удается найти настройку?"
   },
@@ -1980,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "Необходимо выбрать хотя бы 1 токен."
-  },
-  "myAccounts": {
-    "message": "Мои счета"
   },
   "name": {
     "message": "Имя"
@@ -2177,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
-  },
-  "noNFTs": {
-    "message": "Пока нет NFT-токенов"
   },
   "noSnaps": {
     "message": "Снапы не установлены"
@@ -2796,9 +2771,6 @@
   "receive": {
     "message": "Получить"
   },
-  "recents": {
-    "message": "Недавние"
-  },
   "recipientAddressPlaceholder": {
     "message": "Поиск, открытый адрес (0x) или ENS"
   },
@@ -3245,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "Я понимаю, что, если я не создам резервную копию своей секретной фразы для восстановления, я могу потерять доступ ко всем своим счетам и всем средствам на них."
   },
-  "smartTransaction": {
-    "message": "Смарт-транзакция"
-  },
   "snapContent": {
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3260,10 +3229,12 @@
     "message": "Установить снап"
   },
   "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки."
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Вы предоставляете ключ доступа $2 к привязке \"$1\". Это действие нельзя отменить, и оно предоставляет \"$1\" управление всеми счетами и активами $2. Перед тем как продолжить, убедитесь, что доверяете \"$1\".",
@@ -3353,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Не удалось вставить, так как он содержит более 24 слов. Секретная фраза для восстановления может содержать не более 24 слов.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Вы можете вставить всю свою секретную фразу для восстановления в любое поле",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Начать"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Чтобы увидеть свою секретную фразу для восстановления, вам нужно правильно ответить на два вопроса"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Если вы потеряете свою секретную фразу для восстановления, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Не сможет вам помочь"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Запишите ее, выгравируйте ее на металле или храните в нескольких потайных местах, чтобы никогда не потерять. Если вы потеряете ее, она пропадет навсегда."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Правильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Не сможет вернуть ее вам"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Если вы потеряете свою секретную фразу для восстановления, она пропадет навсегда. Никто не может помочь вам вернуть ее, что бы кто ни говорил."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Неправильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Если кто-нибудь, даже представитель службы поддержки, попросит вашу секретную фразу для восстановления..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Вас обманывают"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Любой, кто утверждает, что ему нужна ваша секретная фраза для восстановления, лжет вам. Если вы сообщите эту фразу ему (ей), он(-а) украдет ваши активы."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Правильно! Сообщать кому-либо своей секретную фразу для восстановления — это всегда плохая идея"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Вы должны сообщите фразу ему (ей)"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Любой, кто утверждает, что ему нужна ваша секретная фраза для восстановления, лжет вам. Если вы сообщите эту фразу ему (ей), он(-а) украдет ваши активы."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Нет! Никогда никому не сообщайте никому свою секретную фразу для восстановления"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Тест по безопасности"
   },
   "srpToggleShow": {
     "message": "Показать/скрыть это слово секретной фразы для восстановления",
@@ -3429,9 +3451,6 @@
   "strong": {
     "message": "Сильный"
   },
-  "stxAreHere": {
-    "message": "Появились смарт-транзакции!"
-  },
   "stxBenefit1": {
     "message": "Минимизируйте транзакционные издержки"
   },
@@ -3453,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "Попробуйте обменять еще раз. Мы готовы защитить вас от подобных рисков в следующий раз."
   },
-  "stxDescription": {
-    "message": "Функция обмена в MetaMask стала намного умнее! Включение смарт-транзакций позволит MetaMask программно оптимизировать ваш обмен, чтобы помочь:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Недостаточно средств для смарт-транзакции."
-  },
-  "stxErrorUnavailable": {
-    "message": "Смарт-транзакции временно недоступны."
-  },
   "stxFailure": {
     "message": "Обмен не удался"
   },
@@ -3474,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Публичная отправка вашей операции обмена..."
-  },
-  "stxSubDescription": {
-    "message": "* Смарт-транзакции попытаются несколько раз отправить вашу транзакцию в конфиденциальном порядке. Если все попытки не увенчаются успехом, транзакция будет показана публично, чтобы гарантировать успешное завершение вашего обмена."
   },
   "stxSuccess": {
     "message": "Обмен завершен!"
@@ -4061,9 +4068,6 @@
   },
   "transfer": {
     "message": "Перевести"
-  },
-  "transferBetweenAccounts": {
-    "message": "Перевод между моими счетами"
   },
   "transferFrom": {
     "message": "Перевести с"
