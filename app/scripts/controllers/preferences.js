@@ -8,7 +8,7 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
-import { SNAP_REGISTRY_URL } from '../../../shared/constants/app';
+import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
 
 export default class PreferencesController {
   /**
@@ -546,7 +546,7 @@ export default class PreferencesController {
   }
 
   async updateSnapRegistry() {
-    const snapRegistry = await fetchWithCache(SNAP_REGISTRY_URL, {
+    const snapRegistry = await fetchWithCache(KEYRING_SNAPS_REGISTRY_URL, {
       method: 'GET',
     });
     this.store.updateState({ snapRegistryList: snapRegistry });

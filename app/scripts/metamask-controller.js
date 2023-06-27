@@ -1785,7 +1785,7 @@ export default class MetamaskController extends EventEmitter {
           await this.keyringController.fullUpdate();
         },
         ///: END:ONLY_INCLUDE_IN
-        /// :( so sad
+        // / :( so sad
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     };
