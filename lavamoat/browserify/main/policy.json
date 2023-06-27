@@ -951,6 +951,12 @@
         "superstruct": true
       }
     },
+    "@metamask/eth-json-rpc-provider": {
+      "packages": {
+        "@metamask/safe-event-emitter": true,
+        "json-rpc-engine": true
+      }
+    },
     "@metamask/eth-keyring-controller": {
       "globals": {
         "console.error": true
@@ -1255,7 +1261,13 @@
         "crypto": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": {
@@ -1565,8 +1577,8 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>eth-block-tracker": true,
         "@metamask/utils": true,
@@ -1619,12 +1631,6 @@
         "json-rpc-engine": true,
         "lavamoat>json-stable-stringify": true,
         "vinyl>clone": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "json-rpc-engine": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
