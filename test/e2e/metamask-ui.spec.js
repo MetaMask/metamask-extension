@@ -456,15 +456,16 @@ describe('MetaMask', function () {
 
       await driver.switchToWindow(dapp);
 
-      const transferButton = await driver.findElement({
+      await driver.clickElement({
         text: 'Transfer Tokens Without Gas',
         tag: 'button',
       });
-      await driver.clickElement(transferButton);
+
       await driver.switchToWindow(extension);
       await driver.delay(regularDelayMs);
 
       await driver.wait(async () => {
+        await driver.delay(regularDelayMs);
         const pendingTxes = await driver.findElements(
           '.transaction-list__pending-transactions .activity-list-item',
         );
