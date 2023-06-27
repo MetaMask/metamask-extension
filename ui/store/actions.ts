@@ -1123,9 +1123,10 @@ export function enableSnap(
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch, state: MetaMaskReduxState) => {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
-    const { snaps } = state().metamask;
+    // eslint-disable-next-line prefer-destructuring
+    const snaps = getState().metamask?.snaps;
 
     const isAccountsSnap =
       snaps[snapId]?.manifest?.initialPermissions.snap_manageAccounts !==
@@ -4404,7 +4405,8 @@ export function setSnapsAddSnapAccountModalDismissed() {
   };
 }
 
-export function updateSnapRegistry() {
-  submitRequestToBackground('updateSnapRegistry', []);
+export async function updateSnapRegistry() {
+  console.log('in updateSnapRegistry');
+  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN

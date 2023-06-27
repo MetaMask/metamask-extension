@@ -7,11 +7,10 @@ import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 // eslint-disable-next-line import/no-duplicates
-import { getURLHostName } from '../../../../helpers/utils/util';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-// eslint-disable-next-line import/no-duplicates
-import { isAbleToExportAccount } from '../../../../helpers/utils/util';
-///: END:ONLY_INCLUDE_IN
+import {
+  getURLHostName,
+  isAbleToExportAccount,
+} from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import CustodyLabels from '../../../institutional/custody-labels/custody-labels';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';

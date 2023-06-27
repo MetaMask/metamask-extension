@@ -1,6 +1,6 @@
 import { Snap } from '@metamask/snaps-utils';
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Text } from '../../../components/component-library';
 import {
@@ -46,7 +46,7 @@ export interface SnapCardProps extends SnapDetails {
 }
 
 function getShuffledSnapList(arr: SnapDetails[]): SnapDetails[] {
-  return [...arr].map((_, i, arrCopy) => {
+  return [...arr].map((__, i, arrCopy) => {
     const rand = i + Math.floor(Math.random() * (arrCopy.length - i));
     [arrCopy[rand], arrCopy[i]] = [arrCopy[i], arrCopy[rand]];
     return arrCopy[i];
@@ -55,16 +55,18 @@ function getShuffledSnapList(arr: SnapDetails[]): SnapDetails[] {
 
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
-  const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
-  const snapRegistryList: Record<string, SnapDetails> =
-    useSelector(getSnapRegistry);
-  const snapList = getShuffledSnapList(Object.values(snapRegistryList));
-
-  const [showPopup, setShowPopup] = useState(true);
   const history = useHistory();
+  const [showPopup, setShowPopup] = useState(true);
+  const installedSnaps: Record<string, Snap> = useSelector(getSnaps);
+  const snapRegistryList: Record<string, SnapDetails> = useSelector(
+    getSnapRegistry,
+    shallowEqual,
+  );
 
   useEffect(() => {
-    updateSnapRegistry();
+    updateSnapRegistry().catch((err) =>
+      console.log(`Failed to fetch snap list: ${err}`),
+    );
   }, []);
 
   const hidePopup = () => {
@@ -113,7 +115,7 @@ export default function NewSnapAccountPage() {
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
       >
-        {snapList.map((snap: SnapDetails, index: number) => {
+        {snapRegistryList.map((snap: SnapDetails, index: number) => {
           const foundSnap = Object.values(installedSnaps).find(
             (installedSnap) => installedSnap.id === snap.snapId,
           );
