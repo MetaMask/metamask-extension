@@ -43,7 +43,7 @@ import TokenDetailsPage from '../token-details';
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import AddSnapAccountPage from '../add-snap-account/add-snap-account';
+import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';

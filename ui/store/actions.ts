@@ -105,7 +105,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { SnapDetails } from 'ui/pages/add-snap-account/new-snap-account-page';
+import { SnapDetails } from 'ui/pages/keyring-snaps/new-snap-account-page';
 
 export function goHome() {
   return {
