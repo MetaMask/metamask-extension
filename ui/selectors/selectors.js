@@ -1,7 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
-import { ApprovalType, ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -574,7 +574,7 @@ export function getSuggestedNfts(state) {
     getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
-        [ERC721, ERC1155].includes(requestData?.asset?.standard)
+        requestData?.asset?.tokenId !== undefined
       );
     }) || []
   );
