@@ -1125,12 +1125,9 @@ export function removeSnap(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
-    // eslint-disable-next-line prefer-destructuring
-    const snaps = getState().metamask?.snaps;
-
     const isAccountsSnap =
-      snaps[snapId]?.manifest?.initialPermissions.snap_manageAccounts !==
-      undefined;
+      getState().metamask?.subjects?.[snapId]?.permissions
+        ?.snap_manageAccounts !== undefined;
 
     try {
       if (isAccountsSnap) {
