@@ -6,6 +6,7 @@ import {
   Display,
   BlockSize,
   FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Button, Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
@@ -28,7 +29,7 @@ const JwtUrlForm = (props) => {
         marginTop={4}
         alignItems={AlignItems.center}
         className="jwt-url-form__jwt-container"
-        marginBottom={6}
+        marginBottom={4}
       >
         {showJwtDropdown && (
           <JwtDropdown
@@ -65,7 +66,12 @@ const JwtUrlForm = (props) => {
         )}
         {(!showJwtDropdown || showAddNewToken) && (
           <Box width={BlockSize.Full}>
-            <Text className="jwt-url-form__instruction" display={Display.Block}>
+            <Text
+              className="jwt-url-form__instruction"
+              display={Display.Block}
+              variant={TextVariant.bodyMd}
+              marginBottom={4}
+            >
               {props.jwtInputText}
             </Text>
             {fileTooBigError && (
@@ -94,10 +100,14 @@ const JwtUrlForm = (props) => {
   const renderAPIURLInput = () => {
     return (
       <Box width={BlockSize.Full}>
-        <Text className="jwt-url-form__instruction" display={Display.Block}>
+        <Text
+          className="jwt-url-form__instruction"
+          display={Display.Block}
+          variant={TextVariant.bodyMd}
+        >
           {props.urlInputText}
         </Text>
-        <Box>
+        <Box marginTop={4}>
           <input
             className="jwt-url-form__input"
             id="api-url-box"

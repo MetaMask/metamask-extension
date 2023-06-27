@@ -95,7 +95,6 @@ const CustodyPage = () => {
           borderColor={BorderColor.borderDefault}
           borderRadius={BorderRadius.SM}
           padding={[3, 4]}
-          marginBottom={4}
         >
           <Box display={Display.FLEX} alignItems={AlignItems.center}>
             {custodian.iconUrl && (
@@ -139,7 +138,15 @@ const CustodyPage = () => {
     });
 
     return custodianItems;
-  }, [connectRequest, custodians, dispatch, selectedCustodianName]);
+  }, [
+    connectRequest,
+    custodians,
+    dispatch,
+    mmiActions,
+    selectedCustodianName,
+    t,
+    trackEvent,
+  ]);
 
   const handleConnectError = useCallback(
     (e) => {
@@ -347,12 +354,7 @@ const CustodyPage = () => {
             onClick={() => history.push(DEFAULT_ROUTE)}
             display={Display.Flex}
           />
-          <Text
-            as="h4"
-            variant={TextVariant.bodyLgMedium}
-            marginTop={4}
-            marginBottom={4}
-          >
+          <Text as="h4" variant={TextVariant.bodyLgMedium} marginTop={4}>
             {t('connectCustodialAccountTitle')}
           </Text>
           <Text
@@ -372,18 +374,26 @@ const CustodyPage = () => {
       {!accounts && selectedCustodianType && (
         <>
           <Box
-            padding={[0, 7, 2]}
+            padding={0}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
           >
-            <ButtonIcon
-              ariaLabel={t('back')}
-              iconName={IconName.ArrowLeft}
-              size={IconSize.Sm}
-              color={Color.iconAlternative}
-              onClick={() => cancelConnectCustodianToken()}
-              display={[Display.Flex]}
-            />
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              marginBottom={4}
+              marginTop={4}
+            >
+              <ButtonIcon
+                ariaLabel={t('back')}
+                iconName={IconName.ArrowLeft}
+                size={IconSize.Sm}
+                color={Color.iconAlternative}
+                onClick={() => cancelConnectCustodianToken()}
+                display={[Display.Flex]}
+              />
+              <Text>{t('back')}</Text>
+            </Box>
             <Text as="h4">
               <Box display={Display.Flex} alignItems={AlignItems.center}>
                 {selectedCustodianImage && (
@@ -397,7 +407,7 @@ const CustodyPage = () => {
                 <Text marginLeft={2}>{selectedCustodianDisplayName}</Text>
               </Box>
             </Text>
-            <Text marginTop={4} marginBottom={4}>
+            <Text marginTop={4}>
               {t('enterCustodianToken', [selectedCustodianDisplayName])}
             </Text>
           </Box>
@@ -415,7 +425,7 @@ const CustodyPage = () => {
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.center}
-              padding={[4, 0]}
+              padding={0}
             >
               <Button
                 variant={BUTTON_VARIANT.SECONDARY}
@@ -573,7 +583,11 @@ const CustodyPage = () => {
             {t('allCustodianAccountsConnectedSubtitle')}
           </Text>
 
-          <Box padding={[5, 7]} className="custody-accounts-empty__footer">
+          <Box
+            padding={[5, 7]}
+            width={BlockSize.Full}
+            className="custody-accounts-empty__footer"
+          >
             <Button
               size={BUTTON_SIZES.LG}
               type={BUTTON_VARIANT.SECONDARY}
