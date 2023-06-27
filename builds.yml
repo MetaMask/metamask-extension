@@ -141,6 +141,8 @@ features:
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
+    env:
+      - KEYRING_SNAPS_REGISTRY_URL
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
 

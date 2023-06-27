@@ -64,8 +64,9 @@ export const MESSAGE_TYPE = {
 } as const;
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+// eslint-disable-next-line prefer-destructuring
 export const KEYRING_SNAPS_REGISTRY_URL =
-  'https://metamask.github.io/keyring-snaps-registry/registry.json';
+  process.env.KEYRING_SNAPS_REGISTRY_URL;
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
