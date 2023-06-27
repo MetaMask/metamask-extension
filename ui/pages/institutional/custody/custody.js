@@ -73,7 +73,24 @@ const CustodyPage = () => {
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
-    custodians.forEach((custodian) => {
+
+    const sortedCustodians = custodians
+    .sort(function(a, b) {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+
+      if (nameA < nameB) {
+        // negative if nameA should be sorted before nameB
+        return -1;
+      }
+      if (nameA > nameB) {
+        // positive if nameA should be sorted after nameB
+        return 1;
+      }
+      return 0; // names are equal and their order doesn't matter
+    });
+
+    sortedCustodians.forEach((custodian) => {
       if (
         (!custodian.production &&
           process.env.METAMASK_ENVIRONMENT === 'production') ||
@@ -139,13 +156,13 @@ const CustodyPage = () => {
 
     return custodianItems;
   }, [
-    connectRequest,
-    custodians,
-    dispatch,
-    mmiActions,
-    selectedCustodianName,
-    t,
-    trackEvent,
+    // connectRequest,
+    // custodians,
+    // dispatch,
+    // mmiActions,
+    // selectedCustodianName,
+    // t,
+    // trackEvent,
   ]);
 
   const handleConnectError = useCallback(
