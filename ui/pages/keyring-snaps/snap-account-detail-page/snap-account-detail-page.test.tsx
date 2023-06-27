@@ -167,7 +167,7 @@ describe('SnapAccountDetails', () => {
             id: 'a51ea3a8-f1b0-4613-9440-b80e2236713b',
             snapId: 'npm:@metamask/snap-simple-keyring',
             iconUrl: '',
-            snapTitle: 'Metamask Simple Keyring',
+            snapTitle: 'MetaMask Simple Keyring',
             snapSlug: 'Secure your account with MetaMask Mobile',
             snapDescription:
               'A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.',
