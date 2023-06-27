@@ -22,18 +22,20 @@ module.exports = function createStaticAssetTasks({
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
+  const buildConfig = loadBuildTypesConfig();
+
+  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+  const includePPOM = activeFeatures.includes('blockaid');
+
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      includePPOM,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
   });
-
-  const buildConfig = loadBuildTypesConfig();
-
-  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
 
   const additionalAssets = activeFeatures.flatMap(
     (feature) =>
@@ -108,7 +110,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow, includePPOM) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -196,12 +198,15 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: `runtime-lavamoat.js`,
       pattern: '',
     },
-    {
-      src: getPathInsideNodeModules('@blockaid/ppom-mock', 'dist/'),
+  ];
+
+  if (includePPOM) {
+    allCopyTargets.push({
+      src: getPathInsideNodeModules('@metamask/ppom-validator', 'dist/'),
       pattern: '*.wasm',
       dest: '',
-    },
-  ];
+    });
+  }
 
   const languageTags = new Set();
   for (const locale of locales) {
