@@ -45,14 +45,6 @@ export interface SnapCardProps extends SnapDetails {
   updateAvailable: boolean;
 }
 
-function getShuffledSnapList(arr: SnapDetails[]): SnapDetails[] {
-  return [...arr].map((__, i, arrCopy) => {
-    const rand = i + Math.floor(Math.random() * (arrCopy.length - i));
-    [arrCopy[rand], arrCopy[i]] = [arrCopy[i], arrCopy[rand]];
-    return arrCopy[i];
-  });
-}
-
 export default function NewSnapAccountPage() {
   const t = useI18nContext();
   const history = useHistory();
@@ -62,7 +54,6 @@ export default function NewSnapAccountPage() {
     getSnapRegistry,
     shallowEqual,
   );
-
   useEffect(() => {
     updateSnapRegistry().catch((err) =>
       console.log(`Failed to fetch snap list: ${err}`),
