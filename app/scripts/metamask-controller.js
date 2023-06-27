@@ -1773,6 +1773,7 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
         saveSnapKeyring: async (removedAddress) => {
@@ -1784,6 +1785,8 @@ export default class MetamaskController extends EventEmitter {
           await this.keyringController.fullUpdate();
         },
         ///: END:ONLY_INCLUDE_IN
+        /// :( so sad
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     };
   }
@@ -2449,12 +2452,6 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:disable',
       ),
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      installOrUpdateSnap: this.installOrUpdateSnap.bind(this),
-      updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
-        preferencesController,
-      ),
-      ///: END:ONLY_INCLUDE_IN
       enableSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:enable',
@@ -2469,6 +2466,12 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      installOrUpdateSnap: this.installOrUpdateSnap.bind(this),
+      updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
+        preferencesController,
+      ),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       // Desktop

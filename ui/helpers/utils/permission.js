@@ -255,14 +255,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.SecurityKey,
     weight: 3,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
-    label: t('permission_manageAccounts'),
-    leftIcon: 'fas fa-door-open',
-    rightIcon: null,
-    weight: 3,
-  }),
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
+
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
@@ -397,6 +390,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     return results;
   },
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
+    label: t('permission_manageAccounts'),
+    leftIcon: 'fas fa-door-open',
+    rightIcon: null,
+    weight: 3,
+  }),
+  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: getLeftIcon(IconName.Question),
