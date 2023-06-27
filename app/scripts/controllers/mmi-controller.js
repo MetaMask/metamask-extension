@@ -546,7 +546,7 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async setMmiPortfolioCookie() {
+  async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
     const { identities } = this.preferencesController.store.getState();
@@ -554,14 +554,13 @@ export default class MMIController extends EventEmitter {
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
-
     const networks = [
       ...this.preferencesController.getRpcMethodPreferences(),
       { chainId: CHAIN_IDS.MAINNET },
       { chainId: CHAIN_IDS.GOERLI },
     ];
 
-    handleMmiPortfolio({
+    return handleMmiPortfolio({
       keyringAccounts,
       identities,
       metaMetricsId,
@@ -574,7 +573,7 @@ export default class MMIController extends EventEmitter {
   async prepareMmiPortfolio() {
     if (!process.env.IN_TEST) {
       try {
-        const mmiDashboardData = await this.setMmiPortfolioCookie();
+        const mmiDashboardData = await this.handleMmiDashboardData();
         const cookieSetUrls =
         this.mmiConfigurationController.store.mmiConfiguration?.portfolio?.cookieSetUrls;
         setDashboardCookie(mmiDashboardData, cookieSetUrls);
