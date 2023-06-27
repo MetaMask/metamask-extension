@@ -24,6 +24,7 @@ import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
 } from '../../../ui/helpers/constants/routes';
+import { previousValueComparator } from '../lib/util';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
@@ -75,8 +76,15 @@ export default class MMIController extends EventEmitter {
       });
     }
 
-    this.preferencesController.on('update-mmi-portfolio', () =>
-      this.prepareMmiPortfolio(),
+    this.preferencesController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { identities: prevIdentities } = prevState;
+        const { identities: currIdentities } = currState;
+        if (prevIdentities === currIdentities) {
+          return;
+        }
+        await this.prepareMmiPortfolio();
+      }, this.preferencesController.store.getState()),
     );
   } // End of constructor
 

@@ -1,4 +1,3 @@
-import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
@@ -6,7 +5,7 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
 
-export default class PreferencesController extends EventEmitter {
+export default class PreferencesController {
   /**
    *
    * @typedef {object} PreferencesController
@@ -23,8 +22,6 @@ export default class PreferencesController extends EventEmitter {
    * @property {string} store.selectedAddress A hex string that matches the currently selected address in the app
    */
   constructor(opts = {}) {
-    super();
-
     const initState = {
       useBlockie: false,
       useNonceField: false,
@@ -253,10 +250,6 @@ export default class PreferencesController extends EventEmitter {
       return ids;
     }, {});
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.emit('update-mmi-portfolio');
-    ///: END:ONLY_INCLUDE_IN
-
     this.store.updateState({ identities });
   }
 
@@ -281,10 +274,6 @@ export default class PreferencesController extends EventEmitter {
       const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.emit('update-mmi-portfolio');
-    ///: END:ONLY_INCLUDE_IN
 
     return address;
   }
@@ -341,10 +330,6 @@ export default class PreferencesController extends EventEmitter {
 
     this.store.updateState({ identities, lostIdentities });
     this.addAddresses(addresses);
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.emit('update-mmi-portfolio');
-    ///: END:ONLY_INCLUDE_IN
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
