@@ -89,7 +89,7 @@ export const Checkbox = forwardRef(function Checkbox(
       <Text
         {...textProps}
         as="label"
-        htmlFor={id}
+        for={id}
         className={classnames(
           'mm-checkbox__label',
           textProps?.className ?? '',
