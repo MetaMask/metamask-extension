@@ -397,7 +397,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 3,
   }),
-  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: getLeftIcon(IconName.Question),

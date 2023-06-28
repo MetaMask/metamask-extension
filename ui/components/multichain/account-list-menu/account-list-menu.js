@@ -33,7 +33,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -251,7 +251,7 @@ export const AccountListMenu = ({ onClose }) => {
               </ButtonLink>
             </Box>
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
               <>
                 <Box marginTop={4}>
                   <ButtonLink

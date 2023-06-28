@@ -72,7 +72,7 @@ export default class PreferencesController {
       snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,

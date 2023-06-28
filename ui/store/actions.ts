@@ -19,7 +19,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
@@ -37,6 +37,8 @@ import {
   hasTransactionPendingApprovals,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
@@ -1129,14 +1131,16 @@ export function removeSnap(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       [k: string]: { permissions: Record<string, any> };
     };
 
     const isAccountsSnap =
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
-
+    ///: END:ONLY_INCLUDE_IN
     try {
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
         const accounts = (await handleSnapRequest({
           snapId,
@@ -1152,6 +1156,7 @@ export function removeSnap(
           dispatch(removeAccount(account.address.toLowerCase()));
         }
       }
+      ///: END:ONLY_INCLUDE_IN
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
