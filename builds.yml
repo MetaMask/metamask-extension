@@ -142,7 +142,7 @@ features:
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
     env:
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/registry.json
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
 
