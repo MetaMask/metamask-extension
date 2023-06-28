@@ -1776,10 +1776,7 @@ export default class MetamaskController extends EventEmitter {
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
-        saveSnapKeyring: async (removedAddress) => {
-          if (removedAddress) {
-            this.keyringController.emit('removedAccount', removedAddress);
-          }
+        saveSnapKeyring: async () => {
           await this.keyringController.persistAllKeyrings();
           await this.keyringController._updateMemStoreKeyrings();
           await this.keyringController.fullUpdate();
