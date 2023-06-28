@@ -6,7 +6,9 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { v4 as uuidV4 } from 'uuid';
+///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
