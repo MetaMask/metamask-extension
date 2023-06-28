@@ -911,9 +911,6 @@
   "delete": {
     "message": "Xóa"
   },
-  "deleteAccount": {
-    "message": "Xóa tài khoản"
-  },
   "deleteNetwork": {
     "message": "Xóa mạng?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục 'Chi tiết'. Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importNFTs": {
-    "message": "Nhập NFT"
-  },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
   },
-  "missingNFT": {
-    "message": "Không thấy NFT của mình?"
-  },
   "missingSetting": {
     "message": "Không tìm thấy thiết lập?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noSnaps": {
     "message": "Chưa cài đặt Snap nào"

@@ -47,12 +47,6 @@
   flex-direction: column;
   min-height: min-content;
 
-  &__title {
-    @include H5;
-
-    font-weight: 500;
-  }
-
   &__info {
     @include H7;
 

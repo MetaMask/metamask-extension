@@ -562,10 +562,7 @@ export default class Routes extends Component {
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
-        <Box
-          className="main-container-wrapper"
-          paddingTop={isUnlocked && [0, 4]}
-        >
+        <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}

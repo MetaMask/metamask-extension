@@ -27,7 +27,13 @@ jobs:
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -44,6 +50,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -72,6 +83,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Checkout pull request
+        run: gh pr checkout "${PR_NUMBER}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -99,7 +115,8 @@ jobs:
     # Ensure forks don't get access to the LavaMoat update token
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
@@ -113,6 +130,7 @@ jobs:
         with:
           path: lavamoat/build-system
           key: cache-build-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       # One restore step per build type: [main, beta, flask, mmi, desktop]
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
       # and with the build type list in `builds.yml`
@@ -121,27 +139,31 @@ jobs:
         with:
           path: lavamoat/browserify/main
           key: cache-main-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       - name: Restore beta application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/beta
           key: cache-beta-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       - name: Restore flask application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/flask
           key: cache-flask-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       - name: Restore mmi application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/mmi
           key: cache-mmi-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
       - name: Restore desktop application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/desktop
           key: cache-desktop-${{ github.run_id }}-${{ github.run_attempt }}
-
+          fail-on-cache-miss: true
       - name: Check whether there are policy changes
         id: policy-changes
         run: |

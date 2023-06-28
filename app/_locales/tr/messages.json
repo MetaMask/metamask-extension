@@ -911,9 +911,6 @@
   "delete": {
     "message": "Sil"
   },
-  "deleteAccount": {
-    "message": "Hesabı Sil"
-  },
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
   },
-  "importNFTs": {
-    "message": "NFS'leri İçe Aktar"
-  },
   "importSelectedTokens": {
     "message": "Seçilen tokenleri içe aktar?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
   },
-  "missingNFT": {
-    "message": "NFT'nizi görmüyor musunuz?"
-  },
   "missingSetting": {
     "message": "Bir ayarı bulamıyor musun?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noSnaps": {
     "message": "Hiç Snap yüklü değil"

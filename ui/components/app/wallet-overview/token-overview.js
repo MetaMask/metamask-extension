@@ -83,6 +83,7 @@ const TokenOverview = ({ className, token }) => {
 
   return (
     <WalletOverview
+      showAddress={false}
       balance={
         <div className="token-overview__balance">
           <div className="token-overview__primary-container">
