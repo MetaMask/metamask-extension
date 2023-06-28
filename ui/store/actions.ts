@@ -6,7 +6,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
-import { v4 as uuid } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1141,7 +1141,7 @@ export function removeSnap(
           origin: 'metamask',
           handler: HandlerType.OnRpcRequest,
           request: {
-            id: uuid(),
+            id: uuidV4(),
             jsonrpc: '2.0',
             method: 'keyring_listAccounts',
           },
