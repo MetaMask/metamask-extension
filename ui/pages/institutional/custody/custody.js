@@ -71,99 +71,102 @@ const CustodyPage = () => {
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 
-  const custodianButtons = useMemo(() => {
-    const custodianItems = [];
+  const custodianButtons = useMemo(
+    () => {
+      const custodianItems = [];
 
-    const sortedCustodians = custodians
-    .sort(function(a, b) {
-      const nameA = a.name.toLowerCase();
-      const nameB = b.name.toLowerCase();
+      const sortedCustodians = custodians.sort(function (a, b) {
+        const nameA = a.name.toLowerCase();
+        const nameB = b.name.toLowerCase();
 
-      if (nameA < nameB) {
-        // negative if nameA should be sorted before nameB
-        return -1;
-      }
-      if (nameA > nameB) {
-        // positive if nameA should be sorted after nameB
-        return 1;
-      }
-      return 0; // names are equal and their order doesn't matter
-    });
+        if (nameA < nameB) {
+          // negative if nameA should be sorted before nameB
+          return -1;
+        }
+        if (nameA > nameB) {
+          // positive if nameA should be sorted after nameB
+          return 1;
+        }
+        return 0; // names are equal and their order doesn't matter
+      });
 
-    sortedCustodians.forEach((custodian) => {
-      if (
-        (!custodian.production &&
-          process.env.METAMASK_ENVIRONMENT === 'production') ||
-        custodian.hidden ||
-        (connectRequest &&
-          Object.keys(connectRequest).length &&
-          custodian.name !== selectedCustodianName)
-      ) {
-        return;
-      }
+      sortedCustodians.forEach((custodian) => {
+        if (
+          (!custodian.production &&
+            process.env.METAMASK_ENVIRONMENT === 'production') ||
+          custodian.hidden ||
+          (connectRequest &&
+            Object.keys(connectRequest).length &&
+            custodian.name !== selectedCustodianName)
+        ) {
+          return;
+        }
 
-      custodianItems.push(
-        <Box
-          key={uuidv4()}
-          display={Display.FLEX}
-          flexDirection={FlexDirection.ROW}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-          borderColor={BorderColor.borderDefault}
-          borderRadius={BorderRadius.SM}
-          padding={[3, 4]}
-        >
-          <Box display={Display.FLEX} alignItems={AlignItems.center}>
-            {custodian.iconUrl && (
-              <img
-                width={32}
-                height={32}
-                src={custodian.iconUrl}
-                alt={custodian.displayName}
-              />
-            )}
-            <Text marginLeft={2}>{custodian.displayName}</Text>
-          </Box>
-
-          <Button
-            size={BUTTON_SIZES.SM}
-            data-testid="custody-connect-button"
-            onClick={async (_) => {
-              const jwtListValue = await dispatch(
-                mmiActions.getCustodianJWTList(custodian.name),
-              );
-              setSelectedCustodianName(custodian.name);
-              setSelectedCustodianType(custodian.type);
-              setSelectedCustodianImage(custodian.iconUrl);
-              setSelectedCustodianDisplayName(custodian.displayName);
-              setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtListValue[0] || '');
-              setJwtList(jwtListValue);
-              trackEvent({
-                category: 'MMI',
-                event: 'Custodian Selected',
-                properties: {
-                  custodian: custodian.name,
-                },
-              });
-            }}
+        custodianItems.push(
+          <Box
+            key={uuidv4()}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            borderColor={BorderColor.borderDefault}
+            borderRadius={BorderRadius.SM}
+            padding={4}
+            marginBottom={4}
           >
-            {t('select')}
-          </Button>
-        </Box>,
-      );
-    });
+            <Box display={Display.Flex} alignItems={AlignItems.center}>
+              {custodian.iconUrl && (
+                <img
+                  width={32}
+                  height={32}
+                  src={custodian.iconUrl}
+                  alt={custodian.displayName}
+                />
+              )}
+              <Text marginLeft={2}>{custodian.displayName}</Text>
+            </Box>
 
-    return custodianItems;
-  }, [
-    // connectRequest,
-    // custodians,
-    // dispatch,
-    // mmiActions,
-    // selectedCustodianName,
-    // t,
-    // trackEvent,
-  ]);
+            <Button
+              size={BUTTON_SIZES.SM}
+              data-testid="custody-connect-button"
+              onClick={async (_) => {
+                const jwtListValue = await dispatch(
+                  mmiActions.getCustodianJWTList(custodian.name),
+                );
+                setSelectedCustodianName(custodian.name);
+                setSelectedCustodianType(custodian.type);
+                setSelectedCustodianImage(custodian.iconUrl);
+                setSelectedCustodianDisplayName(custodian.displayName);
+                setApiUrl(custodian.apiUrl);
+                setCurrentJwt(jwtListValue[0] || '');
+                setJwtList(jwtListValue);
+                trackEvent({
+                  category: 'MMI',
+                  event: 'Custodian Selected',
+                  properties: {
+                    custodian: custodian.name,
+                  },
+                });
+              }}
+            >
+              {t('select')}
+            </Button>
+          </Box>,
+        );
+      });
+
+      return custodianItems;
+    },
+    [
+      // connectRequest,
+      // custodians,
+      // dispatch,
+      // mmiActions,
+      // selectedCustodianName,
+      // t,
+      // trackEvent,
+    ],
+  );
 
   const handleConnectError = useCallback(
     (e) => {
@@ -344,7 +347,7 @@ const CustodyPage = () => {
   };
 
   return (
-    <Box>
+    <>
       {connectError && (
         <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {connectError}
@@ -359,18 +362,30 @@ const CustodyPage = () => {
 
       {!accounts && !selectedCustodianType ? (
         <Box
-          padding={[0, 7, 2]}
+          padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
+          backgroundColor={Color.backgroundDefault}
+          style={{
+            boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+          }}
         >
-          <ButtonIcon
-            ariaLabel={t('back')}
-            iconName={IconName.ArrowLeft}
-            size={IconSize.Sm}
-            color={Color.iconDefault}
-            onClick={() => history.push(DEFAULT_ROUTE)}
+          <Box
             display={Display.Flex}
-          />
+            alignItems={AlignItems.center}
+            marginBottom={4}
+            marginTop={4}
+          >
+            <ButtonIcon
+              ariaLabel={t('back')}
+              iconName={IconName.ArrowLeft}
+              size={IconSize.Sm}
+              color={Color.iconDefault}
+              onClick={() => history.push(DEFAULT_ROUTE)}
+              display={Display.Flex}
+            />
+            <Text>{t('back')}</Text>
+          </Box>
           <Text as="h4" variant={TextVariant.bodyLgMedium} marginTop={4}>
             {t('connectCustodialAccountTitle')}
           </Text>
@@ -391,9 +406,13 @@ const CustodyPage = () => {
       {!accounts && selectedCustodianType && (
         <>
           <Box
-            padding={0}
+            padding={4}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
+            backgroundColor={Color.backgroundDefault}
+            style={{
+              boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+            }}
           >
             <Box
               display={Display.Flex}
@@ -405,7 +424,7 @@ const CustodyPage = () => {
                 ariaLabel={t('back')}
                 iconName={IconName.ArrowLeft}
                 size={IconSize.Sm}
-                color={Color.iconAlternative}
+                color={Color.iconDefault}
                 onClick={() => cancelConnectCustodianToken()}
                 display={[Display.Flex]}
               />
@@ -427,43 +446,46 @@ const CustodyPage = () => {
             <Text marginTop={4}>
               {t('enterCustodianToken', [selectedCustodianDisplayName])}
             </Text>
-          </Box>
-          <Box paddingBottom={7}>
-            <JwtUrlForm
-              jwtList={jwtList}
-              currentJwt={currentJwt}
-              onJwtChange={(jwt) => setCurrentJwt(jwt)}
-              jwtInputText={t('pasteJWTToken')}
-              apiUrl={apiUrl}
-              urlInputText={t('custodyApiUrl', [selectedCustodianDisplayName])}
-              onUrlChange={(url) => setApiUrl(url)}
-            />
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.center}
-              padding={0}
-            >
-              <Button
-                variant={BUTTON_VARIANT.SECONDARY}
-                marginRight={4}
-                onClick={() => {
-                  cancelConnectCustodianToken();
-                }}
-                block
+            <Box paddingBottom={7}>
+              <JwtUrlForm
+                jwtList={jwtList}
+                currentJwt={currentJwt}
+                onJwtChange={(jwt) => setCurrentJwt(jwt)}
+                jwtInputText={t('pasteJWTToken')}
+                apiUrl={apiUrl}
+                urlInputText={t('custodyApiUrl', [
+                  selectedCustodianDisplayName,
+                ])}
+                onUrlChange={(url) => setApiUrl(url)}
+              />
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                justifyContent={JustifyContent.center}
+                padding={0}
               >
-                {t('cancel')}
-              </Button>
-              <Button
-                data-testid="jwt-form-connect-button"
-                onClick={connect}
-                disabled={
-                  !selectedCustodianName || (addNewTokenClicked && !currentJwt)
-                }
-                block
-              >
-                {t('connect')}
-              </Button>
+                <Button
+                  variant={BUTTON_VARIANT.SECONDARY}
+                  marginRight={4}
+                  onClick={() => {
+                    cancelConnectCustodianToken();
+                  }}
+                  block
+                >
+                  {t('cancel')}
+                </Button>
+                <Button
+                  data-testid="jwt-form-connect-button"
+                  onClick={connect}
+                  disabled={
+                    !selectedCustodianName ||
+                    (addNewTokenClicked && !currentJwt)
+                  }
+                  block
+                >
+                  {t('connect')}
+                </Button>
+              </Box>
             </Box>
           </Box>
         </>
@@ -615,7 +637,7 @@ const CustodyPage = () => {
           </Box>
         </Box>
       )}
-    </Box>
+    </>
   );
 };
 
