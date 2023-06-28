@@ -185,12 +185,12 @@ const CustodyPage = () => {
   );
 
   const getCustodianAccounts = useCallback(
-    async (token, custody, getNonImportedAccounts) => {
+    async (token, getNonImportedAccounts) => {
       return await dispatch(
         mmiActions.getCustodianAccounts(
           token,
           apiUrl,
-          custody || selectedCustodianType,
+          selectedCustodianType,
           getNonImportedAccounts,
         ),
       );
@@ -203,12 +203,8 @@ const CustodyPage = () => {
       // If you have one JWT already, but no dropdown yet, currentJwt is null!
       const jwt = currentJwt || jwtList[0];
       setConnectError('');
-      const accountsValue = await getCustodianAccounts(
-        jwt,
-        apiUrl,
-        selectedCustodianType,
-        true,
-      );
+      const accountsValue = await getCustodianAccounts(jwt, true);
+
       setAccounts(accountsValue);
       trackEvent({
         category: 'MMI',
@@ -230,7 +226,6 @@ const CustodyPage = () => {
     handleConnectError,
     jwtList,
     selectedCustodianName,
-    selectedCustodianType,
     trackEvent,
   ]);
 
@@ -239,6 +234,7 @@ const CustodyPage = () => {
       const connectRequestValue = await dispatch(
         mmiActions.getCustodianConnectRequest(),
       );
+
       setChainId(parseInt(currentChainId, 16));
 
       // check if it's empty object
@@ -251,15 +247,23 @@ const CustodyPage = () => {
         setSelectedCustodianType(connectRequestValue.custodianType);
         setSelectedCustodianName(connectRequestValue.custodianName);
         setApiUrl(connectRequestValue.apiUrl);
-        connect();
+
+        // connect();
       }
     };
 
-    // call the function
-    fetchConnectRequest()
-      // make sure to catch any error
-      .catch(console.error);
-  }, [dispatch, connect, currentChainId, mmiActions]);
+    // Define a separate handler for the effect
+    const handleFetchConnectRequest = async () => {
+      try {
+        await fetchConnectRequest();
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    handleFetchConnectRequest();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const handleNetworkChange = async () => {
@@ -267,14 +271,7 @@ const CustodyPage = () => {
         const jwt = currentJwt || jwtList[0];
 
         if (jwt && jwt.length) {
-          setAccounts(
-            await getCustodianAccounts(
-              jwt,
-              apiUrl,
-              selectedCustodianType,
-              true,
-            ),
-          );
+          setAccounts(await getCustodianAccounts(jwt, true));
         }
       }
     };

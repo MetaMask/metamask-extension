@@ -230,12 +230,14 @@ const ConfirmAddCustodianToken = () => {
                     custodianName = connectRequest.environment;
                   }
 
-                  await mmiActions.setCustodianConnectRequest({
-                    token: connectRequest.token,
-                    apiUrl: connectRequest.apiUrl,
-                    custodianName,
-                    custodianType: connectRequest.service,
-                  });
+                  await dispatch(
+                    mmiActions.setCustodianConnectRequest({
+                      token: connectRequest.token,
+                      apiUrl: connectRequest.apiUrl,
+                      custodianName,
+                      custodianType: connectRequest.service,
+                    }),
+                  );
                   mmiActions.removeAddTokenConnectRequest({
                     origin: connectRequest.origin,
                     apiUrl: connectRequest.apiUrl,
