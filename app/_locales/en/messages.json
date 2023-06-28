@@ -3148,7 +3148,7 @@
     "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
-    "message": "Control accounts handled by snaps",
+    "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
