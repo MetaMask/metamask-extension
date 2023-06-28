@@ -41,6 +41,10 @@
       opacity: 0.5;
     }
 
+    .disclosure__content {
+      margin-left: 0;
+    }
+
     .disclosure__summary--icon {
       transform: rotateX(180deg);
       transition: 0.1s transform;
