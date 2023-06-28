@@ -151,7 +151,7 @@ export const AppHeader = ({ location }) => {
 
   // This is required to ensure send and confirmation screens
   // look as desired
-  const headerBottomMargin = disableNetworkPicker ? 4 : 0;
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
 
   return (
     <>
