@@ -339,7 +339,7 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1 TST',
       });
 
@@ -370,10 +370,12 @@ describe('MetaMask', function () {
 
       await driver.findElements('.transaction-list__pending-transactions');
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item__primary-currency');
+      await driver.clickElement(
+        '[data-testid="transaction-list-item-primary-currency"]',
+      );
       await driver.delay(regularDelayMs);
 
       const transactionAmounts = await driver.findElements(
@@ -415,7 +417,7 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
 
@@ -472,7 +474,7 @@ describe('MetaMask', function () {
       }, 10000);
 
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
       await driver.clickElement('.activity-list-item');
@@ -494,7 +496,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .activity-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
     });
