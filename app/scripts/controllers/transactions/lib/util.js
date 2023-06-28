@@ -9,6 +9,7 @@ import {
 import { isEIP1559Transaction } from '../../../../../shared/modules/transaction.utils';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
+const identity = (x) => x;
 const normalizers = {
   from: addHexPrefix,
   to: (to, lowerCase) =>
@@ -21,8 +22,9 @@ const normalizers = {
   maxFeePerGas: addHexPrefix,
   maxPriorityFeePerGas: addHexPrefix,
   type: addHexPrefix,
-  estimateSuggested: (estimate) => estimate,
-  estimateUsed: (estimate) => estimate,
+  estimateSuggested: identity,
+  estimateUsed: identity,
+  accessList: identity,
 };
 
 export function normalizeAndValidateTxParams(txParams, lowerCase = true) {
@@ -224,10 +226,25 @@ export function validateTxParams(txParams, eip1559Compatibility = true) {
         validateInputData(value);
         ensureFieldIsString(txParams, 'data');
         break;
+      case 'accessList':
+        validateAccessList(value);
+        break;
       default:
         ensureFieldIsString(txParams, key);
     }
   });
+}
+
+/**
+ *
+ * @param {*} value
+ */
+export function validateAccessList(value) {
+  if (value instanceof Array === false) {
+    throw ethErrors.rpc.invalidParams(
+      `Invalid transaction params: accessList must be an array of access entries`,
+    );
+  }
 }
 
 /**

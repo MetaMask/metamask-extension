@@ -221,6 +221,7 @@ export const unrestrictedMethods = Object.freeze([
   'eth_coinbase',
   'eth_decrypt',
   'eth_estimateGas',
+  'eth_createAccessList',
   'eth_feeHistory',
   'eth_gasPrice',
   'eth_getBalance',

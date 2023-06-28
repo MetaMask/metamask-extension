@@ -76,8 +76,27 @@ export default class TxGasUtil {
     delete txParams.maxFeePerGas;
     delete txParams.maxPriorityFeePerGas;
 
-    // estimate tx gas requirements
-    return await this.query.estimateGas(txParams);
+    // dont use ethjs-query here because it will blow up about accessList
+    if (txParams.accessList) {
+      return await new Promise((resolve, reject) => {
+        this.query.rpc.currentProvider.sendAsync(
+          {
+            id: '1',
+            jsonrpc: '2.0',
+            method: 'eth_estimateGas',
+            params: [txParams, 'latest'],
+          },
+          (err, { result, error }) => {
+            if (error || err) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          },
+        );
+      });
+    }
+    return this.query.estimateGas(txParams);
   }
 
   /**
