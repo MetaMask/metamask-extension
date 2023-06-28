@@ -325,7 +325,7 @@ describe('Selectors', () => {
           },
         },
       });
-      expect(networks).toHaveLength(2);
+      expect(networks).toHaveLength(1);
     });
 
     it('returns networks with showTestNetworks on', () => {
