@@ -103,8 +103,8 @@ describe('NewSnapAccountPage', () => {
 
   it('should render all the keymanagement snaps', async () => {
     const { getAllByTestId } = renderComponent();
-    const keymanagementSnaps = getAllByTestId('key-management-snap');
-    expect(keymanagementSnaps.length).toBe(
+    const keyManagementSnaps = getAllByTestId('key-management-snap');
+    expect(keyManagementSnaps.length).toBe(
       Object.values(mockState.metamask.snapRegistryList).length,
     );
   });
