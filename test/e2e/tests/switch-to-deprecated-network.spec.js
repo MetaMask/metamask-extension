@@ -15,26 +15,27 @@ describe('Prevents switching to a deprecated network', function () {
   it(`tries to switch to a deprecated network`, async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkController({
-          networkConfigurations: {
-            networkConfigurationId: {
-              rpcUrl: 'http://127.0.0.1:8545',
-              chainId: '0x539',
-              ticker: 'ETH',
-              nickname: 'Test',
-              rpcPrefs: {},
+        fixtures: new FixtureBuilder()
+          .withNetworkController({
+            networkConfigurations: {
+              networkConfigurationId: {
+                rpcUrl: 'http://127.0.0.1:8545',
+                chainId: '0x539',
+                ticker: 'ETH',
+                nickname: 'Test',
+                rpcPrefs: {},
+              },
+              networkConfigurationId2: {
+                rpcUrl:
+                  'https://rinkeby.infura.io/3/9aa3d95b3bc440fa88ea12eaa4456161',
+                chainId: '0x539',
+                ticker: 'ETH',
+                nickname: 'Rinkeby Infura',
+                rpcPrefs: {},
+              },
             },
-            networkConfigurationId2: {
-              rpcUrl:
-                'https://rinkeby.infura.io/3/9aa3d95b3bc440fa88ea12eaa4456161',
-              chainId: '0x539',
-              ticker: 'ETH',
-              nickname: 'Rinkeby Infura',
-              rpcPrefs: {},
-            },
-          },
-        })
-        .build(),
+          })
+          .build(),
         ganacheOptions,
         title: this.test.title,
       },
