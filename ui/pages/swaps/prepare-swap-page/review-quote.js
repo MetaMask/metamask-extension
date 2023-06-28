@@ -876,6 +876,17 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   );
 
   useEffect(() => {
+    if (
+      shouldShowPriceDifferenceWarning &&
+      acknowledgedPriceDifference &&
+      quotesLastFetched !== prevQuotesLastFetched
+    ) {
+      // Reset price difference acknowledgement if price diff % changed.
+      setAcknowledgedPriceDifference(false);
+    }
+  }, [priceDifferencePercentage]);
+
+  useEffect(() => {
     if (isSmartTransaction && !insufficientTokens) {
       const unsignedTx = {
         from: unsignedTransaction.from,
