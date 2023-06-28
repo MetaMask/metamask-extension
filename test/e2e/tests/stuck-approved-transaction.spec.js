@@ -37,7 +37,7 @@ describe('Editing Confirm Transaction', function () {
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));

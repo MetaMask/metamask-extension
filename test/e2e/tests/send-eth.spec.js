@@ -85,7 +85,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },
@@ -205,7 +205,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },
@@ -282,13 +282,13 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 
         // the transaction has the expected gas price
         const txValue = await driver.findClickableElement(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         await txValue.click();
         const gasPrice = await driver.waitForSelector({
@@ -366,13 +366,13 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 
         // the transaction has the expected gas value
         const txValue = await driver.findClickableElement(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         await txValue.click();
         const baseFeeValue = await driver.waitForSelector(

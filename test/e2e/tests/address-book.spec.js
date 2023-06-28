@@ -68,7 +68,7 @@ describe('Address Book', function () {
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-2 ETH',
         });
       },

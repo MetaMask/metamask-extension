@@ -68,7 +68,7 @@ describe('Deploy contract and call contract methods', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-4 ETH',
         });
 
@@ -87,7 +87,7 @@ describe('Deploy contract and call contract methods', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
         );
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-0 ETH',
         });
 

@@ -135,7 +135,7 @@ const checkActivityTransaction = async (driver, options) => {
   );
 
   await driver.findElement({
-    css: '.transaction-list-item__primary-currency',
+    css: '[data-testid="transaction-list-item-primary-currency"]',
     text: `-${options.amount} ${options.swapFrom}`,
   });
 
