@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { ProductTour } from './product-tour-popover';
+import { ProductTour } from '.';
 
 describe('DetectedTokensBanner', () => {
   const props = {
