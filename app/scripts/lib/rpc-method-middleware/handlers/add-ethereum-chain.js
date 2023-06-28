@@ -293,18 +293,22 @@ async function addEthereumChainHandler(
         networkConfigurationId,
       },
     });
-
-    await setActiveNetwork(networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
     if (error.code !== errorCodes.provider.userRejectedRequest) {
-      endApprovalFlow({ id: approvalFlowId });
       return end(error);
     }
+  } finally {
+    endApprovalFlow({ id: approvalFlowId });
   }
 
-  endApprovalFlow({ id: approvalFlowId });
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
+  }
+
   return end();
 }
