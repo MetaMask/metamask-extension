@@ -393,7 +393,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
     label: t('permission_manageAccounts'),
-    leftIcon: 'fas fa-door-open',
+    leftIcon: getLeftIcon(IconName.Key),
     rightIcon: null,
     weight: 3,
   }),
