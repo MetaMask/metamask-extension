@@ -1213,6 +1213,7 @@
     },
     "@metamask/eth-snap-keyring": {
       "globals": {
+        "console.error": true,
         "console.warn": true
       },
       "packages": {
