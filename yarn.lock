@@ -3773,21 +3773,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/sdk@npm:^0.1.14, @metamask-institutional/sdk@npm:^0.1.15, @metamask-institutional/sdk@npm:^0.1.16, @metamask-institutional/sdk@npm:^0.1.17":
-  version: 0.1.17
-  resolution: "@metamask-institutional/sdk@npm:0.1.17"
-  dependencies:
-    "@metamask-institutional/simplecache": ^1.0.2
-    "@metamask-institutional/types": ^1.0.2
-    "@types/jsonwebtoken": ^9.0.1
-    "@types/node": ^18.15.11
-    bignumber.js: ^9.1.1
-    jsonwebtoken: ^9.0.0
-  checksum: 82b3a8038fdf96983846fa884c867ec9497ac4a2a287d8bb2ce4ffde39b6127ce3af8d2adccab5cedf4ed6b1980488f3cc83347237c085f44ed3a0c004f8a183
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/sdk@npm:^0.1.18":
+"@metamask-institutional/sdk@npm:^0.1.14, @metamask-institutional/sdk@npm:^0.1.15, @metamask-institutional/sdk@npm:^0.1.16, @metamask-institutional/sdk@npm:^0.1.17, @metamask-institutional/sdk@npm:^0.1.18":
   version: 0.1.18
   resolution: "@metamask-institutional/sdk@npm:0.1.18"
   dependencies:
@@ -3798,13 +3784,6 @@ __metadata:
     bignumber.js: ^9.1.1
     jsonwebtoken: ^9.0.0
   checksum: c9093f4d6495d35f540b25e6dae70ab69ee9c1ce6e18f6164e9aeae5194318a34dfb471791f4f83cec68059456740bd66a5e6368115431d1029a04524f500067
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/simplecache@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@metamask-institutional/simplecache@npm:1.0.2"
-  checksum: 65444d49478e14956f884e5423992ad7069c9e8979cdc012db3f8f6f207147816b8f3b45be33007772a9628560b5f054ea52b0eb8a9ee25066abc199260d30b6
   languageName: node
   linkType: hard
 
@@ -3829,14 +3808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/types@npm:^1.0.1, @metamask-institutional/types@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@metamask-institutional/types@npm:1.0.2"
-  checksum: 27bee2dc32a1a8869a2918863d60e4c59b350ad5fcf2d3fbc3fd52b9db2e2af33eb3af568726b72cb7accd7aba2639e9e707522989cc5db9ee8d8f1239f9d6f9
-  languageName: node
-  linkType: hard
-
-"@metamask-institutional/types@npm:^1.0.3":
+"@metamask-institutional/types@npm:^1.0.1, @metamask-institutional/types@npm:^1.0.2, @metamask-institutional/types@npm:^1.0.3":
   version: 1.0.3
   resolution: "@metamask-institutional/types@npm:1.0.3"
   checksum: ce22762d43c8438104df32a91b115c6e99d5f17745fd0e747141730a91b0affd2d92cd1c7dabe34dad8cc59d6dccc70019aa07bd2039c3da68b9987ab7bcf81b
