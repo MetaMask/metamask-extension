@@ -42,7 +42,7 @@ const SnapVersion = ({ version, url }) => {
       >
         {version ? (
           <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
-            {t('shortVersion', [version])}
+            {version}
           </Text>
         ) : (
           <Preloader size={18} />

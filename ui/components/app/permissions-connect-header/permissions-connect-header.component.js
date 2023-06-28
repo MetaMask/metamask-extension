@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
-import SnapAuthorshipHeader from '../snaps/snap-authorship-header/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IN
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
@@ -48,11 +47,7 @@ export default class PermissionsConnectHeader extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
     if (subjectType === SubjectType.Snap) {
-      return (
-        <div className="permissions-connect-header__icon">
-          <SnapAuthorshipHeader snapId={siteOrigin} />
-        </div>
-      );
+      return null;
     }
     ///: END:ONLY_INCLUDE_IN
 
