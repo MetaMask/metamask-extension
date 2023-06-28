@@ -26,10 +26,12 @@ export default {
     children: 'hello world',
     size: 'normal',
     title: 'title',
-    type: DISCLOSURE_TYPES.DEFAULT,
   },
 };
 
 export const DefaultStory = (args) => <Disclosure {...args} />;
-
 DefaultStory.storyName = 'Default';
+
+export const TypeArrow = (args) => (
+  <Disclosure type={DISCLOSURE_TYPES.ARROW} {...args} />
+);
