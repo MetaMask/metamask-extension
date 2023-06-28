@@ -6,6 +6,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
+import { v4 as uuid } from 'uuid';
 import {
   AssetsContractController,
   BalanceMap,
@@ -1140,9 +1141,9 @@ export function removeSnap(
           origin: 'metamask',
           handler: HandlerType.OnRpcRequest,
           request: {
+            id: uuid(),
             jsonrpc: '2.0',
             method: 'keyring_listAccounts',
-            params: [],
           },
         })) as unknown as any[];
         for (const account of accounts) {
@@ -1170,9 +1171,10 @@ export async function handleSnapRequest(args: {
   origin: string;
   handler: string;
   request: {
+    id?: string;
     jsonrpc: '2.0';
     method: string;
-    params: Record<string, any>;
+    params?: Record<string, any>;
   };
 }): Promise<void> {
   return submitRequestToBackground('handleSnapRequest', [args]);
