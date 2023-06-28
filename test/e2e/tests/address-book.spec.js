@@ -63,6 +63,15 @@ describe('Address Book', function () {
 
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
+        await driver.clickElement({ text: 'Edit', tag: 'button' });
+
+        const [gasLimitInput, gasPriceInput] = await driver.findElements(
+          'input[type="number"]',
+        );
+        await gasPriceInput.fill('8');
+        await gasLimitInput.fill('100000');
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
