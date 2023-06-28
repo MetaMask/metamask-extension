@@ -21,11 +21,11 @@ import { getMetaMaskAccountsOrdered } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
   JustifyContent,
   TextVariant,
   Size,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { AddressCopyButton } from '../address-copy-button';
 import { AccountDetailsDisplay } from './account-details-display';
@@ -93,7 +93,7 @@ export const AccountDetails = ({ address }) => {
         ) : (
           <PopoverHeader
             childrenWrapperProps={{
-              display: DISPLAY.FLEX,
+              display: Display.Text,
               justifyContent: JustifyContent.center,
             }}
           >
@@ -106,9 +106,9 @@ export const AccountDetails = ({ address }) => {
       {attemptingExport ? (
         <>
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            flexDirection={FlexDirection.Column}
           >
             {avatar}
             <Text

@@ -18,8 +18,8 @@ import {
 } from '../../component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -50,9 +50,9 @@ export const AccountDetailsDisplay = ({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
     >
       <EditableLabel
         defaultValue={accountName}
