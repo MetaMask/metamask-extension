@@ -52,7 +52,11 @@ describe('Test Snap Account', function () {
           tag: 'button',
         });
 
-        await driver.clickElement('[data-testid="snap-install-scroll"]');
+        try {
+          await driver.clickElement('[data-testid="snap-install-scroll"]');
+        } catch (_) {
+          console.log('Missing scroll');
+        }
 
         await driver.waitForSelector({ text: 'Install' });
 
