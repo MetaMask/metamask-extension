@@ -165,13 +165,13 @@ export default function reduceApp(
         networkDropdownOpen: false,
       };
 
-    case actionConstants.IMPORT_NFTS_POPOVER_OPEN:
+    case actionConstants.IMPORT_NFTS_MODAL_OPEN:
       return {
         ...appState,
         importNftsModalOpen: true,
       };
 
-    case actionConstants.IMPORT_NFTS_POPOVER_CLOSE:
+    case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
       return {
         ...appState,
         importNftsModalOpen: false,

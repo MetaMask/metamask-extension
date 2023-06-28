@@ -2,15 +2,17 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidHexAddress } from '@metamask/controller-utils';
+import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
-  DISPLAY,
+  Display,
+  FlexDirection,
   FONT_WEIGHT,
+  JustifyContent,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
 import Typography from '../../ui/typography';
 import ActionableMessage from '../../ui/actionable-message';
 import {
@@ -43,9 +45,12 @@ import {
   ModalOverlay,
   ModalHeader,
   Modal,
+  ButtonPrimary,
+  ButtonSecondary,
+  Box,
 } from '../../component-library';
 
-export const ImportNftsModal = () => {
+export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -136,16 +141,15 @@ export const ImportNftsModal = () => {
     <Modal
       isOpen
       onClose={() => {
-        history.push(DEFAULT_ROUTE);
+        onClose();
       }}
       className="import-nfts-modal"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onBack={history.push(DEFAULT_ROUTE)}
           onClose={() => {
-            history.push(DEFAULT_ROUTE);
+            onClose();
           }}
         >
           {t('importNFT')}
@@ -159,7 +163,7 @@ export const ImportNftsModal = () => {
                 useIcon
                 iconFillColor="var(--color-error-default)"
                 message={
-                  <Box display={DISPLAY.INLINE_FLEX}>
+                  <Box display={Display.InlineFlex}>
                     <Typography
                       variant={TypographyVariant.H7}
                       fontWeight={FONT_WEIGHT.NORMAL}
@@ -206,7 +210,29 @@ export const ImportNftsModal = () => {
             />
           </Box>
         </Box>
+        <Box
+          padding={6}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          gap={4}
+        >
+          <ButtonSecondary onClick={() => onClose()} block>
+            {t('cancel')}
+          </ButtonSecondary>
+          <ButtonPrimary
+            onClick={() => handleAddNft()}
+            disabled={disabled}
+            block
+          >
+            {t('add')}
+          </ButtonPrimary>
+        </Box>
       </ModalContent>
     </Modal>
   );
+};
+
+ImportNftsModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
 };

@@ -8,7 +8,6 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
-  ADD_NFT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
@@ -306,27 +305,6 @@ class ImportToken extends Component {
           customDecimals: 0,
           customSymbolError: null,
           customDecimalsError: null,
-        });
-
-        break;
-      case standard === 'ERC1155' || standard === 'ERC721':
-        this.setState({
-          nftAddressError: this.context.t('nftAddressError', [
-            <a
-              className="import-token__nft-address-error-link"
-              onClick={() =>
-                this.props.history.push({
-                  pathname: ADD_NFT_ROUTE,
-                  state: {
-                    addressEnteredOnImportTokensPage: this.state.customAddress,
-                  },
-                })
-              }
-              key="nftAddressError"
-            >
-              {this.context.t('importNFTPage')}
-            </a>,
-          ]),
         });
 
         break;

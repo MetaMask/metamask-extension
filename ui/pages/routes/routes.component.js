@@ -159,7 +159,7 @@ export default class Routes extends Component {
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
-    isimportNftsModalOpen: PropTypes.bool.isRequired,
+    isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
   };
 
@@ -518,7 +518,7 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       location,
-      isimportNftsModalOpen,
+      isImportNftsModalOpen,
       hideImportNftsModal,
     } = this.props;
     const loadMessage =
@@ -578,7 +578,7 @@ export default class Routes extends Component {
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
-        {isimportNftsModalOpen ? (
+        {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
         ) : null}
         <Box className="main-container-wrapper">

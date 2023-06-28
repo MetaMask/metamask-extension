@@ -2403,13 +2403,13 @@ export function hideModal(): Action {
 
 export function showImportNftsModal(): Action {
   return {
-    type: actionConstants.IMPORT_NFTS_POPOVER_OPEN,
+    type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
   };
 }
 
 export function hideImportNftsModal(): Action {
   return {
-    type: actionConstants.IMPORT_NFTS_POPOVER_CLOSE,
+    type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
   };
 }
 
