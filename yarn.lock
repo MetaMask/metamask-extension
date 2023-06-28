@@ -3870,21 +3870,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/assets-controllers@npm:9.1.0"
+"@metamask/assets-controllers@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@metamask/assets-controllers@npm:9.2.0"
   dependencies:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/abi-utils": ^1.2.0
-    "@metamask/approval-controller": ^3.2.0
+    "@metamask/approval-controller": ^3.3.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^4.0.0
+    "@metamask/controller-utils": ^4.0.1
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^10.1.0
+    "@metamask/network-controller": ^10.2.0
     "@metamask/preferences-controller": ^4.1.0
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/utils": ^5.0.2
@@ -3899,10 +3899,10 @@ __metadata:
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^3.2.0
-    "@metamask/network-controller": ^10.1.0
+    "@metamask/approval-controller": ^3.3.0
+    "@metamask/network-controller": ^10.2.0
     "@metamask/preferences-controller": ^4.1.0
-  checksum: 99504638f2b7612a2636c71c9bbfb0cd91b02949a22c7535ec69a49635673387faeeb67027798cf0c38f89a1e1bb4d62f31e9e815c43845837aa123e150ee437
+  checksum: 020e86dfc3dfa5eea927ada0b2f5a00642495589edbf5ab54f160e65e5e904502682f11ebebe10d892a091d05eb10306cf92d403a2ac8434048cd3e1f3df3f89
   languageName: node
   linkType: hard
 
@@ -4333,12 +4333,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "@metamask/network-controller@npm:10.1.0"
+"@metamask/network-controller@npm:^10.1.0, @metamask/network-controller@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "@metamask/network-controller@npm:10.2.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
+    "@metamask/controller-utils": ^4.0.1
     "@metamask/eth-json-rpc-infura": ^8.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-json-rpc-provider": ^1.0.0
@@ -4352,7 +4352,7 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     uuid: ^8.3.2
-  checksum: f5f1621e00bd5f818405554cfb0c01a648aba5fde30ac9e4b63ef4d00dacf58d86aabd0d4dc3342e17358ea48cbcce40f68d4aa6f61fb39e80aac50b44c2dde6
+  checksum: 6474125845d838564ef60105b5914369aa650a6769df5f3f2a471839f351d798984faa5e3184054a5bfb4ec738e2a50c6fbf31f9eceb9cea4c227651105295dc
   languageName: node
   linkType: hard
 
@@ -24431,7 +24431,7 @@ __metadata:
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^3.1.0
-    "@metamask/assets-controllers": ^9.1.0
+    "@metamask/assets-controllers": ^9.2.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/browser-passworder": ^4.1.0
