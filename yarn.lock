@@ -4333,30 +4333,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.1.0":
-  version: 10.1.0
-  resolution: "@metamask/network-controller@npm:10.1.0"
-  dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-    "@metamask/eth-json-rpc-infura": ^8.0.0
-    "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/eth-json-rpc-provider": ^1.0.0
-    "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/utils": ^5.0.2
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-block-tracker: ^7.0.1
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    json-rpc-engine: ^6.1.0
-    uuid: ^8.3.2
-  checksum: f5f1621e00bd5f818405554cfb0c01a648aba5fde30ac9e4b63ef4d00dacf58d86aabd0d4dc3342e17358ea48cbcce40f68d4aa6f61fb39e80aac50b44c2dde6
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^10.2.0":
+"@metamask/network-controller@npm:^10.1.0, @metamask/network-controller@npm:^10.2.0":
   version: 10.2.0
   resolution: "@metamask/network-controller@npm:10.2.0"
   dependencies:
