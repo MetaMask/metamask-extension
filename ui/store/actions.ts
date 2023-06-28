@@ -4400,10 +4400,10 @@ export function installSnapFromSnapAccounts(
   };
 }
 
-export function setSnapsAddSnapAccountModalDismissed() {
-  return async () => {
-    submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [true]);
-  };
+export async function setSnapsAddSnapAccountModalDismissed() {
+  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
+    true,
+  ]);
 }
 
 export async function updateSnapRegistry() {

@@ -60,9 +60,9 @@ export default function NewSnapAccountPage() {
     );
   }, []);
 
-  const hidePopup = () => {
+  const hidePopup = async () => {
     setShowPopup(false);
-    setSnapsAddSnapAccountModalDismissed();
+    await setSnapsAddSnapAccountModalDismissed();
   };
 
   const snapsAddSnapAccountModalDismissed = useSelector(
@@ -72,7 +72,9 @@ export default function NewSnapAccountPage() {
   return (
     <Box className="snap-account-page">
       <AddSnapAccountModal
-        onClose={hidePopup}
+        onClose={async () => {
+          await hidePopup();
+        }}
         isOpen={showPopup && !snapsAddSnapAccountModalDismissed}
       />
       <Box
