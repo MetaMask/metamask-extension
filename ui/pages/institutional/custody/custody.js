@@ -158,13 +158,13 @@ const CustodyPage = () => {
       return custodianItems;
     },
     [
-      // connectRequest,
-      // custodians,
-      // dispatch,
-      // mmiActions,
-      // selectedCustodianName,
-      // t,
-      // trackEvent,
+      connectRequest,
+      custodians,
+      dispatch,
+      mmiActions,
+      selectedCustodianName,
+      t,
+      trackEvent,
     ],
   );
 
