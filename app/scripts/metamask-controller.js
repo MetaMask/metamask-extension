@@ -71,7 +71,6 @@ import {
 } from '@metamask-institutional/custody-keyring';
 import { InstitutionalFeaturesController } from '@metamask-institutional/institutional-features';
 import { CustodyController } from '@metamask-institutional/custody-controller';
-import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
@@ -382,10 +381,6 @@ export default class MetamaskController extends EventEmitter {
       ),
       tokenListController: this.tokenListController,
       provider: this.provider,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
-      mmiConfigurationStore: this.mmiConfigurationController.store,
-      ///: END:ONLY_INCLUDE_IN
     });
 
     this.preferencesController.store.subscribe(async ({ currentLocale }) => {
@@ -3918,7 +3913,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         handleMmiCheckIfTokenIsPresent:
           this.mmiController.handleMmiCheckIfTokenIsPresent.bind(this),
-        handleMmiDashboardData: this.handleMmiDashboardData.bind(this),
+        handleMmiDashboardData:
+          this.mmiController.handleMmiDashboardData.bind(this),
         handleMmiOpenSwaps: this.mmiController.handleMmiOpenSwaps.bind(this),
         handleMmiSetAccountAndNetwork:
           this.mmiController.setAccountAndNetwork.bind(this),
@@ -3976,37 +3972,6 @@ export default class MetamaskController extends EventEmitter {
     engine.push(providerAsMiddleware(provider));
     return engine;
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  /**
-   * This method is needed in preferences controller
-   * so it needs to be here and not in our controller because
-   * preferences controllers is initiated first
-   */
-  async handleMmiDashboardData() {
-    await this.appStateController.getUnlockPromise(true);
-    const keyringAccounts = await this.keyringController.getAccounts();
-    const { identities } = this.preferencesController.store.getState();
-    const { metaMetricsId } = this.metaMetricsController.store.getState();
-    const getAccountDetails = (address) =>
-      this.custodyController.getAccountDetails(address);
-    const extensionId = this.extension.runtime.id;
-    const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
-    ];
-
-    return handleMmiPortfolio({
-      keyringAccounts,
-      identities,
-      metaMetricsId,
-      networks,
-      getAccountDetails,
-      extensionId,
-    });
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   /**
    * TODO:LegacyProvider: Delete

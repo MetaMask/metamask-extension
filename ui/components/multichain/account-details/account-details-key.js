@@ -11,9 +11,9 @@ import {
   AlignItems,
   BorderColor,
   BorderRadius,
-  DISPLAY,
-  FLEX_DIRECTION,
-  SEVERITIES,
+  Display,
+  FlexDirection,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -35,8 +35,8 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
         {t('privateKeyCopyWarning', [accountName])}
       </Text>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.SM}
         borderWidth={1}
@@ -52,7 +52,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           iconName={privateKeyCopied ? IconName.CopySuccess : IconName.Copy}
         />
       </Box>
-      <BannerAlert severity={SEVERITIES.DANGER} marginTop={4}>
+      <BannerAlert severity={Severity.Danger} marginTop={4}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
       <ButtonPrimary marginTop={6} onClick={onClose}>
