@@ -12,6 +12,7 @@ import { CheckboxProps } from './checkbox.types';
 
 export const Checkbox = forwardRef(function Checkbox(
   {
+    id,
     isChecked,
     isIndeterminate,
     isDisabled,
@@ -21,6 +22,7 @@ export const Checkbox = forwardRef(function Checkbox(
     className = '',
     textProps,
     title,
+    name,
     label,
     ...props
   }: CheckboxProps,
@@ -44,6 +46,8 @@ export const Checkbox = forwardRef(function Checkbox(
         as="input"
         type="checkbox"
         title={title}
+        name={name}
+        id={id}
         checked={isChecked}
         disabled={isDisabled}
         readOnly={isReadOnly}
@@ -84,6 +88,8 @@ export const Checkbox = forwardRef(function Checkbox(
       {CheckboxComponent}
       <Text
         {...textProps}
+        as="label"
+        htmlFor={id}
         className={classnames(
           'mm-checkbox__label',
           textProps?.className ?? '',

@@ -7,6 +7,10 @@ export interface CheckboxProps extends StyleUtilityProps {
    */
   className?: string;
   /*
+   * id - the id for the Checkbox
+   */
+  id?: string;
+  /*
    * isDisabled - if true, the Checkbox will be disabled
    */
   isDisabled?: boolean;
