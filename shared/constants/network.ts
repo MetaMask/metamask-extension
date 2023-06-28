@@ -549,7 +549,6 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.FANTOM_TESTNET
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.LINEA_GOERLI
-    | typeof CHAIN_IDS.LINEA_MAINNET
     | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
 } = {
@@ -613,6 +612,10 @@ export const BUYABLE_CHAINS_MAP: {
     nativeCurrency: CURRENCY_SYMBOLS.PALM,
     network: 'palm',
   },
+  [CHAIN_IDS.LINEA_MAINNET]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: "linea",
+  }
 };
 
 export const FEATURED_RPCS: RPCDefinition[] = [
