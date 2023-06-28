@@ -132,7 +132,7 @@ export const AccountListMenu = ({ onClose }) => {
             >
               <TextFieldSearch
                 size={Size.SM}
-                width={BlockSize.FULL}
+                width={BlockSize.Full}
                 placeholder={t('searchAccounts')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
