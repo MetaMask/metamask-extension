@@ -15,7 +15,7 @@ describe('Prevents switching to a deprecated network', function () {
   it(`tries to switch to a deprecated network`, async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build().withNetworkController({
+        fixtures: new FixtureBuilder().withNetworkController({
           networkConfigurations: {
             networkConfigurationId: {
               rpcUrl: 'http://127.0.0.1:8545',
@@ -33,7 +33,8 @@ describe('Prevents switching to a deprecated network', function () {
               rpcPrefs: {},
             },
           },
-        }),
+        })
+        .build(),
         ganacheOptions,
         title: this.test.title,
       },
