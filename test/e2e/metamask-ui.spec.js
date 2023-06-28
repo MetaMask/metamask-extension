@@ -462,6 +462,7 @@ describe('MetaMask', function () {
       });
 
       await driver.switchToWindow(extension);
+      await driver.delay(veryLargeDelayMs);
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(
