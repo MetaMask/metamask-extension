@@ -33,7 +33,7 @@ import {
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
-  hasPendingApprovals as hasPendingApprovalsSelector,
+  getTotalUnapprovedCount,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -180,7 +180,7 @@ export default function ConfirmationPage({
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
-  const hasPendingApprovals = useSelector(hasPendingApprovalsSelector);
+  const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
@@ -262,7 +262,7 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
-      (approvalFlows.length === 0 || hasPendingApprovals) &&
+      (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
@@ -275,7 +275,7 @@ export default function ConfirmationPage({
   }, [
     pendingConfirmations,
     approvalFlows,
-    hasPendingApprovals,
+    totalUnapprovedCount,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
