@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import { isEqual } from 'lodash';
 import {
   PersonalMessageManager,
   TypedMessageManager,
@@ -80,7 +81,7 @@ export default class MMIController extends EventEmitter {
       previousValueComparator(async (prevState, currState) => {
         const { identities: prevIdentities } = prevState;
         const { identities: currIdentities } = currState;
-        if (prevIdentities === currIdentities) {
+        if (isEqual(prevIdentities, currIdentities)) {
           return;
         }
         await this.prepareMmiPortfolio();
