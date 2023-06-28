@@ -1131,6 +1131,7 @@ export function removeSnap(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     dispatch(showLoadingIndication());
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const subjects = getPermissionSubjects(getState()) as {
       [k: string]: { permissions: Record<string, any> };
@@ -1138,8 +1139,9 @@ export function removeSnap(
 
     const isAccountsSnap =
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
-    ///: END:ONLY_INCLUDE_IN
+
     try {
+      ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
         const accounts = (await handleSnapRequest({
@@ -1157,6 +1159,7 @@ export function removeSnap(
         }
       }
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
       await submitRequestToBackground('removeSnap', [snapId]);
       await forceUpdateMetamaskState(dispatch);
