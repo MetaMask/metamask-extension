@@ -85,7 +85,7 @@ export const AccountListMenu = ({ onClose }) => {
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
-        modalDialogProps={{ padding: 0 }}
+        modalDialogProps={{ padding: 0, marginBottom: 0 }}
       >
         <ModalHeader
           paddingTop={4}
