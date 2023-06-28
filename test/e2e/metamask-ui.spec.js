@@ -494,7 +494,7 @@ describe('MetaMask', function () {
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .activity-list-item .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .activity-list-item:first-child .transaction-list-item__primary-currency',
         text: '-1.5 TST',
       });
     });
