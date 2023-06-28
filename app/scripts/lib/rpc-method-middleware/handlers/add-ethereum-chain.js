@@ -297,9 +297,11 @@ async function addEthereumChainHandler(
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
-      return end(error);
-    }
+    return end(
+      error.code === errorCodes.provider.userRejectedRequest
+        ? undefined
+        : error,
+    );
   } finally {
     endApprovalFlow({ id: approvalFlowId });
   }
