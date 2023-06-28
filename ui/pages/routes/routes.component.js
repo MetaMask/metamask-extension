@@ -19,7 +19,6 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import ImportTokenPage from '../import-token';
-import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account/create-account.component';
@@ -33,6 +32,7 @@ import {
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
+  ImportNftsModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -79,7 +79,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   ONBOARDING_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -160,6 +159,8 @@ export default class Routes extends Component {
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
+    isimportNftsModalOpen: PropTypes.bool.isRequired,
+    hideImportNftsModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -282,7 +283,6 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -518,6 +518,8 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       location,
+      isimportNftsModalOpen,
+      hideImportNftsModal,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -575,6 +577,9 @@ export default class Routes extends Component {
         ) : null}
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
+        ) : null}
+        {isimportNftsModalOpen ? (
+          <ImportNftsModal onClose={() => hideImportNftsModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

@@ -19,6 +19,7 @@ import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
+  showImportNftsModal,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
@@ -113,7 +114,9 @@ export default function NftsTab({ onAddNFT }) {
           size={Size.MD}
           data-testid="import-nft-button"
           startIconName={IconName.Add}
-          onClick={onAddNFT}
+          onClick={() => {
+            dispatch(showImportNftsModal());
+          }}
         >
           {t('importNFT')}
         </ButtonLink>

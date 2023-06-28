@@ -2,47 +2,50 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { isValidHexAddress } from '@metamask/controller-utils';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   DISPLAY,
   FONT_WEIGHT,
   TypographyVariant,
-} from '../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 
-import Box from '../../components/ui/box';
-import Typography from '../../components/ui/typography';
-import ActionableMessage from '../../components/ui/actionable-message';
-import PageContainer from '../../components/ui/page-container';
+import Box from '../../ui/box';
+import Typography from '../../ui/typography';
+import ActionableMessage from '../../ui/actionable-message';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
-} from '../../store/actions';
-import FormField from '../../components/ui/form-field';
+} from '../../../store/actions';
+import FormField from '../../ui/form-field';
 import {
   getCurrentChainId,
   getIsMainnet,
   getSelectedAddress,
   getUseNftDetection,
-} from '../../selectors';
-import { getNftsDropdownState } from '../../ducks/metamask/metamask';
-import NftsDetectionNotice from '../../components/app/nfts-detection-notice';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import { AssetType } from '../../../shared/constants/transaction';
+} from '../../../selectors';
+import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
+import NftsDetectionNotice from '../../app/nfts-detection-notice';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
-} from '../../../shared/constants/metametrics';
+} from '../../../../shared/constants/metametrics';
 import {
   ButtonIcon,
   IconName,
   ButtonIconSize,
-} from '../../components/component-library';
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
+  Modal,
+} from '../../component-library';
 
-export default function AddNft() {
+export const ImportNftsModal = () => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -130,20 +133,23 @@ export default function AddNft() {
   };
 
   return (
-    <PageContainer
-      title={t('importNFT')}
-      onSubmit={() => {
-        handleAddNft();
-      }}
-      submitText={t('add')}
-      onCancel={() => {
-        history.push(DEFAULT_ROUTE);
-      }}
+    <Modal
+      isOpen
       onClose={() => {
         history.push(DEFAULT_ROUTE);
       }}
-      disabled={disabled}
-      contentComponent={
+      className="import-nfts-modal"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          onBack={history.push(DEFAULT_ROUTE)}
+          onClose={() => {
+            history.push(DEFAULT_ROUTE);
+          }}
+        >
+          {t('importNFT')}
+        </ModalHeader>
         <Box>
           {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
           {nftAddFailed && (
@@ -200,7 +206,7 @@ export default function AddNft() {
             />
           </Box>
         </Box>
-      }
-    />
+      </ModalContent>
+    </Modal>
   );
-}
+};
