@@ -393,7 +393,7 @@ const onboardingPinExtension = async (driver) => {
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await onboardingBeginCreateNewWallet(driver);
-  await onboardingChooseMetametricsOption(driver, true);
+  await onboardingChooseMetametricsOption(driver, false);
   await onboardingCreatePassword(driver, password);
   await onboardingRevealAndConfirmSRP(driver);
   await onboardingCompleteWalletCreation(driver);
