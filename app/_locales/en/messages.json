@@ -3883,7 +3883,7 @@
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapCreateAccountSubtitle": {
-    "message": "Choose how to secure your new account using Snaps."
+    "message": "Choose how to secure your new account using MetaMask Snaps."
   },
   "snapCreateAccountTitle": {
     "message": "Create a $1 account",
