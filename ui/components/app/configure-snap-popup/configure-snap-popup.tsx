@@ -39,11 +39,7 @@ export default function ConfigureSnapPopup({
   const t = useI18nContext();
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      className="whats-new-popup__popover"
-    >
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
@@ -59,8 +55,8 @@ export default function ConfigureSnapPopup({
         >
           <img
             src="images/logo/metamask-fox.svg"
-            width="53.68px"
-            height="49.5px"
+            width="54x"
+            height="50px"
             style={{ marginBottom: '16px' }}
           />
           <Text
