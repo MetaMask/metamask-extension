@@ -31,9 +31,11 @@ export default function KeyringLabel({ keyring }) {
     case KeyringType.lattice:
       label = HardwareKeyringNames.lattice;
       break;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     case KeyringType.snap:
       label = t('snaps');
       break;
+    ///: END:ONLY_INCLUDE_IN
     default:
       label = null;
   }
