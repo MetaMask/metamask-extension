@@ -3570,6 +3570,10 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityProviderAdviceBy": {
+    "message": "Security advice by $1",
+    "description": "The security provider that is providing data"
+  },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"
   },
@@ -3623,6 +3627,9 @@
   },
   "seedPhraseWriteDownHeader": {
     "message": "Write down your Secret Recovery Phrase"
+  },
+  "seeDetails": {
+    "message": "See details"
   },
   "select": {
     "message": "Select"
