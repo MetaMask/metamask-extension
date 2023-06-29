@@ -44,7 +44,7 @@ export const AccountDetailsDisplay = ({
   const keyrings = useSelector(getMetaMaskKeyrings);
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
   let exportPrivateKeyFeatureEnabled = true;
-  // This feature is disabled for hardware wallets
+  // This feature is disabled for hardware wallets and snap accounts
   if (isAbleToExportAccount(keyring?.type)) {
     exportPrivateKeyFeatureEnabled = false;
   }
