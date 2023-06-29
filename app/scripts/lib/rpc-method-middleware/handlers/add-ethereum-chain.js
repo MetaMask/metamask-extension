@@ -280,6 +280,13 @@ async function addEthereumChainHandler(
     // Once the network has been added, the requested is considered successful
     res.result = null;
   } catch (error) {
+    // For the purposes of this method, it does not matter if the user
+    // declines to add the network. However, other errors indicate
+    // that something is wrong.
+    if (error.code === errorCodes.provider.userRejectedRequest) {
+      endApprovalFlow({ id: approvalFlowId });
+      return end();
+    }
     await showApprovalError({
       error: error.message,
       flowToEnd: approvalFlowId,
