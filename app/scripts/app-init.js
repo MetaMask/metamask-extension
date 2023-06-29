@@ -60,6 +60,13 @@ function importAllScripts() {
   loadFile('./globalthis.js');
   loadFile('./sentry-install.js');
 
+  const isWorker = !self.document
+  if (!isWorker) { // process.env.ENABLE_MV3 ?
+    loadFile('./snow.js');
+  }
+
+  loadFile('./use-snow.js');
+
   // Always apply LavaMoat in e2e test builds, so that we can capture initialization stats
   if (testMode || applyLavaMoat) {
     loadFile('./runtime-lavamoat.js');
