@@ -29,6 +29,7 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
   hasTransactionPendingApprovals,
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -2335,9 +2336,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   AnyAction
 > {
   return (_, getState) => {
+    const state = getState();
+    const approvalFlows = getApprovalFlows(state);
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovals(getState())
+      !hasTransactionPendingApprovals(state) &&
+      approvalFlows.length === 0
     ) {
       closeNotificationPopup();
     }
@@ -3406,13 +3410,8 @@ export function resolvePendingApproval(
     await submitRequestToBackground('resolvePendingApproval', [id, value]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
-    const { pendingApprovals, approvalFlows } = await forceUpdateMetamaskState(
-      dispatch,
-    );
-    if (
-      Object.values(pendingApprovals).length === 0 &&
-      approvalFlows.length === 0
-    ) {
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
   };
