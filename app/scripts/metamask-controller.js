@@ -49,19 +49,21 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-///: END:ONLY_INCLUDE_IN
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
 import {
   CronjobController,
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -774,6 +776,16 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IN
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    additionalKeyrings.push(
+      (() => {
+        const builder = () => new SnapKeyring(this.snapController);
+        builder.type = SnapKeyring.type;
+        return builder;
+      })(),
+    );
+    ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
@@ -1682,7 +1694,28 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  /**
+   * Initialize the snap keyring if it is not present.
+   */
+  async getSnapKeyring() {
+    if (!this.snapKeyring) {
+      let [snapKeyring] = this.keyringController.getKeyringsByType(
+        KeyringType.snap,
+      );
+      if (!snapKeyring) {
+        snapKeyring = await this.keyringController.addNewKeyring(
+          KeyringType.snap,
+        );
+      }
+      this.snapKeyring = snapKeyring;
+    }
+    return this.snapKeyring;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
   /**
    * Constructor helper for getting Snap permission specifications.
    */
@@ -1738,6 +1771,16 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+        getSnapKeyring: this.getSnapKeyring.bind(this),
+        saveSnapKeyring: async () => {
+          await this.keyringController.persistAllKeyrings();
+          await this.keyringController._updateMemStoreKeyrings();
+          await this.keyringController.fullUpdate();
+        },
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     };
   }
@@ -2171,6 +2214,13 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      setSnapsAddSnapAccountModalDismissed:
+        preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -2411,6 +2461,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
+        preferencesController,
+      ),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       // Desktop
@@ -2775,6 +2830,7 @@ export default class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
+
       return vault;
     } finally {
       releaseLock();
@@ -3883,6 +3939,16 @@ export default class MetamaskController extends EventEmitter {
         handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
+        setApprovalFlowLoadingText:
+          this.approvalController.setFlowLoadingText.bind(
             this.approvalController,
           ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(

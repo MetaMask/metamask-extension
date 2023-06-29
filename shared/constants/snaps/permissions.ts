@@ -13,7 +13,7 @@ export const EndowmentPermissions = Object.freeze({
 // Methods / permissions in external packages that we are temporarily excluding.
 export const ExcludedSnapPermissions = Object.freeze({
   // TODO: Enable in Flask
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   snap_manageAccounts:
     'This permission is still in development and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
