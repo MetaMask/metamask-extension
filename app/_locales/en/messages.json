@@ -3890,7 +3890,7 @@
     "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
-    "message": "Snap",
+    "message": "snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetaMask": {
