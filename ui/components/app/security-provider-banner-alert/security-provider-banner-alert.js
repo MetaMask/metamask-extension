@@ -67,7 +67,7 @@ function SecurityProviderBannerAlert({
         />
         {t('securityProviderAdviceBy', [
           <ButtonLink
-            key="security-provider-button-link"
+            key={`security-provider-button-link-${provider}`}
             size={Size.inherit}
             href={SECURITY_PROVIDER_CONFIG[provider].url}
             externalLink
