@@ -54,10 +54,6 @@ describe('Flask Restricted Methods', () => {
       ExcludedSnapPermissions,
     ).filter((key) => key !== 'snap_manageAccounts');
 
-    console.log(flaskExcludedSnapPermissions);
-    console.log(Object.keys(RestrictedMethods).sort());
-    console.log(Object.keys(restrictedMethodPermissionBuilders));
-
     expect(Object.keys(RestrictedMethods).sort()).toStrictEqual(
       [
         'eth_accounts',
