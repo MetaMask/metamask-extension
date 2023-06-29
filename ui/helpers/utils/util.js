@@ -622,6 +622,12 @@ export const getNetworkNameFromProviderType = (providerName) => {
   return providerName;
 };
 
-export const isAbleToExportAccount = (keyringType = '') => {
+/**
+ * Checks if the given keyring type is not able to export an account.
+ *
+ * @param keyringType - The type of the keyring.
+ * @returns {boolean} `true` if the keyring type includes 'Hardware' or 'Snap', `false` otherwise.
+ */
+export const isNotAbleToExportAccount = (keyringType = '') => {
   return keyringType.includes('Hardware') || keyringType.includes('Snap');
 };

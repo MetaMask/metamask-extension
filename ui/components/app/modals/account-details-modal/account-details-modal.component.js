@@ -9,7 +9,7 @@ import Button from '../../../ui/button';
 // eslint-disable-next-line import/no-duplicates
 import {
   getURLHostName,
-  isAbleToExportAccount,
+  isNotAbleToExportAccount,
 } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import CustodyLabels from '../../../institutional/custody-labels/custody-labels';
@@ -68,11 +68,9 @@ export default class AccountDetailsModal extends Component {
       return kr.accounts.includes(address);
     });
 
-    let exportPrivateKeyFeatureEnabled = true;
-    // This feature is disabled for hardware wallets and snap accounts
-    if (isAbleToExportAccount(keyring?.type)) {
-      exportPrivateKeyFeatureEnabled = false;
-    }
+    let exportPrivateKeyFeatureEnabled = !isNotAbleToExportAccount(
+      keyring?.type,
+    );
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (keyring?.type?.search('Custody') !== -1) {
