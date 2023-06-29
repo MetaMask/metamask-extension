@@ -710,7 +710,7 @@
     "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "configureSnapPopupDescription": {
-    "message": "You're now leaving MetaMask to configure this Snap."
+    "message": "You're now leaving MetaMask to configure this snap."
   },
   "configureSnapPopupInstallDescription": {
     "message": "You're now leaving MetaMask to install this Snap."
