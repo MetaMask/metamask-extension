@@ -49,7 +49,9 @@ export default function SnapAccountDetailPage() {
 
   const isInstalled = Boolean(installedSnaps[currentSnap.snapId]);
 
-  const updateAvailable = isInstalled && semver.gt(currentSnap.version, installedSnaps[currentSnap.snapId].version);
+  const updateAvailable =
+    isInstalled &&
+    semver.gt(currentSnap.version, installedSnaps[currentSnap.snapId].version);
 
   return (
     <Box
