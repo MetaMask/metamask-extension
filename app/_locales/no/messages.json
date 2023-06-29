@@ -208,9 +208,6 @@
   "delete": {
     "message": "Slett"
   },
-  "deleteAccount": {
-    "message": "Slett konto "
-  },
   "deleteNetwork": {
     "message": "Slette nettverk? "
   },

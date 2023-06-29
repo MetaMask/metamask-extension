@@ -1,7 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
-import { ApprovalType, ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -574,7 +574,7 @@ export function getSuggestedNfts(state) {
     getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
-        [ERC721, ERC1155].includes(requestData?.asset?.standard)
+        requestData?.asset?.tokenId !== undefined
       );
     }) || []
   );
@@ -971,6 +971,7 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
+  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -993,7 +994,7 @@ function getAllowedAnnouncementIds(state) {
     18: true,
     19: true,
     20: currentKeyringIsLedger && isFirefox,
-    21: true,
+    21: isSwapsChain,
   };
 }
 

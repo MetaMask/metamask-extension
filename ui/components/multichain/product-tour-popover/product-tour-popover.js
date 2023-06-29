@@ -1,13 +1,12 @@
 import React from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
-  BLOCK_SIZES,
+  BlockSize,
   BorderRadius,
   BackgroundColor,
-  DISPLAY,
+  Display,
   IconColor,
   JustifyContent,
   Size,
@@ -20,6 +19,7 @@ import {
   ButtonIcon,
   IconName,
   Text,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
@@ -63,13 +63,13 @@ export const ProductTour = ({
         <Box
           borderWidth={1}
           className="multichain-product-tour-menu__arrow"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           style={{ right: positionObj }}
         />
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           className="multichain-product-tour-menu__header"
         >
@@ -86,7 +86,7 @@ export const ProductTour = ({
           <Text
             textAlign={TextAlign.Center}
             variant={TextVariant.headingSm}
-            width={BLOCK_SIZES.FULL}
+            width={BlockSize.Full}
             color={TextColor.infoInverse}
           >
             {title}
@@ -101,7 +101,7 @@ export const ProductTour = ({
           {description}
         </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
         >

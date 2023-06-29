@@ -10,7 +10,6 @@ import {
   getNativeCurrencyImage,
   getDetectedTokensInCurrentNetwork,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getTokenList,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -62,19 +61,15 @@ const AssetList = ({ onClickAsset }) => {
 
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork) || [];
-  const istokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
+  const isTokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
     getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   );
-  const tokenList = useSelector(getTokenList);
-  const tokenData = Object.values(tokenList).find(
-    (token) => token.symbol === primaryCurrencyProperties.suffix,
-  );
-  const title = tokenData?.name || primaryCurrencyProperties.suffix;
+
   return (
     <>
       <TokenListItem
         onClick={() => onClickAsset(nativeCurrency)}
-        title={title}
+        title={nativeCurrency}
         primary={
           primaryCurrencyProperties.value ?? secondaryCurrencyProperties.value
         }
@@ -96,14 +91,14 @@ const AssetList = ({ onClickAsset }) => {
         }}
       />
       {detectedTokens.length > 0 &&
-      !istokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+      !isTokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
         <DetectedTokensBanner
           actionButtonOnClick={() => setShowDetectedTokens(true)}
           margin={4}
         />
       ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} />
+        <ImportTokenLink margin={4} marginBottom={2} />
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

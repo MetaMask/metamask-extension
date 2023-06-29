@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { TokenListItem } from './token-list-item';
+import { TokenListItem } from '.';
 
 const state = {
   metamask: {

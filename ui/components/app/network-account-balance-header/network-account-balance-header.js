@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import Identicon from '../../ui/identicon';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
   FontWeight,
   AlignItems,
@@ -33,22 +33,22 @@ export default function NetworkAccountBalanceHeader({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.ROW}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
       padding={4}
       className="network-account-balance-header"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
       >
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
           <Identicon address={accountAddress} diameter={32} />
@@ -60,15 +60,14 @@ export default function NetworkAccountBalanceHeader({
           />
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.flexStart}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexDirection={FlexDirection.Column}
         >
           <Text
             variant={TextVariant.bodySm}
             as="h6"
             color={TextColor.textAlternative}
-            marginBottom={0}
           >
             {networkName}
           </Text>
@@ -78,22 +77,20 @@ export default function NetworkAccountBalanceHeader({
             as="h6"
             color={TextColor.textDefault}
             fontWeight={FontWeight.Bold}
-            marginTop={0}
           >
             {accountName}
           </Text>
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexEnd}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
       >
         <Text
           variant={TextVariant.bodySm}
           as="h6"
           color={TextColor.textAlternative}
-          marginBottom={0}
         >
           {t('balance')}
         </Text>
@@ -103,7 +100,6 @@ export default function NetworkAccountBalanceHeader({
           as="h6"
           color={TextColor.textDefault}
           fontWeight={FontWeight.Bold}
-          marginTop={0}
           align={TextAlign.End}
         >
           {accountBalance} {tokenName}

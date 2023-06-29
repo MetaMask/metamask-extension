@@ -911,9 +911,6 @@
   "delete": {
     "message": "削除"
   },
-  "deleteAccount": {
-    "message": "アカウントを削除"
-  },
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },
@@ -1562,6 +1559,12 @@
     "message": "もし尋ねられた場合はフィッシング詐欺の可能性があります。",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "長押ししてSRPを表示"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "SRPは安全に保管してください"
+  },
   "ignoreAll": {
     "message": "すべて無視"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "NFT の ID は一意の識別子で、同じ NFT は 2 つとして存在しません。前述の通り、OpenSea ではこの番号は「詳細」に表示されます。この ID を書き留めるか、クリップボードにコピーしてください。"
-  },
-  "importNFTs": {
-    "message": "NFTをインポート"
   },
   "importSelectedTokens": {
     "message": "選択したトークンをインポートしますか？"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "ロック"
   },
-  "lockTimeTooGreat": {
-    "message": "ロック時間が長すぎます"
-  },
   "logo": {
     "message": "$1 ロゴ",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信された RPC URL の値がこのチェーン ID の既知のプロバイダーと一致しません。"
-  },
-  "missingNFT": {
-    "message": "NFTが見当たりませんか？"
   },
   "missingSetting": {
     "message": "設定が見つかりませんか？"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
-  },
-  "noNFTs": {
-    "message": "NFTはまだありません"
   },
   "noSnaps": {
     "message": "スナップがインストールされていません"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "24 を超える単語が含まれていたため、貼り付けに失敗しました。秘密のリカバリーフレーズは 24 語までです。",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "秘密のリカバリーフレーズ全体をいずれかのフィールドに張り付けできます。",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "開始"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "秘密のリカバリーフレーズを表示するには、2 つの質問に正しく答える必要があります。"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "秘密のリカバリーフレーズをなくした場合、MetaMask は..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "どうすることもできません"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "書き留めたり金属に掘ったり、いくつかの秘密の場所に保管したりして、絶対になくさないようにしてください。なくした場合、一生戻ってきません。"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "正解です！秘密のリカバリーフレーズは誰にも取り戻すことができません"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "それを取り戻すことができます"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "秘密のリカバリーフレーズをなくした場合、一生戻ってきません。誰が何と言おうと、誰にも取り戻すことはできません。"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "不正解！秘密のリカバリーフレーズは誰にも取り戻せません"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "誰かに秘密のリカバリーフレーズを尋ねられたら、それがサポート担当者であっても..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "あなたは騙されようとしています"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "秘密のリカバリーフレーズが必要だと言われたら、それは嘘です。教えてしまったら資産を盗まれます。"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "正解です！秘密のリカバリーフレーズは決して誰にも教えてはいけません"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "教えるべきです"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "秘密のリカバリーフレーズが必要だと言われたら、それは嘘です。教えてしまったら資産を盗まれます。"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "不正解！秘密のリカバリーフレーズは決して誰にも教えないでください"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "セキュリティの質問"
   },
   "srpToggleShow": {
     "message": "秘密のリカバリーフレーズのこの単語を表示・非表示",

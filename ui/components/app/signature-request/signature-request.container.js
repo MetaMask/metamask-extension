@@ -13,6 +13,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
   getSelectedAccount,
+  unapprovedTypedMessagesSelector,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
@@ -29,16 +30,20 @@ import {
   setTypedMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { checkForUnapprovedTypedMessages } from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
-  MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ENVIRONMENT_TYPE_NOTIFICATION,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/app';
+
 import {
-  cancelMsgs,
   showModal,
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   goHome,
   ///: END:ONLY_INCLUDE_IN
@@ -89,6 +94,7 @@ function mapStateToProps(state, ownProps) {
     accountType: getAccountType(state),
     isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
+    unapprovedTypedMessages: unapprovedTypedMessagesSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
@@ -143,6 +149,10 @@ mapDispatchToProps = mmiMapDispatchToProps;
 
 mapDispatchToProps = function (dispatch) {
   return {
+    resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    completedTx: (id) => dispatch(completedTx(id)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
@@ -157,8 +167,9 @@ mapDispatchToProps = function (dispatch) {
         }),
       );
     },
-    cancelAll: (unconfirmedMessagesList) =>
-      dispatch(cancelMsgs(unconfirmedMessagesList)),
+    cancelAllApprovals: (unconfirmedMessagesList) => {
+      dispatch(rejectAllMessages(unconfirmedMessagesList));
+    },
   };
 };
 
@@ -180,49 +191,33 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNotification,
+    unapprovedTypedMessages,
     ///: END:ONLY_INCLUDE_IN
   } = stateProps;
-  const {
-    signPersonalMessage,
-    signTypedMessage,
-    cancelPersonalMessage,
-    cancelTypedMessage,
-    signMessage,
-    cancelMessage,
-    txData,
-  } = ownProps;
-
-  const { cancelAll: dispatchCancelAll } = dispatchProps;
+  const { txData } = ownProps;
 
   const {
-    type,
+    cancelAll: dispatchCancelAll,
+    cancelAllApprovals: dispatchCancelAllApprovals,
+  } = dispatchProps;
+
+  const {
     msgParams: { from },
   } = txData;
 
   const fromAccount = getAccountByAddress(allAccounts, from);
 
-  let cancel;
-  let sign;
-
-  if (type === MESSAGE_TYPE.PERSONAL_SIGN) {
-    cancel = cancelPersonalMessage;
-    sign = signPersonalMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
-    cancel = cancelTypedMessage;
-    sign = signTypedMessage;
-  } else if (type === MESSAGE_TYPE.ETH_SIGN) {
-    cancel = cancelMessage;
-    sign = signMessage;
-  }
-
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const signFn = async (...opts) => {
+  const mmiOnSignCallback = async (_msgData) => {
     if (accountType === 'custody') {
       try {
-        let msgData = opts;
-        let id = opts.custodyId;
-        if (!opts.custodyId) {
-          msgData = await sign(opts);
+        let msgData = _msgData;
+        let id = _msgData.custodyId;
+        if (!_msgData.custodyId) {
+          msgData = checkForUnapprovedTypedMessages(
+            _msgData,
+            unapprovedTypedMessages,
+          );
           id = msgData.custodyId;
         }
         dispatchProps.showCustodianDeepLink({
@@ -235,7 +230,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         await dispatchProps.setMsgInProgress(msgData.metamaskId);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await goHome();
-        return msgData;
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
@@ -243,11 +237,8 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           closeNotification: true,
           operationFailed: true,
         });
-        return null;
       }
     }
-
-    return sign(opts);
   };
   ///: END:ONLY_INCLUDE_IN
 
@@ -256,14 +247,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...dispatchProps,
     fromAccount,
     txData,
-    cancel,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-    sign,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    // eslint-disable-next-line no-dupe-keys
-    sign: signFn,
-    ///: END:ONLY_INCLUDE_IN
     isLedgerWallet,
     hardwareWalletRequiresConnection,
     chainId,
@@ -276,6 +259,11 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     unapprovedMessagesCount,
     mostRecentOverviewPage,
     cancelAll: () => dispatchCancelAll(valuesFor(unconfirmedMessagesList)),
+    cancelAllApprovals: () =>
+      dispatchCancelAllApprovals(valuesFor(unconfirmedMessagesList)),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    mmiOnSignCallback,
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 

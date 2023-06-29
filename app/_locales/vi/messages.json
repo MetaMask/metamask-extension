@@ -911,9 +911,6 @@
   "delete": {
     "message": "Xóa"
   },
-  "deleteAccount": {
-    "message": "Xóa tài khoản"
-  },
   "deleteNetwork": {
     "message": "Xóa mạng?"
   },
@@ -1562,6 +1559,12 @@
     "message": "nhưng những kẻ lừa đảo qua mạng thì có.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Giữ để hiển thị SRP"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Đảm bảo an toàn cho SRP của bạn"
+  },
   "ignoreAll": {
     "message": "Bỏ qua tất cả"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục 'Chi tiết'. Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
-  },
-  "importNFTs": {
-    "message": "Nhập NFT"
   },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Khóa"
   },
-  "lockTimeTooGreat": {
-    "message": "Thời gian khóa quá lớn"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
-  },
-  "missingNFT": {
-    "message": "Không thấy NFT của mình?"
   },
   "missingSetting": {
     "message": "Không tìm thấy thiết lập?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noSnaps": {
     "message": "Chưa cài đặt Snap nào"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Dán không thành công vì cụm từ có nhiều hơn 24 từ. Cụm từ khôi phục bí mật chỉ có tối đa 24 từ.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Bạn có thể dán toàn bộ cụm từ khôi phục bí mật vào bất kỳ trường nào",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Bắt đầu"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Để hiển thị Cụm từ khôi phục bí mật, bạn cần trả lời đúng hai câu hỏi"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Không thể giúp bạn"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Hãy viết ra, khắc lên kim loại hoặc cất giữ ở nhiều nơi bí mật để bạn không bao giờ làm mất nó. Nếu bạn làm mất, nó sẽ bị mất vĩnh viễn."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Đúng! Không ai có thể giúp bạn lấy lại Cụm từ khôi phục bí mật"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Có thể lấy lại cho bạn"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Nếu bạn làm mất Cụm từ khôi phục bí mật, nó sẽ bị mất vĩnh viễn. Dù mọi người có nói gì, thì cũng không ai có thể giúp bạn lấy lại."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Sai! Không ai có thể giúp bạn lấy lại Cụm từ khôi phục bí mật"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Nếu có bất kỳ ai, kể cả nhân viên hỗ trợ, hỏi về Cụm từ khôi phục bí mật của bạn..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Bạn đang bị lừa đảo"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Bất kỳ ai nói rằng họ cần Cụm từ khôi phục bí mật của bạn thì đều đang nói dối bạn. Nếu bạn chia sẻ với họ thì họ sẽ đánh cắp tài sản của bạn."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Chính xác! Chia sẻ Cụm từ khôi phục bí mật chưa bao giờ là một ý hay"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Bạn nên đưa nó cho họ"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Bất kỳ ai nói rằng họ cần Cụm từ khôi phục bí mật của bạn thì đều đang nói dối bạn. Nếu bạn chia sẻ với họ thì họ sẽ đánh cắp tài sản của bạn."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Không! Tuyệt đối không bao giờ chia sẻ Cụm từ khôi phục bí mật của bạn với bất kỳ ai"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Câu hỏi bảo mật"
   },
   "srpToggleShow": {
     "message": "Hiện/Ẩn từ này của cụm từ khôi phục bí mật",
