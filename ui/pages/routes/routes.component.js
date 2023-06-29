@@ -42,6 +42,9 @@ import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
@@ -89,6 +92,9 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
@@ -335,6 +341,14 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          <Authenticated
+            path={ADD_SNAP_ACCOUNT_ROUTE}
+            component={AddSnapAccountPage}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}

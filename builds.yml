@@ -46,6 +46,7 @@ buildTypes:
       - snaps
       - desktop
       - build-flask
+      - keyring-snaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -64,6 +65,7 @@ buildTypes:
       - snaps
       - desktop
       - build-flask
+      - keyring-snaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -138,6 +140,11 @@ features:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
+  keyring-snaps:
+    env:
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+    assets:
+      - ./{app,shared,ui}/**/keyring-snaps/**
 
 # Env variables that are required for all types of builds
 #
