@@ -44,6 +44,7 @@ import { getCurrentChainId } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
+import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -55,6 +56,7 @@ const CustodyPage = () => {
   const currentChainId = useSelector(getCurrentChainId);
   const { custodians } = useSelector(getMMIConfiguration);
 
+  const [loading, setLoading] = useState(true);
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
   const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
@@ -230,6 +232,7 @@ const CustodyPage = () => {
   ]);
 
   useEffect(() => {
+    setLoading(true);
     const fetchConnectRequest = async () => {
       const connectRequestValue = await dispatch(
         mmiActions.getCustodianConnectRequest(),
@@ -247,17 +250,16 @@ const CustodyPage = () => {
         setSelectedCustodianType(connectRequestValue.custodianType);
         setSelectedCustodianName(connectRequestValue.custodianName);
         setApiUrl(connectRequestValue.apiUrl);
-
-        // connect();
       }
     };
 
-    // Define a separate handler for the effect
     const handleFetchConnectRequest = async () => {
       try {
         await fetchConnectRequest();
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     };
 
@@ -322,6 +324,10 @@ const CustodyPage = () => {
       setSelectedAccounts({});
     }
   };
+
+  if (loading) {
+    return <PulseLoader />;
+  }
 
   return (
     <Box>
@@ -504,6 +510,10 @@ const CustodyPage = () => {
             selectedAccounts={selectedAccounts}
             onAddAccounts={async () => {
               try {
+                const selectedCustodian = custodians.find(
+                  (custodian) => custodian.name === selectedCustodianName,
+                );
+
                 await dispatch(
                   mmiActions.connectCustodyAddresses(
                     selectedCustodianType,
@@ -511,17 +521,7 @@ const CustodyPage = () => {
                     selectedAccounts,
                   ),
                 );
-                const selectedCustodian = custodians.find(
-                  (custodian) => custodian.name === selectedCustodianName,
-                );
-                history.push({
-                  pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
-                  state: {
-                    imgSrc: selectedCustodian.iconUrl,
-                    title: t('custodianAccountAddedTitle'),
-                    description: t('custodianAccountAddedDesc'),
-                  },
-                });
+
                 trackEvent({
                   category: 'MMI',
                   event: 'Custodial accounts connected',
@@ -529,6 +529,15 @@ const CustodyPage = () => {
                     custodian: selectedCustodianName,
                     numberOfAccounts: Object.keys(selectedAccounts).length,
                     chainId,
+                  },
+                });
+
+                history.push({
+                  pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
+                  state: {
+                    imgSrc: selectedCustodian.iconUrl,
+                    title: t('custodianAccountAddedTitle'),
+                    description: t('custodianAccountAddedDesc'),
                   },
                 });
               } catch (e) {
@@ -572,11 +581,11 @@ const CustodyPage = () => {
             marginBottom={2}
             fontWeight={FontWeight.Bold}
             color={TextColor.textDefault}
-            variant={TextVariant.bodySm}
+            variant={TextVariant.bodyLgMedium}
           >
             {t('allCustodianAccountsConnectedTitle')}
           </Text>
-          <Text variant={TextVariant.bodyXs}>
+          <Text variant={TextVariant.bodyMd}>
             {t('allCustodianAccountsConnectedSubtitle')}
           </Text>
 
