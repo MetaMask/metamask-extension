@@ -9,7 +9,7 @@ import withModalProps from '../../../../helpers/higher-order-components/with-mod
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
-import { ignoreTokens } from '../../../../store/actions';
+import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
@@ -35,6 +35,8 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
           history.push({
             pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
           });
+        } else {
+          dispatch(showImportNftsModal());
         }
         hideModal();
       }}

@@ -4,6 +4,7 @@ import {
   setPendingTokens,
   clearPendingTokens,
   getTokenStandardAndDetails,
+  showImportNftsModal,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
@@ -58,6 +59,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setPendingTokens: (tokens) => dispatch(setPendingTokens(tokens)),
     clearPendingTokens: () => dispatch(clearPendingTokens()),
+    showImportNftsModal: () => dispatch(showImportNftsModal()),
     getTokenStandardAndDetails: (address, selectedAddress) =>
       getTokenStandardAndDetails(address, selectedAddress, null),
   };

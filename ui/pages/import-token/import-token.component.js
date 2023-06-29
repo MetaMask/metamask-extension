@@ -60,6 +60,11 @@ class ImportToken extends Component {
     clearPendingTokens: PropTypes.func,
 
     /**
+     * Clear the list of pending tokens. Called when closing the modal.
+     */
+    showImportNftsModal: PropTypes.func,
+
+    /**
      * The list of already added tokens.
      */
     tokens: PropTypes.array,
@@ -307,6 +312,22 @@ class ImportToken extends Component {
           customDecimalsError: null,
         });
 
+        break;
+      case standard === 'ERC1155' || standard === 'ERC721':
+        this.setState({
+          nftAddressError: this.context.t('nftAddressError', [
+            <a
+              className="import-token__nft-address-error-link"
+              onClick={() => {
+                this.props.showImportNftsModal();
+
+              }}
+              key="nftAddressError"
+            >
+              {this.context.t('importNFTPage')}
+            </a>,
+          ]),
+        });
         break;
       case isMainnetToken && !isMainnetNetwork:
         this.setState({

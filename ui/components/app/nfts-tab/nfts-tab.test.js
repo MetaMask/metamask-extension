@@ -150,7 +150,6 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
-  onAddNFT = jest.fn(),
 }) => {
   const store = configureStore({
     metamask: {
@@ -170,7 +169,7 @@ const render = ({
       nftsDropdownState,
     },
   });
-  return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
+  return renderWithProvider(<NftsTab />, store);
 };
 
 describe('NFT Items', () => {

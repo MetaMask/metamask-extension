@@ -6,15 +6,14 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
+  AlignItems,
   Display,
   FlexDirection,
-  FONT_WEIGHT,
+  IconColor,
   JustifyContent,
-  TypographyVariant,
+  Size,
 } from '../../../helpers/constants/design-system';
 
-import Typography from '../../ui/typography';
-import ActionableMessage from '../../ui/actionable-message';
 import {
   addNftVerifyOwnership,
   getTokenStandardAndDetails,
@@ -22,7 +21,6 @@ import {
   setNewNftAddedMessage,
   updateNftDropDownState,
 } from '../../../store/actions';
-import FormField from '../../ui/form-field';
 import {
   getCurrentChainId,
   getIsMainnet,
@@ -38,9 +36,7 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
 import {
-  ButtonIcon,
   IconName,
-  ButtonIconSize,
   ModalContent,
   ModalOverlay,
   ModalHeader,
@@ -48,7 +44,13 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   Box,
+  FormTextField,
+  Label,
+  Icon,
+  IconSize,
+  BannerAlert,
 } from '../../component-library';
+import Tooltip from '../../ui/tooltip';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
@@ -155,77 +157,113 @@ export const ImportNftsModal = ({ onClose }) => {
           {t('importNFT')}
         </ModalHeader>
         <Box>
-          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}
+          {isMainnet && !useNftDetection ? (
+            <Box marginTop={6}>
+              <NftsDetectionNotice />
+            </Box>
+          ) : null}
           {nftAddFailed && (
             <Box marginLeft={4} marginRight={4}>
-              <ActionableMessage
-                type="danger"
-                useIcon
-                iconFillColor="var(--color-error-default)"
-                message={
-                  <Box display={Display.InlineFlex}>
-                    <Typography
-                      variant={TypographyVariant.H7}
-                      fontWeight={FONT_WEIGHT.NORMAL}
-                      marginTop={0}
-                    >
-                      {t('nftAddFailedMessage')}
-                    </Typography>
-                    <ButtonIcon
-                      className="add-nft__close"
-                      iconName={IconName.Close}
-                      size={ButtonIconSize.Sm}
-                      ariaLabel={t('close')}
-                      data-testid="add-nft-error-close"
-                      onClick={() => setNftAddFailed(false)}
-                    />
-                  </Box>
-                }
-              />
+              <BannerAlert
+                danger
+                title="onClose demo"
+                onClose={() => setNftAddFailed(false)}
+              >
+                {t('nftAddFailedMessage')}
+              </BannerAlert>
             </Box>
           )}
-          <Box margin={4}>
-            <FormField
-              dataTestId="address"
-              titleText={t('address')}
-              placeholder="0x..."
-              value={nftAddress}
-              onChange={(val) => {
-                validateAndSetAddress(val);
-                setNftAddFailed(false);
-              }}
-              tooltipText={t('importNFTAddressToolTip')}
-              autoFocus
-            />
-            <FormField
-              dataTestId="token-id"
-              titleText={t('tokenId')}
-              placeholder={t('nftTokenIdPlaceholder')}
-              value={tokenId}
-              onChange={(val) => {
-                validateAndSetTokenId(val);
-                setNftAddFailed(false);
-              }}
-              tooltipText={t('importNFTTokenIdToolTip')}
-            />
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={6}
+            marginTop={6}
+            marginBottom={6}
+          >
+            <Box>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Box display={Display.Flex} alignItems={AlignItems.center}>
+                  <Label htmlFor="address">{t('address')}</Label>
+                  <Tooltip
+                    title={t('importNFTAddressToolTip')}
+                    position="bottom"
+                  >
+                    <Icon
+                      name={IconName.Info}
+                      size={IconSize.Sm}
+                      marginLeft={1}
+                      color={IconColor.iconAlternative}
+                    />
+                  </Tooltip>
+                </Box>
+              </Box>
+              <FormTextField
+                dataTestId="address"
+                id="address"
+                placeholder="0x..."
+                value={nftAddress}
+                onChange={(val) => {
+                  validateAndSetAddress(val);
+                  setNftAddFailed(false);
+                }}
+              />
+            </Box>
+            <Box>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+                alignItems={AlignItems.flexEnd}
+              >
+                <Box display={Display.Flex} alignItems={AlignItems.center}>
+                  <Label htmlFor="token-id">{t('tokenId')}</Label>
+                  <Tooltip
+                    title={t('importNFTTokenIdToolTip')}
+                    position="bottom"
+                  >
+                    <Icon
+                      name={IconName.Info}
+                      size={IconSize.Sm}
+                      marginLeft={1}
+                      color={IconColor.iconAlternative}
+                    />
+                  </Tooltip>
+                </Box>
+              </Box>
+              <FormTextField
+                dataTestId="token-id"
+                id="token-id"
+                placeholder={t('nftTokenIdPlaceholder')}
+                value={tokenId}
+                onChange={(val) => {
+                  validateAndSetTokenId(val);
+                  setNftAddFailed(false);
+                }}
+              />
+            </Box>
           </Box>
         </Box>
         <Box
-          padding={6}
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
           gap={4}
+          paddingTop={4}
+          paddingBottom={4}
         >
-          <ButtonSecondary onClick={() => onClose()} block>
+          <ButtonSecondary size={Size.LG} onClick={() => onClose()} block>
             {t('cancel')}
           </ButtonSecondary>
           <ButtonPrimary
+            size={Size.LG}
             onClick={() => handleAddNft()}
             disabled={disabled}
             block
           >
-            {t('add')}
+            {t('import')}
           </ButtonPrimary>
         </Box>
       </ModalContent>

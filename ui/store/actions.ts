@@ -2402,6 +2402,7 @@ export function hideModal(): Action {
 }
 
 export function showImportNftsModal(): Action {
+  console.log("nftAddressError")
   return {
     type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
   };
