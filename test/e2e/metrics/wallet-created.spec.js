@@ -88,7 +88,6 @@ describe('Wallet Created Event', function () {
         );
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        console.log(events[1].properties);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'metamask',
           category: 'Onboarding',
