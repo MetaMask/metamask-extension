@@ -183,6 +183,6 @@ export const Name = (args) => {
 };
 
 Name.args = {
-  name: 'Pineapple',
-  label: 'Name Demo',
+  name: 'pineapple',
+  label: 'Pineapple',
 };

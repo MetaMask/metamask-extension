@@ -1,5 +1,11 @@
+import { IconProps } from '../icon';
 import type { StyleUtilityProps } from '../box';
 import type { TextProps } from '../text';
+
+// TextProps for Checkbox label
+interface ExtendedTextProps extends TextProps {
+  htmlFor?: string;
+}
 
 export interface CheckboxProps extends StyleUtilityProps {
   /*
@@ -7,7 +13,7 @@ export interface CheckboxProps extends StyleUtilityProps {
    */
   className?: string;
   /*
-   * id - the id for the Checkbox
+   * id - the id for the Checkbox and used for the htmlFor attribute of the label
    */
   id?: string;
   /*
@@ -31,7 +37,8 @@ export interface CheckboxProps extends StyleUtilityProps {
    */
   isRequired?: boolean;
   /*
-   * title - the title for the Checkbox
+   * title can help add additional context to the Checkbox for screen readers and will work for native tooltip elements
+   * if no title is passed, then it will try to use the label prop if it is a string
    */
   title?: string;
   /*
@@ -43,11 +50,15 @@ export interface CheckboxProps extends StyleUtilityProps {
    */
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   /*
-   * label - the label for the Checkbox
+   * label is the string or ReactNode to be rendered next to the Checkbox
    */
-  label?: string;
+  label?: any;
   /*
-   * textProps - additional props to be spread to the label
+   * textProps - additional props to be spread to the label Text component
    */
-  textProps?: TextProps;
+  textProps?: ExtendedTextProps;
+  /*
+   * iconProps - additional props to be spread to the Icon component used for the Checkbox
+   */
+  iconProps?: IconProps;
 }

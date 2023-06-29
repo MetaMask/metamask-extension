@@ -21,6 +21,7 @@ export const Checkbox = forwardRef(function Checkbox(
     onChange,
     className = '',
     textProps,
+    iconProps,
     title,
     name,
     label,
@@ -34,6 +35,10 @@ export const Checkbox = forwardRef(function Checkbox(
     }
   };
 
+  // If no title is provided, use the label as the title only if the label is a string
+  const sanitizedTitle =
+    !title && typeof label === 'string' ? label : id || title;
+
   const CheckboxComponent = (
     <Box className="mm-checkbox__wrapper">
       <Box
@@ -45,7 +50,7 @@ export const Checkbox = forwardRef(function Checkbox(
         })}
         as="input"
         type="checkbox"
-        title={title}
+        title={sanitizedTitle}
         name={name}
         id={id}
         checked={isChecked}
@@ -58,7 +63,6 @@ export const Checkbox = forwardRef(function Checkbox(
           onChange?.(event);
         }}
         onKeyDown={handleCheckboxKeyDown}
-        {...props}
         margin={0}
         backgroundColor={
           isChecked || isIndeterminate
@@ -72,12 +76,17 @@ export const Checkbox = forwardRef(function Checkbox(
         }
         borderRadius={BorderRadius.SM}
         borderWidth={2}
+        {...props}
       />
       {(isChecked || isIndeterminate) && (
         <Icon
-          className="mm-checkbox__icon"
           color={IconColor.primaryInverse}
           name={isChecked ? IconName.CheckBold : IconName.MinusBold}
+          className={classnames(
+            'mm-checkbox__icon',
+            iconProps?.className ?? '',
+          )}
+          {...iconProps}
         />
       )}
     </Box>
@@ -87,9 +96,8 @@ export const Checkbox = forwardRef(function Checkbox(
     <Box display={Display.Flex} gap={4}>
       {CheckboxComponent}
       <Text
-        {...textProps}
         as="label"
-        for={id}
+        htmlFor={id}
         className={classnames(
           'mm-checkbox__label',
           textProps?.className ?? '',
@@ -97,6 +105,7 @@ export const Checkbox = forwardRef(function Checkbox(
             'mm-checkbox--disabled': Boolean(isDisabled),
           },
         )}
+        {...textProps}
       >
         {label}
       </Text>
