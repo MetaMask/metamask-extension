@@ -713,7 +713,7 @@
     "message": "You're now leaving MetaMask to configure this snap."
   },
   "configureSnapPopupInstallDescription": {
-    "message": "You're now leaving MetaMask to install this Snap."
+    "message": "You're now leaving MetaMask to install this snap."
   },
   "configureSnapPopupInstallTitle": {
     "message": "Install snap"
