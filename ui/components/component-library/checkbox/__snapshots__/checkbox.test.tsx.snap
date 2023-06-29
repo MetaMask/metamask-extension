@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checkbox should render the Checkbox without crashing 1`] = `
+<div>
+  <div
+    class="mm-box mm-checkbox__wrapper"
+  >
+    <input
+      class="mm-box mm-checkbox mm-box--margin-0 mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
+      type="checkbox"
+    />
+  </div>
+</div>
+`;
