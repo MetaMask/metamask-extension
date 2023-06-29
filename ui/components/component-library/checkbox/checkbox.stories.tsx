@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 
 import { Box } from '..';
@@ -22,7 +22,7 @@ export default {
   args: {},
 } as Meta<typeof Checkbox>;
 
-export const DefaultStory = (args) => {
+const Template: StoryFn<typeof Checkbox> = (args) => {
   const [isChecked, setIsChecked] = React.useState(false);
 
   return (
@@ -34,6 +34,7 @@ export const DefaultStory = (args) => {
   );
 };
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const Label = (args) => {
@@ -175,7 +176,7 @@ export const Title = (args) => {
 
 Title.args = {
   title: 'Apples',
-  label: 'Title Demo',
+  label: 'Inspect to see title attribute',
 };
 
 export const Name = (args) => {
