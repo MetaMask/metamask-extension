@@ -104,7 +104,6 @@ describe('Account Details Modal', () => {
     expect(queryByText(/block.explorer/u)).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   it('does not display export private key if the keyring is snaps', () => {
     const mockStateWithSnapKeyring = {
       appState: {
@@ -233,5 +232,4 @@ describe('Account Details Modal', () => {
 
     expect(exportPrivateKeyButton).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IN
 });
