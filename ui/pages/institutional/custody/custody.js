@@ -79,14 +79,12 @@ const CustodyPage = () => {
       const nameB = b.name.toLowerCase();
 
       if (nameA < nameB) {
-        // negative if nameA should be sorted before nameB
         return -1;
       }
       if (nameA > nameB) {
-        // positive if nameA should be sorted after nameB
         return 1;
       }
-      return 0; // names are equal and their order doesn't matter
+      return 0;
     });
 
     sortedCustodians.forEach((custodian) => {
