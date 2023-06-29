@@ -310,6 +310,7 @@ async function addEthereumChainHandler(
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
     if (error.code === errorCodes.provider.userRejectedRequest) {
+      endApprovalFlow({ id: approvalFlowId });
       return end();
     }
     await showApprovalError({
@@ -317,8 +318,6 @@ async function addEthereumChainHandler(
       flowToEnd: approvalFlowId,
     });
     return end(error);
-  } finally {
-    endApprovalFlow({ id: approvalFlowId });
   }
 
   try {
