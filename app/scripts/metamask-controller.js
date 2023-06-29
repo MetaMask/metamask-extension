@@ -1080,6 +1080,7 @@ export default class MetamaskController extends EventEmitter {
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkId: () => this.networkController.state.networkId,
       getNetworkStatus: () => this.networkController.state.networkStatus,
+      getRpcPrefs: () => this.networkController.state.rpcPrefs,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',

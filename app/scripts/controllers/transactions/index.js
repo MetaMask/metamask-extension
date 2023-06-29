@@ -118,6 +118,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {object} opts.initState - initial transaction list default is an empty array
  * @param {Function} opts.getNetworkId - Get the current network ID.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
+ * @param {Function} opts.getRpcPrefs - Get the current network RPC preferences.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
@@ -133,6 +134,7 @@ export default class TransactionController extends EventEmitter {
     super();
     this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
+    this.getRpcPrefs = opts.getRpcPrefs;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -179,8 +181,12 @@ export default class TransactionController extends EventEmitter {
     this.store = this.txStateManager.store;
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
-      blockTracker: this.blockTracker,
-      getPendingTransactions: (...args) => {
+      blockTracker: this.blockTracker, // this changes
+      getPendingTransactions: (...args) => { // here
+        const rpcPrefs = this.getRpcPrefs()
+        if (rpcPrefs?.ignoreNonceCache) {
+          return []
+        }
         const pendingTransactions = this.txStateManager.getPendingTransactions(
           ...args,
         );
@@ -189,8 +195,13 @@ export default class TransactionController extends EventEmitter {
         );
         return [...pendingTransactions, ...externalPendingTransactions];
       },
-      getConfirmedTransactions:
-        this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+      getConfirmedTransactions: (...args) => {
+        const rpcPrefs = this.getRpcPrefs()
+        if (rpcPrefs?.ignoreNonceCache) {
+          return []
+        }
+        return this.txStateManager.getConfirmedTransactions(...args)
+      }
     });
 
     this.pendingTxTracker = new PendingTransactionTracker({
@@ -1219,7 +1230,7 @@ export default class TransactionController extends EventEmitter {
     try {
       // TODO: we should add a check to verify that all transactions have the same from address
       const fromAddress = initialTx.from;
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress); //here
       const nonce = nonceLock.nextNonce;
 
       rawTxes = await Promise.all(
@@ -1868,7 +1879,7 @@ export default class TransactionController extends EventEmitter {
       // wait for a nonce
       let { customNonceValue } = txMeta;
       customNonceValue = Number(customNonceValue);
-      nonceLock = await this.nonceTracker.getNonceLock(fromAddress);
+      nonceLock = await this.nonceTracker.getNonceLock(fromAddress); // here
       // add nonce to txParams
       // if txMeta has previousGasParams then it is a retry at same nonce with
       // higher gas settings and therefor the nonce should not be recalculated

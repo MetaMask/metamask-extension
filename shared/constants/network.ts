@@ -34,6 +34,7 @@ type RPCPreferences = {
    * A URL for the block explorer for the RPC's network
    */
   blockExplorerUrl: `https://${string}`;
+  // Put ignoreNonceCache here
   /**
    * A image reflecting the asset symbol for the network
    */
