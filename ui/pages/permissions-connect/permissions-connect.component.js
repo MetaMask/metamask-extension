@@ -279,7 +279,7 @@ export default class PermissionConnect extends Component {
             onClick={() => this.goBack()}
           >
             <Icon
-              name={IconName.ArrowRight}
+              name={IconName.ArrowLeft}
               marginInlineEnd={1}
               size={IconSize.Xs}
             />

@@ -12,7 +12,7 @@ import {
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
-  BLOCK_SIZES,
+  BlockSize,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -129,7 +129,7 @@ export const AccountListMenu = ({ onClose }) => {
             >
               <TextFieldSearch
                 size={Size.SM}
-                width={BLOCK_SIZES.FULL}
+                width={BlockSize.Full}
                 placeholder={t('searchAccounts')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
