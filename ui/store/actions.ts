@@ -4389,29 +4389,9 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
     );
   };
 }
+///: END:ONLY_INCLUDE_IN
 
-export function installSnapFromSnapAccounts(
-  origin: string,
-  snapId: string,
-  version: string,
-) {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.installSnaps`);
-    try {
-      await submitRequestToBackground('installOrUpdateSnap', [
-        origin,
-        snapId,
-        version,
-      ]);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-  };
-}
-
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,

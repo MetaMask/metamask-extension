@@ -2459,7 +2459,6 @@ export default class MetamaskController extends EventEmitter {
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-      installOrUpdateSnap: this.installOrUpdateSnap.bind(this),
       updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
         preferencesController,
       ),
@@ -4478,20 +4477,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
-
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  async installOrUpdateSnap(origin, snapId, version) {
-    await this.snapController.installSnaps(
-      origin,
-      {
-        [snapId]: {
-          version,
-        },
-      },
-      true,
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   updateCaveat = (origin, target, caveatType, caveatValue) => {
