@@ -525,9 +525,13 @@ export default class PreferencesController {
   }
 
   async updateSnapRegistry() {
-    const snapRegistry = await fetchWithCache(KEYRING_SNAPS_REGISTRY_URL, {
-      method: 'GET',
-    });
+    let snapRegistry;
+    try {
+      snapRegistry = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+    } catch (error) {
+      console.error(`Failed to fetch registry: `, error);
+      snapRegistry = {};
+    }
     this.store.updateState({ snapRegistryList: snapRegistry });
   }
   ///: END:ONLY_INCLUDE_IN
