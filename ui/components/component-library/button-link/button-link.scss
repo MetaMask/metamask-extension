@@ -1,36 +1,35 @@
 .mm-button-link {
-  &:hover {
-    opacity: 0.5;
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
   }
 
   &:active {
-    opacity: 0.5;
+    color: var(--color-primary-alternative);
   }
 
-  &--disabled {
-    &:hover {
-      opacity: 0.3;
-    }
-
+  &--disabled,
+  :disabled {
+    &:hover,
     &:active {
-      opacity: 0.3;
+      text-decoration: none;
     }
   }
 
   &--type-danger {
     &:hover {
       color: var(--color-error-default);
-      opacity: 0.5;
     }
 
     &:active {
-      color: var(--color-error-default);
-      opacity: 0.5;
+      color: var(--color-error-alternative);
     }
   }
 
-  &--type-danger#{&}--disabled:hover {
-    opacity: 0.3;
+  &--type-danger#{&}--disabled:active {
+    color: var(--color-error-default);
   }
 
   &--size-auto {
@@ -46,5 +45,9 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
+
+    &:hover {
+      text-decoration-thickness: auto;
+    }
   }
 }
