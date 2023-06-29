@@ -14,7 +14,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
         class="box mm-text mm-banner-base__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
         data-testid="mm-banner-base-title"
       >
-        Title is sentence case no period
+        Malicious third party detected
       </h5>
       <h6
         class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--color-text-default"
