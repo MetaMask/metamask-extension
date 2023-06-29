@@ -105,7 +105,7 @@ describe('Checkbox', () => {
 
   test('Checkbox component renders with the correct title attribute', () => {
     const { getByLabelText } = render(
-      <Checkbox label="Option 1" id="option-1" title={'pineapple'} />,
+      <Checkbox label="Option 1" id="option-1" title="pineapple" />,
     );
 
     const checkbox = getByLabelText('Option 1');

@@ -37,7 +37,7 @@ export const Checkbox = forwardRef(function Checkbox(
 
   // If no title is provided, use the label as the title only if the label is a string
   const sanitizedTitle =
-    !title && typeof label === 'string' ? label : id || title;
+    !title && typeof label === 'string' ? label : title || id;
 
   const CheckboxComponent = (
     <Box className="mm-checkbox__wrapper">
