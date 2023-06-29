@@ -28,7 +28,6 @@ export const ButtonLink = ({
       })}
       paddingLeft={0}
       paddingRight={0}
-      fontWeight={size === BUTTON_LINK_SIZES.INHERIT ? null : FontWeight.Medium}
       size={size === BUTTON_LINK_SIZES.INHERIT ? null : size}
       backgroundColor={BackgroundColor.transparent}
       color={danger ? Color.errorDefault : Color.primaryDefault}
