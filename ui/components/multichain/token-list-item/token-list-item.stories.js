@@ -2,7 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
-import { TokenListItem } from './token-list-item';
+import { TokenListItem } from '.';
 
 export default {
   title: 'Components/Multichain/MultichainTokenListItem',
