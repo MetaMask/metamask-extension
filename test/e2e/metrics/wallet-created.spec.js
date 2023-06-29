@@ -3,7 +3,12 @@ const {
   defaultGanacheOptions,
   withFixtures,
   WALLET_PASSWORD,
-  completeCreateNewWalletOnboardingFlowWithMetricsEnabled,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
   getEventPayloads,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -59,12 +64,13 @@ describe('Wallet Created Event', function () {
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await driver.navigate();
-        await driver.navigate();
 
-        await completeCreateNewWalletOnboardingFlowWithMetricsEnabled(
-          driver,
-          WALLET_PASSWORD,
-        );
+        await onboardingBeginCreateNewWallet(driver);
+        await onboardingChooseMetametricsOption(driver, true);
+        await onboardingCreatePassword(driver, WALLET_PASSWORD);
+        await onboardingRevealAndConfirmSRP(driver);
+        await onboardingCompleteWalletCreation(driver);
+        await onboardingPinExtension(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {

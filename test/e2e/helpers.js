@@ -294,22 +294,52 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+/**
+ * Begin the create new wallet flow on onboarding screen.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingBeginCreateNewWallet = async (driver) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+};
 
+/**
+ * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
+ *
+ * @param {WebDriver} driver
+ * @param {boolean} optin - true to opt into metrics, default is false
+ */
+const onboardingChooseMetametricsOption = async (driver, optin = false) => {
+  const optionIdentifier = optin ? 'i-agree' : 'no-thanks';
   // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
+};
 
+/**
+ * Set a password for MetaMask during onboarding
+ *
+ * @param {WebDriver} driver
+ * @param {string} password - Password to set
+ */
+const onboardingCreatePassword = async (driver, password) => {
   // create password
   await driver.fill('[data-testid="create-password-new"]', password);
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
+};
 
+/**
+ * Choose to secure wallet, and then get recovery phrase and confirm the SRP
+ * during onboarding flow.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingRevealAndConfirmSRP = async (driver) => {
   // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
@@ -336,69 +366,38 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+};
 
+/**
+ * Complete the onboarding flow by confirming completion. Final step before the
+ * reminder to pin the extension.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingCompleteWalletCreation = async (driver) => {
   // complete
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+};
 
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlowWithMetricsEnabled = async (
-  driver,
-  password,
-) => {
-  // agree to terms of use
-  await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
-
-  // welcome
-  await driver.clickElement('[data-testid="onboarding-create-wallet"]');
-
-  // metrics
-  await driver.clickElement('[data-testid="metametrics-i-agree"]');
-
-  // create password
-  await driver.fill('[data-testid="create-password-new"]', password);
-  await driver.fill('[data-testid="create-password-confirm"]', password);
-  await driver.clickElement('[data-testid="create-password-terms"]');
-  await driver.clickElement('[data-testid="create-password-wallet"]');
-
-  // secure my wallet
-  await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-
-  // reveal SRP
-  await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
-
-  const revealedSeedPhrase = await driver.findElement(
-    '[data-testid="recovery-phrase-chips"]',
-  );
-
-  const recoveryPhrase = await revealedSeedPhrase.getText();
-
-  await driver.clickElement('[data-testid="recovery-phrase-next"]');
-
-  // confirm SRP
-  const words = recoveryPhrase.split(/\s*(?:[0-9)]+|\n|\.|^$|$)\s*/u);
-  const finalWords = words.filter((str) => str !== '');
-  assert.equal(finalWords.length, 12);
-
-  await driver.fill('[data-testid="recovery-phrase-input-2"]', finalWords[2]);
-  await driver.fill('[data-testid="recovery-phrase-input-3"]', finalWords[3]);
-  await driver.fill('[data-testid="recovery-phrase-input-7"]', finalWords[7]);
-
-  await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
-
-  await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-  // complete
-  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
-  await driver.clickElement('[data-testid="onboarding-complete-done"]');
-
-  // pin extension
-  await driver.clickElement('[data-testid="pin-extension-next"]');
-  await driver.clickElement('[data-testid="pin-extension-done"]');
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, true);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreation(driver);
+  await onboardingPinExtension(driver);
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
@@ -784,7 +783,6 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
-  completeCreateNewWalletOnboardingFlowWithMetricsEnabled,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   closeSRPReveal,
@@ -815,4 +813,10 @@ module.exports = {
   terminateServiceWorker,
   switchToNotificationWindow,
   getEventPayloads,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
 };
