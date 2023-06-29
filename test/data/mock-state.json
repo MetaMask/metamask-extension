@@ -139,6 +139,10 @@
       {
         "type": "Simple Key Pair",
         "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+      },
+      {
+        "type": "Snap Keyring",
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       }
     ],
     "identities": {
@@ -170,6 +174,22 @@
         "name": "@metamask/test-snap-bip44",
         "version": "1.2.3",
         "subjectType": "snap"
+      }
+    },
+    "snapRegistryList": {
+      "a51ea3a8-f1b0-4613-9440-b80e2236713b": {
+        "id": "a51ea3a8-f1b0-4613-9440-b80e2236713b",
+        "snapId": "npm:@metamask/snap-simple-keyring",
+        "iconUrl": "",
+        "snapTitle": "Metamask Simple Keyring",
+        "snapSlug": "Secure your account with MetaMask Mobile",
+        "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
+        "tags": ["EOA"],
+        "developer": "Metamask",
+        "website": "https://www.consensys.net/",
+        "auditUrls": ["auditUrl1", "auditUrl2"],
+        "version": "1.0.0",
+        "lastUpdated": "April 20, 2023"
       }
     },
     "notifications": {
