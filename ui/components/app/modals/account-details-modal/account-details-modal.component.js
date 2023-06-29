@@ -6,7 +6,6 @@ import AccountModalContainer from '../account-modal-container';
 import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
-// eslint-disable-next-line import/no-duplicates
 import {
   getURLHostName,
   isNotAbleToExportAccount,
