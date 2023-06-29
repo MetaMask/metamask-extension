@@ -16,7 +16,6 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import { ComponentState } from '@metamask/snaps-controllers/dist/interface/utils';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -4344,6 +4343,9 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   };
 }
 
-export const updateInterfaceState = async (state: ComponentState) =>
-  submitRequestToBackground('updateInterfaceState', [state]);
+export const updateInterfaceState =
+  (id: string, state: any) => (dispatch: MetaMaskReduxDispatch) => {
+    submitRequestToBackground('updateInterfaceState', [id, state]);
+    return forceUpdateMetamaskState(dispatch);
+  };
 ///: END:ONLY_INCLUDE_IN

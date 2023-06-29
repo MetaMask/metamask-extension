@@ -1533,6 +1533,7 @@ export default class MetamaskController extends EventEmitter {
       PhishingController: this.phishingController,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       SnapController: this.snapController,
+      InterfaceController: this.interfaceController,
       CronjobController: this.cronjobController,
       SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
@@ -1576,6 +1577,7 @@ export default class MetamaskController extends EventEmitter {
         NftController: this.nftController,
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
         SnapController: this.snapController,
+        InterfaceController: this.interfaceController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,

@@ -17,8 +17,7 @@ import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
-import { Input } from '../../component-library/input';
-import { Label } from '../../component-library/label';
+import { FormTextField } from '../../component-library/form-text-field';
 import { Button as DSButton } from '../../component-library/button';
 ///: END:ONLY_INCLUDE_IN
 
@@ -50,8 +49,7 @@ export const safeComponentList = {
   Copyable,
   Spinner,
   SnapUIMarkdown,
-  Input,
-  Label,
+  FormTextField,
   DSButton,
   ///: END:ONLY_INCLUDE_IN
 };

@@ -1,51 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-ui';
-import { useSelector } from 'react-redux';
-import { UserInputEventType } from '@metamask/snaps-utils';
+import { ButtonTypes, isComponent } from '@metamask/snaps-ui';
+import { useDispatch, useSelector } from 'react-redux';
+import { UserInputEventTypes } from '@metamask/snaps-utils';
+import { debounce } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
   TypographyVariant,
   OverflowWrap,
   FontWeight,
   TextVariant,
+  Display,
+  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box';
 import { getSnapName } from '../../../../helpers/utils/util';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import {
+  getInteraceState,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
 import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { handleSnapRequest } from '../../../../store/actions';
-
-const handleEvent = async (interfaceId, event, snapId) => {
-  console.log('snapId inside handleEvent: ', snapId);
-  return await handleSnapRequest({
-    snapId,
-    origin: '',
-    handler: 'onUserInput',
-    request: {
-      jsonrpc: '2.0',
-      method: ' ',
-      params: { event, id: interfaceId },
-    },
-  });
-};
+import {
+  handleSnapRequest,
+  updateInterfaceState,
+} from '../../../../store/actions';
 
 export const UI_MAPPING = {
-  panel: (params) => ({
+  panel: ({ element, ...params }) => ({
     element: 'Box',
-    children: params.element.children.map((element) =>
+    children: element.children.map((children) =>
       // eslint-disable-next-line no-use-before-define
-      mapToTemplate({ ...params, element }),
+      mapToTemplate({ ...params, element: children }),
     ),
     props: {
-      display: DISPLAY.FLEX,
-      flexDirection: FLEX_DIRECTION.COLUMN,
+      display: Display.Flex,
+      flexDirection: FlexDirection.Column,
       className: 'snap-ui-renderer__panel',
     },
   }),
@@ -80,15 +73,27 @@ export const UI_MAPPING = {
       text: element.value,
     },
   }),
-  button: ({ element, interfaceId, snapId }) => ({
+  button: ({ element, form, state, handleEvent }) => ({
     element: 'DSButton',
     props: {
-      onClick: () =>
+      className: 'snap-ui-renderer__button',
+      marginBottom: 1,
+      block: true,
+      onClick: (event) => {
+        event.preventDefault();
         handleEvent(
-          interfaceId,
-          { type: UserInputEventType.ButtonClickEvent, name: element.name },
-          snapId,
-        ),
+          element.buttonType === ButtonTypes.Submit
+            ? {
+                eventType: UserInputEventTypes.FormSubmitEvent,
+                componentName: form,
+                value: state[form],
+              }
+            : {
+                eventType: UserInputEventTypes.ButtonClickEvent,
+                componentName: element.name,
+              },
+        );
+      },
       type: element.buttonType,
       variant: element.variant,
     },
@@ -97,17 +102,35 @@ export const UI_MAPPING = {
       children: element.value,
     },
   }),
-  form: (params) => ({
+  form: ({ element, ...params }) => ({
     element: 'form',
-    children: params.element.children.map((element) =>
+    children: element.children.map((children) =>
       // eslint-disable-next-line no-use-before-define
-      mapToTemplate({ ...params, element }),
+      mapToTemplate({ ...params, element: children, form: element.name }),
     ),
-  }),
-  input: ({ element, state, form }) => ({
-    element: 'Input',
     props: {
-      value: form ? state[form][element.name] : state[element.name],
+      className: 'snap-ui-renderer__form',
+    },
+  }),
+  input: ({ element, state, form, handleEvent }) => ({
+    element: 'FormTextField',
+    props: {
+      className: 'snap-ui-renderer__input',
+      marginBottom: 1,
+      value: form
+        ? state?.[form]?.[element.name] ?? ''
+        : state?.[element.name] ?? '',
+      label: element.label,
+      id: element.name,
+      placeholder: element.placeholder,
+      type: element.inputType,
+      onChange: (event) =>
+        handleEvent({
+          eventType: UserInputEventTypes.InputChangeEvent,
+          componentName: element.name,
+          parentForm: form,
+          value: event.target.value,
+        }),
     },
   }),
 };
@@ -126,13 +149,77 @@ export const SnapUIRenderer = ({
   snapId,
   delineatorType = DelineatorType.Content,
   data,
+  interfaceId,
 }) => {
+  const dispatch = useDispatch();
   const t = useI18nContext();
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
   );
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
+
+  const interfaceState = useSelector((state) =>
+    getInteraceState(state, interfaceId),
+  );
+
+  const [internalState, setInternalState] = useState(interfaceState);
+
+  const handleEvent = ({ eventType, componentName, parentForm, value }) => {
+    const snapRequestDebounced = debounce(
+      () =>
+        handleSnapRequest({
+          snapId,
+          origin: '',
+          handler: 'onUserInput',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              event: value
+                ? {
+                    type: eventType,
+                    name: componentName,
+                    value,
+                  }
+                : { type: eventType, name: componentName },
+              id: interfaceId,
+            },
+          },
+        }),
+      200,
+    );
+
+    const updateStateDebounced = debounce(
+      (state) => dispatch(updateInterfaceState(interfaceId, state)),
+      200,
+    );
+
+    snapRequestDebounced();
+
+    if (eventType === UserInputEventTypes.InputChangeEvent) {
+      const state = parentForm
+        ? {
+            ...internalState,
+            [parentForm]: {
+              ...internalState[parentForm],
+              [componentName]: value,
+            },
+          }
+        : { ...internalState, [componentName]: value };
+
+      setInternalState(state);
+      updateStateDebounced(state);
+    }
+
+    if (
+      eventType === UserInputEventTypes.FormSubmitEvent ||
+      eventType === UserInputEventTypes.ButtonClickEvent
+    ) {
+      snapRequestDebounced.flush();
+      updateStateDebounced.flush();
+    }
+  };
 
   if (!isComponent(data)) {
     return (
@@ -146,7 +233,13 @@ export const SnapUIRenderer = ({
   }
 
   const elementKeyIndex = { value: 0 };
-  const sections = mapToTemplate({ element: data, elementKeyIndex, snapId });
+  const sections = mapToTemplate({
+    element: data,
+    elementKeyIndex,
+    snapId,
+    state: internalState,
+    handleEvent,
+  });
 
   return (
     <SnapDelineator snapName={snapName} type={delineatorType}>
@@ -161,4 +254,5 @@ SnapUIRenderer.propTypes = {
   snapId: PropTypes.string,
   delineatorType: PropTypes.string,
   data: PropTypes.object,
+  interfaceId: PropTypes.string,
 };

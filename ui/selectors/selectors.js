@@ -553,8 +553,6 @@ export function getUnapprovedConfirmations(state) {
 
 export function getUnapprovedTemplatedConfirmations(state) {
   const unapprovedConfirmations = getUnapprovedConfirmations(state);
-  console.log('Before filter :', unapprovedConfirmations);
-  console.log(TEMPLATED_CONFIRMATION_APPROVAL_TYPES);
   return unapprovedConfirmations.filter((approval) =>
     TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(approval.type),
   );
@@ -961,11 +959,9 @@ export const getUnreadNotificationsCount = createSelector(
 
 export const getInterfaces = (state) => state.metamask.interfaces;
 
-export const getInteraceState = createDeepEqualSelector(
-  getInterfaces,
-  (_, interfaceId) => interfaceId,
-  (interfaces, interfaceId) => interfaces[interfaceId].state,
-);
+export const getInteraceState = (state, interfaceId) =>
+  state.metamask.interfaces[interfaceId].state;
+
 ///: END:ONLY_INCLUDE_IN
 
 /**

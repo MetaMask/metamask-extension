@@ -280,8 +280,6 @@ export default class Home extends PureComponent {
       pendingConfirmations,
     } = this.props;
 
-    console.log(pendingConfirmations);
-
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.shouldCloseCurrentWindow();
     ///: END:ONLY_INCLUDE_IN
