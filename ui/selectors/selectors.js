@@ -1537,3 +1537,15 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   return snapsInstallPrivacyWarningShown;
 }
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
+}
+///: END:ONLY_INCLUDE_IN

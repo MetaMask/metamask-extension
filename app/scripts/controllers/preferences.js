@@ -4,6 +4,9 @@ import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 
 export default class PreferencesController {
   /**
@@ -65,8 +68,12 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
+      snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      snapsAddSnapAccountModalDismissed: false,
+      ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
       ...opts.initState,
     };
@@ -510,6 +517,23 @@ export default class PreferencesController {
   getRpcMethodPreferences() {
     return this.store.getState().disabledRpcMethodPreferences;
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  setSnapsAddSnapAccountModalDismissed(value) {
+    this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
+  }
+
+  async updateSnapRegistry() {
+    let snapRegistry;
+    try {
+      snapRegistry = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+    } catch (error) {
+      console.error(`Failed to fetch registry: `, error);
+      snapRegistry = {};
+    }
+    this.store.updateState({ snapRegistryList: snapRegistry });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   //
   // PRIVATE METHODS
