@@ -4714,8 +4714,11 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
   };
 }
 
-export const updateInterfaceState = async (state: ComponentState) =>
-  submitRequestToBackground('updateInterfaceState', [state]);
+export const updateInterfaceState =
+  (id: string, state: any) => (dispatch: MetaMaskReduxDispatch) => {
+    submitRequestToBackground('updateInterfaceState', [id, state]);
+    return forceUpdateMetamaskState(dispatch);
+  };
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

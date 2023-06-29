@@ -27,8 +27,7 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
-import { Input } from '../../component-library/input';
-import { Label } from '../../component-library/label';
+import { FormTextField } from '../../component-library/form-text-field';
 import { Button as DSButton } from '../../component-library/button';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -73,8 +72,7 @@ export const safeComponentList = {
   Spinner,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  Input,
-  Label,
+  FormTextField,
   DSButton,
   form: 'form',
   ///: END:ONLY_INCLUDE_IF

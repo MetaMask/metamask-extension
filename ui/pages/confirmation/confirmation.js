@@ -40,6 +40,8 @@ import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
+import { SnapUIRenderer } from '../../components/app/snaps/snap-ui-renderer';
+import { DelineatorType } from '../../helpers/constants/snaps';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
@@ -293,14 +295,11 @@ export default function ConfirmationPage({
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
-    return pendingConfirmation
+    return pendingConfirmation && !isSnapInterface
       ? getTemplateValues(
           {
             ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             snapName: isSnapDialog && snapName,
-            snapId: isSnapDialog && pendingConfirmation.origin,
-            interfaceId: isSnapDialog && pendingConfirmation.id,
-            requestState,
             ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
           },
@@ -321,8 +320,7 @@ export default function ConfirmationPage({
     ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
-    requestState,
-
+    isSnapInterface,
     ///: END:ONLY_INCLUDE_IN
   ]);
 
@@ -496,7 +494,16 @@ export default function ConfirmationPage({
           )
           ///: END:ONLY_INCLUDE_IF
         }
-        <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        {isSnapInterface ? (
+          <SnapUIRenderer
+            snapId={pendingConfirmation?.origin}
+            delineatorType={DelineatorType.Content}
+            data={requestState?.content}
+            interfaceId={pendingConfirmation?.id}
+          />
+        ) : (
+          <MetaMaskTemplateRenderer sections={templatedValues.content} />
+        )}
         {showWarningModal && (
           <ConfirmationWarningModal
             onSubmit={async () => {
