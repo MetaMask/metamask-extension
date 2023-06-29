@@ -38,9 +38,9 @@ describe('Import ERC1155 NFT', function () {
         await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter a valid NFT that belongs to user and check success message appears
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
+        await driver.fill('#address', contractAddress);
+        await driver.fill('#token-id', '1');
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         const newNftNotification = await driver.findVisibleElement({
           text: 'NFT was successfully added!',
@@ -86,9 +86,9 @@ describe('Import ERC1155 NFT', function () {
         await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '4');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
+        await driver.fill('#address', contractAddress);
+        await driver.fill('#token-id', '4');
+        await driver.clickElement({ text: 'Import', tag: 'button' });
 
         // Check error message appears
         const invalidNftNotification = await driver.findElement({

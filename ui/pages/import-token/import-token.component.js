@@ -320,7 +320,6 @@ class ImportToken extends Component {
               className="import-token__nft-address-error-link"
               onClick={() => {
                 this.props.showImportNftsModal();
-
               }}
               key="nftAddressError"
             >

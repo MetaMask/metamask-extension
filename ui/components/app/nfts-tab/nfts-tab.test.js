@@ -294,16 +294,5 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
     });
-    it('should render a link "Import NFTs" when some NFTs are present, which, when clicked calls the passed in onAddNFT method', () => {
-      const onAddNFTStub = jest.fn();
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        onAddNFT: onAddNFTStub,
-      });
-      expect(onAddNFTStub).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Import NFT'));
-      expect(onAddNFTStub).toHaveBeenCalledTimes(1);
-    });
   });
 });

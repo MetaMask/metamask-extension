@@ -55,7 +55,10 @@ describe('ImportNftsModal', () => {
   });
 
   it('should enable the "Add" button when valid entries are input into both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(<ImportNftsModal />, store);
+    const { getByTestId, getByText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
     expect(getByText('Add')).not.toBeEnabled();
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
@@ -67,7 +70,10 @@ describe('ImportNftsModal', () => {
   });
 
   it('should not enable the "Add" button when an invalid entry is input into one or both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(<ImportNftsModal />, store);
+    const { getByTestId, getByText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
     expect(getByText('Add')).not.toBeEnabled();
     fireEvent.change(getByTestId('address'), {
       target: { value: INVALID_ADDRESS },
@@ -87,7 +93,10 @@ describe('ImportNftsModal', () => {
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
-    const { getByTestId, getByText } = renderWithProvider(<ImportNftsModal />, store);
+    const { getByTestId, getByText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
@@ -127,7 +136,10 @@ describe('ImportNftsModal', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText } = renderWithProvider(<ImportNftsModal />, store);
+    const { getByTestId, getByText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
