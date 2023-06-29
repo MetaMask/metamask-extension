@@ -69,6 +69,7 @@
     "https://*.codefi.network/",
     "https://chainid.network/chains.json",
     "https://lattice.gridplus.io/*",
+    "https://metamask.github.io/*",
     "activeTab",
     "webRequest",
     "*://*.eth/",
