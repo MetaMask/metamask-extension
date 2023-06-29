@@ -1,0 +1,69 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Security Provider Banner Alert should match snapshot 1`] = `
+<div>
+  <div
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+  >
+    <span
+      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div>
+      <h5
+        class="box mm-text mm-banner-base__title mm-text--body-lg-medium box--flex-direction-row box--color-text-default"
+        data-testid="mm-banner-base-title"
+      >
+        Title is sentence case no period
+      </h5>
+      <h6
+        class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--color-text-default"
+      >
+        This is a description to warn the user of malicious or suspicious transactions.
+      </h6>
+      <div
+        class="disclosure"
+      >
+        <details>
+          <summary
+            class="disclosure__summary is-arrow"
+          >
+            [seeDetails]
+            <span
+              class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-start-2 box--display-inline-block box--flex-direction-row box--color-inherit"
+              style="mask-image: url('./images/icons/arrow-up.svg');"
+            />
+          </summary>
+          <div
+            class="disclosure__content normal"
+          >
+            <ul>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+            </ul>
+          </div>
+          <div
+            class="disclosure__footer"
+          />
+        </details>
+      </div>
+      <h6
+        class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--align-items-center box--color-text-alternative box--display-flex"
+      >
+        <span
+          class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+          style="mask-image: url('./images/icons/security-tick.svg');"
+        />
+        [securityProviderAdviceBy]
+      </h6>
+    </div>
+  </div>
+</div>
+`;
