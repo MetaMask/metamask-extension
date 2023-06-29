@@ -198,7 +198,6 @@ export const SnapDetailHeader = ({
               labelProps={{
                 color: TextColor.infoDefault,
               }}
-              className=""
             />
           )}
         </Box>
