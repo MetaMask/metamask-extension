@@ -35,6 +35,7 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
   hasTransactionPendingApprovals,
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
@@ -2382,9 +2383,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   AnyAction
 > {
   return (_, getState) => {
+    const state = getState();
+    const approvalFlows = getApprovalFlows(state);
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovals(getState())
+      !hasTransactionPendingApprovals(state) &&
+      approvalFlows.length === 0
     ) {
       closeNotificationPopup();
     }
