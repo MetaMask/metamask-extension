@@ -605,6 +605,7 @@ function notifyInpageOfStreamFailure() {
   );
 }
 
+
 /**
  * Redirects the current page to a phishing information page
  */
@@ -628,6 +629,8 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
+    console.log("cs manifest", browser.runtime.getManifest())
+
     if (!isManifestV3) {
       injectScript(inpageBundle);
     }

@@ -59,5 +59,8 @@ if (shouldInjectProvider()) {
     connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
+    // providerInfo: {
+    //   name: browser.runtime.getManifest()
+    // }
   });
 }
