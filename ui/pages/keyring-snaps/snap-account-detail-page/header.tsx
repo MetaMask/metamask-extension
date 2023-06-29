@@ -177,6 +177,7 @@ export const SnapDetailHeader = ({
           )}
           {auditUrls.length > 0 && (
             <Tag
+              className=""
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
               borderColor={BackgroundColor.infoMuted}
