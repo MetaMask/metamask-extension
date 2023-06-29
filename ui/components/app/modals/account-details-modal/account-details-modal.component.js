@@ -8,7 +8,7 @@ import EditableLabel from '../../../ui/editable-label';
 import Button from '../../../ui/button';
 import {
   getURLHostName,
-  isNotAbleToExportAccount,
+  isAbleToExportAccount,
 } from '../../../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import CustodyLabels from '../../../institutional/custody-labels/custody-labels';
@@ -67,9 +67,7 @@ export default class AccountDetailsModal extends Component {
       return kr.accounts.includes(address);
     });
 
-    let exportPrivateKeyFeatureEnabled = !isNotAbleToExportAccount(
-      keyring?.type,
-    );
+    let exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (keyring?.type?.search('Custody') !== -1) {

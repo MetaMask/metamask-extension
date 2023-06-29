@@ -11,7 +11,7 @@ import {
   getHardwareWalletType,
   getMetaMaskKeyrings,
 } from '../../../selectors';
-import { isNotAbleToExportAccount } from '../../../helpers/utils/util';
+import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
   BUTTON_SECONDARY_SIZES,
   ButtonSecondary,
@@ -43,9 +43,7 @@ export const AccountDetailsDisplay = ({
 
   const keyrings = useSelector(getMetaMaskKeyrings);
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
-  const exportPrivateKeyFeatureEnabled = !isNotAbleToExportAccount(
-    keyring?.type,
-  );
+  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
