@@ -11,6 +11,7 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
+  Severity,
   Size,
 } from '../../../helpers/constants/design-system';
 
@@ -127,6 +128,7 @@ export const ImportNftsModal = ({ onClose }) => {
     });
 
     history.push(DEFAULT_ROUTE);
+    onClose();
   };
 
   const validateAndSetAddress = (val) => {
@@ -163,10 +165,9 @@ export const ImportNftsModal = ({ onClose }) => {
             </Box>
           ) : null}
           {nftAddFailed && (
-            <Box marginLeft={4} marginRight={4}>
+            <Box marginTop={6}>
               <BannerAlert
-                danger
-                title="onClose demo"
+                severity={Severity.Danger}
                 onClose={() => setNftAddFailed(false)}
               >
                 {t('nftAddFailedMessage')}
@@ -206,8 +207,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
-                onChange={(val) => {
-                  validateAndSetAddress(val);
+                onChange={(e) => {
+                  validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
                 }}
               />
@@ -238,8 +239,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}
-                onChange={(val) => {
-                  validateAndSetTokenId(val);
+                onChange={(e) => {
+                  validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);
                 }}
               />
