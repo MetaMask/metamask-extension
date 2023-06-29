@@ -15,6 +15,7 @@ import {
   BorderRadius,
   BackgroundColor,
   IconColor,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -48,6 +49,7 @@ export const ButtonBase = ({
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
       color={loading ? TextColor.transparent : color}
+      fontWeight={FontWeight.Medium}
       href={href}
       paddingLeft={4}
       paddingRight={4}
