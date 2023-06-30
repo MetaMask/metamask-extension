@@ -67,7 +67,7 @@ describe('Hold to Reveal Modal', () => {
 
     expect(holdButton).toBeDefined();
 
-    fireEvent.mouseUp(holdButton);
+    fireEvent.pointerUp(holdButton);
 
     expect(holdButton).toBeDefined();
   });
@@ -84,7 +84,7 @@ describe('Hold to Reveal Modal', () => {
     const holdButton = getByText('Hold to reveal SRP');
     const circleLocked = queryByLabelText('hold to reveal circle locked');
 
-    fireEvent.mouseDown(holdButton);
+    fireEvent.pointerDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
     const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
@@ -164,7 +164,7 @@ describe('Hold to Reveal Modal', () => {
     const holdButton = getByText('Hold to reveal SRP');
     const circleLocked = queryByLabelText('hold to reveal circle locked');
 
-    fireEvent.mouseDown(holdButton);
+    fireEvent.pointerDown(holdButton);
     fireEvent.transitionEnd(circleLocked);
 
     const circleUnlocked = queryByLabelText('hold to reveal circle unlocked');
