@@ -114,44 +114,22 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        <>
-          {mmiPortfolioEnabled && (
-            <MenuItem
-              iconName={IconName.Diagram}
-              onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.UserClickedPortfolioButton,
-                });
-                window.open(mmiPortfolioUrl, '_blank');
-                closeMenu();
-              }}
-              data-testid="global-menu-mmi-portfolio"
-            >
-              {t('portfolioDashboard')}
-            </MenuItem>
-          )}
-
+        mmiPortfolioEnabled && (
           <MenuItem
-            iconName={IconName.Compliance}
+            iconName={IconName.Diagram}
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.UserClickedCompliance,
+                event: MetaMetricsEventName.UserClickedPortfolioButton,
               });
-              if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                global.platform.openExtensionInBrowser(
-                  COMPLIANCE_FEATURE_ROUTE,
-                );
-              } else {
-                history.push(COMPLIANCE_FEATURE_ROUTE);
-              }
+              window.open(mmiPortfolioUrl, '_blank');
+              closeMenu();
             }}
-            data-testid="global-menu-mmi-compliance"
+            data-testid="global-menu-mmi-portfolio"
           >
-            {t('compliance')}
+            {t('portfolioDashboard')}
           </MenuItem>
-        </>
+        )
         ///: END:ONLY_INCLUDE_IN
       }
 
