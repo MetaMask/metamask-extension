@@ -13,7 +13,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Text, Box, Button } from '../../../component-library';
+import { Text, Box, ButtonLink } from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
@@ -37,15 +37,14 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
         position="bottom"
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
       >
-        <Button
-          type="link"
+        <ButtonLink
           className="detected-token-address__copy-link"
           onClick={() => {
             handleCopy(tokenAddress);
           }}
         >
           <i className="fa fa-copy" />
-        </Button>
+        </ButtonLink>
       </Tooltip>
     </Box>
   );
