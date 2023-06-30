@@ -2368,19 +2368,38 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      connectCustodyAddresses:
-        this.mmiController.connectCustodyAddresses.bind(this),
-      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
+      connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
+        this.mmiController,
+      ),
+      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(
+        this.mmiController,
+      ),
       getCustodianAccountsByAddress:
-        this.mmiController.getCustodianAccountsByAddress.bind(this),
+        this.mmiController.getCustodianAccountsByAddress.bind(
+          this.mmiController,
+        ),
       getCustodianTransactionDeepLink:
-        this.mmiController.getCustodianTransactionDeepLink.bind(this),
+        this.mmiController.getCustodianTransactionDeepLink.bind(
+          this.mmiController,
+        ),
       getCustodianConfirmDeepLink:
-        this.mmiController.getCustodianConfirmDeepLink.bind(this),
+        this.mmiController.getCustodianConfirmDeepLink.bind(this.mmiController),
       getCustodianSignMessageDeepLink:
-        this.mmiController.getCustodianSignMessageDeepLink.bind(this),
-      getCustodianToken: this.mmiController.getCustodianToken.bind(this),
-      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(this),
+        this.mmiController.getCustodianSignMessageDeepLink.bind(
+          this.mmiController,
+        ),
+      getCustodianToken: this.mmiController.getCustodianToken.bind(
+        this.mmiController,
+      ),
+      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(
+        this.mmiController,
+      ),
+      getAllCustodianAccountsWithToken:
+        this.mmiController.getAllCustodianAccountsWithToken.bind(
+          this.mmiController,
+        ),
+      setCustodianNewRefreshToken:
+        this.mmiController.setCustodianNewRefreshToken.bind(this.mmiController),
       setWaitForConfirmDeepLinkDialog:
         this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
           this.custodyController,
@@ -2393,8 +2412,6 @@ export default class MetamaskController extends EventEmitter {
         this.custodyController.getCustodianConnectRequest.bind(
           this.custodyController,
         ),
-      getAllCustodianAccountsWithToken:
-        this.mmiController.getAllCustodianAccountsWithToken.bind(this),
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
@@ -2415,12 +2432,10 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.syncReportsInProgress.bind(
           this.institutionalFeaturesController,
         ),
-
       removeConnectInstitutionalFeature:
         this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
           this.institutionalFeaturesController,
         ),
-
       getComplianceHistoricalReportsByAddress:
         this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
           this.institutionalFeaturesController,
@@ -2429,8 +2444,6 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
         ),
-      setCustodianNewRefreshToken:
-        this.mmiController.setCustodianNewRefreshToken.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
