@@ -92,7 +92,7 @@ describe('Hold to Reveal Modal', () => {
 
     await waitFor(() => {
       expect(holdButton.firstChild).toHaveClass(
-        'box hold-to-reveal-button__icon-container box--flex-direction-row',
+        'hold-to-reveal-button__icon-container',
       );
       expect(onLongPressStub).toHaveBeenCalled();
     });
@@ -172,7 +172,7 @@ describe('Hold to Reveal Modal', () => {
 
     await waitFor(() => {
       expect(holdButton.firstChild).toHaveClass(
-        'box hold-to-reveal-button__icon-container box--flex-direction-row',
+        'hold-to-reveal-button__icon-container',
       );
       expect(onLongPressStub).toHaveBeenCalled();
       expect(hideModalStub).not.toHaveBeenCalled();
