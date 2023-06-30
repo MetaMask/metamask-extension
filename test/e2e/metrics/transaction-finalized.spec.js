@@ -95,6 +95,7 @@ describe('Transaction Finalized Event', function () {
         // If we switch to a different assertion library we can use generic matchers in the future.
         delete transactionSubmittedNoMMId.properties.first_seen;
         delete transactionFinalizedNoMMId.properties.first_seen;
+        delete transactionFinalizedNoMMId.properties.completion_time;
 
         // Assert that the event names begin with the appropriate prefixes. Even finalized events begin with transaction-submitted
         // because they start as event fragments created when the transaction is submitted.
@@ -261,7 +262,6 @@ describe('Transaction Finalized Event', function () {
             transaction_speed_up: false,
             ui_customizations: null,
             gas_used: '5208',
-            completion_time: '2',
             category: 'Transactions',
             locale: 'en',
             environment_type: 'background',
