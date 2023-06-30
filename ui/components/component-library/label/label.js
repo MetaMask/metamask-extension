@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Text } from '../text';
 import {
-  FONT_WEIGHT,
   TextVariant,
-  DISPLAY,
+  Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
 
@@ -18,9 +17,8 @@ export const Label = ({ htmlFor, className, children, ...props }) => (
     )}
     as="label"
     htmlFor={htmlFor}
-    variant={TextVariant.bodyMd}
-    fontWeight={FONT_WEIGHT.BOLD}
-    display={DISPLAY.INLINE_FLEX}
+    variant={TextVariant.bodyMdBold}
+    display={Display.InlineFlex}
     alignItems={AlignItems.center}
     {...props}
   >

@@ -1,5 +1,9 @@
 import { IconProps } from '../icon';
-import type { StyleUtilityProps } from '../box';
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+} from '../box';
+
 import type { TextProps } from '../text';
 
 // TextProps for Checkbox label
@@ -7,7 +11,7 @@ interface ExtendedTextProps extends TextProps {
   htmlFor?: string;
 }
 
-export interface CheckboxProps extends StyleUtilityProps {
+export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * Additional classNames to be added to the Checkbox component
    */
@@ -62,3 +66,10 @@ export interface CheckboxProps extends StyleUtilityProps {
    */
   iconProps?: IconProps;
 }
+
+export type CheckboxProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, CheckboxStyleUtilityProps>;
+
+export type CheckboxComponent = <C extends React.ElementType = 'div'>(
+  props: CheckboxProps<C>,
+) => React.ReactElement | null;
