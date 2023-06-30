@@ -36,7 +36,6 @@ describe('Phishing warning page', function () {
           });
         },
         dapp: true,
-        failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
