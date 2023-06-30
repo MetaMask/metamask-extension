@@ -8,14 +8,14 @@ import { Text } from '../text';
 
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
   TextColor,
   TextVariant,
   BorderRadius,
   BackgroundColor,
   IconColor,
-  FontWeight,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
@@ -49,7 +49,7 @@ export const ButtonBase = ({
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
       color={loading ? TextColor.transparent : color}
-      fontWeight={FontWeight.Medium}
+      variant={TextVariant.bodyMdMedium}
       href={href}
       paddingLeft={4}
       paddingRight={4}
@@ -67,7 +67,7 @@ export const ButtonBase = ({
         className,
       )}
       disabled={disabled}
-      display={DISPLAY.INLINE_FLEX}
+      display={Display.InlineFlex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}
