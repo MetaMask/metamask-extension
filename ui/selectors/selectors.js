@@ -1,6 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -29,9 +30,12 @@ import {
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
   ETH_TOKEN_IMAGE_URL,
-  LINEA_TESTNET_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
+  LINEA_GOERLI_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -502,9 +506,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { pendingApprovalCount = 0 } = state.metamask;
-
-  return pendingApprovalCount + getSuggestedAssetCount(state);
+  return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -545,7 +547,7 @@ export function getUnapprovedTxCount(state) {
 }
 
 export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals } = state.metamask;
+  const { pendingApprovals = {} } = state.metamask;
   return Object.values(pendingApprovals);
 }
 
@@ -556,13 +558,26 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
+export function getSuggestedTokens(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId === undefined
+      );
+    }) || []
+  );
 }
 
-export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
+export function getSuggestedNfts(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId !== undefined
+      );
+    }) || []
+  );
 }
 
 export function getIsMainnet(state) {
@@ -956,6 +971,7 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
+  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -975,9 +991,10 @@ function getAllowedAnnouncementIds(state) {
     15: false,
     16: false,
     17: false,
-    18: true,
-    19: true,
+    18: false,
+    19: false,
     20: currentKeyringIsLedger && isFirefox,
+    21: isSwapsChain,
   };
 }
 
@@ -1184,15 +1201,19 @@ export function getAllNetworks(state) {
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
     },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+    },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(
-      ({ chainId }) =>
-        ![
-          CHAIN_IDS.LOCALHOST,
-          // Linea gets added as a custom network configuration so
-          // we must ignore it here to display in test networks
-          CHAIN_IDS.LINEA_TESTNET,
-        ].includes(chainId),
+      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
     ),
     // Test networks
     {
@@ -1210,10 +1231,14 @@ export function getAllNetworks(state) {
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     },
     {
-      chainId: CHAIN_IDS.LINEA_TESTNET,
-      nickname: LINEA_TESTNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+      chainId: CHAIN_IDS.LINEA_GOERLI,
+      nickname: LINEA_GOERLI_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+      rpcPrefs: {
+        imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_GOERLI,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
@@ -1491,5 +1516,24 @@ export function getSnapsList(state) {
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
+}
+
+/**
+ * To get the state of snaps privacy warning popover.
+ *
+ * @param state - Redux state object.
+ * @returns True if popover has been shown, false otherwise.
+ */
+export function getSnapsInstallPrivacyWarningShown(state) {
+  const { snapsInstallPrivacyWarningShown } = state.metamask;
+
+  if (
+    snapsInstallPrivacyWarningShown === undefined ||
+    snapsInstallPrivacyWarningShown === null
+  ) {
+    return false;
+  }
+
+  return snapsInstallPrivacyWarningShown;
 }
 ///: END:ONLY_INCLUDE_IN

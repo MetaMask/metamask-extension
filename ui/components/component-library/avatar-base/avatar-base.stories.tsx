@@ -1,8 +1,8 @@
-import { ComponentMeta } from '@storybook/react';
+import { Meta } from '@storybook/react';
 import React from 'react';
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   TextColor,
   BackgroundColor,
   BorderColor,
@@ -60,7 +60,7 @@ export default {
       control: 'select',
     },
     display: {
-      options: Object.values(DISPLAY),
+      options: Object.values(Display),
       control: 'select',
       table: { category: 'box props' },
     },
@@ -92,14 +92,14 @@ export default {
     borderColor: BorderColor.borderDefault,
     children: 'B',
   },
-} as ComponentMeta<typeof AvatarBase>;
+} as Meta<typeof AvatarBase>;
 
 export const DefaultStory = (args: AvatarBaseProps) => <AvatarBase {...args} />;
 
 DefaultStory.storyName = 'Default';
 
 export const Size = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarBase {...args} size={AvatarBaseSize.Xs} />
     <AvatarBase {...args} size={AvatarBaseSize.Sm} />
     <AvatarBase {...args} size={AvatarBaseSize.Md} />
@@ -109,7 +109,7 @@ export const Size = (args: AvatarBaseProps) => (
 );
 
 export const Children = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={Display.Flex} gap={1}>
     <AvatarBase {...args}>
       <img src="./images/eth_logo.png" />
     </AvatarBase>
@@ -131,7 +131,7 @@ export const Children = (args: AvatarBaseProps) => (
 );
 
 export const ColorBackgroundColorAndBorderColor = (args: AvatarBaseProps) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={Display.Flex} gap={1}>
     <AvatarBase {...args}>B</AvatarBase>
     <AvatarBase
       {...args}

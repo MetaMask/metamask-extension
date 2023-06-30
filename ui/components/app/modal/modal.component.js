@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Button from '../../ui/button';
 
+/**
+ * @deprecated The `<Modal />` component has been deprecated in favor of the new `<Modal>` component from the component-library.
+ * Please update your code to use the new `<Modal>` component instead, which can be found at ui/components/component-library/modal/modal.tsx.
+ * You can find documentation for the new Modal component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-modal--docs}
+ * If you would like to help with the replacement of the old Modal component, please submit a pull request
+ */
+
 export default class Modal extends PureComponent {
   static propTypes = {
     children: PropTypes.node,

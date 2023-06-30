@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "カスタムトークンを追加"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります。",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "トークンを追加"
+  },
+  "addTokenByContractAddress": {
+    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "アドレス"
@@ -359,12 +359,6 @@
     "message": "すべての $1 へのアクセスとその送金を許可しますか？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "承認してインストール"
-  },
-  "approveAndUpdate": {
-    "message": "承認して更新"
-  },
   "approveButtonText": {
     "message": "承認"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "戻る"
-  },
-  "backToAll": {
-    "message": "一覧に戻る"
   },
   "backup": {
     "message": "バックアップ"
@@ -557,13 +548,6 @@
     "message": "トランザクションを$1するには、ネットワークに認識されるようにガス代を 10% 以上増額する必要があります。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "$1 以下でスワップをキャンセル",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "無料でスワップをキャンセル"
-  },
   "cancelled": {
     "message": "キャンセル済み"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "アカウントを接続するか、または新規に作成します"
   },
-  "connectHardwareWallet": {
-    "message": "ハードウェアウォレットの接続"
-  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli テストネットワークに接続中"
   },
   "connectingToMainnet": {
@@ -760,7 +741,7 @@
     "message": "トークンコントラクト"
   },
   "convertTokenToNFTDescription": {
-    "message": "このアセットは NFT であることが検出されました。Metamask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
+    "message": "このアセットは NFT であることが検出されました。MetaMask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
   },
   "convertTokenToNFTExistDescription": {
     "message": "このアセットは NFT として追加されていることが検出されました。トークンリストから削除しますか？"
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAccount": {
-    "message": "アカウントを作成"
   },
   "createNewWallet": {
     "message": "新規ウォレットを作成"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
-  "enableSmartTransactions": {
-    "message": "スマートトランザクションを有効にする"
-  },
   "enableToken": {
     "message": "$1を有効にする",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります!"
   },
-  "importTokens": {
-    "message": "トークンをインポート"
-  },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli テストネットワーク"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "missingToken": {
-    "message": "トークンが見当たりませんか？"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
-  },
-  "myAccounts": {
-    "message": "マイアカウント"
   },
   "name": {
     "message": "名前"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "受領"
   },
-  "recents": {
-    "message": "最近"
-  },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリックアドレス (0x)、またはENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
   },
-  "showHide": {
-    "message": "表示・非表示"
-  },
   "showIncomingTransactions": {
     "message": "受信トランザクションを表示"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
   },
-  "smartTransaction": {
-    "message": "スマートトランザクション"
-  },
   "snapContent": {
     "message": "このコンテンツは $1 からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "スナップをインストール"
   },
   "snapInstallWarningCheck": {
-    "message": "理解したことを確認するために、次の項目にチェックを入れてください."
+    "message": "理解したことを確認するために、次の項目にチェックを入れてください.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
+    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "ステータス"
   },
-  "statusConnected": {
-    "message": "接続済み"
-  },
   "statusNotConnected": {
     "message": "未接続"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "強"
   },
-  "stxAreHere": {
-    "message": "スマートトランザクションが利用可能になりました！"
-  },
   "stxBenefit1": {
     "message": "トランザクションコストを最小化"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回は同様のリスクを避けられるようサポートします。"
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps がはるかに賢くなりました！スマートトランザクションを有効にすると、MetaMask がプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "スマートトランザクションに十分な資金がありません。"
-  },
-  "stxErrorUnavailable": {
-    "message": "スマートトランザクションは一時的に利用できません。"
-  },
   "stxFailure": {
     "message": "スワップに失敗しました"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "スワップを公開で送信中..."
-  },
-  "stxSubDescription": {
-    "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
   "stxSuccess": {
     "message": "スワップ完了！"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 要求の設定"
   },
-  "toggleTestNetworks": {
-    "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "トークン"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "送金"
   },
-  "transferBetweenAccounts": {
-    "message": "自分のアカウント間での振替"
-  },
   "transferFrom": {
     "message": "送金元"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
-  },
-  "troubleTokenBalances": {
-    "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "パーミッションを付与することで、次の$1による資金へのアクセスが許可されます"

@@ -93,9 +93,6 @@
   "back": {
     "message": "Tagasi"
   },
-  "backToAll": {
-    "message": "Tagasi kõigile"
-  },
   "backupApprovalInfo": {
     "message": "See salakood on vajalik teie rahakoti taastamiseks, kui kaotate oma seadme, unustate parooli, peate MetaMaski uuesti alla laadima, või kui soovite avada oma rahakoti mõnel teisel seadmel."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Ühendamine"
   },
-  "connectHardwareWallet": {
-    "message": "Ühendage riistvara rahakott"
-  },
   "connectingTo": {
     "message": "Ühenduse loomine $1"
   },
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Loo"
-  },
-  "createAccount": {
-    "message": "Loo konto"
   },
   "createPassword": {
     "message": "Loo parool"
@@ -411,7 +402,7 @@
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testvõrk"
   },
   "links": {
@@ -443,9 +434,6 @@
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
-  },
-  "myAccounts": {
-    "message": "Minu kontod"
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
@@ -570,9 +558,6 @@
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."
-  },
-  "recents": {
-    "message": "Hiljutised"
   },
   "recipientAddressPlaceholder": {
     "message": "Otsing, avalik aadress (0x) või ENS"
@@ -797,15 +782,8 @@
   "transfer": {
     "message": "Ülekandmine"
   },
-  "transferBetweenAccounts": {
-    "message": "Ülekandmine minu kontode vahel"
-  },
   "transferFrom": {
     "message": "Ülekandmine asukohast"
-  },
-  "troubleTokenBalances": {
-    "message": "Teie loasaldode laadimisega oli probleem. Saate neid vaadata",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Proovi uuesti"

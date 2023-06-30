@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Tambahkan token kustom"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Tidak dapat menemukan token? Tambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan dengan MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Tambahkan token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Tidak dapat menemukan token? Tambahkan token secara manual dengan menempelkan alamatnya. Alamat kontrak token dapat ditemukan di $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Alamat"
@@ -359,12 +359,6 @@
     "message": "Berikan izin untuk mengakses dan mentransfer seluruh $1 Anda?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Setujui & instal"
-  },
-  "approveAndUpdate": {
-    "message": "Setujui dan perbarui"
-  },
   "approveButtonText": {
     "message": "Setujui"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "Kembali"
-  },
-  "backToAll": {
-    "message": "Kembali ke semua"
   },
   "backup": {
     "message": "Pencadangan"
@@ -557,13 +548,6 @@
     "message": "Untuk $1 suatu transaksi, biaya gas harus dinaikkan minimal 10% agar dapat dikenali oleh jaringan.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Batalkan swap untuk ~$",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Batalkan swap gratis"
-  },
   "cancelled": {
     "message": "Dibatalkan"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "Hubungkan akun atau buat baru"
   },
-  "connectHardwareWallet": {
-    "message": "Hubungkan dompet perangkat keras"
-  },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Menghubungkan ke jaringan uji Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menghubungkan ke jaringan uji Linea Goerli"
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "Buat"
-  },
-  "createAccount": {
-    "message": "Buat akun"
   },
   "createNewWallet": {
     "message": "Buat dompet baru"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
-  "enableSmartTransactions": {
-    "message": "Aktifkan transaksi pintar"
-  },
   "enableToken": {
     "message": "aktifkan $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko ditanggung sendiri!"
   },
-  "importTokens": {
-    "message": "impor token"
-  },
   "importTokensCamelCase": {
     "message": "Impor token"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Jaringan uji Linea Goerli"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "Minta di sini"
   },
-  "missingToken": {
-    "message": "Tidak melihat token Anda?"
-  },
   "moreComingSoon": {
     "message": "Selanjutnya akan segera hadir..."
   },
   "mustSelectOne": {
     "message": "Harus memilih minimal 1 token."
-  },
-  "myAccounts": {
-    "message": "Akun saya"
   },
   "name": {
     "message": "Nama"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "Gas tidak cukup"
-  },
-  "notifications": {
-    "message": "Notifikasi"
   },
   "notifications10ActionText": {
     "message": "Lihat di Pengaturan",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "Terima"
   },
-  "recents": {
-    "message": "Terkini"
-  },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat publik (0x), atau ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "Pilih ini untuk menampilkan bidang data hex di layar kirim"
   },
-  "showHide": {
-    "message": "Tampil/Sembunyi"
-  },
   "showIncomingTransactions": {
     "message": "Tampilkan transaksi masuk"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "Saya memahami bahwa sampai saya mencadangkan Frasa Pemulihan Rahasia, saya dapat kehilangan akun saya dan semua aset yang ada."
   },
-  "smartTransaction": {
-    "message": "Transaksi pintar"
-  },
   "snapContent": {
     "message": "Konten ini berasal dari $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "Instal Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya."
+    "message": "Untuk mengonfirmasikan bahwa Anda sudah paham, centang kotaknya.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak."
+    "message": "Untuk mengonfirmasikan bahwa Anda memahaminya, centang semua kotak.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Anda memberikan $2 akses kunci ke snap \"$1\". Tindakan ini tidak dapat dibatalkan dan memberikan kendali \"$1\" atas akun dan aset $2 Anda. Sebelum melanjutkan, pastikan \"$1\" aman.",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "Status"
   },
-  "statusConnected": {
-    "message": "Terhubung"
-  },
   "statusNotConnected": {
     "message": "Tidak terhubung"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "Kuat"
   },
-  "stxAreHere": {
-    "message": "Transaksi Pintar hadir di sini!"
-  },
   "stxBenefit1": {
     "message": "Meminimalkan biaya transaksi"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "Cobalah untuk menukar lagi. Kami akan selalu hadir untuk melindungi Anda dari risiko serupa di lain waktu."
   },
-  "stxDescription": {
-    "message": "Pertukaran MetaMask menjadi semakin pintar! Mengaktifkan Transaksi Pintar akan memungkinkan MetaMask mengoptimalkan Pertukaran Anda secara terprogram untuk membantu:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Dana tidak cukup untuk mengaktifkan transaksi pintar."
-  },
-  "stxErrorUnavailable": {
-    "message": "Transaksi Pintar tidak tersedia untuk sementara waktu."
-  },
   "stxFailure": {
     "message": "Pertukaran gagal"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara publik..."
-  },
-  "stxSubDescription": {
-    "message": "* Transaksi Pintar akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Pertukaran telah berhasil dilakukan."
   },
   "stxSuccess": {
     "message": "Pertukaran selesai!"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "Alihkan permintaan eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 jaringan pengujian",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "Transfer"
   },
-  "transferBetweenAccounts": {
-    "message": "Transfer antar akun saya"
-  },
   "transferFrom": {
     "message": "Transfer dari"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask mengalami masalah saat memulai. Kesalahan ini dapat terjadi berselang, coba mulai ulang ekstensi."
-  },
-  "troubleTokenBalances": {
-    "message": "Kami mengalami masalah saat memuat saldo token Anda. Anda dapat melihatnya ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Dengan memberikan izin, Anda mengizinkan $1 berikut untuk mengakses dana Anda"

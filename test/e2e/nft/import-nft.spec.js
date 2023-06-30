@@ -51,10 +51,10 @@ describe('Import NFT', function () {
         // Check the imported NFT and its image are displayed in the NFT tab
         const importedNft = await driver.waitForSelector({
           css: 'h5',
-          text: 'TestDappCollectibles',
+          text: 'TestDappNFTs',
         });
         const importedNftImage = await driver.findElement(
-          '.nfts-items__item-image',
+          '.nft-item__item-image',
         );
         assert.equal(await importedNft.isDisplayed(), true);
         assert.equal(await importedNftImage.isDisplayed(), true);

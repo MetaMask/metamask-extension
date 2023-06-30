@@ -15,6 +15,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+import { ethErrors } from 'eth-rpc-errors';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -902,32 +903,6 @@ export function updatePreviousGasParams(
   };
 }
 
-// TODO: codeword: NOT_A_THUNK @brad-decker
-export function updateSwapApprovalTransaction(
-  txId: number,
-  txSwapApproval: TransactionMeta,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateSwapApprovalTransaction',
-        [txId, txSwapApproval],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export function updateEditableParams(
   txId: number,
   editableParams: Partial<TxParams>,
@@ -1044,32 +1019,6 @@ export function updateTransactionGasFees(
   };
 }
 
-// TODO: codeword: NOT_A_THUNK @brad-decker
-export function updateSwapTransaction(
-  txId: number,
-  txSwap: TransactionMeta,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateSwapTransaction',
-        [txId, txSwap],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export function updateTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
@@ -1154,18 +1103,27 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * @param method
  * @param txParams - the transaction parameters
  * @param type - The type of the transaction being added.
+ * @param options - Additional options for the transaction.
+ * @param options.requireApproval - Whether the transaction requires approval.
+ * @param options.swaps - Options specific to swaps transactions.
+ * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
+ * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @returns
  */
 export async function addUnapprovedTransaction(
   method: string,
   txParams: TxParams,
   type: TransactionType,
+  options?: {
+    requireApproval?: boolean;
+    swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
+  },
 ): Promise<TransactionMeta> {
   log.debug('background.addUnapprovedTransaction');
   const actionId = generateActionId();
   const txMeta = await submitRequestToBackground<TransactionMeta>(
     'addUnapprovedTransaction',
-    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId],
+    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId, options],
     actionId,
   );
   return txMeta;
@@ -1185,8 +1143,8 @@ export function updateAndApproveTx(
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
-        'updateAndApproveTransaction',
-        [txMeta, actionId],
+        'resolvePendingApproval',
+        [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
           dispatch(resetSendState());
@@ -1615,10 +1573,12 @@ export function cancelTx(
   return (dispatch: MetaMaskReduxDispatch) => {
     _showLoadingIndication && dispatch(showLoadingIndication());
     return new Promise<void>((resolve, reject) => {
-      const actionId = generateActionId();
       callBackgroundMethod(
-        'cancelTransaction',
-        [txMeta.id, actionId],
+        'rejectPendingApproval',
+        [
+          String(txMeta.id),
+          ethErrors.provider.userRejectedRequest().serialize(),
+        ],
         (error) => {
           if (error) {
             reject(error);
@@ -1663,15 +1623,21 @@ export function cancelTxs(
       const cancellations = txIds.map(
         (id) =>
           new Promise<void>((resolve, reject) => {
-            const actionId = generateActionId();
-            callBackgroundMethod('cancelTransaction', [id, actionId], (err) => {
-              if (err) {
-                reject(err);
-                return;
-              }
+            callBackgroundMethod(
+              'rejectPendingApproval',
+              [
+                String(id),
+                ethErrors.provider.userRejectedRequest().serialize(),
+              ],
+              (err) => {
+                if (err) {
+                  reject(err);
+                  return;
+                }
 
-              resolve();
-            });
+                resolve();
+              },
+            );
           }),
       );
 
@@ -2295,44 +2261,6 @@ export function addTokens(
         dispatch(addToken(address, symbol, decimals)),
       ),
     );
-  };
-}
-
-export function rejectWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('rejectWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
-  };
-}
-
-export function acceptWatchAsset(
-  suggestedAssetID: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    try {
-      await submitRequestToBackground('acceptWatchAsset', [suggestedAssetID]);
-      await forceUpdateMetamaskState(dispatch);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      return;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-    dispatch(closeCurrentNotificationWindow());
   };
 }
 
@@ -3439,7 +3367,6 @@ export function fetchAndSetQuotes(
     destinationToken: string;
     value: string;
     fromAddress: string;
-    destinationTokenAddedForSwap: string;
     balanceError: string;
     sourceDecimals: number;
   },
@@ -3581,24 +3508,6 @@ export function setSwapsQuotesPollingLimitEnabled(
     await submitRequestToBackground('setSwapsQuotesPollingLimitEnabled', [
       quotesPollingLimitEnabled,
     ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setTradeTxId(
-  tradeTxId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setTradeTxId', [tradeTxId]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function setApproveTxId(
-  approveTxId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('setApproveTxId', [approveTxId]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -4678,3 +4587,20 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   }
   return networkEIP1559Compatibility;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * Set status of popover warning for the first snap installation.
+ *
+ * @param shown - True if popover has been shown.
+ * @returns Promise Resolved on successfully submitted background request.
+ */
+export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
+  return async () => {
+    await submitRequestToBackground(
+      'setSnapsInstallPrivacyWarningShownStatus',
+      [shown],
+    );
+  };
+}
+///: END:ONLY_INCLUDE_IN

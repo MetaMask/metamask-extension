@@ -33,10 +33,12 @@ async function loadNewAccount() {
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
 
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-menu-icon"]');
       const timestampBeforeAction = new Date();
-      await driver.clickElement({ text: 'Create account', tag: 'div' });
-      await driver.fill('.new-account-create-form input', '2nd account');
+      await driver.clickElement(
+        '[data-testid="multichain-account-menu-add-account"]',
+      );
+      await driver.fill('[placeholder="Account 2"]', '2nd account');
       await driver.clickElement({ text: 'Create', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',
@@ -64,7 +66,7 @@ async function confirmTx() {
       await driver.clickElement('[data-testid="eth-overview-send"]');
 
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 

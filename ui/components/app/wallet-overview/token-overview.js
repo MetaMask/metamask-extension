@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import Identicon from '../../ui/identicon';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -84,6 +83,7 @@ const TokenOverview = ({ className, token }) => {
 
   return (
     <WalletOverview
+      showAddress={false}
       balance={
         <div className="token-overview__balance">
           <div className="token-overview__primary-container">
@@ -264,9 +264,6 @@ const TokenOverview = ({ className, token }) => {
         </>
       }
       className={className}
-      icon={
-        <Identicon diameter={32} address={token.address} image={token.image} />
-      }
     />
   );
 };

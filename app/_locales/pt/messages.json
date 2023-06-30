@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Adicionar token personalizado"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Adicionar token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Endereço"
@@ -359,12 +359,6 @@
     "message": "Permitir acesso a todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Aprovar e instalar"
-  },
-  "approveAndUpdate": {
-    "message": "Aprovar e atualizar"
-  },
   "approveButtonText": {
     "message": "Aprovar"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "Voltar"
-  },
-  "backToAll": {
-    "message": "Voltar para todos"
   },
   "backup": {
     "message": "Backup"
@@ -557,13 +548,6 @@
     "message": "Para $1 uma transação, a taxa de gás deve ser aumentada em pelo menos 10% para que seja reconhecida pela rede.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Cancelar swap por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Cancelar swap gratuitamente"
-  },
   "cancelled": {
     "message": "Cancelada"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "Conectar conta ou criar nova"
   },
-  "connectHardwareWallet": {
-    "message": "Conectar carteira de hardware"
-  },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Conectando à rede de teste Linea Goerli"
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "Criar"
-  },
-  "createAccount": {
-    "message": "Criar conta"
   },
   "createNewWallet": {
     "message": "Criar uma nova carteira"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
-  "enableSmartTransactions": {
-    "message": "Ativar transações inteligentes"
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
   },
-  "importTokens": {
-    "message": "importar tokens"
-  },
   "importTokensCamelCase": {
     "message": "Importar tokens"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Gostaria de adicionar estes tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rede de teste Linea Goerli"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "Solicite aqui"
   },
-  "missingToken": {
-    "message": "Não está vendo seu token?"
-  },
   "moreComingSoon": {
     "message": "Mais em breve..."
   },
   "mustSelectOne": {
     "message": "Deve escolher no mínimo 1 token."
-  },
-  "myAccounts": {
-    "message": "Minhas contas"
   },
   "name": {
     "message": "Nome"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "Não há gás suficiente"
-  },
-  "notifications": {
-    "message": "Notificações"
   },
   "notifications10ActionText": {
     "message": "Visite nas configurações",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "Receber"
   },
-  "recents": {
-    "message": "Recentes"
-  },
   "recipientAddressPlaceholder": {
     "message": "Pesquisa, endereço público (0x) ou ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "Selecione essa opção para mostrar o campo de dados hexadecimais na tela de envio"
   },
-  "showHide": {
-    "message": "Mostrar/ocultar"
-  },
   "showIncomingTransactions": {
     "message": "Mostrar transações recebidas"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "Compreendo que, até fazer o backup da minha Frase de Recuperação Secreta, poderei perder minhas contas e todos os ativos contidos nela."
   },
-  "smartTransaction": {
-    "message": "Transação inteligente"
-  },
   "snapContent": {
     "message": "Esse conteúdo vem de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "Instalar snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para confirmar que você entende, marque a caixa."
+    "message": "Para confirmar que você entende, marque a caixa.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para confirmar que você entende, marque todas as caixas."
+    "message": "Para confirmar que você entende, marque todas as caixas.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Você está concedendo ao snap \"$1\" acesso à sua chave $2. Isso é irrevogável e concede a \"$1\" controle de suas contas e ativos $2. Certifique-se de que confia em \"$1\" antes de prosseguir.",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "Status"
   },
-  "statusConnected": {
-    "message": "Conectado"
-  },
   "statusNotConnected": {
     "message": "Não conectado"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "Forte"
   },
-  "stxAreHere": {
-    "message": "As transações inteligentes chegaram!"
-  },
   "stxBenefit1": {
     "message": "Minimize os custos das transações"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "Tente fazer sua swap novamente. Estaremos aqui para te proteger contra riscos semelhantes no futuro."
   },
-  "stxDescription": {
-    "message": "As swaps na MetaMask ficaram muito mais inteligentes! A ativação de Transações Inteligentes permite que o MetaMask otimize programaticamente suas swaps para evitar:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Insuficiência de fundos para fazer uma transação inteligente."
-  },
-  "stxErrorUnavailable": {
-    "message": "Indisponibilidade temporária de Transações Inteligentes."
-  },
   "stxFailure": {
     "message": "Falha na troca"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Enviando seu swap de forma pública..."
-  },
-  "stxSubDescription": {
-    "message": "* A função de Transações Inteligentes tentará enviar a sua transação várias vezes de forma privada. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua Swap seja realizada com sucesso."
   },
   "stxSuccess": {
     "message": "Swap concluído!"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "Ativar/desativar solicitações eth_sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 redes de teste",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Token"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "Transferir"
   },
-  "transferBetweenAccounts": {
-    "message": "Transferir entre minhas contas"
-  },
   "transferFrom": {
     "message": "Transferir de"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "A MetaMask teve problemas para iniciar. Esse erro pode ser intermitente, por isso tente reiniciar a extensão."
-  },
-  "troubleTokenBalances": {
-    "message": "Tivemos um problema a carregar o balanço dos seus tokens. Pode vê-los em ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "Ao conceder permissão, você estará autorizando que o $1 a seguir acesse seus fundos"

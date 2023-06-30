@@ -14,6 +14,7 @@ function getValues(pendingApproval, t, actions) {
         element: 'Box',
         key: 'snap-dialog-content-wrapper',
         props: {
+          marginTop: 4,
           marginLeft: 4,
           marginRight: 4,
         },
@@ -29,7 +30,7 @@ function getValues(pendingApproval, t, actions) {
         },
       },
     ],
-    submitText: t('ok'),
+    submitText: t('ok').toUpperCase(),
     onSubmit: () => actions.resolvePendingApproval(pendingApproval.id, null),
   };
 }

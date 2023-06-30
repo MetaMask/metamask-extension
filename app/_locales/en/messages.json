@@ -204,10 +204,6 @@
   "addCustomToken": {
     "message": "Add custom token"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
   },
@@ -269,11 +265,24 @@
   "addNewToken": {
     "message": "Add new token"
   },
+  "addNft": {
+    "message": "Add NFT"
+  },
+  "addNfts": {
+    "message": "Add NFTs"
+  },
+  "addSuggestedNFTs": {
+    "message": "Add suggested NFTs"
+  },
   "addSuggestedTokens": {
     "message": "Add suggested tokens"
   },
   "addToken": {
     "message": "Add token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Can’t find a token? You can manually add any token by pasting its address. Token contract addresses can be found on $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "addingCustomNetwork": {
     "message": "Adding Network"
@@ -306,7 +315,7 @@
     "message": "Priority fee (aka “miner tip”) goes directly to miners and incentivizes them to prioritize your transaction."
   },
   "agreeTermsOfUse": {
-    "message": "I agree to Metamask's $1",
+    "message": "I agree to MetaMask's $1",
     "description": "$1 is the `terms` link"
   },
   "airgapVault": {
@@ -398,12 +407,6 @@
     "message": "Allow access to and transfer all of your NFTs from $1?",
     "description": "$1 a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
-  "approveAndInstall": {
-    "message": "Approve & install"
-  },
-  "approveAndUpdate": {
-    "message": "Approve & update"
-  },
   "approveButtonText": {
     "message": "Approve"
   },
@@ -444,6 +447,10 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
+  "attemptToCancelSwap": {
+    "message": "Attempt to cancel swap for ~$1",
+    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
+  },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
   },
@@ -474,9 +481,6 @@
   },
   "back": {
     "message": "Back"
-  },
-  "backToAll": {
-    "message": "Back to all"
   },
   "backup": {
     "message": "Backup"
@@ -609,13 +613,6 @@
     "message": "To $1 a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Cancel swap for ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Cancel swap for free"
-  },
   "cancelled": {
     "message": "Cancelled"
   },
@@ -653,6 +650,9 @@
   },
   "clearActivityDescription": {
     "message": "This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
+  },
+  "click": {
+    "message": "Click"
   },
   "clickToConnectLedgerViaWebHID": {
     "message": "Click here to connect your Ledger via WebHID",
@@ -742,11 +742,12 @@
   "connectCustodialAccountTitle": {
     "message": "Custodial Accounts"
   },
-  "connectHardwareWallet": {
-    "message": "Connect hardware wallet"
-  },
   "connectManually": {
     "message": "Manually connect to current site"
+  },
+  "connectSnap": {
+    "message": "Connect $1",
+    "description": "$1 is the snap for which a connection is being requested."
   },
   "connectTo": {
     "message": "Connect to $1",
@@ -801,8 +802,11 @@
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connecting to Linea Goerli test network"
+  },
+  "connectingToLineaMainnet": {
+    "message": "Connecting to Linea Mainnet"
   },
   "connectingToMainnet": {
     "message": "Connecting to Ethereum Mainnet"
@@ -812,6 +816,16 @@
   },
   "connectionError": {
     "message": "Connection error"
+  },
+  "connectionFailed": {
+    "message": "Connection failed"
+  },
+  "connectionFailedDescription": {
+    "message": "Fetching of $1 failed, check your network and try again.",
+    "description": "$1 is the name of the snap being fetched."
+  },
+  "connectionRequest": {
+    "message": "Connection request"
   },
   "contactUs": {
     "message": "Contact us"
@@ -891,9 +905,6 @@
   },
   "create": {
     "message": "Create"
-  },
-  "createAccount": {
-    "message": "Create account"
   },
   "createNewWallet": {
     "message": "Create a new wallet"
@@ -1032,6 +1043,12 @@
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "$1 has suggested this price.",
     "description": "$1 is url for the dapp that has suggested gas settings"
+  },
+  "dappSuggestedHigh": {
+    "message": "Site suggested"
+  },
+  "dappSuggestedHighShortLabel": {
+    "message": "Site (high)"
   },
   "dappSuggestedShortLabel": {
     "message": "Site"
@@ -1370,8 +1387,8 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableSmartTransactions": {
-    "message": "Enable smart transactions"
+  "enableSmartSwaps": {
+    "message": "Enable smart swaps"
   },
   "enableSnap": {
     "message": "Enable"
@@ -1379,6 +1396,9 @@
   "enableToken": {
     "message": "enable $1",
     "description": "$1 is a token symbol, e.g. ETH"
+  },
+  "enabled": {
+    "message": "Enabled"
   },
   "encryptionPublicKeyNotice": {
     "message": "$1 would like your public encryption key. By consenting, this site will be able to compose encrypted messages to you.",
@@ -1426,6 +1446,9 @@
   },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
+  },
+  "enterTokenNameOrAddress": {
+    "message": "Enter token name or paste address"
   },
   "enterYourPassword": {
     "message": "Enter your password"
@@ -1791,7 +1814,9 @@
     "message": "full access to your wallet and funds.",
     "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
   },
-  "holdToRevealLockedLabel": { "message": "hold to reveal circle locked" },
+  "holdToRevealLockedLabel": {
+    "message": "hold to reveal circle locked"
+  },
   "holdToRevealPrivateKey": {
     "message": "Hold to reveal Private Key"
   },
@@ -1804,7 +1829,9 @@
   "holdToRevealSRPTitle": {
     "message": "Keep your SRP safe"
   },
-  "holdToRevealUnlockedLabel": { "message": "hold to reveal circle unlocked" },
+  "holdToRevealUnlockedLabel": {
+    "message": "hold to reveal circle unlocked"
+  },
   "id": {
     "message": "Id"
   },
@@ -1871,9 +1898,6 @@
   },
   "importTokenWarning": {
     "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
-  },
-  "importTokens": {
-    "message": "import tokens"
   },
   "importTokensCamelCase": {
     "message": "Import tokens"
@@ -2114,8 +2138,11 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli test network"
+  },
+  "lineaMainnet": {
+    "message": "Linea Mainnet"
   },
   "link": {
     "message": "Link"
@@ -2255,9 +2282,6 @@
   "missingSettingRequest": {
     "message": "Request here"
   },
-  "missingToken": {
-    "message": "Don't see your token?"
-  },
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
@@ -2270,11 +2294,12 @@
   "moreComingSoon": {
     "message": "More coming soon..."
   },
+  "multipleSnapConnectionWarning": {
+    "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
+    "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
-  },
-  "myAccounts": {
-    "message": "My accounts"
   },
   "name": {
     "message": "Name"
@@ -2522,6 +2547,9 @@
   "notCurrentAccount": {
     "message": "Is this the correct account? It's different from the currently selected account in your wallet"
   },
+  "notEnoughBalance": {
+    "message": "Insufficient balance"
+  },
   "notEnoughGas": {
     "message": "Not enough gas"
   },
@@ -2647,6 +2675,16 @@
   "notifications20Title": {
     "message": "Ledger and Firefox Users Experiencing Connection Issues",
     "description": "Title for a notification in the 'See What's New' popup. Tells users that latest firefox users using U2F may experience connection issues."
+  },
+  "notifications21ActionText": {
+    "message": "Try it out"
+  },
+  "notifications21Description": {
+    "message": "We've updated Swaps in the MetaMask extension to be easier and faster to use.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes NFT autodetection feature."
+  },
+  "notifications21Title": {
+    "message": "Introducing new and refreshed Swaps!"
   },
   "notifications3ActionText": {
     "message": "Read more",
@@ -2991,6 +3029,9 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
+  "percentage": {
+    "message": "$1%"
+  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3248,6 +3289,9 @@
   "queued": {
     "message": "Queued"
   },
+  "quoteRate": {
+    "message": "Quote rate"
+  },
   "reAddAccounts": {
     "message": "re-add any other accounts"
   },
@@ -3260,11 +3304,8 @@
   "receive": {
     "message": "Receive"
   },
-  "recents": {
-    "message": "Recents"
-  },
   "recipientAddressPlaceholder": {
-    "message": "Search, public address (0x), or ENS"
+    "message": "Enter public address (0x) or ENS name"
   },
   "recommendedGasLabel": {
     "message": "Recommended"
@@ -3359,9 +3400,6 @@
   },
   "reportLastRunTooltip": {
     "message": "The date and time of when the last AML/CFT report was run"
-  },
-  "requestFailed": {
-    "message": "Request failed"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3708,9 +3746,6 @@
   "showHexDataDescription": {
     "message": "Select this to show the hex data field on the send screen"
   },
-  "showHide": {
-    "message": "Show/hide"
-  },
   "showIncomingTransactions": {
     "message": "Show incoming transactions"
   },
@@ -3772,8 +3807,27 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
-  "smartTransaction": {
-    "message": "Smart transaction"
+  "smartSwap": {
+    "message": "Smart swap"
+  },
+  "smartSwapsAreHere": {
+    "message": "Smart Swaps are here!"
+  },
+  "smartSwapsDescription": {
+    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart swap."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Smart Swaps are temporarily unavailable."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
   },
   "snapContent": {
     "message": "This content is coming from $1",
@@ -3787,29 +3841,38 @@
     "message": "Install snap"
   },
   "snapInstallRequest": {
-    "message": "$1 wants to install $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+    "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name."
   },
-  "snapInstallRequestsPermission": {
-    "message": "$1 wants to install $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapInstallSuccess": {
+    "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Ensure that the permission below aligns with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Ensure that the permissions below align with your intended actions. Only proceed with authors you trust."
+    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
   "snapInstallWarningKeyAccess": {
-    "message": "Grant $2 account control to $1",
+    "message": "Give $2 account control to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallWarningPublicKeyAccess": {
-    "message": "Grant $2 public key access to $1",
+    "message": "Give $2 public key access to $1",
     "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1 couldn’t be installed.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Installation failed",
+    "description": "Error title used when snap installation fails."
   },
   "snapResultError": {
     "message": "Error"
@@ -3818,18 +3881,25 @@
     "message": "Success"
   },
   "snapResultSuccessDescription": {
-    "message": "$1 is now available to use."
+    "message": "$1 is ready to use"
   },
   "snapUpdate": {
     "message": "Update snap"
   },
-  "snapUpdateRequest": {
-    "message": "$1 wants to update $2. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapUpdateErrorDescription": {
+    "message": "$1 couldn’t be updated.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
   },
-  "snapUpdateRequestsPermission": {
-    "message": "$1 wants to update $2, which is requesting the following permissions. Make sure you trust the authors before you proceed.",
-    "description": "$1 is the dApp origin requesting the snap and $2 is the snap name"
+  "snapUpdateErrorTitle": {
+    "message": "Update failed",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Update complete"
   },
   "snaps": {
     "message": "Snaps"
@@ -3843,8 +3913,23 @@
   "snapsNoInsight": {
     "message": "The snap didn't return any insight"
   },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "You acknowledge that the snap that you are about to install is a Third Party Service as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys has no access to information you share with these third parties.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
+  },
+  "snapsTermsOfUse": {
+    "message": "Terms of Use"
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -3957,9 +4042,6 @@
   "status": {
     "message": "Status"
   },
-  "statusConnected": {
-    "message": "Connected"
-  },
   "statusNotConnected": {
     "message": "Not connected"
   },
@@ -4000,9 +4082,6 @@
   "strong": {
     "message": "Strong"
   },
-  "stxAreHere": {
-    "message": "Smart Transactions are here!"
-  },
   "stxBenefit1": {
     "message": "Minimize transaction costs"
   },
@@ -4024,15 +4103,6 @@
   "stxCancelledSubDescription": {
     "message": "Try your swap again. We’ll be here to protect you against similar risks next time."
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Transactions will allow MetaMask to programmatically optimize your Swap to help:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Not enough funds for a smart transaction."
-  },
-  "stxErrorUnavailable": {
-    "message": "Smart Transactions are temporarily unavailable."
-  },
   "stxFailure": {
     "message": "Swap failed"
   },
@@ -4045,9 +4115,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Publicly submitting your Swap..."
-  },
-  "stxSubDescription": {
-    "message": "* Smart Transactions will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "stxSuccess": {
     "message": "Swap complete!"
@@ -4109,6 +4176,9 @@
   "swapAmountReceivedInfo": {
     "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
+  "swapAnyway": {
+    "message": "Swap anyway"
+  },
   "swapApproval": {
     "message": "Approve $1 for swaps",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
@@ -4117,12 +4187,21 @@
     "message": "You need $1 more $2 to complete this swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
   },
+  "swapAreYouStillThere": {
+    "message": "Are you still there?"
+  },
+  "swapAreYouStillThereDescription": {
+    "message": "We’re ready to show you the latest quotes when you want to continue"
+  },
   "swapBuildQuotePlaceHolderText": {
     "message": "No tokens available matching $1",
     "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapConfirmWithHwWallet": {
     "message": "Confirm with your hardware wallet"
+  },
+  "swapContinueSwapping": {
+    "message": "Continue swapping"
   },
   "swapContractDataDisabledErrorDescription": {
     "message": "In the Ethereum app on your Ledger, go to \"Settings\" and allow contract data. Then, try your swap again."
@@ -4142,6 +4221,9 @@
   "swapEditLimit": {
     "message": "Edit limit"
   },
+  "swapEditTransactionSettings": {
+    "message": "Edit transaction settings"
+  },
   "swapEnableDescription": {
     "message": "This is required and gives MetaMask permission to swap your $1.",
     "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
@@ -4149,6 +4231,9 @@
   "swapEnableTokenForSwapping": {
     "message": "This will $1 for swapping",
     "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
+  },
+  "swapEnterAmount": {
+    "message": "Enter an amount"
   },
   "swapEstimatedNetworkFees": {
     "message": "Estimated network fees"
@@ -4162,6 +4247,9 @@
   },
   "swapFailedErrorTitle": {
     "message": "Swap failed"
+  },
+  "swapFetchingQuote": {
+    "message": "Fetching quote"
   },
   "swapFetchingQuoteNofN": {
     "message": "Fetching quote $1 of $2",
@@ -4203,6 +4291,9 @@
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
+  "swapLearnMore": {
+    "message": "Learn more about Swaps"
+  },
   "swapLowSlippageError": {
     "message": "Transaction may fail, max slippage too low."
   },
@@ -4223,6 +4314,10 @@
   "swapNewQuoteIn": {
     "message": "New quotes in $1",
     "description": "Tells the user the amount of time until the currently displayed quotes are update. $1 is a time that is counting down from 1:00 to 0:00"
+  },
+  "swapNoTokensAvailable": {
+    "message": "No tokens available matching $1",
+    "description": "Tells the user that a given search string does not match any tokens in our token lists. $1 can be any string of text"
   },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed.",
@@ -4251,6 +4346,10 @@
   "swapQuoteDetails": {
     "message": "Quote details"
   },
+  "swapQuoteNofM": {
+    "message": "$1 of $2",
+    "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
+  },
   "swapQuoteSource": {
     "message": "Quote source"
   },
@@ -4259,6 +4358,9 @@
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Quotes timeout"
+  },
+  "swapQuotesNotAvailableDescription": {
+    "message": "Reduce the size of your trade or use a different token."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
@@ -4296,15 +4398,51 @@
   "swapSelectQuotePopoverDescription": {
     "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
+  "swapSelectToken": {
+    "message": "Select token"
+  },
+  "swapShowLatestQuotes": {
+    "message": "Show latest quotes"
+  },
   "swapSlippageNegative": {
     "message": "Slippage must be greater or equal to zero"
+  },
+  "swapSlippageNegativeDescription": {
+    "message": "Slippage must be greater or equal to zero"
+  },
+  "swapSlippageNegativeTitle": {
+    "message": "Increase slippage to continue"
+  },
+  "swapSlippageOverLimitDescription": {
+    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
+  },
+  "swapSlippageOverLimitTitle": {
+    "message": "Reduce slippage to continue"
   },
   "swapSlippagePercent": {
     "message": "$1%",
     "description": "$1 is the amount of % for slippage"
   },
+  "swapSlippageTooLowDescription": {
+    "message": "Max slippage is too low which may cause your transaction to fail."
+  },
+  "swapSlippageTooLowTitle": {
+    "message": "Increase slippage to avoid transaction failure"
+  },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
+  },
+  "swapSlippageVeryHighDescription": {
+    "message": "The slippage entered is considered very high and may result in a bad rate"
+  },
+  "swapSlippageVeryHighTitle": {
+    "message": "Very high slippage"
+  },
+  "swapSlippageZeroDescription": {
+    "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
+  },
+  "swapSlippageZeroTitle": {
+    "message": "Sourcing zero-slippage providers"
   },
   "swapSource": {
     "message": "Liquidity source"
@@ -4322,13 +4460,20 @@
     "message": "Swap from"
   },
   "swapSwapSwitch": {
-    "message": "Switch from and to tokens"
+    "message": "Switch token order"
   },
   "swapSwapTo": {
     "message": "Swap to"
   },
   "swapToConfirmWithHwWallet": {
     "message": "to confirm with your hardware wallet"
+  },
+  "swapTokenAddedManuallyDescription": {
+    "message": "Verify this token on $1 and make sure it is the token you want to trade.",
+    "description": "$1 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "swapTokenAddedManuallyTitle": {
+    "message": "Token added manually"
   },
   "swapTokenAvailable": {
     "message": "Your $1 has been added to your account.",
@@ -4355,6 +4500,13 @@
   "swapTokenVerificationSources": {
     "message": "Verified on $1 sources.",
     "description": "Indicates the number of token information sources that recognize the symbol + address. $1 is a decimal number."
+  },
+  "swapTokenVerifiedOn1SourceDescription": {
+    "message": "$1 is only verified on 1 source. Consider verifying it on $2 before proceeding.",
+    "description": "$1 is a token name, $2 points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
+  },
+  "swapTokenVerifiedOn1SourceTitle": {
+    "message": "Potentially inauthentic token"
   },
   "swapTooManyDecimalsError": {
     "message": "$1 allows up to $2 decimals",
@@ -4393,8 +4545,15 @@
     "message": "Not enough $1 to complete this transaction",
     "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
   },
+  "swapsNotEnoughToken": {
+    "message": "Not enough $1",
+    "description": "Tells the user that they don't have enough of a token for a proposed swap. $1 is a token symbol"
+  },
   "swapsViewInActivity": {
     "message": "View in activity"
+  },
+  "switch": {
+    "message": "Switch"
   },
   "switchEthereumChainConfirmationDescription": {
     "message": "This will switch the selected network within MetaMask to a previously added network:"
@@ -4466,6 +4625,10 @@
   "thingsToKeep": {
     "message": "Things to keep in mind:"
   },
+  "thirdPartySoftware": {
+    "message": "Third-party software notice",
+    "description": "Title of a popup modal displayed when installing a snap for the first time."
+  },
   "thisCollection": {
     "message": "this collection"
   },
@@ -4524,10 +4687,6 @@
   },
   "toggleEthSignOn": {
     "message": "ON (Not recommended)"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 test networks",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "Token"
@@ -4698,6 +4857,9 @@
   "transactionSecurityCheckDescription": {
     "message": "We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language."
   },
+  "transactionSettings": {
+    "message": "Transaction settings"
+  },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
   },
@@ -4709,9 +4871,6 @@
   },
   "transfer": {
     "message": "Transfer"
-  },
-  "transferBetweenAccounts": {
-    "message": "Transfer between my accounts"
   },
   "transferFrom": {
     "message": "Transfer from"
@@ -4738,10 +4897,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask had trouble starting. This error could be intermittent, so try restarting the extension."
-  },
-  "troubleTokenBalances": {
-    "message": "We had trouble loading your token balances. You can view them ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "By granting permission, you are allowing the following $1 to access your funds"
@@ -4965,6 +5120,10 @@
   "wantToAddThisNetwork": {
     "message": "Want to add this network?"
   },
+  "wantsToAddThisAsset": {
+    "message": "$1 wants to add this asset to your wallet",
+    "description": "$1 is the name of the website that wants to add an asset to your wallet"
+  },
   "warning": {
     "message": "Warning"
   },
@@ -5035,6 +5194,9 @@
   },
   "youSign": {
     "message": "You are signing"
+  },
+  "yourAccounts": {
+    "message": "Your accounts"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"

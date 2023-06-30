@@ -93,9 +93,6 @@
   "back": {
     "message": "Wstecz"
   },
-  "backToAll": {
-    "message": "Wróć do wszystkich"
-  },
   "backupApprovalInfo": {
     "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Połącz"
   },
-  "connectHardwareWallet": {
-    "message": "Podłącz portfel sprzętowy"
-  },
   "connectingTo": {
     "message": "Łączenie z $1"
   },
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Łączenie z siecią testową Linea Goerli"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Utwórz"
-  },
-  "createAccount": {
-    "message": "Utwórz konto"
   },
   "createPassword": {
     "message": "Utwórz hasło"
@@ -415,7 +406,7 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Sieć testowa Linea Goerli"
   },
   "links": {
@@ -450,9 +441,6 @@
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje konta"
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
@@ -574,9 +562,6 @@
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "recents": {
-    "message": "Ostatnie"
   },
   "recipientAddressPlaceholder": {
     "message": "Szukaj, adres publiczny (0x) lub ENS"
@@ -795,15 +780,8 @@
   "transfer": {
     "message": "Przelew"
   },
-  "transferBetweenAccounts": {
-    "message": "Przelew między moimi kontami"
-  },
   "transferFrom": {
     "message": "Przelew z"
-  },
-  "troubleTokenBalances": {
-    "message": "Wystąpił problem z załadowaniem informacji o Twoich tokenach. Można je zobaczyć ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Spróbuj ponownie"

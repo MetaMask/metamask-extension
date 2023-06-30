@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "커스텀 토큰 추가"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "토큰 추가"
+  },
+  "addTokenByContractAddress": {
+    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "주소"
@@ -359,12 +359,6 @@
     "message": "내 모든 $1에 액세스 및 전송할 수 있는 권한을 부여할까요?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "승인 및 설치"
-  },
-  "approveAndUpdate": {
-    "message": "승인 및 업데이트"
-  },
   "approveButtonText": {
     "message": "승인"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "뒤로"
-  },
-  "backToAll": {
-    "message": "전체 목록으로 돌아가기"
   },
   "backup": {
     "message": "백업"
@@ -557,13 +548,6 @@
     "message": "거래를 $1하려면 가스비를 최소 10%를 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "~$1 비용으로 스왑 취소",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "무료로 스왑 취소"
-  },
   "cancelled": {
     "message": "취소됨"
   },
@@ -642,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "계정 연결 또는 새 계정 만들기"
   },
-  "connectHardwareWallet": {
-    "message": "하드웨어 지갑 연결"
-  },
   "connectManually": {
     "message": "현재 사이트에 수동으로 연결"
   },
@@ -701,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크에 연결 중"
   },
   "connectingToMainnet": {
@@ -788,9 +769,6 @@
   },
   "create": {
     "message": "생성"
-  },
-  "createAccount": {
-    "message": "계정 생성"
   },
   "createNewWallet": {
     "message": "새 지갑 생성"
@@ -1215,9 +1193,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
-  "enableSmartTransactions": {
-    "message": "스마트 트랜잭션 활성화"
-  },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -1636,9 +1611,6 @@
   "importTokenWarning": {
     "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 거래는 사용자의 책임입니다."
   },
-  "importTokens": {
-    "message": "토큰 가져오기"
-  },
   "importTokensCamelCase": {
     "message": "토큰 가져오기"
   },
@@ -1858,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "이 토큰을 추가할까요?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크"
   },
   "link": {
@@ -1990,17 +1962,11 @@
   "missingSettingRequest": {
     "message": "여기에서 요청하세요"
   },
-  "missingToken": {
-    "message": "토큰이 보이지 않나요?"
-  },
   "moreComingSoon": {
     "message": "더 추가 예정..."
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
-  },
-  "myAccounts": {
-    "message": "내 계정"
   },
   "name": {
     "message": "이름"
@@ -2234,9 +2200,6 @@
   },
   "notEnoughGas": {
     "message": "가스 부족"
-  },
-  "notifications": {
-    "message": "알림"
   },
   "notifications10ActionText": {
     "message": "설정으로 이동하기",
@@ -2817,9 +2780,6 @@
   "receive": {
     "message": "받기"
   },
-  "recents": {
-    "message": "최근"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
@@ -3214,9 +3174,6 @@
   "showHexDataDescription": {
     "message": "이 항목을 선택하면 보내기 화면에 16진수 데이터 필드가 표시됩니다."
   },
-  "showHide": {
-    "message": "보기/숨기기"
-  },
   "showIncomingTransactions": {
     "message": "수신 거래 표시"
   },
@@ -3269,9 +3226,6 @@
   "skipAccountSecurityDetails": {
     "message": "본인은 본인의 비밀 복구 구문을 백업하지 않는 한 본인의 계정과 모든 자산을 잃을 수 있다는 사실을 이해합니다."
   },
-  "smartTransaction": {
-    "message": "스마트 트랜잭션"
-  },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3284,10 +3238,12 @@
     "message": "스냅 설치"
   },
   "snapInstallWarningCheck": {
-    "message": "이해하셨으면 모두 체크해 주세요."
+    "message": "이해하셨으면 모두 체크해 주세요.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "이해하셨으면 모든 란에 체크하세요."
+    "message": "이해하셨으면 모든 란에 체크하세요.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
@@ -3416,9 +3372,6 @@
   "status": {
     "message": "상태"
   },
-  "statusConnected": {
-    "message": "연결됨"
-  },
   "statusNotConnected": {
     "message": "연결되지 않음"
   },
@@ -3456,9 +3409,6 @@
   "strong": {
     "message": "강함"
   },
-  "stxAreHere": {
-    "message": "스마트 거래가 가능합니다!"
-  },
   "stxBenefit1": {
     "message": "거래 비용 최소화하기"
   },
@@ -3480,15 +3430,6 @@
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
   },
-  "stxDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 거래를 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음을 도울 수 있습니다."
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "스마트 거래 자금 부족"
-  },
-  "stxErrorUnavailable": {
-    "message": "스마트 거래를 잠시 사용할 수 없습니다."
-  },
   "stxFailure": {
     "message": "스왑 실패"
   },
@@ -3501,9 +3442,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "스왑을 공개로 제출하는 중..."
-  },
-  "stxSubDescription": {
-    "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
   "stxSuccess": {
     "message": "스왑 완료!"
@@ -3923,10 +3861,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 요청 토글"
   },
-  "toggleTestNetworks": {
-    "message": "$1 테스트 네트워크",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "토큰"
   },
@@ -4093,9 +4027,6 @@
   "transfer": {
     "message": "전송"
   },
-  "transferBetweenAccounts": {
-    "message": "내 계정 간 전송"
-  },
   "transferFrom": {
     "message": "전송 위치"
   },
@@ -4105,10 +4036,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask 실행 중 오류가 발생했습니다. 일시적인 오류일 수 있으니 확장 프로그램을 재시작해 보세요."
-  },
-  "troubleTokenBalances": {
-    "message": "토큰 잔액을 로드하는 도중 문제가 발생했습니다. 다음에서 잔액을 확인하세요. ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "권한을 부여하면 다음 $1이(가) 귀하의 자금에 액세스할 수 있습니다."

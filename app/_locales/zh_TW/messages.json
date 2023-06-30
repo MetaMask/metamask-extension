@@ -160,9 +160,6 @@
   "back": {
     "message": "上一頁"
   },
-  "backToAll": {
-    "message": "回到全部"
-  },
   "backupApprovalInfo": {
     "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
@@ -251,9 +248,6 @@
   "connectAccountOrCreate": {
     "message": "連結帳戶或建立新的"
   },
-  "connectHardwareWallet": {
-    "message": "連線硬體錢包"
-  },
   "connectManually": {
     "message": "手動連結到目前的網站"
   },
@@ -310,7 +304,7 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "連線到 Linea Goerli 測試網路"
   },
   "connectingToMainnet": {
@@ -354,9 +348,6 @@
   },
   "create": {
     "message": "建立"
-  },
-  "createAccount": {
-    "message": "建立帳戶"
   },
   "createPassword": {
     "message": "建立密碼"
@@ -812,7 +803,7 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 測試網路"
   },
   "links": {
@@ -869,9 +860,6 @@
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣。"
-  },
-  "myAccounts": {
-    "message": "我的帳戶"
   },
   "name": {
     "message": "名稱"
@@ -1080,9 +1068,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recents": {
-    "message": "最近"
   },
   "recipientAddressPlaceholder": {
     "message": "搜尋、公開位址 (0x)、或 ENS"
@@ -1322,9 +1307,6 @@
   "stateLogsDescription": {
     "message": "狀態紀錄包含您的公開帳戶位址和已傳送的交易資訊"
   },
-  "statusConnected": {
-    "message": "已連結"
-  },
   "statusNotConnected": {
     "message": "未連結"
   },
@@ -1463,19 +1445,12 @@
   "transfer": {
     "message": "交易"
   },
-  "transferBetweenAccounts": {
-    "message": "在我的帳戶間轉帳"
-  },
   "transferFrom": {
     "message": "交易來源"
   },
   "troubleConnectingToWallet": {
     "message": "我們在連線到您的 $1 的時候遇到問題，試著檢查 $2 然後再試一次。",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "無法取得代幣餘額。您可以到這裡查看 ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "您信任這個網站嗎？當您授予這個權限，$1 就能提領您的 $2 並且代替您自動發送交易。"

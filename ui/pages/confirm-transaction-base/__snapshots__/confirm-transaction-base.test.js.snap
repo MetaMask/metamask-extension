@@ -335,6 +335,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
               >
                 <div
                   class="transaction-detail-item"
+                  data-testid="confirm-gas-display"
                 >
                   <div
                     class="transaction-detail-item__row"
@@ -345,6 +346,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       Estimated gas fee
                       <div
                         class="info-tooltip"
+                        data-testid="info-tooltip"
                       >
                         <div>
                           <div

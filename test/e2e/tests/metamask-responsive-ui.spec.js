@@ -3,6 +3,7 @@ const {
   TEST_SEED_PHRASE_TWO,
   convertToHexValue,
   withFixtures,
+  assertAccountBalanceForDOM,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -71,7 +72,7 @@ describe('MetaMask Responsive UI', function () {
 
         // assert balance
         const balance = await driver.findElement(
-          '[data-testid="wallet-balance"]',
+          '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
@@ -108,11 +109,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        const balance = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balance} ETH`,
-        });
+        await assertAccountBalanceForDOM(driver, ganacheServer);
       },
     );
   });
@@ -145,7 +142,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 

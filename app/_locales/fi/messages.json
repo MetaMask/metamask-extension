@@ -93,9 +93,6 @@
   "back": {
     "message": "Edellinen"
   },
-  "backToAll": {
-    "message": "Takaisin kaikkiin"
-  },
   "backupApprovalInfo": {
     "message": "Tämä salainen koodi vaaditaan kukkarosi palauttamiseen siinä tapauksessa, että kadotat laitteesi, unohdat salasanasi, joudut asentamaan MetaMaskin uudestaan tai haluat käyttää lompakkoasi jollakin toisella laitteella."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Muodosta yhteys"
   },
-  "connectHardwareWallet": {
-    "message": "Yhdistä laitteistokukkaro"
-  },
   "connectingTo": {
     "message": "Yhdistetään summaan $1 "
   },
   "connectingToGoerli": {
     "message": "Yhdistetään Goerlin testiverkostoon"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Yhdistetään Linea Goerli testiverkostoon"
   },
   "connectingToMainnet": {
@@ -192,9 +186,6 @@
   },
   "create": {
     "message": "Luo"
-  },
-  "createAccount": {
-    "message": "Luo tili"
   },
   "createPassword": {
     "message": "Luo salasana"
@@ -415,7 +406,7 @@
   "likeToImportTokens": {
     "message": "Haluaisitko lisätä nämä poletit?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea-testiverkko"
   },
   "links": {
@@ -453,9 +444,6 @@
   },
   "mustSelectOne": {
     "message": "Valittava vähintään 1 poletti."
-  },
-  "myAccounts": {
-    "message": "Omat tilit"
   },
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
@@ -577,9 +565,6 @@
   },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
-  },
-  "recents": {
-    "message": "Viimeaikaiset"
   },
   "recipientAddressPlaceholder": {
     "message": "Haku, julkinen osoite (0x) tai ENS"
@@ -804,15 +789,8 @@
   "transfer": {
     "message": "Siirrä"
   },
-  "transferBetweenAccounts": {
-    "message": "Siirrä tilieni välillä"
-  },
   "transferFrom": {
     "message": "Siirto kohteesta"
-  },
-  "troubleTokenBalances": {
-    "message": "Kohtasimme ongelmia ladatessamme tietuesaldojasi. Voit katsella niitä kohteessa",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Yritä uudelleen"
