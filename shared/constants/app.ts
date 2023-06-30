@@ -63,6 +63,12 @@ export const MESSAGE_TYPE = {
   ///: END:ONLY_INCLUDE_IN
 } as const;
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+// eslint-disable-next-line prefer-destructuring
+export const KEYRING_SNAPS_REGISTRY_URL =
+  process.env.KEYRING_SNAPS_REGISTRY_URL;
+///: END:ONLY_INCLUDE_IN
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,

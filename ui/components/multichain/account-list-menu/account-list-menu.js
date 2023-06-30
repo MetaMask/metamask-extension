@@ -33,6 +33,9 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
@@ -247,6 +250,30 @@ export const AccountListMenu = ({ onClose }) => {
                 {t('hardwareWallet')}
               </ButtonLink>
             </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+              <>
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={Size.SM}
+                    startIconName={IconName.Snaps}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
+                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                        ? global.platform.openExtensionInBrowser(
+                            ADD_SNAP_ACCOUNT_ROUTE,
+                            null,
+                            true,
+                          )
+                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                    }}
+                  >
+                    {t('settingAddSnapAccount')}
+                  </ButtonLink>
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IN
+            }
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               <Box>

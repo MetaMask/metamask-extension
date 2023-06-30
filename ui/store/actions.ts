@@ -6,6 +6,9 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { v4 as uuidV4 } from 'uuid';
+///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -16,6 +19,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -29,8 +35,12 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
   hasTransactionPendingApprovals,
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -1120,9 +1130,46 @@ export function enableSnap(
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removeSnap', [snapId]);
-    await forceUpdateMetamaskState(dispatch);
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    dispatch(showLoadingIndication());
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const subjects = getPermissionSubjects(getState()) as {
+      [k: string]: { permissions: Record<string, any> };
+    };
+
+    const isAccountsSnap =
+      subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
+
+    try {
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      if (isAccountsSnap) {
+        const accounts = (await handleSnapRequest({
+          snapId,
+          origin: 'metamask',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            id: uuidV4(),
+            jsonrpc: '2.0',
+            method: 'keyring_listAccounts',
+          },
+        })) as unknown as any[];
+        for (const account of accounts) {
+          dispatch(removeAccount(account.address.toLowerCase()));
+        }
+      }
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+      await submitRequestToBackground('removeSnap', [snapId]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -1135,9 +1182,10 @@ export async function handleSnapRequest(args: {
   origin: string;
   handler: string;
   request: {
+    id?: string;
     jsonrpc: '2.0';
     method: string;
-    params: Record<string, any>;
+    params?: Record<string, any>;
   };
 }): Promise<void> {
   return submitRequestToBackground('handleSnapRequest', [args]);
@@ -2335,9 +2383,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   AnyAction
 > {
   return (_, getState) => {
+    const state = getState();
+    const approvalFlows = getApprovalFlows(state);
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovals(getState())
+      !hasTransactionPendingApprovals(state) &&
+      approvalFlows.length === 0
     ) {
       closeNotificationPopup();
     }
@@ -4341,5 +4392,17 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       [shown],
     );
   };
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setSnapsAddSnapAccountModalDismissed() {
+  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
+    true,
+  ]);
+}
+
+export async function updateSnapRegistry() {
+  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN

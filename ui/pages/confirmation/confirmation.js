@@ -32,11 +32,14 @@ import {
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
+  getApprovalFlows,
+  getTotalUnapprovedCount,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
 import SiteOrigin from '../../components/ui/site-origin';
 import { Icon, IconName } from '../../components/component-library';
+import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
@@ -176,6 +179,9 @@ export default function ConfirmationPage({
     isEqual,
   );
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
+  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
@@ -256,20 +262,36 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
+      (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
-    } else if (pendingConfirmations.length <= currentPendingConfirmation) {
+    } else if (
+      pendingConfirmations.length &&
+      pendingConfirmations.length <= currentPendingConfirmation
+    ) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
   }, [
     pendingConfirmations,
+    approvalFlows,
+    totalUnapprovedCount,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
 
+  useEffect(() => {
+    const childFlow = approvalFlows[approvalFlows.length - 1];
+
+    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
+  }, [approvalFlows]);
+
   if (!pendingConfirmation) {
+    if (approvalFlows.length > 0) {
+      return <Loading loadingMessage={approvalFlowLoadingText} />;
+    }
+
     return null;
   }
 

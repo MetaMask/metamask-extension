@@ -6,6 +6,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.33.0]
+### Added
+- UI Upgrade ([#18903](https://github.com/MetaMask/metamask-extension/pull/18903))
+    - A completely new application header, which contains:
+        - A new network picker, which displays as only an avatar in the popup and as a full dropdown in full screen mode
+        - A new account picker
+        - A new connected icon which displays in popup mode
+        - A new global menu which contains controls that were formally in the account menu as well as account options menu
+    - A new token list
+    - A new token details popover
+- Added the ability to navigate multiple SIWE notifications ([#18103](https://github.com/MetaMask/metamask-extension/pull/18103))
+- Add portfolio button in on home screen, under the balance([#19601](https://github.com/MetaMask/metamask-extension/pull/19601))
+- Add support for ERC721 and ERC1155 tokens to `wallet_watchAsset` API ([#19454](https://github.com/MetaMask/metamask-extension/pull/19454))
+- Add support for Cronos, Moonbeam, Moonriver, Aurora, Harmony and Palm to the 'Buy Crypto' feature ([#19268](https://github.com/MetaMask/metamask-extension/pull/19268))
+- [FLASK] Add Snaps privacy warning on snap install ([#18835](https://github.com/MetaMask/metamask-extension/pull/18835))
+
+### Changed
+- Redesign swaps feature to be faster and easier to use ([#19169](https://github.com/MetaMask/metamask-extension/pull/19169))
+- Update linea testnet rpc url ([#19294](https://github.com/MetaMask/metamask-extension/pull/19294))
+- Make `eth_accounts` return all permitted accounts ([#18516](https://github.com/MetaMask/metamask-extension/pull/18516))
+- When gas fees suggested by dapp is too high, show warning color and icon ([#19088](https://github.com/MetaMask/metamask-extension/pull/19088))
+- Show balance and selected account in the header on the SIWE screen ([#19361](https://github.com/MetaMask/metamask-extension/pull/19361))
+- Submit the account creation form when pressing enter ([#19620](https://github.com/MetaMask/metamask-extension/pull/19620))
+- [FLASK] Rework Snaps headers and footers ([#19442](https://github.com/MetaMask/metamask-extension/pull/19442))
+- Send flow UI update ([#19465](https://github.com/MetaMask/metamask-extension/pull/19465))
+    - Remove Recents
+    - Display a list of "Your accounts" if the user has more than one account
+    - Display "Contacts" in alphabetical order after the final user's account
+    - UI Updates in Contacts Page (AddressBook) in Settings Page
+- [FLASK] Small UI improvements ([#19388](https://github.com/MetaMask/metamask-extension/pull/19388))
+- [FLASK] Limit notification count display to 99+ ([#19449](https://github.com/MetaMask/metamask-extension/pull/19449))
+- [FLASK] Update snap tweaks ([#19410](https://github.com/MetaMask/metamask-extension/pull/19410))
+- [FLASK] Add snap icon SVG validation ([#19377](https://github.com/MetaMask/metamask-extension/pull/19377))
+- [FLASK] Update rate limits for showInAppNotification and showNativeNotification ([#19621](https://github.com/MetaMask/metamask-extension/pull/19621))
+- [FLASK] Align update error state with Figma ([#19547](https://github.com/MetaMask/metamask-extension/pull/19547))
+- [FLASK] Update snap installation permission warning UI ([#19494](https://github.com/MetaMask/metamask-extension/pull/19494))
+- [FLASK] Improve snaps connect flow ([#19461](https://github.com/MetaMask/metamask-extension/pull/19461))
+
+### Fixed
+- Fix centering and spacing of icons in the Add Network screen ([#19513](https://github.com/MetaMask/metamask-extension/pull/19513))
+- Fix details when transferring NFT not added to wallet ([#19045](https://github.com/MetaMask/metamask-extension/pull/19045))
+- Fix capitalization of MetaMask in some translations ([#19466](https://github.com/MetaMask/metamask-extension/pull/19466))
+- Fix space occurring after footer on token approve screen ([#19276](https://github.com/MetaMask/metamask-extension/pull/19276))
+- Fix unknown processing time not showing in warning color on confirmation screens ([#19527](https://github.com/MetaMask/metamask-extension/pull/19527))
+
+
 ## [10.32.0]
 ### Added
 - Enable token detection for the Aurora network ([#19009](https://github.com/MetaMask/metamask-extension/pull/19009))
@@ -3779,7 +3825,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...HEAD
+[10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...v10.33.0
 [10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...v10.32.0
 [10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
 [10.31.0]: https://github.com/MetaMask/metamask-extension/compare/v10.30.4...v10.31.0

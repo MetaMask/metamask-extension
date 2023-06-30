@@ -48,6 +48,8 @@ jobs:
     needs: is-fork-pull-request
     # Early exit if this is a fork, since later steps are skipped for forks
     if: ${{ needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    outputs:
+      COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -63,6 +65,9 @@ jobs:
           cache: 'yarn'
       - name: Install Yarn dependencies
         run: yarn --immutable
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   update-lavamoat-build-policy:
     name: Update LavaMoat build policy
@@ -90,7 +95,7 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: lavamoat/build-system
-          key: cache-build-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   update-lavamoat-webapp-policy:
     strategy:
@@ -125,12 +130,13 @@ jobs:
         uses: actions/cache/save@v3
         with:
           path: lavamoat/browserify/${{ matrix.build-type }}
-          key: cache-${{ matrix.build-type }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-${{ matrix.build-type }}-${{ needs.prepare.outputs.COMMIT_SHA }}
 
   commit-updated-policies:
     name: Commit the updated LavaMoat policies
     runs-on: ubuntu-latest
     needs:
+      - prepare
       - is-fork-pull-request
       - update-lavamoat-build-policy
       - update-lavamoat-webapp-policy
@@ -147,11 +153,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+      - name: Get commit SHA
+        id: commit-sha
+        run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Restore build policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/build-system
-          key: cache-build-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-build-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       # One restore step per build type: [main, beta, flask, mmi, desktop]
       # Ensure this is synchronized with the list above in the "update-lavamoat-webapp-policy" job
@@ -160,31 +169,31 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/main
-          key: cache-main-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-main-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore beta application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/beta
-          key: cache-beta-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-beta-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore flask application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/flask
-          key: cache-flask-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-flask-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore mmi application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/mmi
-          key: cache-mmi-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-mmi-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Restore desktop application policy
         uses: actions/cache/restore@v3
         with:
           path: lavamoat/browserify/desktop
-          key: cache-desktop-${{ github.run_id }}-${{ github.run_attempt }}
+          key: cache-desktop-${{ needs.prepare.outputs.COMMIT_SHA }}
           fail-on-cache-miss: true
       - name: Check whether there are policy changes
         id: policy-changes
