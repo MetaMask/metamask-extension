@@ -15,13 +15,13 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
           class="form-field"
         >
           <div
-            class="box box--flex-direction-row"
+            class="mm-box"
           >
             <div
               class="form-field__heading"
             >
               <div
-                class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+                class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
               >
                 <h6
                   class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
@@ -52,7 +52,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="box form-field__heading-detail box--margin-bottom-2 box--flex-direction-row box--text-align-end"
+                class="mm-box form-field__heading-detail mm-box--margin-right-0 mm-box--margin-bottom-2 mm-box--text-align-end"
               >
                 <button
                   class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"

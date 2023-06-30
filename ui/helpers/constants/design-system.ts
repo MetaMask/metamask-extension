@@ -46,8 +46,10 @@ export enum Color {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   transparent = 'transparent',
   localhost = 'localhost',
   inherit = 'inherit',
@@ -77,7 +79,8 @@ export enum BackgroundColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
+  lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -103,9 +106,11 @@ export enum BorderColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
+  lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
+  backgroundDefault = 'background-default', // exception for border color when element is meant to look "cut out"
 }
 
 export enum TextColor {
@@ -126,8 +131,10 @@ export enum TextColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
   transparent = 'transparent',
@@ -151,8 +158,10 @@ export enum IconColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
@@ -206,13 +215,37 @@ export enum BorderStyle {
 }
 
 export enum BorderRadius {
+  /**
+   * 2px
+   */
   XS = 'xs',
+  /**
+   * 4px
+   */
   SM = 'sm',
+  /**
+   * 6px
+   */
   MD = 'md',
+  /**
+   * 8px
+   */
   LG = 'lg',
+  /**
+   * 12px
+   */
   XL = 'xl',
+  /**
+   * 0
+   */
   none = 'none',
+  /**
+   * 9999px
+   */
   pill = 'pill',
+  /**
+   * 50%
+   */
   full = 'full',
 }
 

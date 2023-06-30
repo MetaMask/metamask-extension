@@ -20,12 +20,10 @@ const ZENDESK_URLS = {
   LEGACY_WEB3: 'https://metamask.zendesk.com/hc/en-us/articles/360053147012',
   NFT_TOKENS:
     'https://metamask.zendesk.com/hc/en-us/articles/360058238591-NFT-tokens-in-MetaMask-wallet',
-  PASSWORD_ARTICLE:
+  PASSWORD_AND_SRP_ARTICLE:
     'https://metamask.zendesk.com/hc/en-us/articles/4404722782107',
   SECRET_RECOVERY_PHRASE:
     'https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure',
-  SECRET_RECOVERY_PHRASE_USER_GUIDE:
-    'https://metamask.zendesk.com/hc/en-us/articles/4404722782107-User-guide-Secret-Recovery-Phrase-password-and-private-keys',
   NON_CUSTODIAL_WALLET:
     'https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet',
   SPEEDUP_CANCEL:

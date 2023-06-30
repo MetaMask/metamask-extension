@@ -71,7 +71,7 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'home__portfolio-site';
+  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 

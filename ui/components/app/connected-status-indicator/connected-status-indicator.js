@@ -17,7 +17,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedAddress,
 } from '../../../selectors';
-import { MultichainConnectedSiteMenu } from '../../multichain';
+import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
@@ -52,7 +52,7 @@ export default function ConnectedStatusIndicator({ onClick }) {
       : t('tooltipSatusNotConnected');
 
   return (
-    <MultichainConnectedSiteMenu
+    <ConnectedSiteMenu
       status={status}
       globalMenuColor={globalMenuColor}
       text={tooltipText}

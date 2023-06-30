@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
@@ -210,9 +210,6 @@
   },
   "delete": {
     "message": "Kustuta"
-  },
-  "deleteAccount": {
-    "message": "Kustuta konto"
   },
   "deleteNetwork": {
     "message": "Võrk kustutada?"
@@ -402,7 +399,7 @@
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testvõrk"
   },
   "links": {
@@ -434,9 +431,6 @@
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
-  },
-  "myAccounts": {
-    "message": "Minu kontod"
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",

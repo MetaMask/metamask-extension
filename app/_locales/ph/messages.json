@@ -42,10 +42,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Bibigyang-daan nito na magamit ang network na ito sa MetaMask."
   },
@@ -74,6 +70,10 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Walang makitang token? Puwede kang manual na magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Makikita ang mga address ng kontrata ng token sa $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "advanced": {
     "message": "Advanced"
@@ -305,7 +305,7 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -405,9 +405,6 @@
   },
   "delete": {
     "message": "I-delete"
-  },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
   },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
@@ -795,7 +792,7 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli Test Network"
   },
   "links": {
@@ -815,9 +812,6 @@
   },
   "lock": {
     "message": "I-lock"
-  },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -855,9 +849,6 @@
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
-  },
-  "myAccounts": {
-    "message": "Mga Account Ko"
   },
   "name": {
     "message": "Pangalan"

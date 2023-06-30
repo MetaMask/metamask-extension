@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
   },
   "connectingToMainnet": {
@@ -204,9 +204,6 @@
   },
   "delete": {
     "message": "Futa"
-  },
-  "deleteAccount": {
-    "message": "Futa Akaunti"
   },
   "deleteNetwork": {
     "message": "Futa Mtandao?"
@@ -393,7 +390,7 @@
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
@@ -422,9 +419,6 @@
   },
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."
-  },
-  "myAccounts": {
-    "message": "Akaunti zangu"
   },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",

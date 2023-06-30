@@ -7,7 +7,7 @@ export function getAccountNameErrorMessage(
   defaultAccountName,
 ) {
   const isDuplicateAccountName = accounts.some(
-    (item) => item.name === newAccountName,
+    (item) => item.name.toLowerCase() === newAccountName.toLowerCase(),
   );
 
   const isEmptyAccountName = newAccountName === '';
@@ -25,7 +25,7 @@ export function getAccountNameErrorMessage(
   const isReservedAccountName = reservedRegEx.test(newAccountName);
 
   const isValidAccountName =
-    newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
+    newAccountName.toLowerCase() === defaultAccountName.toLowerCase() || // What is written in the text field is the same as the placeholder
     (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);
 
   let errorMessage;

@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
@@ -210,9 +210,6 @@
   },
   "delete": {
     "message": "Padam"
-  },
-  "deleteAccount": {
-    "message": "Hapus Akaun"
   },
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
@@ -395,7 +392,7 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
@@ -427,9 +424,6 @@
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
-  "myAccounts": {
-    "message": "Akaun Saya"
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",

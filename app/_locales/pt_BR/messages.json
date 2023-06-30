@@ -103,10 +103,6 @@
   "addCustomToken": {
     "message": "Adicionar token personalizado"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -138,6 +134,10 @@
   },
   "addToken": {
     "message": "Adicionar token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Não consegue encontrar um token? Cole o endereço para adicionar manualmente qualquer token. Os endereços de contrato do token se encontram em $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Endereço"
@@ -442,7 +442,7 @@
   "connectingToGoerli": {
     "message": "Conectando à rede de testes Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Conectando à rede de testes Linea Goerli"
   },
   "connectingToMainnet": {
@@ -580,9 +580,6 @@
   },
   "delete": {
     "message": "Excluir"
-  },
-  "deleteAccount": {
-    "message": "Excluir conta"
   },
   "deleteNetwork": {
     "message": "Excluir rede?"
@@ -1073,9 +1070,6 @@
   "importMyWallet": {
     "message": "Importar minha carteira"
   },
-  "importNFTs": {
-    "message": "Importar NFTs"
-  },
   "importTokenQuestion": {
     "message": "Importar token?"
   },
@@ -1245,7 +1239,7 @@
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rede de testes Linea Goerli"
   },
   "link": {
@@ -1268,9 +1262,6 @@
   },
   "lock": {
     "message": "Bloquear"
-  },
-  "lockTimeTooGreat": {
-    "message": "O tempo de bloqueio é longo demais"
   },
   "low": {
     "message": "Baixa"
@@ -1336,14 +1327,8 @@
     "message": "verifique os detalhes da rede",
     "description": "Serves as link text for the 'mismatchedChain' key. This text will be embedded inside the translation for that key."
   },
-  "missingNFT": {
-    "message": "Não está vendo o seu NFT?"
-  },
   "mustSelectOne": {
     "message": "Selecione pelo menos 1 token."
-  },
-  "myAccounts": {
-    "message": "Minhas contas"
   },
   "name": {
     "message": "Nome"
@@ -1473,9 +1458,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
-  },
-  "noNFTs": {
-    "message": "Ainda não há nenhum NFT"
   },
   "noTransactions": {
     "message": "Você não tem transações"

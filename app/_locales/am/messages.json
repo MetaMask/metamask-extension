@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "ከ Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "ከ Linea Goerli የሙከራ አውታረ መረብ ጋር መገናኘት"
   },
   "connectingToMainnet": {
@@ -201,9 +201,6 @@
   },
   "delete": {
     "message": "ሰርዝ"
-  },
-  "deleteAccount": {
-    "message": "መለያን ሰርዝ"
   },
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
@@ -394,7 +391,7 @@
   "likeToImportTokens": {
     "message": "እነዚህን ተለዋጭ ስሞች ለማከል ይፈልጋሉ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "የ Linea Goerli የሙከራ አውታረ መረብ"
   },
   "links": {
@@ -429,9 +426,6 @@
   },
   "mustSelectOne": {
     "message": "ቢያንስ 1 ተለዋጭ ስም መምረጥ አለብዎ።"
-  },
-  "myAccounts": {
-    "message": "የእኔ መለያዎች"
   },
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",

@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Se conectează la rețeaua de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -210,9 +210,6 @@
   },
   "delete": {
     "message": "Șterge"
-  },
-  "deleteAccount": {
-    "message": "Ștergeți cont"
   },
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
@@ -396,7 +393,7 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rețea de test Linea Goerli"
   },
   "links": {
@@ -431,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
-  "myAccounts": {
-    "message": "Conturile mele"
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",

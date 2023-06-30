@@ -92,14 +92,14 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  *  './useGasFeeEstimates'
  * ).GasEstimates} gas fee input state and the GasFeeEstimates object
  */
+
+const GAS_LIMIT_TOO_HIGH_IN_ETH = '1';
 export function useGasFeeInputs(
   defaultEstimateToUse = GasRecommendations.medium,
   _transaction,
   minimumGasLimit = '0x5208',
   editGasMode = EditGasModes.modifyInPlace,
 ) {
-  const GAS_LIMIT_TOO_HIGH_IN_ETH = '1';
-
   const initialRetryTxMeta = {
     txParams: _transaction?.txParams,
     id: _transaction?.id,

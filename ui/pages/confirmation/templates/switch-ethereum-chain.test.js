@@ -33,6 +33,7 @@ const mockBaseStore = {
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
+    approvalFlows: [],
     subjectMetadata: {},
     providerConfig: {
       type: 'rpc',

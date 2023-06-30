@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
   },
   "connectingToMainnet": {
@@ -210,9 +210,6 @@
   },
   "delete": {
     "message": "حذف"
-  },
-  "deleteAccount": {
-    "message": "حذف حساب"
   },
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
@@ -406,7 +403,7 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {
@@ -444,9 +441,6 @@
   },
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
-  },
-  "myAccounts": {
-    "message": "حساب های من"
   },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",

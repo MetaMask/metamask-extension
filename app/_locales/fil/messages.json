@@ -136,7 +136,7 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -186,9 +186,6 @@
   },
   "delete": {
     "message": "I-delete"
-  },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
   },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
@@ -382,9 +379,6 @@
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token."
-  },
-  "myAccounts": {
-    "message": "Mga Account Ko"
   },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",

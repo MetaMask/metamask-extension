@@ -11,19 +11,17 @@ import {
   setShowTestNetworks,
   setProviderType,
   toggleNetworkMenu,
-  upsertNetworkConfiguration,
 } from '../../../store/actions';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getAllEnabledNetworks,
   getCurrentChainId,
-  getNetworkConfigurations,
 } from '../../../selectors';
 import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
@@ -38,17 +36,22 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsNetworkEventSource,
 } from '../../../../shared/constants/metametrics';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
 
-const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
+const UNREMOVABLE_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.LINEA_MAINNET,
+  ...TEST_CHAINS,
+];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const networks = useSelector(getAllEnabledNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
-  const networkConfigurations = useSelector(getNetworkConfigurations);
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -61,6 +64,8 @@ export const NetworkListMenu = ({ onClose }) => {
   const networkListRef = useRef(null);
 
   const completedOnboarding = useSelector(getCompletedOnboarding);
+
+  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
   useEffect(() => {
     if (showTestNetworks && !showTestNetworksRef.current) {
@@ -80,6 +85,12 @@ export const NetworkListMenu = ({ onClose }) => {
       <>
         <Box className="multichain-network-list-menu" ref={networkListRef}>
           {networks.map((network, index) => {
+            if (
+              !lineaMainnetReleased &&
+              network.providerType === 'linea-mainnet'
+            ) {
+              return null;
+            }
             const isCurrentNetwork = currentChainId === network.chainId;
             const canDeleteNetwork =
               !isCurrentNetwork &&
@@ -96,29 +107,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   if (network.providerType) {
                     dispatch(setProviderType(network.providerType));
                   } else {
-                    // Linea needs to be added as a custom network because
-                    // it is not yet supported by Infura.  The following lazily
-                    // adds Linea to the custom network configurations object
-                    let networkId = network.id;
-                    if (network.chainId === CHAIN_IDS.LINEA_TESTNET) {
-                      const lineaNetworkConfiguration = Object.values(
-                        networkConfigurations,
-                      ).find(
-                        ({ chainId }) => chainId === CHAIN_IDS.LINEA_TESTNET,
-                      );
-                      if (lineaNetworkConfiguration) {
-                        networkId = lineaNetworkConfiguration.id;
-                      } else {
-                        networkId = await dispatch(
-                          upsertNetworkConfiguration(network, {
-                            setActive: true,
-                            source:
-                              MetaMetricsNetworkEventSource.CustomNetworkForm,
-                          }),
-                        );
-                      }
-                    }
-                    dispatch(setActiveNetwork(networkId));
+                    dispatch(setActiveNetwork(network.id));
                   }
                   trackEvent({
                     event: MetaMetricsEventName.NavNetworkSwitched,
@@ -151,7 +140,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box
           padding={4}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
           <Text>{t('showTestnetNetworks')}</Text>

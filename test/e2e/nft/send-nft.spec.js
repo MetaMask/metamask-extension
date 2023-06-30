@@ -71,7 +71,7 @@ describe('Send NFT', function () {
 
         const sendNftItem = await driver.findElement({
           css: 'h2',
-          text: 'Send Test Dapp Collectibles',
+          text: 'Send Test Dapp NFTs',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);
 
