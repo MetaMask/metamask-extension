@@ -60,8 +60,10 @@ function importAllScripts() {
   loadFile('./globalthis.js');
   loadFile('./sentry-install.js');
 
-  const isWorker = !self.document
-  if (!isWorker) { // process.env.ENABLE_MV3 ?
+  // eslint-disable-next-line no-undef
+  const isWorker = !self.document;
+  if (!isWorker) {
+    // process.env.ENABLE_MV3 ?
     loadFile('./snow.js');
   }
 
