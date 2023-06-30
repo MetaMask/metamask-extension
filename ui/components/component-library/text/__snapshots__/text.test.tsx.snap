@@ -33,6 +33,11 @@ exports[`Text should render the Text with proper variant class name 1`] = `
     body-md
   </p>
   <p
+    class="box mm-text mm-text--body-md-medium box--flex-direction-row box--color-text-default"
+  >
+    body-md-medium
+  </p>
+  <p
     class="box mm-text mm-text--body-md-bold box--flex-direction-row box--color-text-default"
   >
     body-md-bold
@@ -43,6 +48,11 @@ exports[`Text should render the Text with proper variant class name 1`] = `
     body-sm
   </p>
   <p
+    class="box mm-text mm-text--body-sm-medium box--flex-direction-row box--color-text-default"
+  >
+    body-sm-medium
+  </p>
+  <p
     class="box mm-text mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
   >
     body-sm-bold
@@ -51,6 +61,11 @@ exports[`Text should render the Text with proper variant class name 1`] = `
     class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
   >
     body-xs
+  </p>
+  <p
+    class="box mm-text mm-text--body-xs-medium box--flex-direction-row box--color-text-default"
+  >
+    body-xs-medium
   </p>
 </div>
 `;
