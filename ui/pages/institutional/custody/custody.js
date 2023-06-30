@@ -351,7 +351,6 @@ const CustodyPage = () => {
           {connectError}
         </Text>
       )}
-
       {selectError && (
         <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {selectError}
@@ -400,7 +399,6 @@ const CustodyPage = () => {
           </Box>
         </Box>
       ) : null}
-
       {!accounts && selectedCustodianType && (
         <>
           <Box
@@ -488,7 +486,6 @@ const CustodyPage = () => {
           </Box>
         </>
       )}
-
       {accounts && accounts.length > 0 && (
         <>
           <Box
@@ -604,7 +601,6 @@ const CustodyPage = () => {
           />
         </>
       )}
-
       {accounts && accounts.length === 0 && (
         <Box
           data-testid="custody-accounts-empty"
