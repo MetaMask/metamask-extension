@@ -15,7 +15,6 @@ import {
   BorderRadius,
   BackgroundColor,
   IconColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { BUTTON_BASE_SIZES } from './button-base.constants';
 
