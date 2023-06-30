@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.34.0]
+
 ## [10.33.0]
 ### Added
 - UI Upgrade ([#18903](https://github.com/MetaMask/metamask-extension/pull/18903))
@@ -3825,7 +3827,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...HEAD
+[10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...v10.34.0
 [10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...v10.33.0
 [10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...v10.32.0
 [10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
