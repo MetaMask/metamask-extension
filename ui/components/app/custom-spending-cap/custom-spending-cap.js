@@ -6,18 +6,17 @@ import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text, ButtonLink, Icon, IconName } from '../../component-library';
+import { Text, ButtonLink, Icon, IconName, Box } from '../../component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextAlign,
   TextVariant,
   JustifyContent,
   Size,
-  BLOCK_SIZES,
+  BlockSize,
   BackgroundColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -208,15 +207,15 @@ export default function CustomSpendingCap({
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexStart}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
           justifyContent={JustifyContent.center}
-          display={DISPLAY.BLOCK}
+          display={Display.Block}
           className="custom-spending-cap__input"
         >
           <label
@@ -269,7 +268,7 @@ export default function CustomSpendingCap({
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
             />
             <Box
-              width={BLOCK_SIZES.MAX}
+              width={BlockSize.Max}
               marginLeft="auto"
               paddingRight={4}
               paddingBottom={2}

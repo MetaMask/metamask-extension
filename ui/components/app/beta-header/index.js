@@ -1,12 +1,11 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../ui/box/box';
 import {
   TextVariant,
   Color,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   AlignItems,
   IconColor,
   TextColor,
@@ -19,6 +18,7 @@ import {
   ButtonIconSize,
   IconName,
   Text,
+  Box,
 } from '../../component-library';
 
 const BetaHeader = () => {
@@ -26,8 +26,8 @@ const BetaHeader = () => {
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      width={BLOCK_SIZES.FULL}
+      display={Display.Flex}
+      width={BlockSize.Full}
       backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"

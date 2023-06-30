@@ -4,25 +4,23 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 
-import Box from '../../../ui/box';
-import Button from '../../../ui/button';
 import Tooltip from '../../../ui/tooltip';
 
 import {
-  DISPLAY,
+  Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Text } from '../../../component-library';
+import { Text, Box, Button } from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="detected-token-address">
+    <Box display={Display.InlineFlex} className="detected-token-address">
       <Text variant={TextVariant.bodySm} as="h6" color={TextColor.textDefault}>
         {`${t('tokenAddress')}:`}
       </Text>
