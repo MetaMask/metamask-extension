@@ -614,7 +614,7 @@ export const BUYABLE_CHAINS_MAP: {
   },
   [CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
-    network: "linea",
+    network: 'linea',
   }
 };
 
