@@ -474,7 +474,6 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-
         {removeNftMessage === 'success' ? (
           <ActionableMessage
             type="danger"
@@ -578,22 +577,26 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {shouldShowSeedPhraseReminder ? (
-          <HomeNotification
-            descriptionText={t('backupApprovalNotice')}
-            acceptText={t('backupNow')}
-            onAccept={() => {
-              const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
-              if (isPopup) {
-                global.platform.openExtensionInBrowser(backUpSRPRoute);
-              } else {
-                history.push(backUpSRPRoute);
-              }
-            }}
-            infoText={t('backupApprovalInfo')}
-            key="home-backupApprovalNotice"
-          />
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          shouldShowSeedPhraseReminder ? (
+            <HomeNotification
+              descriptionText={t('backupApprovalNotice')}
+              acceptText={t('backupNow')}
+              onAccept={() => {
+                const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+                if (isPopup) {
+                  global.platform.openExtensionInBrowser(backUpSRPRoute);
+                } else {
+                  history.push(backUpSRPRoute);
+                }
+              }}
+              infoText={t('backupApprovalInfo')}
+              key="home-backupApprovalNotice"
+            />
+          ) : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {infuraBlocked && this.state.canShowBlockageNotification ? (
           <HomeNotification
             descriptionText={t('infuraBlockedNotification', [
