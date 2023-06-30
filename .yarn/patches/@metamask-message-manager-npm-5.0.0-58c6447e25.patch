@@ -1,0 +1,13 @@
+diff --git a/dist/TypedMessageManager.js b/dist/TypedMessageManager.js
+index 2517e7e0acf7422d47ab960cafd3b7d3393cb403..0f1a0af60068be45bd48f94df642120390d765cb 100644
+--- a/dist/TypedMessageManager.js
++++ b/dist/TypedMessageManager.js
+@@ -85,7 +85,7 @@ class TypedMessageManager extends AbstractMessageManager_1.AbstractMessageManage
+                 time: Date.now(),
+                 type: 'eth_signTypedData',
+             };
+-            this.addMessage(messageData);
++            yield this.addMessage(messageData);
+             this.hub.emit(`unapprovedMessage`, messageParamsMetamask);
+             return messageId;
+         });

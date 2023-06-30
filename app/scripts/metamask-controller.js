@@ -4314,8 +4314,8 @@ export default class MetamaskController extends EventEmitter {
 
         return securityProviderResponse;
       } catch (err) {
-        log.error(err.message);
-        throw err;
+        log.error('Failed to perform security provider request', err);
+        return {};
       }
     }
 
