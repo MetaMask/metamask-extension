@@ -9,9 +9,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -23,12 +20,7 @@ import {
 } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  ENVIRONMENT_TYPE_POPUP,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
