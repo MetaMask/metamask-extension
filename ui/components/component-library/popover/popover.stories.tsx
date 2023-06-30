@@ -731,7 +731,7 @@ export const Offset: StoryFn<typeof Popover> = (args) => {
   );
 };
 
-export const onPressEscKey: StoryFn<typeof Popover> = (args) => {
+export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 

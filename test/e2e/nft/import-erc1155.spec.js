@@ -35,7 +35,7 @@ describe('Import ERC1155 NFT', function () {
 
         // After login, go to NFTs tab, open the import NFT/ERC1155 form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+        await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('[data-testid="address"]', contractAddress);
@@ -83,7 +83,7 @@ describe('Import ERC1155 NFT', function () {
 
         // After login, go to NFTs tab, open the import NFT form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+        await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
         await driver.fill('[data-testid="address"]', contractAddress);

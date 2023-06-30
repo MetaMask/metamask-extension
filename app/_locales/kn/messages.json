@@ -211,9 +211,6 @@
   "delete": {
     "message": "ಅಳಿಸಿ"
   },
-  "deleteAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
-  },
   "deleteNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
   },

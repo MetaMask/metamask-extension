@@ -911,9 +911,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteAccount": {
-    "message": "Supprimer le compte"
-  },
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
   },
@@ -1562,6 +1559,12 @@
     "message": "mais les hameçonneurs pourraient le faire.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Appuyez longuement pour révéler PSR"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Protégez votre PSR"
+  },
   "ignoreAll": {
     "message": "Ignorer tout"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
-  },
-  "importNFTs": {
-    "message": "Importer des NFT"
   },
   "importSelectedTokens": {
     "message": "Voulez-vous importer les jetons sélectionnés ?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Déconnexion"
   },
-  "lockTimeTooGreat": {
-    "message": "Le temps de verrouillage est trop important"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
-  },
-  "missingNFT": {
-    "message": "Vous ne voyez pas votre NFT ?"
   },
   "missingSetting": {
     "message": "Vous ne trouvez pas un paramètre ?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
-  },
-  "noNFTs": {
-    "message": "Aucun NFT pour le moment"
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Le collage a échoué parce que la phrase contenait plus de 24 mots. Une phrase secrète de récupération peut contenir un maximum de 24 mots.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Vous pouvez coller toute votre phrase de récupération secrète dans n’importe quel champ",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Commencer"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Pour révéler votre Phrase secrète de récupération, vous devez répondre correctement à deux questions"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Si vous perdez votre Phrase secrète de récupération, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Ne pourra pas vous aider"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Gravez-la sur une plaque en métal ou inscrivez-la sur plusieurs bouts de papier et cachez-les dans différents endroits secrets pour ne jamais la perdre. Si vous la perdez, il n'y a aucun moyen de la récupérer."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "En effet ! Personne ne peut vous aider à récupérer votre Phrase secrète de récupération."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Pourra la récupérer pour vous"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Personne ne peut vous aider à récupérer votre phrase secrète de récupération si jamais vous la perdez."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "C'est faux ! Personne ne peut vous aider à récupérer votre Phrase secrète de récupération."
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Si un membre du service d'assistance ou toute autre personne vous demande votre Phrase secrète de récupération..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Ne la lui fournissez pas, car cette personne essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Toute personne qui vous demande votre phrase secrète de récupération, que ce soit pour des raisons de sécurité ou autre, essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "C'est exact ! Vous ne devez jamais partager votre Phrase secrète de récupération avec qui que ce soit."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Vous devez la lui fournir"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Toute personne qui vous demande votre phrase secrète de récupération, que ce soit pour des raisons de sécurité ou autre, essaie de vous arnaquer."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "C'est faux ! Vous ne devez jamais partager votre Phrase secrète de récupération avec qui que ce soit."
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Quiz sur la sécurité"
   },
   "srpToggleShow": {
     "message": "Afficher / Masquer ce mot de la phrase de récupération secrète",

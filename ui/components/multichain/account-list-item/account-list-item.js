@@ -60,6 +60,10 @@ function getLabel(keyring = {}, t) {
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case KeyringType.snap:
+      return t('snaps');
+    ///: END:ONLY_INCLUDE_IN
     default:
       return null;
   }

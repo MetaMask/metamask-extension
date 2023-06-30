@@ -1,13 +1,10 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { ApprovalType } from '@metamask/controller-utils';
-import { TransactionMeta } from '../../shared/constants/transaction';
 
 type ApprovalsMetaMaskState = {
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
-    unapprovedTxs: {
-      [transactionId: string]: TransactionMeta;
-    };
+    approvalFlows: ApprovalControllerState['approvalFlows'];
   };
 };
 
@@ -46,3 +43,7 @@ export const getApprovalRequestsByType = (
 
   return pendingApprovalRequests;
 };
+
+export function getApprovalFlows(state: ApprovalsMetaMaskState) {
+  return state.metamask.approvalFlows;
+}

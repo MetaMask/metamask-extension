@@ -4,7 +4,11 @@ import { captureException } from '@sentry/browser';
 import { capitalize, isEqual } from 'lodash';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { v4 as uuidV4 } from 'uuid';
+///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -15,14 +19,15 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-import { ethErrors } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
-  MESSAGE_TYPE,
 } from '../../shared/constants/app';
 import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
@@ -30,8 +35,12 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
   hasTransactionPendingApprovals,
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -72,7 +81,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from '../helpers/utils/i18n-helper';
+} from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
@@ -91,10 +100,7 @@ import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import {
-  checkForUnapprovedTypedMessages,
-  updateCustodyState,
-} from './institutional/institution-actions';
+import { updateCustodyState } from './institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   generateActionId,
@@ -641,76 +647,6 @@ export function setCurrentCurrency(
   };
 }
 
-export function signMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signMessage`);
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
-export function signPersonalMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signPersonalMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signPersonalMessage`);
-
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signPersonalMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
 export function decryptMsgInline(
   decryptedMsgData: TemporaryMessageDataType['msgParams'],
 ): ThunkAction<
@@ -799,44 +735,6 @@ export function encryptionPublicKeyMsg(
     }
 
     dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.metamaskId));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
-export function signTypedMsg(
-  msgData: TemporaryMessageDataType['msgParams'],
-): ThunkAction<
-  Promise<TemporaryMessageDataType['msgParams']>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  log.debug('action - signTypedMsg');
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`actions calling background.signTypedMessage`);
-
-    let newState: MetaMaskReduxState['metamask'];
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('signTypedMessage', [msgData]);
-    } catch (error) {
-      logErrorWithMessage(error);
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (newState.unapprovedTypedMessages) {
-      return checkForUnapprovedTypedMessages(msgData, newState);
-    }
-    ///: END:ONLY_INCLUDE_IN
     dispatch(completedTx(msgData.metamaskId));
     dispatch(closeCurrentNotificationWindow());
     return msgData;
@@ -1232,9 +1130,46 @@ export function enableSnap(
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removeSnap', [snapId]);
-    await forceUpdateMetamaskState(dispatch);
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    dispatch(showLoadingIndication());
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const subjects = getPermissionSubjects(getState()) as {
+      [k: string]: { permissions: Record<string, any> };
+    };
+
+    const isAccountsSnap =
+      subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
+
+    try {
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      if (isAccountsSnap) {
+        const accounts = (await handleSnapRequest({
+          snapId,
+          origin: 'metamask',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            id: uuidV4(),
+            jsonrpc: '2.0',
+            method: 'keyring_listAccounts',
+          },
+        })) as unknown as any[];
+        for (const account of accounts) {
+          dispatch(removeAccount(account.address.toLowerCase()));
+        }
+      }
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+      await submitRequestToBackground('removeSnap', [snapId]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -1247,9 +1182,10 @@ export async function handleSnapRequest(args: {
   origin: string;
   handler: string;
   request: {
+    id?: string;
     jsonrpc: '2.0';
     method: string;
-    params: Record<string, any>;
+    params?: Record<string, any>;
   };
 }): Promise<void> {
   return submitRequestToBackground('handleSnapRequest', [args]);
@@ -1330,156 +1266,6 @@ export async function disableDesktop() {
 }
 ///: END:ONLY_INCLUDE_IN
 
-export function cancelMsg(
-  msgData: TemporaryMessageDataType,
-): ThunkAction<
-  Promise<TemporaryMessageDataType>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('cancelMessage', [msgData.id]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.id));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
-/**
- * Cancels all of the given messages
- *
- * @param msgDataList - a list of msg data objects
- * @returns
- */
-export function cancelMsgs(
-  msgDataList: TemporaryMessageDataType[],
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    try {
-      const msgIds = msgDataList.map(({ id }) => id);
-      const cancellations = msgDataList.map(
-        ({ id, type }) =>
-          new Promise<void>((resolve, reject) => {
-            switch (type) {
-              case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-                callBackgroundMethod('cancelTypedMessage', [id], (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.PERSONAL_SIGN:
-                callBackgroundMethod('cancelPersonalMessage', [id], (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.ETH_DECRYPT:
-                callBackgroundMethod('cancelDecryptMessage', [id], (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              case MESSAGE_TYPE.ETH_GET_ENCRYPTION_PUBLIC_KEY:
-                callBackgroundMethod(
-                  'cancelEncryptionPublicKey',
-                  [id],
-                  (err) => {
-                    if (err) {
-                      reject(err);
-                      return;
-                    }
-                    resolve();
-                  },
-                );
-                return;
-              case MESSAGE_TYPE.ETH_SIGN:
-                callBackgroundMethod('cancelMessage', [id], (err) => {
-                  if (err) {
-                    reject(err);
-                    return;
-                  }
-                  resolve();
-                });
-                return;
-              default:
-                reject(
-                  new Error(
-                    `MetaMask Message Signature: Unknown message type: ${id}`,
-                  ),
-                );
-            }
-          }),
-      );
-
-      await Promise.all(cancellations);
-      const newState = await updateMetamaskStateFromBackground();
-      dispatch(updateMetamaskState(newState));
-
-      msgIds.forEach((id) => {
-        dispatch(completedTx(id));
-      });
-    } catch (err) {
-      logErrorWithMessage(err);
-    } finally {
-      if (getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION) {
-        closeNotificationPopup();
-      } else {
-        dispatch(hideLoadingIndication());
-      }
-    }
-  };
-}
-
-export function cancelPersonalMsg(
-  msgData: TemporaryMessageDataType,
-): ThunkAction<
-  Promise<TemporaryMessageDataType>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('cancelPersonalMessage', [msgData.id]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.id));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
 export function cancelDecryptMsg(
   msgData: TemporaryMessageDataType,
 ): ThunkAction<
@@ -1523,33 +1309,6 @@ export function cancelEncryptionPublicKeyMsg(
       newState = await submitRequestToBackground<
         MetaMaskReduxState['metamask']
       >('cancelEncryptionPublicKey', [msgData.id]);
-    } finally {
-      dispatch(hideLoadingIndication());
-    }
-
-    dispatch(updateMetamaskState(newState));
-    dispatch(completedTx(msgData.id));
-    dispatch(closeCurrentNotificationWindow());
-    return msgData;
-  };
-}
-
-export function cancelTypedMsg(
-  msgData: TemporaryMessageDataType,
-): ThunkAction<
-  Promise<TemporaryMessageDataType>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-
-    let newState;
-    try {
-      newState = await submitRequestToBackground<
-        MetaMaskReduxState['metamask']
-      >('cancelTypedMessage', [msgData.id]);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -2624,9 +2383,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   AnyAction
 > {
   return (_, getState) => {
+    const state = getState();
+    const approvalFlows = getApprovalFlows(state);
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovals(getState())
+      !hasTransactionPendingApprovals(state) &&
+      approvalFlows.length === 0
     ) {
       closeNotificationPopup();
     }
@@ -3724,6 +3486,34 @@ export function rejectPendingApproval(
   };
 }
 
+/**
+ * Rejects all approvals for the given messages
+ *
+ * @param messageList - The list of messages to reject
+ */
+export function rejectAllMessages(
+  messageList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const userRejectionError = serializeError(
+      ethErrors.provider.userRejectedRequest(),
+    );
+    await Promise.all(
+      messageList.map(
+        async ({ id }) =>
+          await submitRequestToBackground('rejectPendingApproval', [
+            id,
+            userRejectionError,
+          ]),
+      ),
+    );
+    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    if (Object.values(pendingApprovals).length === 0) {
+      dispatch(closeCurrentNotificationWindow());
+    }
+  };
+}
+
 export function setFirstTimeFlowType(
   type: 'create' | 'import',
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4602,5 +4392,17 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       [shown],
     );
   };
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setSnapsAddSnapAccountModalDismissed() {
+  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
+    true,
+  ]);
+}
+
+export async function updateSnapRegistry() {
+  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN

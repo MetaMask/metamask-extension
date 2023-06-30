@@ -98,7 +98,7 @@ const AssetList = ({ onClickAsset }) => {
         />
       ) : null}
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
-        <ImportTokenLink margin={4} />
+        <ImportTokenLink margin={4} marginBottom={2} />
       </Box>
       {showDetectedTokens && (
         <DetectedToken setShowDetectedTokens={setShowDetectedTokens} />

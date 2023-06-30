@@ -911,9 +911,6 @@
   "delete": {
     "message": "Διαγραφή"
   },
-  "deleteAccount": {
-    "message": "Διαγραφή Λογαριασμού"
-  },
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },
@@ -1562,6 +1559,12 @@
     "message": "αλλά οι απατεώνες μπορεί να το κάνουν.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Κρατήστε το πατημένο για να αποκαλυφθεί το ΜΦΑ"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Κρατήστε το ΜΦΑ σας ασφαλές"
+  },
   "ignoreAll": {
     "message": "Αγνόηση όλων"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Ένα αναγνωριστικό του συλλεκτικού είναι ένα μοναδικό αναγνωριστικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
-  },
-  "importNFTs": {
-    "message": "Εισαγωγή NFT"
   },
   "importSelectedTokens": {
     "message": "Εισαγωγή επιλεγμένων token;"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Αποσύνδεση"
   },
-  "lockTimeTooGreat": {
-    "message": "Ο χρόνος κλειδώματος είναι πολύ μεγάλος"
-  },
   "logo": {
     "message": "Λογότυπο $1",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Σύμφωνα με τις καταχωρήσεις μας, η τιμή RPC URL που υποβλήθηκε δεν ταιριάζει με κάποιον γνωστό πάροχο για αυτό το αναγνωριστικό αλυσίδας."
-  },
-  "missingNFT": {
-    "message": "Δεν βλέπετε το NFT σας;"
   },
   "missingSetting": {
     "message": "Δεν μπορείτε να βρείτε μια ρύθμιση;"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
-  },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"
@@ -3330,11 +3321,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Η επικόλληση απέτυχε επειδή περιείχε περισσότερες από 24 λέξεις. Μια μυστική φράση ανάκτησης μπορεί να αποτελείται από το πολύ 24 λέξεις.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Μπορείτε να επικολλήσετε ολόκληρη τη μυστική φράση ανάκτησής σας σε οποιοδήποτε πεδίο",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Ξεκινήστε"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Για να σας αποκαλύψουμε τη Μυστική Φράση Ανάκτησης, πρέπει να απαντήσετε σωστά σε δύο ερωτήσεις"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Αν χάσετε τη Μυστική Φράση Ανάκτησης, το MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Δεν μπορεί να σας βοηθήσει"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Γράψτε την κάπου, χαράξτε την πάνω σε μέταλλο ή κρατήστε την σε πολλά μυστικά σημεία για να μην την χάσετε ποτέ. Αν την χάσετε, θα χαθεί για πάντα."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Σωστά! Κανείς δεν μπορεί να σας βοηθήσει να επαναφέρετε τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Μπορεί να την επαναφέρει για εσάς"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Αν χάσετε τη Μυστική Φράση Ανάκτησης, θα την χάσετε για πάντα. Κανείς δεν μπορεί να σας βοηθήσει να την επαναφέρετε, ό,τι κι αν σας πει."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Λάθος! Κανείς δεν μπορεί να σας βοηθήσει να επαναφέρετε τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Αν κάποιος, ακόμα και ένας τεχνικός υποστήριξης, σας ζητήσει τη Μυστική Φράση Ανάκτησης..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Σας έχουν εξαπατήσει"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Όποιος ισχυριστεί ότι χρειάζεται τη Μυστική Φράση Ανάκτησης, σας λέει ψέματα. Αν την μοιραστείτε μαζί του, θα κλέψει τα περιουσιακά σας στοιχεία."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Σωστά! Το να μοιράζεστε τη Μυστική Φράση Ανάκτησης δεν είναι καλή ιδέα"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Πρέπει να τους την δώσετε"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Όποιος ισχυριστεί ότι χρειάζεται τη Μυστική Φράση Ανάκτησης, σας λέει ψέματα. Αν την μοιραστείτε μαζί του, θα κλέψει τα περιουσιακά σας στοιχεία."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Όχι! Ποτέ μα ποτέ μην μοιραστείτε με κανέναν τη Μυστική Φράση Ανάκτησης"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Κουίζ Ασφαλείας"
   },
   "srpToggleShow": {
     "message": "Εμφάνιση/Απόκρυψη αυτής της λέξης από τη μυστική φράση ανάκτησης",

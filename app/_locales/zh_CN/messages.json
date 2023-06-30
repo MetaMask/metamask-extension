@@ -911,9 +911,6 @@
   "delete": {
     "message": "删除"
   },
-  "deleteAccount": {
-    "message": "删除账户"
-  },
   "deleteNetwork": {
     "message": "删除网络？"
   },
@@ -1562,6 +1559,12 @@
     "message": "但网络钓鱼者可能会。",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "按住以显示 助记词"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "保护您的 助记词 安全"
+  },
   "ignoreAll": {
     "message": "忽略所有"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
-  },
-  "importNFTs": {
-    "message": "添加收藏品"
   },
   "importSelectedTokens": {
     "message": "要导入所选代币吗？"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "注销"
   },
-  "lockTimeTooGreat": {
-    "message": "锁定时间过长"
-  },
   "logo": {
     "message": "$1标志",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
-  },
-  "missingNFT": {
-    "message": "找不到您的 NFT？"
   },
   "missingSetting": {
     "message": "找不到设置吗？"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
-  },
-  "noNFTs": {
-    "message": "尚无 NFT"
   },
   "noSnaps": {
     "message": "没有安装Snap"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "粘贴失败，因为它包含超过24个单词。一个助记词最多可包含24个单词。",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "您可以将整个助记词粘贴到任何字段中",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "开始"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "要查看助记词，您需要答对两个问题"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "如果您丢失了助记词，MetaMask......"
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "无法帮助您"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "将它写下来、刻在金属上，或保存在多个秘密位置，这样您就不会丢失它。如果丢失了，它就会永远消失。"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "答对了！没有人能够帮您找回您的助记词"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "可以为您找回来"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "一旦遗失助记词，它将永远消失。无论他人如何保证，无人能够帮您找回。"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "答错了！没有人能够帮您找回您的助记词"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "如果有人（即使是技术支持人员）查问您的助记词......"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "就是在对您进行诈骗"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "答对了！分享您的助记词绝对不是个好主意"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "您应该交给他们"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "不！永远不要与任何人分享您的助记词"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "安全问答"
   },
   "srpToggleShow": {
     "message": "显示/隐藏助记词中的这个单词",

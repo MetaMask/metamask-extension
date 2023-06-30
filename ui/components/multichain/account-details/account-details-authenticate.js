@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  DISPLAY,
+  Display,
   FontWeight,
-  SEVERITIES,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -60,10 +60,10 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         labelProps={{ fontWeight: FontWeight.Medium }}
         autoFocus
       />
-      <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
+      <BannerAlert marginTop={6} severity={Severity.Danger}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
-      <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
+      <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
           {t('cancel')}
         </ButtonSecondary>
