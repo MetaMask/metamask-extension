@@ -3883,9 +3883,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^9.1.0":
-  version: 9.1.0
-  resolution: "@metamask/assets-controllers@npm:9.1.0"
+"@metamask/assets-controllers@npm:^9.2.0":
+  version: 9.2.0
+  resolution: "@metamask/assets-controllers@npm:9.2.0"
   dependencies:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
