@@ -63,7 +63,6 @@ function importAllScripts() {
   // eslint-disable-next-line no-undef
   const isWorker = !self.document;
   if (!isWorker) {
-    // process.env.ENABLE_MV3 ?
     loadFile('./snow.js');
   }
 
