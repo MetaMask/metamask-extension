@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
-  FLEX_DIRECTION,
+  Display,
+  BlockSize,
+  FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Box, Button, Text } from '../../component-library';
 import JwtDropdown from '../jwt-dropdown';
-import Button from '../../ui/button';
-import Box from '../../ui/box';
 
 const JwtUrlForm = (props) => {
   const t = useI18nContext();
@@ -24,13 +23,13 @@ const JwtUrlForm = (props) => {
 
     return (
       <Box
-        width={BLOCK_SIZES.FULL}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        width={BlockSize.Full}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         marginTop={4}
         alignItems={AlignItems.center}
         className="jwt-url-form__jwt-container"
-        marginBottom={6}
+        marginBottom={4}
       >
         {showJwtDropdown && (
           <JwtDropdown
@@ -45,9 +44,9 @@ const JwtUrlForm = (props) => {
         )}
         {showJwtDropdown && !showAddNewToken && (
           <Box
-            width={BLOCK_SIZES.FULL}
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            width={BlockSize.Full}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             marginTop={2}
           >
@@ -66,8 +65,13 @@ const JwtUrlForm = (props) => {
           </Box>
         )}
         {(!showJwtDropdown || showAddNewToken) && (
-          <Box>
-            <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+          <Box width={BlockSize.Full}>
+            <Text
+              className="jwt-url-form__instruction"
+              display={Display.Block}
+              variant={TextVariant.bodyMd}
+              marginBottom={4}
+            >
               {props.jwtInputText}
             </Text>
             {fileTooBigError && (
@@ -95,11 +99,15 @@ const JwtUrlForm = (props) => {
 
   const renderAPIURLInput = () => {
     return (
-      <Box width={BLOCK_SIZES.FULL}>
-        <Text className="jwt-url-form__instruction" display={DISPLAY.BLOCK}>
+      <Box width={BlockSize.Full}>
+        <Text
+          className="jwt-url-form__instruction"
+          display={Display.Block}
+          variant={TextVariant.bodyMd}
+        >
           {props.urlInputText}
         </Text>
-        <Box>
+        <Box marginTop={4}>
           <input
             className="jwt-url-form__input"
             id="api-url-box"
@@ -117,8 +125,8 @@ const JwtUrlForm = (props) => {
   return (
     <Box
       className="jwt-url-form"
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       alignItems={AlignItems.flexStart}
       marginBottom={8}
     >

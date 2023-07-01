@@ -149,6 +149,10 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  // This is required to ensure send and confirmation screens
+  // look as desired
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
+
   return (
     <>
       {isUnlocked && !popupStatus ? (
@@ -175,6 +179,7 @@ export const AppHeader = ({ location }) => {
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
+        marginBottom={headerBottomMargin}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={

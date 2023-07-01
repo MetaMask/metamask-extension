@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
+import { PageContainerFooter } from '../../../components/ui/page-container';
 
 const ChooseAccount = ({
   selectedAccountAddresses,
@@ -75,21 +75,14 @@ const ChooseAccount = ({
       </div>
       <div className="permissions-connect-choose-account__footer-container">
         <PermissionsConnectFooter />
-        <div className="permissions-connect-choose-account__bottom-buttons">
-          <Button
-            onClick={() => cancelPermissionsRequest(permissionsRequestId)}
-            type="secondary"
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            onClick={() => selectAccounts(selectedAccounts)}
-            type="primary"
-            disabled={selectedAccounts.size === 0}
-          >
-            {t('next')}
-          </Button>
-        </div>
+        <PageContainerFooter
+          cancelButtonType="default"
+          onCancel={() => cancelPermissionsRequest(permissionsRequestId)}
+          cancelText={t('cancel')}
+          onSubmit={() => selectAccounts(selectedAccounts)}
+          submitText={t('next')}
+          disabled={selectedAccounts.size === 0}
+        />
       </div>
     </>
   );
