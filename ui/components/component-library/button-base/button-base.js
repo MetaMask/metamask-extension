@@ -8,7 +8,7 @@ import { Text } from '../text';
 
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -65,7 +65,7 @@ export const ButtonBase = ({
         className,
       )}
       disabled={disabled}
-      display={DISPLAY.INLINE_FLEX}
+      display={Display.InlineFlex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       borderRadius={BorderRadius.pill}

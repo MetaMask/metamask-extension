@@ -49,19 +49,21 @@ import {
   SubjectMetadataController,
   SubjectType,
 } from '@metamask/subject-metadata-controller';
+import SmartTransactionsController from '@metamask/smart-transactions-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
-///: END:ONLY_INCLUDE_IN
-import SmartTransactionsController from '@metamask/smart-transactions-controller';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
 import {
   CronjobController,
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SnapKeyring } from '@metamask/eth-snap-keyring';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -771,6 +773,16 @@ export default class MetamaskController extends EventEmitter {
       }
       ///: END:ONLY_INCLUDE_IN
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    additionalKeyrings.push(
+      (() => {
+        const builder = () => new SnapKeyring(this.snapController);
+        builder.type = SnapKeyring.type;
+        return builder;
+      })(),
+    );
+    ///: END:ONLY_INCLUDE_IN
 
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
@@ -1679,7 +1691,28 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  /**
+   * Initialize the snap keyring if it is not present.
+   */
+  async getSnapKeyring() {
+    if (!this.snapKeyring) {
+      let [snapKeyring] = this.keyringController.getKeyringsByType(
+        KeyringType.snap,
+      );
+      if (!snapKeyring) {
+        snapKeyring = await this.keyringController.addNewKeyring(
+          KeyringType.snap,
+        );
+      }
+      this.snapKeyring = snapKeyring;
+    }
+    return this.snapKeyring;
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
   /**
    * Constructor helper for getting Snap permission specifications.
    */
@@ -1735,6 +1768,16 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+        getSnapKeyring: this.getSnapKeyring.bind(this),
+        saveSnapKeyring: async () => {
+          await this.keyringController.persistAllKeyrings();
+          await this.keyringController._updateMemStoreKeyrings();
+          await this.keyringController.fullUpdate();
+        },
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       }),
     };
   }
@@ -2167,6 +2210,13 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      setSnapsAddSnapAccountModalDismissed:
+        preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -2318,19 +2368,38 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      connectCustodyAddresses:
-        this.mmiController.connectCustodyAddresses.bind(this),
-      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(this),
+      connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
+        this.mmiController,
+      ),
+      getCustodianAccounts: this.mmiController.getCustodianAccounts.bind(
+        this.mmiController,
+      ),
       getCustodianAccountsByAddress:
-        this.mmiController.getCustodianAccountsByAddress.bind(this),
+        this.mmiController.getCustodianAccountsByAddress.bind(
+          this.mmiController,
+        ),
       getCustodianTransactionDeepLink:
-        this.mmiController.getCustodianTransactionDeepLink.bind(this),
+        this.mmiController.getCustodianTransactionDeepLink.bind(
+          this.mmiController,
+        ),
       getCustodianConfirmDeepLink:
-        this.mmiController.getCustodianConfirmDeepLink.bind(this),
+        this.mmiController.getCustodianConfirmDeepLink.bind(this.mmiController),
       getCustodianSignMessageDeepLink:
-        this.mmiController.getCustodianSignMessageDeepLink.bind(this),
-      getCustodianToken: this.mmiController.getCustodianToken.bind(this),
-      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(this),
+        this.mmiController.getCustodianSignMessageDeepLink.bind(
+          this.mmiController,
+        ),
+      getCustodianToken: this.mmiController.getCustodianToken.bind(
+        this.mmiController,
+      ),
+      getCustodianJWTList: this.mmiController.getCustodianJWTList.bind(
+        this.mmiController,
+      ),
+      getAllCustodianAccountsWithToken:
+        this.mmiController.getAllCustodianAccountsWithToken.bind(
+          this.mmiController,
+        ),
+      setCustodianNewRefreshToken:
+        this.mmiController.setCustodianNewRefreshToken.bind(this.mmiController),
       setWaitForConfirmDeepLinkDialog:
         this.custodyController.setWaitForConfirmDeepLinkDialog.bind(
           this.custodyController,
@@ -2343,8 +2412,6 @@ export default class MetamaskController extends EventEmitter {
         this.custodyController.getCustodianConnectRequest.bind(
           this.custodyController,
         ),
-      getAllCustodianAccountsWithToken:
-        this.mmiController.getAllCustodianAccountsWithToken.bind(this),
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
@@ -2365,12 +2432,10 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.syncReportsInProgress.bind(
           this.institutionalFeaturesController,
         ),
-
       removeConnectInstitutionalFeature:
         this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
           this.institutionalFeaturesController,
         ),
-
       getComplianceHistoricalReportsByAddress:
         this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
           this.institutionalFeaturesController,
@@ -2379,8 +2444,6 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
         ),
-      setCustodianNewRefreshToken:
-        this.mmiController.setCustodianNewRefreshToken.bind(this),
       ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -2407,6 +2470,11 @@ export default class MetamaskController extends EventEmitter {
       ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      updateSnapRegistry: this.preferencesController.updateSnapRegistry.bind(
+        preferencesController,
+      ),
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(desktop)
       // Desktop
@@ -2771,6 +2839,7 @@ export default class MetamaskController extends EventEmitter {
       // set new identities
       this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
+
       return vault;
     } finally {
       releaseLock();
@@ -3851,6 +3920,16 @@ export default class MetamaskController extends EventEmitter {
         handleWatchAssetRequest: this.handleWatchAssetRequest.bind(this),
         requestUserApproval:
           this.approvalController.addAndShowApprovalRequest.bind(
+            this.approvalController,
+          ),
+        startApprovalFlow: this.approvalController.startFlow.bind(
+          this.approvalController,
+        ),
+        endApprovalFlow: this.approvalController.endFlow.bind(
+          this.approvalController,
+        ),
+        setApprovalFlowLoadingText:
+          this.approvalController.setFlowLoadingText.bind(
             this.approvalController,
           ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(

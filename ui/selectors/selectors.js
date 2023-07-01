@@ -991,8 +991,8 @@ function getAllowedAnnouncementIds(state) {
     15: false,
     16: false,
     17: false,
-    18: true,
-    19: true,
+    18: false,
+    19: false,
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
   };
@@ -1535,5 +1535,17 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   }
 
   return snapsInstallPrivacyWarningShown;
+}
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
 }
 ///: END:ONLY_INCLUDE_IN
