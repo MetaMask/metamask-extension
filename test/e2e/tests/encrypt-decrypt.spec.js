@@ -51,8 +51,10 @@ async function verifyDecryptedMessageMM(driver, message) {
 async function verifyDecryptedMessageDapp(driver, message) {
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-  const clearTextLabel = await driver.findElement('#cleartextDisplay');
-  assert.equal(await clearTextLabel.getText(), message);
+  await driver.findElement({
+    css: '#cleartextDisplay',
+    text: message,
+  });
 }
 
 describe('Encrypt Decrypt', function () {
@@ -67,6 +69,7 @@ describe('Encrypt Decrypt', function () {
   };
   const encryptionKey = 'fxYXfCbun026g5zcCQh7Ia+O0urAEVZWLG8H4Jzu7Xs=';
   const message = 'Hello, Bob!';
+
   it('should decrypt an encrypted message', async function () {
     await withFixtures(
       {
