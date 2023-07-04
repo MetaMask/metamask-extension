@@ -1314,6 +1314,12 @@ export default class TransactionController extends EventEmitter {
     txMeta.s = addHexPrefix(signedEthTx.s.toString(16));
     txMeta.v = addHexPrefix(signedEthTx.v.toString(16));
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (txMeta.custodyStatus) {
+      return null;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     this.txStateManager.updateTransaction(
       txMeta,
       'transactions#signTransaction: add r, s, v values',
