@@ -1,13 +1,8 @@
+import { StorageBackend } from '@metamask/ppom-validator';
+
 type StorageKey = {
   name: string;
   chainId: string;
-};
-
-type StorageBackend = {
-  read(key: StorageKey, checksum: string): Promise<ArrayBuffer>;
-  write(key: StorageKey, data: ArrayBuffer, checksum: string): Promise<void>;
-  delete(key: StorageKey): Promise<void>;
-  dir(): Promise<StorageKey[]>;
 };
 
 const validateChecksum = async (
@@ -25,7 +20,7 @@ const validateChecksum = async (
   }
 };
 
-export class IndexedDBBackend implements StorageBackend {
+export class IndexexDBPPOMStorage implements StorageBackend {
   private storeName: string;
 
   private dbVersion: number;
@@ -35,9 +30,7 @@ export class IndexedDBBackend implements StorageBackend {
     this.dbVersion = dbVersion;
   }
 
-  private async _getObjectStore(
-    mode: IDBTransactionMode,
-  ): Promise<IDBObjectStore> {
+  #getObjectStore(mode: IDBTransactionMode): Promise<IDBObjectStore> {
     return new Promise((resolve, reject) => {
       const request = indexedDB.open(this.storeName, this.dbVersion);
 
@@ -70,23 +63,27 @@ export class IndexedDBBackend implements StorageBackend {
     });
   }
 
-  async read(key: StorageKey, checksum: string): Promise<ArrayBuffer> {
-    return new Promise<ArrayBuffer>((resolve, reject) => {
-      this._getObjectStore('readonly')
+  private async objectStoreAction(
+    method: 'get' | 'delete' | 'put' | 'getAllKeys',
+    args?: any,
+    mode: IDBTransactionMode = 'readonly',
+  ): Promise<any> {
+    return new Promise<Event>((resolve, reject) => {
+      this.#getObjectStore(mode)
         .then((objectStore) => {
-          const request = objectStore.get([key.name, key.chainId]);
+          const request = objectStore[method](args);
 
           request.onsuccess = async (event) => {
-            const data = (event.target as any)?.result?.data;
-            await validateChecksum(key, data, checksum).catch((error) => {
-              reject(error);
-            });
-            resolve(data);
+            resolve(event);
           };
 
           request.onerror = (event) => {
             reject(
-              new Error(`Error reading data: ${(event.target as any)?.error}`),
+              new Error(
+                `Error in indexDB operation ${method}: ${
+                  (event.target as any)?.error
+                }`,
+              ),
             );
           };
         })
@@ -94,6 +91,13 @@ export class IndexedDBBackend implements StorageBackend {
           reject(error);
         });
     });
+  }
+
+  async read(key: StorageKey, checksum: string): Promise<ArrayBuffer> {
+    const event = await this.objectStoreAction('get', [key.name, key.chainId]);
+    const data = (event.target as any)?.result?.data;
+    await validateChecksum(key, data, checksum);
+    return data;
   }
 
   async write(
@@ -101,85 +105,23 @@ export class IndexedDBBackend implements StorageBackend {
     data: ArrayBuffer,
     checksum: string,
   ): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      validateChecksum(key, data, checksum)
-        .then(() => {
-          this._getObjectStore('readwrite')
-            .then((objectStore) => {
-              const request = objectStore.put({ ...key, data });
-
-              request.onsuccess = () => {
-                resolve();
-              };
-
-              request.onerror = (event) => {
-                reject(
-                  new Error(
-                    `Error writing data: ${(event.target as any)?.error}`,
-                  ),
-                );
-              };
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    await validateChecksum(key, data, checksum);
+    await this.objectStoreAction('put', { ...key, data }, 'readwrite');
   }
 
-  public async delete(key: StorageKey): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this._getObjectStore('readwrite')
-        .then((objectStore) => {
-          const request = objectStore.delete([key.name, key.chainId]);
-
-          request.onsuccess = () => {
-            resolve();
-          };
-
-          request.onerror = (event) => {
-            reject(
-              new Error(`Error deleting data: ${(event.target as any)?.error}`),
-            );
-          };
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async delete(key: StorageKey): Promise<void> {
+    await this.objectStoreAction(
+      'delete',
+      [key.name, key.chainId],
+      'readwrite',
+    );
   }
 
-  public async dir(): Promise<StorageKey[]> {
-    return new Promise<StorageKey[]>((resolve, reject) => {
-      this._getObjectStore('readwrite')
-        .then((objectStore) => {
-          const request = objectStore.getAllKeys();
-
-          request.onsuccess = (event) => {
-            resolve(
-              (event.target as any)?.result.map(
-                ([name, chainId]: string[]) => ({
-                  name,
-                  chainId,
-                }),
-              ),
-            );
-          };
-
-          request.onerror = (event) => {
-            reject(
-              new Error(
-                `Error saving binary data: ${(event.target as any)?.error}`,
-              ),
-            );
-          };
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async dir(): Promise<StorageKey[]> {
+    const event = await this.objectStoreAction('getAllKeys');
+    return (event.target as any)?.result.map(([name, chainId]: string[]) => ({
+      name,
+      chainId,
+    }));
   }
 }

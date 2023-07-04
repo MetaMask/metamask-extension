@@ -213,7 +213,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { IndexedDBBackend } from './lib/indexed-db-backend';
+import { IndexexDBPPOMStorage } from './lib/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 
@@ -629,7 +629,7 @@ export default class MetamaskController extends EventEmitter {
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
       }),
-      storageBackend: new IndexedDBBackend('PPOMDB', 1),
+      storageBackend: new IndexexDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,

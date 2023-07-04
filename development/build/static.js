@@ -25,13 +25,12 @@ module.exports = function createStaticAssetTasks({
   const buildConfig = loadBuildTypesConfig();
 
   const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
-  const includePPOM = activeFeatures.includes('blockaid');
 
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
-      includePPOM,
+      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -110,7 +109,11 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow, includePPOM) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  activeFeatures,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -200,7 +203,7 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow, includePPOM) {
     },
   ];
 
-  if (includePPOM) {
+  if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
       src: getPathInsideNodeModules('@metamask/ppom-validator', 'dist/'),
       pattern: '*.wasm',
