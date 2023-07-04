@@ -68,7 +68,19 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
-    testPaths = await getTestPathsForTestDir(testDir);
+    testPaths = [
+      ...(await getTestPathsForTestDir(testDir)),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
+      ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
+
+    if (mv3) {
+      testPaths.push(
+        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      );
+    }
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
