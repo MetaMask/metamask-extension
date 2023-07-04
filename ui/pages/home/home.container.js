@@ -138,7 +138,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
-    hasApprovalFlows: getApprovalFlows(state)?.length > 0,
+    hasApprovalFlows: getApprovalFlows(state).length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
