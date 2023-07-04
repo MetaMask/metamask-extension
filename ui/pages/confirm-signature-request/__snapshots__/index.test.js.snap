@@ -38,9 +38,9 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
           class="confirm-page-container-navigation__navtext"
         >
           0
-
+           
           of
-
+           
           1
         </div>
         <div
@@ -166,7 +166,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             9.107408
-
+             
           </h6>
         </div>
       </div>
@@ -244,7 +244,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             >
               Contents
               :
-
+               
             </span>
             <span
               class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -260,7 +260,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             >
               From
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -273,7 +273,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                 >
                   Name
                   :
-
+                   
                 </span>
                 <span
                   class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -289,7 +289,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                 >
                   Wallets
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -302,7 +302,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                     >
                       0
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -378,7 +378,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                     >
                       1
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -458,7 +458,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             >
               To
               :
-
+               
             </span>
             <div
               class="box signature-request-data__node box--flex-direction-row"
@@ -471,7 +471,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                 >
                   0
                   :
-
+                   
                 </span>
                 <div
                   class="box signature-request-data__node box--flex-direction-row"
@@ -484,7 +484,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                     >
                       Name
                       :
-
+                       
                     </span>
                     <span
                       class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -500,7 +500,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                     >
                       Wallets
                       :
-
+                       
                     </span>
                     <div
                       class="box signature-request-data__node box--flex-direction-row"
@@ -513,7 +513,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                         >
                           0
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -589,7 +589,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                         >
                           1
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
@@ -665,7 +665,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                         >
                           2
                           :
-
+                           
                         </span>
                         <span
                           class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"

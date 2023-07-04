@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { valuesFor } from '../helpers/utils/util';
-import { cancelMsgs, showModal } from '../store/actions';
+import { showModal, rejectAllMessages } from '../store/actions';
 import { clearConfirmTransaction } from '../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../ducks/history/history';
 import {
@@ -21,7 +21,7 @@ export function useRejectTransactionModal() {
       showModal({
         name: 'REJECT_TRANSACTIONS',
         onSubmit: async () => {
-          await dispatch(cancelMsgs(valuesFor(unconfirmedMessagesList)));
+          await dispatch(rejectAllMessages(valuesFor(unconfirmedMessagesList)));
           dispatch(clearConfirmTransaction());
           history.push(mostRecentOverviewPage);
         },

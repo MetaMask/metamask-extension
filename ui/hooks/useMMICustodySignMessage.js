@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import { checkForUnapprovedTypedMessages } from '../store/institutional/institution-actions';
 import {
   mmiActionsFactory,
   setTypedMessageInProgress,
@@ -7,6 +8,7 @@ import {
 import {
   accountsWithSendEtherInfoSelector,
   getAccountType,
+  unapprovedTypedMessagesSelector,
 } from '../selectors';
 import { getAccountByAddress } from '../helpers/utils/util';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
@@ -20,16 +22,20 @@ export function useMMICustodySignMessage() {
   const accountType = useSelector(getAccountType);
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const unapprovedTypedMessages = useSelector(unapprovedTypedMessagesSelector);
 
-  const custodySignFn = async (...opts) => {
+  const custodySignFn = async (_msgData) => {
     if (accountType === 'custody') {
       const { address: fromAddress } =
-        getAccountByAddress(allAccounts, opts.params.from) || {};
+        getAccountByAddress(allAccounts, _msgData.msgParams.from) || {};
       try {
-        let msgData = opts.params;
-        let id = msgData.custodyId;
-        if (!id) {
-          msgData = await opts.action(opts.params);
+        let msgData = _msgData;
+        let id = _msgData.custodyId;
+        if (!_msgData.custodyId) {
+          msgData = checkForUnapprovedTypedMessages(
+            _msgData,
+            unapprovedTypedMessages,
+          );
           id = msgData.custodyId;
         }
         dispatch(
@@ -48,7 +54,6 @@ export function useMMICustodySignMessage() {
         await dispatch(setTypedMessageInProgress(msgData.metamaskId));
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
         await dispatch(goHome());
-        return msgData;
       } catch (err) {
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
         await dispatch(
@@ -59,11 +64,8 @@ export function useMMICustodySignMessage() {
             operationFailed: true,
           }),
         );
-        return null;
       }
     }
-
-    return opts.action(opts.params);
   };
 
   return { custodySignFn };

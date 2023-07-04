@@ -1,14 +1,16 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  useDispatch,
-  ///: END:ONLY_INCLUDE_IN
-  useSelector,
-} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+  completedTx,
+} from '../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
@@ -16,6 +18,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
+  getAccountType,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
@@ -39,22 +42,24 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
 import {
   TextAlign,
   TextColor,
   TextVariant,
+  Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
-  DISPLAY,
-  BLOCK_SIZES,
   BackgroundColor,
+  Display,
+  BlockSize,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import {
   BUTTON_VARIANT,
   Button,
+  ButtonLink,
   TagUrl,
   Text,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -74,11 +79,9 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
-const SignatureRequest = ({ txData, sign, cancel }) => {
+const SignatureRequest = ({ txData }) => {
   const trackEvent = useContext(MetaMetricsContext);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const dispatch = useDispatch();
-  ///: END:ONLY_INCLUDE_IN
   const t = useI18nContext();
 
   const [hasScrolledMessage, setHasScrolledMessage] = useState(false);
@@ -87,6 +90,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   const [messageIsScrollable, setMessageIsScrollable] = useState(false);
 
   const {
+    id,
     type,
     msgParams: { from, data, origin, version },
   } = txData;
@@ -106,9 +110,11 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
   // Largely relevant for contract wallet custodians
   const selectedAccount = useSelector(getSelectedAccount);
   const mmiActions = mmiActionsFactory();
+  const accountType = useSelector(getAccountType);
   const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const { address } = getAccountByAddress(allAccounts, from) || {};
+  const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
@@ -127,8 +133,15 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
     return { sanitizedMessage, domain, primaryType };
   };
 
-  const onSign = (event) => {
-    sign(event);
+  const onSign = async () => {
+    await dispatch(resolvePendingApproval(id));
+    completedTx(id);
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (accountType === 'custody') {
+      await custodySignFn(txData);
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
       event: 'Confirm',
@@ -141,8 +154,13 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
     });
   };
 
-  const onCancel = (event) => {
-    cancel(event);
+  const onCancel = async () => {
+    await dispatch(
+      rejectPendingApproval(
+        id,
+        serializeError(ethErrors.provider.userRejectedRequest()),
+      ),
+    );
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
       event: 'Cancel',
@@ -205,7 +223,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
       <div className="signature-request-content">
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
           txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
+            SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||
         (txData?.securityProviderResponse &&
           Object.keys(txData.securityProviderResponse).length === 0) ? (
           <SecurityProviderBannerMessage
@@ -217,8 +235,8 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
           selectedAccount.address === address ? null : (
             <Box
               className="request-signature__mismatch-info"
-              display={DISPLAY.FLEX}
-              width={BLOCK_SIZES.FULL}
+              display={Display.Flex}
+              width={BlockSize.Full}
               padding={4}
               marginBottom={4}
               backgroundColor={BackgroundColor.primaryMuted}
@@ -243,10 +261,7 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="signature-request__origin">
-          <TagUrl
-            label={origin}
-            src={targetSubjectMetadata?.iconUrl}
-          />
+          <TagUrl label={origin} src={targetSubjectMetadata?.iconUrl} />
         </div>
         <Text
           className="signature-request__content__title"
@@ -320,14 +335,14 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
         />
       )}
       {unapprovedMessagesCount > 1 ? (
-        <Button
-          type="link"
+        <ButtonLink
+          size={Size.inherit}
           className="signature-request__reject-all-button"
           data-testid="signature-request-reject-all"
           onClick={handleCancelAll}
         >
           {t('rejectRequestsN', [unapprovedMessagesCount])}
-        </Button>
+        </ButtonLink>
       ) : null}
     </div>
   );
@@ -335,8 +350,6 @@ const SignatureRequest = ({ txData, sign, cancel }) => {
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
-  sign: PropTypes.func,
-  cancel: PropTypes.func,
 };
 
 export default SignatureRequest;

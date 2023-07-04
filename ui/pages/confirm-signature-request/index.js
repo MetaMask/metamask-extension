@@ -15,16 +15,12 @@ import {
   getTotalUnapprovedSignatureRequestCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
-  getAccountType,
   ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { useMMICustodySignMessage } from '../../hooks/useMMICustodySignMessage';
-///: END:ONLY_INCLUDE_IN
 
 const signatureSelect = (txData) => {
   const {
@@ -70,8 +66,6 @@ const ConfirmTxScreen = ({ match }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
-  const accountType = useSelector(getAccountType);
-  const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
