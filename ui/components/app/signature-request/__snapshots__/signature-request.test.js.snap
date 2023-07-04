@@ -766,9 +766,8 @@ exports[`Signature Request Component render should match snapshot when we are us
       </footer>
     </div>
     <button
-      class="box mm-text mm-button-base mm-button-base--size-md signature-request__reject-all-button mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+      class="box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
       data-testid="signature-request-reject-all"
-      type="link"
     >
       Reject 2 requests
     </button>
@@ -1542,9 +1541,8 @@ exports[`Signature Request Component render should match snapshot when we want t
       </footer>
     </div>
     <button
-      class="box mm-text mm-button-base mm-button-base--size-md signature-request__reject-all-button mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+      class="box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
       data-testid="signature-request-reject-all"
-      type="link"
     >
       Reject 2 requests
     </button>
