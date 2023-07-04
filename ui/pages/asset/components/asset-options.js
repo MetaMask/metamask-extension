@@ -7,13 +7,16 @@ import { I18nContext } from '../../../contexts/i18n';
 import { Menu, MenuItem } from '../../../components/ui/menu';
 import { getBlockExplorerLinkText } from '../../../selectors';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { ButtonIcon, IconName } from '../../../components/component-library';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+} from '../../../components/component-library';
 import { Color } from '../../../helpers/constants/design-system';
 
 const AssetOptions = ({
   onRemove,
   onClickBlockExplorer,
-  onViewAccountDetails,
   onViewTokenDetails,
   tokenSymbol,
   isNativeAsset,
@@ -42,22 +45,13 @@ const AssetOptions = ({
         ariaLabel={t('assetOptions')}
         iconName={IconName.MoreVertical}
         color={Color.textDefault}
+        size={ButtonIconSize.Sm}
       />
       {assetOptionsOpen ? (
         <Menu
           anchorElement={ref.current}
           onHide={() => setAssetOptionsOpen(false)}
         >
-          <MenuItem
-            iconName={IconName.ScanBarcode}
-            data-testid="asset-options__account-details"
-            onClick={() => {
-              setAssetOptionsOpen(false);
-              onViewAccountDetails();
-            }}
-          >
-            {t('accountDetails')}
-          </MenuItem>
           <MenuItem
             iconName={IconName.Export}
             data-testid="asset-options__etherscan"
@@ -111,7 +105,6 @@ const isNotFunc = (p) => {
 AssetOptions.propTypes = {
   isNativeAsset: PropTypes.bool,
   onClickBlockExplorer: PropTypes.func.isRequired,
-  onViewAccountDetails: PropTypes.func.isRequired,
   onRemove: (props) => {
     if (props.isNativeAsset === false && isNotFunc(props.onRemove)) {
       throw new Error(
