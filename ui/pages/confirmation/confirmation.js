@@ -372,8 +372,7 @@ export default function ConfirmationPage({
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           !isSnapDialog &&
             ///: END:ONLY_INCLUDE_IN
-            pendingConfirmation.origin === 'metamask' &&
-            originMetadata?.origin && (
+            pendingConfirmation.origin === 'metamask' && (
               <Box
                 alignItems={AlignItems.center}
                 paddingTop={2}

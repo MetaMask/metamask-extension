@@ -64,12 +64,12 @@ function getValues(pendingApproval, t, actions, _history) {
                 key: 'message',
                 element: 'Box',
                 props: {
-                  alignItems: AlignItems.Center,
+                  alignItems: AlignItems.center,
                   textAlign: TextAlign.Center,
                 },
                 children: processError(
                   pendingApproval.requestData.error,
-                  'The operation failed.',
+                  t('operationFailed'),
                 ),
               },
             ],

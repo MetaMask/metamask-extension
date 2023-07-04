@@ -2986,6 +2986,9 @@
   "openSeaNew": {
     "message": "OpenSea"
   },
+  "operationCompletedSuccessfully": {
+    "message": "The operation completed successfully."
+  },
   "operationFailed": {
     "message": "Operation Failed"
   },

@@ -1144,9 +1144,6 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
-          `${this.approvalController.name}:startFlow`,
-          `${this.approvalController.name}:showSuccess`,
-          `${this.approvalController.name}:showError`,
         ],
       }),
     });
