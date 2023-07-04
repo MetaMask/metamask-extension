@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
   IconColor,
@@ -18,6 +17,7 @@ import {
   ButtonIcon,
   ButtonLink,
   IconName,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
