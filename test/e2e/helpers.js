@@ -294,22 +294,52 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+/**
+ * Begin the create new wallet flow on onboarding screen.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingBeginCreateNewWallet = async (driver) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+};
 
+/**
+ * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
+ *
+ * @param {WebDriver} driver
+ * @param {boolean} optin - true to opt into metrics, default is false
+ */
+const onboardingChooseMetametricsOption = async (driver, optin = false) => {
+  const optionIdentifier = optin ? 'i-agree' : 'no-thanks';
   // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
+};
 
+/**
+ * Set a password for MetaMask during onboarding
+ *
+ * @param {WebDriver} driver
+ * @param {string} password - Password to set
+ */
+const onboardingCreatePassword = async (driver, password) => {
   // create password
   await driver.fill('[data-testid="create-password-new"]', password);
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
+};
 
+/**
+ * Choose to secure wallet, and then get recovery phrase and confirm the SRP
+ * during onboarding flow.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingRevealAndConfirmSRP = async (driver) => {
   // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
@@ -336,14 +366,38 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+};
 
+/**
+ * Complete the onboarding flow by confirming completion. Final step before the
+ * reminder to pin the extension.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingCompleteWalletCreation = async (driver) => {
   // complete
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+};
 
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreation(driver);
+  await onboardingPinExtension(driver);
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
@@ -687,6 +741,30 @@ async function switchToNotificationWindow(driver) {
   await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
 }
 
+/**
+ * When mocking the segment server and returning an array of mocks from the
+ * mockServer method, this method will allow getting all of the seen requests
+ * for each mock in the array.
+ *
+ * @param {WebDriver} driver
+ * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ */
+async function getEventPayloads(driver, mockedEndpoints) {
+  await driver.wait(async () => {
+    let isPending = true;
+    for (const mockedEndpoint of mockedEndpoints) {
+      isPending = await mockedEndpoint.isPending();
+    }
+    return isPending === false;
+  }, 10000);
+  const mockedRequests = [];
+  for (const mockedEndpoint of mockedEndpoints) {
+    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+  }
+  return mockedRequests.map((req) => req.body.json.batch).flat();
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -734,4 +812,11 @@ module.exports = {
   sleepSeconds,
   terminateServiceWorker,
   switchToNotificationWindow,
+  getEventPayloads,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
 };

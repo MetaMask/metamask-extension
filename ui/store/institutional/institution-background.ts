@@ -91,14 +91,17 @@ export function mmiActionsFactory() {
     };
   }
 
-  function createAction(name: string, payload: any) {
-    return () => {
-      callBackgroundMethod(name, [payload], (err) => {
-        if (isErrorWithMessage(err)) {
-          throw new Error(err.message);
+  function createAction(name: string, payload: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      callBackgroundMethod(name, [payload], (error) => {
+        if (error) {
+          reject(error);
+          return;
         }
+
+        resolve();
       });
-    };
+    });
   }
 
   return {
@@ -190,18 +193,27 @@ export function mmiActionsFactory() {
       createAction('syncReportsInProgress', { address, historicalReports }),
     removeConnectInstitutionalFeature: (origin: string, projectId: string) =>
       createAction('removeConnectInstitutionalFeature', { origin, projectId }),
-    removeAddTokenConnectRequest: (
-      origin: string,
-      apiUrl: string,
-      token: string,
-    ) =>
+    removeAddTokenConnectRequest: ({
+      origin,
+      apiUrl,
+      token,
+    }: {
+      origin: string;
+      apiUrl: string;
+      token: string;
+    }) =>
       createAction('removeAddTokenConnectRequest', { origin, apiUrl, token }),
-    setCustodianConnectRequest: (
-      token: string,
-      apiUrl: string,
-      custodianType: string,
-      custodianName: string,
-    ) =>
+    setCustodianConnectRequest: ({
+      token,
+      apiUrl,
+      custodianType,
+      custodianName,
+    }: {
+      token: string;
+      apiUrl: string;
+      custodianType: string;
+      custodianName: string;
+    }) =>
       createAsyncAction('setCustodianConnectRequest', [
         { token, apiUrl, custodianType, custodianName },
       ]),

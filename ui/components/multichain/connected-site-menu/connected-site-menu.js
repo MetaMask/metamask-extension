@@ -11,7 +11,7 @@ import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -41,7 +41,7 @@ export const ConnectedSiteMenu = ({
       data-testid="connection-menu"
       as="button"
       onClick={onClick}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
       backgroundColor={BackgroundColor.backgroundDefault}
