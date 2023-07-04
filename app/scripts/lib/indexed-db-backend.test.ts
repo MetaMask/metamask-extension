@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 
-import { IndexexDBPPOMStorage } from './indexed-db-backend';
+import { IndexedDBPPOMStorage } from './indexed-db-backend';
 
 Object.defineProperty(globalThis, 'crypto', {
   value: {
@@ -13,14 +13,14 @@ Object.defineProperty(globalThis, 'crypto', {
 const enc = new TextEncoder();
 const dec = new TextDecoder('utf-8');
 
-describe('IndexexDBPPOMStorage', () => {
+describe('IndexedDBPPOMStorage', () => {
   it('should be able to initialise correctly', () => {
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     expect(indexDBBackend).toBeDefined();
   });
 
   it('should be able to write and read file data if checksum matches', async () => {
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       { name: 'fake_name', chainId: '5' },
       enc.encode('fake_data'),
@@ -34,7 +34,7 @@ describe('IndexexDBPPOMStorage', () => {
   });
 
   it('should fail to write if checksum does not match', async () => {
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await expect(async () => {
       await indexDBBackend.write(
         { name: 'fake_name', chainId: '5' },
@@ -45,7 +45,7 @@ describe('IndexexDBPPOMStorage', () => {
   });
 
   it('should fail to read if checksum does not match', async () => {
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await expect(async () => {
       await indexDBBackend.write(
         { name: 'fake_name', chainId: '5' },
@@ -57,7 +57,7 @@ describe('IndexexDBPPOMStorage', () => {
   });
 
   it('should delete a file when delete method is called', async () => {
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       { name: 'fake_name', chainId: '5' },
       enc.encode('fake_data'),
@@ -76,7 +76,7 @@ describe('IndexexDBPPOMStorage', () => {
       { chainId: '5', name: 'fake_name_1' },
       { chainId: '1', name: 'fake_name_2' },
     ];
-    const indexDBBackend = new IndexexDBPPOMStorage('PPOMDB', 1);
+    const indexDBBackend = new IndexedDBPPOMStorage('PPOMDB', 1);
     await indexDBBackend.write(
       keys[0],
       enc.encode('fake_data_1'),

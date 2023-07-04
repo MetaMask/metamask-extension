@@ -20,7 +20,7 @@ const validateChecksum = async (
   }
 };
 
-export class IndexexDBPPOMStorage implements StorageBackend {
+export class IndexedDBPPOMStorage implements StorageBackend {
   private storeName: string;
 
   private dbVersion: number;
