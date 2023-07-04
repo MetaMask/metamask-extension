@@ -9,9 +9,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -23,12 +20,7 @@ import {
 } from '../../component-library';
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  ENVIRONMENT_TYPE_POPUP,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -114,44 +106,22 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        <>
-          {mmiPortfolioEnabled && (
-            <MenuItem
-              iconName={IconName.Diagram}
-              onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.UserClickedPortfolioButton,
-                });
-                window.open(mmiPortfolioUrl, '_blank');
-                closeMenu();
-              }}
-              data-testid="global-menu-mmi-portfolio"
-            >
-              {t('portfolioDashboard')}
-            </MenuItem>
-          )}
-
+        mmiPortfolioEnabled && (
           <MenuItem
-            iconName={IconName.Compliance}
+            iconName={IconName.Diagram}
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.UserClickedCompliance,
+                event: MetaMetricsEventName.UserClickedPortfolioButton,
               });
-              if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                global.platform.openExtensionInBrowser(
-                  COMPLIANCE_FEATURE_ROUTE,
-                );
-              } else {
-                history.push(COMPLIANCE_FEATURE_ROUTE);
-              }
+              window.open(mmiPortfolioUrl, '_blank');
+              closeMenu();
             }}
-            data-testid="global-menu-mmi-compliance"
+            data-testid="global-menu-mmi-portfolio"
           >
-            {t('compliance')}
+            {t('portfolioDashboard')}
           </MenuItem>
-        </>
+        )
         ///: END:ONLY_INCLUDE_IN
       }
 

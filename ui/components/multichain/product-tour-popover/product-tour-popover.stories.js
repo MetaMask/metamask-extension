@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProductTour } from './product-tour-popover';
+import { ProductTour } from '.';
 
 export default {
   title: 'Components/Multichain/ProductTour',
