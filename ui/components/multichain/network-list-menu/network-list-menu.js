@@ -18,7 +18,6 @@ import {
   getAllEnabledNetworks,
   getCurrentChainId,
 } from '../../../selectors';
-import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
 import {
   Display,
@@ -28,6 +27,7 @@ import {
   BUTTON_SECONDARY_SIZES,
   ButtonSecondary,
   Text,
+  Box,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
