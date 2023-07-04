@@ -15,8 +15,8 @@ import {
   IconName,
   PopoverHeader,
   Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

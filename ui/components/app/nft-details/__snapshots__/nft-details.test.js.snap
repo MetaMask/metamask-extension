@@ -46,7 +46,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box nft-details__nft-item box--flex-direction-row"
       >
         <button
-          class="box nft-item__container box--flex-direction-row"
+          class="mm-box nft-item__container"
           data-testid="nft-item"
         >
           <div
@@ -54,7 +54,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           >
             <img
               alt="MUNK #1 1"
-              class="box nft-item__item nft-item__item-image box--display-block box--flex-direction-row box--justify-content-center"
+              class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
               data-testid="nft-image"
               src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
             />

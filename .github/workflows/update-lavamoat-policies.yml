@@ -223,3 +223,37 @@ jobs:
           HAS_CHANGES: ${{ steps.policy-changes.outputs.HAS_CHANGES }}
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
+
+  check-status:
+    name: Check whether the policy update succeeded
+    runs-on: ubuntu-latest
+    needs:
+      - commit-updated-policies
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set PASSED output
+        id: set-output
+        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+
+  failure-comment:
+    name: Comment about the policy update failure
+    if: ${{ always() && needs.is-fork-pull-request.outputs.IS_FORK == 'false' }}
+    runs-on: ubuntu-latest
+    needs:
+      - is-fork-pull-request
+      - check-status
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+      - name: Post comment if the update failed
+        run: |
+          passed="${{ needs.check-status.outputs.PASSED }}"
+          if [[ $passed != "true" ]]; then
+            gh pr comment "${PR_NUMBER}" --body "Policy update failed. You can [review the logs or retry the policy update here](${ACTION_RUN_URL})"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          ACTION_RUN_URL: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
