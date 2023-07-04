@@ -13,7 +13,11 @@ const NoteToTrader = (props) => {
 
   return (
     <Box className="confirm-page-container-content__data">
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} padding={4}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        padding={4}
+      >
         <Box
           className="note-header"
           display={Display.Flex}
