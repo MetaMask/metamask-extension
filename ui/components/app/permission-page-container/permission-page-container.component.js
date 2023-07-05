@@ -7,6 +7,7 @@ import {
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/rpc-methods';
 ///: END:ONLY_INCLUDE_IN
+import { SubjectType } from '@metamask/permission-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { PageContainerFooter } from '../../ui/page-container';
 import PermissionsConnectFooter from '../permissions-connect-footer';
@@ -210,7 +211,9 @@ export default class PermissionPageContainer extends Component {
           allIdentitiesSelected={allIdentitiesSelected}
         />
         <div className="permission-approval-container__footers">
-          <PermissionsConnectFooter />
+          {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
+            <PermissionsConnectFooter />
+          )}
           <PageContainerFooter
             cancelButtonType="default"
             onCancel={() => this.onCancel()}
