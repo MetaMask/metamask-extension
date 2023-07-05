@@ -103,28 +103,28 @@ describe('Transaction Finalized Event', function () {
           transactionSubmittedNoMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          'Transaction Submitted event with sensitive properties does not have a messageId beginning with "transaction-submitted"',
+          `Transaction Submitted event with sensitive properties has messageId "${transactionSubmittedNoMMId.messageId}" does not have a messageId beginning with "transaction-submitted"`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          'Transaction Finalized event with sensitive properties does not have a messageId beginning with "transaction-submitted"',
+          `Transaction Finalized event with sensitive properties has messageId "${transactionFinalizedNoMMId.messageId}" that does not begin with "transaction-submitted"`,
         );
 
         assert.ok(
           transactionSubmittedWithMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          'Transaction Submitted event does not have a messageId beginning with "transaction-submitted"',
+          `Transaction Submitted event has messageId "${transactionSubmittedWithMMId.messageId}" that does not begin with "transaction-submitted"`,
         );
 
         assert.ok(
           transactionFinalizedWithMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          'Transaction Finalized event does not have a messageId beginning with "transaction-submitted"',
+          `Transaction Finalized event has messageID "${transactionFinalizedWithMMId.messageId}" that does not begin with "transaction-submitted"`,
         );
 
         // Assert that the events with sensitive properties should have messageIds ending in 0x000
@@ -132,23 +132,23 @@ describe('Transaction Finalized Event', function () {
 
         assert.ok(
           transactionSubmittedNoMMId.messageId.endsWith('0x000'),
-          'Transaction Submitted event with sensitive properties does not have a messageId ending in "0x000" to differentiate it from the event that does not include sensitive data.',
+          `Transaction Submitted event with sensitive properties has messageId "${transactionSubmittedNoMMId.messageId}" that does not end in "0x000" to differentiate it from the event that does not include sensitive data.`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.endsWith('0x000'),
-          'Transaction Finalized event with sensitive properties does not have a messageId ending in "0x000" to differentiate it from the event that does not include sensitive data.',
+          `Transaction Finalized event with sensitive properties has messageID "${transactionFinalizedNoMMId.messageId}" that does not end in "0x000" to differentiate it from the event that does not include sensitive data.`,
         );
 
         // Assert that transaction finalized events contain '-success-' in their messageId
         assert.ok(
           transactionFinalizedWithMMId.messageId.includes('-success-'),
-          'Transaction Finalized event messageId does not contain "-success-"',
+          `Transaction Finalized event has messageId "${transactionFinalizedWithMMId.messageId}" that does not contain "-success-"`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.includes('-success-'),
-          'Transaction Finalized event with sensitive properties messageId does not contain "-success-"',
+          `Transaction Finalized event with sensitive properties has messageID "${transactionFinalizedNoMMId.messageId}" that does not contain "-success-"`,
         );
 
         // Assert that the events with sensitive data do not contain a userId (the random anonymous id generated when a user opts into metametrics)
