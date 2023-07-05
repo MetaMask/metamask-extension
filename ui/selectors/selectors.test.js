@@ -321,7 +321,7 @@ describe('Selectors', () => {
   });
 
   describe('#getAllEnabledNetworks', () => {
-    it('returns only MainNet with showTestNetworks off', () => {
+    it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({
         metamask: {
           preferences: {
