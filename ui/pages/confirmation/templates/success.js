@@ -58,7 +58,7 @@ function getValues(pendingApproval, t, actions, _history) {
                   fontWeight: FontWeight.Bold,
                   paddingBottom: 2,
                 },
-                children: 'Success',
+                children: t('resultPageSuccess'),
               },
               {
                 key: 'message',
@@ -69,7 +69,7 @@ function getValues(pendingApproval, t, actions, _history) {
                 },
                 children: processString(
                   pendingApproval.requestData.message,
-                  t('operationCompletedSuccessfully'),
+                  t('resultPageSuccessDefaultMessage'),
                 ),
               },
             ],

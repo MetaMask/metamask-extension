@@ -58,7 +58,7 @@ function getValues(pendingApproval, t, actions, _history) {
                   fontWeight: FontWeight.Bold,
                   paddingBottom: 2,
                 },
-                children: 'Error',
+                children: t('resultPageError'),
               },
               {
                 key: 'message',
@@ -69,7 +69,7 @@ function getValues(pendingApproval, t, actions, _history) {
                 },
                 children: processError(
                   pendingApproval.requestData.error,
-                  t('operationFailed'),
+                  t('resultPageErrorDefaultMessage'),
                 ),
               },
             ],

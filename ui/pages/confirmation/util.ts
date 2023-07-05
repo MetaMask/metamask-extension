@@ -10,6 +10,14 @@ type TemplateRendererComponent = {
     | (string | TemplateRendererComponent)[];
 };
 
+/**
+ * Processes an error message or ResultComponent and returns a TemplateRendererComponent
+ * or an array of strings | TemplateRendererComponents.
+ *
+ * @param input - The message or component to process.
+ * @param fallback - The fallback message to use when the input is not valid.
+ * @returns The processed error component.
+ */
 export function processError(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
@@ -31,6 +39,14 @@ export function processError(
   };
 }
 
+/**
+ * Processes a string or ResultComponent and returns a string or TemplateRendererComponent
+ * or an array of strings | TemplateRendererComponents.
+ *
+ * @param input - The message or component to process.
+ * @param fallback - The fallback string to use when the input is not valid.
+ * @returns The processed message.
+ */
 export function processString(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
@@ -47,7 +63,12 @@ export function processString(
 
   return applyBold(currentInput);
 }
-
+/**
+ * Applies bold formatting to the message.
+ *
+ * @param message - The input message to apply bold formatting to.
+ * @returns The formatted message.
+ */
 export function applyBold(
   message: string,
 ): (string | TemplateRendererComponent)[] {
@@ -59,7 +80,14 @@ export function applyBold(
     children: formattedText,
   }));
 }
-
+/**
+ * Finds and formats markdown elements in the given text.
+ *
+ * @param text - The input text to search for markdown elements.
+ * @param pattern - The pattern to match the markdown elements.
+ * @param getElement - The callback function to create the formatted elements.
+ * @returns The array of formatted elements.
+ */
 export function findMarkdown(
   text: string,
   pattern: RegExp,
