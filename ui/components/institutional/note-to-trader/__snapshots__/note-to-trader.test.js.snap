@@ -6,7 +6,7 @@ exports[`NoteToTrader should render the Note to trader component 1`] = `
     class="box confirm-page-container-content__data box--flex-direction-row"
   >
     <div
-      class="box box--display-flex box--flex-direction-row"
+      class="box box--padding-4 box--display-flex box--flex-direction-column"
     >
       <div
         class="box note-header box--display-flex box--flex-direction-row box--justify-content-space-between"

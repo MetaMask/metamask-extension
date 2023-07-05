@@ -15,6 +15,7 @@ import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
   BUTTON_SECONDARY_SIZES,
   ButtonSecondary,
+  Box,
 } from '../../component-library';
 import {
   AlignItems,
@@ -29,7 +30,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box/box';
 
 export const AccountDetailsDisplay = ({
   accounts,

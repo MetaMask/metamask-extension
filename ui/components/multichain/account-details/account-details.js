@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import Popover from '../../ui/popover/popover.component';
 import {
   setAccountDetailsAddress,
   clearAccountDetails,
@@ -11,19 +10,18 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
-  ButtonIcon,
-  IconName,
-  PopoverHeader,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
-  JustifyContent,
   TextVariant,
-  Size,
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
@@ -61,85 +59,68 @@ export const AccountDetails = ({ address }) => {
       }
       address={address}
       size={AvatarAccountSize.Lg}
+      style={{ margin: '0 auto' }}
     />
   );
 
   return (
-    <Popover
-      headerProps={{
-        paddingBottom: 1,
-      }}
-      contentProps={{
-        paddingLeft: 4,
-        paddingRight: 4,
-        paddingBottom: 4,
-      }}
-      title={
-        attemptingExport ? (
-          <PopoverHeader
-            startAccessory={
-              <ButtonIcon
-                onClick={() => {
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader
+          onClose={onClose}
+          onBack={
+            attemptingExport
+              ? () => {
                   dispatch(hideWarning());
                   setAttemptingExport(false);
-                }}
-                iconName={IconName.ArrowLeft}
-                size={Size.SM}
-              />
-            }
-          >
-            {t('showPrivateKey')}
-          </PopoverHeader>
-        ) : (
-          <PopoverHeader
-            childrenWrapperProps={{
-              display: Display.Text,
-              justifyContent: JustifyContent.center,
-            }}
-          >
-            <Box paddingLeft={6}>{avatar}</Box>
-          </PopoverHeader>
-        )
-      }
-      onClose={onClose}
-    >
-      {attemptingExport ? (
-        <>
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            flexDirection={FlexDirection.Column}
-          >
-            {avatar}
-            <Text
-              marginTop={2}
-              marginBottom={2}
-              variant={TextVariant.bodyLgMedium}
-              style={{ wordBreak: 'break-word' }}
+                }
+              : null
+          }
+        >
+          {attemptingExport ? t('showPrivateKey') : avatar}
+        </ModalHeader>
+        {attemptingExport ? (
+          <>
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              flexDirection={FlexDirection.Column}
             >
-              {name}
-            </Text>
-            <AddressCopyButton address={address} shorten />
-          </Box>
-          {privateKey ? (
-            <AccountDetailsKey
-              accountName={name}
-              onClose={onClose}
-              privateKey={privateKey}
-            />
-          ) : (
-            <AccountDetailsAuthenticate address={address} onCancel={onClose} />
-          )}
-        </>
-      ) : (
-        <AccountDetailsDisplay
-          accounts={accounts}
-          accountName={name}
-          address={address}
-          onExportClick={() => setAttemptingExport(true)}
-        />
-      )}
-    </Popover>
+              {avatar}
+              <Text
+                marginTop={2}
+                marginBottom={2}
+                variant={TextVariant.bodyLgMedium}
+                style={{ wordBreak: 'break-word' }}
+              >
+                {name}
+              </Text>
+              <AddressCopyButton address={address} shorten />
+            </Box>
+            {privateKey ? (
+              <AccountDetailsKey
+                accountName={name}
+                onClose={onClose}
+                privateKey={privateKey}
+              />
+            ) : (
+              <AccountDetailsAuthenticate
+                address={address}
+                onCancel={onClose}
+              />
+            )}
+          </>
+        ) : (
+          <AccountDetailsDisplay
+            accounts={accounts}
+            accountName={name}
+            address={address}
+            onExportClick={() => setAttemptingExport(true)}
+          />
+        )}
+      </ModalContent>
+    </Modal>
   );
 };
 
