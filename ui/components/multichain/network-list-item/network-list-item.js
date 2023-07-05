@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
   IconColor,
@@ -10,14 +9,15 @@ import {
   Size,
   JustifyContent,
   TextColor,
-  BLOCK_SIZES,
   BackgroundColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   ButtonIcon,
   ButtonLink,
   IconName,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
@@ -69,7 +69,7 @@ export const NetworkListItem = ({
       })}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       ref={networkRef}
     >
       {selected && (

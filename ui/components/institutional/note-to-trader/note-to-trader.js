@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Label, Text } from '../../component-library';
@@ -13,10 +13,14 @@ const NoteToTrader = (props) => {
 
   return (
     <Box className="confirm-page-container-content__data">
-      <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.ROW}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        padding={4}
+      >
         <Box
           className="note-header"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
           <Label htmlFor="transaction-note">{labelText}</Label>
@@ -25,8 +29,8 @@ const NoteToTrader = (props) => {
           </Text>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           className="note-field"
         >
           <textarea

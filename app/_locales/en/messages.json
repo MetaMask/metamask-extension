@@ -271,6 +271,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addSnapAccountModalDescription": {
+    "message": "Discover options to keep your account secure with MetaMask Snaps"
+  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -670,9 +673,6 @@
   "coingecko": {
     "message": "CoinGecko"
   },
-  "compliance": {
-    "message": "Compliance"
-  },
   "complianceActivatedDesc": {
     "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
   },
@@ -705,6 +705,21 @@
   },
   "complianceSettingsExplanation": {
     "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
+  },
+  "configureSnapPopupDescription": {
+    "message": "You're now leaving MetaMask to configure this snap."
+  },
+  "configureSnapPopupInstallDescription": {
+    "message": "You're now leaving MetaMask to install this snap."
+  },
+  "configureSnapPopupInstallTitle": {
+    "message": "Install snap"
+  },
+  "configureSnapPopupLink": {
+    "message": "Click this link to continue:"
+  },
+  "configureSnapPopupTitle": {
+    "message": "Configure snap"
   },
   "confirm": {
     "message": "Confirm"
@@ -1700,6 +1715,9 @@
   },
   "general": {
     "message": "General"
+  },
+  "getStarted": {
+    "message": "Get started"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -3126,6 +3144,10 @@
     "message": "Allow the snap to run indefinitely while, for example, processing large amounts of data.",
     "description": "An extended description for the `endowment:long-running` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Add and control Ethereum accounts",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
@@ -3739,6 +3761,9 @@
     "message": "Set a spending cap for your $1",
     "description": "$1 is a token symbol"
   },
+  "settingAddSnapAccount": {
+    "message": "Add snap account"
+  },
   "settings": {
     "message": "Settings"
   },
@@ -3843,6 +3868,9 @@
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
+  "snapConfigure": {
+    "message": "Configure"
+  },
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3850,6 +3878,47 @@
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Choose how to secure your new account using MetaMask Snaps."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Create a $1 account",
+    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "By MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Audit"
+  },
+  "snapDetailDeveloper": {
+    "message": "Developer"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Updated"
+  },
+  "snapDetailManageSnap": {
+    "message": "Manage snap"
+  },
+  "snapDetailTags": {
+    "message": "Tags"
+  },
+  "snapDetailVersion": {
+    "message": "Version"
+  },
+  "snapDetailWebsite": {
+    "message": "Website"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Create a Snap Account"
+  },
+  "snapDetailsInstalled": {
+    "message": "Installed"
   },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
@@ -3892,6 +3961,9 @@
     "message": "Installation failed",
     "description": "Error title used when snap installation fails."
   },
+  "snapIsAudited": {
+    "message": "Audited"
+  },
   "snapResultError": {
     "message": "Error"
   },
@@ -3903,6 +3975,9 @@
   },
   "snapUpdate": {
     "message": "Update snap"
+  },
+  "snapUpdateAvailable": {
+    "message": "Update available"
   },
   "snapUpdateErrorDescription": {
     "message": "$1 couldn’t be updated.",
