@@ -101,7 +101,7 @@ export default function AddNft() {
     const tokenDetails = await getTokenStandardAndDetails(
       nftAddress,
       null,
-      tokenId
+      tokenId,
     );
 
     trackEvent({
