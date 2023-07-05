@@ -186,14 +186,8 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const {
-      accounts,
-      selectedAddress,
-      nativeCurrency,
-      nativeCurrencyImage,
-      sendAsset,
-    } = this.props;
-
+    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
+      this.props;
     const { sendableTokens, sendableNfts } = this.state;
 
     const balanceValue = accounts[selectedAddress]
@@ -211,15 +205,11 @@ export default class SendAssetRow extends Component {
         onClick={() => this.selectToken(AssetType.native)}
       >
         <div className="send-v2__asset-dropdown__asset-icon">
-          {sendAsset?.type === AssetType.NFT && sendAsset?.details?.image ? (
-            <img width={36} src={sendAsset.details.image} />
-          ) : (
-            <Identicon
-              diameter={36}
-              image={nativeCurrencyImage}
-              address={nativeCurrency}
-            />
-          )}
+          <Identicon
+            diameter={36}
+            image={nativeCurrencyImage}
+            address={nativeCurrency}
+          />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
           <div className="send-v2__asset-dropdown__symbol">

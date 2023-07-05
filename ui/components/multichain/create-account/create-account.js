@@ -6,6 +6,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
@@ -15,7 +16,6 @@ import {
 } from '../../../selectors';
 import { addNewAccount, setAccountLabel } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import Box from '../../ui/box/box';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,

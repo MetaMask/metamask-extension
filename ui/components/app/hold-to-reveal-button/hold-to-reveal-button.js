@@ -2,11 +2,9 @@ import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
-import { Button } from '../../component-library';
-import Box from '../../ui/box';
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -15,6 +13,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { Button, Box } from '../../component-library';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -131,7 +130,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           className="hold-to-reveal-button__lock-icon-container"
@@ -197,10 +196,10 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
 
   return (
     <Button
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
+      onPointerDown={onMouseDown} // allows for touch and mouse events
+      onPointerUp={onMouseUp} // allows for touch and mouse events
       className="hold-to-reveal-button__button-hold"
-      textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
+      textProps={{ display: Display.Flex, alignItems: AlignItems.center }}
     >
       <Box className="hold-to-reveal-button__icon-container" marginRight={2}>
         {renderPreCompleteContent()}

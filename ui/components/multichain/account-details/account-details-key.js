@@ -6,6 +6,7 @@ import {
   ButtonPrimary,
   IconName,
   Text,
+  Box,
 } from '../../component-library';
 import {
   AlignItems,
@@ -17,7 +18,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../ui/box/box';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {

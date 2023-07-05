@@ -1316,6 +1316,8 @@ export default class TransactionController extends EventEmitter {
         txMeta.custodyId,
         fromAddress,
       );
+
+      return null;
     }
     ///: END:ONLY_INCLUDE_IN
 
