@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
-import { APPROVAL_TYPE_RESULT_SUCCESS } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import Confirmation from '../confirmation';
 
@@ -48,7 +48,7 @@ describe('success template', () => {
         pendingApprovals: {
           [mockApprovalId]: {
             ...mockApproval,
-            type: APPROVAL_TYPE_RESULT_SUCCESS,
+            type: ApprovalType.ResultSuccess,
           },
         },
       },

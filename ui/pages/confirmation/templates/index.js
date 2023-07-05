@@ -1,10 +1,6 @@
 import { omit, pick } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
-  APPROVAL_TYPE_RESULT_ERROR,
-  APPROVAL_TYPE_RESULT_SUCCESS,
-} from '@metamask/approval-controller';
-import {
   rejectPendingApproval,
   resolvePendingApproval,
   setNewNetworkAdded,
@@ -24,8 +20,8 @@ const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
   // Use ApprovalType from utils controller
-  [APPROVAL_TYPE_RESULT_SUCCESS]: success,
-  [APPROVAL_TYPE_RESULT_ERROR]: error,
+  [ApprovalType.ResultSuccess]: success,
+  [ApprovalType.ResultError]: error,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,

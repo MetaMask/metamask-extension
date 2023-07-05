@@ -3857,29 +3857,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/approval-controller@npm:3.3.0"
+"@metamask/approval-controller@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@metamask/approval-controller@npm:3.4.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 1fa6111a897d6f4aa369fd1a669fb5e16558277019f9d6c61449aea0d7b2672a62c189e5b3d9e84ab6e4d5826932c78d2bdb0f05aafb184a4ff07903c46abf2c
-  languageName: node
-  linkType: hard
-
-"@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.3.0
-  resolution: "@metamask/approval-controller@patch:@metamask/approval-controller@npm%3A3.3.0#./.yarn/patches/@metamask-approval-controller-npm-3.3.0-b441086d73.patch::version=3.3.0&hash=be1fe6&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/utils": ^5.0.2
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    nanoid: ^3.1.31
-  checksum: faf6c58b42cad95efc63d174e1ded24c2237dce5bb2003f208f67925cb1b1a755ba5b9cb441f17e281e7655d9b2a6a2cbd8e6df10a7c4210ba1496231894dfc6
+  checksum: 153136800fbd8cd50e2d6012740526c55e74e3f8e5aa99a05d5788e8bae04ede622608a1adf67dcf0986162e9e7d1d11b6f6f0df438904b65db7435b881c2e3f
   languageName: node
   linkType: hard
 
@@ -4021,6 +4008,23 @@ __metadata:
   linkType: hard
 
 "@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/controller-utils@npm:4.1.0"
+  dependencies:
+    "@metamask/utils": ^5.0.2
+    "@spruceid/siwe-parser": 1.1.3
+    babel-runtime: ^6.26.0
+    eth-ens-namehash: ^2.0.8
+    eth-query: ^2.1.2
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: b4975e6ca860b691931254aa749e8c4faddd04279609cf197155b38150e55da0e966bf9b2d61ee1cd070f79d16e0305d5a0ff1747e0b4ab2e1c3ab46ca84e4d7
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/controller-utils@npm:4.1.0"
   dependencies:
@@ -24491,7 +24495,7 @@ __metadata:
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
-    "@metamask/approval-controller": ^3.3.0
+    "@metamask/approval-controller": ^3.4.0
     "@metamask/assets-controllers": ^9.2.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
