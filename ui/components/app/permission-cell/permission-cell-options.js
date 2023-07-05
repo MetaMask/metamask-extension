@@ -46,7 +46,7 @@ export const PermissionCellOptions = ({
 
   const handleRevokePermission = () => {
     setShowOptions(false);
-    dispatch(revokeDynamicSnapPermissions(snapId, permissionName));
+    dispatch(revokeDynamicSnapPermissions(snapId, [permissionName]));
   };
 
   return (

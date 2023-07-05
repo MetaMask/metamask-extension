@@ -189,7 +189,7 @@ export default class PermissionPageContainer extends Component {
     ///: END:ONLY_INCLUDE_IN
 
     return (
-      <div className="page-container permission-approval-container">
+      <>
         {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           <>
@@ -220,7 +220,7 @@ export default class PermissionPageContainer extends Component {
             buttonSizeLarge={false}
           />
         </div>
-      </div>
+      </>
     );
   }
 }
