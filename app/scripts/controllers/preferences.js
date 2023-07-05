@@ -526,7 +526,8 @@ export default class PreferencesController {
   async updateSnapRegistry() {
     let snapRegistry;
     try {
-      snapRegistry = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      snapRegistry = await response.json();
     } catch (error) {
       console.error(`Failed to fetch registry: `, error);
       snapRegistry = {};
