@@ -283,11 +283,13 @@ export default class PermissionConnect extends Component {
     return redirecting ? null : (
       <Box
         style={{
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           marginBottom:
             targetSubjectMetadata.subjectType === SubjectType.Snap && '14px',
           boxShadow:
             targetSubjectMetadata.subjectType === SubjectType.Snap &&
             'var(--shadow-size-lg) var(--color-shadow-default)',
+          ///: END:ONLY_INCLUDE_IN
         }}
       >
         <div className="permissions-connect__top-bar">
@@ -310,12 +312,16 @@ export default class PermissionConnect extends Component {
             </div>
           ) : null}
         </div>
-        {targetSubjectMetadata.subjectType === SubjectType.Snap && (
-          <SnapAuthorshipHeader
-            snapId={targetSubjectMetadata.origin}
-            boxShadow="none"
-          />
-        )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          targetSubjectMetadata.subjectType === SubjectType.Snap && (
+            <SnapAuthorshipHeader
+              snapId={targetSubjectMetadata.origin}
+              boxShadow="none"
+            />
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
       </Box>
     );
   }

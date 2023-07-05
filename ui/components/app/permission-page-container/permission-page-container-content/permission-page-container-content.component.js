@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { SubjectType } from '@metamask/permission-controller';
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
-import { SubjectType } from '@metamask/permission-controller';
 
 export default class PermissionPageContainerContent extends PureComponent {
   static propTypes = {

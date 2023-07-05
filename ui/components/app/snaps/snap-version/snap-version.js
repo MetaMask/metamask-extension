@@ -18,10 +18,8 @@ import {
   Text,
 } from '../../../component-library';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SnapVersion = ({ version, url }) => {
-  const t = useI18nContext();
   return (
     <Button
       variant={BUTTON_VARIANT.LINK}
