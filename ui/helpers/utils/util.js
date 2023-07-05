@@ -53,26 +53,18 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
-/**
- * Determines if the provided chainId is a default MetaMask chain
- *
- * @param {string} chainId - chainId to check
- */
-export function isDefaultMetaMaskChain(chainId) {
-  if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LOCALHOST
-  ) {
-    return true;
-  }
 
-  return false;
-}
+const DEFAULT_CHAIN_IDS = new Set([
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.LINEA_MAINNET,
+  CHAIN_IDS.GOERLI,
+  CHAIN_IDS.SEPOLIA,
+  CHAIN_IDS.LINEA_GOERLI,
+  CHAIN_IDS.LOCALHOST,
+]);
+
+export const isDefaultMetaMaskChain = (chainId) =>
+  !chainId || DEFAULT_CHAIN_IDS.has(chainId);
 
 export function valuesFor(obj) {
   if (!obj) {
