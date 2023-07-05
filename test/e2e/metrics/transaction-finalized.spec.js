@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 const { strict: assert } = require('assert');
 const {
   defaultGanacheOptions,
@@ -11,9 +12,12 @@ const FixtureBuilder = require('../fixture-builder');
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
- * 'Transaction Submitted' and 'Transaction Finalized'. Do not use the
- * constants from the metrics constants files, because if these change we want
- * a strong indicator to our data team that the shape of data will change.
+ * 'Transaction Submitted' and 'Transaction Finalized'. In addition on the
+ * first event of each series we require a field that should only appear in the
+ * anonymized events so that we can guarantee order of seenRequests and can
+ * properly make assertions. Do not use the constants from the metrics
+ * constants files, because if these change we want a strong indicator to our
+ * data team that the shape of data will change.
  *
  * @param {import('mockttp').Mockttp} mockServer
  * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
@@ -23,7 +27,13 @@ async function mockSegment(mockServer) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Transaction Submitted' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Transaction Submitted',
+            properties: { status: 'submitted' },
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -33,7 +43,12 @@ async function mockSegment(mockServer) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Transaction Submitted' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Transaction Submitted',
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -43,7 +58,13 @@ async function mockSegment(mockServer) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Transaction Finalized' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Transaction Finalized',
+            properties: { status: 'confirmed' },
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -53,7 +74,12 @@ async function mockSegment(mockServer) {
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
       .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Transaction Finalized' }],
+        batch: [
+          {
+            type: 'track',
+            event: 'Transaction Finalized',
+          },
+        ],
       })
       .thenCallback(() => {
         return {
@@ -86,6 +112,9 @@ describe('Transaction Finalized Event', function () {
         await sendTransaction(driver, RECIPIENT, '2.0');
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+        // The order of these events is ensured by the mockSegment function
+        // which requires that the first, and third (0, 2 indexes) have the
+        // status property, which will only appear on the anonymous events.
         const transactionSubmittedNoMMId = events[0];
         const transactionSubmittedWithMMId = events[1];
         const transactionFinalizedNoMMId = events[2];
@@ -103,28 +132,28 @@ describe('Transaction Finalized Event', function () {
           transactionSubmittedNoMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          `Transaction Submitted event with sensitive properties has messageId "${transactionSubmittedNoMMId.messageId}" does not have a messageId beginning with "transaction-submitted"`,
+          `Transaction Submitted event with sensitive properties has messageId \"${transactionSubmittedNoMMId.messageId}\" does not have a messageId beginning with \"transaction-submitted\"`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          `Transaction Finalized event with sensitive properties has messageId "${transactionFinalizedNoMMId.messageId}" that does not begin with "transaction-submitted"`,
+          `Transaction Finalized event with sensitive properties has messageId \"${transactionFinalizedNoMMId.messageId}\" that does not begin with \"transaction-submitted\"`,
         );
 
         assert.ok(
           transactionSubmittedWithMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          `Transaction Submitted event has messageId "${transactionSubmittedWithMMId.messageId}" that does not begin with "transaction-submitted"`,
+          `Transaction Submitted event has messageId \"${transactionSubmittedWithMMId.messageId}\" that does not begin with \"transaction-submitted\"`,
         );
 
         assert.ok(
           transactionFinalizedWithMMId.messageId.startsWith(
             'transaction-submitted',
           ),
-          `Transaction Finalized event has messageID "${transactionFinalizedWithMMId.messageId}" that does not begin with "transaction-submitted"`,
+          `Transaction Finalized event has messageID \"${transactionFinalizedWithMMId.messageId}\" that does not begin with \"transaction-submitted\"`,
         );
 
         // Assert that the events with sensitive properties should have messageIds ending in 0x000
@@ -132,23 +161,23 @@ describe('Transaction Finalized Event', function () {
 
         assert.ok(
           transactionSubmittedNoMMId.messageId.endsWith('0x000'),
-          `Transaction Submitted event with sensitive properties has messageId "${transactionSubmittedNoMMId.messageId}" that does not end in "0x000" to differentiate it from the event that does not include sensitive data.`,
+          `Transaction Submitted event with sensitive properties has messageId \"${transactionSubmittedNoMMId.messageId}\" that does not end in \"0x000\" to differentiate it from the event that does not include sensitive data.`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.endsWith('0x000'),
-          `Transaction Finalized event with sensitive properties has messageID "${transactionFinalizedNoMMId.messageId}" that does not end in "0x000" to differentiate it from the event that does not include sensitive data.`,
+          `Transaction Finalized event with sensitive properties has messageID \"${transactionFinalizedNoMMId.messageId}\" that does not end in \"0x000\" to differentiate it from the event that does not include sensitive data.`,
         );
 
         // Assert that transaction finalized events contain '-success-' in their messageId
         assert.ok(
           transactionFinalizedWithMMId.messageId.includes('-success-'),
-          `Transaction Finalized event has messageId "${transactionFinalizedWithMMId.messageId}" that does not contain "-success-"`,
+          `Transaction Finalized event has messageId \"${transactionFinalizedWithMMId.messageId}\" that does not contain "-success-"`,
         );
 
         assert.ok(
           transactionFinalizedNoMMId.messageId.includes('-success-'),
-          `Transaction Finalized event with sensitive properties has messageID "${transactionFinalizedNoMMId.messageId}" that does not contain "-success-"`,
+          `Transaction Finalized event with sensitive properties has messageID \"${transactionFinalizedNoMMId.messageId}\" that does not contain "-success-"`,
         );
 
         // Assert that the events with sensitive data do not contain a userId (the random anonymous id generated when a user opts into metametrics)
