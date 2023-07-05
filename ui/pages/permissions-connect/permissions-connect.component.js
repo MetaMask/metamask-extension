@@ -277,7 +277,12 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar() {
-    const { redirecting, targetSubjectMetadata } = this.state;
+    const {
+      redirecting,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      targetSubjectMetadata,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.state;
     const { page, isRequestingAccounts, totalPages } = this.props;
     const { t } = this.context;
     return redirecting ? null : (
