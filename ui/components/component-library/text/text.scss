@@ -32,6 +32,9 @@ $text-variants: (
   // Set default styles
   color: var(--color-text-default);
   font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
 
   strong {
     font-weight: var(--font-weight-bold);

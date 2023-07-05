@@ -18,7 +18,7 @@ exports[`NetworkListItem renders properly 1`] = `
       class="mm-box multichain-network-list-item__network-name"
     >
       <button
-        class="box mm-text mm-button-base mm-button-base--ellipsis mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+        class="box mm-text mm-button-base mm-button-base--ellipsis mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
       >
         <span
           class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
