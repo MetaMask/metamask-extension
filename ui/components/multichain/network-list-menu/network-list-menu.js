@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -15,8 +15,9 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
-  getAllEnabledNetworks,
   getCurrentChainId,
+  getNonTestNetworks,
+  getTestNetworks,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -50,7 +51,10 @@ const UNREMOVABLE_CHAIN_IDS = [
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
-  const networks = useSelector(getAllEnabledNetworks);
+
+  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const testNetworks = useSelector(getTestNetworks);
+
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
@@ -60,20 +64,61 @@ export const NetworkListMenu = ({ onClose }) => {
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
-  const showTestNetworksRef = useRef(showTestNetworks);
-  const networkListRef = useRef(null);
-
   const completedOnboarding = useSelector(getCompletedOnboarding);
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
-  useEffect(() => {
-    if (showTestNetworks && !showTestNetworksRef.current) {
-      // Scroll to the bottom of the list
-      networkListRef.current.lastChild.scrollIntoView();
-    }
-    showTestNetworksRef.current = showTestNetworks;
-  }, [showTestNetworks, showTestNetworksRef]);
+  const generateMenuItems = (desiredNetworks) => {
+    return desiredNetworks.map((network, index) => {
+      if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
+        return null;
+      }
+      const isCurrentNetwork = currentChainId === network.chainId;
+      const canDeleteNetwork =
+        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+
+      return (
+        <NetworkListItem
+          name={network.nickname}
+          iconSrc={network?.rpcPrefs?.imageUrl}
+          key={`${network.id || network.chainId}-${index}`}
+          selected={isCurrentNetwork}
+          onClick={async () => {
+            dispatch(toggleNetworkMenu());
+            if (network.providerType) {
+              dispatch(setProviderType(network.providerType));
+            } else {
+              dispatch(setActiveNetwork(network.id));
+            }
+            trackEvent({
+              event: MetaMetricsEventName.NavNetworkSwitched,
+              category: MetaMetricsEventCategory.Network,
+              properties: {
+                location: 'Network Menu',
+                chain_id: currentChainId,
+                from_network: currentChainId,
+                to_network: network.id || network.chainId,
+              },
+            });
+          }}
+          onDeleteClick={
+            canDeleteNetwork
+              ? () => {
+                  dispatch(toggleNetworkMenu());
+                  dispatch(
+                    showModal({
+                      name: 'CONFIRM_DELETE_NETWORK',
+                      target: network.id || network.chainId,
+                      onConfirm: () => undefined,
+                    }),
+                  );
+                }
+              : null
+          }
+        />
+      );
+    });
+  };
 
   return (
     <Popover
@@ -83,60 +128,8 @@ export const NetworkListMenu = ({ onClose }) => {
       title={t('networkMenuHeading')}
     >
       <>
-        <Box className="multichain-network-list-menu" ref={networkListRef}>
-          {networks.map((network, index) => {
-            if (
-              !lineaMainnetReleased &&
-              network.providerType === 'linea-mainnet'
-            ) {
-              return null;
-            }
-            const isCurrentNetwork = currentChainId === network.chainId;
-            const canDeleteNetwork =
-              !isCurrentNetwork &&
-              !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
-
-            return (
-              <NetworkListItem
-                name={network.nickname}
-                iconSrc={network?.rpcPrefs?.imageUrl}
-                key={`${network.id || network.chainId}-${index}`}
-                selected={isCurrentNetwork}
-                onClick={async () => {
-                  dispatch(toggleNetworkMenu());
-                  if (network.providerType) {
-                    dispatch(setProviderType(network.providerType));
-                  } else {
-                    dispatch(setActiveNetwork(network.id));
-                  }
-                  trackEvent({
-                    event: MetaMetricsEventName.NavNetworkSwitched,
-                    category: MetaMetricsEventCategory.Network,
-                    properties: {
-                      location: 'Network Menu',
-                      chain_id: currentChainId,
-                      from_network: currentChainId,
-                      to_network: network.id || network.chainId,
-                    },
-                  });
-                }}
-                onDeleteClick={
-                  canDeleteNetwork
-                    ? () => {
-                        dispatch(toggleNetworkMenu());
-                        dispatch(
-                          showModal({
-                            name: 'CONFIRM_DELETE_NETWORK',
-                            target: network.id || network.chainId,
-                            onConfirm: () => undefined,
-                          }),
-                        );
-                      }
-                    : null
-                }
-              />
-            );
-          })}
+        <Box className="multichain-network-list-menu">
+          {generateMenuItems(nonTestNetworks)}
         </Box>
         <Box
           padding={4}
@@ -158,6 +151,11 @@ export const NetworkListMenu = ({ onClose }) => {
             }}
           />
         </Box>
+        {showTestNetworks ? (
+          <Box className="multichain-network-list-menu">
+            {generateMenuItems(testNetworks)}
+          </Box>
+        ) : null}
         <Box padding={4}>
           <ButtonSecondary
             size={BUTTON_SECONDARY_SIZES.LG}

@@ -51,14 +51,14 @@ describe('Import flow', function () {
         await driver.findVisibleElement('.qr-code__wrapper');
 
         // shows a QR code for the account
-        await driver.findVisibleElement('.popover-container');
+        await driver.findVisibleElement('.mm-modal');
         // shows the correct account address
         const address = await driver.findElement(
           '.multichain-address-copy-button',
         );
         assert.equal(await address.getText(), '0x0Cc...afD3');
 
-        await driver.clickElement('[data-testid="popover-close"]');
+        await driver.clickElement('.mm-modal button[aria-label="Close"]');
 
         // logs out of the account
         await driver.clickElement(
