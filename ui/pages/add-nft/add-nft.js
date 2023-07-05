@@ -101,7 +101,7 @@ export default function AddNft() {
     const tokenDetails = await getTokenStandardAndDetails(
       nftAddress,
       null,
-      tokenId.toString(), // this should already be a string?
+      tokenId
     );
 
     trackEvent({
@@ -110,7 +110,7 @@ export default function AddNft() {
       sensitiveProperties: {
         token_contract_address: nftAddress,
         token_symbol: tokenDetails?.symbol,
-        token_id: tokenId.toString(), // This should already be a string?
+        token_id: tokenId,
         token_standard: tokenDetails?.standard,
         asset_type: AssetType.NFT,
         source: MetaMetricsTokenEventSource.Custom,
