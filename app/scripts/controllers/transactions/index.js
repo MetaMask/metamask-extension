@@ -1305,6 +1305,8 @@ export default class TransactionController extends EventEmitter {
         txMeta.custodyId,
         fromAddress,
       );
+
+      return null;
     }
     ///: END:ONLY_INCLUDE_IN
 
@@ -1313,12 +1315,6 @@ export default class TransactionController extends EventEmitter {
     txMeta.r = addHexPrefix(signedEthTx.r.toString(16));
     txMeta.s = addHexPrefix(signedEthTx.s.toString(16));
     txMeta.v = addHexPrefix(signedEthTx.v.toString(16));
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (txMeta.custodyStatus) {
-      return null;
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     this.txStateManager.updateTransaction(
       txMeta,
