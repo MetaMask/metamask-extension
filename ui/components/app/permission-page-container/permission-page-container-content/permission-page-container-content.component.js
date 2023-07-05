@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
