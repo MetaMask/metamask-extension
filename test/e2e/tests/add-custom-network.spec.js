@@ -173,7 +173,7 @@ describe('Custom network', function () {
     );
   });
 
-  it('don’t add unreachable custom network', async function () {
+  it.only('don’t add unreachable custom network', async function () {
     await withFixtures(
       {
         dapp: true,

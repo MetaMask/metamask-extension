@@ -38,16 +38,18 @@ workflows:
           requires:
             - prep-deps
       - prep-deps
+      - prep-build-test:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
-      - job-publish-prerelease:
+      - test-e2e-chrome:
           requires:
-            - prep-deps
-            - prep-build-test-mv3
+            - prep-build-test
 
 jobs:
   trigger-beta-build:
