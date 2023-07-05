@@ -64,7 +64,10 @@ export default class SignatureRequestOriginal extends Component {
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
+    mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -285,12 +288,22 @@ export default class SignatureRequestOriginal extends Component {
           if (type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            if (this.props.mmiOnSignCallback) {
+              return await this.props.mmiOnSignCallback(txData);
+            }
+            ///: END:ONLY_INCLUDE_IN
+
             await resolvePendingApproval(id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }
         }}
-        disabled={hardwareWalletRequiresConnection}
+        disabled={
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          Boolean(txData?.custodyId) ||
+          ///: END:ONLY_INCLUDE_IN
+          hardwareWalletRequiresConnection}
       />
     );
   };
