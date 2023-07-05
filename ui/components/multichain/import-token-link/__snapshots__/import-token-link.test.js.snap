@@ -3,10 +3,10 @@
 exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
 <div>
   <div
-    class="box multichain-import-token-link box--flex-direction-row"
+    class="mm-box multichain-import-token-link"
   >
     <div
-      class="box box--display-flex box--flex-direction-row box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <button
         class="box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
@@ -20,7 +20,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
       </button>
     </div>
     <div
-      class="box box--padding-top-2 box--display-flex box--flex-direction-row box--align-items-center"
+      class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
     >
       <button
         class="box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
@@ -40,10 +40,10 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
 exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
 <div>
   <div
-    class="box multichain-import-token-link box--flex-direction-row"
+    class="mm-box multichain-import-token-link"
   >
     <div
-      class="box box--display-flex box--flex-direction-row box--align-items-center"
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
     >
       <button
         class="box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
@@ -57,7 +57,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
       </button>
     </div>
     <div
-      class="box box--padding-top-2 box--display-flex box--flex-direction-row box--align-items-center"
+      class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
     >
       <button
         class="box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
