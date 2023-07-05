@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
