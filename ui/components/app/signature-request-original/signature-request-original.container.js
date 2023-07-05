@@ -10,11 +10,15 @@ import {
   completedTx,
 } from '../../../store/actions';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/order
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
   accountsWithSendEtherInfoSelector,
@@ -23,6 +27,8 @@ import {
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  unapprovedPersonalMsgsSelector,
+  getAccountType,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -36,6 +42,10 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const envType = getEnvironmentType();
+  ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -55,7 +65,10 @@ function mapStateToProps(state, ownProps) {
     messagesList,
     messagesCount,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType: getAccountType(state),
+    isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
+    unapprovedPersonalMessages: unapprovedPersonalMsgsSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
@@ -135,12 +148,21 @@ mapDispatchToProps = function (dispatch) {
       dispatch(rejectAllMessages(messagesList));
     },
   };
-}
+};
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;
 
-  const { allAccounts, messagesList, ...otherStateProps } = stateProps;
+  const {
+    allAccounts,
+    messagesList,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNotification,
+    unapprovedPersonalMessages,
+    ///: END:ONLY_INCLUDE_IN
+    ...otherStateProps
+  } = stateProps;
 
   const {
     msgParams: { from },
@@ -159,7 +181,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         if (!_msgData.custodyId) {
           msgData = checkForUnapprovedMessages(
             _msgData,
-            unapprovedTypedMessages,
+            unapprovedPersonalMessages,
           );
           id = msgData.custodyId;
         }

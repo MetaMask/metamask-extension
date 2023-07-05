@@ -225,7 +225,8 @@ export default class SignatureRequest extends PureComponent {
     const onSign = async () => {
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       if (this.props.mmiOnSignCallback) {
-        return await this.props.mmiOnSignCallback(txData);
+        await this.props.mmiOnSignCallback(txData);
+        return;
       }
       ///: END:ONLY_INCLUDE_IN
 

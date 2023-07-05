@@ -265,7 +265,7 @@ export default class SignatureRequestOriginal extends Component {
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      txData: { type, id },
+      txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
       resolvePendingApproval,
@@ -278,23 +278,24 @@ export default class SignatureRequestOriginal extends Component {
         submitText={t('sign')}
         onCancel={async () => {
           await rejectPendingApproval(
-            id,
+            txData.id,
             serializeError(ethErrors.provider.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async () => {
-          if (type === MESSAGE_TYPE.ETH_SIGN) {
+          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             if (this.props.mmiOnSignCallback) {
-              return await this.props.mmiOnSignCallback(txData);
+              await this.props.mmiOnSignCallback(txData);
+              return;
             }
             ///: END:ONLY_INCLUDE_IN
 
-            await resolvePendingApproval(id);
+            await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }
@@ -303,7 +304,8 @@ export default class SignatureRequestOriginal extends Component {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           Boolean(txData?.custodyId) ||
           ///: END:ONLY_INCLUDE_IN
-          hardwareWalletRequiresConnection}
+          hardwareWalletRequiresConnection
+        }
       />
     );
   };
