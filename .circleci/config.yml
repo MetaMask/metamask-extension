@@ -44,10 +44,6 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
-      - job-publish-prerelease:
-          requires:
-            - prep-deps
-            - prep-build-test-mv3
 
 jobs:
   trigger-beta-build:
@@ -511,7 +507,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --debug --mv3
+              yarn test:e2e:chrome --debug --mv3
             fi
           no_output_timeout: 20m
       - store_artifacts:
