@@ -1,4 +1,4 @@
-// This line gets replaced by content script
+// DO NOT CHANGE. This line gets replaced by content script
 const env = {};
 
 // need to make sure we aren't affected by overlapping namespaces

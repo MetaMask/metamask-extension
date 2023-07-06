@@ -639,8 +639,6 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    console.log('cs manifest', browser.runtime.getManifest());
-
     if (!isManifestV3) {
       injectScript(inpageBundle);
     }
