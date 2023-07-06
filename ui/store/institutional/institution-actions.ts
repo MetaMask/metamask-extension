@@ -28,12 +28,17 @@ export function showInteractiveReplacementTokenModal(): ThunkAction<
   };
 }
 
-export function showCustodyConfirmLink(
-  link: string,
-  address: string,
-  closeNotification: boolean,
-  custodyId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function showCustodyConfirmLink({
+  link,
+  address,
+  closeNotification,
+  custodyId,
+}: {
+  link: string;
+  address: string;
+  closeNotification: boolean;
+  custodyId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
     dispatch(
       showModal({
@@ -69,7 +74,7 @@ export function updateCustodyState(
     differentTxs.find((tx) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
-          toChecksumHexAddress(tx.txParams.from)
+        toChecksumHexAddress(tx.txParams.from)
         ];
       const custody = custodyAccountDetails?.custodyType
         .split(' - ')[1]
@@ -101,7 +106,7 @@ export function updateCustodyState(
   if (
     state.appState.modal.open &&
     state.appState.modal.modalState.name ===
-      'INTERACTIVE_REPLACEMENT_TOKEN_MODAL'
+    'INTERACTIVE_REPLACEMENT_TOKEN_MODAL'
   ) {
     if (state.appState.modal.modalState.props?.closeNotification) {
       dispatch(closeCurrentNotificationWindow());
