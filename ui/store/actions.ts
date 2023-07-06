@@ -1252,6 +1252,19 @@ export function markNotificationsAsRead(
   };
 }
 
+export function revokeDynamicSnapPermissions(
+  snapId: string,
+  permissionNames: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('revokeDynamicSnapPermissions', [
+      snapId,
+      permissionNames,
+    ]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 
