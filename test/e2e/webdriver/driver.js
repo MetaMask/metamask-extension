@@ -398,6 +398,7 @@ class Driver {
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
+
         const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;

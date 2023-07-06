@@ -714,7 +714,8 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  const serviceWorkerElements = await driver.findElements({
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
     text: 'terminate',
     tag: 'span',
   });

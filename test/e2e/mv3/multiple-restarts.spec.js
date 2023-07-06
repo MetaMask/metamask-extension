@@ -13,7 +13,7 @@ const {
   sleepSeconds,
   terminateServiceWorker,
   unlockWallet,
-  regularDelayMs,
+  largeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -194,6 +194,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Terminate Service Worker
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+
         await terminateServiceWorker(driver);
 
         // Click add Ethereum chain #2
@@ -258,28 +259,18 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await openDapp(driver);
 
-        await driver.getAllWindowHandles();
-        await driver.getWindowTitles();
-
         await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
 
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+
         await terminateServiceWorker(driver);
 
-        await driver.getAllWindowHandles();
-        await driver.getWindowTitles();
-
-        await driver.waitUntilXWindowHandles(2);
-
         await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
 
         await switchToWindow(driver, WINDOW_TITLES.TestDApp);
         await terminateServiceWorker(driver);
 
         await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
 
         await assertNumberOfTransactionsInPopUp(driver, 3);
 
@@ -326,10 +317,11 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
 
     async function assertNumberOfTransactionsInPopUp(driver, number) {
-      await sleepSeconds(regularDelayMs);
+      await driver.delay(largeDelayMs);
+
       await switchToWindow(driver, WINDOW_TITLES.Notification);
 
-      const foundElement = await driver.findElement({
+      const foundElement = await driver.findElements({
         css: '.confirm-page-container-navigation__navtext',
         text: `1 of ${number}`,
       });
