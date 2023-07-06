@@ -13,8 +13,8 @@ import {
   ButtonSecondary,
   FormTextField,
   Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 

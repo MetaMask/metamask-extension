@@ -4024,10 +4024,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.6.0, @metamask/design-tokens@npm:^1.9.0":
-  version: 1.11.1
-  resolution: "@metamask/design-tokens@npm:1.11.1"
-  checksum: 38677f66167861826c35f7b0e6efc3c69269178e3dad5de41a9c9a7925dfb1f560f673e02a51acd7f7983762546130132f83dcaefe8ab47e16301775cff0b968
+"@metamask/design-tokens@npm:^1.12.0, @metamask/design-tokens@npm:^1.6.0":
+  version: 1.12.0
+  resolution: "@metamask/design-tokens@npm:1.12.0"
+  checksum: 9b6c5485c846171aa7fcef03cbe93b4d94ffaa76faf953aa27a689fd3d494438cd657de6ea1aa5a40cc2af15dcf10f8dd860fd3d90f5e9806807e37020bdccd9
   languageName: node
   linkType: hard
 
@@ -24489,7 +24489,7 @@ __metadata:
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
     "@metamask/controller-utils": ^4.0.1
-    "@metamask/design-tokens": ^1.9.0
+    "@metamask/design-tokens": ^1.12.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
     "@metamask/eslint-config-jest": ^9.0.0

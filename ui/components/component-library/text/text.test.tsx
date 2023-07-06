@@ -76,10 +76,13 @@ describe('Text', () => {
         <Text variant={TextVariant.headingSm}>heading-sm</Text>
         <Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
         <Text variant={TextVariant.bodyMd}>body-md</Text>
+        <Text variant={TextVariant.bodyMdMedium}>body-md-medium</Text>
         <Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
         <Text variant={TextVariant.bodySm}>body-sm</Text>
+        <Text variant={TextVariant.bodySmMedium}>body-sm-medium</Text>
         <Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
         <Text variant={TextVariant.bodyXs}>body-xs</Text>
+        <Text variant={TextVariant.bodyXsMedium}>body-xs-medium</Text>
       </>,
     );
 
@@ -89,10 +92,13 @@ describe('Text', () => {
     expect(getByText('heading-sm')).toHaveClass('mm-text--heading-sm');
     expect(getByText('body-lg-medium')).toHaveClass('mm-text--body-lg-medium');
     expect(getByText('body-md')).toHaveClass('mm-text--body-md');
+    expect(getByText('body-md-medium')).toHaveClass('mm-text--body-md-medium');
     expect(getByText('body-md-bold')).toHaveClass('mm-text--body-md-bold');
     expect(getByText('body-sm')).toHaveClass('mm-text--body-sm');
+    expect(getByText('body-sm-medium')).toHaveClass('mm-text--body-sm-medium');
     expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
     expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
+    expect(getByText('body-xs-medium')).toHaveClass('mm-text--body-xs-medium');
     expect(container).toMatchSnapshot();
   });
 
