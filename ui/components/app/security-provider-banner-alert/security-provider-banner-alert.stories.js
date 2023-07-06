@@ -1,6 +1,9 @@
 import React from 'react';
-import { Severity } from '../../../helpers/constants/design-system';
-import { ButtonLink, BUTTON_LINK_SIZES } from '../../component-library';
+import {
+  Severity,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { ButtonLink, BUTTON_LINK_SIZES, Text } from '../../component-library';
 import { SecurityProvider } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from './security-provider-banner-alert';
 
@@ -9,19 +12,21 @@ const mockPlainText =
   'amet laoreet vitae, semper in est. Nulla vel tristique felis. Donec non tellus eget neque cursus malesuada.';
 
 const MockDescriptionWithLinks = () => (
-  <span>
+  <>
     Description shouldn’t repeat title. 1-3 lines. Can contain a{' '}
     <ButtonLink size={BUTTON_LINK_SIZES.INHERIT}>hyperlink</ButtonLink>. It can
     also contain a toggle to enable progressive disclosure.
-  </span>
+  </>
 );
 
 const MockDetailsList = () => (
   <ul>
-    <li>• List item</li>
-    <li>• List item</li>
-    <li>• List item</li>
-    <li>• List item</li>
+    <Text variant={TextVariant.bodySm}>
+      <li>• List item</li>
+      <li>• List item</li>
+      <li>• List item</li>
+      <li>• List item</li>
+    </Text>
   </ul>
 );
 
