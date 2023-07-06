@@ -292,6 +292,7 @@ describe('MetaMask', function () {
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
       await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(largeDelayMs);
     });
@@ -482,6 +483,7 @@ describe('MetaMask', function () {
 
     it('submits the transaction', async function () {
       await driver.delay(largeDelayMs * 2);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs * 2);
     });
