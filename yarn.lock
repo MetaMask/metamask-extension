@@ -22366,13 +22366,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "json-rpc-middleware-stream@npm:4.2.1"
+"json-rpc-middleware-stream@npm:^4.2.0, json-rpc-middleware-stream@npm:^4.2.1, json-rpc-middleware-stream@npm:^4.2.2":
+  version: 4.2.2
+  resolution: "json-rpc-middleware-stream@npm:4.2.2"
   dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
     readable-stream: "npm:^2.3.3"
-  checksum: 7cf1b521cb2dd24fc06a38f80960aa0bd53e020b955feb92119a64831986be474ba695bfa4851ed0bf9e7828a07b49f70fdc38a58bc2c62502abe874d4acff6c
+  checksum: 0f7882b5898001c00a442104790a487c1276faf40b64fb6257aceffcb30f0f0ccabb67553a43d6313e30a940fc256ddd8f7c0176e3bdeea172a7bfe11e9aa56e
   languageName: node
   linkType: hard
 
@@ -24453,7 +24453,7 @@ __metadata:
     js-yaml: "npm:^4.1.0"
     jsdom: "npm:^16.7.0"
     json-rpc-engine: "npm:^6.1.0"
-    json-rpc-middleware-stream: "npm:^4.2.1"
+    json-rpc-middleware-stream: "npm:^4.2.2"
     junit-report-merger: "npm:^4.0.0"
     koa: "npm:^2.7.0"
     labeled-stream-splicer: "npm:^2.0.2"
