@@ -627,17 +627,12 @@ export default class MMIController extends EventEmitter {
        * - deferSetAsSigned?: boolean;
        */
       if (!message.metadata?.custodyId) {
-        // the equivalent to setMsgCustodyId
+        // Equivalent to the old setMsgCustodyId
         this.signatureController.setMessageMetadata(messageId, {
+          // From "signature" we have the custodian_transactionId
           custodyId: signature.custodian_transactionId,
         });
 
-        /**
-         * From "signature" we have:
-         * - custodian_transactionId
-         * - from
-         * - transactionStatus
-         */
         this.transactionUpdateController.addTransactionToWatchList(
           signature.custodian_transactionId,
           message.from,
