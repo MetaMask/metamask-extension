@@ -1467,6 +1467,18 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.newUnsignedPersonalMessage.bind(
           this.signatureController,
         ),
+
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      setTypedMessageInProgress:
+        this.signatureController.setTypedMessageInProgress.bind(
+          this.signatureController,
+        ),
+      setPersonalMessageInProgress:
+        this.signatureController.setPersonalMessageInProgress.bind(
+          this.signatureController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
+
       processEncryptionPublicKey:
         this.encryptionPublicKeyController.newRequestEncryptionPublicKey.bind(
           this.encryptionPublicKeyController,

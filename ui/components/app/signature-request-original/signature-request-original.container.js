@@ -9,6 +9,17 @@ import {
   rejectAllMessages,
   completedTx,
 } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+// eslint-disable-next-line import/order
+import { showCustodianDeepLink } from '@metamask-institutional/extension';
+import {
+  mmiActionsFactory,
+  setPersonalMessageInProgress,
+} from '../../../store/institutional/institution-background';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 import {
   accountsWithSendEtherInfoSelector,
   getSubjectMetadata,
@@ -16,6 +27,8 @@ import {
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  unapprovedPersonalMsgsSelector,
+  getAccountType,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -29,6 +42,10 @@ function mapStateToProps(state, ownProps) {
   const {
     msgParams: { from },
   } = ownProps.txData;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const envType = getEnvironmentType();
+  ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
@@ -48,12 +65,63 @@ function mapStateToProps(state, ownProps) {
     messagesList,
     messagesCount,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType: getAccountType(state),
+    isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
+    unapprovedPersonalMessages: unapprovedPersonalMsgsSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
 
-function mapDispatchToProps(dispatch) {
+let mapDispatchToProps = null;
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+function mmiMapDispatchToProps(dispatch) {
+  const mmiActions = mmiActionsFactory();
+  return {
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
+    showCustodianDeepLink: ({
+      custodyId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+      }),
+    showTransactionsFailedModal: ({
+      errorMessage,
+      closeNotification,
+      operationFailed,
+    }) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+          operationFailed,
+        }),
+      ),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    goHome: () => dispatch(goHome()),
+  };
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
+
+mapDispatchToProps = function (dispatch) {
   return {
     goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
@@ -80,12 +148,21 @@ function mapDispatchToProps(dispatch) {
       dispatch(rejectAllMessages(messagesList));
     },
   };
-}
+};
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;
 
-  const { allAccounts, messagesList, ...otherStateProps } = stateProps;
+  const {
+    allAccounts,
+    messagesList,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    accountType,
+    isNotification,
+    unapprovedPersonalMessages,
+    ///: END:ONLY_INCLUDE_IN
+    ...otherStateProps
+  } = stateProps;
 
   const {
     msgParams: { from },
@@ -95,6 +172,41 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
 
   const { cancelAllApprovals: dispatchCancelAllApprovals } = dispatchProps;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiOnSignCallback = async (_msgData) => {
+    if (accountType === 'custody') {
+      try {
+        let msgData = _msgData;
+        let id = _msgData.custodyId;
+        if (!_msgData.custodyId) {
+          msgData = checkForUnapprovedMessages(
+            _msgData,
+            unapprovedPersonalMessages,
+          );
+          id = msgData.custodyId;
+        }
+        dispatchProps.showCustodianDeepLink({
+          custodyId: id,
+          fromAddress: fromAccount.address,
+          closeNotification: isNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => undefined,
+        });
+        await dispatchProps.setMsgInProgress(msgData.metamaskId);
+        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
+        await goHome();
+      } catch (err) {
+        await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
+        await dispatchProps.showTransactionsFailedModal({
+          errorMessage: err.message,
+          closeNotification: true,
+          operationFailed: true,
+        });
+      }
+    }
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   return {
     ...ownProps,
     ...otherStateProps,
@@ -103,6 +215,9 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     cancelAllApprovals: () =>
       dispatchCancelAllApprovals(valuesFor(messagesList)),
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    mmiOnSignCallback,
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
