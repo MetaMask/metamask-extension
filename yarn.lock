@@ -4372,7 +4372,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.0.2":
+"@metamask/message-manager@npm:^7.0.0, @metamask/message-manager@npm:^7.0.2":
   version: 7.0.2
   resolution: "@metamask/message-manager@npm:7.0.2"
   dependencies:
