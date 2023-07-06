@@ -297,7 +297,7 @@ describe('MetaMask', function () {
     });
 
     it('displays the token transfer data', async function () {
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
@@ -481,7 +481,7 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      await driver.delay(largeDelayMs * 2);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs * 2);
     });
