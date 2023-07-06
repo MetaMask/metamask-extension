@@ -1126,11 +1126,21 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+///: END:ONLY_INCLUDE_IN
 
+// TODO: Clean this up.
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    getState,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ) => {
     dispatch(showLoadingIndication());
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -1140,7 +1150,9 @@ export function removeSnap(
 
     const isAccountsSnap =
       subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
+    ///: END:ONLY_INCLUDE_IN
 
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     try {
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
