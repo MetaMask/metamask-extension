@@ -81,14 +81,14 @@ function SecurityProviderBannerAlert({
 }
 
 SecurityProviderBannerAlert.propTypes = {
-  description: PropTypes.oneOf([PropTypes.string, PropTypes.element])
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     .isRequired,
-  provider: PropTypes.oneOf(Object.values(SecurityProvider)).isRequired,
-  severity: PropTypes.oneOf([Severity.Danger, Severity.Warning]).isRequired,
+  provider: PropTypes.oneOfType(Object.values(SecurityProvider)).isRequired,
+  severity: PropTypes.oneOfType([Severity.Danger, Severity.Warning]).isRequired,
   title: PropTypes.string.isRequired,
 
   //  Optional
-  details: PropTypes.oneOf([PropTypes.string, PropTypes.element]),
+  details: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
 export default SecurityProviderBannerAlert;
