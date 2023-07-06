@@ -5,13 +5,12 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 import log from 'loglevel';
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { replace } from 'lodash';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
@@ -73,8 +72,7 @@ let extensionMux,
  */
 function injectScript(content) {
   try {
-    const manifest = browser.runtime.getManifest()
-    console.log(manifest)
+    const manifest = browser.runtime.getManifest();
 
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
@@ -82,8 +80,11 @@ function injectScript(content) {
     const scriptEnv = {
       name: manifest.name,
       uuid: uuid(),
-    }
-    const scriptContent = content.replace("const env = {};", `const env = ${JSON.stringify(scriptEnv)};`)
+    };
+    const scriptContent = content.replace(
+      'const env = {};',
+      `const env = ${JSON.stringify(scriptEnv)};`,
+    );
     scriptTag.textContent = scriptContent;
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
@@ -358,8 +359,6 @@ const setupExtensionStreams = () => {
     ),
   );
 
-  notifyInpageOfProviderInfo()
-
   // connect "phishing" channel to warning system
   extensionPhishingStream = extensionMux.createStream('phishing');
   extensionPhishingStream.once('data', redirectToPhishingWarning);
@@ -617,35 +616,6 @@ function notifyInpageOfStreamFailure() {
   );
 }
 
-
-/**
- * Notifies something TODO.
- */
-function notifyInpageOfProviderInfo() {
-  const manifest = browser.runtime.getManifest()
-
-  window.postMessage(
-    {
-      target: INPAGE, // the post-message-stream "target"
-      data: {
-        // this object gets passed to obj-multiplex
-        name: PROVIDER, // the obj-multiplex channel name
-        data: {
-          jsonrpc: '2.0',
-          method: 'METAMASK_PROVIDER_INFO',
-          params: {
-            uuid: uuid(),
-            name: manifest.name,
-            icon: 'https://raw.githubusercontent.com/MetaMask/brand-resources/cb6fd847f3a9cc5e231c749383c3898935e62eab/SVG/metamask-fox.svg', // TODO: Find a shorter URL
-          }
-        },
-      },
-    },
-    window.location.origin,
-  );
-}
-
-
 /**
  * Redirects the current page to a phishing information page
  */
@@ -669,7 +639,7 @@ const start = () => {
   }
 
   if (shouldInjectProvider()) {
-    console.log("cs manifest", browser.runtime.getManifest())
+    console.log('cs manifest', browser.runtime.getManifest());
 
     if (!isManifestV3) {
       injectScript(inpageBundle);

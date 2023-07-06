@@ -40,7 +40,8 @@ import { initializeProvider } from '@metamask/providers/dist/initializeInpagePro
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
 // provider constants
-const iconUrl = 'https://raw.githubusercontent.com/MetaMask/brand-resources/cb6fd847f3a9cc5e231c749383c3898935e62eab/SVG/metamask-fox.svg'; // TODO: Find a shorter URL
+const iconUrl =
+  'https://raw.githubusercontent.com/MetaMask/brand-resources/cb6fd847f3a9cc5e231c749383c3898935e62eab/SVG/metamask-fox.svg'; // TODO: Find a shorter URL
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -61,8 +62,6 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  console.log("inpage env", env)
-
   initializeProvider({
     connectionStream: metamaskStream,
     logger: log,
@@ -71,6 +70,6 @@ if (shouldInjectProvider()) {
       name: env.name,
       uuid: env.uuid,
       icon: iconUrl,
-    }
+    },
   });
 }
