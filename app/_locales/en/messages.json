@@ -366,6 +366,9 @@
   "allowThisSiteTo": {
     "message": "Allow this site to:"
   },
+  "allowThisSnapTo": {
+    "message": "Allow this snap to:"
+  },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
@@ -3560,6 +3563,9 @@
     "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "revokePermission": {
+    "message": "Revoke permission"
+  },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
     "description": "$1 is a token symbol"
@@ -3681,6 +3687,9 @@
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
+  "selectAccountsForSnap": {
+    "message": "Select the account(s) to use with this snap"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -3769,10 +3778,6 @@
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
-  },
-  "shortVersion": {
-    "message": "v$1",
-    "description": "$1 is the version number to show"
   },
   "show": {
     "message": "Show"
