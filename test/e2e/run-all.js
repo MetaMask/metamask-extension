@@ -68,7 +68,7 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
-    testPaths = [...(await getTestPathsForTestDir(testDir))];
+    testPaths = await getTestPathsForTestDir(testDir);
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
