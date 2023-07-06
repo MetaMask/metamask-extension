@@ -58,6 +58,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock();
     try {
       const pendingTxs = this.getPendingTransactions();
+      console.log(':: Got the following pending txs:', pendingTxs);
       await Promise.all(
         pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)),
       );
@@ -131,6 +132,12 @@ export default class PendingTransactionTracker extends EventEmitter {
       this.emit('tx:block-update', txMeta, latestBlockNumber);
     }
 
+    // If we get here it means that the user op was already submitted to the
+    // bundler, there is nothing more that we can do.
+    if (txMeta.userOp) {
+      return txMeta.hash;
+    }
+
     const firstRetryBlockNumber =
       txMeta.firstRetryBlockNumber || latestBlockNumber;
     const txBlockDistance =
@@ -180,8 +187,11 @@ export default class PendingTransactionTracker extends EventEmitter {
     const txHash = txMeta.hash;
     const txId = txMeta.id;
 
+    console.log(':: Entered _checkPendingTx');
+
     // Only check submitted txs
     if (txMeta.status !== TransactionStatus.submitted) {
+      console.log(':: Not TX has the submitted status');
       return;
     }
 
@@ -196,6 +206,8 @@ export default class PendingTransactionTracker extends EventEmitter {
     ///: END:ONLY_INCLUDE_IN
 
     if (hasNoHash) {
+      console.log(`:: Transaction ${txMeta.id} hash no hash ${txMeta.hash}`);
+
       const noTxHashErr = new Error(
         'We had an error while submitting this transaction, please try again.',
       );
@@ -210,28 +222,63 @@ export default class PendingTransactionTracker extends EventEmitter {
       return;
     }
 
-    try {
-      const transactionReceipt = await this.query.getTransactionReceipt(txHash);
-      if (transactionReceipt?.blockNumber) {
-        const { baseFeePerGas, timestamp: blockTimestamp } =
-          await this.query.getBlockByHash(transactionReceipt?.blockHash, false);
-
-        this.emit(
-          'tx:confirmed',
-          txId,
-          transactionReceipt,
-          baseFeePerGas,
-          blockTimestamp,
+    console.log('going to query tx status');
+    if (txMeta.userOp) {
+      console.log('checking sca tx status');
+      const res = await fetch(process.env.BUNDLER_URL, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'eth_getUserOperationReceipt',
+          params: [txMeta.hash],
+        }),
+      });
+      const resJson = await res.json();
+      console.log('eth_getUserOperationReceipt result:', resJson);
+      if (resJson.result.success) {
+        const { receipt } = resJson.result;
+        const { baseFeePerGas, timestamp } = await this.query.getBlockByHash(
+          receipt.blockHash,
+          false,
         );
+
+        txMeta.hash = receipt.transactionHash;
+        this.emit('tx:confirmed', txId, receipt, baseFeePerGas, timestamp);
+      }
+    } else {
+      try {
+        const transactionReceipt = await this.query.getTransactionReceipt(
+          txHash,
+        );
+        if (transactionReceipt?.blockNumber) {
+          const { baseFeePerGas, timestamp: blockTimestamp } =
+            await this.query.getBlockByHash(
+              transactionReceipt?.blockHash,
+              false,
+            );
+
+          this.emit(
+            'tx:confirmed',
+            txId,
+            transactionReceipt,
+            baseFeePerGas,
+            blockTimestamp,
+          );
+          return;
+        }
+      } catch (err) {
+        txMeta.warning = {
+          error: err.message,
+          message: 'There was a problem loading this transaction.',
+        };
+        this.emit('tx:warning', txMeta, err);
         return;
       }
-    } catch (err) {
-      txMeta.warning = {
-        error: err.message,
-        message: 'There was a problem loading this transaction.',
-      };
-      this.emit('tx:warning', txMeta, err);
-      return;
     }
 
     if (await this._checkIfTxWasDropped(txMeta)) {

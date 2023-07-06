@@ -1291,8 +1291,9 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
+      txMeta,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      txMeta.custodyStatus ? txMeta : undefined,
+      // txMeta.custodyStatus ? txMeta : undefined,
       ///: END:ONLY_INCLUDE_IN
     );
 
@@ -1310,6 +1311,15 @@ export default class TransactionController extends EventEmitter {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    if (signedEthTx.userOp) {
+      txMeta.userOp = signedEthTx.userOp;
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#signTransaction: add r, s, v values',
+      );
+      const rawTx = signedEthTx.userOpHash;
+      return rawTx;
+    }
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
     txMeta.r = addHexPrefix(signedEthTx.r.toString(16));
@@ -1336,7 +1346,52 @@ export default class TransactionController extends EventEmitter {
    * @param {number} actionId - actionId passed from UI
    */
   async publishTransaction(txId, rawTx, actionId) {
+    console.log(':: In publishTransaction', txId, rawTx, actionId);
     const txMeta = this.txStateManager.getTransaction(txId);
+    console.log(txMeta);
+    if (txMeta.userOp) {
+      console.log(":: It's an UserOp");
+      this.txStateManager.updateTransaction(
+        txMeta,
+        'transactions#publishTransaction',
+      );
+      try {
+        const res = await fetch(process.env.BUNDLER_URL, {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'eth_sendUserOperation',
+            params: [txMeta.userOp, process.env.ENTRYPOINT_ADDRESS],
+          }),
+        });
+        const resJson = await res.json();
+        console.log(':: Bundler response:', resJson);
+        txMeta.userOpHash = resJson.result;
+      } catch (error) {
+        if (error.message.toLowerCase().includes('known transaction')) {
+          txHash = keccak(toBuffer(addHexPrefix(rawTx), 'hex')).toString('hex');
+          txHash = addHexPrefix(txHash);
+        } else {
+          throw error;
+        }
+      }
+
+      console.log(':: Finished publishing TX, now going to update its status');
+      this.setTxHash(txId, txMeta.userOpHash);
+      console.log(':: Set transaction hash to userOpHash');
+      console.log(`:: Status of TX ${txId} was ${txMeta.status}`);
+      this.txStateManager.setTxStatusSubmitted(txId);
+      console.log(`:: Updated status of TX ${txId} to ${txMeta.status}`);
+      console.log(`:: TX hash is (UserOp): ${txMeta.hash}`);
+
+      return;
+    }
+
     txMeta.rawTx = rawTx;
     if (txMeta.type === TransactionType.swap) {
       const preTxBalance = await this.query.getBalance(txMeta.txParams.from);
@@ -1545,6 +1600,7 @@ export default class TransactionController extends EventEmitter {
     // Add the tx hash to the persisted meta-tx object
     const txMeta = this.txStateManager.getTransaction(txId);
     txMeta.hash = txHash;
+    console.log(`:: Set TX ${txId} hash to ${txHash}: ${txMeta.hash}`);
     this.txStateManager.updateTransaction(txMeta, 'transactions#setTxHash');
   }
 
