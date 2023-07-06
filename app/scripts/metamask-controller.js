@@ -1148,28 +1148,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.mmiController = new MMIController({
-      mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
-      txController: this.txController,
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-      preferencesController: this.preferencesController,
-      appStateController: this.appStateController,
-      transactionUpdateController: this.transactionUpdateController,
-      custodyController: this.custodyController,
-      institutionalFeaturesController: this.institutionalFeaturesController,
-      getState: this.getState.bind(this),
-      getPendingNonce: this.getPendingNonce.bind(this),
-      accountTracker: this.accountTracker,
-      metaMetricsController: this.metaMetricsController,
-      networkController: this.networkController,
-      permissionController: this.permissionController,
-      platform: this.platform,
-      extension: this.extension,
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
         status === TransactionStatus.confirmed ||
@@ -1330,6 +1308,29 @@ export default class MetamaskController extends EventEmitter {
         });
       },
     );
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController = new MMIController({
+      mmiConfigurationController: this.mmiConfigurationController,
+      keyringController: this.keyringController,
+      txController: this.txController,
+      securityProviderRequest: this.securityProviderRequest.bind(this),
+      preferencesController: this.preferencesController,
+      appStateController: this.appStateController,
+      transactionUpdateController: this.transactionUpdateController,
+      custodyController: this.custodyController,
+      institutionalFeaturesController: this.institutionalFeaturesController,
+      getState: this.getState.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      accountTracker: this.accountTracker,
+      metaMetricsController: this.metaMetricsController,
+      networkController: this.networkController,
+      permissionController: this.permissionController,
+      signatureController: this.signatureController,
+      platform: this.platform,
+      extension: this.extension,
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     this.swapsController = new SwapsController(
       {

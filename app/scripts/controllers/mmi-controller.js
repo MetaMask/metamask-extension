@@ -48,6 +48,7 @@ export default class MMIController extends EventEmitter {
     this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
+    this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
 
@@ -86,6 +87,20 @@ export default class MMIController extends EventEmitter {
         }
         await this.prepareMmiPortfolio();
       }, this.preferencesController.store.getState()),
+    );
+
+    this.signatureController.hub.on(
+      'personal_sign:signed',
+      async ({ signature, messageId }) => {
+        await this.handleSigningEvents(signature, messageId, 'personal');
+      },
+    );
+
+    this.signatureController.hub.on(
+      'eth_signTypedData:signed',
+      async ({ signature, messageId }) => {
+        await this.handleSigningEvents(signature, messageId, 'v4');
+      },
     );
   } // End of constructor
 
@@ -596,6 +611,43 @@ export default class MMIController extends EventEmitter {
         console.error(error);
       }
     }
+  }
+
+  async handleSigningEvents(signature, messageId, signOperation) {
+    const allMessages = this.signatureController.allMessages;
+
+    for (let i = 0; i < allMessages.length; i++) {
+      const message = allMessages[i][0];
+
+      /**
+       * From each "message" we have:
+       * - metamaskId?: string;
+       * - from: string;
+       * - origin?: string;
+       * - deferSetAsSigned?: boolean;
+       */
+      if (!message.metadata?.custodyId) {
+        // the equivalent to setMsgCustodyId
+        this.signatureController.setMessageMetadata(messageId, {
+          custodyId: signature.custodian_transactionId,
+        });
+
+        /**
+         * From "signature" we have:
+         * - custodian_transactionId
+         * - from
+         * - transactionStatus
+         */
+        this.transactionUpdateController.addTransactionToWatchList(
+          signature.custodian_transactionId,
+          message.from,
+          signOperation,
+          true,
+        );
+      }
+    }
+
+    return this.getState();
   }
 
   async setAccountAndNetwork(origin, address, chainId) {
