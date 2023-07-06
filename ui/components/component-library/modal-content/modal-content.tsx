@@ -44,6 +44,17 @@ export const ModalContent = forwardRef(
     };
 
     const handleClickOutside = (event: MouseEvent) => {
+      // Popover should be launched from within Modal but
+      // the Popover containing element is a sibling to modal,
+      // so this is required to ensure `onClose` isn't triggered
+      // when clicking on a popover item
+      if (
+        isClosedOnOutsideClick &&
+        (event.target as HTMLElement).closest('.mm-popover')
+      ) {
+        return;
+      }
+
       if (
         isClosedOnOutsideClick &&
         modalDialogRef?.current &&
