@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { DISCLOSURE_TYPES } from './disclosure.constants';
 
 /**
@@ -14,9 +15,12 @@ const renderSummaryByType = (type, title) => {
     case DISCLOSURE_TYPES.ARROW:
       return (
         <summary className="disclosure__summary is-arrow">
-          {title}
+          <Text color={Color.primaryDefault} variant={TextVariant.bodySm}>
+            {title}
+          </Text>
           <Icon
             className="disclosure__summary--icon"
+            color={Color.primaryDefault}
             name={IconName.ArrowUp}
             size={IconSize.Sm}
             marginInlineStart={2}

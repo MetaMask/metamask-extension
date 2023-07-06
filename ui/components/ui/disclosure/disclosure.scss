@@ -34,7 +34,8 @@
   }
 
   &__summary.is-arrow {
-    color: var(--color-primary-default);
+    display: flex;
+    align-items: center;
     font-weight: normal;
 
     &:hover {
