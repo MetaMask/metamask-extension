@@ -224,18 +224,10 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
-    # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - ENTRYPOINT_ADDRESS
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - PAYMASTER_ADDRESS
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - ACTION_TOKEN_ADDRESS
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - ROUTER_WRAPPER_ADDRESS
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - BUNDLER_URL
-  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
-  - AA_FACTORY_ADDRESS
 
   ###
   # Meta variables
