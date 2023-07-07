@@ -17,6 +17,7 @@ import {
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -37,7 +38,7 @@ export const mapStateToProps = (state) => {
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit = 0,
+    autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);

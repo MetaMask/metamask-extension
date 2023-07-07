@@ -117,7 +117,6 @@ describe('Institution Actions', () => {
         'newApiUrl',
       );
       connectCustodyAddresses(jest.fn());
-      setWaitForConfirmDeepLinkDialog(jest.fn());
       expect(connectCustodyAddresses).toBeDefined();
       expect(setWaitForConfirmDeepLinkDialog).toBeDefined();
     });

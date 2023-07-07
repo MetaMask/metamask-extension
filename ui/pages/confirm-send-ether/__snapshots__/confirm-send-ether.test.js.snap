@@ -388,6 +388,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           >
             <div
               class="transaction-detail-item"
+              data-testid="confirm-gas-display"
             >
               <div
                 class="transaction-detail-item__row"

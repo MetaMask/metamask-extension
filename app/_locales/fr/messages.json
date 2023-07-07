@@ -911,9 +911,6 @@
   "delete": {
     "message": "Supprimer"
   },
-  "deleteAccount": {
-    "message": "Supprimer le compte"
-  },
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
-  "importNFTs": {
-    "message": "Importer des NFT"
-  },
   "importSelectedTokens": {
     "message": "Voulez-vous importer les jetons sélectionnés ?"
   },
@@ -1863,9 +1857,6 @@
   "lock": {
     "message": "Déconnexion"
   },
-  "lockTimeTooGreat": {
-    "message": "Le temps de verrouillage est trop important"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
@@ -1958,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Selon nos informations, la valeur de l’URL RPC soumise ne correspond pas à un fournisseur connu pour cet ID de chaîne."
-  },
-  "missingNFT": {
-    "message": "Vous ne voyez pas votre NFT ?"
   },
   "missingSetting": {
     "message": "Vous ne trouvez pas un paramètre ?"
@@ -2167,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Aucun taux de conversion disponible"
-  },
-  "noNFTs": {
-    "message": "Aucun NFT pour le moment"
   },
   "noSnaps": {
     "message": "Aucun Snap installé"

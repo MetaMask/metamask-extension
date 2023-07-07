@@ -5,7 +5,8 @@ const FixtureBuilder = require('../fixture-builder');
 describe('Sentry errors', function () {
   async function mockSentry(mockServer) {
     return await mockServer
-      .forPost('https://sentry.io/api/0000000/store/')
+      .forPost('https://sentry.io/api/0000000/envelope/')
+      .withBodyIncluding('Test Error')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -48,7 +49,8 @@ describe('Sentry errors', function () {
           return isPending === false;
         }, 10000);
         const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-        const mockJsonBody = mockedRequest.body.json;
+        const mockTextBody = mockedRequest.body.text.split('\n');
+        const mockJsonBody = JSON.parse(mockTextBody[2]);
         const { level, extra } = mockJsonBody;
         const [{ type, value }] = mockJsonBody.exception.values;
         const { participateInMetaMetrics } = extra.appState.store.metamask;

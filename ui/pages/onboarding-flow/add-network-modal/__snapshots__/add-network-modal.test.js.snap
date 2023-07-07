@@ -40,13 +40,13 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
                 class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
@@ -71,13 +71,13 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
                 class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
@@ -102,13 +102,13 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
                 class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
@@ -158,13 +158,13 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
                 class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
@@ -189,13 +189,13 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
                 class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
