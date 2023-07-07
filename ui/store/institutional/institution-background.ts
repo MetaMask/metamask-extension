@@ -11,7 +11,7 @@ import {
   callBackgroundMethod,
   submitRequestToBackground,
 } from '../action-queue';
-import { MetaMaskReduxState } from '../store';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 
 export function showInteractiveReplacementTokenBanner({
@@ -21,7 +21,7 @@ export function showInteractiveReplacementTokenBanner({
   url: string;
   oldRefreshToken: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
         url,
@@ -37,10 +37,25 @@ export function showInteractiveReplacementTokenBanner({
 }
 
 export function setTypedMessageInProgress(msgId: string) {
-  return async (dispatch: any) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     try {
       await submitRequestToBackground('setTypedMessageInProgress', [msgId]);
+    } catch (error: any) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function setPersonalMessageInProgress(msgId: string) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('setPersonalMessageInProgress', [msgId]);
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
