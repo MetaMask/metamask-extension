@@ -10,6 +10,7 @@ import {
   OverflowWrap,
   FontWeight,
   TextVariant,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -53,9 +54,12 @@ export const UI_MAPPING = {
     },
   }),
   divider: () => ({
-    element: 'hr',
+    element: 'Box',
     props: {
       className: 'snap-ui-renderer__divider',
+      backgroundColor: BorderColor.borderDefault,
+      marginTop: 2,
+      marginBottom: 2,
     },
   }),
   copyable: (props) => ({

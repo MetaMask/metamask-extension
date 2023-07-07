@@ -2480,6 +2480,10 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:handleRequest',
       ),
+      revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapController:revokeDynamicPermissions',
+      ),
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       ///: END:ONLY_INCLUDE_IN
