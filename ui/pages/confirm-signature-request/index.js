@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import * as actions from '../../store/actions';
@@ -69,6 +69,7 @@ const ConfirmTxScreen = ({ match }) => {
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
+  const history = useHistory();
 
   useEffect(() => {
     const unconfTxList = txHelper(
@@ -174,6 +175,7 @@ const ConfirmTxScreen = ({ match }) => {
 
   return (
     <SigComponent
+      history={history}
       txData={txData}
       key={txData.id}
       identities={identities}
