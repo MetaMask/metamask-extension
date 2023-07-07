@@ -4007,9 +4007,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@metamask/controller-utils@npm:4.0.1"
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/controller-utils@npm:4.1.0"
   dependencies:
     "@metamask/utils": ^5.0.2
     "@spruceid/siwe-parser": 1.1.3
@@ -4020,7 +4020,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: c0c3b8b5a363aff6a7996e349f47fdc77d3b31846546dc937669a2ab2306c3ed3c2122cf682a1146c6ba3eeeabe491f8ba7aa0157d62843689242779bb506017
+  checksum: b4975e6ca860b691931254aa749e8c4faddd04279609cf197155b38150e55da0e966bf9b2d61ee1cd070f79d16e0305d5a0ff1747e0b4ab2e1c3ab46ca84e4d7
   languageName: node
   linkType: hard
 
@@ -4355,19 +4355,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/message-manager@npm:7.0.0"
+"@metamask/message-manager@npm:^7.0.0, @metamask/message-manager@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "@metamask/message-manager@npm:7.0.2"
   dependencies:
     "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
+    "@metamask/controller-utils": ^4.1.0
     "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
     eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: 1a7b785159d93153ef966a82bcdf9beea1a641cd663d2c1719cf6b671364f18b98c84795d23fa9872ec5e2bd9f08162c2c4d7369f46a81d12fd496b6433818a0
+  checksum: ee2f11a44fd7fae662aa72a0bfc02cb51327d1a42812c73aca291284a0dd2575836fd9e2a390e788da5e6515334e51863d839719762ceff65a56e60be14c046b
   languageName: node
   linkType: hard
 
@@ -24508,7 +24508,7 @@ __metadata:
     "@metamask/jazzicon": ^2.0.0
     "@metamask/key-tree": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^7.0.0
+    "@metamask/message-manager": ^7.0.2
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/network-controller": ^10.1.0
     "@metamask/notification-controller": ^3.0.0

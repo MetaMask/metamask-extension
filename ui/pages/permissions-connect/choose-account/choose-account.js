@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { SubjectType } from '@metamask/permission-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
@@ -47,6 +48,21 @@ const ChooseAccount = ({
     return accounts.length === selectedAccounts.size;
   };
 
+  const getHeaderText = () => {
+    if (accounts.length === 0) {
+      return t('connectAccountOrCreate');
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    if (targetSubjectMetadata?.subjectType === SubjectType.Snap) {
+      return t('selectAccountsForSnap');
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return t('selectAccounts');
+  };
+
+  const headerText = getHeaderText();
+
   return (
     <>
       <div className="permissions-connect-choose-account__content">
@@ -54,12 +70,9 @@ const ChooseAccount = ({
           iconUrl={targetSubjectMetadata?.iconUrl}
           iconName={targetSubjectMetadata?.name}
           headerTitle={t('connectWithMetaMask')}
-          headerText={
-            accounts.length > 0
-              ? t('selectAccounts')
-              : t('connectAccountOrCreate')
-          }
+          headerText={headerText}
           siteOrigin={targetSubjectMetadata?.origin}
+          subjectType={targetSubjectMetadata?.subjectType}
         />
         <AccountList
           accounts={accounts}
@@ -74,7 +87,9 @@ const ChooseAccount = ({
         />
       </div>
       <div className="permissions-connect-choose-account__footer-container">
-        <PermissionsConnectFooter />
+        {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
+          <PermissionsConnectFooter />
+        )}
         <PageContainerFooter
           cancelButtonType="default"
           onCancel={() => cancelPermissionsRequest(permissionsRequestId)}
