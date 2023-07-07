@@ -74,7 +74,7 @@ export function updateCustodyState(
     differentTxs.find((tx) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
-        toChecksumHexAddress(tx.txParams.from)
+          toChecksumHexAddress(tx.txParams.from)
         ];
       const custody = custodyAccountDetails?.custodyType
         .split(' - ')[1]
@@ -106,7 +106,7 @@ export function updateCustodyState(
   if (
     state.appState.modal.open &&
     state.appState.modal.modalState.name ===
-    'INTERACTIVE_REPLACEMENT_TOKEN_MODAL'
+      'INTERACTIVE_REPLACEMENT_TOKEN_MODAL'
   ) {
     if (state.appState.modal.modalState.props?.closeNotification) {
       dispatch(closeCurrentNotificationWindow());

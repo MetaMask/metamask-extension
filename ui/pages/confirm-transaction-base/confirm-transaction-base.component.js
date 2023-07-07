@@ -741,33 +741,28 @@ export default class ConfirmTransactionBase extends Component {
         this._removeBeforeUnload();
 
         if (txData.custodyStatus) {
-          console.log('setWaitForConfirmDeepLinkDialog');
           setWaitForConfirmDeepLinkDialog(true);
         }
-        console.log('sendTransaction');
+
         sendTransaction(txData)
           .then(() => {
             if (!this._isMounted) {
               return;
             }
             if (txData.custodyStatus) {
-              console.log('showCustodianDeepLink');
               showCustodianDeepLink({
                 fromAddress,
                 closeNotification: isNotification && unapprovedTxCount === 1,
                 txId: txData.id,
                 onDeepLinkFetched: () => {
-                  console.log('onDeepLinkFetched');
                   this.context.trackEvent({
                     category: 'MMI',
                     event: 'Show deeplink for transaction',
                   });
                 },
                 onDeepLinkShown: () => {
-                  console.log('onDeepLinkShown');
                   clearConfirmTransaction();
                   this.setState({ submitting: false }, () => {
-                    console.log('mostRecentOverviewPage');
                     history.push(mostRecentOverviewPage);
                     updateCustomNonce('');
                   });
