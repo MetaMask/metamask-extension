@@ -17,7 +17,10 @@ import {
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { showCustodyConfirmLink, checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import {
+  showCustodyConfirmLink,
+  checkForUnapprovedMessages,
+} from '../../../store/institutional/institution-actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
