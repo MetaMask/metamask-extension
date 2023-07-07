@@ -221,6 +221,7 @@ export const CURRENCY_SYMBOLS = {
   ETH: 'ETH',
   FANTOM: 'FTM',
   HARMONY: 'ONE',
+  LINEA_ETH: 'LINEAETH',
   PALM: 'PALM',
   MATIC: 'MATIC',
   TEST_ETH: 'TESTETH',
@@ -612,7 +613,7 @@ export const BUYABLE_CHAINS_MAP: {
     network: 'palm',
   },
   [CHAIN_IDS.LINEA_MAINNET]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    nativeCurrency: CURRENCY_SYMBOLS.LINEA_ETH,
     network: 'linea',
   },
 };
