@@ -131,10 +131,10 @@ export function useTokensToSearch({
       ];
 
   const memoizedTokensToSearch = useEqualityCheck(tokensToSearch);
+
   return useMemo(() => {
-    const usersTokensAddressMap = memoizedUsersToken.reduce(
-      (acc, token) => ({ ...acc, [token.address.toLowerCase()]: token }),
-      {},
+    const usersTokensAddressMap = new Map(
+      memoizedUsersToken.map((token) => [token.address.toLowerCase(), token]),
     );
 
     const tokensToSearchBuckets = {
@@ -150,7 +150,10 @@ export function useTokensToSearch({
 
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
-        { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
+        {
+          ...usersTokensAddressMap.get(token.address.toLowerCase()),
+          ...token,
+        },
         tokenConversionRates,
         conversionRate,
         currentCurrency,
@@ -160,7 +163,7 @@ export function useTokensToSearch({
       if (tokenBucketPriority === TokenBucketPriority.owned) {
         if (
           isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-          usersTokensAddressMap[token.address.toLowerCase()]
+          usersTokensAddressMap.has(token.address.toLowerCase())
         ) {
           tokensToSearchBuckets.owned.push(renderableDataToken);
         } else if (memoizedTopTokens[token.address.toLowerCase()]) {
@@ -176,18 +179,16 @@ export function useTokensToSearch({
         ] = renderableDataToken;
       } else if (
         isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
-        usersTokensAddressMap[token.address.toLowerCase()]
+        usersTokensAddressMap.has(token.address.toLowerCase())
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
       } else {
         tokensToSearchBuckets.others.push(renderableDataToken);
       }
     });
-
-    tokensToSearchBuckets.owned = tokensToSearchBuckets.owned.sort(
-      ({ rawFiat }, { rawFiat: secondRawFiat }) => {
-        return new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1;
-      },
+    tokensToSearchBuckets.owned.sort(
+      ({ rawFiat }, { rawFiat: secondRawFiat }) =>
+        new BigNumber(rawFiat || 0).gt(secondRawFiat || 0) ? -1 : 1,
     );
     tokensToSearchBuckets.top = tokensToSearchBuckets.top.filter(Boolean);
     if (tokenBucketPriority === TokenBucketPriority.owned) {
