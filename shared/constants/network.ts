@@ -924,7 +924,7 @@ export const BUYABLE_CHAINS_MAP: {
     network: 'celo',
   },
   [CHAIN_IDS.OPTIMISM]: {
-    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    nativeCurrency: CURRENCY_SYMBOLS.OPTIMISM,
     network: 'optimism',
   },
   [CHAIN_IDS.ARBITRUM]: {
