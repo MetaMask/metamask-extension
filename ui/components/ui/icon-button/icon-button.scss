@@ -29,4 +29,9 @@
     opacity: 0.3;
     cursor: auto;
   }
+
+  p {
+    width: 60px; //for ellipsis keeping the width same as icon-button used here
+  }
+
 }
