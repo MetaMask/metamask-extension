@@ -300,7 +300,7 @@ export default class MetamaskController extends EventEmitter {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.mmiConfigurationController = new MmiConfigurationController({
       initState: initState.MmiConfigurationController,
-      mmiConfigurationServiceUrl: MMI_CONFIGURATION_SERVICE_URL
+      mmiConfigurationServiceUrl: process.env.MMI_CONFIGURATION_SERVICE_URL,
     });
     ///: END:ONLY_INCLUDE_IN
 
