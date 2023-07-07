@@ -10,7 +10,7 @@ import {
   TextVariant,
   Color,
 } from '../../../helpers/constants/design-system';
-import { TextDirection, ValidTag } from './text.types';
+import { TextDirection } from './text.types';
 import { Text } from '.';
 
 describe('Text', () => {
@@ -21,20 +21,20 @@ describe('Text', () => {
   it('should render the Text with correct html elements', () => {
     const { getByText, container } = render(
       <>
-        <Text as={ValidTag.P}>p</Text>
-        <Text as={ValidTag.H1}>h1</Text>
-        <Text as={ValidTag.H2}>h2</Text>
-        <Text as={ValidTag.H3}>h3</Text>
-        <Text as={ValidTag.H4}>h4</Text>
-        <Text as={ValidTag.H5}>h5</Text>
-        <Text as={ValidTag.H6}>h6</Text>
-        <Text as={ValidTag.Span}>span</Text>
-        <Text as={ValidTag.Strong}>strong</Text>
-        <Text as={ValidTag.Em}>em</Text>
-        <Text as={ValidTag.Li}>li</Text>
-        <Text as={ValidTag.Div}>div</Text>
-        <Text as={ValidTag.Dt}>dt</Text>
-        <Text as={ValidTag.Dd}>dd</Text>
+        <Text as="p">p</Text>
+        <Text as="h1">h1</Text>
+        <Text as="h2">h2</Text>
+        <Text as="h3">h3</Text>
+        <Text as="h4">h4</Text>
+        <Text as="h5">h5</Text>
+        <Text as="h6">h6</Text>
+        <Text as="span">span</Text>
+        <Text as="strong">strong</Text>
+        <Text as="em">em</Text>
+        <Text as="li">li</Text>
+        <Text as="div">div</Text>
+        <Text as="dt">dt</Text>
+        <Text as="dd">dd</Text>
       </>,
     );
     expect(container.querySelector('p')).toBeDefined();
@@ -76,10 +76,13 @@ describe('Text', () => {
         <Text variant={TextVariant.headingSm}>heading-sm</Text>
         <Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
         <Text variant={TextVariant.bodyMd}>body-md</Text>
+        <Text variant={TextVariant.bodyMdMedium}>body-md-medium</Text>
         <Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
         <Text variant={TextVariant.bodySm}>body-sm</Text>
+        <Text variant={TextVariant.bodySmMedium}>body-sm-medium</Text>
         <Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
         <Text variant={TextVariant.bodyXs}>body-xs</Text>
+        <Text variant={TextVariant.bodyXsMedium}>body-xs-medium</Text>
       </>,
     );
 
@@ -89,10 +92,13 @@ describe('Text', () => {
     expect(getByText('heading-sm')).toHaveClass('mm-text--heading-sm');
     expect(getByText('body-lg-medium')).toHaveClass('mm-text--body-lg-medium');
     expect(getByText('body-md')).toHaveClass('mm-text--body-md');
+    expect(getByText('body-md-medium')).toHaveClass('mm-text--body-md-medium');
     expect(getByText('body-md-bold')).toHaveClass('mm-text--body-md-bold');
     expect(getByText('body-sm')).toHaveClass('mm-text--body-sm');
+    expect(getByText('body-sm-medium')).toHaveClass('mm-text--body-sm-medium');
     expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
     expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
+    expect(getByText('body-xs-medium')).toHaveClass('mm-text--body-xs-medium');
     expect(container).toMatchSnapshot();
   });
 

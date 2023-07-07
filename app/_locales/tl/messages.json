@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Magdagdag ng Custom na Token"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Hindi makahanap ng token? Maaari kang manu-manong magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Ang mga address ng token contract ay matatagpuan sa $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Magpapahintulot ito sa network na ito na gamitin sa loob ng MetaMask."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Magdagdag ng Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Hindi makahanap ng token? Maaari kang manu-manong magdagdag ng anumang token sa pamamagitan ng pag-paste ng address nito. Ang mga address ng token contract ay matatagpuan sa $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Address"
@@ -359,9 +359,6 @@
     "message": "Payagan ang pag-access at paglipat ng lahat ng iyong $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Aprubahan at I-install"
-  },
   "approveButtonText": {
     "message": "Aprubahan"
   },
@@ -425,9 +422,6 @@
   },
   "back": {
     "message": "Bumalik"
-  },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
   },
   "backup": {
     "message": "I-backup"
@@ -553,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Sa $1 na transaksyon ang singil sa gas ay dapat tumaas nang hindi bababa sa 10% para ito ay makilala ng network.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Kanselahin ang swap sa halagang ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Kanselahin ang swap nang libre"
   },
   "cancelled": {
     "message": "Nakansela"
@@ -695,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli test network"
   },
   "connectingToMainnet": {
@@ -923,9 +910,6 @@
   },
   "delete": {
     "message": "I-delete"
-  },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
   },
   "deleteNetwork": {
     "message": "I-delete ang network?"
@@ -1205,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
-  },
-  "enableSmartTransactions": {
-    "message": "Payagan ang mga smart transaction"
   },
   "enableToken": {
     "message": "paganahin ang $1",
@@ -1578,6 +1559,12 @@
     "message": "ngunit maaring hingin ng mga phisher.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "I-hold para ipakita ang SRP"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Panatilihing ligtas ang iyong SRP"
+  },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
   },
@@ -1611,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
-  },
-  "importNFTs": {
-    "message": "I-import ang mga NFT"
   },
   "importSelectedTokens": {
     "message": "I-import ang mga napiling token?"
@@ -1846,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Gusto mo bang idagdag ang mga token na ito?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli test network"
   },
   "link": {
@@ -1872,9 +1856,6 @@
   },
   "lock": {
     "message": "I-lock"
-  },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
   },
   "logo": {
     "message": "$1 logo",
@@ -1969,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Ayon sa aming mga talaan, ang isinumiteng RPC URL value ay hindi tumutugma sa isang kilalang provider para sa chain ID na ito."
   },
-  "missingNFT": {
-    "message": "Hindi makita ang NFT mo?"
-  },
   "missingSetting": {
     "message": "Hindi makahanap ng setting?"
   },
@@ -1983,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token lang."
-  },
-  "myAccounts": {
-    "message": "Mga Account Ko"
   },
   "name": {
     "message": "Pangalan"
@@ -2180,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng conversion"
-  },
-  "noNFTs": {
-    "message": "Wala pang mga NFT"
   },
   "noSnaps": {
     "message": "Walang mga Snap na naka-install"
@@ -2799,9 +2771,6 @@
   "receive": {
     "message": "Tumanggap"
   },
-  "recents": {
-    "message": "Mga Kamakailan"
-  },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
   },
@@ -3248,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Secret Recovery Phrase, maaari kong maiwala ang aking mga account at lahat ng kanilang mga asset."
   },
-  "smartTransaction": {
-    "message": "Smart Transaction"
-  },
   "snapContent": {
     "message": "Ang nilalamang ito ay nagmumula sa $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3263,10 +3229,12 @@
     "message": "I-install ang snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Para kumpirmahing naunawaan mo, tsekan lahat."
+    "message": "Para kumpirmahing naunawaan mo, tsekan lahat.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon."
+    "message": "Para kumpirmahin na naiintindihan mo, lagyan ng tsek ang lahat ng kahon.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
@@ -3356,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Nabigong i-paste dahil naglalaman ito ng higit sa 24 na salita. Ang secret recovery phrase ay mayroong hanggang 24 na salita lamang.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Maaari mong i-paste ang iyong buong secret recovery phrase sa alinmang patlang",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Magsimula"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Upang ipakita ang iyong Secret Recovery Phrase, kailangan mong sagutin nang tama ang dalawang tanong"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Kung mawala mo ang iyong Secret Recovery Phrase, ang MetaMask ay..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Hindi ka matutulungan"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Isulat ito, iukit sa metal, o itago ito sa maraming lihim na lugar upang hindi ito mawala. Kung nawala mo ito, wala na ito ng tuluyan."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Tama! Walang makakatulong na maibalik ang iyong Secret Recovery Phrase"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Maaari itong ibalik para sa iyo"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Kung nawala mo ang iyong Secret Recovery Phrase mawawala na ito nang tuluyan. Walang makakatulong sa iyo na maibalik ito, anuman ang maaaring sabihin nila."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Mali! Walang makakatulong na maibalik ang iyong Secret Recovery Phrase"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Kung sinuman, kahit isang ahente ng suporta, ay humingi ng iyong Secret Recovery Phrase..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Niloloko ka"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Secret Recovery Phrase ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Tama! Ang pagbabahagi ng iyong Secret Recovery Phrase ay hindi kailanman isang magandang ideya"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Dapat mong ibigay sa kanila"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Secret Recovery Phrase ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Hindi! Huwag kailanman ibahagi ang iyong Secret Recovery Phrase sa sinuman, kailanman"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Pagsusulit sa seguridad"
   },
   "srpToggleShow": {
     "message": "Ipakita/Itago ang salitang ito ng secret recovery phrase",
@@ -3432,9 +3451,6 @@
   "strong": {
     "message": "Mahirap"
   },
-  "stxAreHere": {
-    "message": "Narito na ang mga Smart Transaction!"
-  },
   "stxBenefit1": {
     "message": "Bawasan ang mga gastos sa transaksyon"
   },
@@ -3456,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "Subukan muli ang iyong pagpapalit. Narito kami para protektahan ka sa mga katulad na panganib sa susunod."
   },
-  "stxDescription": {
-    "message": "Mas humusay pa ang mga Pagpapalit sa MetaMask! Papayagan ng Pagpapagana sa mga Smart Transaction ang MetaMask na pahusayin ang iyong Pagpapalit gamit ang program para makatulong sa: "
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Hindi sapat na pondo para sa smart transaction."
-  },
-  "stxErrorUnavailable": {
-    "message": "Pansamantalang hindi available ang mga Smart Transaction."
-  },
   "stxFailure": {
     "message": "Hindi matagumpay ang pag-swap"
   },
@@ -3477,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Pampublikong isinusumite ang iyong Swap..."
-  },
-  "stxSubDescription": {
-    "message": "* Susubukan ng mga Smart Transaction na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Pagpapalit ay naging matagupay."
   },
   "stxSuccess": {
     "message": "Nakumpleto ang pagpapalit!"
@@ -4065,9 +4069,6 @@
   "transfer": {
     "message": "Mag-transfer"
   },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa iba't ibang account ko"
-  },
   "transferFrom": {
     "message": "Mag-transfer Mula Kay/Sa"
   },
@@ -4329,7 +4330,7 @@
     "message": "Magsimula na tayo"
   },
   "welcomeToMetaMaskIntro": {
-    "message": "Ang Metamask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
+    "message": "Ang MetaMask na pinagkakatiwalaan ng milyun-milyon ay isang ligtas na wallet na ginagawang accessible ang mundo ng web3 para sa lahat."
   },
   "whatsNew": {
     "message": "Ano'ng bago",

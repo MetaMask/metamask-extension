@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import * as actions from '../../store/actions';
@@ -22,12 +22,6 @@ import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
-const SIGN_MESSAGE_TYPE = {
-  MESSAGE: 'message',
-  PERSONAL: 'personal',
-  TYPED: 'typed',
-};
-
 const signatureSelect = (txData) => {
   const {
     type,
@@ -47,12 +41,6 @@ const signatureSelect = (txData) => {
   }
 
   return SignatureRequestOriginal;
-};
-
-const stopPropagation = (event) => {
-  if (event?.stopPropagation) {
-    event.stopPropagation();
-  }
 };
 
 const ConfirmTxScreen = ({ match }) => {
@@ -81,6 +69,7 @@ const ConfirmTxScreen = ({ match }) => {
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
+  const history = useHistory();
 
   useEffect(() => {
     const unconfTxList = txHelper(
@@ -182,49 +171,16 @@ const ConfirmTxScreen = ({ match }) => {
     return <Loading />;
   }
 
-  const signMessage = (type) => (event) => {
-    stopPropagation(event);
-    const params = txData.msgParams;
-    params.metamaskId = txData.id;
-    let action;
-    if (type === SIGN_MESSAGE_TYPE.MESSAGE) {
-      action = actions.signMsg;
-    } else if (type === SIGN_MESSAGE_TYPE.PERSONAL) {
-      action = actions.signPersonalMsg;
-    } else {
-      action = actions.signTypedMsg;
-    }
-    return dispatch(action?.(params));
-  };
-
-  const cancelMessage = (type) => (event) => {
-    stopPropagation(event);
-    let action;
-    if (type === SIGN_MESSAGE_TYPE.MESSAGE) {
-      action = actions.cancelMsg;
-    } else if (type === SIGN_MESSAGE_TYPE.PERSONAL) {
-      action = actions.cancelPersonalMsg;
-    } else {
-      action = actions.cancelTypedMsg;
-    }
-    return dispatch(action(txData));
-  };
-
   const SigComponent = signatureSelect(txData);
 
   return (
     <SigComponent
+      history={history}
       txData={txData}
       key={txData.id}
       identities={identities}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
-      signMessage={signMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
-      signPersonalMessage={signMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
-      signTypedMessage={signMessage(SIGN_MESSAGE_TYPE.TYPED)}
-      cancelMessage={cancelMessage(SIGN_MESSAGE_TYPE.MESSAGE)}
-      cancelPersonalMessage={cancelMessage(SIGN_MESSAGE_TYPE.PERSONAL)}
-      cancelTypedMessage={cancelMessage(SIGN_MESSAGE_TYPE.TYPED)}
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       selectedAccount={selectedAccount}
       ///: END:ONLY_INCLUDE_IN

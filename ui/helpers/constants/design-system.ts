@@ -46,8 +46,10 @@ export enum Color {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   transparent = 'transparent',
   localhost = 'localhost',
   inherit = 'inherit',
@@ -77,7 +79,8 @@ export enum BackgroundColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
+  lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
 }
@@ -103,9 +106,11 @@ export enum BorderColor {
   mainnet = 'mainnet',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
+  lineaGoerli = 'linea-goerli',
+  lineaMainnet = 'linea-mainnet',
   transparent = 'transparent',
   localhost = 'localhost',
+  backgroundDefault = 'background-default', // exception for border color when element is meant to look "cut out"
 }
 
 export enum TextColor {
@@ -126,8 +131,10 @@ export enum TextColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
   transparent = 'transparent',
@@ -151,8 +158,10 @@ export enum IconColor {
   inherit = 'inherit',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  lineaTestnet = 'lineatestnet',
-  lineaTestnetInverse = 'lineatestnet-inverse',
+  lineaGoerli = 'linea-goerli',
+  lineaGoerliInverse = 'linea-goerli-inverse',
+  lineaMainnet = 'linea-mainnet',
+  lineaMainnetInverse = 'linea-mainnet-inverse',
   goerliInverse = 'goerli-inverse',
   sepoliaInverse = 'sepolia-inverse',
 }
@@ -178,10 +187,13 @@ export enum TextVariant {
   headingSm = 'heading-sm',
   bodyLgMedium = 'body-lg-medium',
   bodyMd = 'body-md',
+  bodyMdMedium = 'body-md-medium',
   bodyMdBold = 'body-md-bold',
   bodySm = 'body-sm',
+  bodySmMedium = 'body-sm-medium',
   bodySmBold = 'body-sm-bold',
   bodyXs = 'body-xs',
+  bodyXsMedium = 'body-xs-medium',
   inherit = 'inherit',
 }
 
@@ -206,13 +218,37 @@ export enum BorderStyle {
 }
 
 export enum BorderRadius {
+  /**
+   * 2px
+   */
   XS = 'xs',
+  /**
+   * 4px
+   */
   SM = 'sm',
+  /**
+   * 6px
+   */
   MD = 'md',
+  /**
+   * 8px
+   */
   LG = 'lg',
+  /**
+   * 12px
+   */
   XL = 'xl',
+  /**
+   * 0
+   */
   none = 'none',
+  /**
+   * 9999px
+   */
   pill = 'pill',
+  /**
+   * 50%
+   */
   full = 'full',
 }
 
@@ -243,7 +279,7 @@ export enum FlexDirection {
 }
 
 /**
- * @deprecated `FLEX_DIRECTION` const has been deprecated in favour of the `FlexDirection` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `FLEX_DIRECTION` const has been deprecated in favor of the `FlexDirection` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `FLEX_DIRECTION` with `FlexDirection` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -262,7 +298,7 @@ export enum FlexWrap {
 }
 
 /**
- * @deprecated `FLEX_WRAP` const has been deprecated in favour of the `FlexWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `FLEX_WRAP` const has been deprecated in favor of the `FlexWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `FLEX_WRAP` with `FlexWrap` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -286,7 +322,7 @@ export enum Display {
 }
 
 /**
- * @deprecated `DISPLAY` const has been deprecated in favour of the `Display` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `DISPLAY` const has been deprecated in favor of the `Display` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `DISPLAY` with `Display` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -304,7 +340,7 @@ export const DISPLAY = {
 };
 
 /**
- * @deprecated `FRACTIONS` const has been deprecated in favour of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `FRACTIONS` const has been deprecated in favor of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `FRACTIONS` with `BlockSize` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -372,7 +408,7 @@ export enum BlockSize {
 }
 
 /**
- * @deprecated `BLOCK_SIZES` const has been deprecated in favour of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `BLOCK_SIZES` const has been deprecated in favor of the `BlockSize` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `BLOCK_SIZES` with `BlockSize` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -395,7 +431,7 @@ export enum TextAlign {
 }
 
 /**
- * @deprecated `TEXT_ALIGN` const has been deprecated in favour of the `TextAlign` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `TEXT_ALIGN` const has been deprecated in favor of the `TextAlign` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `TEXT_ALIGN` with `TextAlign` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -418,7 +454,7 @@ export enum TextTransform {
 }
 
 /**
- * @deprecated `TEXT_TRANSFORM` const has been deprecated in favour of the `TextTransform` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `TEXT_TRANSFORM` const has been deprecated in favor of the `TextTransform` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `TEXT_TRANSFORM` with `TextTransform` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -435,7 +471,7 @@ export enum FontWeight {
 }
 
 /**
- * @deprecated `FONT_WEIGHT` const has been deprecated in favour of the `FontWeight` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `FONT_WEIGHT` const has been deprecated in favor of the `FontWeight` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `FONT_WEIGHT` with `FontWeight` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -452,7 +488,7 @@ export enum OverflowWrap {
 }
 
 /**
- * @deprecated `OVERFLOW_WRAP` const has been deprecated in favour of the `OverflowWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `OVERFLOW_WRAP` const has been deprecated in favor of the `OverflowWrap` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `OVERFLOW_WRAP` with `OverflowWrap` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -468,7 +504,7 @@ export enum FontStyle {
 }
 
 /**
- * @deprecated `FONT_STYLE` const has been deprecated in favour of the `FontStyle` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `FONT_STYLE` const has been deprecated in favor of the `FontStyle` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `FONT_STYLE` with `FontStyle` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */
@@ -485,7 +521,7 @@ export enum Severity {
 }
 
 /**
- * @deprecated `SEVERITIES` const has been deprecated in favour of the `Severity` enum which can still be imported from `ui/helpers/constants/design-system.ts`
+ * @deprecated `SEVERITIES` const has been deprecated in favor of the `Severity` enum which can still be imported from `ui/helpers/constants/design-system.ts`
  *
  * Help to replace `SEVERITIES` with `FontStyle` by submitting PRs against https://github.com/MetaMask/metamask-extension/issues/18714
  */

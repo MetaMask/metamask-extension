@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "커스텀 토큰 추가"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "토큰 추가"
+  },
+  "addTokenByContractAddress": {
+    "message": "이 토큰을 찾을 수 없으신가요? 토큰 주소를 붙여넣으면 토큰을 직접 추가할 수 있습니다. 토큰의 계약 주소는 $1에서 찾을 수 있습니다",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "주소"
@@ -359,9 +359,6 @@
     "message": "내 모든 $1에 액세스 및 전송할 수 있는 권한을 부여할까요?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "승인 및 설치"
-  },
   "approveButtonText": {
     "message": "승인"
   },
@@ -425,9 +422,6 @@
   },
   "back": {
     "message": "뒤로"
-  },
-  "backToAll": {
-    "message": "전체 목록으로 돌아가기"
   },
   "backup": {
     "message": "백업"
@@ -553,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "거래를 $1하려면 가스비를 최소 10%를 인상해야 네트워크에서 인식될 수 있습니다.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "~$1 비용으로 스왑 취소",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "무료로 스왑 취소"
   },
   "cancelled": {
     "message": "취소됨"
@@ -695,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerli 테스트 네트워크에 연결 중"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크에 연결 중"
   },
   "connectingToMainnet": {
@@ -923,9 +910,6 @@
   },
   "delete": {
     "message": "삭제"
-  },
-  "deleteAccount": {
-    "message": "계정 삭제"
   },
   "deleteNetwork": {
     "message": "네트워크를 삭제할까요?"
@@ -1205,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
-  },
-  "enableSmartTransactions": {
-    "message": "스마트 트랜잭션 활성화"
   },
   "enableToken": {
     "message": "$1 활성화",
@@ -1578,6 +1559,12 @@
     "message": "오히려 피싱 사기꾼들이 요구할 수 있으니 주의가 필요합니다.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "눌러서 SRP 정보를 확인하세요"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "SRP 정보를 안전하게 보관하세요"
+  },
   "ignoreAll": {
     "message": "모두 무시"
   },
@@ -1611,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "NFT의 ID는 고유한 식별자이므로 동일한 NFT는 존재하지 않습니다. 다시 말하지만, OpenSea에서 이 번호는 '세부 정보(Details)'에서 찾아볼 수 있습니다. 이를 기록하거나 클립보드에 복사해 두세요."
-  },
-  "importNFTs": {
-    "message": "NFT 가져오기"
   },
   "importSelectedTokens": {
     "message": "선택한 토큰을 불러올까요?"
@@ -1846,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "이 토큰을 추가할까요?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 테스트 네트워크"
   },
   "link": {
@@ -1872,9 +1856,6 @@
   },
   "lock": {
     "message": "잠금"
-  },
-  "lockTimeTooGreat": {
-    "message": "잠금 시간이 너무 깁니다"
   },
   "logo": {
     "message": "$1 로고",
@@ -1969,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "기록에 따르면 제출한 RPC URL 값이 이 체인 ID의 알려진 공급업체와 일치하지 않습니다."
   },
-  "missingNFT": {
-    "message": "NFT가 보이지 않나요?"
-  },
   "missingSetting": {
     "message": "설정을 찾으세요?"
   },
@@ -1983,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "토큰을 1개 이상 선택해야 합니다."
-  },
-  "myAccounts": {
-    "message": "내 계정"
   },
   "name": {
     "message": "이름"
@@ -2180,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
-  },
-  "noNFTs": {
-    "message": "아직 NFT가 없음"
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
@@ -2799,9 +2771,6 @@
   "receive": {
     "message": "받기"
   },
-  "recents": {
-    "message": "최근"
-  },
   "recipientAddressPlaceholder": {
     "message": "검색, 공개 주소(0x) 또는 ENS"
   },
@@ -3248,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "본인은 본인의 비밀 복구 구문을 백업하지 않는 한 본인의 계정과 모든 자산을 잃을 수 있다는 사실을 이해합니다."
   },
-  "smartTransaction": {
-    "message": "스마트 트랜잭션"
-  },
   "snapContent": {
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3263,10 +3229,12 @@
     "message": "스냅 설치"
   },
   "snapInstallWarningCheck": {
-    "message": "이해하셨으면 모두 체크해 주세요."
+    "message": "이해하셨으면 모두 체크해 주세요.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "이해하셨으면 모든 란에 체크하세요."
+    "message": "이해하셨으면 모든 란에 체크하세요.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
@@ -3356,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "단어가 24개를 초과하여 붙여넣기에 실패했습니다. 비밀 복구 구문은 24개 이하의 단어로 이루어집니다.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "비밀 복구 구문 전체를 아무 입력란에 붙여넣을 수 있습니다",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "시작하기"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "비밀 복구 구문을 찾으려면 두 가지 질문에 올바르게 답해야 합니다"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "비밀 복구 구문을 분실하시면 MetaMask가..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "도와드릴 수 없습니다"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "따라서 이를 적거나, 금속 등에 새기거나, 여러 비밀 장소에 보관하여 절대로 잃어버리지 않도록 하세요. 한 번 잃어버리면 영원히 찾을 수 없습니다."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "맞습니다! 아무도 본인의 비밀 복구 구문을 복구할 수 없습니다"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "찾아드릴 수 있습니다"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "비밀 복구 구문은 한 번 잃어버리면 영원히 찾을 수 없습니다. 누가 뭐라고 해도 아무도 이를 찾아드리지 못합니다."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "아닙니다! 아무도 본인의 비밀 복구 구문을 복구할 수 없습니다"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "누군가, 심지어 고객 센터 직원이라고 해도 여러분의 비밀 복구 구문을 물어본다면..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "이는 반드시 사기입니다"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "비밀 복구 구문이 필요하다고 하는 사람은 모두 거짓말쟁이입니다. 그런 자들과 비밀 복구 구문을 공유하면 자산을 도둑맞게 됩니다."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "맞습니다! 비밀 복구 구문은 아무와도 공유하면 안 됩니다"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "주어야 합니다"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "비밀 복구 구문이 필요하다고 하는 사람은 모두 거짓말쟁이입니다. 그런 자들과 비밀 복구 구문을 공유하면 자산을 도둑맞게 됩니다."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "맞습니다! 비밀 복구 구문은 절대로 아무와도 공유하면 안 됩니다"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "보안 퀴즈"
   },
   "srpToggleShow": {
     "message": "비밀 복구 구문 중에서 이 단어 공개하기/숨기기",
@@ -3432,9 +3451,6 @@
   "strong": {
     "message": "강함"
   },
-  "stxAreHere": {
-    "message": "스마트 거래가 가능합니다!"
-  },
   "stxBenefit1": {
     "message": "거래 비용 최소화하기"
   },
@@ -3456,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "스왑을 다시 진행하세요. 다음에도 유사한 위험이 발생한다면 보호해 드리겠습니다."
   },
-  "stxDescription": {
-    "message": "MetaMask 스왑이 더욱 스마트해졌습니다! 스마트 거래를 활성화하면 MetaMask가 프로그램을 통해 스왑을 최적화하여 다음을 도울 수 있습니다."
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "스마트 거래 자금 부족"
-  },
-  "stxErrorUnavailable": {
-    "message": "스마트 거래를 잠시 사용할 수 없습니다."
-  },
   "stxFailure": {
     "message": "스왑 실패"
   },
@@ -3477,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "스왑을 공개로 제출하는 중..."
-  },
-  "stxSubDescription": {
-    "message": "*스마트 거래는 비공개로 거래를 제출하기 위해 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 거래는 공개적으로 브로드캐스트될 것입니다."
   },
   "stxSuccess": {
     "message": "스왑 완료!"
@@ -4064,9 +4068,6 @@
   },
   "transfer": {
     "message": "전송"
-  },
-  "transferBetweenAccounts": {
-    "message": "내 계정 간 전송"
   },
   "transferFrom": {
     "message": "전송 위치"

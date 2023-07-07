@@ -6,6 +6,7 @@ import {
   AvatarNetwork,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
+  Box,
 } from '../../component-library';
 import {
   BackgroundColor,
@@ -13,7 +14,6 @@ import {
   JustifyContent,
   Size,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 
 export const NftItem = ({
   alt,

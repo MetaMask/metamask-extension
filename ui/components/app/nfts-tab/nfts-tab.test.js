@@ -5,7 +5,6 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import NftsTab from '.';
 
 const NFTS = [
@@ -153,17 +152,16 @@ const render = ({
   useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
-  const chainIdAsDecimal = hexToDecimal(chainId);
   const store = configureStore({
     metamask: {
       allNfts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: nfts,
+          [chainId]: nfts,
         },
       },
       allNftContracts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: nftContracts,
+          [chainId]: nftContracts,
         },
       },
       providerConfig: { chainId },
@@ -305,7 +303,7 @@ describe('NFT Items', () => {
         onAddNFT: onAddNFTStub,
       });
       expect(onAddNFTStub).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Import NFTs'));
+      fireEvent.click(screen.queryByText('Import NFT'));
       expect(onAddNFTStub).toHaveBeenCalledTimes(1);
     });
   });

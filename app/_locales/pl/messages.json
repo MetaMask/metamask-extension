@@ -93,9 +93,6 @@
   "back": {
     "message": "Wstecz"
   },
-  "backToAll": {
-    "message": "Wróć do wszystkich"
-  },
   "backupApprovalInfo": {
     "message": "Ten tajny kod jest wymagany do odzyskania portfela w przypadku zgubienia urządzenia, zapomnienia hasła, ponownego zainstalowania MetaMask lub potrzeby uzyskania dostępu do portfela na innym urządzeniu."
   },
@@ -160,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Łączenie z siecią testową Linea Goerli"
   },
   "connectingToMainnet": {
@@ -213,9 +210,6 @@
   },
   "delete": {
     "message": "Usuń"
-  },
-  "deleteAccount": {
-    "message": "Usuń konto"
   },
   "deleteNetwork": {
     "message": "Usunąć sieć?"
@@ -409,7 +403,7 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Sieć testowa Linea Goerli"
   },
   "links": {
@@ -444,9 +438,6 @@
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje konta"
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
@@ -568,9 +559,6 @@
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
-  },
-  "recents": {
-    "message": "Ostatnie"
   },
   "recipientAddressPlaceholder": {
     "message": "Szukaj, adres publiczny (0x) lub ENS"
@@ -788,9 +776,6 @@
   },
   "transfer": {
     "message": "Przelew"
-  },
-  "transferBetweenAccounts": {
-    "message": "Przelew między moimi kontami"
   },
   "transferFrom": {
     "message": "Przelew z"

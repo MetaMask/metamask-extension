@@ -1,6 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -29,9 +30,12 @@ import {
   SEPOLIA_DISPLAY_NAME,
   GOERLI_DISPLAY_NAME,
   ETH_TOKEN_IMAGE_URL,
-  LINEA_TESTNET_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
+  LINEA_GOERLI_TOKEN_IMAGE_URL,
+  LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -502,9 +506,7 @@ export function getCurrentCurrency(state) {
 }
 
 export function getTotalUnapprovedCount(state) {
-  const { pendingApprovalCount = 0 } = state.metamask;
-
-  return pendingApprovalCount + getSuggestedAssetCount(state);
+  return state.metamask.pendingApprovalCount ?? 0;
 }
 
 export function getTotalUnapprovedMessagesCount(state) {
@@ -545,7 +547,7 @@ export function getUnapprovedTxCount(state) {
 }
 
 export function getUnapprovedConfirmations(state) {
-  const { pendingApprovals } = state.metamask;
+  const { pendingApprovals = {} } = state.metamask;
   return Object.values(pendingApprovals);
 }
 
@@ -556,13 +558,26 @@ export function getUnapprovedTemplatedConfirmations(state) {
   );
 }
 
-function getSuggestedAssetCount(state) {
-  const { suggestedAssets = [] } = state.metamask;
-  return suggestedAssets.length;
+export function getSuggestedTokens(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ type, requestData }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId === undefined
+      );
+    }) || []
+  );
 }
 
-export function getSuggestedAssets(state) {
-  return state.metamask.suggestedAssets;
+export function getSuggestedNfts(state) {
+  return (
+    getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
+      return (
+        type === ApprovalType.WatchAsset &&
+        requestData?.asset?.tokenId !== undefined
+      );
+    }) || []
+  );
 }
 
 export function getIsMainnet(state) {
@@ -956,6 +971,7 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
+  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -975,9 +991,10 @@ function getAllowedAnnouncementIds(state) {
     15: false,
     16: false,
     17: false,
-    18: true,
-    19: true,
+    18: false,
+    19: false,
     20: currentKeyringIsLedger && isFirefox,
+    21: isSwapsChain,
   };
 }
 
@@ -1159,42 +1176,17 @@ export function getCurrentNetwork(state) {
 }
 
 export function getAllEnabledNetworks(state) {
+  const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
   const showTestnetNetworks = getShowTestNetworks(state);
 
-  return showTestnetNetworks
-    ? allNetworks
-    : allNetworks.filter(
-        (network) => TEST_CHAINS.includes(network.chainId) === false,
-      );
+  return showTestnetNetworks ? allNetworks : nonTestNetworks;
 }
 
-export function getAllNetworks(state) {
+export function getTestNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
 
-  const networks = [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) =>
-        ![
-          CHAIN_IDS.LOCALHOST,
-          // Linea gets added as a custom network configuration so
-          // we must ignore it here to display in test networks
-          CHAIN_IDS.LINEA_TESTNET,
-        ].includes(chainId),
-    ),
-    // Test networks
+  return [
     {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
@@ -1210,15 +1202,60 @@ export function getAllNetworks(state) {
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     },
     {
-      chainId: CHAIN_IDS.LINEA_TESTNET,
-      nickname: LINEA_TESTNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_TESTNET],
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_TESTNET],
+      chainId: CHAIN_IDS.LINEA_GOERLI,
+      nickname: LINEA_GOERLI_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+      rpcPrefs: {
+        imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_GOERLI,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
       ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
     ),
+  ];
+}
+
+export function getNonTestNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+
+  return [
+    // Mainnet always first
+    {
+      chainId: CHAIN_IDS.MAINNET,
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcPrefs: {
+        imageUrl: ETH_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.MAINNET,
+      ticker: CURRENCY_SYMBOLS.ETH,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+    },
+    // Custom networks added by the user
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
+    ),
+  ];
+}
+
+export function getAllNetworks(state) {
+  const networks = [
+    // Mainnet and custom networks
+    ...getNonTestNetworks(state),
+    // Test networks
+    ...getTestNetworks(state),
   ];
 
   return networks;
@@ -1510,5 +1547,17 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   }
 
   return snapsInstallPrivacyWarningShown;
+}
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
 }
 ///: END:ONLY_INCLUDE_IN

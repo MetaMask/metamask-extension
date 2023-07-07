@@ -19,7 +19,6 @@
 @import 'connected-accounts-list/index';
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
-@import 'connected-status-indicator/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'custom-spending-cap/index';
 @import 'edit-gas-display/index';
@@ -64,6 +63,7 @@
 @import 'signature-request-original/index';
 @import 'signature-request-original/signature-request-original-warning/index';
 @import 'srp-input/srp-input';
+@import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';

@@ -93,9 +93,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backToAll": {
-    "message": "Înapoi la toate"
-  },
   "backupApprovalInfo": {
     "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
@@ -160,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Se conectează la rețeaua de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -213,9 +210,6 @@
   },
   "delete": {
     "message": "Șterge"
-  },
-  "deleteAccount": {
-    "message": "Ștergeți cont"
   },
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
@@ -399,7 +393,7 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rețea de test Linea Goerli"
   },
   "links": {
@@ -434,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
-  "myAccounts": {
-    "message": "Conturile mele"
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -561,9 +552,6 @@
   },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
-  },
-  "recents": {
-    "message": "Recente"
   },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
@@ -781,9 +769,6 @@
   },
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
-  },
-  "transferBetweenAccounts": {
-    "message": "Transferă între conturile mele"
   },
   "transferFrom": {
     "message": "Transferați de la"

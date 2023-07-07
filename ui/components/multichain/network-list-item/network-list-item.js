@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
   IconColor,
@@ -10,20 +9,21 @@ import {
   Size,
   JustifyContent,
   TextColor,
-  BLOCK_SIZES,
   BackgroundColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   ButtonIcon,
   ButtonLink,
   IconName,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   GOERLI_DISPLAY_NAME,
-  LINEA_TESTNET_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 
@@ -33,8 +33,8 @@ function getAvatarNetworkColor(name) {
   switch (name) {
     case GOERLI_DISPLAY_NAME:
       return BackgroundColor.goerli;
-    case LINEA_TESTNET_DISPLAY_NAME:
-      return BackgroundColor.lineaTestnet;
+    case LINEA_GOERLI_DISPLAY_NAME:
+      return BackgroundColor.lineaGoerli;
     case SEPOLIA_DISPLAY_NAME:
       return BackgroundColor.sepolia;
     default:
@@ -69,7 +69,7 @@ export const NetworkListItem = ({
       })}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       ref={networkRef}
     >
       {selected && (

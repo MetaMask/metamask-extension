@@ -282,7 +282,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
@@ -291,13 +291,12 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(largeDelayMs);
     });
 
     it('displays the token transfer data', async function () {
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
@@ -481,7 +480,7 @@ describe('MetaMask', function () {
     });
 
     it('submits the transaction', async function () {
-      await driver.delay(largeDelayMs * 2);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs * 2);
     });

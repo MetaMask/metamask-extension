@@ -93,9 +93,6 @@
   "back": {
     "message": "Назад"
   },
-  "backToAll": {
-    "message": "Повернутися до всіх"
-  },
   "backupApprovalInfo": {
     "message": "Цей секретний код буде потрібен, щоб відновити ваш гаманець у разі втрати вашого пристрою, забуття паролю, потреби у перевстановленні MetaMask або виникнення бажання отримати доступ до вашого гаманця з іншого пристрою."
   },
@@ -160,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Підключення до тестової мережі Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Підключення до тестової мережі Linea Goerli"
   },
   "connectingToMainnet": {
@@ -213,9 +210,6 @@
   },
   "delete": {
     "message": "Видалити"
-  },
-  "deleteAccount": {
-    "message": "Видалити обліковий запис"
   },
   "deleteNetwork": {
     "message": "Видалити мережу?"
@@ -409,7 +403,7 @@
   "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестова мережа Linea Goerli"
   },
   "links": {
@@ -447,9 +441,6 @@
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
-  },
-  "myAccounts": {
-    "message": "Мої облікові записи"
   },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
@@ -574,9 +565,6 @@
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
-  },
-  "recents": {
-    "message": "Останні"
   },
   "recipientAddressPlaceholder": {
     "message": "Пошук, публічна адреса (0x), або ENS"
@@ -800,9 +788,6 @@
   },
   "transfer": {
     "message": "Передати"
-  },
-  "transferBetweenAccounts": {
-    "message": "Передати між моїми обліковими записами"
   },
   "transferFrom": {
     "message": "Передати від"

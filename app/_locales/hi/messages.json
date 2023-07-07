@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "कस्टम टोकन जोड़ें"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "टोकन जोड़ें"
+  },
+  "addTokenByContractAddress": {
+    "message": "टोकन नहीं मिल रहा है? आप किसी भी टोकन का पता पेस्ट करके उसे मैन्युअल रूप से भी जोड़ सकते हैं। टोकन अनुबंध पते $1 पर मिल सकते हैं।",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "पता"
@@ -359,9 +359,6 @@
     "message": "आपके सभी $1 को एक्सेस और ट्रांसफर करने के लिए अनुमति दें",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "स्वीकृत और इंस्टॉल करें"
-  },
   "approveButtonText": {
     "message": "अनुमोदित करें"
   },
@@ -425,9 +422,6 @@
   },
   "back": {
     "message": "वापस"
-  },
-  "backToAll": {
-    "message": "सभी पर वापस"
   },
   "backup": {
     "message": "बैकअप"
@@ -553,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "किसी लेनदेन को $1 करने के लिए गैस शुल्क में कम से कम 10% की वृद्धि की जानी चाहिए ताकि उसे नेटवर्क द्वारा मान्यता मिल सके।",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "~$1 में स्वैप रद्द करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "मुफ्त में स्वैप रद्द करें"
   },
   "cancelled": {
     "message": "रद्द किया गया"
@@ -695,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli टेस्ट नेटवर्क से कनेक्ट हो रहा है"
   },
   "connectingToMainnet": {
@@ -923,9 +910,6 @@
   },
   "delete": {
     "message": "हटाएँ"
-  },
-  "deleteAccount": {
-    "message": "अकाउंट हटाएं"
   },
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
@@ -1205,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
-  },
-  "enableSmartTransactions": {
-    "message": "स्मार्ट लेनदेन को सक्षम करें"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
@@ -1578,6 +1559,12 @@
     "message": "लेकिन फिशर कर सकते हैं।",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "SRP दिखाने के लिए होल्ड करें"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "अपना SRP सुरक्षित रखें"
+  },
   "ignoreAll": {
     "message": "सभी को अनदेखा करें"
   },
@@ -1611,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "किसी एनएफटी की आईडी एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो एनएफटी एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
-  },
-  "importNFTs": {
-    "message": "NFT आयात करें"
   },
   "importSelectedTokens": {
     "message": "चयनित टोकन आयात करें?"
@@ -1846,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli टेस्ट नेटवर्क"
   },
   "link": {
@@ -1872,9 +1856,6 @@
   },
   "lock": {
     "message": "लॉक"
-  },
-  "lockTimeTooGreat": {
-    "message": "लॉक समय बहुत अधिक है"
   },
   "logo": {
     "message": "$1 लोगो",
@@ -1969,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "हमारे रिकॉर्ड के अनुसार, सबमिट किया गया RPC-URL मान इस चेन आईडी के लिए किसी ज्ञात प्रदाता से मेल नहीं खाता।"
   },
-  "missingNFT": {
-    "message": "अपना NFT नहीं देख रहे हैं?"
-  },
   "missingSetting": {
     "message": "सेटिंग नहीं मिल पाया?"
   },
@@ -1983,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "कम से कम 1 टोकन का चयन करना होगा।"
-  },
-  "myAccounts": {
-    "message": "मेरे खाते"
   },
   "name": {
     "message": "नाम"
@@ -2180,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "कोई भी रूपांतरण दर उपलब्ध नहीं है"
-  },
-  "noNFTs": {
-    "message": "अभी तक कोई NFT नहीं"
   },
   "noSnaps": {
     "message": "कोई स्नैप इंस्टाल नहीं किया गया"
@@ -2799,9 +2771,6 @@
   "receive": {
     "message": "प्राप्त करें"
   },
-  "recents": {
-    "message": "हाल ही के"
-  },
   "recipientAddressPlaceholder": {
     "message": "खोज, सार्वजनिक पता (0x) या ENS"
   },
@@ -3248,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने खाते और उनकी सभी संपत्ति खो सकता हूं।"
   },
-  "smartTransaction": {
-    "message": "स्मार्ट लेनदेन"
-  },
   "snapContent": {
     "message": "यह सामग्री $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3263,10 +3229,12 @@
     "message": "स्नैप इंस्टाल करें"
   },
   "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:"
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
@@ -3356,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "पेस्ट विफल हुआ क्योंकि उसमें 24 से ज़्यादा शब्द हैं। सीक्रेट रिकवरी फ़्रेज़ में अधिकतम 24 शब्द हो सकते हैं।",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "आप अपना पूरा सीक्रेट रिकवरी फ़्रेज किसी भी फ़ील्ड में पेस्ट कर सकते हैं",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "शुरू करें"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "अपना सीक्रेट रिकवरी फ्रेज़ प्रकट करने के लिए, आपको दो प्रश्नों का सही उत्तर देना होगा"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "आपकी मदद नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "इसे लिख लें, इसे किसी धातु पर उकेर दें, या इसे कई गुप्त स्थानों पर रखें ताकि आप इसे कभी न खोएं। यदि आप इसे खो देते हैं, तो यह हमेशा के लिए चला जाता है।"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "सही! आपके सीक्रेट रिकवरी फ्रेज़ को वापस पाने में कोई भी सहायता नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "आपके लिए इसे वापस ला सकते हैं"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो यह हमेशा के लिए चला जाता है। इसे वापस पाने में कोई भी आपकी मदद नहीं कर सकता, चाहे वे कुछ भी कहें।"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "गलत! आपके सीक्रेट रिकवरी फ्रेज़ को वापस पाने में कोई भी सहायता नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "यदि कोई, यहां तक कि एक सहायक एजेंट भी, आपका सीक्रेट रिकवरी फ्रेज़ मांगता है..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "तो आपके साथ धोखा किया जा रहा है"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "आपके सीक्रेट रिकवरी फ्रेज़ की आवश्यकता का दावा करने वाला कोई भी व्यक्ति आपसे झूठ बोल रहा है। यदि आप इसे उनके साथ साझा करते हैं, तो वे आपकी संपत्ति चुरा लेंगे।"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "सही! अपना सीक्रेट रिकवरी फ्रेज़ साझा करना कभी भी अच्छा विचार नहीं है"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "आपको उन्हें यह देना चाहिए"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "आपके सीक्रेट रिकवरी फ्रेज़ की आवश्यकता का दावा करने वाला कोई भी व्यक्ति आपसे झूठ बोल रहा है। यदि आप इसे उनके साथ साझा करते हैं, तो वे आपकी संपत्तियां चुरा लेंगे।"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "नहीं! अपने सीक्रेट रिकवरी फ्रेज़ को कभी भी किसी के साथ साझा न करें"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "सुरक्षा प्रश्नोत्तरी"
   },
   "srpToggleShow": {
     "message": "सीक्रेट रिकवरी फ़्रेज का ये शब्द दिखाएं/छुपाएं",
@@ -3432,9 +3451,6 @@
   "strong": {
     "message": "मजबूत"
   },
-  "stxAreHere": {
-    "message": "स्मार्ट लेनदेन यहां पर हैं!"
-  },
   "stxBenefit1": {
     "message": "लेनदेन लागतें मिनिमाइज़ करें"
   },
@@ -3456,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "अपना स्वैप फिर से कोशिश करें। अगली बार भी इस तरह के जोखिमों से आपको बचाने के लिए हम यहां होंगे।"
   },
-  "stxDescription": {
-    "message": "MetaMask के स्वैप अब और अधिक स्मार्ट हो गए हैं! इन हेतु सहयता के लिए स्मार्ट लेनदेन को सक्षम करने से MetaMask आपके स्वैप को प्रोग्रामेटिक रूप से ऑप्टिमाइज़ कर पाएगा:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "एक स्मार्ट लेनदेन के लिए पर्याप्त फंड नहीं है।"
-  },
-  "stxErrorUnavailable": {
-    "message": "स्मार्ट लेनदेन अस्थाई तौर पर अनुपबल्ध हैं।"
-  },
   "stxFailure": {
     "message": "स्वैप विफल हुआ"
   },
@@ -3477,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "आपका स्वैप सार्वजनिक रूप से सबमिट किया जा रहा है..."
-  },
-  "stxSubDescription": {
-    "message": "* स्मार्ट लेनदेन आपके लेनदेन को निजी तौर पर, अनेक बार जमा करने का प्रयास करेंगे। यदि सभी प्रयास विफल हो जाते हैं, तो लेनदेन को सार्वजनिक रूप से प्रसारित किया जाएगा ताकि यह सुनिश्चित हो सके कि आपका स्वैप सफलतापूर्वक पूरा हो।"
   },
   "stxSuccess": {
     "message": "स्वैप पूरा हुआ!"
@@ -4064,9 +4068,6 @@
   },
   "transfer": {
     "message": "स्थानांतरण"
-  },
-  "transferBetweenAccounts": {
-    "message": "मेरे खातों के बीच स्थानांतरित करें"
   },
   "transferFrom": {
     "message": "इससे स्थानांतरित करें"

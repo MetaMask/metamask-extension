@@ -160,9 +160,6 @@
   "back": {
     "message": "上一頁"
   },
-  "backToAll": {
-    "message": "回到全部"
-  },
   "backupApprovalInfo": {
     "message": "在裝置遺失、忘記密碼、需要重新安裝 MetaMask、或是想在另一裝置開啟錢包的情形下，你需要此秘密代碼來復原錢包。"
   },
@@ -307,7 +304,7 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "連線到 Linea Goerli 測試網路"
   },
   "connectingToMainnet": {
@@ -410,9 +407,6 @@
   },
   "delete": {
     "message": "刪除"
-  },
-  "deleteAccount": {
-    "message": "刪除帳戶"
   },
   "deleteNetwork": {
     "message": "刪除網路？"
@@ -806,7 +800,7 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 測試網路"
   },
   "links": {
@@ -823,9 +817,6 @@
   },
   "lock": {
     "message": "鎖定"
-  },
-  "lockTimeTooGreat": {
-    "message": "鎖定時間過長"
   },
   "mainnet": {
     "message": "以太坊 主網路"
@@ -863,9 +854,6 @@
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣。"
-  },
-  "myAccounts": {
-    "message": "我的帳戶"
   },
   "name": {
     "message": "名稱"
@@ -1074,9 +1062,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recents": {
-    "message": "最近"
   },
   "recipientAddressPlaceholder": {
     "message": "搜尋、公開位址 (0x)、或 ENS"
@@ -1453,9 +1438,6 @@
   },
   "transfer": {
     "message": "交易"
-  },
-  "transferBetweenAccounts": {
-    "message": "在我的帳戶間轉帳"
   },
   "transferFrom": {
     "message": "交易來源"

@@ -28,11 +28,15 @@ const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {
     checkNetworkAndAccountSupports1559,
   );
   const supportsEIP1559 = networkAndAccountSupports1559 && !isLegacyTxn;
+  const dataTestId = 'confirm-gas-display';
 
   return supportsEIP1559 ? (
-    <GasDetailsItem userAcknowledgedGasMissing={userAcknowledgedGasMissing} />
+    <GasDetailsItem
+      data-testid={dataTestId}
+      userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+    />
   ) : (
-    <ConfirmLegacyGasDisplay />
+    <ConfirmLegacyGasDisplay data-testid={dataTestId} />
   );
 };
 

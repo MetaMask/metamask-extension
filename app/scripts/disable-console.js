@@ -6,6 +6,7 @@ if (
 ) {
   console.log = noop;
   console.info = noop;
+  console.warn = noop;
 }
 
 function noop() {

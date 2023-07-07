@@ -90,9 +90,6 @@
   "back": {
     "message": "Zpět"
   },
-  "backToAll": {
-    "message": "Späť na všetko"
-  },
   "backupApprovalInfo": {
     "message": "Tento tajný kód je potrebný na obnovenie peňaženky v prípade straty zariadenia, zabudnutia hesla, preinštalovania MetaMask alebo prístupu k peňaženke na inom zariadení."
   },
@@ -154,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Pripája sa k testovacej sieti Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pripája sa k testovacej sieti Linea Goerli"
   },
   "connectingToMainnet": {
@@ -207,9 +204,6 @@
   },
   "delete": {
     "message": "Odstrániť"
-  },
-  "deleteAccount": {
-    "message": "Zmazať účet"
   },
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
@@ -396,7 +390,7 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testovacia sieť Linea Goerli"
   },
   "links": {
@@ -422,9 +416,6 @@
   },
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje účty"
   },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
@@ -546,9 +537,6 @@
   },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
-  },
-  "recents": {
-    "message": "Posledné"
   },
   "recipientAddressPlaceholder": {
     "message": "Vyhľadávať verejnú adresu (0x) alebo ENS"
@@ -766,9 +754,6 @@
   },
   "transfer": {
     "message": "Prevod"
-  },
-  "transferBetweenAccounts": {
-    "message": "Prevod medzi mojimi účtami"
   },
   "transferFrom": {
     "message": "Presun z"

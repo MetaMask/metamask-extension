@@ -93,9 +93,6 @@
   "back": {
     "message": "Nyuma"
   },
-  "backToAll": {
-    "message": "Rudi kwenye Zote"
-  },
   "backupApprovalInfo": {
     "message": "Msimbo huu wa siri unahitajika ili kurejesha waleti yako ikitokea umepoteza kifaa chako, umesahau nenosiri lako, umelazimika kusakinisha MetaMask, au unataka kufikia waleti yako kwenye kifaa kingine."
   },
@@ -154,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Inaunganisha kwenye Mtandao wa Majaribio wa Linea Goerli"
   },
   "connectingToMainnet": {
@@ -207,9 +204,6 @@
   },
   "delete": {
     "message": "Futa"
-  },
-  "deleteAccount": {
-    "message": "Futa Akaunti"
   },
   "deleteNetwork": {
     "message": "Futa Mtandao?"
@@ -396,7 +390,7 @@
   "likeToImportTokens": {
     "message": "Je, ungependa kuongeza vianzio hivi?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Mtandao wa Majaribio wa Linea Goerli"
   },
   "links": {
@@ -425,9 +419,6 @@
   },
   "mustSelectOne": {
     "message": "Lazima uchague angalau kianzio 1."
-  },
-  "myAccounts": {
-    "message": "Akaunti zangu"
   },
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
@@ -552,9 +543,6 @@
   },
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
-  },
-  "recents": {
-    "message": "Za hivi karibuni"
   },
   "recipientAddressPlaceholder": {
     "message": "Tafuta, anwani za umma (0x), au ENS"
@@ -778,9 +766,6 @@
   },
   "transfer": {
     "message": "Kutuma"
-  },
-  "transferBetweenAccounts": {
-    "message": "Kutuma baina ya akaunti zangu"
   },
   "transferFrom": {
     "message": "Tuma Kutoka"

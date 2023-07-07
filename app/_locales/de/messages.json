@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "Kunden-Token hinzufügen"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Sie können kein Token finden? Sie können ein beliebiges Token manuell hinzufügen, indem Sie seine Adresse eingeben. Token-Vertragsadressen finden Sie auf $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Dadurch kann dieses Netzwerk innerhalb MetaMask verwendet werden."
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "Token hinzufügen"
+  },
+  "addTokenByContractAddress": {
+    "message": "Sie können kein Token finden? Sie können ein beliebiges Token manuell hinzufügen, indem Sie seine Adresse eingeben. Token-Vertragsadressen finden Sie auf $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Adresse"
@@ -359,9 +359,6 @@
     "message": "Erlauben Sie den Zugriff auf und die Übertragung von all Ihren $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Genehmigen und installieren"
-  },
   "approveButtonText": {
     "message": "Genehmigen"
   },
@@ -425,9 +422,6 @@
   },
   "back": {
     "message": "Zurück"
-  },
-  "backToAll": {
-    "message": "Zurück zur Übersicht"
   },
   "backup": {
     "message": "Datensicherung"
@@ -553,13 +547,6 @@
   "cancelSpeedUpTransactionTooltip": {
     "message": "Für eine Transaktion im Wert von $1 muss die Gasgebühr um mindestens 10 % erhöht werden, damit sie vom Netz erkannt wird.",
     "description": "$1 is string 'cancel' or 'speed up'"
-  },
-  "cancelSwapForFee": {
-    "message": "Tausch für ~$1 abbrechen",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Tausch kostenlos abbrechen"
   },
   "cancelled": {
     "message": "Abgebrochen"
@@ -695,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Verbindungsaufbau zum Goerli-Testnetzwerk"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Verbindungsaufbau zum Linea-Testnetzwerk"
   },
   "connectingToMainnet": {
@@ -923,9 +910,6 @@
   },
   "delete": {
     "message": "Löschen"
-  },
-  "deleteAccount": {
-    "message": "Konto löschen"
   },
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
@@ -1205,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
-  },
-  "enableSmartTransactions": {
-    "message": "Intelligente Transaktionen ermöglichen"
   },
   "enableToken": {
     "message": "$1 aktivieren",
@@ -1578,6 +1559,12 @@
     "message": "Betrüger aber schon.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Halten, um GWP anzuzeigen"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Bewahren Sie Ihre GWP sicher auf"
+  },
   "ignoreAll": {
     "message": "Alle ignorieren"
   },
@@ -1611,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Die ID eines NFTs ist eine eindeutige Kennung, da keine zwei NFTs gleich sind. Auch diese Nummer finden Sie in OpenSea unter „Details“. Notieren Sie diese oder kopieren Sie sie in Ihre Zwischenablage."
-  },
-  "importNFTs": {
-    "message": "NFTs importieren"
   },
   "importSelectedTokens": {
     "message": "Ausgewählte Token importieren?"
@@ -1846,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "Möchtest du diese Token hinzufügen?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea-Testnetzwerk"
   },
   "link": {
@@ -1872,9 +1856,6 @@
   },
   "lock": {
     "message": "Ausloggen"
-  },
-  "lockTimeTooGreat": {
-    "message": "Sperrzeit ist zu groß"
   },
   "logo": {
     "message": "$1-Logo",
@@ -1969,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Laut unseren Aufzeichnungen stimmt der angegebene RPC-URL-Wert nicht mit einem bekannten Provider für diese Chain-ID überein."
   },
-  "missingNFT": {
-    "message": "Sie sehen Ihr NFT nicht?"
-  },
   "missingSetting": {
     "message": "Sie können eine Einstellung nicht finden?"
   },
@@ -1983,9 +1961,6 @@
   },
   "mustSelectOne": {
     "message": "Du musst mindestens 1 Token auswählen."
-  },
-  "myAccounts": {
-    "message": "Meine Konten"
   },
   "name": {
     "message": "Name"
@@ -2181,9 +2156,6 @@
   "noConversionRateAvailable": {
     "message": "Kein Umrechnungskurs verfügbar"
   },
-  "noNFTs": {
-    "message": "Noch keine NFTs"
-  },
   "noSnaps": {
     "message": "Keine Snaps installiert"
   },
@@ -2291,7 +2263,7 @@
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
   },
   "notifications3Description": {
-    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen Metamask-Supports.",
+    "message": "Bleiben Sie auf dem Laufenden bezüglich der bewährten Sicherheitsverfahren von MetaMask und erhalten Sie die neuesten Sicherheitstipps des offiziellen MetaMask-Supports.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the information they can get on security from the linked support page."
   },
   "notifications3Title": {
@@ -2799,9 +2771,6 @@
   "receive": {
     "message": "Erhalten"
   },
-  "recents": {
-    "message": "Letzte"
-  },
   "recipientAddressPlaceholder": {
     "message": "Suchen, öffentliche Adresse (0x) oder ENS"
   },
@@ -3248,9 +3217,6 @@
   "skipAccountSecurityDetails": {
     "message": "Mir ist klar, dass ich meine Konten und alle dazugehörigen Vermögenswerte verlieren kann, solange ich keine Sicherungskopie meiner Geheimen Wiederherstellungsphrase erstelle."
   },
-  "smartTransaction": {
-    "message": "Intelligente Transaktionen"
-  },
   "snapContent": {
     "message": "Diese Inhalte stammen von $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3263,10 +3229,12 @@
     "message": "Snap installieren"
   },
   "snapInstallWarningCheck": {
-    "message": "Um zu bestätigen, dass Sie das verstanden haben, markieren Sie das Kästchen."
+    "message": "Um zu bestätigen, dass Sie das verstanden haben, markieren Sie das Kästchen.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Um zu bestätigen, dass Sie alles verstanden haben, markieren Sie alle Kästchen."
+    "message": "Um zu bestätigen, dass Sie alles verstanden haben, markieren Sie alle Kästchen.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Sie gewähren dem Snap „$1“ wichtige $2-Zugriffsrechte. Dies kann nicht rückgängig gemacht werden und gibt „$1“ Kontrolle über Ihre $2-Konten und Vermögenswerte. Stellen Sie sicher, dass Sie „$1“ vertrauen, bevor Sie fortfahren.",
@@ -3356,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Das Einfügen schlug fehl, weil sie mehr als 24 Wörter enthielt. Eine geheime Wiederherstellungsphrase darf maximal 24 Wörter enthalten.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Sie können Ihre gesamte geheime Wiederherstellungsphrase in ein beliebiges Feld einfügen",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Anfangen"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Zur Enthüllung Ihrer geheimen Wiederherstellungsphrase, müssen Sie zwei Fragen beantworten"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, kann MetaMask ..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Ihnen nicht helfen"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Schreiben Sie sie auf, gravieren Sie sie in Metall ein oder bewahren Sie sie an mehreren geheimen Orten auf, damit Sie sie niemals verlieren. Sollten Sie sie verlieren, ist sie für immer weg."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Richtig! Niemand kann Ihnen dabei helfen, Ihre geheime Wiederherstellungsphrase zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "diese für Sie zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Wenn Sie Ihre geheime Wiederherstellungsphrase verlieren, ist diese für immer verloren. Niemand kann Ihnen dabei helfen, sie zurückzubekommen, egal, was behauptet wird."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Falsch! Niemand kann Ihnen dabei helfen, Ihre geheime Wiederherstellungsphrase zurückzubekommen"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Sollte jemand, selbst ein Support-Mitarbeiter, nach Ihrer geheimen Wiederherstellungsphrase fragen ..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Werden Sie betrogen"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Jeder, der behauptet, Ihre gemeine Wiederherstellungsphrase zu benötigen, lügt Sie an. Wenn Sie diese mit solchen Personen teilen, werden diese Ihre Vermögenswerte stehlen."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Richtig! Es ist nie eine gute Idee, Ihre geheime Wiederherstellungsphrase mit anderen zu teilen"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Sie sollten sie dieser Person geben"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Jeder, der behauptet, Ihre gemeine Wiederherstellungsphrase zu benötigen, lügt Sie an. Wenn Sie diese mit einer solchen Person teilen, wird sie Ihre Vermögenswerte stehlen."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Nein! Teilen Sie Ihre geheime Wiederherstellungsphrase mit niemandem, niemals"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Sicherheits-Quiz"
   },
   "srpToggleShow": {
     "message": "Dieses Wort der geheimen Wiederherstellungsphrase anzeigen/ausblenden",
@@ -3432,9 +3451,6 @@
   "strong": {
     "message": "Stark"
   },
-  "stxAreHere": {
-    "message": "Intelligente Transaktionen sind da!"
-  },
   "stxBenefit1": {
     "message": "Transaktionskosten minimieren"
   },
@@ -3456,15 +3472,6 @@
   "stxCancelledSubDescription": {
     "message": "Versuchen Sie Ihren Swap erneut. Wir werden hier sein, um Sie beim nächsten Mal vor ähnlichen Risiken zu schützen."
   },
-  "stxDescription": {
-    "message": "MetaMask-Swap ist jetzt viel intelligenter geworden! Wenn Sie intelligente Transaktionen aktivieren, kann MetaMask Ihren Swap programmgesteuert optimieren, um Ihnen zu helfen:"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "Nicht genügend Mittel für eine intelligente Transaktion."
-  },
-  "stxErrorUnavailable": {
-    "message": "Intelligente Transaktionen sind vorübergehend nicht verfügbar."
-  },
   "stxFailure": {
     "message": "Swap fehlgeschlagen"
   },
@@ -3477,9 +3484,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "Ihr Swap wird öffentlich eingereicht ..."
-  },
-  "stxSubDescription": {
-    "message": "* Intelligente Transaktionen versuchen mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
   },
   "stxSuccess": {
     "message": "Swap abgeschlossen!"
@@ -4064,9 +4068,6 @@
   },
   "transfer": {
     "message": "Überweisung"
-  },
-  "transferBetweenAccounts": {
-    "message": "Zwischen meinen Konten transferieren"
   },
   "transferFrom": {
     "message": "Transferieren von"
