@@ -30,7 +30,7 @@ import {
   setTypedMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { checkForUnapprovedTypedMessages } from '../../../store/institutional/institution-actions';
+import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -214,7 +214,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         let msgData = _msgData;
         let id = _msgData.custodyId;
         if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedTypedMessages(
+          msgData = checkForUnapprovedMessages(
             _msgData,
             unapprovedTypedMessages,
           );

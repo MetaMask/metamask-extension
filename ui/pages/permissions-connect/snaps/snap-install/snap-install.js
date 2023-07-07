@@ -179,6 +179,7 @@ export default function SnapInstall({
               ])}
             </Text>
             <SnapPermissionsList
+              snapId={targetSubjectMetadata.origin}
               permissions={requestState.permissions || {}}
               targetSubjectMetadata={targetSubjectMetadata}
             />
