@@ -44,7 +44,6 @@ export const safeComponentList = {
   SnapDelineator,
   Copyable,
   Spinner,
-  hr: 'hr',
   SnapUIMarkdown,
   ///: END:ONLY_INCLUDE_IN
 };
