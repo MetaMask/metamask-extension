@@ -581,7 +581,7 @@ export default class ConfirmTransactionBase extends Component {
     });
   }
 
-  handleCancel() {
+  async handleCancel() {
     const {
       txData,
       cancelTransaction,

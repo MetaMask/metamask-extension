@@ -125,7 +125,7 @@ export default class ConfirmPageContainerContent extends Component {
             <Tab
               className="confirm-page-container-content__tab"
               name={t('note')}
-              pillText={t('new')}
+              tabKey="note"
               onClick={() => {
                 this.context.trackEvent({
                   category: 'Note to trader',
