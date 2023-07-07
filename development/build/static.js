@@ -26,6 +26,7 @@ module.exports = function createStaticAssetTasks({
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      browser,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
@@ -108,7 +109,7 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow, browser) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -215,13 +216,21 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     });
   }
 
+  const chromeReloadDev =
+    browser === 'chrome'
+      ? {
+          src: './development',
+          pattern: '/chromereload.js',
+          dest: ``,
+        }
+      : {
+          src: EMPTY_JS_FILE,
+          dest: `chromereload.js`,
+        };
+
   const copyTargetsDev = [
     ...allCopyTargets,
-    {
-      src: './development',
-      pattern: '/chromereload.js',
-      dest: ``,
-    },
+    chromeReloadDev,
     // empty files to suppress missing file errors
     {
       src: EMPTY_JS_FILE,
