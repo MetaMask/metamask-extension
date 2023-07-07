@@ -123,6 +123,7 @@ export default class ConfirmPageContainerContent extends Component {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           noteComponent && (
             <Tab
+              data-testid="note-tab"
               className="confirm-page-container-content__tab"
               name={t('note')}
               tabKey="note"
