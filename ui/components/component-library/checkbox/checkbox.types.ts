@@ -1,15 +1,9 @@
 import { IconProps } from '../icon';
+import { Label } from '../label';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
-
-import type { TextProps } from '../text';
-
-// TextProps for Checkbox label
-interface ExtendedTextProps extends TextProps {
-  htmlFor?: string;
-}
 
 export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
@@ -58,9 +52,9 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
    */
   label?: any;
   /*
-   * textProps - additional props to be spread to the label Text component
+   * label - additional props to be spread to the Label component
    */
-  textProps?: ExtendedTextProps;
+  labelProps?: typeof Label.propTypes;
   /*
    * iconProps - additional props to be spread to the Icon component used for the Checkbox
    */

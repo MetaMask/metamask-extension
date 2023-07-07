@@ -50,14 +50,17 @@ export const Label = (args) => {
   );
 };
 
-export const TextProps = (args) => {
+export const LabelProps = (args) => {
   const [isChecked, setIsChecked] = React.useState(false);
 
   return (
     <Checkbox
       {...args}
-      label="Checkbox Label with textProps"
-      textProps={{ color: TextColor.errorDefault, fontWeight: FontWeight.Bold }}
+      label="Checkbox Label with labelProps"
+      labelProps={{
+        color: TextColor.errorDefault,
+        fontWeight: FontWeight.Bold,
+      }}
       onChange={() => setIsChecked(!isChecked)}
       isChecked={isChecked}
     />
@@ -83,7 +86,10 @@ export const IsIndeterminate = () => {
   ]);
 
   const handleTopCheckboxChange = () => {
-    if (isTopCheckboxChecked === true) {
+    if (
+      isTopCheckboxChecked === true ||
+      isTopCheckboxChecked === 'indeterminate'
+    ) {
       setTopCheckboxChecked(false);
       setCheckboxes([false, false, false]);
     } else {
