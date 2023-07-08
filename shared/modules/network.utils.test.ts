@@ -1,8 +1,9 @@
-import { MAX_SAFE_CHAIN_ID } from '../constants/network';
+import { MAX_SAFE_CHAIN_ID, CHAIN_IDS } from '../constants/network';
 import {
   isSafeChainId,
   isPrefixedFormattedHexString,
   isTokenDetectionEnabledForNetwork,
+  isBuiltInChainId,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -85,6 +86,16 @@ describe('network utils', () => {
 
     it('returns false given undefined', () => {
       expect(isTokenDetectionEnabledForNetwork(undefined)).toBe(false);
+    });
+  });
+
+  describe('isBuiltInChainId()', () => {
+    it('should return true if the provided chainId is a built in MetaMask chain ID', () => {
+      expect(isBuiltInChainId(CHAIN_IDS.GOERLI)).toBeTruthy();
+    });
+
+    it('should return false if the provided chainId is not a built in MetaMask chain ID', () => {
+      expect(isBuiltInChainId(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
 });

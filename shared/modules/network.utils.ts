@@ -1,4 +1,9 @@
-import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
+import {
+  MAX_SAFE_CHAIN_ID,
+  BUILT_IN_CHAIN_IDS,
+  CHAIN_IDS,
+  ChainId,
+} from '../constants/network';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -11,6 +16,9 @@ import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 export function isSafeChainId(chainId: unknown): boolean {
   return isSafeInteger(chainId) && chainId > 0 && chainId <= MAX_SAFE_CHAIN_ID;
 }
+
+export const isBuiltInChainId = (chainId: ChainId) =>
+  !chainId || BUILT_IN_CHAIN_IDS.has(chainId);
 
 /**
  * Checks whether the given value is a 0x-prefixed, non-zero, non-zero-padded,

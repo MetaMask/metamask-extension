@@ -909,16 +909,6 @@ describe('util', () => {
     });
   });
 
-  describe('isDefaultMetaMaskChain()', () => {
-    it('should return true if the provided chainId is a default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
-    });
-
-    it('should return false if the provided chainId is a not default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
-    });
-  });
-
   describe('getNetworkNameFromProviderType()', () => {
     it('should return providerConfig.type if the type is not rpc', () => {
       expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(

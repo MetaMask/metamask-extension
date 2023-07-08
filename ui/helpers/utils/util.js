@@ -12,7 +12,7 @@ import { getSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -53,18 +53,6 @@ export function formatDateWithYearContext(
     now.year === dateTime.year ? formatThisYear : fallback,
   );
 }
-
-const DEFAULT_CHAIN_IDS = new Set([
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  CHAIN_IDS.GOERLI,
-  CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.LINEA_GOERLI,
-  CHAIN_IDS.LOCALHOST,
-]);
-
-export const isDefaultMetaMaskChain = (chainId) =>
-  !chainId || DEFAULT_CHAIN_IDS.has(chainId);
 
 export function valuesFor(obj) {
   if (!obj) {

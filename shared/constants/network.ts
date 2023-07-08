@@ -320,6 +320,10 @@ export const BUILT_IN_NETWORKS = {
   },
 } as const;
 
+export const BUILT_IN_CHAIN_IDS = new Set<ChainId>(
+  Object.values(BUILT_IN_NETWORKS).map((network) => network.chainId),
+);
+
 export const BUILT_IN_INFURA_NETWORKS = pick(
   BUILT_IN_NETWORKS,
   INFURA_PROVIDER_TYPES,
