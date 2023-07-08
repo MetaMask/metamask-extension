@@ -41,9 +41,6 @@ describe('Security Provider Banner Alert', () => {
       />,
     );
 
-    const btn = container.querySelector('.mm-button-link');
-    console.log(btn);
-
     expect(getByText(mockTitle)).toBeInTheDocument();
     expect(getByText(mockDescription)).toBeInTheDocument();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
