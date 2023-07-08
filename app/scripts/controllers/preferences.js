@@ -75,6 +75,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
+      securityAlertsEnabled: false,
       ...opts.initState,
     };
 
@@ -211,6 +212,17 @@ export default class PreferencesController {
   setTransactionSecurityCheckEnabled(transactionSecurityCheckEnabled) {
     this.store.updateState({
       transactionSecurityCheckEnabled,
+    });
+  }
+
+  /**
+   * Setter for the `securityAlertsEnabled` property
+   *
+   * @param securityAlertsEnabled
+   */
+  setSecurityAlertsEnabled(securityAlertsEnabled) {
+    this.store.updateState({
+      securityAlertsEnabled,
     });
   }
 

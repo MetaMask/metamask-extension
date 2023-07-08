@@ -2327,6 +2327,9 @@
   "moreComingSoon": {
     "message": "More coming soon..."
   },
+  "moreProviders": {
+    "message": "More providers coming soon"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -3645,6 +3648,12 @@
   "securityAlert": {
     "message": "Security alert from $1 and $2"
   },
+  "securityAlerts": {
+    "message": "Security alerts"
+  },
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There’s no guarantee that this feature will detect all malicious activity."
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
@@ -3739,7 +3748,7 @@
     "message": "If you don't see the accounts you expect, try switching the HD path."
   },
   "selectProvider": {
-    "message": "Select providers:"
+    "message": "Select providers"
   },
   "selectType": {
     "message": "Select Type"

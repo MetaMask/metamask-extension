@@ -376,6 +376,12 @@
     }
   }
 
+  &__content-item-col-blockaid {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
   &__content-item-col-open-sea {
     flex-direction: row;
     justify-content: space-between;

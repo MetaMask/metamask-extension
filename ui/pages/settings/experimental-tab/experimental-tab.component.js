@@ -30,6 +30,8 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
+    securityAlertsEnabled: PropTypes.bool,
+    setSecurityAlertsEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -134,6 +136,82 @@ export default class ExperimentalTab extends PureComponent {
                 offLabel={t('off')}
                 onLabel={t('on')}
               />
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  renderSecurityAlertsToggle() {
+    const { t } = this.context;
+
+    const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
+
+    return (
+      <>
+        <Typography
+          variant={TypographyVariant.H4}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FONT_WEIGHT.BOLD}
+        >
+          {t('security')}
+        </Typography>
+        <div
+          ref={this.settingsRefs[2]}
+          className="settings-page__content-row settings-page__content-row-experimental settings-page__content-row-security"
+        >
+          <div className="settings-page__content-item">
+            <span>{t('securityAlerts')}</span>
+            <div className="settings-page__content-description">
+              <Typography
+                variant={TypographyVariant.H6}
+                color={TextColor.textAlternative}
+              >
+                {t('securityAlertsDescription')}
+              </Typography>
+              <Typography
+                marginTop={3}
+                marginBottom={1}
+                variant={TypographyVariant.H6}
+                color={TextColor.textDefault}
+                fontWeight={FONT_WEIGHT.BOLD}
+              >
+                {t('selectProvider')}
+              </Typography>
+              <div className="settings-page__content-item-col settings-page__content-item-col-blockaid">
+                <Typography
+                  variant={TypographyVariant.H5}
+                  color={TextColor.textDefault}
+                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  marginBottom={0}
+                >
+                  {t('blockaid')}
+                </Typography>
+                <ToggleButton
+                  value={securityAlertsEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: MetaMetricsEventCategory.Settings,
+                      event: 'Enabled/Disable Security Alerts',
+                      properties: {
+                        action: 'Enabled/Disable Security Alerts',
+                        security_alerts_enabled: !value,
+                        legacy_event: true,
+                      },
+                    });
+                    setSecurityAlertsEnabled(!value);
+                  }}
+                />
+              </div>
+              <Typography
+                variant={TypographyVariant.H6}
+                color={TextColor.textMuted}
+                marginTop={0}
+              >
+                {t('moreProviders')}
+              </Typography>
             </div>
           </div>
         </div>
@@ -261,6 +339,7 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderSecurityAlertsToggle()}
         {this.renderTransactionSecurityCheckToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {

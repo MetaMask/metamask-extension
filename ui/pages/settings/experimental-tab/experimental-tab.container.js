@@ -5,11 +5,13 @@ import {
   setUseNftDetection,
   setOpenSeaEnabled,
   setTransactionSecurityCheckEnabled,
+  setSecurityAlertsEnabled,
 } from '../../../store/actions';
 import {
   getUseNftDetection,
   getOpenSeaEnabled,
   getIsTransactionSecurityCheckEnabled,
+  getIsSecurityAlertsEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -19,6 +21,7 @@ const mapStateToProps = (state) => {
     openSeaEnabled: getOpenSeaEnabled(state),
     transactionSecurityCheckEnabled:
       getIsTransactionSecurityCheckEnabled(state),
+    securityAlertsEnabled: getIsSecurityAlertsEnabled(state),
   };
 };
 
@@ -28,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setTransactionSecurityCheckEnabled: (val) =>
       dispatch(setTransactionSecurityCheckEnabled(val)),
+    setSecurityAlertsEnabled: (val) => dispatch(setSecurityAlertsEnabled(val)),
   };
 };
 

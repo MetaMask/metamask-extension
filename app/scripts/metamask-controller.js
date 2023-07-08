@@ -2265,6 +2265,10 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
+      setSecurityAlertsEnabled:
+        preferencesController.setSecurityAlertsEnabled.bind(
+          preferencesController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       setSnapsAddSnapAccountModalDismissed:
         preferencesController.setSnapsAddSnapAccountModalDismissed.bind(
@@ -4636,10 +4640,13 @@ export default class MetamaskController extends EventEmitter {
   };
 
   async securityProviderRequest(requestData, methodName) {
-    const { currentLocale, transactionSecurityCheckEnabled } =
-      this.preferencesController.store.getState();
+    const {
+      currentLocale,
+      transactionSecurityCheckEnabled,
+      securityAlertsEnabled,
+    } = this.preferencesController.store.getState();
 
-    if (transactionSecurityCheckEnabled) {
+    if (transactionSecurityCheckEnabled || securityAlertsEnabled) {
       const chainId = Number(
         hexToDecimal(this.networkController.state.providerConfig.chainId),
       );

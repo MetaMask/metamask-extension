@@ -4344,6 +4344,20 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
+export function setSecurityAlertsEnabled(
+  securityAlertsEnabled: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    try {
+      await submitRequestToBackground('setSecurityAlertsEnabled', [
+        securityAlertsEnabled,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
 }

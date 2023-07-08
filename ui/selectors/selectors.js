@@ -1433,6 +1433,16 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+/**
+ * To get the `securityAlertsEnabled` value which determines whether we show security alerts or not
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsEnabled(state) {
+  return state.metamask.securityAlertsEnabled;
+}
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
