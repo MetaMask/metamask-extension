@@ -137,6 +137,7 @@ Whenever you change dependencies (adding, removing, or updating, either in `pack
 [![Architecture Diagram](./docs/architecture.png)][1]
 
 ## Other Docs
+## Other Docs
 
 - [How to add custom build to Chrome](./docs/add-to-chrome.md)
 - [How to add custom build to Firefox](./docs/add-to-firefox.md)
