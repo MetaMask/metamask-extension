@@ -39,18 +39,18 @@ exports[`CustodyPage renders CustodyPage 2`] = `
         />
       </button>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
         Back
       </p>
     </div>
     <h4
-      class="box mm-text mm-text--body-lg-medium box--margin-top-4 box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-4 mm-box--color-text-default"
     >
       Custodial Accounts
     </h4>
     <h6
-      class="box mm-text mm-text--body-md box--margin-top-2 box--margin-bottom-5 box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--margin-bottom-5 mm-box--color-text-default"
     >
       Please choose the custodian you want to connect in order to add or refresh a token.
     </h6>
@@ -73,13 +73,13 @@ exports[`CustodyPage renders CustodyPage 2`] = `
               width="32"
             />
             <p
-              class="box mm-text mm-text--body-md box--margin-left-2 box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--margin-left-2 mm-box--color-text-default"
             >
               Saturn Custody
             </p>
           </div>
           <button
-            class="box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
             data-testid="custody-connect-button"
           >
             Select

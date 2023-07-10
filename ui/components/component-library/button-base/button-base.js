@@ -132,7 +132,7 @@ ButtonBase.propTypes = {
   /**
    * Additional props to pass to the Text component that wraps the button children
    */
-  buttonTextProps: PropTypes.shape(Text.PropTypes),
+  buttonTextProps: PropTypes.object,
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -194,7 +194,7 @@ ButtonBase.propTypes = {
   /**
    * textProps accepts all the props from Icon
    */
-  textProps: PropTypes.shape(Text.PropTypes),
+  textProps: PropTypes.object,
   /**
    * ButtonBase accepts all the props from Box
    */

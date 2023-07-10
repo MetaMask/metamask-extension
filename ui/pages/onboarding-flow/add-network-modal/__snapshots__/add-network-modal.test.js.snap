@@ -49,7 +49,7 @@ exports[`Add Network Modal should render 1`] = `
               class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 tag="label"
               >
                 Network name
@@ -80,7 +80,7 @@ exports[`Add Network Modal should render 1`] = `
               class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 tag="label"
               >
                 New RPC URL
@@ -111,7 +111,7 @@ exports[`Add Network Modal should render 1`] = `
               class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 tag="label"
               >
                 Chain ID
@@ -167,7 +167,7 @@ exports[`Add Network Modal should render 1`] = `
               class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 tag="label"
               >
                 Currency symbol
@@ -198,13 +198,13 @@ exports[`Add Network Modal should render 1`] = `
               class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 tag="label"
               >
                 Block explorer URL
               </h6>
               <h6
-                class="box mm-text mm-text--body-sm box--display-inline-block box--flex-direction-row box--color-text-alternative"
+                class="mm-box mm-text mm-text--body-sm mm-box--display-inline-block mm-box--color-text-alternative"
                 tag="body-sm"
               >
                 (Optional)

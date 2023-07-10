@@ -69,7 +69,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from AvatarNetwork
    */
-  avatarNetworkProps: PropTypes.shape(AvatarNetwork.PropTypes),
+  avatarNetworkProps: PropTypes.object,
   /**
    * It accepts all the props from Icon
    */
