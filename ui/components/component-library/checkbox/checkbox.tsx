@@ -17,7 +17,7 @@ import { Box, Icon, IconName, Label } from '..';
 import { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
 export const Checkbox: CheckboxComponent = React.forwardRef(
-  <C extends React.ElementType = 'div'>(
+  <C extends React.ElementType = 'input'>(
     {
       id,
       isChecked,

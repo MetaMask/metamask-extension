@@ -60,7 +60,7 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
   /*
    * textProps - additional props to be spread to the label Text component
    */
-  textProps?: ExtendedTextProps;
+  labelProps?: any; // TODO: Need to figure out how to type this
   /*
    * iconProps - additional props to be spread to the Icon component used for the Checkbox
    */

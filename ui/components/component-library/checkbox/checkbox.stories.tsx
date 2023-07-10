@@ -46,6 +46,7 @@ export const Label = (args) => {
       label="Checkbox Label"
       onChange={() => setIsChecked(!isChecked)}
       isChecked={isChecked}
+      href="https://www.mattermost.com"
     />
   );
 };
@@ -87,8 +88,8 @@ export const IsIndeterminate = () => {
       setTopCheckboxChecked(false);
       setCheckboxes([false, false, false]);
     } else {
-      setTopCheckboxChecked(true);
-      setCheckboxes([true, true, true]);
+      setTopCheckboxChecked(false);
+      setCheckboxes([false, false, false]);
     }
   };
 
