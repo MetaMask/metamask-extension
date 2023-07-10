@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   Display,
@@ -33,7 +34,6 @@ export const ActivityListItem = ({
 
   return (
     <Box
-      as="button"
       backgroundColor={BackgroundColor.backgroundDefault}
       className={primaryClassName}
       onClick={onClick}
@@ -61,11 +61,7 @@ export const ActivityListItem = ({
         gap={4}
       >
         {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
-        <Box
-          display={Display.InlineFlex}
-          width={BlockSize.Full}
-          justifyContent={JustifyContent.spaceBetween}
-        >
+        <Box display={Display.InlineFlex} width={BlockSize.Full}>
           <Box
             display={Display.InlineFlex}
             width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
@@ -105,7 +101,13 @@ export const ActivityListItem = ({
             </Box>
           )}
           {rightContent && (
-            <Box className="activity-list-item__right-content">
+            <Box
+              display={Display.InlineFlex}
+              width={BlockSize.Full}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.flexEnd}
+              className="activity-list-item__right-content"
+            >
               {rightContent}
             </Box>
           )}

@@ -314,6 +314,7 @@ function TransactionListItemInner({
                 title={primaryCurrency}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-primary-currency"
+                ellipsis={primaryCurrency.length > 20}
               >
                 {primaryCurrency}
               </Text>
