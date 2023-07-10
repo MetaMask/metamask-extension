@@ -768,7 +768,7 @@ export default class MetaMetricsController {
       ///: END:ONLY_INCLUDE_IN
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
-      [MetaMetricsUserTrait.SecurityProviders]:
+      [MetaMetricsUserTrait.SecurityAlertsEnabled]:
         metamaskState.securityAlertsEnabled || false,
     };
 

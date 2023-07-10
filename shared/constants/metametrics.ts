@@ -455,6 +455,11 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IN
+  /**
+   * Identified when the security provider feature is enabled.
+   */
+  SecurityAlertsEnabled = 'security_alerts_enabled',
+
 }
 
 /**

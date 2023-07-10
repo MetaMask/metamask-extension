@@ -346,7 +346,7 @@ export const SETTINGS_CONSTANTS = [
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('securityAlerts'),
     descriptionMessage: (t) => t('securityAlertsDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
+    route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
     icon: 'fa fa-flask',
   },
   {

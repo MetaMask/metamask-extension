@@ -148,6 +148,7 @@ export default class ExperimentalTab extends PureComponent {
 
     const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
 
+    console.log('securityAlertsEnabled', this.settingsRefs);
     return (
       <>
         <Typography
