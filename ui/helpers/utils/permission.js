@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { getRpcCaveatOrigins } from '@metamask/snaps-controllers/dist/snaps/endowments/rpc';
+import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -255,6 +255,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.SecurityKey,
     weight: 3,
   }),
+
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
@@ -388,6 +389,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return results;
   },
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
+    label: t('permission_manageAccounts'),
+    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    rightIcon: null,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),

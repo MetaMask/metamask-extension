@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Box,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -47,7 +47,6 @@ import {
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
-import Box from '../../ui/box/box';
 import {
   hideProductTour,
   toggleAccountMenu,
@@ -149,6 +148,10 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  // This is required to ensure send and confirmation screens
+  // look as desired
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
+
   return (
     <>
       {isUnlocked && !popupStatus ? (
@@ -175,6 +178,7 @@ export const AppHeader = ({ location }) => {
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
+        marginBottom={headerBottomMargin}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={
@@ -355,7 +359,6 @@ export const AppHeader = ({ location }) => {
                         setAccountOptionsMenuOpen(true);
                       }}
                       size={ButtonIconSize.Sm}
-                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
                 </Box>

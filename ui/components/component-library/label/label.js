@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { Text } from '../text';
 import {
+  FontWeight,
   TextVariant,
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../text';
 
 export const Label = ({ htmlFor, className, children, ...props }) => (
   <Text
@@ -17,7 +18,8 @@ export const Label = ({ htmlFor, className, children, ...props }) => (
     )}
     as="label"
     htmlFor={htmlFor}
-    variant={TextVariant.bodyMdBold}
+    variant={TextVariant.bodyMd}
+    fontWeight={FontWeight.Medium}
     display={Display.InlineFlex}
     alignItems={AlignItems.center}
     {...props}

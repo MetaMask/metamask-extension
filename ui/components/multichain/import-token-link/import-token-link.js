@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { ButtonLink, IconName } from '../../component-library';
+import { ButtonLink, IconName, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -64,13 +63,9 @@ export const ImportTokenLink = ({ className, ...props }) => {
               t('importTokensCamelCase').slice(1)}
         </ButtonLink>
       </Box>
-      <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingBottom={4}
-        paddingTop={4}
-      >
+      <Box display={Display.Flex} alignItems={AlignItems.center} paddingTop={2}>
         <ButtonLink
+          size={Size.MD}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
           onClick={() => detectNewTokens()}

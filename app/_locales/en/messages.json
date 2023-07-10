@@ -271,6 +271,9 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addSnapAccountModalDescription": {
+    "message": "Discover options to keep your account secure with MetaMask Snaps"
+  },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
   },
@@ -362,6 +365,9 @@
   },
   "allowThisSiteTo": {
     "message": "Allow this site to:"
+  },
+  "allowThisSnapTo": {
+    "message": "Allow this snap to:"
   },
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
@@ -670,9 +676,6 @@
   "coingecko": {
     "message": "CoinGecko"
   },
-  "compliance": {
-    "message": "Compliance"
-  },
   "complianceActivatedDesc": {
     "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
   },
@@ -705,6 +708,21 @@
   },
   "complianceSettingsExplanation": {
     "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
+  },
+  "configureSnapPopupDescription": {
+    "message": "You're now leaving MetaMask to configure this snap."
+  },
+  "configureSnapPopupInstallDescription": {
+    "message": "You're now leaving MetaMask to install this snap."
+  },
+  "configureSnapPopupInstallTitle": {
+    "message": "Install snap"
+  },
+  "configureSnapPopupLink": {
+    "message": "Click this link to continue:"
+  },
+  "configureSnapPopupTitle": {
+    "message": "Configure snap"
   },
   "confirm": {
     "message": "Confirm"
@@ -1101,8 +1119,8 @@
   "delete": {
     "message": "Delete"
   },
-  "deleteAccount": {
-    "message": "Delete account"
+  "deleteContact": {
+    "message": "Delete contact"
   },
   "deleteNetwork": {
     "message": "Delete network?"
@@ -1701,6 +1719,9 @@
   "general": {
     "message": "General"
   },
+  "getStarted": {
+    "message": "Get started"
+  },
   "globalTitle": {
     "message": "Global menu"
   },
@@ -1883,9 +1904,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
-  },
-  "importNFTs": {
-    "message": "Import NFTs"
   },
   "importSelectedTokens": {
     "message": "Import selected tokens?"
@@ -2171,8 +2189,8 @@
   "lockMetaMask": {
     "message": "Lock MetaMask"
   },
-  "lockTimeTooGreat": {
-    "message": "Lock time is too great"
+  "lockTimeInvalid": {
+    "message": "Lock time must be a number between 0 and 10080"
   },
   "logo": {
     "message": "$1 logo",
@@ -2272,9 +2290,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
-  },
-  "missingNFT": {
-    "message": "Don't see your NFT?"
   },
   "missingSetting": {
     "message": "Can't find a setting?"
@@ -2558,6 +2573,30 @@
   },
   "notePlaceholder": {
     "message": "The approver will see this note when approving the transaction at the custodian."
+  },
+  "notificationTransactionFailedMessage": {
+    "message": "Transaction $1 failed! $2",
+    "description": "Content of the browser notification that appears when a transaction fails"
+  },
+  "notificationTransactionFailedMessageMMI": {
+    "message": "Transaction failed! $1",
+    "description": "Content of the browser notification that appears when a transaction fails in MMI"
+  },
+  "notificationTransactionFailedTitle": {
+    "message": "Failed transaction",
+    "description": "Title of the browser notification that appears when a transaction fails"
+  },
+  "notificationTransactionSuccessMessage": {
+    "message": "Transaction $1 confirmed!",
+    "description": "Content of the browser notification that appears when a transaction is confirmed"
+  },
+  "notificationTransactionSuccessTitle": {
+    "message": "Confirmed transaction",
+    "description": "Title of the browser notification that appears when a transaction is confirmed"
+  },
+  "notificationTransactionSuccessView": {
+    "message": "View on $1",
+    "description": "Additional content in browser notification that appears when a transaction is confirmed and has a block explorer URL"
   },
   "notifications": {
     "message": "Notifications"
@@ -3108,6 +3147,10 @@
     "message": "Allow the snap to run indefinitely while, for example, processing large amounts of data.",
     "description": "An extended description for the `endowment:long-running` permission"
   },
+  "permission_manageAccounts": {
+    "message": "Add and control Ethereum accounts",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
   "permission_manageBip32Keys": {
     "message": "Control your accounts and assets under $1 ($2).",
     "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
@@ -3520,6 +3563,9 @@
     "message": "This revokes the permission for a third party to access and transfer all of your NFTs from $1 without further notice.",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "revokePermission": {
+    "message": "Revoke permission"
+  },
   "revokeSpendingCap": {
     "message": "Revoke spending cap for your $1",
     "description": "$1 is a token symbol"
@@ -3641,6 +3687,9 @@
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
+  "selectAccountsForSnap": {
+    "message": "Select the account(s) to use with this snap"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -3721,15 +3770,14 @@
     "message": "Set a spending cap for your $1",
     "description": "$1 is a token symbol"
   },
+  "settingAddSnapAccount": {
+    "message": "Add snap account"
+  },
   "settings": {
     "message": "Settings"
   },
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
-  },
-  "shortVersion": {
-    "message": "v$1",
-    "description": "$1 is the version number to show"
   },
   "show": {
     "message": "Show"
@@ -3825,6 +3873,9 @@
   "smartSwapsSubDescription": {
     "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
+  "snapConfigure": {
+    "message": "Configure"
+  },
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3832,6 +3883,47 @@
   "snapContent": {
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Choose how to secure your new account using MetaMask Snaps."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Create a $1 account",
+    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "By MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Audit"
+  },
+  "snapDetailDeveloper": {
+    "message": "Developer"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Updated"
+  },
+  "snapDetailManageSnap": {
+    "message": "Manage snap"
+  },
+  "snapDetailTags": {
+    "message": "Tags"
+  },
+  "snapDetailVersion": {
+    "message": "Version"
+  },
+  "snapDetailWebsite": {
+    "message": "Website"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Create a Snap Account"
+  },
+  "snapDetailsInstalled": {
+    "message": "Installed"
   },
   "snapError": {
     "message": "Snap Error: '$1'. Error Code: '$2'",
@@ -3874,6 +3966,9 @@
     "message": "Installation failed",
     "description": "Error title used when snap installation fails."
   },
+  "snapIsAudited": {
+    "message": "Audited"
+  },
   "snapResultError": {
     "message": "Error"
   },
@@ -3885,6 +3980,9 @@
   },
   "snapUpdate": {
     "message": "Update snap"
+  },
+  "snapUpdateAvailable": {
+    "message": "Update available"
   },
   "snapUpdateErrorDescription": {
     "message": "$1 couldn’t be updated.",
@@ -4000,11 +4098,65 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Paste failed because it contained over 24 words. A secret recovery phrase can have a maximum of 24 words.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "You can paste your entire secret recovery phrase into any field",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Get started"
+  },
+  "srpSecurityQuizImgAlt": {
+    "message": "An eye with a keyhole in the center, and three floating password fields"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "To reveal your Secret Recovery Phrase, you need to correctly answer two questions"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "If you lose your Secret Recovery Phrase, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Can’t help you"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Write it down, engrave it on metal, or keep it in multiple secret spots so you never lose it. If you lose it, it’s gone forever."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Right! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Can get it back for you"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "If you lose your Secret Recovery Phrase, it’s gone forever. No one can help you get it back, no matter what they might say."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Wrong! No one can help get your Secret Recovery Phrase back"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "If anyone, even a support agent, asks for your Secret Recovery Phrase..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "You’re being scammed"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Correct! Sharing your Secret Recovery Phrase is never a good idea"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "You should give it to them"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Anyone claiming to need your Secret Recovery Phrase is lying to you. If you share it with them, they will steal your assets."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Nope! Never share your Secret Recovery Phrase with anyone, ever"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Security quiz"
   },
   "srpToggleShow": {
     "message": "Show/Hide this word of the secret recovery phrase",
@@ -5083,6 +5235,9 @@
   },
   "viewOnOpensea": {
     "message": "View on Opensea"
+  },
+  "viewPortfolioDashboard": {
+    "message": "View Portfolio Dashboard"
   },
   "viewinCustodianApp": {
     "message": "View in custodian app"

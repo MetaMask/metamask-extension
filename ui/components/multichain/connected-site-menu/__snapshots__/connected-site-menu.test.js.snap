@@ -3,7 +3,7 @@
 exports[`Connected Site Menu should render the site menu in connected state 1`] = `
 <div>
   <button
-    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -27,7 +27,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
             style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
-              class="box multichain-connected-site-menu__badge  box--flex-direction-row box--background-color-success-default box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              class="mm-box multichain-connected-site-menu__badge  mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
             />
           </div>
         </div>
@@ -40,7 +40,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
 exports[`Connected Site Menu should render the site menu in not connected state 1`] = `
 <div>
   <button
-    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -64,7 +64,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
             style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
-              class="box multichain-connected-site-menu__badge  box--flex-direction-row box--background-color-icon-alternative box--rounded-full box--border-color-background-default box--border-width-3 box--border-style-solid"
+              class="mm-box multichain-connected-site-menu__badge  mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
             />
           </div>
         </div>
@@ -77,7 +77,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
 exports[`Connected Site Menu should render the site menu in not connected to current account state 1`] = `
 <div>
   <button
-    class="box multichain-connected-site-menu box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default"
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
     data-testid="connection-menu"
   >
     <div>
@@ -101,7 +101,7 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
             style="bottom: 4px; right: -1px; z-index: 1;"
           >
             <div
-              class="box multichain-connected-site-menu__badge not-connected box--flex-direction-row box--background-color-background-default box--rounded-full box--border-color-success-default box--border-width-2 box--border-style-solid"
+              class="mm-box multichain-connected-site-menu__badge not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
             />
           </div>
         </div>

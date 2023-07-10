@@ -24,7 +24,11 @@ import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import SnapVersion from '../snap-version/snap-version';
 
-const SnapAuthorshipHeader = ({ snapId, className }) => {
+const SnapAuthorshipHeader = ({
+  snapId,
+  className,
+  boxShadow = 'var(--shadow-size-lg) var(--color-shadow-default)',
+}) => {
   // We're using optional chaining with snapId, because with the current implementation
   // of snap update in the snap controller, we do not have reference to snapId when an
   // update request is rejected because the reference comes from the request itself and not subject metadata
@@ -51,7 +55,7 @@ const SnapAuthorshipHeader = ({ snapId, className }) => {
       display={DISPLAY.FLEX}
       padding={4}
       style={{
-        boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        boxShadow,
       }}
     >
       <Box>
@@ -91,6 +95,7 @@ SnapAuthorshipHeader.propTypes = {
    * The className of the SnapAuthorship
    */
   className: PropTypes.string,
+  boxShadow: PropTypes.string,
 };
 
 export default SnapAuthorshipHeader;

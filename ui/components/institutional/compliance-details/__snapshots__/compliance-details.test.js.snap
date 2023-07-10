@@ -3,10 +3,10 @@
 exports[`ComplianceDetails should render correctly 1`] = `
 <div>
   <div
-    class="box compliance-details box--padding-right-4 box--padding-left-4 box--display-flex box--flex-direction-column"
+    class="mm-box compliance-details mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
-      class="box compliance-details__row box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-column box--justify-content-center box--height-2/3"
+      class="mm-box compliance-details__row mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--height-2/3"
     >
       <p
         class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
@@ -20,10 +20,10 @@ exports[`ComplianceDetails should render correctly 1`] = `
       </p>
     </div>
     <div
-      class="box compliance-details__row box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-column box--justify-content-center box--height-2/3"
+      class="mm-box compliance-details__row mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--height-2/3"
     >
       <div
-        class="box box--margin-bottom-1 box--display-flex box--flex-direction-row box--align-items-center box--color-text-alternative"
+        class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
           class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
@@ -57,7 +57,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         </div>
       </div>
       <div
-        class="box compliance-row__column-risk compliance-row__column-risk--green box--flex-direction-row"
+        class="mm-box compliance-row__column-risk compliance-row__column-risk--green"
       >
         <p
           class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
@@ -67,10 +67,10 @@ exports[`ComplianceDetails should render correctly 1`] = `
       </div>
     </div>
     <div
-      class="box compliance-details__row box--padding-top-4 box--padding-bottom-4 box--display-flex box--flex-direction-column box--justify-content-center box--height-2/3"
+      class="mm-box compliance-details__row mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--height-2/3"
     >
       <div
-        class="box box--display-flex box--flex-direction-row box--align-items-center box--color-text-alternative"
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
           class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
@@ -108,7 +108,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
       />
     </div>
     <div
-      class="box box--flex-direction-row"
+      class="mm-box"
     >
       <div
         class="swaps-footer"

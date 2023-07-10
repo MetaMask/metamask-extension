@@ -6,7 +6,7 @@ import { _setBackgroundConnection } from '../action-queue';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
-  checkForUnapprovedTypedMessages,
+  checkForUnapprovedMessages,
   updateCustodyState,
 } from './institution-actions';
 
@@ -153,8 +153,8 @@ describe('#InstitutionActions', () => {
   });
 });
 
-describe('#checkForUnapprovedTypedMessages', () => {
-  it('calls checkForUnapprovedTypedMessages and returns the messageData', async () => {
+describe('#checkForUnapprovedMessages', () => {
+  it('calls checkForUnapprovedMessages and returns the messageData', async () => {
     const messageData = {
       id: 1,
       type: 'tx',
@@ -166,11 +166,9 @@ describe('#checkForUnapprovedTypedMessages', () => {
       status: 'unapproved',
     };
 
-    expect(
-      checkForUnapprovedTypedMessages(messageData, {
-        unapprovedTypedMessages: { msg: 'msg' },
-      }),
-    ).toBe(messageData);
+    expect(checkForUnapprovedMessages(messageData, { msg: 'msg' })).toBe(
+      messageData,
+    );
   });
 });
 

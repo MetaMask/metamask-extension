@@ -1,30 +1,27 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-import Box from '../../ui/box/box';
 import {
   IconName,
   ButtonLink,
   TextFieldSearch,
   Text,
+  Box,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  ModalHeader,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
-  BLOCK_SIZES,
+  BlockSize,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import Popover from '../../ui/popover';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import {
-  getMmiPortfolioEnabled,
-  getMmiPortfolioUrl,
-} from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getSelectedAccount,
   getMetaMaskAccountsOrdered,
@@ -39,9 +36,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  COMPLIANCE_FEATURE_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -56,12 +55,6 @@ export const AccountListMenu = ({ onClose }) => {
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  const inputRef = useRef();
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
-  const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IN
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState('');
@@ -80,13 +73,6 @@ export const AccountListMenu = ({ onClose }) => {
     searchResults = fuse.search(searchQuery);
   }
 
-  // Focus on the search box when the popover is opened
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.rootNode.querySelector('input[type=search]')?.focus();
-    }
-  }, [inputRef]);
-
   let title = t('selectAnAccount');
   if (actionMode === 'add') {
     title = t('addAccount');
@@ -95,171 +81,215 @@ export const AccountListMenu = ({ onClose }) => {
   }
 
   return (
-    <Popover
-      title={title}
-      ref={inputRef}
-      centerTitle
-      onClose={onClose}
-      onBack={actionMode === '' ? null : () => setActionMode('')}
-    >
-      {actionMode === 'add' ? (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <CreateAccount
-            onActionComplete={(confirmed) => {
-              if (confirmed) {
-                dispatch(toggleAccountMenu());
-              } else {
-                setActionMode('');
-              }
-            }}
-          />
-        </Box>
-      ) : null}
-      {actionMode === 'import' ? (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4} paddingTop={0}>
-          <ImportAccount
-            onActionComplete={(confirmed) => {
-              if (confirmed) {
-                dispatch(toggleAccountMenu());
-              } else {
-                setActionMode('');
-              }
-            }}
-          />
-        </Box>
-      ) : null}
-      {actionMode === '' ? (
-        <Box className="multichain-account-menu">
-          {/* Search box */}
-          {accounts.length > 1 ? (
-            <Box
-              paddingLeft={4}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingTop={0}
-            >
-              <TextFieldSearch
-                size={Size.SM}
-                width={BLOCK_SIZES.FULL}
-                placeholder={t('searchAccounts')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                clearButtonOnClick={() => setSearchQuery('')}
-                clearButtonProps={{
-                  size: Size.SM,
-                }}
-              />
-            </Box>
-          ) : null}
-          {/* Account list block */}
-          <Box className="multichain-account-menu__list">
-            {searchResults.length === 0 && searchQuery !== '' ? (
-              <Text
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent
+        className="multichain-account-menu-popover"
+        modalDialogProps={{ padding: 0, marginBottom: 0 }}
+      >
+        <ModalHeader
+          paddingTop={4}
+          paddingRight={4}
+          paddingBottom={6}
+          onClose={onClose}
+          onBack={actionMode === '' ? null : () => setActionMode('')}
+        >
+          {title}
+        </ModalHeader>
+        {actionMode === 'add' ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <CreateAccount
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  dispatch(toggleAccountMenu());
+                } else {
+                  setActionMode('');
+                }
+              }}
+            />
+          </Box>
+        ) : null}
+        {actionMode === 'import' ? (
+          <Box
+            paddingLeft={4}
+            paddingRight={4}
+            paddingBottom={4}
+            paddingTop={0}
+          >
+            <ImportAccount
+              onActionComplete={(confirmed) => {
+                if (confirmed) {
+                  dispatch(toggleAccountMenu());
+                } else {
+                  setActionMode('');
+                }
+              }}
+            />
+          </Box>
+        ) : null}
+        {actionMode === '' ? (
+          <Box>
+            {/* Search box */}
+            {accounts.length > 1 ? (
+              <Box
                 paddingLeft={4}
                 paddingRight={4}
-                color={TextColor.textMuted}
-                data-testid="multichain-account-menu-no-results"
+                paddingBottom={4}
+                paddingTop={0}
               >
-                {t('noAccountsFound')}
-              </Text>
+                <TextFieldSearch
+                  size={Size.SM}
+                  width={BlockSize.Full}
+                  placeholder={t('searchAccounts')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  clearButtonOnClick={() => setSearchQuery('')}
+                  clearButtonProps={{
+                    size: Size.SM,
+                  }}
+                  inputProps={{ autoFocus: true }}
+                />
+              </Box>
             ) : null}
-            {searchResults.map((account) => {
-              const connectedSite = connectedSites[account.address]?.find(
-                ({ origin }) => origin === currentTabOrigin,
-              );
+            {/* Account list block */}
+            <Box className="multichain-account-menu-popover__list">
+              {searchResults.length === 0 && searchQuery !== '' ? (
+                <Text
+                  paddingLeft={4}
+                  paddingRight={4}
+                  color={TextColor.textMuted}
+                  data-testid="multichain-account-menu-popover-no-results"
+                >
+                  {t('noAccountsFound')}
+                </Text>
+              ) : null}
+              {searchResults.map((account) => {
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
-              return (
-                <AccountListItem
+                return (
+                  <AccountListItem
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.NavAccountSwitched,
+                        properties: {
+                          location: 'Main Menu',
+                        },
+                      });
+                      dispatch(setSelectedAccount(account.address));
+                    }}
+                    identity={account}
+                    key={account.address}
+                    selected={selectedAccount.address === account.address}
+                    closeMenu={onClose}
+                    connectedAvatar={connectedSite?.iconUrl}
+                    connectedAvatarName={connectedSite?.name}
+                  />
+                );
+              })}
+            </Box>
+            {/* Add / Import / Hardware */}
+            <Box padding={4}>
+              <Box marginBottom={4}>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Add}
+                  onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        account_type: MetaMetricsEventAccountType.Default,
+                        location: 'Main Menu',
+                      },
+                    });
+                    setActionMode('add');
+                  }}
+                  data-testid="multichain-account-menu-popover-add-account"
+                >
+                  {t('addAccount')}
+                </ButtonLink>
+              </Box>
+              <Box marginBottom={4}>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Import}
+                  onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        account_type: MetaMetricsEventAccountType.Imported,
+                        location: 'Main Menu',
+                      },
+                    });
+                    setActionMode('import');
+                  }}
+                >
+                  {t('importAccount')}
+                </ButtonLink>
+              </Box>
+              <Box marginBottom={4}>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Hardware}
                   onClick={() => {
                     dispatch(toggleAccountMenu());
                     trackEvent({
                       category: MetaMetricsEventCategory.Navigation,
-                      event: MetaMetricsEventName.NavAccountSwitched,
+                      event: MetaMetricsEventName.AccountAddSelected,
                       properties: {
+                        account_type: MetaMetricsEventAccountType.Hardware,
                         location: 'Main Menu',
                       },
                     });
-                    dispatch(setSelectedAccount(account.address));
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        CONNECT_HARDWARE_ROUTE,
+                      );
+                    } else {
+                      history.push(CONNECT_HARDWARE_ROUTE);
+                    }
                   }}
-                  identity={account}
-                  key={account.address}
-                  selected={selectedAccount.address === account.address}
-                  closeMenu={onClose}
-                  connectedAvatar={connectedSite?.iconUrl}
-                  connectedAvatarName={connectedSite?.name}
-                />
-              );
-            })}
-          </Box>
-          {/* Add / Import / Hardware */}
-          <Box padding={4}>
-            <Box marginBottom={4}>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Add}
-                onClick={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Default,
-                      location: 'Main Menu',
-                    },
-                  });
-                  setActionMode('add');
-                }}
-                data-testid="multichain-account-menu-add-account"
-              >
-                {t('addAccount')}
-              </ButtonLink>
-            </Box>
-            <Box marginBottom={4}>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Import}
-                onClick={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Imported,
-                      location: 'Main Menu',
-                    },
-                  });
-                  setActionMode('import');
-                }}
-              >
-                {t('importAccount')}
-              </ButtonLink>
-            </Box>
-            <Box>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Hardware}
-                onClick={() => {
-                  dispatch(toggleAccountMenu());
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Hardware,
-                      location: 'Main Menu',
-                    },
-                  });
-                  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                    global.platform.openExtensionInBrowser(
-                      CONNECT_HARDWARE_ROUTE,
-                    );
-                  } else {
-                    history.push(CONNECT_HARDWARE_ROUTE);
-                  }
-                }}
-              >
-                {t('hardwareWallet')}
-              </ButtonLink>
+                >
+                  {t('hardwareWallet')}
+                </ButtonLink>
+              </Box>
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+                <>
+                  <Box marginTop={4}>
+                    <ButtonLink
+                      size={Size.SM}
+                      startIconName={IconName.Snaps}
+                      onClick={() => {
+                        dispatch(toggleAccountMenu());
+                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                          ? global.platform.openExtensionInBrowser(
+                              ADD_SNAP_ACCOUNT_ROUTE,
+                              null,
+                              true,
+                            )
+                          : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      }}
+                    >
+                      {t('settingAddSnapAccount')}
+                    </ButtonLink>
+                  </Box>
+                </>
+                ///: END:ONLY_INCLUDE_IN
+              }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <>
+                <Box>
                   <ButtonLink
                     size={Size.SM}
                     startIconName={IconName.Custody}
@@ -281,51 +311,14 @@ export const AccountListMenu = ({ onClose }) => {
                   >
                     {t('connectCustodialAccountMenu')}
                   </ButtonLink>
-                  {mmiPortfolioEnabled && (
-                    <ButtonLink
-                      size={Size.SM}
-                      startIconName={IconName.MmmiPortfolioDashboard}
-                      onClick={() => {
-                        dispatch(toggleAccountMenu());
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event:
-                            MetaMetricsEventName.UserClickedPortfolioButton,
-                        });
-                        window.open(mmiPortfolioUrl, '_blank');
-                      }}
-                    >
-                      {t('portfolioDashboard')}
-                    </ButtonLink>
-                  )}
-                  <ButtonLink
-                    size={Size.SM}
-                    startIconName={IconName.Compliance}
-                    onClick={() => {
-                      dispatch(toggleAccountMenu());
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.UserClickedCompliance,
-                      });
-                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                        global.platform.openExtensionInBrowser(
-                          COMPLIANCE_FEATURE_ROUTE,
-                        );
-                      } else {
-                        history.push(COMPLIANCE_FEATURE_ROUTE);
-                      }
-                    }}
-                  >
-                    {t('compliance')}
-                  </ButtonLink>
-                </>
+                </Box>
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
           </Box>
-        </Box>
-      ) : null}
-    </Popover>
+        ) : null}
+      </ModalContent>
+    </Modal>
   );
 };
 

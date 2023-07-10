@@ -725,6 +725,7 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat,
+              isMMI: buildType === 'mmi',
             });
             renderHtmlFile({
               htmlName: 'home',

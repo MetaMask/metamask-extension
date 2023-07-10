@@ -29,6 +29,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { LINEA_GOERLI_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -44,6 +45,10 @@ export const TokenListItem = ({
   const dataTheme = document.documentElement.getAttribute('data-theme');
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+  const badgeWrapperImage =
+    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : primaryTokenImage;
+  const badgeTokenImage =
+    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : tokenImage;
 
   return (
     <Box
@@ -80,9 +85,9 @@ export const TokenListItem = ({
             <AvatarNetwork
               size={Size.XS}
               name={tokenSymbol}
-              src={primaryTokenImage}
+              src={badgeWrapperImage}
               borderColor={
-                primaryTokenImage
+                badgeWrapperImage
                   ? BorderColor.borderMuted
                   : BorderColor.borderDefault
               }
@@ -92,10 +97,12 @@ export const TokenListItem = ({
         >
           <AvatarToken
             name={tokenSymbol}
-            src={tokenImage}
+            src={badgeTokenImage}
             showHalo
             borderColor={
-              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
+              badgeTokenImage
+                ? BorderColor.transparent
+                : BorderColor.borderDefault
             }
           />
         </BadgeWrapper>

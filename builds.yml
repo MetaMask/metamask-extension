@@ -11,6 +11,7 @@ default: &default main
 # Declaration of build types
 # Each build type is composed of features, env variables and assets.
 # Also known as productFlavors in Android lingo
+# Note: These build types should be kept in sync with the list in `.github/workflows/update-lavamoat-policies.yml`
 buildTypes:
   main:
     features:
@@ -45,12 +46,13 @@ buildTypes:
       - snaps
       - desktop
       - build-flask
+      - keyring-snaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.16.1-flask.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.35.2-flask.1/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -63,12 +65,13 @@ buildTypes:
       - snaps
       - desktop
       - build-flask
+      - keyring-snaps
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.16.1-flask.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/0.35.2-flask.1/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
@@ -86,7 +89,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
+      - MMI_CONFIGURATION_SERVICE_URL
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -137,6 +140,11 @@ features:
       - src: ./app/build-types/flask/images/
         dest: images
       - ./{app,shared,ui}/**/flask/**
+  keyring-snaps:
+    env:
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+    assets:
+      - ./{app,shared,ui}/**/keyring-snaps/**
 
 # Env variables that are required for all types of builds
 #
