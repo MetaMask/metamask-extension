@@ -46,7 +46,9 @@ export default function InteractiveReplacementTokenPage({ history }) {
   const dispatch = useDispatch();
   const isMountedRef = useRef(false);
   const mmiActions = mmiActionsFactory();
-  const { address } = useSelector((state) => state.metamask.modal.props);
+  const address = useSelector(
+    (state) => state.appState.modal.modalState.props?.address,
+  );
   const {
     selectedAddress,
     custodyAccountDetails,
@@ -131,8 +133,8 @@ export default function InteractiveReplacementTokenPage({ history }) {
     return null;
   }
 
-  const onRemoveAddTokenConnectRequest = ({ origin, apiUrl, token }) => {
-    dispatch(
+  const onRemoveAddTokenConnectRequest = async ({ origin, apiUrl, token }) => {
+    await dispatch(
       removeAddTokenConnectRequest({
         origin,
         apiUrl,
