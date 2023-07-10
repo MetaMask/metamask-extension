@@ -89,9 +89,11 @@ const groupTransactionsByDate = (transactionGroups) => {
     } else {
       groupedTransactions.push({
         date,
+        dateMillis: transactionGroup.primaryTransaction.time,
         transactionGroups: [transactionGroup],
       });
     }
+    groupedTransactions.sort((a, b) => b.dateMillis - a.dateMillis);
   });
 
   return groupedTransactions;
