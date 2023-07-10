@@ -44,6 +44,7 @@ export const ConnectedSiteMenu = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Tooltip
         title={
