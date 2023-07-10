@@ -134,7 +134,6 @@ mapDispatchToProps = function (dispatch) {
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
     showCustodianDeepLink: ({
       custodyId,
