@@ -78,6 +78,35 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
+mapDispatchToProps = function (dispatch) {
+  return {
+    goHome: () => dispatch(goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: messagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: messagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
+  };
+};
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
@@ -124,35 +153,6 @@ function mmiMapDispatchToProps(dispatch) {
 
 mapDispatchToProps = mmiMapDispatchToProps;
 ///: END:ONLY_INCLUDE_IN
-
-mapDispatchToProps = function (dispatch) {
-  return {
-    goHome: () => dispatch(goHome()),
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    showRejectTransactionsConfirmationModal: ({
-      onSubmit,
-      unapprovedTxCount: messagesCount,
-    }) => {
-      return dispatch(
-        showModal({
-          name: 'REJECT_TRANSACTIONS',
-          onSubmit,
-          unapprovedTxCount: messagesCount,
-          isRequestType: true,
-        }),
-      );
-    },
-    completedTx: (txId) => dispatch(completedTx(txId)),
-    resolvePendingApproval: (id) => {
-      dispatch(resolvePendingApproval(id));
-    },
-    rejectPendingApproval: (id, error) =>
-      dispatch(rejectPendingApproval(id, error)),
-    cancelAllApprovals: (messagesList) => {
-      dispatch(rejectAllMessages(messagesList));
-    },
-  };
-};
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;
