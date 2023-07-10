@@ -33,7 +33,7 @@ jest.mock('react-router-dom', () => ({
   ),
 }));
 
-jest.mock('../../store/actions.ts', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
@@ -59,14 +59,14 @@ describe('ImportNftsModal', () => {
       <ImportNftsModal />,
       store,
     );
-    expect(getByText('Add')).not.toBeEnabled();
+    expect(getByText('Import')).not.toBeEnabled();
     fireEvent.change(getByTestId('address'), {
       target: { value: VALID_ADDRESS },
     });
     fireEvent.change(getByTestId('token-id'), {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Add')).toBeEnabled();
+    expect(getByText('Import')).toBeEnabled();
   });
 
   it('should not enable the "Add" button when an invalid entry is input into one or both Address and TokenId fields', () => {
