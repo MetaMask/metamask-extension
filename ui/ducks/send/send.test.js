@@ -8,6 +8,7 @@ import {
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
+  INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
@@ -656,11 +657,10 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipient',
+          INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
         );
       });
 
-      // TODO: Expectation might change in the future
       it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -681,7 +681,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipientNotEthNetwork',
+          INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
         );
       });
 
@@ -705,7 +705,7 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.recipient.error).toStrictEqual(
-          'invalidAddressRecipient',
+          INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR,
         );
       });
 

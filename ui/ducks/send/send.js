@@ -72,7 +72,6 @@ import {
 } from '../../helpers/utils/token-util';
 import {
   checkExistingAddresses,
-  isDefaultMetaMaskChain,
   isOriginContractAddress,
   isValidDomainName,
 } from '../../helpers/utils/util';
@@ -107,6 +106,7 @@ import {
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { isBuiltInChainId } from '../../../shared/modules/network.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import {
   estimateGasLimitForSend,
@@ -1349,7 +1349,7 @@ const slice = createSlice({
             }) &&
               !isValidDomainName(state.recipientInput))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
+            draftTransaction.recipient.error = isBuiltInChainId(chainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (
