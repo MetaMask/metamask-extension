@@ -1,5 +1,5 @@
 import React from 'react';
-import { NftItem } from './nft-item';
+import { NftItem } from '.';
 
 export default {
   title: 'Components/Multichain/NftItem',

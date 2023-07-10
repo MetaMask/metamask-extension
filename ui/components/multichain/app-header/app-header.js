@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Box,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -47,7 +47,6 @@ import {
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
-import Box from '../../ui/box/box';
 import {
   hideProductTour,
   toggleAccountMenu,
@@ -151,7 +150,7 @@ export const AppHeader = ({ location }) => {
 
   // This is required to ensure send and confirmation screens
   // look as desired
-  const headerBottomMargin = disableNetworkPicker ? 4 : 0;
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
 
   return (
     <>
@@ -360,7 +359,6 @@ export const AppHeader = ({ location }) => {
                         setAccountOptionsMenuOpen(true);
                       }}
                       size={ButtonIconSize.Sm}
-                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
                 </Box>
