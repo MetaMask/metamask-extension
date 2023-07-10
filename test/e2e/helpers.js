@@ -105,7 +105,9 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
+      chainId: ganacheOptions?.chainId || 1337,
+    });
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
