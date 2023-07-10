@@ -40,21 +40,28 @@ describe('Checkbox', () => {
     expect(getByText('Option 1')).toBeDefined();
   });
 
-  it('should render checkbox with label that has additional textProps for bold text', () => {
-    const { getByText } = render(
-      <Checkbox label="Option 1" textProps={{ fontWeight: FontWeight.Bold }} />,
+  it('should render checkbox with label that has additional labelProps for bold text', () => {
+    const { getByTestId } = render(
+      <Checkbox
+        label="Option 1"
+        labelProps={{ fontWeight: FontWeight.Bold, 'data-testid': 'label' }}
+      />,
     );
-    expect(getByText('Option 1')).toHaveClass('mm-text--font-weight-bold');
+    expect(getByTestId('label')).toHaveClass('mm-text--font-weight-bold');
   });
 
-  it('should render checkbox with id and label has matching htmlFor', () => {
-    const { getByText, getByRole } = render(
-      <Checkbox label="Option 1" id="option-1" />,
+  it('should render checkbox with id and label has matching htmlfor', () => {
+    const { getByTestId, getByRole } = render(
+      <Checkbox
+        label="Option 1"
+        id="option-1"
+        labelProps={{ 'data-testid': 'label' }}
+      />,
     );
     const checkbox = getByRole('checkbox');
 
     expect(checkbox).toHaveAttribute('id', 'option-1');
-    expect(getByText('Option 1')).toHaveAttribute('for', 'option-1');
+    expect(getByTestId('label')).toHaveAttribute('for', 'option-1');
   });
 
   test('Checkbox component is disabled when isDisabled is true', () => {
@@ -89,6 +96,24 @@ describe('Checkbox', () => {
     const checkbox = getByTestId('checkbox');
 
     fireEvent.click(checkbox);
+
+    expect(onChange).toHaveBeenCalled();
+  });
+
+  it('Checkbox component fires onChange function label clicked', () => {
+    const onChange = jest.fn();
+
+    const { getByTestId } = render(
+      <Checkbox
+        label="Click label"
+        labelProps={{ 'data-testid': 'label' }}
+        onChange={onChange}
+      />,
+    );
+
+    const label = getByTestId('label');
+
+    fireEvent.click(label);
 
     expect(onChange).toHaveBeenCalled();
   });

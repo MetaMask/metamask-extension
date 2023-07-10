@@ -2,13 +2,17 @@
 
 exports[`Checkbox should render the Checkbox without crashing 1`] = `
 <div>
-  <div
-    class="mm-box mm-checkbox__wrapper"
+  <label
+    class="box mm-text mm-label mm-checkbox__label mm-text--body-md box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
   >
-    <input
-      class="mm-box mm-checkbox mm-box--margin-0 mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
-      type="checkbox"
-    />
-  </div>
+    <span
+      class="mm-checkbox__wrapper"
+    >
+      <input
+        class="mm-box mm-checkbox mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
+        type="checkbox"
+      />
+    </span>
+  </label>
 </div>
 `;

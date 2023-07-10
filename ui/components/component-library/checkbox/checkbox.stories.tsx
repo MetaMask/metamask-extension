@@ -50,6 +50,15 @@ export const Label = (args) => {
   );
 };
 
+export const Id = (args) => {
+  return <Checkbox {...args} />;
+};
+
+Id.args = {
+  label: 'Id Demo',
+  id: 'id-demo',
+};
+
 export const LabelProps = (args) => {
   const [isChecked, setIsChecked] = React.useState(false);
 
