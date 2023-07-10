@@ -911,9 +911,6 @@
   "delete": {
     "message": "हटाएँ"
   },
-  "deleteAccount": {
-    "message": "अकाउंट हटाएं"
-  },
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
   },
@@ -1562,6 +1559,12 @@
     "message": "लेकिन फिशर कर सकते हैं।",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "SRP दिखाने के लिए होल्ड करें"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "अपना SRP सुरक्षित रखें"
+  },
   "ignoreAll": {
     "message": "सभी को अनदेखा करें"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "किसी एनएफटी की आईडी एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो एनएफटी एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
-  },
-  "importNFTs": {
-    "message": "NFT आयात करें"
   },
   "importSelectedTokens": {
     "message": "चयनित टोकन आयात करें?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "लॉक"
   },
-  "lockTimeTooGreat": {
-    "message": "लॉक समय बहुत अधिक है"
-  },
   "logo": {
     "message": "$1 लोगो",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "हमारे रिकॉर्ड के अनुसार, सबमिट किया गया RPC-URL मान इस चेन आईडी के लिए किसी ज्ञात प्रदाता से मेल नहीं खाता।"
-  },
-  "missingNFT": {
-    "message": "अपना NFT नहीं देख रहे हैं?"
   },
   "missingSetting": {
     "message": "सेटिंग नहीं मिल पाया?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "कोई भी रूपांतरण दर उपलब्ध नहीं है"
-  },
-  "noNFTs": {
-    "message": "अभी तक कोई NFT नहीं"
   },
   "noSnaps": {
     "message": "कोई स्नैप इंस्टाल नहीं किया गया"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "पेस्ट विफल हुआ क्योंकि उसमें 24 से ज़्यादा शब्द हैं। सीक्रेट रिकवरी फ़्रेज़ में अधिकतम 24 शब्द हो सकते हैं।",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "आप अपना पूरा सीक्रेट रिकवरी फ़्रेज किसी भी फ़ील्ड में पेस्ट कर सकते हैं",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "शुरू करें"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "अपना सीक्रेट रिकवरी फ्रेज़ प्रकट करने के लिए, आपको दो प्रश्नों का सही उत्तर देना होगा"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "आपकी मदद नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "इसे लिख लें, इसे किसी धातु पर उकेर दें, या इसे कई गुप्त स्थानों पर रखें ताकि आप इसे कभी न खोएं। यदि आप इसे खो देते हैं, तो यह हमेशा के लिए चला जाता है।"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "सही! आपके सीक्रेट रिकवरी फ्रेज़ को वापस पाने में कोई भी सहायता नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "आपके लिए इसे वापस ला सकते हैं"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "यदि आप अपना सीक्रेट रिकवरी फ्रेज़ खो देते हैं, तो यह हमेशा के लिए चला जाता है। इसे वापस पाने में कोई भी आपकी मदद नहीं कर सकता, चाहे वे कुछ भी कहें।"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "गलत! आपके सीक्रेट रिकवरी फ्रेज़ को वापस पाने में कोई भी सहायता नहीं कर सकता"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "यदि कोई, यहां तक कि एक सहायक एजेंट भी, आपका सीक्रेट रिकवरी फ्रेज़ मांगता है..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "तो आपके साथ धोखा किया जा रहा है"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "आपके सीक्रेट रिकवरी फ्रेज़ की आवश्यकता का दावा करने वाला कोई भी व्यक्ति आपसे झूठ बोल रहा है। यदि आप इसे उनके साथ साझा करते हैं, तो वे आपकी संपत्ति चुरा लेंगे।"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "सही! अपना सीक्रेट रिकवरी फ्रेज़ साझा करना कभी भी अच्छा विचार नहीं है"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "आपको उन्हें यह देना चाहिए"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "आपके सीक्रेट रिकवरी फ्रेज़ की आवश्यकता का दावा करने वाला कोई भी व्यक्ति आपसे झूठ बोल रहा है। यदि आप इसे उनके साथ साझा करते हैं, तो वे आपकी संपत्तियां चुरा लेंगे।"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "नहीं! अपने सीक्रेट रिकवरी फ्रेज़ को कभी भी किसी के साथ साझा न करें"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "सुरक्षा प्रश्नोत्तरी"
   },
   "srpToggleShow": {
     "message": "सीक्रेट रिकवरी फ़्रेज का ये शब्द दिखाएं/छुपाएं",

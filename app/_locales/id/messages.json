@@ -911,9 +911,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteAccount": {
-    "message": "Hapus akun"
-  },
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
@@ -1562,6 +1559,12 @@
     "message": "tetapi penipu akan mencoba memintanya.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Tahan untuk mengungkap FPR"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Jaga keamanan FPR Anda"
+  },
   "ignoreAll": {
     "message": "Abaikan semua"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
-  },
-  "importNFTs": {
-    "message": "Impor NFT"
   },
   "importSelectedTokens": {
     "message": "Impor token yang dipilih?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Kunci"
   },
-  "lockTimeTooGreat": {
-    "message": "Lock time terlalu besar"
-  },
   "logo": {
     "message": "Logo $1",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Menurut catatan kami, nilai URL RPC yang dikirimkan tidak sesuai dengan penyedia yang dikenal untuk ID rantai ini."
-  },
-  "missingNFT": {
-    "message": "Tidak melihat NFT Anda?"
   },
   "missingSetting": {
     "message": "Tidak dapat menemukan pengaturan?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noSnaps": {
     "message": "Belum ada Snap yang diinstal"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Gagal ditempel karena memuat lebih dari 24 kata. Frasa pemulihan rahasia dapat memuat maksimum 24 kata.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Anda bisa menempelkan seluruh frasa pemulihan rahasia ke bagian mana pun",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Mulai"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Untuk mengungkapkan Frasa Pemulihan Rahasia, Anda perlu menjawab dua pertanyaan dengan benar"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Tidak dapat membantu Anda"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Catat, ukir pada logam, atau simpan di beberapa tempat rahasia agar Anda tidak pernah kehilangan. Jika Anda kehilangan, maka akan hilang selamanya."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Benar! Tidak ada yang dapat membantu mengembalikan Frasa Pemulihan Rahasia Anda"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Dapat mengembalikannya untuk Anda"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Jika Anda kehilangan Frasa Pemulihan Rahasia, maka akan hilang selamanya. Tidak ada yang dapat membantu Anda mengembalikannya, apa pun yang mereka katakan."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Salah! Tidak ada yang dapat membantu mengembalikan Frasa Pemulihan Rahasia Anda"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Jika ada yang menanyakan Frasa Pemulihan Rahasia Anda, bahkan agen pendukung,..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Anda ditipu"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Siapa pun yang mengaku membutuhkan Frasa Pemulihan Rahasia, mereka berbohong kepada Anda. Jika membaginya, mereka akan mencuri aset Anda."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Benar! Membagikan Frasa Pemulihan Rahasia bukanlah ide yang baik"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Anda harus memberikannya kepada mereka"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Siapa pun yang mengaku membutuhkan Frasa Pemulihan Rahasia, mereka berbohong kepada Anda. Jika membaginya, mereka akan mencuri aset Anda."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Tidak! Jangan pernah membagikan Frasa Pemulihan Rahasia kepada siapa pun"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Kuis keamanan"
   },
   "srpToggleShow": {
     "message": "Tampilkan/Sembunyikan kata dari frasa pemulihan rahasia ini",

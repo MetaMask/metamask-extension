@@ -4,7 +4,7 @@
 $text-variants: (
   display: ("md"),
   heading: ( "sm", "md", "lg"),
-  body: ("xs", "sm", "sm-bold", "md", "md-bold", "lg-medium"),
+  body: ("xs", "xs-medium", "sm", "sm-medium", "sm-bold", "md", "md-medium", "md-bold", "lg-medium"),
 );
 
 // Variable output mixin

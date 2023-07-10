@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { hasPendingApprovals } from './approvals';
+import { getApprovalFlows, hasPendingApprovals } from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -13,6 +13,7 @@ describe('approval selectors', () => {
           type: ApprovalType.WatchAsset,
           requestData: {},
           requestState: null,
+          expectsResult: false,
         },
         '2': {
           id: '2',
@@ -21,13 +22,19 @@ describe('approval selectors', () => {
           type: ApprovalType.Transaction,
           requestData: {},
           requestState: null,
+          expectsResult: false,
         },
       },
-      unapprovedTxs: {
-        '2': {
+      approvalFlows: [
+        {
+          id: '1',
+          loadingText: 'loadingText1',
+        },
+        {
           id: '2',
+          loadingText: 'loadingText2',
         },
-      },
+      ],
     },
   };
 
@@ -45,6 +52,14 @@ describe('approval selectors', () => {
       );
 
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getApprovalFlows', () => {
+    it('should return existing approval flows', () => {
+      const result = getApprovalFlows(mockedState);
+
+      expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
     });
   });
 });

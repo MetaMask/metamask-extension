@@ -86,9 +86,12 @@ export interface TextProps extends BoxProps {
    * `headingSm` large screen: 18px / small screen: 16px,
    * `bodyLgMedium` large screen: 18px / small screen: 16px,
    * `bodyMd` large screen: 16px / small screen: 14px,
+   * `bodyMdMedium` large screen: 16px / small screen: 14px,
    * `bodyMdBold` large screen: 16px / small screen: 14px,
    * `bodySm` large screen: 14px / small screen: 12px,
+   * `bodySmMedium` large screen: 14px / small screen: 12px,
    * `bodySmBold` large screen: 14px / small screen: 12px,
+   * `bodyXsMedium` large screen: 12px / small screen: 10px,
    * `bodyXs` large screen: 12px / small screen: 10px,
    * `inherit`
    */

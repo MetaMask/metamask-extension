@@ -1,6 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor, screen } from '@testing-library/react';
+import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import CustodyPage from '.';
@@ -16,8 +16,8 @@ const mockedGetCustodianConnectRequest = jest.fn().mockReturnValue({
   custodian: 'saturn',
   token: 'token',
   apiUrl: 'url',
-  custodianType: 'JSON-RPC',
-  custodianName: 'Saturn',
+  custodianType: undefined,
+  custodianName: 'saturn',
 });
 
 jest.mock('../../../store/institutional/institution-background', () => ({
@@ -85,29 +85,19 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('calls getCustodianJwtList on custody select when connect btn is click', async () => {
-    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
-
-    const custodyBtn = getByTestId('custody-connect-button');
-    await waitFor(() => {
-      fireEvent.click(custodyBtn);
+  it('calls getCustodianJwtList on custody select when connect btn is click and clicks connect button and shows the jwt form', async () => {
+    act(() => {
+      renderWithProvider(<CustodyPage />, store);
     });
 
     await waitFor(() => {
-      expect(mockedGetCustodianJWTList).toHaveBeenCalled();
-    });
-  });
-
-  it('clicks connect button and shows the jwt form', async () => {
-    const { getByTestId } = renderWithProvider(<CustodyPage />, store);
-    const custodyBtn = getByTestId('custody-connect-button');
-
-    await waitFor(() => {
+      const custodyBtn = screen.getByTestId('custody-connect-button');
       fireEvent.click(custodyBtn);
     });
 
     await waitFor(() => {
       expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
+      expect(mockedGetCustodianJWTList).toHaveBeenCalled();
     });
   });
 });

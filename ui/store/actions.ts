@@ -6,6 +6,9 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { v4 as uuidV4 } from 'uuid';
+///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -16,6 +19,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { HandlerType } from '@metamask/snaps-utils';
+///: END:ONLY_INCLUDE_IN
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -29,8 +35,12 @@ import {
   getPermittedAccountsForCurrentTab,
   getSelectedAddress,
   hasTransactionPendingApprovals,
+  getApprovalFlows,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -71,7 +81,7 @@ import { NOTIFICATIONS_EXPIRATION_DELAY } from '../helpers/constants/notificatio
 import {
   fetchLocale,
   loadRelativeTimeFormatLocaleData,
-} from '../helpers/utils/i18n-helper';
+} from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
@@ -1116,13 +1126,62 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+///: END:ONLY_INCLUDE_IN
 
+// TODO: Clean this up.
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('removeSnap', [snapId]);
-    await forceUpdateMetamaskState(dispatch);
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    getState,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ) => {
+    dispatch(showLoadingIndication());
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const subjects = getPermissionSubjects(getState()) as {
+      [k: string]: { permissions: Record<string, any> };
+    };
+
+    const isAccountsSnap =
+      subjects[snapId]?.permissions?.snap_manageAccounts !== undefined;
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    try {
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      if (isAccountsSnap) {
+        const accounts = (await handleSnapRequest({
+          snapId,
+          origin: 'metamask',
+          handler: HandlerType.OnRpcRequest,
+          request: {
+            id: uuidV4(),
+            jsonrpc: '2.0',
+            method: 'keyring_listAccounts',
+          },
+        })) as unknown as any[];
+        for (const account of accounts) {
+          dispatch(removeAccount(account.address.toLowerCase()));
+        }
+      }
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+      await submitRequestToBackground('removeSnap', [snapId]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -1135,9 +1194,10 @@ export async function handleSnapRequest(args: {
   origin: string;
   handler: string;
   request: {
+    id?: string;
     jsonrpc: '2.0';
     method: string;
-    params: Record<string, any>;
+    params?: Record<string, any>;
   };
 }): Promise<void> {
   return submitRequestToBackground('handleSnapRequest', [args]);
@@ -1188,6 +1248,19 @@ export function markNotificationsAsRead(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('markNotificationsAsRead', [ids]);
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function revokeDynamicSnapPermissions(
+  snapId: string,
+  permissionNames: string[],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await submitRequestToBackground('revokeDynamicSnapPermissions', [
+      snapId,
+      permissionNames,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }
@@ -2335,9 +2408,12 @@ export function closeCurrentNotificationWindow(): ThunkAction<
   AnyAction
 > {
   return (_, getState) => {
+    const state = getState();
+    const approvalFlows = getApprovalFlows(state);
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
-      !hasTransactionPendingApprovals(getState())
+      !hasTransactionPendingApprovals(state) &&
+      approvalFlows.length === 0
     ) {
       closeNotificationPopup();
     }
@@ -4341,5 +4417,17 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       [shown],
     );
   };
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export async function setSnapsAddSnapAccountModalDismissed() {
+  await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
+    true,
+  ]);
+}
+
+export async function updateSnapRegistry() {
+  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IN
