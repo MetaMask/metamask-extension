@@ -30,7 +30,10 @@ import {
   setTypedMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import {
+  showCustodyConfirmLink,
+  checkForUnapprovedMessages,
+} from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -124,6 +127,7 @@ function mmiMapDispatchToProps(dispatch) {
         closeNotification,
         onDeepLinkFetched,
         onDeepLinkShown,
+        showCustodyConfirmLink,
       }),
     showTransactionsFailedModal: ({
       errorMessage,
