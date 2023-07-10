@@ -134,7 +134,6 @@ mapDispatchToProps = function (dispatch) {
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
     showCustodianDeepLink: ({
       custodyId,
@@ -171,6 +170,27 @@ function mmiMapDispatchToProps(dispatch) {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     goHome: () => dispatch(goHome()),
+    resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    completedTx: (id) => dispatch(completedTx(id)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: unapprovedMessagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: unapprovedMessagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    cancelAllApprovals: (unconfirmedMessagesList) => {
+      dispatch(rejectAllMessages(unconfirmedMessagesList));
+    },
   };
 }
 
