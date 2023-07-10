@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../ui/button';
-import SiteIcon from '../../ui/site-icon';
+import { AvatarFavicon } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
 
@@ -33,11 +33,12 @@ export default class ConnectedSitesList extends Component {
             className="connected-sites-list__content-row"
           >
             <div className="connected-sites-list__subject-info">
-              <SiteIcon
-                icon={subject.iconUrl}
-                name={subject.name}
-                size={32}
+              <AvatarFavicon
+                borderColor="border-muted"
                 className="connected-sites-list__subject-icon"
+                name={subject.name}
+                size="sm"
+                src={subject.iconUrl}
               />
               <SiteOrigin
                 className="connected-sites-list__subject-name"
