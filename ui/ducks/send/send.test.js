@@ -661,6 +661,30 @@ describe('Send Slice', () => {
         );
       });
 
+      it('should error with an invalid network error when user input is not a valid hex string on a default network', () => {
+        const tokenAssetTypeState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          recipientInput: '0xValidateError',
+        };
+        const action = {
+          type: 'send/validateRecipientUserInput',
+          payload: {
+            chainId: CHAIN_IDS.GOERLI,
+            tokens: [],
+            useTokenDetection: true,
+            tokenAddressList: [],
+          },
+        };
+
+        const result = sendReducer(tokenAssetTypeState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.recipient.error).toStrictEqual(
+          INVALID_RECIPIENT_ADDRESS_ERROR,
+        );
+      });
+
       it('should error with an invalid network error when user input is not a valid hex string on a non default network', () => {
         const tokenAssetTypeState = {
           ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
@@ -669,7 +693,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x55',
+            chainId: CHAIN_IDS.POLYGON,
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
