@@ -18,7 +18,7 @@ export function isSafeChainId(chainId: unknown): boolean {
 }
 
 export const isBuiltInChainId = (chainId: ChainId) =>
-  !chainId || BUILT_IN_CHAIN_IDS.has(chainId);
+  BUILT_IN_CHAIN_IDS.has(chainId);
 
 /**
  * Checks whether the given value is a 0x-prefixed, non-zero, non-zero-padded,
