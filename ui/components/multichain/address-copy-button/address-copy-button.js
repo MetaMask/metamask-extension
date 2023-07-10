@@ -14,15 +14,17 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { SECOND } from '../../../../shared/constants/time';
 
 export const AddressCopyButton = ({
   address,
   shorten = false,
   wrap = false,
   onClick,
+  delay = SECOND * 60,
 }) => {
   const displayAddress = shorten ? shortenAddress(address) : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+  const [copied, handleCopy] = useCopyToClipboard(delay);
   const t = useI18nContext();
 
   return (
@@ -69,4 +71,8 @@ AddressCopyButton.propTypes = {
    * Fires when the button is clicked
    */
   onClick: PropTypes.func,
+  /**
+   * Amount of time before the clipboard should be cleared
+   */
+  delay: PropTypes.number,
 };
