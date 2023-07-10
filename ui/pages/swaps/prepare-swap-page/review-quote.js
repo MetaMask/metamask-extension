@@ -509,36 +509,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  useEffect(() => {
-    if (quotesLastFetched === prevQuotesLastFetched) {
-      return;
-    }
-    let balanceNeeded;
-    if (isSmartTransaction && ethBalanceNeededStx) {
-      balanceNeeded = ethBalanceNeededStx;
-    } else if (!isSmartTransaction && ethBalanceNeeded) {
-      balanceNeeded = ethBalanceNeeded;
-    } else {
-      return; // A user has enough balance for a gas fee, so we don't need to track it.
-    }
-    trackEvent({
-      event: MetaMetricsEventName.UiWarnings,
-      category: MetaMetricsEventCategory.Swaps,
-      sensitiveProperties: {
-        stx_enabled: smartTransactionsEnabled,
-        current_stx_enabled: currentSmartTransactionsEnabled,
-        stx_user_opt_in: smartTransactionsOptInStatus,
-        balance_needed: balanceNeeded,
-      },
-    });
-  }, [
-    quotesLastFetched,
-    prevQuotesLastFetched,
-    ethBalanceNeededStx,
-    isSmartTransaction,
-    trackEvent,
-  ]);
-
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
     if (isSmartTransaction) {
@@ -729,6 +699,34 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     sourceTokenSymbol,
     sourceTokenValue,
     trackBestQuoteReviewedEvent,
+  ]);
+
+  useEffect(() => {
+    if (quotesLastFetched === prevQuotesLastFetched) {
+      return;
+    }
+    let balanceNeeded;
+    if (isSmartTransaction && ethBalanceNeededStx) {
+      balanceNeeded = ethBalanceNeededStx;
+    } else if (!isSmartTransaction && ethBalanceNeeded) {
+      balanceNeeded = ethBalanceNeeded;
+    } else {
+      return; // A user has enough balance for a gas fee, so we don't need to track it.
+    }
+    trackEvent({
+      event: MetaMetricsEventName.UiWarnings,
+      category: MetaMetricsEventCategory.Swaps,
+      sensitiveProperties: {
+        ...eventObjectBase,
+        balance_needed: balanceNeeded,
+      },
+    });
+  }, [
+    quotesLastFetched,
+    prevQuotesLastFetched,
+    ethBalanceNeededStx,
+    isSmartTransaction,
+    trackEvent,
   ]);
 
   const metaMaskFee = usedQuote.fee;
