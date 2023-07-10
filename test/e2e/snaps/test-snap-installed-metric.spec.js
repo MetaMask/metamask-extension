@@ -6,7 +6,7 @@ const {
   getEventPayloads,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
+const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 async function mockSegment(mockServer) {
   return [
