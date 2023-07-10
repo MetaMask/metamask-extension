@@ -1,0 +1,72 @@
+Attempt 1 at 2023-07-10 17:06:21:
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 57651
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 57809
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 57964
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58090
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+<testsuite name="Mocha Tests" tests="4" failures="0" errors="0" skipped="0" timestamp="Mon, 10 Jul 2023 16:07:25 GMT" time="58.666">
+<testcase classname="MV3 - Restart service worker multiple times" name="Simple simple send flow within full screen view should still be usable" time="21.612"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support add network dApp interactions after service worker re-starts multiple times" time="15.408"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support send ETH dApp interactions after service worker re-starts multiple times" time="13.054"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should lock wallet when a browser session ends (after turning off the extension)" time="8.589"/>
+</testsuite>
+
+Attempt 2 at 2023-07-10 17:07:25:
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58125
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58275
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58429
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58554
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+<testsuite name="Mocha Tests" tests="4" failures="0" errors="0" skipped="0" timestamp="Mon, 10 Jul 2023 16:08:26 GMT" time="54.953">
+<testcase classname="MV3 - Restart service worker multiple times" name="Simple simple send flow within full screen view should still be usable" time="18.608"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support add network dApp interactions after service worker re-starts multiple times" time="15.08"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support send ETH dApp interactions after service worker re-starts multiple times" time="12.614"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should lock wallet when a browser session ends (after turning off the extension)" time="8.649"/>
+</testsuite>
+
+Attempt 3 at 2023-07-10 17:08:26:
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58589
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58745
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 58898
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+Starting ChromeDriver 114.0.5735.90 (386bc09e8f4f2e025eddae123f36f6263096ae49-refs/branch-heads/5735@{#1052}) on port 59024
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully.
+<testsuite name="Mocha Tests" tests="4" failures="0" errors="0" skipped="0" timestamp="Mon, 10 Jul 2023 16:09:29 GMT" time="56.751">
+<testcase classname="MV3 - Restart service worker multiple times" name="Simple simple send flow within full screen view should still be usable" time="19.724"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support add network dApp interactions after service worker re-starts multiple times" time="15.593"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should continue to support send ETH dApp interactions after service worker re-starts multiple times" time="12.864"/>
+<testcase classname="MV3 - Restart service worker multiple times" name="Should lock wallet when a browser session ends (after turning off the extension)" time="8.567"/>
+</testsuite>
+
