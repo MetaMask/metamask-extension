@@ -966,6 +966,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
+        [MetaMetricsUserTrait.SecurityAlertsEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: [],
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
