@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
-  "reviewSpendingCap": {
-    "message": "使用上限を確認してください"
-  },
   "revokeAllTokensTitle": {
     "message": "すべての $1 へのアクセスおよび転送許可を取り消しますか？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "使用限度額なしで $1 を承認",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "$1 の使用上限を設定",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "設定"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
-  },
-  "useDefault": {
-    "message": "既定値を使用"
   },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"

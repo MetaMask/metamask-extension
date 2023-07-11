@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"
   },
-  "reviewSpendingCap": {
-    "message": "अपनी खर्च के सीमा की समीक्षा करें"
-  },
   "revokeAllTokensTitle": {
     "message": "आपके सभी $1 को एक्सेस और स्थानांतरित करने की अनुमति निरस्त करें?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "बिना किसी खर्च सीमा के $1 स्वीकृत करें",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "अपने $1 के लिए खर्च की सीमा को निर्धारित करें",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "सेटिंग"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
-  },
-  "useDefault": {
-    "message": "डिफॉल्ट का उपयोग करें"
   },
   "useMultiAccountBalanceChecker": {
     "message": "खाता के शेष राशि के अनुरोधों को बैच करें"
