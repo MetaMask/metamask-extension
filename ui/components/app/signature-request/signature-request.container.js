@@ -28,6 +28,7 @@ import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setTypedMessageInProgress,
+  setMessageMetadata,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
@@ -238,11 +239,18 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
         let msgData = _msgData;
         let id = _msgData.custodyId;
         if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedMessages(
+          msgData = await setMessageMetadata(_msgData)
+          id = msgData.custodyId;
+
+          const unApprovedMessages = checkForUnapprovedMessages(
             _msgData,
             unapprovedTypedMessages,
           );
-          id = msgData.custodyId;
+
+          if(unApprovedMessages) {
+            id = unApprovedMessages.custodyId;
+          }
+
         }
         dispatchProps.showCustodianDeepLink({
           custodyId: id,
@@ -251,7 +259,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
         });
-        await dispatchProps.setMsgInProgress(msgData.metamaskId);
+        await dispatchProps.setMsgInProgress(msgData.id);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await goHome();
       } catch (err) {

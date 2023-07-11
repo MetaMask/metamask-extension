@@ -218,7 +218,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
         });
-        await dispatchProps.setMsgInProgress(msgData.metamaskId);
+        await dispatchProps.setMsgInProgress(msgData.id);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await goHome();
       } catch (err) {

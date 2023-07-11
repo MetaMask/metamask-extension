@@ -450,6 +450,7 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianSignMessageDeepLink(from, custodyTxId) {
+    debugger;
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(from),
     );
@@ -613,8 +614,12 @@ export default class MMIController extends EventEmitter {
     }
   }
 
+  async setMessageMetadata (msgParams) {
+
+  }
+
   async handleSigningEvents(signature, messageId, signOperation) {
-    const allMessages = this.signatureController.allMessages;
+    const allMessages = this.signatureController.messages;
 
     for (let i = 0; i < allMessages.length; i++) {
       const message = allMessages[i][0];
@@ -626,20 +631,20 @@ export default class MMIController extends EventEmitter {
        * - origin?: string;
        * - deferSetAsSigned?: boolean;
        */
-      if (!message.metadata?.custodyId) {
-        // Equivalent to the old setMsgCustodyId
-        this.signatureController.setMessageMetadata(messageId, {
-          // From "signature" we have the custodian_transactionId
-          custodyId: signature.custodian_transactionId,
-        });
+      // if (!message.metadata?.custodyId) {
+      //   // Equivalent to the old setMsgCustodyId
+      //   this.signatureController.setMessageMetadata(messageId, {
+      //     // From "signature" we have the custodian_transactionId
+      //     custodyId: signature.custodian_transactionId,
+      //   });
 
-        this.transactionUpdateController.addTransactionToWatchList(
-          signature.custodian_transactionId,
-          message.from,
-          signOperation,
-          true,
-        );
-      }
+      //   this.transactionUpdateController.addTransactionToWatchList(
+      //     signature.custodian_transactionId,
+      //     message.from,
+      //     signOperation,
+      //     true,
+      //   );
+      // }
     }
 
     return this.getState();

@@ -36,6 +36,21 @@ export function showInteractiveReplacementTokenBanner({
   };
 }
 
+export function setMessageMetadata(msgData: any) {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    try {
+      await submitRequestToBackground('setMessageMetadata', [msgData]);
+    } catch (error: any) {
+      log.error(error);
+      dispatch(displayWarning(error.message));
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setTypedMessageInProgress(msgId: string) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
