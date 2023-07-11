@@ -41,6 +41,11 @@ import {
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
+import {
+  getCaipChainIdFromEthChainId,
+  getEthChainIdDecFromCaipChainId,
+  isCaipChainId,
+} from '../../../../../shared/lib/caip-util';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -54,24 +59,17 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
  * it can't be converted.
  */
 const getDisplayChainId = (chainId) => {
-  if (!chainId || typeof chainId !== 'string' || !chainId.startsWith('0x')) {
+  if (!chainId || typeof chainId !== 'string') {
     return chainId;
   }
-  return parseInt(chainId, 16).toString(10);
-};
 
-/**
- * Prefixes a given id with '0x' if the prefix does not exist
- *
- * @param {string} chainId - The chainId to prefix
- * @returns {string} The chainId, prefixed with '0x'
- */
-const prefixChainId = (chainId) => {
-  let prefixedChainId = chainId;
-  if (!chainId.startsWith('0x')) {
-    prefixedChainId = `0x${parseInt(chainId, 10).toString(16)}`;
+  if (chainId.startsWith('0x')) {
+    return parseInt(chainId, 16).toString(10);
   }
-  return prefixedChainId;
+
+  return isCaipChainId(chainId)
+    ? getEthChainIdDecFromCaipChainId(chainId)
+    : chainId;
 };
 
 const isValidWhenAppended = (url) => {
@@ -506,7 +504,7 @@ const NetworksForm = ({
     setIsSubmitting(true);
     try {
       const formChainId = chainId.trim().toLowerCase();
-      const prefixedChainId = prefixChainId(formChainId);
+      const caipChainId = getCaipChainIdFromEthChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
@@ -516,7 +514,7 @@ const NetworksForm = ({
               rpcUrl,
               ticker,
               networkConfigurationId: selectedNetwork.networkConfigurationId,
-              chainId: prefixedChainId,
+              chainId: caipChainId,
               nickname: networkName,
               rpcPrefs: {
                 ...rpcPrefs,
@@ -535,7 +533,7 @@ const NetworksForm = ({
             {
               rpcUrl,
               ticker,
-              chainId: prefixedChainId,
+              chainId: caipChainId,
               nickname: networkName,
               rpcPrefs: {
                 ...rpcPrefs,
@@ -563,7 +561,7 @@ const NetworksForm = ({
           category: MetaMetricsEventCategory.Network,
           properties: {
             block_explorer_url: blockExplorerUrl,
-            chain_id: prefixedChainId,
+            chain_id: caipChainId,
             network_name: networkName,
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
