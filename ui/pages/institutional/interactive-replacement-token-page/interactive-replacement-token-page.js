@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { getMetaMaskAccounts } from '../../../selectors';
-import Button from '../../../components/ui/button';
 import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
@@ -17,7 +16,6 @@ import {
   mmiActionsFactory,
   showInteractiveReplacementTokenBanner,
 } from '../../../store/institutional/institution-background';
-import Box from '../../../components/ui/box';
 import {
   Text,
   Label,
@@ -25,14 +23,16 @@ import {
   ButtonLink,
   IconName,
   IconSize,
+  Box,
+  Button,
 } from '../../../components/component-library';
 import {
-  OVERFLOW_WRAP,
+  OverflowWrap,
   TextColor,
   JustifyContent,
-  BLOCK_SIZES,
-  DISPLAY,
-  FLEX_DIRECTION,
+  BlockSize,
+  Display,
+  FlexDirection,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -85,9 +85,12 @@ export default function InteractiveReplacementTokenPage({ history }) {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getTokenAccounts = async () => {
       if (!connectRequest) {
         history.push(mostRecentOverviewPage);
+        setIsLoading(false);
         return;
       }
 
@@ -113,23 +116,37 @@ export default function InteractiveReplacementTokenPage({ history }) {
             metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
         }));
 
-        if (isMountedRef.current) {
+        if (isMounted) {
           setTokenAccounts(mappedAccounts);
           setIsLoading(false);
         }
       } catch (e) {
         setError(true);
         setIsLoading(false);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     getTokenAccounts();
+
+    return () => {
+      isMounted = false;
+    };
     // We just want to get the accounts in the render of the component
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+      setIsLoading(false);
+    }
+  }, [connectRequest, history, mostRecentOverviewPage]);
+
   if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
     return null;
   }
 
@@ -143,9 +160,9 @@ export default function InteractiveReplacementTokenPage({ history }) {
     );
   };
 
-  const handleReject = () => {
-    onRemoveAddTokenConnectRequest(connectRequest);
-    history.push(mostRecentOverviewPage);
+  const handleReject = async () => {
+    setIsLoading(true);
+    await onRemoveAddTokenConnectRequest(connectRequest);
   };
 
   const handleApprove = async () => {
@@ -176,7 +193,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
 
       dispatch(showInteractiveReplacementTokenBanner({}));
 
-      onRemoveAddTokenConnectRequest(connectRequest);
+      await onRemoveAddTokenConnectRequest(connectRequest);
 
       history.push({
         pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
@@ -210,10 +227,10 @@ export default function InteractiveReplacementTokenPage({ history }) {
       </Box>
       <Box className="page-container__content">
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           marginRight={7}
           marginLeft={7}
-          overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+          overflowwrap={OverflowWrap.BreakWord}
           color={TextColor.textAlternative}
           className="interactive-replacement-token-page"
         >
@@ -223,95 +240,96 @@ export default function InteractiveReplacementTokenPage({ history }) {
                 custodian.displayName || 'Custodian',
               ])}
             </Text>
-          ) : null}
-          <Box
-            display={DISPLAY.FLEX}
-            flexDirection={FLEX_DIRECTION.COLUMN}
-            width={BLOCK_SIZES.FULL}
-            data-testid="interactive-replacement-token-page"
-          >
-            {tokenAccounts.map((account, idx) => {
-              return (
-                <Box
-                  display={DISPLAY.FLEX}
-                  className="interactive-replacement-token-page__item"
-                  key={account.address}
-                >
+          ) : (
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              width={BlockSize.Full}
+              data-testid="interactive-replacement-token-page"
+            >
+              {tokenAccounts.map((account, idx) => {
+                return (
                   <Box
-                    display={DISPLAY.FLEX}
-                    flexDirection={FLEX_DIRECTION.COLUMN}
-                    width={BLOCK_SIZES.FULL}
+                    display={Display.Flex}
+                    className="interactive-replacement-token-page__item"
+                    key={account.address}
                   >
-                    <Label
-                      marginTop={3}
-                      marginRight={2}
-                      htmlFor={`address-${idx}`}
-                    >
-                      <Text as="span" data-testid="account-name">
-                        {account.name}
-                      </Text>
-                    </Label>
-                    <Label
-                      marginTop={1}
-                      marginRight={2}
-                      htmlFor={`address-${idx}`}
-                    >
-                      <Text
-                        as="span"
-                        display={DISPLAY.FLEX}
-                        className="interactive-replacement-token-page__item__address"
-                      >
-                        <ButtonLink
-                          href={getButtonLinkHref(account)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {shortenAddress(account.address)}
-                          <Icon
-                            name={IconName.Export}
-                            size={IconSize.Sm}
-                            color={IconColor.primaryDefault}
-                            marginLeft={1}
-                          />
-                        </ButtonLink>
-                        <Tooltip
-                          position="bottom"
-                          title={
-                            copied
-                              ? t('copiedExclamation')
-                              : t('copyToClipboard')
-                          }
-                        >
-                          <button
-                            className="interactive-replacement-token-page__item-clipboard"
-                            onClick={() => handleCopy(account.address)}
-                          >
-                            <Icon
-                              name={IconName.Copy}
-                              size={IconSize.Xs}
-                              color={IconColor.iconMuted}
-                            />
-                          </button>
-                        </Tooltip>
-                      </Text>
-                    </Label>
                     <Box
-                      display={DISPLAY.FLEX}
-                      justifyContent={JustifyContent.spaceBetween}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      width={BlockSize.Full}
                     >
-                      {account.labels && (
-                        <CustodyLabels
-                          labels={account.labels}
-                          index={idx.toString()}
-                          hideNetwork
-                        />
-                      )}
+                      <Label
+                        marginTop={3}
+                        marginRight={2}
+                        htmlFor={`address-${idx}`}
+                      >
+                        <Text as="span" data-testid="account-name">
+                          {account.name}
+                        </Text>
+                      </Label>
+                      <Label
+                        marginTop={1}
+                        marginRight={2}
+                        htmlFor={`address-${idx}`}
+                      >
+                        <Text
+                          as="span"
+                          display={Display.Flex}
+                          className="interactive-replacement-token-page__item__address"
+                        >
+                          <ButtonLink
+                            href={getButtonLinkHref(account)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {shortenAddress(account.address)}
+                            <Icon
+                              name={IconName.Export}
+                              size={IconSize.Sm}
+                              color={IconColor.primaryDefault}
+                              marginLeft={1}
+                            />
+                          </ButtonLink>
+                          <Tooltip
+                            position="bottom"
+                            title={
+                              copied
+                                ? t('copiedExclamation')
+                                : t('copyToClipboard')
+                            }
+                          >
+                            <button
+                              className="interactive-replacement-token-page__item-clipboard"
+                              onClick={() => handleCopy(account.address)}
+                            >
+                              <Icon
+                                name={IconName.Copy}
+                                size={IconSize.Sm}
+                                color={IconColor.iconMuted}
+                              />
+                            </button>
+                          </Tooltip>
+                        </Text>
+                      </Label>
+                      <Box
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.spaceBetween}
+                      >
+                        {account.labels && (
+                          <CustodyLabels
+                            labels={account.labels}
+                            index={idx.toString()}
+                            hideNetwork
+                          />
+                        )}
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-              );
-            })}
-          </Box>
+                );
+              })}
+            </Box>
+          )}
         </Box>
       </Box>
       <Box className="page-container__footer">
@@ -323,7 +341,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
           <footer>
             <Button
               type="default"
-              large
+              large="true"
               className="page-container__footer-button"
               onClick={handleReject}
             >
@@ -331,7 +349,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
             </Button>
             <Button
               type="primary"
-              large
+              large="true"
               className="page-container__footer-button"
               onClick={handleApprove}
             >

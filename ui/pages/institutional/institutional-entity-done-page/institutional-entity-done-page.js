@@ -1,16 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import Button from '../../../components/ui/button';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../../components/component-library';
+import { Text, Box, Button } from '../../../components/component-library';
 import {
   TextColor,
   BorderRadius,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../../components/ui/box';
 
 export default function InstitutionalEntityDonePage(props) {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -61,7 +59,7 @@ export default function InstitutionalEntityDonePage(props) {
         <footer>
           <Button
             type="primary"
-            large
+            large="true"
             data-testid="click-most-recent-overview-page"
             onClick={() => history.push(mostRecentOverviewPage)}
           >
