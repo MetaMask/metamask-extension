@@ -187,12 +187,20 @@ describe('TokenAllowancePage', () => {
     store = configureMockStore()(state);
   });
 
-  it('should render title "Set a spending cap for your" in token allowance page', () => {
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render title "Spending cap request for your" in token allowance page', () => {
     const { getByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
-    expect(getByText('Set a spending cap for your')).toBeInTheDocument();
+    expect(getByText('Spending cap request for your')).toBeInTheDocument();
   });
 
   it('should render reject button', () => {
@@ -215,37 +223,55 @@ describe('TokenAllowancePage', () => {
     expect(getByText('Function: Approve')).toBeInTheDocument();
   });
 
-  it('should click Use default and set input value to default', () => {
-    const { getByText, getByTestId } = renderWithProvider(
+  it('should load the page with dappProposedAmount prefilled and "Use site suggestion" should not be displayed', () => {
+    const { queryByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
 
     act(() => {
-      const useDefault = getByText('Use default');
-      fireEvent.click(useDefault);
+      const useSiteSuggestion = queryByText('Use site suggestion');
+      expect(useSiteSuggestion).not.toBeInTheDocument();
     });
 
     const input = getByTestId('custom-spending-cap-input');
-    expect(input.value).toBe('1');
+    expect(input.value).toBe('7');
   });
 
-  it('should call back button when button is clicked and return to previous page', () => {
+  it('should click Use site suggestion and set input value to default', () => {
     const { getByText, getByTestId } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
-
     const textField = getByTestId('custom-spending-cap-input');
+    expect(textField.value).toBe('7');
     fireEvent.change(textField, { target: { value: '1' } });
+    expect(textField.value).toBe('1');
+
+    act(() => {
+      const useSiteSuggestion = getByText('Use site suggestion');
+      expect(useSiteSuggestion).toBeInTheDocument();
+      fireEvent.click(useSiteSuggestion);
+    });
+
+    expect(textField.value).toBe('7');
+  });
+
+  it('should call back button when button is clicked and return to previous page', () => {
+    const { getByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
 
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);
 
+    expect(getByText('Site requested spending cap')).toBeInTheDocument();
+
     const backButton = getByText('< Back');
     fireEvent.click(backButton);
 
-    expect(getByText('Set a spending cap for your')).toBeInTheDocument();
+    expect(getByText('Spending cap request for your')).toBeInTheDocument();
   });
 
   it('should click Verify third-party details and show popup Third-party details, then close popup', () => {
@@ -265,13 +291,10 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should show ledger info text if the sending address is ledger', () => {
-    const { queryByText, getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger />,
       store,
     );
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
 
@@ -282,13 +305,10 @@ describe('TokenAllowancePage', () => {
   });
 
   it('should not show ledger info text if the sending address is not ledger', () => {
-    const { queryByText, getByText, getByTestId } = renderWithProvider(
+    const { queryByText, getByText } = renderWithProvider(
       <TokenAllowance {...props} fromAddressIsLedger={false} />,
       store,
     );
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
 
     expect(queryByText('Prior to clicking confirm:')).toBeNull();
 

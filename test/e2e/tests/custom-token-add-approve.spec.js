@@ -130,10 +130,6 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'button',
         });
         await driver.clickElement({
-          text: 'Use default',
-          css: '.mm-button-link',
-        });
-        await driver.clickElement({
           text: 'View details',
           css: '.token-allowance-container__view-details',
         });
@@ -157,17 +153,17 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         await driver.findElement({
-          text: 'Review the spending cap for your',
-          tag: 'div',
+          text: 'Spending cap request for your ',
+          css: '.box--flex-direction-row',
         });
 
-        const defaultSpendingCup = await driver.findElement({
+        const defaultSpendingCap = await driver.findElement({
           text: '7 TST',
           css: '.box--flex-direction-row > h6',
         });
 
         assert.equal(
-          await defaultSpendingCup.getText(),
+          await defaultSpendingCap.getText(),
           '7 TST',
           'Default value is not correctly set',
         );
@@ -253,13 +249,13 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'button',
         });
 
-        let spendingCup = await driver.findElement({
+        let spendingCap = await driver.findElement({
           text: '5 TST',
           css: '.box--flex-direction-row > h6',
         });
 
         assert.equal(
-          await spendingCup.getText(),
+          await spendingCap.getText(),
           '5 TST',
           'Default value is not correctly set',
         );
@@ -309,12 +305,12 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'button',
         });
 
-        spendingCup = await driver.findElement({
+        spendingCap = await driver.findElement({
           text: '9 TST',
           css: '.box--flex-direction-row > h6',
         });
         assert.equal(
-          await spendingCup.getText(),
+          await spendingCap.getText(),
           '9 TST',
           'Default value is not correctly set',
         );
@@ -429,7 +425,7 @@ describe('Create token, approve token and approve token without gas', function (
     );
   });
 
-  it('approves token without gas, set default spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
+  it('approves token without gas, set site suggested spending cap, submits the transaction and finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -465,9 +461,16 @@ describe('Create token, approve token and approve token without gas', function (
 
         const pendingTxes = await driver.findElements('.transaction-list-item');
         pendingTxes[0].click();
-        // set spending cap
+
+        // set custom spending cap
+        const spendingCap = await driver.findElement(
+          '[data-testid="custom-spending-cap-input"]',
+        );
+        await spendingCap.fill('5');
+
+        // set site suggested spending cap
         await driver.clickElement({
-          text: 'Use default',
+          text: 'Use site suggestion',
           css: '.mm-button-link',
         });
         await driver.clickElement({

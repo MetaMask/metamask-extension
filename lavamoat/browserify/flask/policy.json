@@ -1967,7 +1967,6 @@
         "@metamask/rpc-methods-flask>@metamask/snaps-ui": true,
         "@metamask/rpc-methods-flask>@metamask/snaps-utils": true,
         "@metamask/rpc-methods-flask>@metamask/utils": true,
-        "@metamask/rpc-methods-flask>nanoid": true,
         "eth-rpc-errors": true,
         "superstruct": true
       }
@@ -2173,7 +2172,6 @@
         "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>@metamask/snaps-utils>@metamask/snaps-ui": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
-        "@metamask/snaps-controllers-flask>nanoid": true,
         "eth-rpc-errors": true,
         "superstruct": true
       }
