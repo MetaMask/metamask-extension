@@ -299,18 +299,16 @@ describe('TokenAllowancePage', () => {
     const customizeNonceWarning = container.querySelector(
       '.token-allowance-container__custom-nonce-warning',
     );
-    console.log(customizeNonceWarning);
     expect(customizeNonceWarning).not.toBeInTheDocument();
   });
 
   it('should render customize nonce modal when next button is clicked and if useNonceField is set to true', () => {
     props.useNonceField = true;
     state.metamask.customNonceValue = '2';
-    const { getByText, getAllByText, queryByText, getByTestId } =
-      renderWithProvider(<TokenAllowance {...props} />, store);
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
+    const { getByText, getAllByText, queryByText } = renderWithProvider(
+      <TokenAllowance {...props} />,
+      store,
+    );
 
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);
@@ -325,13 +323,10 @@ describe('TokenAllowancePage', () => {
   it('should render customize nonce modal when next button is clicked, than back button is clicked, than return to previous page and if useNonceField is set to true', () => {
     props.useNonceField = true;
     state.metamask.customNonceValue = '2';
-    const { getByText, getByTestId, queryByText } = renderWithProvider(
+    const { getByText, queryByText } = renderWithProvider(
       <TokenAllowance {...props} />,
       store,
     );
-
-    const textField = getByTestId('custom-spending-cap-input');
-    fireEvent.change(textField, { target: { value: '1' } });
 
     const nextButton = getByText('Next');
     fireEvent.click(nextButton);

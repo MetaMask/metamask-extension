@@ -190,6 +190,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         </h6>
       </div>
     </div>
+    
     <div
       class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
