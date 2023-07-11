@@ -33,9 +33,15 @@ export const ActivityListItem = ({
 
   return (
     <Box
+      tabIndex={0}
       backgroundColor={BackgroundColor.backgroundDefault}
       className={primaryClassName}
       onClick={onClick}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter') {
+          onClick();
+        }
+      }}
       data-testid={dataTestId}
       padding={4}
       display={Display.Flex}

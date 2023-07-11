@@ -39,7 +39,7 @@ describe('ActivityListItem', () => {
 
   it('calls onClick when clicked', () => {
     const { getByRole } = render(<ActivityListItem {...defaultProps} />);
-    fireEvent.click(getByRole('button'));
+    fireEvent.click(getByRole('div'));
     expect(defaultProps.onClick).toHaveBeenCalled();
   });
 });

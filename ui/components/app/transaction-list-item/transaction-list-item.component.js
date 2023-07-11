@@ -242,6 +242,7 @@ function TransactionListItemInner({
   return (
     <>
       <ActivityListItem
+        data-testid="activity-list-item"
         onClick={toggleShowDetails}
         className={className}
         title={title}
