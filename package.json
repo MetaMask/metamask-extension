@@ -173,7 +173,7 @@
     "@lavamoat/lavapack@^3.1.0": "patch:@lavamoat/lavapack@npm%3A3.1.0#./.yarn/patches/@lavamoat-lavapack-npm-3.1.0-34c65d233b.patch",
     "fast-json-patch@^3.1.0": "patch:fast-json-patch@npm%3A3.1.1#./.yarn/patches/fast-json-patch-npm-3.1.1-7e8bb70a45.patch",
     "@reduxjs/toolkit@^1.6.2": "patch:@reduxjs/toolkit@npm%3A1.6.2#./.yarn/patches/@reduxjs-toolkit-npm-1.6.2-67af09515f.patch",
-    "parse5@^7.0.0": "patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch",
+    "parse5@^7.0.0": "patch:parse5@npm%3A7.1.2#./.yarn/patches/parse5-npm-7.1.2-aa9a92c270.patch",
     "@types/madge@^5.0.0": "patch:@types/madge@npm%3A5.0.0#./.yarn/patches/@types-madge-npm-5.0.0-654566c2d2.patch",
     "zxcvbn@^4.4.2": "patch:zxcvbn@npm%3A4.4.2#./.yarn/patches/zxcvbn-npm-4.4.2-6527983856.patch",
     "web3@^0.20.7": "patch:web3@npm%3A0.20.7#./.yarn/patches/web3-npm-0.20.7-ee7ef00c57.patch",

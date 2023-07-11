@@ -15107,7 +15107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.3.0, entities@npm:^4.4.0":
+"entities@npm:^4.2.0, entities@npm:^4.4.0":
   version: 4.5.0
   resolution: "entities@npm:4.5.0"
   checksum: 853f8ebd5b425d350bffa97dd6958143179a5938352ccae092c62d1267c4e392a039be1bae7d51b6e4ffad25f51f9617531fedf5237f15df302ccfb452cbf2d7
@@ -27528,12 +27528,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@npm:7.0.0":
-  version: 7.0.0
-  resolution: "parse5@npm:7.0.0"
+"parse5@npm:7.1.2":
+  version: 7.1.2
+  resolution: "parse5@npm:7.1.2"
   dependencies:
-    entities: ^4.3.0
-  checksum: 7da5d61cc18eb36ffa71fc861e65cbfd1f23d96483a6631254e627be667dbc9c93ac0b0e6cb17a13a2e4033dab19bfb2f76f38e5936cfb57240ed49036a83fcc
+    entities: ^4.4.0
+  checksum: 59465dd05eb4c5ec87b76173d1c596e152a10e290b7abcda1aecf0f33be49646ea74840c69af975d7887543ea45564801736356c568d6b5e71792fd0f4055713
   languageName: node
   linkType: hard
 
@@ -27546,12 +27546,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse5@patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch::locator=metamask-crx%40workspace%3A.":
-  version: 7.0.0
-  resolution: "parse5@patch:parse5@npm%3A7.0.0#./.yarn/patches/parse5-npm-7.0.0-3158a72394.patch::version=7.0.0&hash=d0ce7a&locator=metamask-crx%40workspace%3A."
+"parse5@patch:parse5@npm%3A7.1.2#./.yarn/patches/parse5-npm-7.1.2-aa9a92c270.patch::locator=metamask-crx%40workspace%3A.":
+  version: 7.1.2
+  resolution: "parse5@patch:parse5@npm%3A7.1.2#./.yarn/patches/parse5-npm-7.1.2-aa9a92c270.patch::version=7.1.2&hash=26d16d&locator=metamask-crx%40workspace%3A."
   dependencies:
-    entities: ^4.3.0
-  checksum: 15c01cf033fb86fab130fc18e9e909145ada02c22c22e8171fcb6d071443e6133da7a281ca50953892b7c30534bd0a7e94453ffd5d8471224fc9455b94db4f98
+    entities: ^4.4.0
+  checksum: 000262d40da4a1c926f167b5067fc452153720d0ffff8be820f018c17f533a548dccd52ab58fd67cbf7e17eec59fa77b8fb23c12326ea42ad74eaefc7a2ab5c9
   languageName: node
   linkType: hard
 
