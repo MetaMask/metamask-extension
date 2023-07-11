@@ -149,6 +149,7 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
+import { AccountsController } from './AccountsController';
 
 import {
   onMessageReceived,
@@ -932,6 +933,12 @@ export default class MetamaskController extends EventEmitter {
         requireAllowlist,
       },
     });
+
+    this.accountsController = new AccountsController(
+      this.keyringController,
+      this.snapController,
+      this.preferencesController,
+    );
 
     this.notificationController = new NotificationController({
       messenger: this.controllerMessenger.getRestricted({
