@@ -8,6 +8,7 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
   Color,
@@ -16,7 +17,6 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { I18nContext } from '../../../../.storybook/i18n';
 
 import Disclosure from '../../ui/disclosure';
 import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
