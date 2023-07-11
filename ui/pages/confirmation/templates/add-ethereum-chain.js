@@ -15,6 +15,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
+import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdNumFromCaipChainId } from '../../../../shared/lib/caip-util';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -135,9 +136,10 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
+  const requestChainId = getEthChainIdNumFromCaipChainId(pendingApproval.requestData.chainId)
   const matchedChain = safeChainsList.find(
     (chain) =>
-      chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
+      chain.chainId === requestChainId
   );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
@@ -177,6 +179,7 @@ async function getAlerts(pendingApproval) {
 
 function getState(pendingApproval) {
   if (parseInt(pendingApproval.requestData.chainId, 16) === 1) {
+    console.log("use warning modal")
     return { useWarningModal: true };
   }
   return {};
@@ -346,7 +349,7 @@ function getValues(pendingApproval, t, actions, history) {
                   '',
                 )
               : pendingApproval.requestData.rpcUrl,
-            [t('chainId')]: parseInt(pendingApproval.requestData.chainId, 16),
+            [t('chainId')]: getEthChainIdDecFromCaipChainId(pendingApproval.requestData.chainId),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
@@ -374,7 +377,7 @@ function getValues(pendingApproval, t, actions, history) {
         return [ERROR_CONNECTING_TO_RPC];
       }
 
-      if (pendingApproval.requestData.chainId !== endpointChainId) {
+      if (pendingApproval.requestData.chainId !== getCaipChainIdFromEthChainId(endpointChainId)) {
         console.error(
           `Chain ID returned by RPC URL ${customRpcUrl} does not match ${endpointChainId}`,
         );
