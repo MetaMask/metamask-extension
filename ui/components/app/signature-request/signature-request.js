@@ -1,5 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import {
+  useDispatch,
+  useSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shallowEqual,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-redux';
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
