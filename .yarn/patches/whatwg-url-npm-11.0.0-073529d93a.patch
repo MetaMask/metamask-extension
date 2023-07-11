@@ -1,0 +1,10 @@
+diff --git a/lib/encoding.js b/lib/encoding.js
+index cb66b8f10aee1c8a6125c4553213917ea95aba59..79d53319d1ac36470a96050aa81f405ff7ff6129 100644
+--- a/lib/encoding.js
++++ b/lib/encoding.js
+@@ -1,4 +1,5 @@
+ "use strict";
++const { TextDecoder, TextEncoder } = require('util');
+ const utf8Encoder = new TextEncoder();
+ const utf8Decoder = new TextDecoder("utf-8", { ignoreBOM: true });
+ 

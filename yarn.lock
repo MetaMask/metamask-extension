@@ -34940,7 +34940,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"whatwg-url@npm:^11.0.0":
+"whatwg-url@npm:11.0.0":
   version: 11.0.0
   resolution: "whatwg-url@npm:11.0.0"
   dependencies:
@@ -34968,6 +34968,16 @@ __metadata:
     tr46: ^2.1.0
     webidl-conversions: ^6.1.0
   checksum: a87abcc6cefcece5311eb642858c8fdb234e51ec74196bfacf8def2edae1bfbffdf6acb251646ed6301f8cee44262642d8769c707256125a91387e33f405dd1e
+  languageName: node
+  linkType: hard
+
+"whatwg-url@patch:whatwg-url@npm%3A11.0.0#./.yarn/patches/whatwg-url-npm-11.0.0-073529d93a.patch::locator=metamask-crx%40workspace%3A.":
+  version: 11.0.0
+  resolution: "whatwg-url@patch:whatwg-url@npm%3A11.0.0#./.yarn/patches/whatwg-url-npm-11.0.0-073529d93a.patch::version=11.0.0&hash=64bb1f&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    tr46: ^3.0.0
+    webidl-conversions: ^7.0.0
+  checksum: 7b762b5ebac4794daf59992b7525642e9920692d4f741f3d550855b4a7acd89f92af59e80e04c3e0374a5e4b62964611a6374bb179dfc759b631c69a51fc853f
   languageName: node
   linkType: hard
 
