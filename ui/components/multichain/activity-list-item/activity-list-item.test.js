@@ -38,8 +38,8 @@ describe('ActivityListItem', () => {
   });
 
   it('calls onClick when clicked', () => {
-    const { getByRole } = render(<ActivityListItem {...defaultProps} />);
-    fireEvent.click(getByRole('div'));
+    const { getByTestId } = render(<ActivityListItem {...defaultProps} />);
+    fireEvent.click(getByTestId('test-id'));
     expect(defaultProps.onClick).toHaveBeenCalled();
   });
 });
