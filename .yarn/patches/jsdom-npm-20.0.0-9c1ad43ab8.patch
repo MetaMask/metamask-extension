@@ -1,0 +1,19 @@
+diff --git a/lib/jsdom/browser/Window.js b/lib/jsdom/browser/Window.js
+index 3a19033d9794265cb34eeea021f09f38528ff536..7cd6f28f562ea19b347e3c00b425f59230acd352 100644
+--- a/lib/jsdom/browser/Window.js
++++ b/lib/jsdom/browser/Window.js
+@@ -429,6 +429,14 @@ function Window(options) {
+ 
+       return this._localStorage;
+     },
++    set localStorage(value) {
++      Object.defineProperty(this, "localStorage", {
++        value,
++        writable: false,
++        enumerable: true,
++        configurable: true
++      });
++    },
+     get sessionStorage() {
+       if (idlUtils.implForWrapper(this._document)._origin === "null") {
+         throw DOMException.create(window, [
