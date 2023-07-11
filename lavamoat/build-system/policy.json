@@ -6283,7 +6283,6 @@
         "events": true,
         "fs.existsSync": true,
         "fs.readFileSync": true,
-        "fs.writeFileSync": true,
         "path.extname": true,
         "path.join": true
       },
