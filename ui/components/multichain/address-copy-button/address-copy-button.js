@@ -21,10 +21,9 @@ export const AddressCopyButton = ({
   shorten = false,
   wrap = false,
   onClick,
-  delay = MINUTE,
 }) => {
   const displayAddress = shorten ? shortenAddress(address) : address;
-  const [copied, handleCopy] = useCopyToClipboard(delay);
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
   return (
@@ -71,8 +70,4 @@ AddressCopyButton.propTypes = {
    * Fires when the button is clicked
    */
   onClick: PropTypes.func,
-  /**
-   * Amount of time before the clipboard should be cleared
-   */
-  delay: PropTypes.number,
 };
