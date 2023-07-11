@@ -1055,6 +1055,9 @@
   "customerSupport": {
     "message": "customer support"
   },
+  "dappRequestedSpendingCap": {
+    "message": "Site requested spending cap"
+  },
   "dappSuggested": {
     "message": "Site suggested"
   },
@@ -3544,9 +3547,6 @@
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
-  "reviewSpendingCap": {
-    "message": "Review the spending cap for your"
-  },
   "revokeAllTokensTitle": {
     "message": "Revoke permission to access and transfer all of your $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3765,10 +3765,6 @@
   "setApprovalForAllTitle": {
     "message": "Approve $1 with no spend limit",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Set a spending cap for your $1",
-    "description": "$1 is a token symbol"
   },
   "settingAddSnapAccount": {
     "message": "Add snap account"
@@ -4091,6 +4087,9 @@
   "spendingCapErrorDescription": {
     "message": "Only enter a number that you're comfortable with $1 accessing now or in the future. You can always increase the token limit later.",
     "description": "$1 is origin of the site requesting the token limit"
+  },
+  "spendingCapRequest": {
+    "message": "Spending cap request for your $1"
   },
   "srpInputNumberOfWords": {
     "message": "I have a $1-word phrase",
@@ -5141,9 +5140,6 @@
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
   },
-  "useDefault": {
-    "message": "Use default"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
@@ -5173,6 +5169,9 @@
   },
   "usePhishingDetectionDescription": {
     "message": "Display a warning for phishing domains targeting Ethereum users"
+  },
+  "useSiteSuggestion": {
+    "message": "Use site suggestion"
   },
   "useTokenDetectionPrivacyDesc": {
     "message": "Automatically displaying tokens sent to your account involves communication with third party servers to fetch token’s images. Those serves will have access to your IP address."
