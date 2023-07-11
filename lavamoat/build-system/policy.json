@@ -1166,11 +1166,6 @@
         "yargs>string-width": true
       }
     },
-    "@storybook/react>acorn-walk": {
-      "globals": {
-        "define": true
-      }
-    },
     "@storybook/test-runner>glob": {
       "builtin": {
         "assert": true,
@@ -1540,12 +1535,17 @@
     },
     "brfs>static-module>acorn-node": {
       "packages": {
-        "@storybook/react>acorn-walk": true,
         "brfs>static-module>acorn-node>acorn": true,
+        "brfs>static-module>acorn-node>acorn-walk": true,
         "watchify>xtend": true
       }
     },
     "brfs>static-module>acorn-node>acorn": {
+      "globals": {
+        "define": true
+      }
+    },
+    "brfs>static-module>acorn-node>acorn-walk": {
       "globals": {
         "define": true
       }
