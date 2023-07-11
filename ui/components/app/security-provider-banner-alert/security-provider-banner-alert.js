@@ -51,7 +51,6 @@ function SecurityProviderBannerAlert({
       )}
 
       <Text
-        as="h6"
         marginTop={2}
         alignItems={AlignItems.center}
         color={Color.textAlternative}
