@@ -81,13 +81,24 @@ function SecurityProviderBannerAlert({
 }
 
 SecurityProviderBannerAlert.propTypes = {
+  /** Description content that may be plain text or contain hyperlinks */
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     .isRequired,
+
+  /** Name of the security provider */
   provider: PropTypes.oneOfType(Object.values(SecurityProvider)).isRequired,
+
+  /** Severity level */
   severity: PropTypes.oneOfType([Severity.Danger, Severity.Warning]).isRequired,
+
+  /** Title to be passed as <BannerAlert> param */
   title: PropTypes.string.isRequired,
 
-  //  Optional
+  /**
+   * Optional
+   */
+
+  /** Additional details to be displayed under the description */
   details: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 };
 
