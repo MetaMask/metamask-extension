@@ -21,6 +21,15 @@ describe('ExperimentalTab', () => {
     }).not.toThrow();
   });
 
+  it('renders Security Alerts settings in ExperimentalTab component', () => {
+    const screen = render({ desktopEnabled: true });
+    expect(screen.getByText('Security alerts')).toBeDefined();
+    expect(screen.getByText('Enable security alerts')).toBeDefined();
+    expect(screen.getByText('Blockaid')).toBeDefined();
+    const blockaidToggle =  screen.getAllByRole('checkbox')[0];
+    expect(blockaidToggle).not.toBeChecked();
+  });
+
   describe('with desktop enabled', () => {
     it('renders ExperimentalTab component without error', () => {
       const { container } = render({ desktopEnabled: true });
