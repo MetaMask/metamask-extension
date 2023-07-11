@@ -1171,12 +1171,11 @@ export function getNetworkConfigurations(state) {
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
   const providerConfig = getProviderConfig(state);
-  const currentChainId = getCurrentChainId(state);
 
   const filter =
     providerConfig.type === 'rpc'
       ? (network) => network.id === providerConfig.id
-      : (network) => network.chainId === currentChainId;
+      : (network) => network.id === providerConfig.type;
 
   return allNetworks.find(filter);
 }
