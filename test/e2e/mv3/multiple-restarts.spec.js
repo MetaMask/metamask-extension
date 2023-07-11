@@ -9,7 +9,6 @@ const {
   generateETHBalance,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   unlockWallet,
@@ -182,7 +181,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         // Click add Ethereum chain
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
@@ -194,7 +192,6 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
 
         // Terminate Service Worker
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -204,7 +201,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         // Click add Ethereum chain #2
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
@@ -216,7 +212,6 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
 
         // Terminate Service Worker
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -225,7 +220,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         // Click add Ethereum chain #3
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
@@ -238,7 +232,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         // Accept Notification
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
       },
     );
   });
@@ -262,6 +255,8 @@ describe('MV3 - Restart service worker multiple times', function () {
         await unlockWallet(driver, WALLET_PASSWORD);
 
         await openDapp(driver);
+
+        await driver.delay(largeDelayMs);
 
         await clickSendButton(driver);
 
