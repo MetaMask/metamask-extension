@@ -20,14 +20,12 @@ const MockDescriptionWithLinks = () => (
 );
 
 const MockDetailsList = () => (
-  <ul>
-    <Text variant={TextVariant.bodySm}>
-      <li>• List item</li>
-      <li>• List item</li>
-      <li>• List item</li>
-      <li>• List item</li>
-    </Text>
-  </ul>
+  <Text as="ul" variant={TextVariant.bodySm}>
+    <li>• List item</li>
+    <li>• List item</li>
+    <li>• List item</li>
+    <li>• List item</li>
+  </Text>
 );
 
 export default {
