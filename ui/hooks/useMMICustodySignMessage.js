@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { checkForUnapprovedTypedMessages } from '../store/institutional/institution-actions';
 import {
@@ -21,7 +21,7 @@ export function useMMICustodySignMessage() {
   const envType = getEnvironmentType();
   const accountType = useSelector(getAccountType);
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector, shallowEqual);
   const unapprovedTypedMessages = useSelector(unapprovedTypedMessagesSelector);
 
   const custodySignFn = async (_msgData) => {
@@ -38,8 +38,7 @@ export function useMMICustodySignMessage() {
           );
           id = msgData.custodyId;
         }
-        dispatch(
-          showCustodianDeepLink({
+        showCustodianDeepLink({
             dispatch,
             mmiActions,
             txId: undefined,
@@ -49,8 +48,7 @@ export function useMMICustodySignMessage() {
             closeNotification: isNotification,
             onDeepLinkFetched: () => undefined,
             onDeepLinkShown: () => undefined,
-          }),
-        );
+        });
         await dispatch(setTypedMessageInProgress(msgData.metamaskId));
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
         await dispatch(goHome());

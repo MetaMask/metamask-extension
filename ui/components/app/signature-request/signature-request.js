@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
@@ -112,7 +113,7 @@ const SignatureRequest = ({ txData }) => {
   const mmiActions = mmiActionsFactory();
   const accountType = useSelector(getAccountType);
   const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
+  const allAccounts = useSelector(accountsWithSendEtherInfoSelector, shallowEqual);
   const { address } = getAccountByAddress(allAccounts, from) || {};
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IN
@@ -123,15 +124,13 @@ const SignatureRequest = ({ txData }) => {
     );
   }, [messageRootRef]);
 
-  const targetSubjectMetadata = txData.msgParams.origin
-    ? subjectMetadata?.[txData.msgParams.origin]
-    : null;
+  const targetSubjectMetadata = subjectMetadata?.[origin] || null;
 
-  const parseMessage = () => {
-    const { message, domain = {}, primaryType, types } = JSON.parse(data);
+  const parseMessage = memoize((dataToParse) => {
+    const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
-  };
+  });
 
   const onSign = async () => {
     await dispatch(resolvePendingApproval(id));
@@ -177,12 +176,11 @@ const SignatureRequest = ({ txData }) => {
     sanitizedMessage,
     domain: { verifyingContract },
     primaryType,
-  } = parseMessage();
+  } = parseMessage(data);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   useEffect(() => {
     if (txData.custodyId) {
-      dispatch(
         showCustodianDeepLink({
           dispatch,
           mmiActions,
@@ -198,8 +196,7 @@ const SignatureRequest = ({ txData }) => {
               event: 'Show deeplink for signature',
             });
           },
-        }),
-      );
+        });
     }
   }, [
     dispatch,
