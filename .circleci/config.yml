@@ -353,17 +353,15 @@ jobs:
               echo "Not a PR; skipping"
             fi
       - run:
-          name: Setup registry config for using package previews on draft PRs
+          name: Install dependencies
           command: |
             if [[ $IS_DRAFT == 'true' ]]
             then
-              printf '%s\n\n%s' '@metamask:registry=https://npm.pkg.github.com' "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGE_READ_TOKEN}" > .npmrc
+              # Use GitHub registry on draft PRs, allowing the use of preview builds
+              METAMASK_NPM_REGISTRY=https://npm.pkg.github.com yarn --immutable
             else
-              echo "Not draft; skipping GitHub registry setup"
+              yarn --immutable
             fi
-      - run:
-          name: Install deps
-          command: yarn --immutable
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
