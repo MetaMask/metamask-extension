@@ -51,7 +51,6 @@ describe('Deploy contract and call contract methods', function () {
           text: 'Deposit initiated',
         });
 
-        // await driver.wait(30000);
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.waitForSelector({
