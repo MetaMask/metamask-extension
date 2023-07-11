@@ -113,7 +113,10 @@ const SignatureRequest = ({ txData }) => {
   const mmiActions = mmiActionsFactory();
   const accountType = useSelector(getAccountType);
   const isNotification = getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector, shallowEqual);
+  const allAccounts = useSelector(
+    accountsWithSendEtherInfoSelector,
+    shallowEqual,
+  );
   const { address } = getAccountByAddress(allAccounts, from) || {};
   const { custodySignFn } = useMMICustodySignMessage();
   ///: END:ONLY_INCLUDE_IN
@@ -127,19 +130,25 @@ const SignatureRequest = ({ txData }) => {
   const targetSubjectMetadata = subjectMetadata?.[origin] || null;
 
   const parseMessage = memoize((dataToParse) => {
-    const { message, domain = {}, primaryType, types } = JSON.parse(dataToParse);
+    const {
+      message,
+      domain = {},
+      primaryType,
+      types,
+    } = JSON.parse(dataToParse);
     const sanitizedMessage = sanitizeMessage(message, primaryType, types);
     return { sanitizedMessage, domain, primaryType };
   });
 
   const onSign = async () => {
-    await dispatch(resolvePendingApproval(id));
-    completedTx(id);
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (accountType === 'custody') {
       await custodySignFn(txData);
     }
     ///: END:ONLY_INCLUDE_IN
+
+    await dispatch(resolvePendingApproval(id));
+    completedTx(id);
 
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -181,22 +190,22 @@ const SignatureRequest = ({ txData }) => {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   useEffect(() => {
     if (txData.custodyId) {
-        showCustodianDeepLink({
-          dispatch,
-          mmiActions,
-          txId: undefined,
-          custodyId: txData.custodyId,
-          fromAddress: address,
-          isSignature: true,
-          closeNotification: isNotification,
-          onDeepLinkFetched: () => undefined,
-          onDeepLinkShown: () => {
-            trackEvent({
-              category: 'MMI',
-              event: 'Show deeplink for signature',
-            });
-          },
-        });
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        custodyId: txData.custodyId,
+        fromAddress: address,
+        isSignature: true,
+        closeNotification: isNotification,
+        onDeepLinkFetched: () => undefined,
+        onDeepLinkShown: () => {
+          trackEvent({
+            category: 'MMI',
+            event: 'Show deeplink for signature',
+          });
+        },
+      });
     }
   }, [
     dispatch,

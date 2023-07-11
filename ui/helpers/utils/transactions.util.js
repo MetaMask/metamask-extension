@@ -225,4 +225,3 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
  */
 export const isNFTAssetStandard = (assetStandard) =>
   assetStandard === ERC1155 || assetStandard === ERC721;
-

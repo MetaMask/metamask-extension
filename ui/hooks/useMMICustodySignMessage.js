@@ -1,6 +1,6 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import { checkForUnapprovedTypedMessages } from '../store/institutional/institution-actions';
+import { checkForUnapprovedMessages } from '../store/institutional/institution-actions';
 import {
   mmiActionsFactory,
   setTypedMessageInProgress,
@@ -21,7 +21,10 @@ export function useMMICustodySignMessage() {
   const envType = getEnvironmentType();
   const accountType = useSelector(getAccountType);
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  const allAccounts = useSelector(accountsWithSendEtherInfoSelector, shallowEqual);
+  const allAccounts = useSelector(
+    accountsWithSendEtherInfoSelector,
+    shallowEqual,
+  );
   const unapprovedTypedMessages = useSelector(unapprovedTypedMessagesSelector);
 
   const custodySignFn = async (_msgData) => {
@@ -32,22 +35,22 @@ export function useMMICustodySignMessage() {
         let msgData = _msgData;
         let id = _msgData.custodyId;
         if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedTypedMessages(
+          msgData = checkForUnapprovedMessages(
             _msgData,
             unapprovedTypedMessages,
           );
           id = msgData.custodyId;
         }
         showCustodianDeepLink({
-            dispatch,
-            mmiActions,
-            txId: undefined,
-            custodyId: id,
-            fromAddress,
-            isSignature: true,
-            closeNotification: isNotification,
-            onDeepLinkFetched: () => undefined,
-            onDeepLinkShown: () => undefined,
+          dispatch,
+          mmiActions,
+          txId: undefined,
+          custodyId: id,
+          fromAddress,
+          isSignature: true,
+          closeNotification: isNotification,
+          onDeepLinkFetched: () => undefined,
+          onDeepLinkShown: () => undefined,
         });
         await dispatch(setTypedMessageInProgress(msgData.metamaskId));
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
