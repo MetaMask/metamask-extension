@@ -459,7 +459,6 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityAlertsEnabled = 'security_alerts_enabled',
-
 }
 
 /**
