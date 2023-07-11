@@ -1,5 +1,5 @@
 import { ResultComponent } from '@metamask/approval-controller';
-import { processError, processString, applyBold, findMarkdown } from './util';
+import { processError, processString } from './util';
 
 const FALLBACK_MESSAGE = 'Fallback Message';
 const mockResultComponent: ResultComponent = {
@@ -56,35 +56,5 @@ describe('processString', () => {
   it('returns TemplateRendererComponent when input is a ResultComponent', () => {
     const result = processString(mockResultComponent, FALLBACK_MESSAGE);
     expect(result).toEqual(expectedTemplateRendererComponent);
-  });
-});
-
-describe('applyBold', () => {
-  it('applies bold formatting to the message', () => {
-    const result = applyBold('This is **bold** text');
-    expect(result).toEqual([
-      'This is ',
-      { key: 'bold-0', element: 'b', children: 'bold' },
-      ' text',
-    ]);
-  });
-});
-
-describe('findMarkdown', () => {
-  it('finds and formats markdown elements', () => {
-    const result = findMarkdown(
-      'Hello **world**!',
-      /\*\*(.+?)\*\*/gu,
-      (formattedText, index) => ({
-        key: `bold-${index}`,
-        element: 'b',
-        children: formattedText,
-      }),
-    );
-    expect(result).toEqual([
-      'Hello ',
-      { key: 'bold-0', element: 'b', children: 'world' },
-      '!',
-    ]);
   });
 });

@@ -22,13 +22,9 @@ export function processError(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
 ): TemplateRendererComponent | (string | TemplateRendererComponent)[] {
-  let currentInput = convertResultComponents(input);
+  const currentInput = convertResultComponents(input) || fallback;
 
-  if (!currentInput) {
-    currentInput = fallback;
-  }
-
-  if (!(typeof currentInput === 'string')) {
+  if (typeof currentInput !== 'string') {
     return currentInput;
   }
 
@@ -51,27 +47,22 @@ export function processString(
   input: undefined | string | ResultComponent | ResultComponent[],
   fallback: string,
 ): string | TemplateRendererComponent | (string | TemplateRendererComponent)[] {
-  let currentInput = convertResultComponents(input);
+  const currentInput = convertResultComponents(input) || fallback;
 
-  if (!currentInput) {
-    currentInput = fallback;
-  }
-
-  if (!(typeof currentInput === 'string')) {
+  if (typeof currentInput !== 'string') {
     return currentInput;
   }
 
   return applyBold(currentInput);
 }
+
 /**
  * Applies bold formatting to the message.
  *
  * @param message - The input message to apply bold formatting to.
  * @returns The formatted message.
  */
-export function applyBold(
-  message: string,
-): (string | TemplateRendererComponent)[] {
+function applyBold(message: string): (string | TemplateRendererComponent)[] {
   const boldPattern = /\*\*(.+?)\*\*/gu;
 
   return findMarkdown(message, boldPattern, (formattedText, index) => ({
@@ -80,6 +71,7 @@ export function applyBold(
     children: formattedText,
   }));
 }
+
 /**
  * Finds and formats markdown elements in the given text.
  *
@@ -88,7 +80,7 @@ export function applyBold(
  * @param getElement - The callback function to create the formatted elements.
  * @returns The array of formatted elements.
  */
-export function findMarkdown(
+function findMarkdown(
   text: string,
   pattern: RegExp,
   getElement: (
@@ -143,7 +135,10 @@ function convertResultComponents(
   }
 
   if (Array.isArray(input)) {
-    return input.map(convertResultComponents) as any;
+    return input.map(convertResultComponents) as (
+      | string
+      | TemplateRendererComponent
+    )[];
   }
 
   return {
