@@ -36,15 +36,12 @@ function SecurityProviderBannerAlert({
   return (
     <BannerAlert
       title={title}
+      description={description}
       severity={severity}
       marginTop={4}
       marginRight={4}
       marginLeft={4}
     >
-      <Text variant={TextVariant.bodySm} as="h6" marginTop={2}>
-        {description}
-      </Text>
-
       {details && (
         <Disclosure title={t('seeDetails')} type={DisclosureVariant.Arrow}>
           {details}
