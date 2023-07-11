@@ -120,7 +120,7 @@ export default function TransactionList({
         paddingInline={4}
         variant={TextVariant.bodyMd}
         color={TextColor.textDefault}
-        key={dateGroup.date}
+        key={dateGroup.dateMillis}
       >
         {dateGroup.date}
       </Text>

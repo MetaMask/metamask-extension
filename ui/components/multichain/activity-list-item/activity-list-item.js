@@ -9,7 +9,6 @@ import {
   FlexDirection,
   FlexWrap,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
