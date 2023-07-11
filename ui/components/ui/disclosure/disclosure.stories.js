@@ -1,5 +1,5 @@
 import React from 'react';
-import { DISCLOSURE_TYPES } from './disclosure.constants';
+import { DisclosureVariant } from './disclosure.constants';
 import Disclosure from '.';
 
 export default {
@@ -19,7 +19,7 @@ export default {
       control: {
         type: 'select',
       },
-      options: [...Object.values(DISCLOSURE_TYPES)],
+      options: [...Object.values(DisclosureVariant)],
     },
   },
   args: {
@@ -33,5 +33,5 @@ export const DefaultStory = (args) => <Disclosure {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const TypeArrow = (args) => (
-  <Disclosure type={DISCLOSURE_TYPES.ARROW} {...args} />
+  <Disclosure type={DisclosureVariant.Arrow} {...args} />
 );

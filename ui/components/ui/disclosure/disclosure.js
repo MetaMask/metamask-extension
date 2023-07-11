@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
-import { DISCLOSURE_TYPES } from './disclosure.constants';
+import { DisclosureVariant } from './disclosure.constants';
 
 /**
- * @param {string} type
+ * @param {string} variant
  * @param {string} title
  * @returns {JSX.Element}
  */
-const renderSummaryByType = (type, title) => {
-  switch (type) {
-    case DISCLOSURE_TYPES.ARROW:
+const renderSummaryByType = (variant, title) => {
+  switch (variant) {
+    case DisclosureVariant.Arrow:
       return (
         <summary className="disclosure__summary is-arrow">
           <Text color={Color.primaryDefault} variant={TextVariant.bodySm}>
@@ -86,7 +86,7 @@ Disclosure.propTypes = {
 Disclosure.defaultProps = {
   size: 'normal',
   title: null,
-  type: DISCLOSURE_TYPES.DEFAULT,
+  type: DisclosureVariant.Default,
 };
 
 export default Disclosure;

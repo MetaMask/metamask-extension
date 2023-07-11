@@ -1,4 +1,4 @@
-export enum DISCLOSURE_TYPES {
-  DEFAULT = 'default',
-  ARROW = 'arrow',
+export enum DisclosureVariant {
+  Default = 'default',
+  Arrow = 'arrow',
 }
