@@ -22,11 +22,6 @@ const render = (showTestNetworks = false) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      providerConfig: {
-        ...mockState.metamask,
-        // Ensure this chainId matches providerConfig
-        chainId: '0x1',
-      },
       preferences: {
         showTestNetworks,
       },
