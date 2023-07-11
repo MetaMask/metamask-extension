@@ -30,7 +30,7 @@
     cursor: auto;
   }
 
-  p {
+  &__label {
     width: 60px; //for ellipsis keeping the width same as icon-button used here
   }
 }

@@ -31,7 +31,7 @@ export default function IconButton({
           {label.length > 9 ? (
             <Tooltip title={label} position="bottom">
               <Text
-                classname="icon-button__label"
+                className="icon-button__label"
                 ellipsis
                 variant={TextVariant.bodySm}
               >
@@ -40,7 +40,7 @@ export default function IconButton({
             </Tooltip>
           ) : (
             <Text
-              classname="icon-button__label"
+              className="icon-button__label"
               ellipsis
               variant={TextVariant.bodySm}
             >
