@@ -28,6 +28,8 @@ const ZENDESK_URLS = {
     'https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet',
   SPEEDUP_CANCEL:
     'https://metamask.zendesk.com/hc/en-us/articles/360015489251-How-to-speed-up-or-cancel-a-pending-transaction',
+  TOKEN_ALLOWANCE_WITH_SPENDING_CAP:
+    'https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap',
   TOKEN_SAFETY_PRACTICES:
     'https://metamask.zendesk.com/hc/en-us/articles/4403988839451',
   UNKNOWN_NETWORK:

@@ -42,7 +42,6 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const dataTheme = document.documentElement.getAttribute('data-theme');
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
   const badgeWrapperImage =
@@ -125,7 +124,6 @@ export const TokenListItem = ({
                 html={title}
                 disabled={title?.length < 12}
                 tooltipInnerClassName="multichain-token-list-item__tooltip"
-                theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
                 <Text
                   fontWeight={FontWeight.Medium}
