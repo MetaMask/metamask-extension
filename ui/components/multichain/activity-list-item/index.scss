@@ -1,8 +1,9 @@
 .activity-list-item {
   &__primary-currency {
     max-width: 130px;
-      @include screen-sm-min {
-        max-width: max-content;
-      }
+
+    @include screen-sm-min {
+      max-width: max-content;
+    }
   }
 }
