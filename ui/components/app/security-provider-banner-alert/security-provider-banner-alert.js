@@ -18,7 +18,7 @@ import {
 import { I18nContext } from '../../../../.storybook/i18n';
 
 import Disclosure from '../../ui/disclosure';
-import { DISCLOSURE_TYPES } from '../../ui/disclosure/disclosure.constants';
+import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
 import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
@@ -46,7 +46,7 @@ function SecurityProviderBannerAlert({
       </Text>
 
       {details && (
-        <Disclosure title={t('seeDetails')} type={DISCLOSURE_TYPES.ARROW}>
+        <Disclosure title={t('seeDetails')} type={DisclosureVariant.Arrow}>
           {details}
         </Disclosure>
       )}
