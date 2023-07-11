@@ -8,14 +8,18 @@ import { DisclosureVariant } from './disclosure.constants';
 /**
  * @param {string} variant
  * @param {string} title
+ * @param {string} size
  * @returns {JSX.Element}
  */
-const renderSummaryByType = (variant, title) => {
+const renderSummaryByType = (variant, title, size) => {
   switch (variant) {
-    case DisclosureVariant.Arrow:
+    case DisclosureVariant.Arrow: {
+      const textVariant =
+        size === 'small' ? TextVariant.bodySm : TextVariant.bodyMd;
+
       return (
         <summary className="disclosure__summary is-arrow">
-          <Text color={Color.primaryDefault} variant={TextVariant.bodySm}>
+          <Text color={Color.primaryDefault} variant={textVariant}>
             {title}
           </Text>
           <Icon
@@ -27,6 +31,7 @@ const renderSummaryByType = (variant, title) => {
           />
         </summary>
       );
+    }
     default:
       return (
         <summary className="disclosure__summary">
