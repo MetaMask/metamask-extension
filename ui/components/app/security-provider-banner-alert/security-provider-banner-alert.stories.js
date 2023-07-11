@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Severity,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { Severity } from '../../../helpers/constants/design-system';
 import { ButtonLink, BUTTON_LINK_SIZES, Text } from '../../component-library';
 import { SecurityProvider } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from './security-provider-banner-alert';
@@ -20,7 +17,7 @@ const MockDescriptionWithLinks = () => (
 );
 
 const MockDetailsList = () => (
-  <Text as="ul" variant={TextVariant.bodySm}>
+  <Text as="ul">
     <li>• List item</li>
     <li>• List item</li>
     <li>• List item</li>
