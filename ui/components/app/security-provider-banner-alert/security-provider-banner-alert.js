@@ -8,6 +8,9 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
+import Disclosure from '../../ui/disclosure';
+import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
+
 import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
@@ -18,8 +21,6 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import Disclosure from '../../ui/disclosure';
-import { DisclosureVariant } from '../../ui/disclosure/disclosure.constants';
 import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
