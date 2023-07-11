@@ -11,6 +11,7 @@ import {
 import {
   AlignItems,
   Color,
+  IconColor,
   Severity,
   Size,
   TextVariant,
@@ -57,7 +58,7 @@ function SecurityProviderBannerAlert({
       >
         <Icon
           className="disclosure__summary--icon"
-          color={Color.primaryDefault}
+          color={IconColor.primaryDefault}
           name={IconName.SecurityTick}
           size={IconSize.Sm}
           marginInlineEnd={1}
