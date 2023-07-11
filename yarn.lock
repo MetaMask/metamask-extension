@@ -22155,7 +22155,7 @@ __metadata:
 
 "jsdom@patch:jsdom@npm%3A20.0.3#./.yarn/patches/jsdom-npm-20.0.3-906a2f7005.patch::locator=metamask-crx%40workspace%3A.":
   version: 20.0.3
-  resolution: "jsdom@patch:jsdom@npm%3A20.0.3#./.yarn/patches/jsdom-npm-20.0.3-906a2f7005.patch::version=20.0.3&hash=f34c7c&locator=metamask-crx%40workspace%3A."
+  resolution: "jsdom@patch:jsdom@npm%3A20.0.3#./.yarn/patches/jsdom-npm-20.0.3-906a2f7005.patch::version=20.0.3&hash=2ed99e&locator=metamask-crx%40workspace%3A."
   dependencies:
     abab: ^2.0.6
     acorn: ^8.8.1
@@ -22188,7 +22188,7 @@ __metadata:
   peerDependenciesMeta:
     canvas:
       optional: true
-  checksum: 29958faab718906dba8e791cdf1b1a16a75181fd0c8c2adec72f5355dc5b3befa95c21ed2bc24453a21b15afa13dea1e0409f3cdfae37e81d785056593458957
+  checksum: 52803cabef3ded0819f65be6efb51967640e7b330ab3f7673fb01699fe6b2d303d75b00f4d0cf54c855f532b0c1d58a49193d414d5790da03ea38f961743fc76
   languageName: node
   linkType: hard
 
