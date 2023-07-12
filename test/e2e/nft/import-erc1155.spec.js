@@ -96,7 +96,7 @@ describe('Import ERC1155 NFT', function () {
         // Check error message appears
         const invalidNftNotification = await driver.findElement({
           text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
-          tag: 'h6',
+          tag: 'p',
         });
         assert.equal(await invalidNftNotification.isDisplayed(), true);
       },
