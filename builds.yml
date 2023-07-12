@@ -116,6 +116,7 @@ features:
       - DISABLE_WEB_SOCKET_ENCRYPTION: false
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
+  blockaid:
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners

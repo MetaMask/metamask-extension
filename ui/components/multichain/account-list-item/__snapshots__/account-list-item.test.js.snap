@@ -61,7 +61,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
           >
             <button
-              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
             >
               <span
                 class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
