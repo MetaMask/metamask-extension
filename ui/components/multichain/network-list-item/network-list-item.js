@@ -53,11 +53,13 @@ export const NetworkListItem = ({
   const t = useI18nContext();
   const networkRef = useRef();
 
+  /*
   useEffect(() => {
     if (networkRef.current && selected) {
       networkRef.current.focus();
     }
   }, [networkRef, selected]);
+  */
 
   return (
     <Box
