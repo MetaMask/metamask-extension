@@ -371,7 +371,7 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = 5000) {
+  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
