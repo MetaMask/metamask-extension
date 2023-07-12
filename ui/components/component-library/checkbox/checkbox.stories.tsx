@@ -2,10 +2,6 @@ import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 
 import { Box } from '..';
-import {
-  FontWeight,
-  TextColor,
-} from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { Checkbox } from '.';
 
