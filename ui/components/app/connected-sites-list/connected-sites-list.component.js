@@ -4,6 +4,7 @@ import Button from '../../ui/button';
 import { AvatarFavicon } from '../../component-library';
 import { stripHttpsSchemeWithoutPort } from '../../../helpers/utils/util';
 import SiteOrigin from '../../ui/site-origin';
+import { BorderColor, Size } from '../../../helpers/constants/design-system';
 
 export default class ConnectedSitesList extends Component {
   static contextTypes = {
@@ -34,10 +35,10 @@ export default class ConnectedSitesList extends Component {
           >
             <div className="connected-sites-list__subject-info">
               <AvatarFavicon
-                borderColor="border-muted"
+                borderColor={BorderColor.borderMuted}
                 className="connected-sites-list__subject-icon"
                 name={subject.name}
-                size="sm"
+                size={Size.MD}
                 src={subject.iconUrl}
               />
               <SiteOrigin
