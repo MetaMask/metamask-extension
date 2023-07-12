@@ -30,9 +30,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
   Box,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';

@@ -3,7 +3,7 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TextProps } from '../text';
+import type { TextProps } from '../text/deprecated';
 
 export enum AvatarBaseSize {
   Xs = 'xs',

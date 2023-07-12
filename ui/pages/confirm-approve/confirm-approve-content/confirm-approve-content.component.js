@@ -31,8 +31,8 @@ import {
   ButtonIcon,
   Icon,
   IconName,
-  Text,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';

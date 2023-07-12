@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { AvatarNetwork } from '../avatar-network';
-import { IconName, Icon, IconSize } from '../icon';
-import { Text } from '../text';
+import { AvatarNetwork, IconName, Icon, IconSize } from '..';
+import { Text } from '../text/deprecated';
 import Box from '../../ui/box';
 import {
   AlignItems,
@@ -69,7 +68,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from AvatarNetwork
    */
-  avatarNetworkProps: PropTypes.shape(AvatarNetwork.PropTypes),
+  avatarNetworkProps: PropTypes.shape(AvatarNetwork.propTypes),
   /**
    * It accepts all the props from Icon
    */

@@ -8,7 +8,8 @@ import {
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text, Box, ButtonLink } from '../../../component-library';
+import { Box, ButtonLink } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
 

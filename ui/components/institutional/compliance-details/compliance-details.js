@@ -11,7 +11,8 @@ import {
   getComplianceTenantSubdomain,
 } from '../../../ducks/institutional/institutional';
 import { formatDate } from '../../../helpers/utils/util';
-import { Text, Box } from '../../component-library';
+import { Box } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   TextColor,
   TextVariant,

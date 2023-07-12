@@ -9,7 +9,7 @@ import Button from '../../../ui/button';
 import FormField from '../../../ui/form-field';
 
 import { useAdvancedGasFeePopoverContext } from '../context';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const validateGasLimit = (gasLimit, minimumGasLimitDec) => {
   return bnLessThan(gasLimit, minimumGasLimitDec) ||

@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box';
 import { IconName, Icon, IconSize } from '../icon';
-import { Text } from '../text';
+import { Text } from '../text/deprecated';
 
 import {
   AlignItems,
@@ -133,7 +133,7 @@ ButtonBase.propTypes = {
   /**
    * Additional props to pass to the Text component that wraps the button children
    */
-  buttonTextProps: PropTypes.shape(Text.PropTypes),
+  buttonTextProps: PropTypes.shape(Text.propTypes),
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -195,7 +195,7 @@ ButtonBase.propTypes = {
   /**
    * textProps accepts all the props from Icon
    */
-  textProps: PropTypes.shape(Text.PropTypes),
+  textProps: PropTypes.shape(Text.propTypes),
   /**
    * ButtonBase accepts all the props from Box
    */

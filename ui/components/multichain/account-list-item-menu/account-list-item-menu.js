@@ -25,13 +25,13 @@ import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { MenuItem } from '../../ui/menu';
 import {
-  Text,
   IconName,
   Popover,
   PopoverPosition,
   ModalFocus,
   PopoverRole,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,

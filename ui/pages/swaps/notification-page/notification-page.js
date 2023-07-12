@@ -14,7 +14,8 @@ import {
   TEXT_ALIGN,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Text, Icon, IconName } from '../../../components/component-library';
+import { Icon, IconName } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import { PREPARE_SWAP_ROUTE } from '../../../helpers/constants/routes';
 import SwapsFooter from '../swaps-footer';
 import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';

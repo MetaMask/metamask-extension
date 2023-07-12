@@ -7,7 +7,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { ButtonLink, Label, Text, Box } from '../../component-library';
+import { ButtonLink, Label, Box } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
