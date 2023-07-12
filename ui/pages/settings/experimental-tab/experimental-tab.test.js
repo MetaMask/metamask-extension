@@ -26,7 +26,7 @@ describe('ExperimentalTab', () => {
     expect(screen.getByText('Security alerts')).toBeDefined();
     expect(screen.getByText('Enable security alerts')).toBeDefined();
     expect(screen.getByText('Blockaid')).toBeDefined();
-    const blockaidToggle =  screen.getAllByRole('checkbox')[0];
+    const blockaidToggle = screen.getAllByRole('checkbox')[0];
     expect(blockaidToggle).not.toBeChecked();
   });
 
