@@ -92,7 +92,7 @@ export default class TransactionStateManager extends EventEmitter {
   generateTxMeta(opts = {}) {
     const networkId = this.getNetworkId();
     const networkStatus = this.getNetworkStatus();
-    const chainId = this.getCurrentChainId();
+    const chainId = this.getCurrentChainId(origin);
     if (networkStatus !== NetworkStatus.Available) {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
