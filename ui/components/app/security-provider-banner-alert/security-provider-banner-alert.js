@@ -45,7 +45,7 @@ function SecurityProviderBannerAlert({
       marginLeft={4}
     >
       {details && (
-        <Disclosure title={t('seeDetails')} type={DisclosureVariant.Arrow}>
+        <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
           {details}
         </Disclosure>
       )}
