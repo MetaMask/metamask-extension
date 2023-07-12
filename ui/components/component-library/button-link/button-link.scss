@@ -1,36 +1,42 @@
 .mm-button-link {
-  &:hover {
-    opacity: 0.5;
+  &:hover:not(&--disabled)::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: currentColor;
+  }
+
+  &.mm-button-base--size-sm:not(&--disabled)::after {
+    bottom: 4px;
+  }
+
+  &.mm-button-base--size-md:not(&--disabled)::after {
+    bottom: 8px;
+  }
+
+  &.mm-button-base--size-lg:not(&--disabled)::after {
+    bottom: 12px;
   }
 
   &:active {
-    opacity: 0.5;
-  }
-
-  &--disabled {
-    &:hover {
-      opacity: 0.3;
-    }
-
-    &:active {
-      opacity: 0.3;
-    }
+    color: var(--color-primary-alternative);
   }
 
   &--type-danger {
     &:hover {
       color: var(--color-error-default);
-      opacity: 0.5;
     }
 
     &:active {
-      color: var(--color-error-default);
-      opacity: 0.5;
+      color: var(--color-error-alternative);
     }
   }
 
-  &--type-danger#{&}--disabled:hover {
-    opacity: 0.3;
+  &--type-danger#{&}--disabled:active {
+    color: var(--color-error-default);
   }
 
   &--size-auto {
@@ -46,5 +52,9 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
+
+    &:hover {
+      text-decoration-thickness: auto;
+    }
   }
 }
