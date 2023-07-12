@@ -15,7 +15,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
-import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdNumFromCaipChainId } from '../../../../shared/lib/caip-util';
+import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdHexFromCaipChainId, getEthChainIdNumFromCaipChainId } from '@metamask/controller-utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -188,6 +188,7 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+  const caipChainId = pendingApproval.requestData.chainId;
   return {
     content: [
       {
@@ -349,7 +350,10 @@ function getValues(pendingApproval, t, actions, history) {
                   '',
                 )
               : pendingApproval.requestData.rpcUrl,
-            [t('chainId')]: getEthChainIdDecFromCaipChainId(pendingApproval.requestData.chainId),
+            [t('chainId')]:
+              originIsMetaMask ?
+                getEthChainIdDecFromCaipChainId(caipChainId)
+              : getEthChainIdHexFromCaipChainId(caipChainId),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
@@ -377,7 +381,9 @@ function getValues(pendingApproval, t, actions, history) {
         return [ERROR_CONNECTING_TO_RPC];
       }
 
-      if (pendingApproval.requestData.chainId !== getCaipChainIdFromEthChainId(endpointChainId)) {
+      const endpointCaipChainId = getCaipChainIdFromEthChainId(endpointChainId)
+
+      if (pendingApproval.requestData.chainId !== endpointCaipChainId) {
         console.error(
           `Chain ID returned by RPC URL ${customRpcUrl} does not match ${endpointChainId}`,
         );

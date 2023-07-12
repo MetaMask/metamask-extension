@@ -13,6 +13,7 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
+import { getCaipChainIdFromEthChainId } from "@metamask/controller-utils";
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -100,10 +101,12 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
+  const caipChainId = getCaipChainIdFromEthChainId(_chainId)
+
+  const requestData = findExistingNetwork(caipChainId, findNetworkConfigurationBy);
   if (requestData) {
-    const currentChainId = getCurrentChainId();
-    if (currentChainId === _chainId) {
+    const currentCaipChainId = getCurrentChainId();
+    if (currentCaipChainId === caipChainId) {
       res.result = null;
       return end();
     }

@@ -211,6 +211,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
 import { updateCurrentLocale } from './translate';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2034,8 +2035,11 @@ export default class MetamaskController extends EventEmitter {
    */
   getProviderNetworkState(memState) {
     const { networkId } = memState || this.getState();
+
+    const caipChainId = this.networkController.state.providerConfig.chainId
+    const chainId = getEthChainIdHexFromCaipChainId(caipChainId)
     return {
-      chainId: this.networkController.state.providerConfig.chainId,
+      chainId,
       networkVersion: networkId ?? 'loading',
     };
   }
@@ -4309,7 +4313,7 @@ export default class MetamaskController extends EventEmitter {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(newState),
+      params: this.getProviderNetworkState(newState)
     });
   }
 

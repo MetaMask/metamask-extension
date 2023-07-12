@@ -11,6 +11,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { getCaipChainIdFromEthChainId } from "@metamask/controller-utils";
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -141,7 +142,9 @@ async function addEthereumChainHandler(
     );
   }
 
-  const existingNetwork = findNetworkConfigurationBy({ chainId: _chainId });
+  const caipChainId = getCaipChainIdFromEthChainId(_chainId)
+
+  const existingNetwork = findNetworkConfigurationBy({ chainId: caipChainId });
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -149,12 +152,12 @@ async function addEthereumChainHandler(
     // If the network already exists, the request is considered successful
     res.result = null;
 
-    const currentChainId = getCurrentChainId();
+    const currentCaipChainId = getCurrentChainId();
     const currentRpcUrl = getCurrentRpcUrl();
 
     // If the current chainId and rpcUrl matches that of the incoming request
     // We don't need to proceed further.
-    if (currentChainId === _chainId && currentRpcUrl === firstValidRPCUrl) {
+    if (currentCaipChainId === caipChainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
     }
 
@@ -254,7 +257,7 @@ async function addEthereumChainHandler(
       origin,
       type: ApprovalType.AddEthereumChain,
       requestData: {
-        chainId: _chainId,
+        chainId: caipChainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
         chainName: _chainName,
         rpcUrl: firstValidRPCUrl,
@@ -264,7 +267,7 @@ async function addEthereumChainHandler(
 
     networkConfigurationId = await upsertNetworkConfiguration(
       {
-        chainId: _chainId,
+        chainId: caipChainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
         nickname: _chainName,
         rpcUrl: firstValidRPCUrl,
@@ -287,7 +290,7 @@ async function addEthereumChainHandler(
       type: ApprovalType.SwitchEthereumChain,
       requestData: {
         rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
+        chainId: caipChainId,
         nickname: _chainName,
         ticker,
         networkConfigurationId,

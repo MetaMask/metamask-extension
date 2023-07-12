@@ -63,6 +63,7 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -236,15 +237,15 @@ export default class TransactionController extends EventEmitter {
    */
   getChainId() {
     const networkStatus = this.getNetworkStatus();
-    const chainId = this._getCurrentChainId();
-    const integerChainId = parseInt(chainId, 16);
+    const caipChainId = this._getCurrentChainId();
+    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId)
     if (
       networkStatus !== NetworkStatus.Available ||
-      Number.isNaN(integerChainId)
+      Number.isNaN(intChainId)
     ) {
       return 0;
     }
-    return integerChainId;
+    return intChainId;
   }
 
   async getEIP1559Compatibility(fromAddress) {
@@ -293,13 +294,16 @@ export default class TransactionController extends EventEmitter {
     // we only support EVM compatible chains, and then override the
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
-    const chainId = parseInt(this._getCurrentChainId(), 16);
+    // here
+    const caipChainId = this._getCurrentChainId();
+    const intChainId = getEthChainIdNumFromCaipChainId(caipChainId)
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 
+
     return Common.custom({
       name,
-      chainId,
+      chainId: intChainId,
       // It is improbable for a transaction to be signed while the network
       // is loading for two reasons.
       // 1. Pending, unconfirmed transactions are wiped on network change

@@ -44,8 +44,8 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import {
   getCaipChainIdFromEthChainId,
   getEthChainIdDecFromCaipChainId,
-  isCaipChainId,
-} from '../../../../../shared/lib/caip-util';
+  isEthCaipChainId,
+} from "@metamask/controller-utils";
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -67,7 +67,7 @@ const getDisplayChainId = (chainId) => {
     return parseInt(chainId, 16).toString(10);
   }
 
-  return isCaipChainId(chainId)
+  return isEthCaipChainId(chainId)
     ? getEthChainIdDecFromCaipChainId(chainId)
     : chainId;
 };
