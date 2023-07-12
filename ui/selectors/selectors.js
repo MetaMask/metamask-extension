@@ -1177,6 +1177,10 @@ export function getCurrentNetwork(state) {
       ? (network) => network.id === providerConfig.id
       : (network) => network.id === providerConfig.type;
 
+  console.log('providerConfig: ', providerConfig);
+  console.log('allNetworks: ', allNetworks);
+  console.log('allNetworks.find(filter): ', allNetworks.find(filter));
+
   return allNetworks.find(filter);
 }
 

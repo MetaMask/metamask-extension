@@ -190,18 +190,19 @@ describe('Stores custom RPC history', function () {
     );
   });
 
-  it('finds all recent RPCs in history', async function () {
+  it.only('finds all recent RPCs in history', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
               networkConfigurationId: {
-                rpcUrl: 'http://127.0.0.1:8545/',
+                rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
+                type: 'rpc',
               },
               networkConfigurationId2: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
@@ -209,6 +210,7 @@ describe('Stores custom RPC history', function () {
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/2',
                 rpcPrefs: {},
+                type: 'rpc',
               },
             },
           })
@@ -249,7 +251,7 @@ describe('Stores custom RPC history', function () {
           .withNetworkController({
             networkConfigurations: {
               networkConfigurationId: {
-                rpcUrl: 'http://127.0.0.1:8545/',
+                rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
