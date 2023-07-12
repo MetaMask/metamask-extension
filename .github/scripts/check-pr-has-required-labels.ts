@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   // Retrieve pull request labels
   const prLabels = await retrievePullRequestLabels(octokit, prRepoOwner, prRepoName, prNumber);
 
-  const qaLabels = ["QA Passed", "No QA Needed/E2E Only"];
+  const qaLabels = ["QA Passed", "No QA Needed/E2E Only", "Spot Check on the Release Build"];
 
   let hasQALabel = false;
   let hasTeamLabel = false;
