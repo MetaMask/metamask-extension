@@ -9,6 +9,10 @@
     background-color: currentColor;
   }
 
+  &.mm-button-link--size-auto:not(&--disabled)::after {
+    bottom: calc(50% - (1em / 2) - 4px);
+  }
+
   &.mm-button-base--size-sm:not(&--disabled)::after {
     bottom: 4px;
   }
