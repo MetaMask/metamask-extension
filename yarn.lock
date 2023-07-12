@@ -3940,13 +3940,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/base-controller@npm:3.0.0"
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "@metamask/base-controller@npm:3.1.0"
   dependencies:
     "@metamask/utils": ^5.0.2
     immer: ^9.0.6
-  checksum: a0853d90b024466c4108531cbf4459bd2f66fa6e0b912e42bd27cdf54262411a5601117649b6061424475ffa6b9714c5199d686c21e4d07c3b7b1ee0b4c17caa
+  checksum: fc1597a099e6d28bd089df936ca349d6c38c2e1b0f0737385cba30c34a5239241519eb172d77c70f8db2604f4dc5724f6893affe42bdd104cef98f9cfd6f1db8
   languageName: node
   linkType: hard
 
@@ -24504,7 +24504,7 @@ __metadata:
     "@metamask/approval-controller": ^3.3.0
     "@metamask/assets-controllers": ^9.2.0
     "@metamask/auto-changelog": ^2.1.0
-    "@metamask/base-controller": ^3.0.0
+    "@metamask/base-controller": ^3.1.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
     "@metamask/controller-utils": ^4.0.1
