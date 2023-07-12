@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"
   },
-  "reviewSpendingCap": {
-    "message": "Revise seu limite de gastos"
-  },
   "revokeAllTokensTitle": {
     "message": "Revogar permissão de acesso e transferência de todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprovar $1 sem limite de gastos",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Definir um limite de gastos para seu $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Definições"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
-  },
-  "useDefault": {
-    "message": "Usar padrão"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Agrupar solicitações de saldo de contas"

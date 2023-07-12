@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Показать сид-фразу"
   },
-  "reviewSpendingCap": {
-    "message": "Проверьте свой лимит расходов"
-  },
   "revokeAllTokensTitle": {
     "message": "Отозвать разрешение на доступ ко всем вашим $1 и их перевод?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "Одобрить $1 без ограничений по расходам",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Установить верхний лимит расходов для вашего $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Настройки"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Это URL-адрес в настоящее время используется сетью $1."
-  },
-  "useDefault": {
-    "message": "Использовать значения по умолчанию"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
