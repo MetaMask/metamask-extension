@@ -515,9 +515,6 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
-
-    console.log("network controller is: ", this.fixture.data.NetworkController);
-
     return this;
   }
 
