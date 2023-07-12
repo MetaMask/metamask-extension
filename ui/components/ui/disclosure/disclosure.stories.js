@@ -32,6 +32,6 @@ export default {
 export const DefaultStory = (args) => <Disclosure {...args} />;
 DefaultStory.storyName = 'Default';
 
-export const TypeArrow = (args) => (
+export const VariantArrow = (args) => (
   <Disclosure variant={DisclosureVariant.Arrow} {...args} />
 );
