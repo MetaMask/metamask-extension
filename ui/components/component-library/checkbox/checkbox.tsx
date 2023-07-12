@@ -6,13 +6,12 @@ import {
   BorderColor,
   BorderRadius,
   IconColor,
-  TextVariant,
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 
-import { Box, Icon, IconName, Label } from '..';
+import { Box, Icon, IconName, Text } from '..';
 
 import { CheckboxProps, CheckboxComponent } from './checkbox.types';
 
@@ -28,10 +27,11 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       onChange,
       className = '',
       iconProps,
+      inputProps,
+      inputRef,
       title,
       name,
       label,
-      labelProps,
       ...props
     }: CheckboxProps<C>,
     ref?: PolymorphicRef<C>,
@@ -47,22 +47,28 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       !title && typeof label === 'string' ? label : title || id;
 
     return (
-      <Label
-        className="mm-checkbox__label"
-        variant={TextVariant.bodyMd}
+      <Text
+        className={classnames('mm-checkbox', className, {
+          'mm-checkbox--disabled': Boolean(isDisabled),
+        })}
+        as="label"
         display={Display.Flex}
         alignItems={AlignItems.center}
+        ref={ref}
         htmlFor={id}
-        {...labelProps}
+        {...props}
       >
-        <span className="mm-checkbox__wrapper">
+        <span className="mm-checkbox__input-wrapper">
           <Box
-            className={classnames('mm-checkbox', className, {
-              'mm-checkbox--checked': Boolean(isChecked),
-              'mm-checkbox--indeterminate': Boolean(isIndeterminate),
-              'mm-checkbox--readonly': Boolean(isReadOnly),
-              'mm-checkbox--disabled': Boolean(isDisabled),
-            })}
+            className={classnames(
+              'mm-checkbox__input',
+              inputProps?.className ?? '',
+              {
+                'mm-checkbox__input--checked': Boolean(isChecked),
+                'mm-checkbox__input--indeterminate': Boolean(isIndeterminate),
+                'mm-checkbox__input--readonly': Boolean(isReadOnly),
+              },
+            )}
             as="input"
             type="checkbox"
             title={sanitizedTitle}
@@ -73,7 +79,6 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             readOnly={isReadOnly}
             required={isRequired}
             data-indeterminate={isIndeterminate}
-            ref={ref}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               onChange?.(event);
             }}
@@ -93,7 +98,8 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             borderRadius={BorderRadius.SM}
             borderWidth={2}
             display={Display.Flex}
-            {...props}
+            ref={inputRef}
+            {...inputProps}
           />
           {(isChecked || isIndeterminate) && (
             <Icon
@@ -108,7 +114,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
           )}
         </span>
         {label ? <span>{label}</span> : null}
-      </Label>
+      </Text>
     );
   },
 );

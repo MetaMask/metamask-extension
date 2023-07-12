@@ -1,20 +1,46 @@
 .mm-checkbox {
-  cursor: pointer;
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-
-  &:hover {
-    background-color: var(--color-background-default-hover);
-  }
-
-  &:focus {
-    border-color: var(--color-primary-default);
-  }
-
-  &__wrapper {
+  &__input-wrapper {
     position: relative;
+  }
+
+  &__input {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+
+    &:hover {
+      background-color: var(--color-background-default-hover);
+    }
+
+    &:focus {
+      border-color: var(--color-primary-default);
+    }
+  }
+
+  &--disabled {
+    opacity: var(--opacity-disabled);
+  }
+
+  &__input--checked:hover,
+  &__input--indeterminate:hover {
+    border-color: var(--color-primary-alternative);
+    background-color: var(--color-primary-alternative);
+  }
+
+
+  &__input--checked#{&}--readonly,
+  &__input--checked#{&}--readonly:hover,
+  &__input--indeterminate#{&}--readonly,
+  &__input--indeterminate#{&}--readonly:hover {
+    border-color: var(--color-icon-alternative);
+    background-color: var(--color-icon-alternative);
+  }
+
+  &__input:disabled {
+    color: var(--color-icon-muted);
+    cursor: not-allowed;
   }
 
   &__icon {
@@ -22,29 +48,5 @@
     top: 0;
     left: 0;
     pointer-events: none;
-  }
-
-  &--disabled {
-    opacity: var(--opacity-disabled);
-  }
-
-  &--checked:hover,
-  &--indeterminate:hover {
-    border-color: var(--color-primary-alternative);
-    background-color: var(--color-primary-alternative);
-  }
-
-
-  &--checked#{&}--readonly,
-  &--checked#{&}--readonly:hover,
-  &--indeterminate#{&}--readonly,
-  &--indeterminate#{&}--readonly:hover {
-    border-color: var(--color-icon-alternative);
-    background-color: var(--color-icon-alternative);
-  }
-
-  &:disabled {
-    color: var(--color-icon-muted);
-    cursor: not-allowed;
   }
 }

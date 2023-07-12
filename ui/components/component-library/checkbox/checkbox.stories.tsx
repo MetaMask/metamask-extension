@@ -59,23 +59,6 @@ Id.args = {
   id: 'id-demo',
 };
 
-export const LabelProps = (args) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-
-  return (
-    <Checkbox
-      {...args}
-      label="Checkbox Label with labelProps"
-      labelProps={{
-        color: TextColor.errorDefault,
-        fontWeight: FontWeight.Bold,
-      }}
-      onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked}
-    />
-  );
-};
-
 export const IsChecked = (args) => {
   return <Checkbox {...args} label="isChecked Demo" />;
 };

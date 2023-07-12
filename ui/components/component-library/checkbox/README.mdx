@@ -30,27 +30,6 @@ import { Checkbox } from '../../component-library';
 <Checkbox label="Checkbox Label" />;
 ```
 
-### LabelProps
-
-Use the `labelProps` object prop to change the label `Label` component
-
-<Canvas>
-  <Story id="components-componentlibrary-checkbox--text-props" />
-</Canvas>
-
-```jsx
-import { Checkbox } from '../../component-library';
-import {
-  TextColor,
-  FontWeight,
-} from '../../../helpers/constants/design-system';
-
-<Checkbox
-  label="Checkbox Label with labelProps"
-  labelProps={{ color: TextColor.errorDefault, fontWeight: FontWeight.Bold }}
-/>;
-```
-
 ### IsChecked
 
 Use the `isChecked` boolean prop to set the checked state of the `Checkbox`

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { FontWeight } from '../../../helpers/constants/design-system';
 import { Checkbox } from '.';
 
 describe('Checkbox', () => {
@@ -40,23 +39,9 @@ describe('Checkbox', () => {
     expect(getByText('Option 1')).toBeDefined();
   });
 
-  it('should render checkbox with label that has additional labelProps for bold text', () => {
-    const { getByTestId } = render(
-      <Checkbox
-        label="Option 1"
-        labelProps={{ fontWeight: FontWeight.Bold, 'data-testid': 'label' }}
-      />,
-    );
-    expect(getByTestId('label')).toHaveClass('mm-text--font-weight-bold');
-  });
-
   it('should render checkbox with id and label has matching htmlfor', () => {
     const { getByTestId, getByRole } = render(
-      <Checkbox
-        label="Option 1"
-        id="option-1"
-        labelProps={{ 'data-testid': 'label' }}
-      />,
+      <Checkbox label="Option 1" id="option-1" data-testid="label" />,
     );
     const checkbox = getByRole('checkbox');
 
@@ -65,14 +50,19 @@ describe('Checkbox', () => {
   });
 
   test('Checkbox component is disabled when isDisabled is true', () => {
-    const { getByLabelText } = render(
-      <Checkbox label="Option 1" id="option-1" isDisabled={true} />,
+    const { getByRole, getByTestId } = render(
+      <Checkbox
+        label="Option 1"
+        id="option-1"
+        data-testid="option-disabled"
+        isDisabled={true}
+      />,
     );
 
-    const checkbox = getByLabelText('Option 1');
+    const checkbox = getByRole('checkbox');
 
     expect(checkbox).toBeDisabled();
-    expect(checkbox).toHaveClass('mm-checkbox--disabled');
+    expect(getByTestId('option-disabled')).toHaveClass('mm-checkbox--disabled');
   });
 
   test('Checkbox component is readOnly when isReadOnly is true', () => {
@@ -83,7 +73,7 @@ describe('Checkbox', () => {
     const checkbox = getByLabelText('Option 1');
 
     expect(checkbox).toHaveAttribute('readonly');
-    expect(checkbox).toHaveClass('mm-checkbox--readonly');
+    expect(checkbox).toHaveClass('mm-checkbox__input--readonly');
   });
 
   it('Checkbox component fires onChange function when clicked', () => {
@@ -103,15 +93,11 @@ describe('Checkbox', () => {
   it('Checkbox component fires onChange function label clicked', () => {
     const onChange = jest.fn();
 
-    const { getByTestId } = render(
-      <Checkbox
-        label="Click label"
-        labelProps={{ 'data-testid': 'label' }}
-        onChange={onChange}
-      />,
+    const { getByText } = render(
+      <Checkbox label="Click label" onChange={onChange} />,
     );
 
-    const label = getByTestId('label');
+    const label = getByText('Click label');
 
     fireEvent.click(label);
 

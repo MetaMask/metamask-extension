@@ -1,5 +1,4 @@
 import { IconProps } from '../icon';
-import { Label } from '../label';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
@@ -52,9 +51,15 @@ export interface CheckboxStyleUtilityProps extends StyleUtilityProps {
    */
   label?: any;
   /*
-   * label - additional props to be spread to the Label component
+   * Use inputProps for additional props to be spread to the checkbox input element
    */
-  labelProps?: typeof Label.propTypes;
+  inputProps?: any; // TODO: Replace with Box types when the syntax and typing is properly figured out. Needs to accept everything Box accepts
+  /*
+   * Use inputRef to pass a ref to the html input element
+   */
+  inputRef?:
+    | React.RefObject<HTMLInputElement>
+    | ((instance: HTMLInputElement | null) => void);
   /*
    * iconProps - additional props to be spread to the Icon component used for the Checkbox
    */
