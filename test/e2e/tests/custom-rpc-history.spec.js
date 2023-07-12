@@ -197,7 +197,7 @@ describe('Stores custom RPC history', function () {
           .withNetworkController({
             networkConfigurations: {
               networkConfigurationId: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
+                rpcUrl: 'http://127.0.0.1:8545/',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
@@ -249,7 +249,7 @@ describe('Stores custom RPC history', function () {
           .withNetworkController({
             networkConfigurations: {
               networkConfigurationId: {
-                rpcUrl: 'http://127.0.0.1:8545/1',
+                rpcUrl: 'http://127.0.0.1:8545/',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
