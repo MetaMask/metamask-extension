@@ -131,7 +131,7 @@ export const SizeStory = (args) => (
   <>
     <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexStart} gap={4}>
       <ButtonLink {...args} size={Size.auto}>
-        Auto (default)g
+        Auto (default)
       </ButtonLink>
       <ButtonLink {...args} size={Size.SM}>
         Small
