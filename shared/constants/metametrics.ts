@@ -553,7 +553,7 @@ export enum MetaMetricsEventName {
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
-  SnapsInstalled = 'Snaps Installed',
+  SnasInstalled = 'Snap Installed',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
