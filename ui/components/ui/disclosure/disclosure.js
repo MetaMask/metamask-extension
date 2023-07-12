@@ -47,7 +47,7 @@ const renderSummaryByType = (variant, title, size) => {
   }
 };
 
-const Disclosure = ({ children, title, size, type }) => {
+const Disclosure = ({ children, title, size, variant }) => {
   const disclosureFooterEl = useRef(null);
   const [open, setOpen] = useState(false);
 
@@ -67,7 +67,7 @@ const Disclosure = ({ children, title, size, type }) => {
     <div className="disclosure" onClick={() => setOpen((state) => !state)}>
       {title ? (
         <details>
-          {renderSummaryByType(type, title)}
+          {renderSummaryByType(variant, title)}
 
           <div className={classnames('disclosure__content', size)}>
             {children}
@@ -85,13 +85,13 @@ Disclosure.propTypes = {
   children: PropTypes.node.isRequired,
   size: PropTypes.string,
   title: PropTypes.string,
-  type: PropTypes.string,
+  variant: PropTypes.string,
 };
 
 Disclosure.defaultProps = {
   size: 'normal',
   title: null,
-  type: DisclosureVariant.Default,
+  variant: DisclosureVariant.Default,
 };
 
 export default Disclosure;

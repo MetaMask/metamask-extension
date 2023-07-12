@@ -15,7 +15,7 @@ export default {
     title: {
       control: 'text',
     },
-    type: {
+    variant: {
       control: {
         type: 'select',
       },
