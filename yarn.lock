@@ -3857,16 +3857,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@metamask/approval-controller@npm:3.3.0"
+"@metamask/approval-controller@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@metamask/approval-controller@npm:3.4.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/utils": ^5.0.2
     eth-rpc-errors: ^4.0.2
     immer: ^9.0.6
     nanoid: ^3.1.31
-  checksum: 1fa6111a897d6f4aa369fd1a669fb5e16558277019f9d6c61449aea0d7b2672a62c189e5b3d9e84ab6e4d5826932c78d2bdb0f05aafb184a4ff07903c46abf2c
+  checksum: 153136800fbd8cd50e2d6012740526c55e74e3f8e5aa99a05d5788e8bae04ede622608a1adf67dcf0986162e9e7d1d11b6f6f0df438904b65db7435b881c2e3f
   languageName: node
   linkType: hard
 
@@ -24596,7 +24596,7 @@ __metadata:
     "@metamask-institutional/transaction-update": ^0.1.21
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
-    "@metamask/approval-controller": ^3.3.0
+    "@metamask/approval-controller": ^3.4.0
     "@metamask/assets-controllers": ^9.2.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.0.0
