@@ -4,6 +4,12 @@
 * This will help improve specificity and reduce the chance of
 * unintended overrides.
 **/
+
+// Temp CSS Variables
+:root {
+  --opacity-disabled: 0.5;
+}
+
 // Atoms
 @import 'box/box';
 @import 'text/text';
