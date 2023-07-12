@@ -2,11 +2,11 @@ import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
-  SEVERITIES,
+  Severity,
   TypographyVariant,
-  TEXT_ALIGN,
-  DISPLAY,
-  FLEX_DIRECTION,
+  TextAlign,
+  Display,
+  FlexDirection,
   AlignItems,
   JustifyContent,
   BackgroundColor,
@@ -19,7 +19,7 @@ import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthCh
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -33,7 +33,7 @@ const UNRECOGNIZED_CHAIN = {
 
 const MISMATCHED_CHAIN_RECOMMENDATION = {
   id: 'MISMATCHED_CHAIN_RECOMMENDATION',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -64,7 +64,7 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
 
 const MISMATCHED_NETWORK_NAME = {
   id: 'MISMATCHED_NETWORK_NAME',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -78,7 +78,7 @@ const MISMATCHED_NETWORK_NAME = {
 
 const MISMATCHED_NETWORK_SYMBOL = {
   id: 'MISMATCHED_NETWORK_SYMBOL',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -92,7 +92,7 @@ const MISMATCHED_NETWORK_SYMBOL = {
 
 const MISMATCHED_NETWORK_RPC = {
   id: 'MISMATCHED_NETWORK_RPC',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -106,7 +106,7 @@ const MISMATCHED_NETWORK_RPC = {
 
 const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   id: 'MISMATCHED_NETWORK_RPC_CHAIN_ID',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -120,7 +120,7 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
 
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -196,8 +196,8 @@ function getValues(pendingApproval, t, actions, history) {
         element: 'Box',
         key: 'network-box',
         props: {
-          textAlign: TEXT_ALIGN.CENTER,
-          display: DISPLAY.FLEX,
+          textAlign: TextAlign.Center,
+          display: Display.Flex,
           justifyContent: JustifyContent.center,
           marginTop: 4,
           marginBottom: 2,
@@ -322,8 +322,8 @@ function getValues(pendingApproval, t, actions, history) {
           variant: TypographyVariant.H7,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
-            display: DISPLAY.FLEX,
-            flexDirection: FLEX_DIRECTION.COLUMN,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
           },
         },

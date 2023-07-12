@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
   },
-  "reviewSpendingCap": {
-    "message": "Xem lại hạn mức chi tiêu của bạn"
-  },
   "revokeAllTokensTitle": {
     "message": "Thu hồi quyền truy cập và chuyển tất cả $1 của bạn?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "Phê duyệt $1 không có giới hạn chi tiêu",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Đặt hạn mức chi tiêu cho $1 của bạn",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Cài đặt"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng URL này."
-  },
-  "useDefault": {
-    "message": "Sử dụng mặc định"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
