@@ -16,11 +16,11 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
       >
         Malicious third party detected
       </h5>
-      <h6
-        class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--color-text-default"
+      <p
+        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
       >
         This is a description to warn the user of malicious or suspicious transactions.
-      </h6>
+      </p>
       <div
         class="disclosure"
       >
@@ -28,9 +28,13 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
           <summary
             class="disclosure__summary is-arrow"
           >
-            [seeDetails]
+            <p
+              class="box mm-text mm-text--body-md box--flex-direction-row box--color-primary-default"
+            >
+              [seeDetails]
+            </p>
             <span
-              class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-start-2 box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-start-2 box--display-inline-block box--flex-direction-row box--color-primary-default"
               style="mask-image: url('./images/icons/arrow-up.svg');"
             />
           </summary>
@@ -54,7 +58,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
           />
         </details>
       </div>
-      <h6
+      <p
         class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--align-items-center box--color-text-alternative box--display-flex"
       >
         <span
@@ -62,7 +66,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
           style="mask-image: url('./images/icons/security-tick.svg');"
         />
         [securityProviderAdviceBy]
-      </h6>
+      </p>
     </div>
   </div>
 </div>
