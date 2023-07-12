@@ -19,7 +19,7 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../../store/actions.ts', () => ({
-  detectNewTokens: jest.fn(),
+  detectNewTokens: jest.fn().mockReturnValue({ type: '' }),
 }));
 
 describe('Import Token Link', () => {

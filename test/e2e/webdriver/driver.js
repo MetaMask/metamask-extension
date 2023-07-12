@@ -161,16 +161,18 @@ class Driver {
     // replacement for the implementation below. It takes an option options
     // bucket that can include the state attribute to wait for elements that
     // match the selector to be removed from the DOM.
-    const selector = this.buildLocator(rawLocator);
     let element;
     if (!['visible', 'detached'].includes(state)) {
       throw new Error(`Provided state selector ${state} is not supported`);
     }
     if (state === 'visible') {
-      element = await this.driver.wait(until.elementLocated(selector), timeout);
+      element = await this.driver.wait(
+        until.elementLocated(this.buildLocator(rawLocator)),
+        timeout,
+      );
     } else if (state === 'detached') {
       element = await this.driver.wait(
-        until.stalenessOf(await this.findElement(selector)),
+        until.stalenessOf(await this.findElement(rawLocator)),
         timeout,
       );
     }
@@ -205,15 +207,13 @@ class Driver {
   }
 
   async findVisibleElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await this.driver.wait(until.elementIsVisible(element), this.timeout);
     return wrapElementWithAPI(element, this);
   }
 
   async findClickableElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await Promise.all([
       this.driver.wait(until.elementIsVisible(element), this.timeout),
       this.driver.wait(until.elementIsEnabled(element), this.timeout),
@@ -231,8 +231,7 @@ class Driver {
   }
 
   async findClickableElements(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const elements = await this.findElements(locator);
+    const elements = await this.findElements(rawLocator);
     await Promise.all(
       elements.reduce((acc, element) => {
         acc.push(
@@ -246,14 +245,12 @@ class Driver {
   }
 
   async clickElement(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findClickableElement(locator);
+    const element = await this.findClickableElement(rawLocator);
     await element.click();
   }
 
   async clickPoint(rawLocator, x, y) {
-    const locator = this.buildLocator(rawLocator);
-    const element = await this.findElement(locator);
+    const element = await this.findElement(rawLocator);
     await this.driver
       .actions()
       .move({ origin: element, x, y })
@@ -281,10 +278,9 @@ class Driver {
   }
 
   async assertElementNotPresent(rawLocator) {
-    const locator = this.buildLocator(rawLocator);
     let dataTab;
     try {
-      dataTab = await this.findElement(locator);
+      dataTab = await this.findElement(rawLocator);
     } catch (err) {
       assert(
         err instanceof webdriverError.NoSuchElementError ||
@@ -375,7 +371,7 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = 5000) {
+  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
