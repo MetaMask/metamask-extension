@@ -3504,6 +3504,18 @@
   "restoreUserDataDescription": {
     "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
   },
+  "resultPageError": {
+    "message": "Error"
+  },
+  "resultPageErrorDefaultMessage": {
+    "message": "The operation failed."
+  },
+  "resultPageSuccess": {
+    "message": "Success"
+  },
+  "resultPageSuccessDefaultMessage": {
+    "message": "The operation completed successfully."
+  },
   "retryTransaction": {
     "message": "Retry transaction"
   },

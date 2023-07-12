@@ -3963,6 +3963,12 @@ export default class MetamaskController extends EventEmitter {
           this.approvalController.setFlowLoadingText.bind(
             this.approvalController,
           ),
+        showApprovalSuccess: this.approvalController.success.bind(
+          this.approvalController,
+        ),
+        showApprovalError: this.approvalController.error.bind(
+          this.approvalController,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),
