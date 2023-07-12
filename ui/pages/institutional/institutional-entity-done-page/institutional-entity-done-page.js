@@ -11,9 +11,11 @@ import {
 } from '../../../components/component-library';
 import {
   TextColor,
-  BorderRadius,
   TypographyVariant,
   Display,
+  FlexDirection,
+  AlignItems,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 export default function InstitutionalEntityDonePage(props) {
@@ -23,7 +25,7 @@ export default function InstitutionalEntityDonePage(props) {
   const { state } = location;
 
   return (
-    <Box className="page-container" borderRadius={BorderRadius.none}>
+    <Box className="page-container">
       <Box className="page-container__content">
         <Box
           paddingBottom={6}
@@ -32,15 +34,17 @@ export default function InstitutionalEntityDonePage(props) {
           className="institutional-entity-done__form"
         >
           <Box
-            display={['flex']}
-            flexDirection={['column']}
-            alignItems={['center']}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            alignItems={AlignItems.center}
           >
-            <img
-              className="institutional-entity-done__img"
-              src={state.imgSrc}
-              alt="Entity image"
-            />
+            {state.imgSrc && (
+              <img
+                className="institutional-entity-done__img"
+                src={state.imgSrc}
+                alt="Entity image"
+              />
+            )}
             <Text
               as="h4"
               marginTop={4}
@@ -55,6 +59,7 @@ export default function InstitutionalEntityDonePage(props) {
               marginTop={2}
               marginBottom={5}
               variant={TypographyVariant.headingSm}
+              textAlign={TextAlign.Center}
             >
               {state.description}
             </Text>
