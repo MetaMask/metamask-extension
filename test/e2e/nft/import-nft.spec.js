@@ -40,7 +40,9 @@ describe('Import NFT', function () {
         // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('#address', contractAddress);
         await driver.fill('#token-id', '1');
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
 
         const newNftNotification = await driver.findElement({
           text: 'NFT was successfully added!',
@@ -87,7 +89,9 @@ describe('Import NFT', function () {
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
         await driver.fill('#address', contractAddress);
         await driver.fill('#token-id', '2');
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
 
         // Check error message appears
         const invalidNftNotification = await driver.findElement({
