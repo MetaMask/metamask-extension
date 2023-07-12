@@ -709,7 +709,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
-    parallelism: 16
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
@@ -746,7 +746,7 @@ jobs:
 
   test-e2e-chrome-mv3:
     executor: node-browsers
-    parallelism: 16
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
@@ -848,7 +848,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
-    parallelism: 16
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
