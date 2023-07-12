@@ -4643,10 +4643,9 @@ export default class MetamaskController extends EventEmitter {
     const {
       currentLocale,
       transactionSecurityCheckEnabled,
-      securityAlertsEnabled,
     } = this.preferencesController.store.getState();
 
-    if (transactionSecurityCheckEnabled || securityAlertsEnabled) {
+    if (transactionSecurityCheckEnabled) {
       const chainId = Number(
         hexToDecimal(this.networkController.state.providerConfig.chainId),
       );
