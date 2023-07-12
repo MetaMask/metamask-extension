@@ -304,6 +304,11 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger,
+      switchNetwork: (a) => {},
+    });
+
     this.approvalController = new ApprovalController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'ApprovalController',
@@ -1187,8 +1192,7 @@ export default class MetamaskController extends EventEmitter {
           ({ networkId }) => networkId,
         );
       },
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
+      getCurrentChainId: this.getCurrentChainId.bind(this),
       preferencesStore: this.preferencesController.store,
       txHistoryLimit: 60,
       signTransaction: this.keyringController.signTransaction.bind(
@@ -1481,10 +1485,6 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.setTradeTxId(txMeta.id);
     });
 
-    this.selectedNetworkController = new SelectedNetworkController({
-      messenger: this.controllerMessenger,
-      switchNetwork: (a) => {},
-    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -2168,6 +2168,13 @@ export default class MetamaskController extends EventEmitter {
       chainId: this.networkController.state.providerConfig.chainId,
       networkVersion: networkId ?? 'loading',
     };
+  }
+
+  getCurrentChainId(origin) {
+    if (origin) {
+      return this.selectedNetworkController.getChainForDomain(origin);
+    }
+    return this.networkController.state.providerConfig.chainId;
   }
 
   //=============================================================================
@@ -4041,28 +4048,44 @@ export default class MetamaskController extends EventEmitter {
   setupProviderEngine({ origin, subjectType, sender, tabId }) {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
-    const { blockTracker, provider } = this;
 
-    const { providerConfig } = this.networkController.state;
 
-    console.log(
-      'getNetworkClientsById',
-      this.selectedNetworkController.getNetworkClientsById(),
-    );
-    if (this.selectedNetworkController.getNetworkClientsById() === undefined) {
+    // set chainid for domain if not exist
+    if (
+      this.selectedNetworkController.getChainForDomain(origin) === undefined
+    ) {
       console.log(
         'setting default chain id for ',
         origin,
         'to ',
-        providerConfig.chainId,
+        this.networkController.state.providerConfig.chainId,
       );
       this.selectedNetworkController.setChainForDomain(
         origin,
-        providerConfig.chainId,
+        this.networkController.state.providerConfig.chainId,
       );
     }
 
-    console.log('providerConfig.chainId', providerConfig.chainId);
+    const chainIdForRequest =
+      this.selectedNetworkController.getChainForDomain(origin);
+    console.log('chainIdForRequest', chainIdForRequest);
+    console.log(
+      'getNetworkClientsById',
+      this.networkController.getNetworkClientsById(),
+    );
+
+    if (
+      this.selectedNetworkController.getClientForDomain(origin) === undefined
+    ) {
+      this.selectedNetworkController.setClientForDomain(
+        origin,
+        this.findFullNetworkConfigurationByChainId(chainIdForRequest),
+      );
+    }
+
+    const networkClient =
+      this.selectedNetworkController.getClientForDomain(origin);
+
     console.log(
       'chainForDomain',
       origin,
@@ -4076,6 +4099,7 @@ export default class MetamaskController extends EventEmitter {
     // add some middleware that will switch chain on each request (as needed)
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
+       console.log('REQEUST IN MIDDLEWARE', req);
         if (req.method === 'wallet_switchEthereumChain') {
           console.log(
             'switch ethereum chain called with',
@@ -4087,67 +4111,26 @@ export default class MetamaskController extends EventEmitter {
             origin,
             req.params[0].chainId,
           );
-          return;
+          this.selectedNetworkController.setClientForDomain(
+            origin,
+            this.findFullNetworkConfigurationByChainId(chainIdForRequest),
+          );
+        } else {
+          return next();
         }
-
-        const chainIdForRequest =
-          this.selectedNetworkController.getChainForDomain(req.origin);
-        console.log('chainIdForRequest', chainIdForRequest);
-
-        // if queue has anything in it && method call depends on chainId
-        const sameChainAsCurrent =
-          chainIdForRequest ===
-          this.networkController.store.getState().providerConfig.chainId;
-        if (
-          this.selectedNetworkController.hasQueuedRequests() &&
-          !sameChainAsCurrent
-        ) {
-          // if the chain id for the request origin is the same as the current chain id, dont wait for queue before calling next
-
-          console.log('waiting for queued requests to complete');
-          await this.selectedNetworkController.waitForRequestQueue();
-          console.log('queued requests complete');
-        }
-        // await all promises in the queue
-        // then continue
-
-        if (
-          chainIdForRequest !==
-          this.networkController.store.getState().providerConfig.chainId
-        ) {
-          console.log('SHOULD SWITCH NETWORK');
-          const type = CHAIN_ID_TO_TYPE_MAP[chainIdForRequest];
-          if (type) {
-            this.networkController.setProviderType(type);
-          } else {
-            const networkConfigId =
-              this.networkController.getNetworkConfigurationForChainId(
-                chainIdForRequest,
-              );
-            this.networkController.setActiveNetwork(networkConfigId);
-          }
-        }
-
-        // if method call depends on chainId
-        // Add 'next' promise to a queue
-<<<<<<< HEAD
-        this.selectedNetworkController.enqueueRequest(chainIdForRequest, next());
-=======
-        this.selectedNetworkController.enqueueRequest(
-          chainIdForRequest,
-          next(),
-        );
->>>>>>> 7f15b5c791 (wip)
       }),
     );
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+    const filterMiddleware = createFilterMiddleware({
+      provider: networkClient.provider,
+      blockTracker: networkClient.blockTracker,
+    });
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
+      provider: networkClient.provider,
+      blockTracker: networkClient.blockTracker,
     });
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
@@ -4164,6 +4147,7 @@ export default class MetamaskController extends EventEmitter {
 
     // logging
     engine.push(createLoggerMiddleware({ origin }));
+
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -4193,7 +4177,12 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
     }
-
+    engine.push(
+      createAsyncMiddleware(async (req, res, next) => {
+       console.log('LAST IN MIDDLEWARE2', req);
+       next();
+      }),
+    );
     // Unrestricted/permissionless RPC method implementations
     engine.push(
       createMethodMiddleware({
@@ -4309,6 +4298,12 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
+    engine.push(
+      createAsyncMiddleware(async (req, res, next) => {
+       console.log('LAST IN MIDDLEWARE3', req);
+       next();
+      }),
+    );
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     engine.push(
       createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
@@ -4354,7 +4349,8 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     // forward to metamask primary provider
-    engine.push(providerAsMiddleware(provider));
+    engine.push(providerAsMiddleware(networkClient.provider));
+
     return engine;
   }
 
@@ -4674,11 +4670,30 @@ export default class MetamaskController extends EventEmitter {
    */
   findNetworkConfigurationBy(rpcInfo) {
     const { networkConfigurations } = this.networkController.state;
+    console.log('networkConfigurations', networkConfigurations);
     const networkConfiguration = Object.values(networkConfigurations).find(
       (configuration) => {
         return Object.keys(rpcInfo).some((key) => {
           return configuration[key] === rpcInfo[key];
         });
+      },
+    );
+
+    return networkConfiguration || null;
+  }
+
+  findFullNetworkConfigurationByChainId(chainId) {
+    const networkClients = this.networkController.getNetworkClientsById();
+    console.log('networkConfigurations', networkClients);
+    const type = CHAIN_ID_TO_TYPE_MAP[chainId];
+    if (type) {
+      return networkClients[type];
+    }
+    console.log('looking for', chainId);
+    const networkConfiguration = Object.values(networkClients).find(
+      (networkClient) => {
+        console.log('checking', networkClient.configuration.chainId, chainId);
+        return networkClient.configuration.chainId === chainId;
       },
     );
 

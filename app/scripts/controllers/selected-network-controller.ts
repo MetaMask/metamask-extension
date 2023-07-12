@@ -1,34 +1,11 @@
-import EventEmitter from 'events';
-import log from 'loglevel';
-import {
-  EncryptionPublicKeyManager,
-  EncryptionPublicKeyParamsMetamask,
-} from '@metamask/message-manager';
-import {
-  AbstractMessageManager,
-  AbstractMessage,
-  MessageManagerState,
-  AbstractMessageParams,
-  AbstractMessageParamsMetamask,
-  OriginalRequest,
-} from '@metamask/message-manager/dist/AbstractMessageManager';
 import {
   BaseControllerV2,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
-import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
-} from '@metamask/approval-controller';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { KeyringType } from '../../../shared/constants/keyring';
-import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import { createEventEmitterProxy } from '@metamask/swappable-obj-proxy';
 
 const controllerName = 'SelectedNetworkController';
-const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
-
 const stateMetadata = {
   domains: { persist: true, anonymous: false },
   queue: { persist: false, anonymous: false },
@@ -87,19 +64,14 @@ export default class SelectedNetworkController extends BaseControllerV2<
 
   private requestQueue: RequestQueue = {};
 
+  private clientsByDomain: Record<string, any> = {};
+
   /**
    * Construct a SelectedNetworkController controller.
    *
    * @param options - The controller options.
    * @param options.messenger - The restricted controller messenger for the EncryptionPublicKey controller.
-<<<<<<< HEAD
    * @param options.switchNetwork - A function for switching the current network.
-=======
-   * @param options.keyringController - An instance of a keyring controller used to extract the encryption public key.
-   * @param options.getState - Callback to retrieve all user state.
-   * @param options.metricsEvent - A function for emitting a metric event.
-   * @param options.switchNetwork
->>>>>>> 7f15b5c791 (wip)
    */
   constructor({ messenger, switchNetwork }: SelectedNetworkControllerOptions) {
     super({
@@ -109,6 +81,7 @@ export default class SelectedNetworkController extends BaseControllerV2<
       state: getDefaultState(),
     });
     this.switchNetwork = switchNetwork;
+    this.clientsByDomain = {};
   }
 
   /**
@@ -122,6 +95,25 @@ export default class SelectedNetworkController extends BaseControllerV2<
     this.update((state) => {
       state.domains[origin] = chainId;
     });
+  }
+
+  setClientForDomain(origin: Domain, client: any) {
+    if (this.clientsByDomain[origin] !== undefined) {
+      this.clientsByDomain[origin].provider.setTarget(client.provider);
+      this.clientsByDomain[origin].blockTracker.setTarget(client.blockTracker);
+      return;
+    }
+    this.clientsByDomain[origin] = {
+      configuration: client.configuration,
+      provider: createEventEmitterProxy(client.provider),
+      blockTracker: createEventEmitterProxy(client.blockTracker, {
+        eventFilter: 'skipInternal',
+      }),
+    };
+  }
+
+  getClientForDomain(origin: Domain) {
+    return this.clientsByDomain[origin];
   }
 
   getChainForDomain(origin: Domain) {
