@@ -40,7 +40,9 @@ describe('Import ERC1155 NFT', function () {
         // Enter a valid NFT that belongs to user and check success message appears
         await driver.fill('#address', contractAddress);
         await driver.fill('#token-id', '1');
-        await driver.clickElement({ text: 'Import', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
 
         const newNftNotification = await driver.findVisibleElement({
           text: 'NFT was successfully added!',
@@ -88,8 +90,9 @@ describe('Import ERC1155 NFT', function () {
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
         await driver.fill('#address', contractAddress);
         await driver.fill('#token-id', '4');
-        await driver.clickElement({ text: 'Import', tag: 'button' });
-
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
         // Check error message appears
         const invalidNftNotification = await driver.findElement({
           text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',

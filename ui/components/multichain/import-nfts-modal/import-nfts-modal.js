@@ -260,7 +260,7 @@ export const ImportNftsModal = ({ onClose }) => {
             size={Size.LG}
             onClick={() => onClose()}
             block
-            className="import-nfts-modal__cancel"
+            className="import-nfts-modal__cancel-button"
           >
             {t('cancel')}
           </ButtonSecondary>
@@ -269,6 +269,7 @@ export const ImportNftsModal = ({ onClose }) => {
             onClick={() => handleAddNft()}
             disabled={disabled}
             block
+            data-testid="import-nfts-modal-import-button"
           >
             {t('import')}
           </ButtonPrimary>
