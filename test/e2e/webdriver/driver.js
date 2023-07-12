@@ -413,25 +413,6 @@ class Driver {
     throw new Error(`No window with title: ${title}`);
   }
 
-  async getWindowTitles(delayStep = 1000, timeout = this.timeout) {
-    let windowHandles = await this.driver.getAllWindowHandles();
-    let timeElapsed = 0;
-    let titles = [];
-    while (timeElapsed <= timeout) {
-      for (const handle of windowHandles) {
-        await this.driver.switchTo().window(handle);
-        const handleTitle = await this.driver.getTitle();
-        titles.push(handleTitle);
-      }
-      await this.delay(delayStep);
-      timeElapsed += delayStep;
-
-      titles = [];
-      // refresh the window handles
-      windowHandles = await this.driver.getAllWindowHandles();
-    }
-  }
-
   async closeWindow() {
     await this.driver.close();
   }
