@@ -51,15 +51,6 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                   </div>
                 </div>
               </div>
-              <div
-                class="mm-box form-field__heading-detail mm-box--margin-right-0 mm-box--margin-bottom-2 mm-box--text-align-end"
-              >
-                <button
-                  class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
-                >
-                  Use default
-                </button>
-              </div>
             </div>
             <input
               class="form-field__input"
@@ -67,7 +58,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               id="custom-spending-cap"
               placeholder="Enter a number"
               type="text"
-              value="10"
+              value="7"
             />
             
           </div>
@@ -85,7 +76,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
           class="box custom-spending-cap__description box--flex-direction-row"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--padding-top-2 box--padding-bottom-2 box--flex-direction-row box--color-text-default"
+            class="box mm-text mm-text--body-sm box--padding-top-2 box--flex-direction-row box--color-text-default"
           >
             <span>
                
@@ -93,7 +84,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               <h6
                 class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
               >
-                10
+                7
                  
                 TST
               </h6>
@@ -101,6 +92,13 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                
             </span>
           </h6>
+          <a
+            class="box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md box--margin-bottom-2 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+            href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
+            target="_blank"
+          >
+            Learn more
+          </a>
         </div>
       </label>
     </div>

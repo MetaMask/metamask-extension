@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "시드 구문 보기"
   },
-  "reviewSpendingCap": {
-    "message": "지출 한도 검토"
-  },
   "revokeAllTokensTitle": {
     "message": "모든 $1에 액세스할 수 있는 권한을 철회할까요?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "$1 무제한 지출 승인",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "$1에 대한 지출 한도 설정",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "설정"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
-  },
-  "useDefault": {
-    "message": "기본값 사용"
   },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"
