@@ -363,8 +363,7 @@ jobs:
             fi
       - run:
           name: Install deps
-          command: |
-            .circleci/scripts/deps-install.sh
+          command: yarn --immutable
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
