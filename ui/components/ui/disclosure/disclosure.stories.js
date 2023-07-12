@@ -33,5 +33,5 @@ export const DefaultStory = (args) => <Disclosure {...args} />;
 DefaultStory.storyName = 'Default';
 
 export const TypeArrow = (args) => (
-  <Disclosure type={DisclosureVariant.Arrow} {...args} />
+  <Disclosure variant={DisclosureVariant.Arrow} {...args} />
 );
