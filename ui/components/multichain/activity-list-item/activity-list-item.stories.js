@@ -1,69 +1,102 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import TransactionStatusLabel from '../../app/transaction-status-label';
+import TransactionIcon from '../../app/transaction-icon';
+import CancelButton from '../../app/cancel-button';
 import {
-  AvatarIcon,
+  BackgroundColor,
+  Color,
+  Display,
+  FontWeight,
+  Size,
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import {
+  AvatarNetwork,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
   Box,
-  ButtonPrimary,
-  ButtonSecondary,
+  Text,
 } from '../../component-library';
-import { Display } from '../../../helpers/constants/design-system';
 import { ActivityListItem } from './activity-list-item';
 
 export default {
   title: 'Components/Multichain/ActivityListItem',
-  argTypes: {
-    title: {
-      control: 'text',
-    },
-    subtitle: {
-      control: 'text',
-    },
-    className: {
-      control: 'text',
-    },
-    topContent: {
-      control: 'text',
-    },
-    midContent: {
-      control: 'text',
-    },
-    children: {
-      control: 'element',
-    },
-    rightContent: {
-      control: 'text',
-    },
-  },
-  args: {
-    topContent: 'Sept 20',
-    icon: <AvatarIcon />,
-    title: 'Send DAI',
-    subtitle: 'Pending',
-    children: (
-      <Box display={Display.Flex} gap={2}>
-        <ButtonPrimary>button1</ButtonPrimary>
-        <ButtonSecondary>button2</ButtonSecondary>
-      </Box>
-    ),
-    // midContent: 'midcontent',
-    rightContent: <Currencies primary="2 ETH" secondary="70 USD" />,
-  },
+  component: ActivityListItem,
 };
 
-function Currencies({ primary, secondary }) {
-  return (
-    <div>
-      <div>{primary}</div>
-      <div>{secondary}</div>
-    </div>
-  );
-}
+const Template = (args) => <ActivityListItem {...args} />;
 
-Currencies.propTypes = {
-  primary: PropTypes.string,
-  secondary: PropTypes.string,
+export const DefaultStory = Template.bind({});
+DefaultStory.args = {
+  'data-testid': 'activity-list-item',
+  onClick: () => {
+    console.log('clicked list item');
+  },
+  className: 'custom-class',
+  title: 'Activity Title',
+  icon: (
+    <BadgeWrapper
+      anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+      positionObj={{ top: -4, right: -4 }}
+      display={Display.Block}
+      badge={
+        <AvatarNetwork
+          className="activity-tx__network-badge"
+          data-testid="activity-tx-network-badge"
+          size={Size.XS}
+          name="Network Name"
+          src="./images/eth_logo.png"
+          borderWidth={1}
+          borderColor={BackgroundColor.backgroundDefault}
+        />
+      }
+    >
+      <TransactionIcon category="interaction" status="failed" />
+    </BadgeWrapper>
+  ),
+  subtitle: (
+    <TransactionStatusLabel
+      statusOnly
+      isPending
+      isEarliestNonce
+      error={{}}
+      date={new Date().toDateString()}
+      status="pending"
+    />
+  ),
+  rightContent: (
+    <>
+      <Text
+        variant={TextVariant.bodyLgMedium}
+        fontWeight={FontWeight.Medium}
+        color={Color.textDefault}
+        title="Primary Currency"
+        textAlign={TextAlign.Right}
+        data-testid="transaction-list-item-primary-currency"
+        className="activity-list-item__primary-currency"
+        ellipsis
+      >
+        Primary Currency
+      </Text>
+      <Text
+        variant={TextVariant.bodyMd}
+        color={Color.textAlternative}
+        textAlign={TextAlign.Right}
+        data-testid="transaction-list-item-secondary-currency"
+      >
+        Secondary Currency
+      </Text>
+    </>
+  ),
+  children: (
+    <Box paddingTop={4} className="transaction-list-item__pending-actions">
+      <CancelButton
+        transaction={{}}
+        cancelTransaction={() => {
+          console.log('canceled');
+        }}
+      />
+    </Box>
+  ),
 };
-
-export const DefaultStory = (args) => <ActivityListItem {...args} />;
-
-DefaultStory.storyName = 'Default';

@@ -84,6 +84,7 @@ export const ActivityListItem = ({
             </Text>
             {subtitle && (
               <Text
+                as="div"
                 ellipsis
                 textAlign={TextAlign.Left}
                 variant={TextVariant.bodyMd}
