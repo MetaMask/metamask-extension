@@ -24,8 +24,10 @@ export function showInteractiveReplacementTokenBanner({
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
-        url,
-        oldRefreshToken,
+        {
+          url,
+          oldRefreshToken,
+        },
       ]);
     } catch (err: any) {
       if (err) {

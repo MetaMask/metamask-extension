@@ -3,11 +3,17 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text, Box, Button } from '../../../components/component-library';
+import {
+  Text,
+  Box,
+  Button,
+  BUTTON_VARIANT,
+} from '../../../components/component-library';
 import {
   TextColor,
   BorderRadius,
   TypographyVariant,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 export default function InstitutionalEntityDonePage(props) {
@@ -17,7 +23,7 @@ export default function InstitutionalEntityDonePage(props) {
   const { state } = location;
 
   return (
-    <Box borderRadius={BorderRadius.none}>
+    <Box className="page-container" borderRadius={BorderRadius.none}>
       <Box className="page-container__content">
         <Box
           paddingBottom={6}
@@ -55,17 +61,17 @@ export default function InstitutionalEntityDonePage(props) {
           </Box>
         </Box>
       </Box>
-      <Box className="page-container__footer">
-        <footer>
+      <Box as="footer" className="page-container__footer" padding={4}>
+        <Box display={Display.Flex} gap={4}>
           <Button
-            type="primary"
-            large="true"
+            block
+            variant={BUTTON_VARIANT.PRIMARY}
             data-testid="click-most-recent-overview-page"
             onClick={() => history.push(mostRecentOverviewPage)}
           >
-            <Text>{t('close')}</Text>
+            {t('close')}
           </Button>
-        </footer>
+        </Box>
       </Box>
     </Box>
   );

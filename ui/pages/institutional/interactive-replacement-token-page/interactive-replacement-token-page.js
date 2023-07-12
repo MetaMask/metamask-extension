@@ -25,6 +25,8 @@ import {
   IconSize,
   Box,
   Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
 } from '../../../components/component-library';
 import {
   OverflowWrap,
@@ -150,8 +152,8 @@ export default function InteractiveReplacementTokenPage({ history }) {
     return null;
   }
 
-  const onRemoveAddTokenConnectRequest = async ({ origin, apiUrl, token }) => {
-    await dispatch(
+  const onRemoveAddTokenConnectRequest = ({ origin, apiUrl, token }) => {
+    dispatch(
       removeAddTokenConnectRequest({
         origin,
         apiUrl,
@@ -160,9 +162,9 @@ export default function InteractiveReplacementTokenPage({ history }) {
     );
   };
 
-  const handleReject = async () => {
+  const handleReject = () => {
     setIsLoading(true);
-    await onRemoveAddTokenConnectRequest(connectRequest);
+    onRemoveAddTokenConnectRequest(connectRequest);
   };
 
   const handleApprove = async () => {
@@ -193,7 +195,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
 
       dispatch(showInteractiveReplacementTokenBanner({}));
 
-      await onRemoveAddTokenConnectRequest(connectRequest);
+      onRemoveAddTokenConnectRequest(connectRequest);
 
       history.push({
         pathname: INSTITUTIONAL_FEATURES_DONE_ROUTE,
@@ -332,32 +334,30 @@ export default function InteractiveReplacementTokenPage({ history }) {
           )}
         </Box>
       </Box>
-      <Box className="page-container__footer">
+      <Box as="footer" className="page-container__footer" padding={4}>
         {isLoading ? (
-          <footer>
-            <PulseLoader />
-          </footer>
+          <PulseLoader />
         ) : (
-          <footer>
+          <Box display={Display.Flex} gap={4}>
             <Button
-              type="default"
-              large="true"
-              className="page-container__footer-button"
+              block
+              variant={BUTTON_VARIANT.SECONDARY}
+              size={BUTTON_SIZES.LG}
               onClick={handleReject}
             >
               {t('reject')}
             </Button>
             <Button
-              type="primary"
-              large="true"
-              className="page-container__footer-button"
+              block
+              variant={BUTTON_VARIANT.PRIMARY}
+              size={BUTTON_SIZES.LG}
               onClick={handleApprove}
             >
               {error
                 ? custodian.displayName || 'Custodian'
                 : t('approveButtonText')}
             </Button>
-          </footer>
+          </Box>
         )}
       </Box>
     </Box>

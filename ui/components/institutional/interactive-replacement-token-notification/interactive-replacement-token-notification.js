@@ -48,10 +48,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
         interactiveReplacementToken &&
         Boolean(Object.keys(interactiveReplacementToken).length);
 
-      if (!/^Custody/u.test(keyring.type)) {
-        setShowNotification(false);
-        return;
-      } else if (!hasInteractiveReplacementToken) {
+      if (!/^Custody/u.test(keyring.type) || !hasInteractiveReplacementToken) {
         setShowNotification(false);
         return;
       }
@@ -93,14 +90,8 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
     };
 
     handleShowNotification();
-  }, [
-    dispatch,
-    address,
-    interactiveReplacementToken,
-    isUnlocked,
-    keyring,
-    mmiActions,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, interactiveReplacementToken.oldRefreshToken, isUnlocked]);
 
   return showNotification ? (
     <Box
