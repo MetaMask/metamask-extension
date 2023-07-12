@@ -48,6 +48,7 @@ export default function TransactionDetailItem({
             <Text
               variant={TextVariant.bodySm}
               as="h6"
+              marginTop={1}
               color={Color.textAlternative}
             >
               {detailText}
@@ -58,7 +59,7 @@ export default function TransactionDetailItem({
             fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
             variant={TextVariant.bodySm}
             as="h6"
-            marginTop={0}
+            marginTop={1}
             marginBottom={1}
             marginLeft={1}
             textAlign={TextAlign.Right}
