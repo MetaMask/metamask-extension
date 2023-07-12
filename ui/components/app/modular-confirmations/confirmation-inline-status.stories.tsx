@@ -5,7 +5,7 @@ import {
   StatusType,
 } from './confirmation-inline-status';
 
-export default {
+const ConfirmationInlineStatusStory = {
   title: 'Components/App/Modular Confirmations/Inline Status',
 
   component: ConfirmationInlineStatus,
@@ -28,3 +28,5 @@ DefaultStory.args = {
   type: StatusType.Error,
   value: '500 ETH',
 };
+
+export default ConfirmationInlineStatusStory;

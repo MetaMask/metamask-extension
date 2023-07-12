@@ -2,7 +2,7 @@ import React from 'react';
 import { ConfirmationRow } from './confirmation-row';
 import { ConfirmationInlineDoubleValue } from './confirmation-inline-double-value';
 
-export default {
+const ConfirmationInlineDoubleValueStory = {
   title: 'Components/App/Modular Confirmations/Inline Double Value',
 
   component: ConfirmationInlineDoubleValue,
@@ -28,3 +28,5 @@ DefaultStory.args = {
   left: '$834.32',
   right: '0.05 ETH',
 };
+
+export default ConfirmationInlineDoubleValueStory;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ConfirmationRow } from './confirmation-row';
 
-export default {
+const ConfirmationRowStory = {
   title: 'Components/App/Modular Confirmations/Row',
 
   component: ConfirmationRow,
@@ -20,3 +20,5 @@ DefaultStory.args = {
   label: 'Key',
   value: 'Value',
 };
+
+export default ConfirmationRowStory;
