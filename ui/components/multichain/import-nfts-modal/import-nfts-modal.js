@@ -169,6 +169,7 @@ export const ImportNftsModal = ({ onClose }) => {
               <BannerAlert
                 severity={Severity.Danger}
                 onClose={() => setNftAddFailed(false)}
+                closeButtonProps={{ 'data-testid': 'add-nft-error-close' }}
               >
                 {t('nftAddFailedMessage')}
               </BannerAlert>
@@ -255,7 +256,12 @@ export const ImportNftsModal = ({ onClose }) => {
           paddingTop={4}
           paddingBottom={4}
         >
-          <ButtonSecondary size={Size.LG} onClick={() => onClose()} block>
+          <ButtonSecondary
+            size={Size.LG}
+            onClick={() => onClose()}
+            block
+            className="import-nfts-modal__cancel"
+          >
             {t('cancel')}
           </ButtonSecondary>
           <ButtonPrimary
