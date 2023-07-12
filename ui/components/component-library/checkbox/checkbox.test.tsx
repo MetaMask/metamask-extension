@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { BorderColor } from '../../../helpers/constants/design-system';
 import { Checkbox } from '.';
 
 describe('Checkbox', () => {
@@ -7,6 +8,35 @@ describe('Checkbox', () => {
     const { getByRole, container } = render(<Checkbox />);
     expect(getByRole('checkbox')).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render the Checkbox with additional className', () => {
+    const { getByTestId } = render(
+      <Checkbox data-testid="classname" className="mm-test" />,
+    );
+    expect(getByTestId('classname')).toHaveClass('mm-checkbox mm-test');
+  });
+
+  it('should render the Checkbox with additional className on the input', () => {
+    const { getByRole } = render(
+      <Checkbox
+        data-testid="classname"
+        inputProps={{ className: 'mm-test' }}
+      />,
+    );
+    expect(getByRole('checkbox')).toHaveClass('mm-checkbox__input mm-test');
+  });
+
+  it('should render the Checkbox with border color changed from inputProps', () => {
+    const { getByRole } = render(
+      <Checkbox
+        data-testid="classname"
+        inputProps={{ borderColor: BorderColor.errorDefault }}
+      />,
+    );
+    expect(getByRole('checkbox')).toHaveClass(
+      'mm-box--border-color-error-default',
+    );
   });
 
   it('should render isChecked', () => {

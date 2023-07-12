@@ -60,15 +60,6 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       >
         <span className="mm-checkbox__input-wrapper">
           <Box
-            className={classnames(
-              'mm-checkbox__input',
-              inputProps?.className ?? '',
-              {
-                'mm-checkbox__input--checked': Boolean(isChecked),
-                'mm-checkbox__input--indeterminate': Boolean(isIndeterminate),
-                'mm-checkbox__input--readonly': Boolean(isReadOnly),
-              },
-            )}
             as="input"
             type="checkbox"
             title={sanitizedTitle}
@@ -100,6 +91,15 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             display={Display.Flex}
             ref={inputRef}
             {...inputProps}
+            className={classnames(
+              'mm-checkbox__input',
+              inputProps?.className ?? '',
+              {
+                'mm-checkbox__input--checked': Boolean(isChecked),
+                'mm-checkbox__input--indeterminate': Boolean(isIndeterminate),
+                'mm-checkbox__input--readonly': Boolean(isReadOnly),
+              },
+            )}
           />
           {(isChecked || isIndeterminate) && (
             <Icon

@@ -2,6 +2,7 @@ import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 
 import { Box } from '..';
+import { BorderColor } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 import { Checkbox } from '.';
 
@@ -180,4 +181,17 @@ export const Name = (args) => {
 Name.args = {
   name: 'pineapple',
   label: 'Pineapple',
+};
+
+export const InputProps = (args) => {
+  const [isChecked, setIsChecked] = React.useState(false);
+  return (
+    <Checkbox
+      {...args}
+      onChange={() => setIsChecked(!isChecked)}
+      isChecked={isChecked}
+      label="Checkbox Label with inputProps"
+      inputProps={{ borderColor: BorderColor.errorDefault }}
+    />
+  );
 };

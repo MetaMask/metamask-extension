@@ -145,3 +145,21 @@ import { Checkbox } from '../../component-library';
 
 <Checkbox name="pineapple" />;
 ```
+
+### InputProps
+
+Use the `inputProps` object prop to add additonal props or attributes to the hidden input element
+If needing to pass a ref to the input element, use the `inputRef` prop
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--input-props" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox
+  label="Checkbox Label with inputProps"
+  // inputProps={{ borderColor: BorderColor.errorDefault }}
+/>;
+```
