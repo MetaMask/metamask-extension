@@ -63,7 +63,7 @@ export default function ReviewSpendingCap({
             as="h6"
             display={DISPLAY.INLINE_BLOCK}
           >
-            {t('customSpendingCap')}
+            {t('dappRequestedSpendingCap')}
           </Text>
           <Box marginLeft={2} display={DISPLAY.INLINE_BLOCK}>
             <Tooltip
