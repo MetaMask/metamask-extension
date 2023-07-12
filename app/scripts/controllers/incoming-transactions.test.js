@@ -870,6 +870,36 @@ describe('IncomingTransactionsController', function () {
         );
       });
 
+      it('should not make a request for new transactions if the user does not opt into incoming transactions', async function () {
+        const incomingTransactionsController =
+          new IncomingTransactionsController({
+            blockTracker: getMockBlockTracker(),
+            ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+            preferencesController: getMockPreferencesController({
+              showIncomingTransactions: false,
+            }),
+            onboardingController: getMockOnboardingController(),
+            initState: getEmptyInitState(),
+            getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          });
+
+        nockEtherscanApiForAllChains({
+          status: '1',
+          result: [getFakeEtherscanTransaction()],
+        });
+
+        incomingTransactionsController._getNewIncomingTransactions =
+          sinon.stub();
+
+        await incomingTransactionsController._update(
+          '0x00000000000000000000000',
+          999,
+        );
+        assert.ok(
+          incomingTransactionsController._getNewIncomingTransactions.notCalled,
+        );
+      });
+
       it('should update the last fetched block for network to highest block seen in incoming txs', async function () {
         const incomingTransactionsController =
           new IncomingTransactionsController({

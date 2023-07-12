@@ -135,10 +135,7 @@ export default class IncomingTransactionsController {
   }
 
   start() {
-    const { featureFlags = {} } = this.preferencesController.store.getState();
-    const { showIncomingTransactions } = featureFlags;
-
-    if (!showIncomingTransactions) {
+    if (!this._userConsentsToShowIncomingTransactions()) {
       return;
     }
 
@@ -166,7 +163,8 @@ export default class IncomingTransactionsController {
     if (
       !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, chainId) ||
       !address ||
-      !completedOnboarding
+      !completedOnboarding ||
+      !this._userConsentsToShowIncomingTransactions()
     ) {
       return;
     }
@@ -301,5 +299,13 @@ export default class IncomingTransactionsController {
       hash: etherscanTransaction.hash,
       type: TransactionType.incoming,
     };
+  }
+
+  /**
+   * @returns {boolean} Whether or not the user has consented to show incoming transactions
+   */
+  _userConsentsToShowIncomingTransactions() {
+    const { featureFlags = {} } = this.preferencesController.store.getState();
+    return Boolean(featureFlags.showIncomingTransactions);
   }
 }
