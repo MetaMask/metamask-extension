@@ -93,14 +93,8 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
     };
 
     handleShowNotification();
-  }, [
-    dispatch,
-    address,
-    interactiveReplacementToken,
-    isUnlocked,
-    keyring,
-    mmiActions,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, interactiveReplacementToken.oldRefreshToken, isUnlocked]);
 
   return showNotification ? (
     <Box
