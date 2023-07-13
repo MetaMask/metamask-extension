@@ -6,7 +6,7 @@ import { captureMessage } from '@sentry/browser';
 
 import {
   addToken,
-  addUnapprovedTransaction,
+  addTransactionAndWaitForPublish,
   fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
@@ -1212,13 +1212,14 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
 
+      console.log('----- Starting swap transactions');
+
       try {
-        finalApproveTxMeta = await addUnapprovedTransaction(
-          undefined,
+        finalApproveTxMeta = await addTransactionAndWaitForPublish(
           { ...approveTxParams, amount: '0x0' },
-          TransactionType.swapApproval,
           {
             requireApproval: false,
+            type: TransactionType.swapApproval,
             swaps: {
               hasApproveTx: true,
               meta: {
@@ -1229,36 +1230,38 @@ export const signAndSendTransactions = (
           },
         );
       } catch (e) {
+        console.log('----- First swap transaction failed!', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
         return;
       }
     }
 
+    console.log('----- First swap transaction success');
+
+    console.log('----- Starting second swap transaction');
+
     try {
-      await addUnapprovedTransaction(
-        undefined,
-        usedTradeTxParams,
-        TransactionType.swap,
-        {
-          requireApproval: false,
-          swaps: {
-            hasApproveTx: Boolean(approveTxParams),
-            meta: {
-              estimatedBaseFee: decEstimatedBaseFee,
-              sourceTokenSymbol: sourceTokenInfo.symbol,
-              destinationTokenSymbol: destinationTokenInfo.symbol,
-              type: TransactionType.swap,
-              destinationTokenDecimals: destinationTokenInfo.decimals,
-              destinationTokenAddress: destinationTokenInfo.address,
-              swapMetaData,
-              swapTokenValue,
-              approvalTxId: finalApproveTxMeta?.id,
-            },
+      await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        requireApproval: false,
+        type: TransactionType.swap,
+        swaps: {
+          hasApproveTx: Boolean(approveTxParams),
+          meta: {
+            estimatedBaseFee: decEstimatedBaseFee,
+            sourceTokenSymbol: sourceTokenInfo.symbol,
+            destinationTokenSymbol: destinationTokenInfo.symbol,
+            type: TransactionType.swap,
+            destinationTokenDecimals: destinationTokenInfo.decimals,
+            destinationTokenAddress: destinationTokenInfo.address,
+            swapMetaData,
+            swapTokenValue,
+            approvalTxId: finalApproveTxMeta?.id,
           },
         },
-      );
+      });
     } catch (e) {
+      console.log('----- Second swap transaction failed', e);
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
@@ -1267,6 +1270,8 @@ export const signAndSendTransactions = (
       history.push(SWAPS_ERROR_ROUTE);
       return;
     }
+
+    console.log('----- Both swap transactions success');
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
     // we redirect to the Awaiting Swap page.
