@@ -1,6 +1,9 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import { checkForUnapprovedMessages } from '../store/institutional/institution-actions';
+import {
+  showCustodyConfirmLink,
+  checkForUnapprovedMessages,
+} from '../store/institutional/institution-actions';
 import {
   mmiActionsFactory,
   setTypedMessageInProgress,
@@ -51,6 +54,7 @@ export function useMMICustodySignMessage() {
           closeNotification: isNotification,
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
+          showCustodyConfirmLink,
         });
         await dispatch(setTypedMessageInProgress(msgData.metamaskId));
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));

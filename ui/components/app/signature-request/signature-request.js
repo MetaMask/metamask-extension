@@ -9,10 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
-///: END:ONLY_INCLUDE_IN
 import {
   resolvePendingApproval,
   rejectPendingApproval,
@@ -81,6 +78,8 @@ import Box from '../../ui/box/box';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
+import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
@@ -211,6 +210,7 @@ const SignatureRequest = ({ txData }) => {
             event: 'Show deeplink for signature',
           });
         },
+        showCustodyConfirmLink,
       });
     }
   }, [
