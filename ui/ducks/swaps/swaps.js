@@ -1212,8 +1212,6 @@ export const signAndSendTransactions = (
         delete approveTxParams.gasPrice;
       }
 
-      console.log('----- Starting swap transactions');
-
       try {
         finalApproveTxMeta = await addTransactionAndWaitForPublish(
           { ...approveTxParams, amount: '0x0' },
@@ -1230,16 +1228,11 @@ export const signAndSendTransactions = (
           },
         );
       } catch (e) {
-        console.log('----- First swap transaction failed!', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
         return;
       }
     }
-
-    console.log('----- First swap transaction success');
-
-    console.log('----- Starting second swap transaction');
 
     try {
       await addTransactionAndWaitForPublish(usedTradeTxParams, {
@@ -1261,7 +1254,6 @@ export const signAndSendTransactions = (
         },
       });
     } catch (e) {
-      console.log('----- Second swap transaction failed', e);
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
@@ -1270,8 +1262,6 @@ export const signAndSendTransactions = (
       history.push(SWAPS_ERROR_ROUTE);
       return;
     }
-
-    console.log('----- Both swap transactions success');
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
     // we redirect to the Awaiting Swap page.
