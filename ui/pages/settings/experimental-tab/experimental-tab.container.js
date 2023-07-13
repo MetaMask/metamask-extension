@@ -31,7 +31,8 @@ const mapDispatchToProps = (dispatch) => {
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setTransactionSecurityCheckEnabled: (val) =>
       dispatch(setTransactionSecurityCheckEnabled(val)),
-    securityAlertBlockaidEnabled: (val) => dispatch(securityAlertBlockaidEnabled(val)),
+    securityAlertBlockaidEnabled: (val) =>
+      dispatch(securityAlertBlockaidEnabled(val)),
   };
 };
 

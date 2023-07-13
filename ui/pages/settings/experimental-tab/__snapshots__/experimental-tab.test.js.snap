@@ -5,41 +5,43 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
   <div
     class="settings-page__body"
   >
-    <h4
-      class="box box--margin-top-1 box--margin-bottom-2 box--flex-direction-row typography typography--h4 typography--weight-bold typography--style-normal typography--color-text-alternative"
+    <h3
+      class="box mm-text mm-text--heading-md mm-text--font-weight-bold box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
     >
       Security
-    </h4>
+    </h3>
     <div
       class="settings-page__content-row settings-page__content-row-experimental settings-page__content-row-security"
     >
       <div
         class="settings-page__content-item"
       >
-        <span>
+        <h4
+          class="box mm-text mm-text--heading-sm mm-text--font-weight-medium box--margin-top-3 box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+        >
           Security alerts
-        </span>
+        </h4>
         <div
           class="settings-page__content-description"
         >
-          <h6
-            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+          <h4
+            class="box mm-text mm-text--heading-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-alternative"
           >
             This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There’s no guarantee that this feature will detect all malicious activity.
-          </h6>
-          <h6
-            class="box box--margin-top-3 box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+          </h4>
+          <h4
+            class="box mm-text mm-text--heading-sm mm-text--font-weight-medium box--margin-top-3 box--margin-bottom-1 box--flex-direction-row box--color-text-default"
           >
             Select providers
-          </h6>
+          </h4>
           <div
             class="settings-page__content-item-col settings-page__content-item-col-blockaid"
           >
-            <h5
-              class="box box--margin-top-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-default"
+            <h3
+              class="box mm-text mm-text--heading-md mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
             >
               Blockaid
-            </h5>
+            </h3>
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -82,11 +84,11 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <h6
-            class="box box--margin-bottom-1 box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-muted"
+          <h4
+            class="box mm-text mm-text--heading-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-muted"
           >
             More providers coming soon
-          </h6>
+          </h4>
         </div>
       </div>
     </div>
