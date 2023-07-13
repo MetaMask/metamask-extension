@@ -76,6 +76,9 @@ import { CustodyController } from '@metamask-institutional/custody-controller';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { PPOMController, createPPOMMiddleware } from '@metamask/ppom-validator';
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 // eslint-disable-next-line import/order
@@ -210,6 +213,9 @@ import {
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { IndexedDBPPOMStorage } from './lib/indexed-db-backend';
+///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -629,6 +635,22 @@ export default class MetamaskController extends EventEmitter {
       this.phishingController.setHotlistRefreshInterval(5 * SECOND);
       this.phishingController.setStalelistRefreshInterval(30 * SECOND);
     }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    this.ppomController = new PPOMController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'PPOMController',
+      }),
+      storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
+      provider: this.provider,
+      state: initState.PPOMController,
+      chainId: this.networkController.state.providerConfig.chainId,
+      onNetworkChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
+    });
+    ///: END:ONLY_INCLUDE_IN
 
     const announcementMessenger = this.controllerMessenger.getRestricted({
       name: 'AnnouncementController',
@@ -1529,6 +1551,9 @@ export default class MetamaskController extends EventEmitter {
       SwapsController: this.swapsController.store,
       EnsController: this.ensController.store,
       ApprovalController: this.approvalController,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      PPOMController: this.ppomController,
+      ///: END:ONLY_INCLUDE_IN
     };
 
     this.store.updateStructure({
@@ -1633,6 +1658,9 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      this.ppomController.clear.bind(this.ppomController),
+      ///: END:ONLY_INCLUDE_IN
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -2470,6 +2498,10 @@ export default class MetamaskController extends EventEmitter {
       removeAddTokenConnectRequest:
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
+        ),
+      showInteractiveReplacementTokenBanner:
+        appStateController.showInteractiveReplacementTokenBanner.bind(
+          appStateController,
         ),
       ///: END:ONLY_INCLUDE_IN
 
@@ -3910,6 +3942,10 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createLoggerMiddleware({ origin }));
     engine.push(this.permissionLogController.createMiddleware());
 
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    engine.push(createPPOMMiddleware(this.ppomController));
+    ///: END:ONLY_INCLUDE_IN
+
     engine.push(
       createRPCMethodTrackingMiddleware({
         trackEvent: this.metaMetricsController.trackEvent.bind(
@@ -3963,6 +3999,12 @@ export default class MetamaskController extends EventEmitter {
           this.approvalController.setFlowLoadingText.bind(
             this.approvalController,
           ),
+        showApprovalSuccess: this.approvalController.success.bind(
+          this.approvalController,
+        ),
+        showApprovalError: this.approvalController.error.bind(
+          this.approvalController,
+        ),
         sendMetrics: this.metaMetricsController.trackEvent.bind(
           this.metaMetricsController,
         ),

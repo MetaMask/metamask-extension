@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
@@ -38,7 +39,7 @@ const ConfirmAddCustodianToken = () => {
   const mmiActions = mmiActionsFactory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests);
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const isComplianceActivated = useSelector(complianceActivated);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,8 +47,14 @@ const ConfirmAddCustodianToken = () => {
 
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+      setIsLoading(false);
+    }
+  }, [connectRequest, history, mostRecentOverviewPage]);
+
   if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
     return null;
   }
 
@@ -168,11 +175,13 @@ const ConfirmAddCustodianToken = () => {
               size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
               onClick={async () => {
-                await mmiActions.removeAddTokenConnectRequest({
-                  origin: connectRequest.origin,
-                  apiUrl: connectRequest.apiUrl,
-                  token: connectRequest.token,
-                });
+                await dispatch(
+                  mmiActions.removeAddTokenConnectRequest({
+                    origin: connectRequest.origin,
+                    apiUrl: connectRequest.apiUrl,
+                    token: connectRequest.token,
+                  }),
+                );
 
                 trackEvent({
                   category: 'MMI',
@@ -220,11 +229,13 @@ const ConfirmAddCustodianToken = () => {
                     }),
                   );
 
-                  await mmiActions.removeAddTokenConnectRequest({
-                    origin: connectRequest.origin,
-                    apiUrl: connectRequest.apiUrl,
-                    token: connectRequest.token,
-                  });
+                  await dispatch(
+                    mmiActions.removeAddTokenConnectRequest({
+                      origin: connectRequest.origin,
+                      apiUrl: connectRequest.apiUrl,
+                      token: connectRequest.token,
+                    }),
+                  );
 
                   trackEvent({
                     category: 'MMI',

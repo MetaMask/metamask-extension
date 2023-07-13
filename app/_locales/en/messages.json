@@ -982,6 +982,12 @@
   "custodianAccount": {
     "message": "Custodian account"
   },
+  "custodianAccountAddedDesc": {
+    "message": "You can now use your custodian accounts in MetaMask Institutional."
+  },
+  "custodianAccountAddedTitle": {
+    "message": "Selected custodian accounts have been added."
+  },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
@@ -3503,6 +3509,18 @@
   },
   "restoreUserDataDescription": {
     "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
+  },
+  "resultPageError": {
+    "message": "Error"
+  },
+  "resultPageErrorDefaultMessage": {
+    "message": "The operation failed."
+  },
+  "resultPageSuccess": {
+    "message": "Success"
+  },
+  "resultPageSuccessDefaultMessage": {
+    "message": "The operation completed successfully."
   },
   "retryTransaction": {
     "message": "Retry transaction"

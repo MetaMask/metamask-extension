@@ -12,7 +12,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
         class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <button
-          class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-right-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--margin-right-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
         >
           Create a Snap Account
         </button>
@@ -42,7 +42,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box"
         >
           <button
-            class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+            class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
           >
             Install snap
           </button>
@@ -180,7 +180,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
             class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
           >
             <a
-              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               href="auditUrl1"
             >
               auditUrl1
@@ -190,7 +190,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
             class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
           >
             <a
-              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
               href="auditUrl2"
             >
               auditUrl2
