@@ -259,8 +259,7 @@ const CustodyPage = () => {
       if (Object.keys(connectRequestValue).length) {
         setConnectRequest(connectRequestValue);
         setCurrentJwt(
-          connectRequestValue.token ||
-            (await dispatch(mmiActions.getCustodianToken())),
+          connectRequestValue.token || dispatch(mmiActions.getCustodianToken()),
         );
         setSelectedCustodianType(connectRequestValue.custodianType);
         setSelectedCustodianName(connectRequestValue.custodianName);
@@ -345,7 +344,7 @@ const CustodyPage = () => {
   }
 
   return (
-    <>
+    <Box className="page-container">
       {connectError && (
         <Text textAlign={TextAlign.Center} marginTop={3} padding={[2, 7, 5]}>
           {connectError}
@@ -362,10 +361,8 @@ const CustodyPage = () => {
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          backgroundColor={Color.backgroundDefault}
-          style={{
-            boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-          }}
+          className="page-container__content"
+          width={BlockSize.Full}
         >
           <Box
             display={Display.Flex}
@@ -405,10 +402,8 @@ const CustodyPage = () => {
             padding={4}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
-            backgroundColor={Color.backgroundDefault}
-            style={{
-              boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
-            }}
+            className="page-container__content"
+            width={BlockSize.Full}
           >
             <Box
               display={Display.Flex}
@@ -426,19 +421,19 @@ const CustodyPage = () => {
               />
               <Text>{t('back')}</Text>
             </Box>
-            <Text as="h4">
+            {selectedCustodianImage && (
               <Box display={Display.Flex} alignItems={AlignItems.center}>
-                {selectedCustodianImage && (
-                  <img
-                    width={32}
-                    height={32}
-                    src={selectedCustodianImage}
-                    alt={selectedCustodianDisplayName}
-                  />
-                )}
-                <Text marginLeft={2}>{selectedCustodianDisplayName}</Text>
+                <img
+                  width={32}
+                  height={32}
+                  src={selectedCustodianImage}
+                  alt={selectedCustodianDisplayName}
+                />
+                <Text as="h4" marginLeft={2}>
+                  {selectedCustodianDisplayName}
+                </Text>
               </Box>
-            </Text>
+            )}
             <Text marginTop={4}>
               {t('enterCustodianToken', [selectedCustodianDisplayName])}
             </Text>
@@ -454,35 +449,37 @@ const CustodyPage = () => {
                 ])}
                 onUrlChange={(url) => setApiUrl(url)}
               />
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.center}
-                padding={0}
-              >
+            </Box>
+          </Box>
+          <Box as="footer" className="page-container__footer" padding={4}>
+            {loading ? (
+              <PulseLoader />
+            ) : (
+              <Box display={Display.Flex} gap={4}>
                 <Button
+                  block
                   variant={BUTTON_VARIANT.SECONDARY}
-                  marginRight={4}
+                  size={BUTTON_SIZES.LG}
                   onClick={() => {
                     cancelConnectCustodianToken();
                   }}
-                  block
                 >
                   {t('cancel')}
                 </Button>
                 <Button
+                  block
                   data-testid="jwt-form-connect-button"
+                  size={BUTTON_SIZES.LG}
                   onClick={connect}
                   disabled={
                     !selectedCustodianName ||
                     (addNewTokenClicked && !currentJwt)
                   }
-                  block
                 >
                   {t('connect')}
                 </Button>
               </Box>
-            </Box>
+            )}
           </Box>
         </>
       )}
@@ -625,6 +622,7 @@ const CustodyPage = () => {
             className="custody-accounts-empty__footer"
           >
             <Button
+              block
               size={BUTTON_SIZES.LG}
               type={BUTTON_VARIANT.SECONDARY}
               onClick={() => history.push(DEFAULT_ROUTE)}
@@ -634,7 +632,7 @@ const CustodyPage = () => {
           </Box>
         </Box>
       )}
-    </>
+    </Box>
   );
 };
 

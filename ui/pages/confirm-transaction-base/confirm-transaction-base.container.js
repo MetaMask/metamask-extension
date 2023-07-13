@@ -76,6 +76,7 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
+import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   TransactionStatus,
@@ -330,15 +331,6 @@ export const mapDispatchToProps = (dispatch) => {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
-    showCustodyConfirmLink: ({ link, address, closeNotification, custodyId }) =>
-      dispatch(
-        mmiActions.showCustodyConfirmLink({
-          link,
-          address,
-          closeNotification,
-          custodyId,
-        }),
-      ),
     showTransactionsFailedModal: (errorMessage, closeNotification) =>
       dispatch(
         showModal({
@@ -362,6 +354,7 @@ export const mapDispatchToProps = (dispatch) => {
         closeNotification,
         onDeepLinkFetched,
         onDeepLinkShown,
+        showCustodyConfirmLink,
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),

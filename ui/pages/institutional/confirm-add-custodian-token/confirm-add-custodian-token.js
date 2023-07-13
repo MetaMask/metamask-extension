@@ -168,11 +168,13 @@ const ConfirmAddCustodianToken = () => {
               size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
               onClick={async () => {
-                await mmiActions.removeAddTokenConnectRequest({
-                  origin: connectRequest.origin,
-                  apiUrl: connectRequest.apiUrl,
-                  token: connectRequest.token,
-                });
+                await dispatch(
+                  mmiActions.removeAddTokenConnectRequest({
+                    origin: connectRequest.origin,
+                    apiUrl: connectRequest.apiUrl,
+                    token: connectRequest.token,
+                  }),
+                );
 
                 trackEvent({
                   category: 'MMI',
@@ -220,11 +222,13 @@ const ConfirmAddCustodianToken = () => {
                     }),
                   );
 
-                  await mmiActions.removeAddTokenConnectRequest({
-                    origin: connectRequest.origin,
-                    apiUrl: connectRequest.apiUrl,
-                    token: connectRequest.token,
-                  });
+                  await dispatch(
+                    mmiActions.removeAddTokenConnectRequest({
+                      origin: connectRequest.origin,
+                      apiUrl: connectRequest.apiUrl,
+                      token: connectRequest.token,
+                    }),
+                  );
 
                   trackEvent({
                     category: 'MMI',
