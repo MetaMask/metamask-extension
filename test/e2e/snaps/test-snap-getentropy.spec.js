@@ -71,7 +71,7 @@ describe('Test Snap getEntropy', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#connectGetEntropySnap',
-          text: 'Reconnect to getEntropy Snap',
+          text: 'Reconnect to Get Entropy Snap',
         });
 
         // find and click on send test
@@ -100,7 +100,7 @@ describe('Test Snap getEntropy', function () {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xb9c20d675976e12c8bb53c3fd8fdff2dee11ad2b132eb453b5a8f35b0553c52d3bcac0fd3324d22ff0c53b3445ef48c119ba6435bc9bfb03234806719599aa6f6245593238c734bcf9d94d2873cacdd65a3176be3ae7e5b84f95fdd4487a395f"',
+          text: '"0xb43dc52e4449972ed702e46c0faef24d69aa6a473a0e2f68a220c741bb89a8615626a98a4a7d697b14f5eb5b55ddff73087016584b691dd471c579dc3e5d59c668066e6d92396f1813c1632747b957b631f0fe33441eedd756548619609aa1cb"',
         });
       },
     );
