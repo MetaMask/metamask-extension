@@ -33,7 +33,7 @@ export default class ExperimentalTab extends PureComponent {
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     securityAlertsEnabled: PropTypes.bool,
-    setSecurityAlertsEnabled: PropTypes.func,
+    securityAlertBlockaidEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -148,7 +148,7 @@ export default class ExperimentalTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
+    const { securityAlertsEnabled, securityAlertBlockaidEnabled } = this.props;
 
     return (
       <>
@@ -196,7 +196,6 @@ export default class ExperimentalTab extends PureComponent {
                   variant={TextVariant.headingMd}
                   color={TextColor.textDefault}
                   fontWeight={FontWeight.Normal}
-                  marginBottom={0}
                 >
                   {t('blockaid')}
                 </Text>
@@ -209,10 +208,9 @@ export default class ExperimentalTab extends PureComponent {
                       properties: {
                         action: 'Enabled/Disable Security Alerts',
                         security_alerts_enabled: !value,
-                        legacy_event: true,
                       },
                     });
-                    setSecurityAlertsEnabled(!value);
+                    securityAlertBlockaidEnabled(!value);
                   }}
                 />
               </div>
@@ -220,7 +218,6 @@ export default class ExperimentalTab extends PureComponent {
                 variant={TextVariant.headingSm}
                 color={TextColor.textMuted}
                 fontWeight={FontWeight.Normal}
-                marginTop={0}
               >
                 {t('moreProviders')}
               </Text>
@@ -351,7 +348,6 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderSecurityAlertsToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
           this.renderSecurityAlertsToggle()

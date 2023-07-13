@@ -2265,8 +2265,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setTransactionSecurityCheckEnabled.bind(
           preferencesController,
         ),
-      setSecurityAlertsEnabled:
-        preferencesController.setSecurityAlertsEnabled.bind(
+      securityAlertBlockaidEnabled:
+        preferencesController.securityAlertBlockaidEnabled.bind(
           preferencesController,
         ),
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)

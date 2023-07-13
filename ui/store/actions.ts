@@ -4344,12 +4344,12 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
-export function setSecurityAlertsEnabled(
+export function securityAlertBlockaidEnabled(
   securityAlertsEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('setSecurityAlertsEnabled', [
+      await submitRequestToBackground('securityAlertBlockaidEnabled', [
         securityAlertsEnabled,
       ]);
     } catch (error) {

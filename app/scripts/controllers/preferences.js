@@ -220,7 +220,7 @@ export default class PreferencesController {
    *
    * @param securityAlertsEnabled
    */
-  setSecurityAlertsEnabled(securityAlertsEnabled) {
+  securityAlertBlockaidEnabled(securityAlertsEnabled) {
     this.store.updateState({
       securityAlertsEnabled,
     });

@@ -5,7 +5,7 @@ import {
   setUseNftDetection,
   setOpenSeaEnabled,
   setTransactionSecurityCheckEnabled,
-  setSecurityAlertsEnabled,
+  securityAlertBlockaidEnabled,
 } from '../../../store/actions';
 import {
   getUseNftDetection,
@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setTransactionSecurityCheckEnabled: (val) =>
       dispatch(setTransactionSecurityCheckEnabled(val)),
-    setSecurityAlertsEnabled: (val) => dispatch(setSecurityAlertsEnabled(val)),
+    securityAlertBlockaidEnabled: (val) => dispatch(securityAlertBlockaidEnabled(val)),
   };
 };
 
