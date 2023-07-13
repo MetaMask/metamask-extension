@@ -3890,22 +3890,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^9.2.0":
-  version: 9.2.0
-  resolution: "@metamask/assets-controllers@npm:9.2.0"
+"@metamask/assets-controllers@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@metamask/assets-controllers@npm:10.0.0"
   dependencies:
     "@ethersproject/address": ^5.7.0
     "@ethersproject/bignumber": ^5.7.0
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/providers": ^5.7.0
     "@metamask/abi-utils": ^1.2.0
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/base-controller": ^3.0.0
+    "@metamask/approval-controller": ^3.4.0
+    "@metamask/base-controller": ^3.1.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^4.0.1
+    "@metamask/controller-utils": ^4.1.0
     "@metamask/metamask-eth-abis": 3.0.0
-    "@metamask/network-controller": ^10.2.0
-    "@metamask/preferences-controller": ^4.1.0
+    "@metamask/network-controller": ^10.3.0
+    "@metamask/preferences-controller": ^4.2.0
     "@metamask/rpc-errors": ^5.1.1
     "@metamask/utils": ^5.0.2
     "@types/uuid": ^8.3.0
@@ -3919,10 +3919,10 @@ __metadata:
     single-call-balance-checker-abi: ^1.0.0
     uuid: ^8.3.2
   peerDependencies:
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/network-controller": ^10.2.0
-    "@metamask/preferences-controller": ^4.1.0
-  checksum: 020e86dfc3dfa5eea927ada0b2f5a00642495589edbf5ab54f160e65e5e904502682f11ebebe10d892a091d05eb10306cf92d403a2ac8434048cd3e1f3df3f89
+    "@metamask/approval-controller": ^3.4.0
+    "@metamask/network-controller": ^10.3.0
+    "@metamask/preferences-controller": ^4.2.0
+  checksum: 55bdfcd4c3d011d696e12e014e5879f069543916dae1242dfaf44b36d760a7641382247e4b28fd423a196edfe4a482fee5eb9813f9e4eb998ada6dd6758a977a
   languageName: node
   linkType: hard
 
@@ -4027,7 +4027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0":
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/controller-utils@npm:4.1.0"
   dependencies:
@@ -4398,7 +4398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0":
+"@metamask/network-controller@npm:^10.3.0":
   version: 10.3.0
   resolution: "@metamask/network-controller@npm:10.3.0"
   dependencies:
@@ -4583,13 +4583,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/preferences-controller@npm:4.1.0"
+"@metamask/preferences-controller@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/preferences-controller@npm:4.2.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-  checksum: 7a121d959082787767786639f5558496c3782bf119f317c24ccae7dc038e8c1a52676d4b5b1c6d94b6563c94d01f24cd3793167322ad5f28dce803223d774fcd
+    "@metamask/controller-utils": ^4.1.0
+  checksum: 492ee83c5d0259c77e8dd58076d06c09456192fe06777d5800b4e6673b6752fc7c00f7a4eb866cf3730a925946e79fd7bcdb31d3963ef44751f3307b5403d12d
   languageName: node
   linkType: hard
 
@@ -24654,7 +24654,7 @@ __metadata:
     "@metamask/address-book-controller": ^3.0.0
     "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^3.4.0
-    "@metamask/assets-controllers": ^9.2.0
+    "@metamask/assets-controllers": ^10.0.0
     "@metamask/auto-changelog": ^2.1.0
     "@metamask/base-controller": ^3.1.0
     "@metamask/browser-passworder": ^4.1.0
