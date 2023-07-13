@@ -5,7 +5,7 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -17,6 +17,7 @@ import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
 
 const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
   [ButtonIconSize.Sm]: IconSize.Sm,
+  [ButtonIconSize.Md]: IconSize.Md,
   [ButtonIconSize.Lg]: IconSize.Lg,
 };
 
@@ -52,7 +53,7 @@ export const ButtonIcon = React.forwardRef(
         )}
         color={color}
         {...(isDisabled ? { disabled: true } : {})} // only allow disabled attribute to be passed down to the Box when the as prop is equal to a button element
-        display={DISPLAY.INLINE_FLEX}
+        display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.LG}
