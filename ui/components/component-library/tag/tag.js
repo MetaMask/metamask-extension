@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
 import { Text } from '../text';
+import { Icon, IconSize } from '../icon';
 import {
   AlignItems,
   BackgroundColor,
@@ -11,9 +12,17 @@ import {
   DISPLAY,
   JustifyContent,
   TextVariant,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-export const Tag = ({ label, className, labelProps, ...props }) => {
+export const Tag = ({
+  label,
+  className,
+  labelProps,
+  iconName,
+  iconProps,
+  ...props
+}) => {
   return (
     <Box
       className={classnames('mm-tag', className)}
@@ -28,6 +37,16 @@ export const Tag = ({ label, className, labelProps, ...props }) => {
       display={DISPLAY.INLINE_BLOCK}
       {...props}
     >
+      {iconName ? (
+        <Icon
+          name={iconName}
+          size={IconSize.Xs}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          {...iconProps}
+        />
+      ) : null}
       <Text variant={TextVariant.bodySm} {...labelProps}>
         {label}
       </Text>
@@ -48,6 +67,14 @@ Tag.propTypes = {
    * Additional classNames to be added to the Tag component
    */
   className: PropTypes.string,
+  /**
+   * The icon name to be used in the Tag component.
+   */
+  iconName: PropTypes.string,
+  /**
+   * The icon props of the component.
+   */
+  iconProps: PropTypes.shape(Icon.PropTypes),
   /**
    * Tag also accepts all props from Box
    */
