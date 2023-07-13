@@ -58,7 +58,7 @@ class Driver {
    * @param extensionUrl
    * @param {number} timeout
    */
-  constructor(driver, browser, extensionUrl, timeout = 10000) {
+  constructor(driver, browser, extensionUrl, timeout = 10 * 1000) {
     this.driver = driver;
     this.browser = browser;
     this.extensionUrl = extensionUrl;
@@ -371,11 +371,12 @@ class Driver {
     return await this.driver.getAllWindowHandles();
   }
 
-  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = 5000) {
+  async waitUntilXWindowHandles(x, delayStep = 1000, timeout = this.timeout) {
     let timeElapsed = 0;
     let windowHandles = [];
     while (timeElapsed <= timeout) {
       windowHandles = await this.driver.getAllWindowHandles();
+
       if (windowHandles.length === x) {
         return windowHandles;
       }
@@ -389,7 +390,7 @@ class Driver {
     title,
     initialWindowHandles,
     delayStep = 1000,
-    timeout = 5000,
+    timeout = this.timeout,
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
@@ -397,6 +398,7 @@ class Driver {
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
         await this.driver.switchTo().window(handle);
+
         const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;

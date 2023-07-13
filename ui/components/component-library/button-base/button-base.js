@@ -48,6 +48,7 @@ export const ButtonBase = ({
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
       color={loading ? TextColor.transparent : color}
+      variant={TextVariant.bodyMdMedium}
       href={href}
       paddingLeft={4}
       paddingRight={4}

@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "显示助记词"
   },
-  "reviewSpendingCap": {
-    "message": "检查您的支出上限"
-  },
   "revokeAllTokensTitle": {
     "message": "撤销访问和转移您的所有 $1 的权限？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "批准$1，且无消费限制",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "为 $1 设置支出上限",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "设置"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
-  },
-  "useDefault": {
-    "message": "使用默认值"
   },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"

@@ -68,6 +68,7 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
+  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -241,6 +242,7 @@ export const AppHeader = ({ location }) => {
               )}
               {showProductTour &&
               popupStatus &&
+              isHomePage &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"

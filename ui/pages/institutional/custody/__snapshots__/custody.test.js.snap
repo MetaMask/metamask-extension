@@ -87,8 +87,14 @@ exports[`CustodyPage renders CustodyPage 2`] = `
               Select
             </button>
           </div>
-        </ul>
-      </div>
+          <button
+            class="box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+            data-testid="custody-connect-button"
+          >
+            Select
+          </button>
+        </div>
+      </ul>
     </div>
   </div>
 </div>
