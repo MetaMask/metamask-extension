@@ -90,13 +90,15 @@ export const AccountListItem = ({
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
-  const label = getLabel(keyring, t);
+  const label = identity.metadata?.snap?.name ?? getLabel(keyring, t);
 
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   const trackEvent = useContext(MetaMetricsContext);
+
+  console.log('isSelected', identity, selected);
 
   return (
     <Box
@@ -269,6 +271,11 @@ AccountListItem.propTypes = {
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      snap: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }),
   }).isRequired,
   /**
    * Represents if this account is currently selected

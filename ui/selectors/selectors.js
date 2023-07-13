@@ -315,6 +315,19 @@ export function getSelectedIdentity(state) {
   return identities[selectedAddress];
 }
 
+export function getSelectedInternalAccount(state) {
+  const identities = getMetaMaskIdentities(state);
+  const accounts = getMetaMaskAccounts(state);
+  const internalAccounts = getInternalAccounts(state);
+
+  const address = getSelectedAddress(state);
+  return {
+    ...identities[address],
+    ...accounts[address],
+    ...internalAccounts[address],
+  };
+}
+
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
@@ -352,11 +365,16 @@ export const getMetaMaskAccountsOrdered = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskIdentities,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
+  getInternalAccounts,
+  (keyrings, identities, accounts, internalAccounts) =>
     keyrings
       .reduce((list, keyring) => list.concat(keyring.accounts), [])
       .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+      .map((address) => ({
+        ...identities[address],
+        ...accounts[address],
+        ...internalAccounts[address],
+      })),
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -1559,5 +1577,14 @@ export function getsnapsAddSnapAccountModalDismissed(state) {
 export function getSnapRegistry(state) {
   const { snapRegistryList } = state.metamask;
   return snapRegistryList;
+}
+
+export function getInternalAccounts(state) {
+  return Object.fromEntries(
+    state.metamask.internalAccounts.map((account) => [
+      account.address.toLowerCase(),
+      account,
+    ]),
+  );
 }
 ///: END:ONLY_INCLUDE_IN

@@ -235,7 +235,7 @@
     "@metamask/eth-json-rpc-middleware": "^11.0.0",
     "@metamask/eth-keyring-controller": "^10.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^0.15.0",
-    "@metamask/eth-snap-keyring": "git+https://github.com/MetaMask/eth-snap-keyring.git#commit=8259579bbcbedb86f316dfe29d0f50c72a1cc169",
+    "@metamask/eth-snap-keyring": "git+https://github.com/MetaMask/eth-snap-keyring.git#commit=654f6a8337da49d59d56bc748af71547774604f5",
     "@metamask/eth-token-tracker": "^4.0.0",
     "@metamask/eth-trezor-keyring": "^1.0.0",
     "@metamask/etherscan-link": "^2.2.0",

@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import { v4 as uuid } from 'uuid';
 import { InternalAccount, SnapKeyring } from '@metamask/eth-snap-keyring';
 import { SnapController } from '@metamask/snaps-controllers';
+import { ObservableStore } from '@metamask/obs-store';
 import { CaseInsensitiveMap } from './CaseInsensitiveMap';
 import { setAsyncInterval } from './async-interval';
 import PreferencesController from './controllers/preferences';
@@ -15,6 +16,8 @@ export class AccountsController extends EventEmitter {
 
   #addressToAccount: CaseInsensitiveMap<InternalAccount>;
 
+  store: ObservableStore<{ internalAccounts: InternalAccount[] }>;
+
   constructor(
     keyringController: any,
     snapsController: SnapController,
@@ -25,7 +28,15 @@ export class AccountsController extends EventEmitter {
     this.#snapsController = snapsController;
     this.#preferencesController = preferencesController;
     this.#addressToAccount = new CaseInsensitiveMap();
-    setAsyncInterval(async () => await this.#syncAccounts(), 10000);
+    this.store = new ObservableStore({ internalAccounts: [] });
+
+    this.#keyringController.on('update', () => {
+      this.listAccounts();
+    });
+
+    setAsyncInterval(async () => {
+      await this.listAccounts();
+    }, 10000);
   }
 
   getAccount(address: string): InternalAccount | undefined {
@@ -38,10 +49,6 @@ export class AccountsController extends EventEmitter {
       throw new Error(`Account ${address} not found`);
     }
     return account;
-  }
-
-  listAccounts(): InternalAccount[] {
-    return [...this.#addressToAccount.values()];
   }
 
   async #listLegacyAccounts(): Promise<InternalAccount[]> {
@@ -72,10 +79,13 @@ export class AccountsController extends EventEmitter {
   async #listSnapAccounts(): Promise<InternalAccount[]> {
     const [snapKeyring]: [SnapKeyring] =
       this.#keyringController.getKeyringsByType(SnapKeyring.type);
+
     return snapKeyring?.listAccounts(true) ?? [];
   }
 
-  async #syncAccounts(): Promise<void> {
+  async listAccounts(): Promise<InternalAccount[]> {
+    console.log('Syncing accounts...');
+
     const preferences = this.#preferencesController.store.getState();
     const accounts = (
       await Promise.all([this.#listLegacyAccounts(), this.#listSnapAccounts()])
@@ -100,14 +110,16 @@ export class AccountsController extends EventEmitter {
       // Resolve account name
       if (account.name === '') {
         account.name =
-          preferences.identities[account.address.toLowerCase()] ??
-          '<Missing Account Name>';
+          preferences.identities[account.address.toLowerCase()].name ??
+          'Account';
       }
 
       // Add account (back) to map
       this.#addressToAccount.set(account.address, account);
     }
 
-    console.log('Synced accounts:', JSON.stringify(this.listAccounts()));
+    this.store.updateState({ internalAccounts: accounts });
+    console.log('Synced accounts:', accounts);
+    return accounts;
   }
 }

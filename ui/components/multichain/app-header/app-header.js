@@ -39,8 +39,8 @@ import {
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getSelectedIdentity,
   getShowProductTour,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
   ///: END:ONLY_INCLUDE_IN
@@ -80,7 +80,8 @@ export const AppHeader = ({ location }) => {
   ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
-  const identity = useSelector(getSelectedIdentity);
+  const identity = useSelector(getSelectedInternalAccount);
+  // const internalAccount = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);

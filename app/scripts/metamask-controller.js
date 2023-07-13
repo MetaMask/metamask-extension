@@ -1572,6 +1572,7 @@ export default class MetamaskController extends EventEmitter {
         NetworkController: this.networkController,
         CachedBalancesController: this.cachedBalancesController.store,
         KeyringController: this.keyringController.memStore,
+        AccountsController: this.accountsController.store,
         PreferencesController: this.preferencesController.store,
         MetaMetricsController: this.metaMetricsController.store,
         AddressBookController: this.addressBookController,

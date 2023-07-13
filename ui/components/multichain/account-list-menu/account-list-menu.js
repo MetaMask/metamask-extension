@@ -47,6 +47,7 @@ export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  console.log('accounts', accounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -175,7 +176,10 @@ export const AccountListMenu = ({ onClose }) => {
                   }}
                   identity={account}
                   key={account.address}
-                  selected={selectedAccount.address === account.address}
+                  selected={
+                    selectedAccount.address.toLowerCase() ===
+                    account.address.toLowerCase()
+                  }
                   closeMenu={onClose}
                   connectedAvatar={connectedSite?.iconUrl}
                   connectedAvatarName={connectedSite?.name}
