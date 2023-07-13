@@ -316,6 +316,46 @@ describe('Selectors', () => {
     });
   });
 
+  describe('#getCurrentNetwork', () => {
+    it('returns the correct custom network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.networkConfigurations
+              .testNetworkConfigurationId,
+            // 0x1 would collide with Ethereum Mainnet
+            chainId: '0x1',
+            // type of "rpc" signals custom network
+            type: 'rpc',
+          },
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
+      expect(currentNetwork.chainId).toBe('0x1');
+    });
+
+    it('returns the correct mainnet network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: '0x1',
+            // Changing type to 'mainnet' represents Ethereum Mainnet
+            type: 'mainnet',
+          },
+        },
+      };
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
+    });
+  });
+
   describe('#getAllEnabledNetworks', () => {
     it('returns only Mainnet and Linea with showTestNetworks off', () => {
       const networks = selectors.getAllEnabledNetworks({

@@ -4937,9 +4937,9 @@
     },
     "react-markdown>unified": {
       "packages": {
-        "jsdom>request>extend": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
+        "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
