@@ -28,7 +28,7 @@ export default function TransactionDetailItem({
     <div className="transaction-detail-item" data-testid={dataTestId}>
       <div className="transaction-detail-item__row">
         <Text
-          as="div"
+          as="h6"
           color={detailTitleColor}
           fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
           display={Display.Flex}
@@ -44,9 +44,12 @@ export default function TransactionDetailItem({
           })}
         >
           {detailText && (
-            <Text color={Color.textAlternative}>{detailText}</Text>
+            <Text as="h6" color={Color.textAlternative}>
+              {detailText}
+            </Text>
           )}
           <Text
+            as="h6"
             color={Color.textDefault}
             fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
             marginLeft={1}
@@ -60,12 +63,17 @@ export default function TransactionDetailItem({
         {React.isValidElement(subTitle) ? (
           <div>{subTitle}</div>
         ) : (
-          <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
+          <Text
+            as="h6"
+            variant={TextVariant.bodySm}
+            color={Color.textAlternative}
+          >
             {subTitle}
           </Text>
         )}
 
         <Text
+          as="h6"
           variant={TextVariant.bodySm}
           color={Color.textAlternative}
           align="end"
