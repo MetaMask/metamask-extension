@@ -73,6 +73,8 @@ const CustodyPage = () => {
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 
+  console.log(selectedAccounts);
+
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
@@ -485,13 +487,9 @@ const CustodyPage = () => {
       )}
       {accounts && accounts.length > 0 && (
         <>
-          <Box
-            borderColor={BorderColor.borderDefault}
-            padding={[5, 7, 2]}
-            width={BlockSize.Full}
-          >
+          <Box padding={[5, 7, 2]} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={5}>
+            <Text marginTop={2} marginBottom={2}>
               {t('selectAnAccountHelp')}
             </Text>
           </Box>
