@@ -3,7 +3,7 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
-import { createEventEmitterProxy } from '@metamask/swappable-obj-proxy';
+import { createEventEmitterProxy, createSwappableProxy } from '@metamask/swappable-obj-proxy';
 
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
@@ -101,10 +101,13 @@ export default class SelectedNetworkController extends BaseControllerV2<
     if (this.clientsByDomain[origin] !== undefined) {
       this.clientsByDomain[origin].provider.setTarget(client.provider);
       this.clientsByDomain[origin].blockTracker.setTarget(client.blockTracker);
+      this.clientsByDomain[origin].configuration.setTarget(
+        client.configuration,
+      );
       return;
     }
     this.clientsByDomain[origin] = {
-      configuration: client.configuration,
+      configuration: createSwappableProxy(client.configuration),
       provider: createEventEmitterProxy(client.provider),
       blockTracker: createEventEmitterProxy(client.blockTracker, {
         eventFilter: 'skipInternal',
