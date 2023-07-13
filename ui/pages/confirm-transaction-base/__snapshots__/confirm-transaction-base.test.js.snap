@@ -341,7 +341,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center box--color-text-default"
                     >
                       Estimated gas fee
                       <div
@@ -374,7 +374,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       class="transaction-detail-item__detail-values"
                     >
                       <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right box--margin-left-1 box--flex-direction-row box--color-text-default"
                       >
                         <div>
                           <div
@@ -399,7 +399,8 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <div />
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      align="end"
+                      class="box mm-text transaction-detail-item__row-subText mm-text--body-sm box--flex-direction-row box--color-text-alternative"
                     >
                       <strong>
                         Max fee:
@@ -429,7 +430,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center box--color-text-default"
                     >
                       Total
                     </h6>
@@ -437,7 +438,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       class="transaction-detail-item__detail-values"
                     >
                       <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right box--margin-left-1 box--flex-direction-row box--color-text-default"
                       >
                         <div
                           class="confirm-page-container-content__total-value"
@@ -463,12 +464,13 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                      class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
                     >
                       Amount + gas fee
                     </h6>
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      align="end"
+                      class="box mm-text transaction-detail-item__row-subText mm-text--body-sm box--flex-direction-row box--color-text-alternative"
                     >
                       <div
                         class="confirm-page-container-content__total-amount"
