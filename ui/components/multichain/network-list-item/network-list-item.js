@@ -11,6 +11,7 @@ import {
   TextColor,
   BackgroundColor,
   BlockSize,
+  Display,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -67,6 +68,7 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
