@@ -17,6 +17,7 @@ import {
   getShowTestNetworks,
   getAllEnabledNetworks,
   getCurrentChainId,
+  getCurrentNetwork,
 } from '../../../selectors';
 import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
@@ -53,6 +54,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const networks = useSelector(getAllEnabledNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -91,7 +95,7 @@ export const NetworkListMenu = ({ onClose }) => {
             ) {
               return null;
             }
-            const isCurrentNetwork = currentChainId === network.chainId;
+            const isCurrentNetwork = currentNetwork.id === network.id;
             const canDeleteNetwork =
               !isCurrentNetwork &&
               !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
