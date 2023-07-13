@@ -10,7 +10,9 @@ import Typography from '../../../components/ui/typography/typography';
 import { Text } from '../../../components/component-library/text/deprecated';
 import {
   FONT_WEIGHT,
+  FontWeight,
   TextColor,
+  TextVariant,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -150,45 +152,54 @@ export default class ExperimentalTab extends PureComponent {
 
     return (
       <>
-        <Typography
-          variant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingMd}
           color={TextColor.textAlternative}
           marginBottom={2}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {t('security')}
-        </Typography>
+        </Text>
         <div
           ref={this.settingsRefs[2]}
           className="settings-page__content-row settings-page__content-row-experimental settings-page__content-row-security"
         >
           <div className="settings-page__content-item">
-            <span>{t('securityAlerts')}</span>
+            <Text
+              marginTop={3}
+              marginBottom={1}
+              variant={TextVariant.headingSm}
+              color={TextColor.textDefault}
+              fontWeight={FontWeight.Medium}
+            >
+              {t('securityAlerts')}
+            </Text>
             <div className="settings-page__content-description">
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.headingSm}
                 color={TextColor.textAlternative}
+                fontWeight={FontWeight.Normal}
               >
                 {t('securityAlertsDescription')}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
                 marginTop={3}
                 marginBottom={1}
-                variant={TypographyVariant.H6}
+                variant={TextVariant.headingSm}
                 color={TextColor.textDefault}
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Medium}
               >
                 {t('selectProvider')}
-              </Typography>
+              </Text>
               <div className="settings-page__content-item-col settings-page__content-item-col-blockaid">
-                <Typography
-                  variant={TypographyVariant.H5}
+                <Text
+                  variant={TextVariant.headingMd}
                   color={TextColor.textDefault}
-                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  fontWeight={FontWeight.Normal}
                   marginBottom={0}
                 >
                   {t('blockaid')}
-                </Typography>
+                </Text>
                 <ToggleButton
                   value={securityAlertsEnabled}
                   onToggle={(value) => {
@@ -205,13 +216,14 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.headingSm}
                 color={TextColor.textMuted}
+                fontWeight={FontWeight.Normal}
                 marginTop={0}
               >
                 {t('moreProviders')}
-              </Typography>
+              </Text>
             </div>
           </div>
         </div>
@@ -339,6 +351,7 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderSecurityAlertsToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
           this.renderSecurityAlertsToggle()
