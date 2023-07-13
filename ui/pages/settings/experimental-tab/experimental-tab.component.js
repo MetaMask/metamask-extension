@@ -339,7 +339,11 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderSecurityAlertsToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          this.renderSecurityAlertsToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {this.renderTransactionSecurityCheckToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {
