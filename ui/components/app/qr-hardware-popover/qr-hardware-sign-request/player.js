@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import QRCode from 'qrcode.react';
 import { UR, UREncoder } from '@ngraveio/bc-ur';
 import PropTypes from 'prop-types';
-import Box from '../../../ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -11,7 +10,7 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../ui/page-container';
-import { Text } from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();
