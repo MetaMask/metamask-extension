@@ -130,7 +130,7 @@ const generateClassNames = memoize(
     }
     return classNamesObject;
   },
-  (styleDeclaration, value) => [styleDeclaration, value],
+  (styleDeclaration, value) => `${styleDeclaration}${value}`,
 );
 
 export const Box: BoxComponent = React.forwardRef(
