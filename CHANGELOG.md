@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.34.0]
+## [10.33.1]
+### Fixed
+- Fix to bug causing users to see an infinite spinner when signing typed messages. ([#19894](https://github.com/MetaMask/metamask-extension/pull/19894))
 
 ## [10.33.0]
 ### Added
@@ -3829,6 +3832,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...HEAD
 [10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...v10.34.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.33.1...HEAD
+[10.33.1]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...v10.33.1
 [10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...v10.33.0
 [10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...v10.32.0
 [10.31.1]: https://github.com/MetaMask/metamask-extension/compare/v10.31.0...v10.31.1
