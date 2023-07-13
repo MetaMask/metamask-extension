@@ -17,7 +17,10 @@ import {
   setPersonalMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import {
+  showCustodyConfirmLink,
+  checkForUnapprovedMessages,
+} from '../../../store/institutional/institution-actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -75,52 +78,6 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-function mmiMapDispatchToProps(dispatch) {
-  const mmiActions = mmiActionsFactory();
-  return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
-    showCustodianDeepLink: ({
-      custodyId,
-      fromAddress,
-      closeNotification,
-      onDeepLinkFetched,
-      onDeepLinkShown,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        closeNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-      }),
-    showTransactionsFailedModal: ({
-      errorMessage,
-      closeNotification,
-      operationFailed,
-    }) =>
-      dispatch(
-        showModal({
-          name: 'TRANSACTION_FAILED',
-          errorMessage,
-          closeNotification,
-          operationFailed,
-        }),
-      ),
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    goHome: () => dispatch(goHome()),
-  };
-}
-
-mapDispatchToProps = mmiMapDispatchToProps;
-///: END:ONLY_INCLUDE_IN
-
 mapDispatchToProps = function (dispatch) {
   return {
     goHome: () => dispatch(goHome()),
@@ -149,6 +106,75 @@ mapDispatchToProps = function (dispatch) {
     },
   };
 };
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+function mmiMapDispatchToProps(dispatch) {
+  const mmiActions = mmiActionsFactory();
+  return {
+    setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
+    showCustodianDeepLink: ({
+      custodyId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+        showCustodyConfirmLink,
+      }),
+    showTransactionsFailedModal: ({
+      errorMessage,
+      closeNotification,
+      operationFailed,
+    }) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+          operationFailed,
+        }),
+      ),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    goHome: () => dispatch(goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: messagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: messagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
+  };
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;
