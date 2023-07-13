@@ -599,28 +599,25 @@ const CustodyPage = () => {
         </>
       )}
       {accounts && accounts.length === 0 && (
-        <Box
-          data-testid="custody-accounts-empty"
-          padding={[6, 7, 2]}
-          className="custody-accounts-empty"
-        >
-          <Text
-            marginBottom={2}
-            fontWeight={FontWeight.Bold}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyLgMedium}
-          >
-            {t('allCustodianAccountsConnectedTitle')}
-          </Text>
-          <Text variant={TextVariant.bodyMd}>
-            {t('allCustodianAccountsConnectedSubtitle')}
-          </Text>
-
+        <>
           <Box
-            padding={[5, 7]}
-            width={BlockSize.Full}
-            className="custody-accounts-empty__footer"
+            data-testid="custody-accounts-empty"
+            padding={[6, 7, 2]}
+            className="page-container__content"
           >
+            <Text
+              marginBottom={2}
+              fontWeight={FontWeight.Bold}
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyLgMedium}
+            >
+              {t('allCustodianAccountsConnectedTitle')}
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              {t('allCustodianAccountsConnectedSubtitle')}
+            </Text>
+          </Box>
+          <Box as="footer" className="page-container__footer" padding={4}>
             <Button
               block
               size={BUTTON_SIZES.LG}
@@ -630,7 +627,7 @@ const CustodyPage = () => {
               {t('close')}
             </Button>
           </Box>
-        </Box>
+        </>
       )}
     </Box>
   );
