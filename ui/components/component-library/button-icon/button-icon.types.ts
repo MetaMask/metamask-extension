@@ -5,6 +5,7 @@ import { IconColor } from '../../../helpers/constants/design-system';
 
 export enum ButtonIconSize {
   Sm = 'sm',
+  Md = 'md',
   Lg = 'lg',
 }
 

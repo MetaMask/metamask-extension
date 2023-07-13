@@ -1,36 +1,27 @@
-.mm-button-link {
-  &:hover {
-    opacity: 0.5;
-  }
 
+.mm-button-link {
   &:active {
-    opacity: 0.5;
+    color: var(--color-primary-alternative);
   }
 
   &--disabled {
-    &:hover {
-      opacity: 0.3;
-    }
-
     &:active {
-      opacity: 0.3;
+      color: var(--color-primary-default);
     }
   }
 
   &--type-danger {
     &:hover {
       color: var(--color-error-default);
-      opacity: 0.5;
     }
 
     &:active {
-      color: var(--color-error-default);
-      opacity: 0.5;
+      color: var(--color-error-alternative);
     }
   }
 
-  &--type-danger#{&}--disabled:hover {
-    opacity: 0.3;
+  &--type-danger#{&}--disabled:active {
+    color: var(--color-error-default);
   }
 
   &--size-auto {

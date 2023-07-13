@@ -17,6 +17,7 @@ import {
   getCurrentChainId,
   getNonTestNetworks,
   getTestNetworks,
+  getCurrentNetwork,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -60,6 +61,9 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -76,7 +80,8 @@ export const NetworkListMenu = ({ onClose }) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
-      const isCurrentNetwork = currentChainId === network.chainId;
+      const isCurrentNetwork = currentNetwork.id === network.id;
+
       const canDeleteNetwork =
         !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
 
