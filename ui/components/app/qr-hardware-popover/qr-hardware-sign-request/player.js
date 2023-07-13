@@ -6,8 +6,8 @@ import Box from '../../../ui/box';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../ui/page-container';
@@ -39,9 +39,9 @@ const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
       <Box
         paddingTop={4}
         paddingBottom={4}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
       >
         <div
           style={{
