@@ -13,7 +13,13 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Text, Box, ButtonLink } from '../../../component-library';
+import {
+  Text,
+  Box,
+  ButtonLink,
+  Icon,
+  IconName,
+} from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
@@ -21,18 +27,7 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
 
   return (
     <Box display={Display.InlineFlex} className="detected-token-address">
-      <Text variant={TextVariant.bodySm} as="h6" color={TextColor.textDefault}>
-        {`${t('tokenAddress')}:`}
-      </Text>
-      <Text
-        variant={TextVariant.bodySm}
-        as="h6"
-        color={TextColor.primaryDefault}
-        marginLeft={2}
-        marginRight={2}
-      >
-        {shortenAddress(tokenAddress)}
-      </Text>
+      <Text color={TextColor.textDefault}>{`${t('tokenAddress')}:`}</Text>
       <Tooltip
         position="bottom"
         title={copied ? t('copiedExclamation') : t('copyToClipboard')}
@@ -42,8 +37,11 @@ const DetectedTokenAddress = ({ tokenAddress }) => {
           onClick={() => {
             handleCopy(tokenAddress);
           }}
+          endIconName={IconName.Copy}
+          marginLeft={2}
+          marginRight={2}
         >
-          <i className="fa fa-copy" />
+          {shortenAddress(tokenAddress)}
         </ButtonLink>
       </Tooltip>
     </Box>
