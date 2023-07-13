@@ -31,6 +31,7 @@ import {
   Size,
   BorderColor,
   Display,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -222,11 +223,20 @@ export const AccountListItem = ({
         </Box>
         {label ? (
           <Tag
+            display={Display.Flex}
+            gap={1}
+            style={{
+              paddingTop: '2px',
+              paddingRight: '8px',
+              paddingBottom: '2px',
+              paddingLeft: '4px',
+            }}
             label={label}
             labelProps={{
               variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
+              color: TextColor.textAlternative,
             }}
+            iconName={IconName.Snaps}
           />
         ) : null}
       </Box>
