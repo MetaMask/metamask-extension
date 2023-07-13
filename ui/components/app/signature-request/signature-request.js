@@ -9,7 +9,9 @@ import {
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
+///: END:ONLY_INCLUDE_IN
 import {
   resolvePendingApproval,
   rejectPendingApproval,
