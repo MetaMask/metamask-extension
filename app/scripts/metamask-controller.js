@@ -3459,9 +3459,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Removes an account from state / storage.
    *
-   * @param {string[]} address - A hex address
+   * @param {string[]} accountAddress - A hex address
    */
-  async removeAccount(address) {
+  async removeAccount(accountAddress) {
+    const address = accountAddress.toLowerCase();
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
     // Remove account from the preferences controller
