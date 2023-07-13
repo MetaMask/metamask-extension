@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { memoize } from 'lodash';
 import {
   AlignItems,
   BlockSize,
@@ -117,75 +116,72 @@ function isValidString(type, value) {
  * @returns
  */
 
-const generateClassNames = memoize(
-  (type, value, validatorFn) => {
-    // if value does not exist return null
-    if (!value) {
-      return null;
+const generateClassNames = (type, value, validatorFn) => {
+  // if value does not exist return null
+  if (!value) {
+    return null;
+  }
+  const classesObject = {};
+  // if value is an array with single item e.g. marginTop={[1]}
+  const singleArrayItemProp =
+    Array.isArray(value) && value.length === 1 ? value[0] : undefined;
+  // if value single value e.g. marginTop={1}
+  const singleValueProp =
+    (!Array.isArray(value) && typeof value === 'string') ||
+    typeof value === 'number'
+      ? value
+      : undefined;
+  // single digit equals single value or single array item
+  const singleValue = singleValueProp || singleArrayItemProp;
+  // 0 is an acceptable value but is falsy in js
+  if (singleValue || singleValue === 0) {
+    // add base style without any breakpoint prefixes to classObject
+    classesObject[`${BASE_CLASS_NAME}--${type}-${singleValue}`] = validatorFn(
+      type,
+      singleValue,
+    );
+  } else {
+    // If array with more than one item
+    switch (value.length) {
+      case 4:
+        // add base/sm/md/lg
+        classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+        ] = value[1] && validatorFn(type, value[1]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+        ] = value[2] && validatorFn(type, value[2]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[3]}:${type}-${value[3]}`
+        ] = value[3] && validatorFn(type, value[3]);
+        break;
+      case 3:
+        // add base/sm/md
+        classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+        ] = value[1] && validatorFn(type, value[1]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
+        ] = value[2] && validatorFn(type, value[2]);
+        break;
+      case 2:
+        // add base/sm
+        classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
+          value[0] && validatorFn(type, value[0]);
+        classesObject[
+          `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
+        ] = value[1] && validatorFn(type, value[1]);
+        break;
+      default:
+        console.log(`Invalid array prop length: ${value.length}`);
     }
-    const classesObject = {};
-    // if value is an array with single item e.g. marginTop={[1]}
-    const singleArrayItemProp =
-      Array.isArray(value) && value.length === 1 ? value[0] : undefined;
-    // if value single value e.g. marginTop={1}
-    const singleValueProp =
-      (!Array.isArray(value) && typeof value === 'string') ||
-      typeof value === 'number'
-        ? value
-        : undefined;
-    // single digit equals single value or single array item
-    const singleValue = singleValueProp || singleArrayItemProp;
-    // 0 is an acceptable value but is falsy in js
-    if (singleValue || singleValue === 0) {
-      // add base style without any breakpoint prefixes to classObject
-      classesObject[`${BASE_CLASS_NAME}--${type}-${singleValue}`] = validatorFn(
-        type,
-        singleValue,
-      );
-    } else {
-      // If array with more than one item
-      switch (value.length) {
-        case 4:
-          // add base/sm/md/lg
-          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
-          ] = value[2] && validatorFn(type, value[2]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[3]}:${type}-${value[3]}`
-          ] = value[3] && validatorFn(type, value[3]);
-          break;
-        case 3:
-          // add base/sm/md
-          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[2]}:${type}-${value[2]}`
-          ] = value[2] && validatorFn(type, value[2]);
-          break;
-        case 2:
-          // add base/sm
-          classesObject[`${BASE_CLASS_NAME}--${type}-${value[0]}`] =
-            value[0] && validatorFn(type, value[0]);
-          classesObject[
-            `${BASE_CLASS_NAME}--${BREAKPOINTS[1]}:${type}-${value[1]}`
-          ] = value[1] && validatorFn(type, value[1]);
-          break;
-        default:
-          console.log(`Invalid array prop length: ${value.length}`);
-      }
-    }
-    return classesObject;
-  },
-  (type, value) => [type, value],
-);
+  }
+  return classesObject;
+};
 
 /**
  * @deprecated The JS version of the <Box /> component has been deprecated in favor of the new TS version from the component-library.

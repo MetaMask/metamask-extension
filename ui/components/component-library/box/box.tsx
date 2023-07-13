@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'classnames';
-import { memoize } from 'lodash';
 
 import { BREAKPOINTS } from '../../../helpers/constants/design-system';
 
@@ -50,7 +49,7 @@ function isValidString(type: StyleDeclarationType, value: StylePropValueType) {
  * @returns
  */
 
-const generateClassNames = memoize(
+const generateClassNames =
   (
     styleDeclaration: StyleDeclarationType,
     value: StylePropValueType,
@@ -129,9 +128,7 @@ const generateClassNames = memoize(
       }
     }
     return classNamesObject;
-  },
-  (styleDeclaration, value) => [styleDeclaration, value],
-);
+  };
 
 export const Box: BoxComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
