@@ -485,13 +485,9 @@ const CustodyPage = () => {
       )}
       {accounts && accounts.length > 0 && (
         <>
-          <Box
-            borderColor={BorderColor.borderDefault}
-            padding={[5, 7, 2]}
-            width={BlockSize.Full}
-          >
+          <Box padding={[5, 7, 2]} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={5}>
+            <Text marginTop={2} marginBottom={2}>
               {t('selectAnAccountHelp')}
             </Text>
           </Box>
@@ -518,22 +514,26 @@ const CustodyPage = () => {
             custody={selectedCustodianName}
             accounts={accounts}
             onAccountChange={(account) => {
-              if (selectedAccounts[account.address]) {
-                delete selectedAccounts[account.address];
-              } else {
-                selectedAccounts[account.address] = {
-                  name: account.name,
-                  custodianDetails: account.custodianDetails,
-                  labels: account.labels,
-                  token: currentJwt,
-                  apiUrl,
-                  chainId: account.chainId,
-                  custodyType: selectedCustodianType,
-                  custodyName: selectedCustodianName,
-                };
-              }
+              setSelectedAccounts((prevSelectedAccounts) => {
+                const updatedSelectedAccounts = { ...prevSelectedAccounts };
 
-              setSelectedAccounts(selectedAccounts);
+                if (updatedSelectedAccounts[account.address]) {
+                  delete updatedSelectedAccounts[account.address];
+                } else {
+                  updatedSelectedAccounts[account.address] = {
+                    name: account.name,
+                    custodianDetails: account.custodianDetails,
+                    labels: account.labels,
+                    token: currentJwt,
+                    apiUrl,
+                    chainId: account.chainId,
+                    custodyType: selectedCustodianType,
+                    custodyName: selectedCustodianName,
+                  };
+                }
+
+                return updatedSelectedAccounts;
+              });
             }}
             selectedAccounts={selectedAccounts}
             onAddAccounts={async () => {
@@ -599,28 +599,25 @@ const CustodyPage = () => {
         </>
       )}
       {accounts && accounts.length === 0 && (
-        <Box
-          data-testid="custody-accounts-empty"
-          padding={[6, 7, 2]}
-          className="custody-accounts-empty"
-        >
-          <Text
-            marginBottom={2}
-            fontWeight={FontWeight.Bold}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodyLgMedium}
-          >
-            {t('allCustodianAccountsConnectedTitle')}
-          </Text>
-          <Text variant={TextVariant.bodyMd}>
-            {t('allCustodianAccountsConnectedSubtitle')}
-          </Text>
-
+        <>
           <Box
-            padding={[5, 7]}
-            width={BlockSize.Full}
-            className="custody-accounts-empty__footer"
+            data-testid="custody-accounts-empty"
+            padding={[6, 7, 2]}
+            className="page-container__content"
           >
+            <Text
+              marginBottom={2}
+              fontWeight={FontWeight.Bold}
+              color={TextColor.textDefault}
+              variant={TextVariant.bodyLgMedium}
+            >
+              {t('allCustodianAccountsConnectedTitle')}
+            </Text>
+            <Text variant={TextVariant.bodyMd}>
+              {t('allCustodianAccountsConnectedSubtitle')}
+            </Text>
+          </Box>
+          <Box as="footer" className="page-container__footer" padding={4}>
             <Button
               block
               size={BUTTON_SIZES.LG}
@@ -630,7 +627,7 @@ const CustodyPage = () => {
               {t('close')}
             </Button>
           </Box>
-        </Box>
+        </>
       )}
     </Box>
   );

@@ -20,12 +20,14 @@ export function showInteractiveReplacementTokenBanner({
 }: {
   url: string;
   oldRefreshToken: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+}) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
-        url,
-        oldRefreshToken,
+        {
+          url,
+          oldRefreshToken,
+        },
       ]);
     } catch (err: any) {
       if (err) {
@@ -237,19 +239,21 @@ export function mmiActionsFactory() {
         custodyType,
         token,
       ]),
-    setCustodianNewRefreshToken: (
-      address: string,
-      oldAuthDetails: string,
-      oldApiUrl: string,
-      newAuthDetails: string,
-      newApiUrl: string,
-    ) =>
+    setCustodianNewRefreshToken: ({
+      address,
+      oldAuthDetails,
+      oldApiUrl,
+      newAuthDetails,
+      newApiUrl,
+    }: {
+      address: string;
+      oldAuthDetails: string;
+      oldApiUrl: string;
+      newAuthDetails: string;
+      newApiUrl: string;
+    }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        address,
-        oldAuthDetails,
-        oldApiUrl,
-        newAuthDetails,
-        newApiUrl,
+        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
       ]),
   };
 }

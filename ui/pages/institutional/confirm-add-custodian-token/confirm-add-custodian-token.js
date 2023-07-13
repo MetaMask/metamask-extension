@@ -1,7 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
-import isEqual from 'lodash/isEqual';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -47,8 +47,14 @@ const ConfirmAddCustodianToken = () => {
 
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+      setIsLoading(false);
+    }
+  }, [connectRequest, history, mostRecentOverviewPage]);
+
   if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
     return null;
   }
 
