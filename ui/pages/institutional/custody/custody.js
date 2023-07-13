@@ -259,7 +259,8 @@ const CustodyPage = () => {
       if (Object.keys(connectRequestValue).length) {
         setConnectRequest(connectRequestValue);
         setCurrentJwt(
-          connectRequestValue.token || dispatch(mmiActions.getCustodianToken()),
+          connectRequestValue.token ||
+            (await dispatch(mmiActions.getCustodianToken())),
         );
         setSelectedCustodianType(connectRequestValue.custodianType);
         setSelectedCustodianName(connectRequestValue.custodianName);
