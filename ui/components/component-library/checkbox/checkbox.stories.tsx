@@ -15,7 +15,11 @@ export default {
       page: README,
     },
   },
-  argTypes: {},
+  argTypes: {
+    label: {
+      control: 'text',
+    },
+  },
   args: {},
 } as Meta<typeof Checkbox>;
 
@@ -26,7 +30,7 @@ const Template: StoryFn<typeof Checkbox> = (args) => {
     <Checkbox
       {...args}
       onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked}
+      isChecked={isChecked || args.isChecked}
     />
   );
 };
@@ -40,11 +44,14 @@ export const Label = (args) => {
   return (
     <Checkbox
       {...args}
-      label="Checkbox Label"
       onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked}
+      isChecked={isChecked || args.isChecked}
     />
   );
+};
+
+Label.args = {
+  label: 'Checkbox Label',
 };
 
 export const Id = (args) => {
@@ -150,7 +157,7 @@ export const OnChange = (args) => {
     <Checkbox
       {...args}
       onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked}
+      isChecked={isChecked || args.isChecked}
       label="onChange Demo"
     />
   );
@@ -189,7 +196,7 @@ export const InputProps = (args) => {
     <Checkbox
       {...args}
       onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked}
+      isChecked={isChecked || args.isChecked}
       label="Checkbox Label with inputProps"
       inputProps={{ borderColor: BorderColor.errorDefault }}
     />

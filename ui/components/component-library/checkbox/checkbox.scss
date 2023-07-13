@@ -10,37 +10,37 @@
     width: 20px;
     height: 20px;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--color-background-default-hover);
     }
 
     &:focus {
       border-color: var(--color-primary-default);
     }
+
+    &:disabled {
+      color: var(--color-icon-muted);
+      cursor: not-allowed;
+    }
   }
 
-  &--disabled {
-    opacity: var(--opacity-disabled);
-  }
-
-  &__input--checked:hover,
-  &__input--indeterminate:hover {
+  &__input--checked:hover:not(:disabled),
+  &__input--indeterminate:hover:not(:disabled) {
     border-color: var(--color-primary-alternative);
     background-color: var(--color-primary-alternative);
   }
 
-
-  &__input--checked#{&}--readonly,
-  &__input--checked#{&}--readonly:hover,
-  &__input--indeterminate#{&}--readonly,
-  &__input--indeterminate#{&}--readonly:hover {
+  &__input--checked#{&}__input--readonly,
+  &__input--checked#{&}__input--readonly:hover,
+  &__input--indeterminate#{&}__input--readonly,
+  &__input--indeterminate#{&}__input--readonly:hover {
     border-color: var(--color-icon-alternative);
     background-color: var(--color-icon-alternative);
+    cursor: not-allowed;
   }
 
-  &__input:disabled {
-    color: var(--color-icon-muted);
-    cursor: not-allowed;
+  &--disabled {
+    opacity: var(--opacity-disabled);
   }
 
   &__icon {

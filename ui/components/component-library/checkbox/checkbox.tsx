@@ -71,7 +71,11 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
             required={isRequired}
             data-indeterminate={isIndeterminate}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              onChange?.(event);
+              if (isReadOnly) {
+                event.preventDefault();
+              } else {
+                onChange?.(event);
+              }
             }}
             onKeyDown={handleCheckboxKeyDown}
             margin={0}
