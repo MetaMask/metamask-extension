@@ -358,6 +358,10 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
+  /**
+   * Whether the security alerts feature has been enabled.
+   */
+  security_alerts_enabled?: boolean;
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   /**
    * The address of the MMI account in question

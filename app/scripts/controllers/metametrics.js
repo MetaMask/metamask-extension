@@ -770,6 +770,8 @@ export default class MetaMetricsController {
         metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
+      [MetaMetricsUserTrait.SecurityAlertsEnabled]:
+        metamaskState.securityAlertsEnabled || false,
     };
 
     if (!previousUserTraits) {
