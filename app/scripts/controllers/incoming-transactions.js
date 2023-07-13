@@ -135,12 +135,12 @@ export default class IncomingTransactionsController {
   }
 
   start() {
-    if (!this._userConsentsToShowIncomingTransactions()) {
-      return;
-    }
+    const chainId = this.getCurrentChainId();
 
-    this.blockTracker.removeListener('latest', this._onLatestBlock);
-    this.blockTracker.addListener('latest', this._onLatestBlock);
+    if (this._allowedToMakeFetchIncomingTx(chainId)) {
+      this.blockTracker.removeListener('latest', this._onLatestBlock);
+      this.blockTracker.addListener('latest', this._onLatestBlock);
+    }
   }
 
   stop() {
@@ -158,14 +158,9 @@ export default class IncomingTransactionsController {
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
    */
   async _update(address, newBlockNumberDec) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
     const chainId = this.getCurrentChainId();
-    if (
-      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, chainId) ||
-      !address ||
-      !completedOnboarding ||
-      !this._userConsentsToShowIncomingTransactions()
-    ) {
+
+    if (!address || !this._allowedToMakeFetchIncomingTx(chainId)) {
       return;
     }
     try {
@@ -302,10 +297,24 @@ export default class IncomingTransactionsController {
   }
 
   /**
+   * @param chainId - {string} The chainId of the current network
    * @returns {boolean} Whether or not the user has consented to show incoming transactions
    */
-  _userConsentsToShowIncomingTransactions() {
+  _allowedToMakeFetchIncomingTx(chainId) {
     const { featureFlags = {} } = this.preferencesController.store.getState();
-    return Boolean(featureFlags.showIncomingTransactions);
+    const { completedOnboarding } = this.onboardingController.store.getState();
+
+    const hasIncomingTransactionsFeatureEnabled = Boolean(
+      featureFlags.showIncomingTransactions,
+    );
+
+    const isEtherscanSupportedNetwork = Boolean(
+      ETHERSCAN_SUPPORTED_NETWORKS[chainId],
+    );
+    return (
+      completedOnboarding &&
+      isEtherscanSupportedNetwork &&
+      hasIncomingTransactionsFeatureEnabled
+    );
   }
 }
