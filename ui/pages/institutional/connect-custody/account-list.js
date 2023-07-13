@@ -38,7 +38,7 @@ export default function CustodyAccountList({
   rawList,
   accounts,
   onAccountChange,
-  selectedAccounts = {},
+  selectedAccounts,
   onCancel,
   onAddAccounts,
   custody,
@@ -46,9 +46,9 @@ export default function CustodyAccountList({
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
-  const disabled = Object.keys(selectedAccounts).length === 0;
-  console.log(selectedAccounts, 'selectedAccounts');
-  console.log(disabled, 'disabled');
+  const disabled =
+    !selectedAccounts || Object.keys(selectedAccounts).length === 0;
+
   return (
     <Box className="page-container">
       <Box padding={4} className="page-container__content">
@@ -84,7 +84,7 @@ export default function CustodyAccountList({
                         chainId: account.chainId,
                       })
                     }
-                    checked={Boolean(selectedAccounts[account.address])}
+                    checked={selectedAccounts[account.address] || false}
                   />
                 )}
               </Box>

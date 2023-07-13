@@ -73,8 +73,6 @@ const CustodyPage = () => {
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 
-  console.log(selectedAccounts);
-
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
@@ -516,22 +514,26 @@ const CustodyPage = () => {
             custody={selectedCustodianName}
             accounts={accounts}
             onAccountChange={(account) => {
-              if (selectedAccounts[account.address]) {
-                delete selectedAccounts[account.address];
-              } else {
-                selectedAccounts[account.address] = {
-                  name: account.name,
-                  custodianDetails: account.custodianDetails,
-                  labels: account.labels,
-                  token: currentJwt,
-                  apiUrl,
-                  chainId: account.chainId,
-                  custodyType: selectedCustodianType,
-                  custodyName: selectedCustodianName,
-                };
-              }
+              setSelectedAccounts((prevSelectedAccounts) => {
+                const updatedSelectedAccounts = { ...prevSelectedAccounts };
 
-              setSelectedAccounts(selectedAccounts);
+                if (updatedSelectedAccounts[account.address]) {
+                  delete updatedSelectedAccounts[account.address];
+                } else {
+                  updatedSelectedAccounts[account.address] = {
+                    name: account.name,
+                    custodianDetails: account.custodianDetails,
+                    labels: account.labels,
+                    token: currentJwt,
+                    apiUrl,
+                    chainId: account.chainId,
+                    custodyType: selectedCustodianType,
+                    custodyName: selectedCustodianName,
+                  };
+                }
+
+                return updatedSelectedAccounts;
+              });
             }}
             selectedAccounts={selectedAccounts}
             onAddAccounts={async () => {
