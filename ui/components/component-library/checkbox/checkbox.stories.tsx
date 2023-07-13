@@ -1,14 +1,19 @@
 import { StoryFn, Meta } from '@storybook/react';
+import { useArgs } from '@storybook/client-api';
 import React from 'react';
 
 import { Box } from '..';
-import { BorderColor } from '../../../helpers/constants/design-system';
+import {
+  BorderColor,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
 import README from './README.mdx';
+
 import { Checkbox } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/Checkbox',
-
   component: Checkbox,
   parameters: {
     docs: {
@@ -19,18 +24,26 @@ export default {
     label: {
       control: 'text',
     },
+    name: {
+      control: 'text',
+    },
+    id: {
+      control: 'text',
+    },
   },
-  args: {},
 } as Meta<typeof Checkbox>;
 
 const Template: StoryFn<typeof Checkbox> = (args) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-
+  const [{ isChecked }, updateArgs] = useArgs();
   return (
     <Checkbox
       {...args}
-      onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked || args.isChecked}
+      onChange={() =>
+        updateArgs({
+          isChecked: !isChecked,
+        })
+      }
+      isChecked={isChecked}
     />
   );
 };
@@ -38,167 +51,127 @@ const Template: StoryFn<typeof Checkbox> = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Label = (args) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-
-  return (
-    <Checkbox
-      {...args}
-      onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked || args.isChecked}
-    />
-  );
-};
-
+export const Label = Template.bind({});
 Label.args = {
-  label: 'Checkbox Label',
+  label: 'Checkbox label',
 };
 
-export const Id = (args) => {
-  return <Checkbox {...args} />;
-};
-
+export const Id = Template.bind({});
 Id.args = {
-  label: 'Id Demo',
+  label: 'Id demo',
   id: 'id-demo',
 };
 
-export const IsChecked = (args) => {
-  return <Checkbox {...args} label="isChecked Demo" />;
-};
-
+export const IsChecked = Template.bind({});
 IsChecked.args = {
   isChecked: true,
+  label: 'isChecked demo',
 };
 
-export const IsIndeterminate = () => {
-  const [isTopCheckboxChecked, setTopCheckboxChecked] = React.useState<
-    boolean | 'indeterminate'
-  >('indeterminate');
-  const [checkboxes, setCheckboxes] = React.useState<boolean[]>([
-    false,
-    true,
-    false,
-  ]);
+export const IsIndeterminate = (args) => {
+  const [checkedItems, setCheckedItems] = React.useState([false, true, false]);
 
-  const handleTopCheckboxChange = () => {
-    if (
-      isTopCheckboxChecked === true ||
-      isTopCheckboxChecked === 'indeterminate'
-    ) {
-      setTopCheckboxChecked(false);
-      setCheckboxes([false, false, false]);
+  const allChecked = checkedItems.every(Boolean);
+  const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
+
+  const handleIndeterminateChange = () => {
+    if (allChecked || isIndeterminate) {
+      setCheckedItems([false, false, false]);
     } else {
-      setTopCheckboxChecked(true);
-      setCheckboxes([true, true, true]);
+      setCheckedItems([true, true, true]);
     }
   };
 
-  const handleCheckboxChange = (index: number) => {
-    const newCheckboxes = [...checkboxes];
-    newCheckboxes[index] = !newCheckboxes[index];
-    setCheckboxes(newCheckboxes);
-
-    if (newCheckboxes.every((checkbox) => checkbox === true)) {
-      setTopCheckboxChecked(true);
-    } else if (newCheckboxes.every((checkbox) => checkbox === false)) {
-      setTopCheckboxChecked(false);
-    } else {
-      setTopCheckboxChecked('indeterminate');
-    }
+  const handleCheckboxChange = (index, value) => {
+    const newCheckedItems = [...checkedItems];
+    newCheckedItems[index] = value;
+    setCheckedItems(newCheckedItems);
   };
 
   return (
     <div>
       <Checkbox
-        label="Demo with isIndeterminate"
-        isChecked={isTopCheckboxChecked === true}
-        isIndeterminate={isTopCheckboxChecked === 'indeterminate'}
-        onChange={() => handleTopCheckboxChange()}
+        {...args}
+        isChecked={allChecked}
+        isIndeterminate={isIndeterminate}
+        onChange={handleIndeterminateChange}
+        marginBottom={2}
       />
-      <Box marginLeft={2}>
-        {checkboxes.map((isChecked, index) => (
-          <Checkbox
-            key={index}
-            label={`Checkbox ${index + 1}`}
-            isChecked={isChecked}
-            onChange={() => handleCheckboxChange(index)}
-          />
-        ))}
+      <Box
+        marginLeft={2}
+        gap={1}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
+        <Checkbox
+          isChecked={checkedItems[0]}
+          onChange={(e) => handleCheckboxChange(0, e.target.checked)}
+          label="Checkbox 1"
+        />
+        <Checkbox
+          isChecked={checkedItems[1]}
+          onChange={(e) => handleCheckboxChange(1, e.target.checked)}
+          label="Checkbox 2"
+        />
+        <Checkbox
+          isChecked={checkedItems[2]}
+          onChange={(e) => handleCheckboxChange(2, e.target.checked)}
+          label="Checkbox 3"
+        />
       </Box>
     </div>
   );
 };
 
 IsIndeterminate.args = {
+  label: 'isIndeterminate demo',
   isIndeterminate: true,
 };
 
-export const IsDisabled = (args) => {
-  return <Checkbox {...args} label="isDisabled Demo" />;
-};
+export const IsDisabled = Template.bind({});
 
 IsDisabled.args = {
   isDisabled: true,
+  label: 'isDisabled demo',
 };
 
-export const IsReadOnly = (args) => {
-  return <Checkbox {...args} label="isReadOnly Demo" />;
-};
+export const IsReadOnly = Template.bind({});
 
 IsReadOnly.args = {
   isReadOnly: true,
   isChecked: true,
+  label: 'isReadOnly demo',
 };
 
-export const OnChange = (args) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-  return (
-    <Checkbox
-      {...args}
-      onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked || args.isChecked}
-      label="onChange Demo"
-    />
-  );
+export const OnChange = Template.bind({});
+OnChange.args = {
+  label: 'onChange demo',
 };
 
-export const IsRequired = (args) => {
-  return <Checkbox {...args} label="isRequired Demo" />;
-};
+export const IsRequired = Template.bind({});
 
 IsRequired.args = {
   isRequired: true,
   isChecked: true,
+  label: 'isRequired demo',
 };
 
-export const Title = (args) => {
-  return <Checkbox {...args} />;
-};
+export const Title = Template.bind({});
 
 Title.args = {
   title: 'Apples',
   label: 'Inspect to see title attribute',
 };
 
-export const Name = (args) => {
-  return <Checkbox {...args} />;
-};
+export const Name = Template.bind({});
 
 Name.args = {
   name: 'pineapple',
-  label: 'Pineapple',
+  label: 'Inspect to see name attribute',
 };
 
-export const InputProps = (args) => {
-  const [isChecked, setIsChecked] = React.useState(false);
-  return (
-    <Checkbox
-      {...args}
-      onChange={() => setIsChecked(!isChecked)}
-      isChecked={isChecked || args.isChecked}
-      label="Checkbox Label with inputProps"
-      inputProps={{ borderColor: BorderColor.errorDefault }}
-    />
-  );
+export const InputProps = Template.bind({});
+InputProps.args = {
+  inputProps: { borderColor: BorderColor.errorDefault },
+  label: 'inputProps demo',
 };
