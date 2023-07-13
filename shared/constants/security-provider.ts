@@ -2,14 +2,17 @@ export enum SecurityProvider {
   Blockaid = 'blockaid',
 }
 
-/**
- * @typedef {object} SecurityProviderConfig
- * @property {string} tKeyName - translation key for security provider name
- * @property {string} url - URL to securty provider website
- */
+type SecurityProviderConfig = Record<
+  SecurityProvider,
+  {
+    /** translation key for security provider name */
+    tKeyName: string;
+    /** URL to securty provider website */
+    url: string;
+  }
+>;
 
-/** @type {Record<string, SecurityProviderConfig>} */
-export const SECURITY_PROVIDER_CONFIG = {
+export const SECURITY_PROVIDER_CONFIG: SecurityProviderConfig = {
   [SecurityProvider.Blockaid]: {
     tKeyName: 'blockaid',
     url: 'https://blockaid.io/',
