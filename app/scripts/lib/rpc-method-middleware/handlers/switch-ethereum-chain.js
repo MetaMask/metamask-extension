@@ -29,6 +29,7 @@ const switchEthereumChain = {
 };
 export default switchEthereumChain;
 
+// TODO: remove this in favor of findFullNetworkConfigurationByChainId
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
@@ -123,7 +124,7 @@ async function switchEthereumChainHandler(
       // ) {
       //   await setProviderType(approvedRequestData.type);
       // } else {
-      setChainForDomain(chainId);
+      setChainForDomain(origin, chainId);
       const networkClient = findFullNetworkConfigurationByChainId(chainId);
       setClientForDomain(origin, networkClient);
       // }

@@ -3,7 +3,10 @@ import {
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
-import { createEventEmitterProxy, createSwappableProxy } from '@metamask/swappable-obj-proxy';
+import {
+  createEventEmitterProxy,
+  createSwappableProxy,
+} from '@metamask/swappable-obj-proxy';
 
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
@@ -123,30 +126,40 @@ export default class SelectedNetworkController extends BaseControllerV2<
     return this.state.domains[origin];
   }
 
-  hasQueuedRequests(origin?: Domain) {
-    if (origin) {
-      return this.requestQueue[origin].length > 0;
-    }
-    return Object.keys(this.requestQueue).length > 0;
-  }
-
-  enqueueRequest(origin: Domain, requestNext: Promise<unknown>) {
-    if (this.requestQueue[origin] === undefined) {
-      this.requestQueue[origin] = [];
-    }
-
-    this.requestQueue[origin].push(requestNext);
-
-    return this.requestQueue;
-  }
-
-  async waitForRequestQueue() {
-    console.log('request queue when starting to wait: ', this.requestQueue);
-    const domainQueues = Object.values(this.requestQueue).map((domainQueue) =>
-      Promise.all(domainQueue),
+  getAllConfigurationsByChainId() {
+    return this.clientsByDomain.reduce(
+      (acc: Record<ChainId, any>, client: any) => {
+        acc[client.configuration.chainId] = client.configuration;
+        return acc;
+      },
+      {},
     );
-    await Promise.all(domainQueues);
-    this.requestQueue = {};
-    return true;
   }
+
+  // hasQueuedRequests(origin?: Domain) {
+  //   if (origin) {
+  //     return this.requestQueue[origin].length > 0;
+  //   }
+  //   return Object.keys(this.requestQueue).length > 0;
+  // }
+
+  // enqueueRequest(origin: Domain, requestNext: Promise<unknown>) {
+  //   if (this.requestQueue[origin] === undefined) {
+  //     this.requestQueue[origin] = [];
+  //   }
+
+  //   this.requestQueue[origin].push(requestNext);
+
+  //   return this.requestQueue;
+  // }
+
+  // async waitForRequestQueue() {
+  //   console.log('request queue when starting to wait: ', this.requestQueue);
+  //   const domainQueues = Object.values(this.requestQueue).map((domainQueue) =>
+  //     Promise.all(domainQueue),
+  //   );
+  //   await Promise.all(domainQueues);
+  //   this.requestQueue = {};
+  //   return true;
+  // }
 }
