@@ -146,7 +146,12 @@ describe('#InstitutionActions', () => {
     ];
 
     await store.dispatch(
-      showCustodyConfirmLink('link', '0x1', false, 'custodyId'),
+      showCustodyConfirmLink({
+        link: 'link',
+        address: '0x1',
+        closeNotification: false,
+        custodyId: 'custodyId',
+      }),
     );
 
     expect(store.getActions()).toStrictEqual(expectedActions);
