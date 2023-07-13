@@ -78,11 +78,39 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
+mapDispatchToProps = function (dispatch) {
+  return {
+    goHome: () => dispatch(goHome()),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: messagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: messagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    completedTx: (txId) => dispatch(completedTx(txId)),
+    resolvePendingApproval: (id) => {
+      dispatch(resolvePendingApproval(id));
+    },
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    cancelAllApprovals: (messagesList) => {
+      dispatch(rejectAllMessages(messagesList));
+    },
+  };
+};
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
     showCustodianDeepLink: ({
       custodyId,
@@ -119,15 +147,6 @@ function mmiMapDispatchToProps(dispatch) {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     goHome: () => dispatch(goHome()),
-  };
-}
-
-mapDispatchToProps = mmiMapDispatchToProps;
-///: END:ONLY_INCLUDE_IN
-
-mapDispatchToProps = function (dispatch) {
-  return {
-    goHome: () => dispatch(goHome()),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
@@ -152,7 +171,10 @@ mapDispatchToProps = function (dispatch) {
       dispatch(rejectAllMessages(messagesList));
     },
   };
-};
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const { txData } = ownProps;

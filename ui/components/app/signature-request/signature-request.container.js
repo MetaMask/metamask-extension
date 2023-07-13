@@ -104,11 +104,36 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
+mapDispatchToProps = function (dispatch) {
+  return {
+    resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    completedTx: (id) => dispatch(completedTx(id)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: unapprovedMessagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: unapprovedMessagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    cancelAllApprovals: (unconfirmedMessagesList) => {
+      dispatch(rejectAllMessages(unconfirmedMessagesList));
+    },
+  };
+};
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
     showCustodianDeepLink: ({
       custodyId,
@@ -145,14 +170,6 @@ function mmiMapDispatchToProps(dispatch) {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     goHome: () => dispatch(goHome()),
-  };
-}
-
-mapDispatchToProps = mmiMapDispatchToProps;
-///: END:ONLY_INCLUDE_IN
-
-mapDispatchToProps = function (dispatch) {
-  return {
     resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
     completedTx: (id) => dispatch(completedTx(id)),
     rejectPendingApproval: (id, error) =>
@@ -175,7 +192,10 @@ mapDispatchToProps = function (dispatch) {
       dispatch(rejectAllMessages(unconfirmedMessagesList));
     },
   };
-};
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const {
