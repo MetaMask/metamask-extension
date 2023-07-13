@@ -2161,6 +2161,8 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       ...this.getProviderNetworkState(),
       accounts: await this.getPermittedAccounts(origin),
+      configurationsByChainId:
+        this.selectedNetworkController.getAllConfigurationsByChainId(),
     };
   }
 
@@ -4066,7 +4068,7 @@ export default class MetamaskController extends EventEmitter {
       console.log(
         'getChainForDomain',
         this.selectedNetworkController.getChainForDomain(origin),
-        origin
+        origin,
       );
       console.log(
         'setting default chain id for ',
@@ -4671,7 +4673,6 @@ export default class MetamaskController extends EventEmitter {
    */
   findNetworkConfigurationBy(rpcInfo) {
     const { networkConfigurations } = this.networkController.state;
-    console.log('networkConfigurations', networkConfigurations);
     const networkConfiguration = Object.values(networkConfigurations).find(
       (configuration) => {
         return Object.keys(rpcInfo).some((key) => {
@@ -4685,15 +4686,12 @@ export default class MetamaskController extends EventEmitter {
 
   findFullNetworkConfigurationByChainId(chainId) {
     const networkClients = this.networkController.getNetworkClientsById();
-    console.log('networkConfigurations', networkClients);
     const type = CHAIN_ID_TO_TYPE_MAP[chainId];
     if (type) {
       return networkClients[type];
     }
-    console.log('looking for', chainId);
     const networkConfiguration = Object.values(networkClients).find(
       (networkClient) => {
-        console.log('checking', networkClient.configuration.chainId, chainId);
         return networkClient.configuration.chainId === chainId;
       },
     );
