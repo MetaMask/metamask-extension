@@ -31,6 +31,7 @@ async function main(): Promise<void> {
   const prLabels = await retrievePullRequestLabels(octokit, prRepoOwner, prRepoName, prNumber);
 
   const qaLabels = ["QA Passed", "No QA Needed/E2E Only", "Spot Check on the Release Build"];
+  const preventMergeLabels = ["needs-qa", "QA'd but questions", "issues-found"];
 
   let hasQALabel = false;
   let hasTeamLabel = false;
@@ -44,6 +45,9 @@ async function main(): Promise<void> {
     if (label.startsWith("team-")) {
       console.log(`PR contains a team label as expected: ${label}`);
       hasTeamLabel = true;
+    }
+    if (preventMergeLabels.includes(label)) {
+      throw new Error(`PR cannot be merged because it still contains this label: ${label}`);
     }
     if (hasQALabel && hasTeamLabel) {
       return;
