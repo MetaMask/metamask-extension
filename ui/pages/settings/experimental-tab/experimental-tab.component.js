@@ -122,7 +122,7 @@ export default class ExperimentalTab extends PureComponent {
                         legacy_event: true,
                       },
                     });
-                    setSecurityAlertsEnabled(!value);
+                    setSecurityAlertsEnabled(!value || false);
                   }}
                 />
               </div>

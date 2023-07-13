@@ -4298,7 +4298,7 @@ export function setTransactionSecurityCheckEnabled(
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
   try {
-    submitRequestToBackground('setTransactionSecurityCheckEnabled', [[val]]);
+    submitRequestToBackground('setSecurityAlertsEnabled', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }
