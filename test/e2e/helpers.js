@@ -692,12 +692,6 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function switchToWindow(driver, windowTitle) {
-  const windowHandles = await driver.getAllWindowHandles();
-
-  return await driver.switchToWindowWithTitle(windowTitle, windowHandles);
-}
-
 async function sleepSeconds(sec) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
@@ -714,7 +708,8 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  const serviceWorkerElements = await driver.findElements({
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
     text: 'terminate',
     tag: 'span',
   });
@@ -722,8 +717,7 @@ async function terminateServiceWorker(driver) {
   // 1st one is app-init.js; while 2nd one is service-worker.js
   await serviceWorkerElements[serviceWorkerElements.length - 1].click();
 
-  const serviceWorkerTab = await switchToWindow(
-    driver,
+  const serviceWorkerTab = await driver.switchToWindowWithTitle(
     WINDOW_TITLES.ServiceWorkerSettings,
   );
 
@@ -810,7 +804,6 @@ module.exports = {
   generateETHBalance,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   switchToNotificationWindow,
