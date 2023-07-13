@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import isEqual from 'lodash/isEqual';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -38,7 +39,7 @@ const ConfirmAddCustodianToken = () => {
   const mmiActions = mmiActionsFactory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests);
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const isComplianceActivated = useSelector(complianceActivated);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
