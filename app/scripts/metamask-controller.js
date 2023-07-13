@@ -4055,6 +4055,11 @@ export default class MetamaskController extends EventEmitter {
       this.selectedNetworkController.getChainForDomain(origin) === undefined
     ) {
       console.log(
+        'getChainForDomain',
+        this.selectedNetworkController.getChainForDomain(origin),
+        origin
+      );
+      console.log(
         'setting default chain id for ',
         origin,
         'to ',
@@ -4095,31 +4100,6 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
-
-    // add some middleware that will switch chain on each request (as needed)
-    engine.push(
-      createAsyncMiddleware(async (req, res, next) => {
-       console.log('REQEUST IN MIDDLEWARE', req);
-        if (req.method === 'wallet_switchEthereumChain') {
-          console.log(
-            'switch ethereum chain called with',
-            req.params[0].chainId,
-          );
-          await next();
-          console.log('setting selected network', req.params[0].chainId);
-          this.selectedNetworkController.setChainForDomain(
-            origin,
-            req.params[0].chainId,
-          );
-          this.selectedNetworkController.setClientForDomain(
-            origin,
-            this.findFullNetworkConfigurationByChainId(chainIdForRequest),
-          );
-        } else {
-          return next();
-        }
-      }),
-    );
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
@@ -4179,7 +4159,7 @@ export default class MetamaskController extends EventEmitter {
     }
     engine.push(
       createAsyncMiddleware(async (req, res, next) => {
-       console.log('LAST IN MIDDLEWARE2', req);
+       console.log('LAST IN MIDDLEWARE2', req, networkClient.configuration, networkClient);
        next();
       }),
     );
@@ -4189,6 +4169,24 @@ export default class MetamaskController extends EventEmitter {
         origin,
 
         subjectType,
+
+        setClientForDomain:
+          this.selectedNetworkController.setClientForDomain.bind(
+            this.selectedNetworkController,
+          ),
+
+        findFullNetworkConfigurationByChainId:
+          this.findFullNetworkConfigurationByChainId.bind(this),
+
+        getChainForDomain:
+          this.selectedNetworkController.getChainForDomain.bind(
+            this.selectedNetworkController,
+          ),
+
+        setChainForDomain:
+          this.selectedNetworkController.setChainForDomain.bind(
+            this.selectedNetworkController,
+          ),
 
         // Miscellaneous
         addSubjectMetadata:
@@ -4298,12 +4296,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(
-      createAsyncMiddleware(async (req, res, next) => {
-       console.log('LAST IN MIDDLEWARE3', req);
-       next();
-      }),
-    );
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     engine.push(
       createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
