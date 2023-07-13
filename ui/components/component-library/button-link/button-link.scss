@@ -1,3 +1,4 @@
+
 .mm-button-link {
   &:hover:not(&--disabled) {
     text-decoration: underline;
@@ -7,6 +8,12 @@
 
   &:active {
     color: var(--color-primary-alternative);
+  }
+
+  &--disabled {
+    &:active {
+      color: var(--color-primary-default);
+    }
   }
 
   &--type-danger {
@@ -36,11 +43,6 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
-
-    &:hover {
-      text-decoration-thickness: auto;
-      text-underline-offset: 2px;
-    }
   }
 
   &--size-inherit:hover:not(&--disabled) {
