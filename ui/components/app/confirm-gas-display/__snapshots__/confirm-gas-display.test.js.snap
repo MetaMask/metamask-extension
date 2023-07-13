@@ -9,7 +9,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
     <div
       class="transaction-detail-item__row"
     >
-      <div
+      <h6
         class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center box--color-text-default"
       >
         <div
@@ -53,11 +53,11 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             </div>
           </div>
         </div>
-      </div>
+      </h6>
       <div
         class="transaction-detail-item__detail-values"
       >
-        <p
+        <h6
           class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
         >
           <div
@@ -77,8 +77,8 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
               </span>
             </div>
           </div>
-        </p>
-        <p
+        </h6>
+        <h6
           class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right box--margin-left-1 box--flex-direction-row box--color-text-default"
         >
           <div
@@ -103,7 +103,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
               </span>
             </div>
           </div>
-        </p>
+        </h6>
       </div>
     </div>
     <div
@@ -116,7 +116,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           Maybe in 1 seconds
         </h6>
       </div>
-      <p
+      <h6
         align="end"
         class="box mm-text transaction-detail-item__row-subText mm-text--body-sm box--flex-direction-row box--color-text-alternative"
       >
@@ -153,7 +153,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
             </div>
           </div>
         </div>
-      </p>
+      </h6>
     </div>
   </div>
 </div>
