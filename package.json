@@ -197,9 +197,9 @@
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/network-controller@^10.1.0": "patch:@metamask/network-controller@npm%3A10.1.0#./.yarn/patches/@metamask-network-controller-npm-10.1.0-fa53ee2dce.patch",
-    "@metamask/network-controller@^9.0.0": "patch:@metamask/network-controller@npm%3A10.1.0#./.yarn/patches/@metamask-network-controller-npm-10.1.0-fa53ee2dce.patch",
-    "@metamask/network-controller@^2.0.0": "patch:@metamask/network-controller@npm%3A10.1.0#./.yarn/patches/@metamask-network-controller-npm-10.1.0-fa53ee2dce.patch"
+    "@metamask/network-controller@^10.3.0": "patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch",
+    "@metamask/network-controller@^2.0.0": "patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch",
+    "@metamask/network-controller@^10.2.0": "patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",

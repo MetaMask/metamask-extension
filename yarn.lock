@@ -4378,9 +4378,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:10.1.0":
-  version: 10.1.0
-  resolution: "@metamask/network-controller@npm:10.1.0"
+"@metamask/network-controller@npm:10.3.0":
+  version: 10.3.0
+  resolution: "@metamask/network-controller@npm:10.3.0"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/controller-utils": ^4.0.0
@@ -4424,12 +4424,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.1.0#./.yarn/patches/@metamask-network-controller-npm-10.1.0-fa53ee2dce.patch::locator=metamask-crx%40workspace%3A.":
-  version: 10.1.0
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.1.0#./.yarn/patches/@metamask-network-controller-npm-10.1.0-fa53ee2dce.patch::version=10.1.0&hash=94294c&locator=metamask-crx%40workspace%3A."
+"@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch::locator=metamask-crx%40workspace%3A.":
+  version: 10.3.0
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch::version=10.3.0&hash=100129&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
+    "@metamask/controller-utils": ^4.1.0
     "@metamask/eth-json-rpc-infura": ^8.0.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-json-rpc-provider": ^1.0.0
@@ -4443,7 +4443,7 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     uuid: ^8.3.2
-  checksum: 7ec85a0e680b47774aa47a7aeb119cecc72eca147e24f03728c02e0bef0791431a5222acdbcc775b148216e66f333ec08c34d1be83d5fd692894533d22cc0641
+  checksum: 8f18faba69141970403d93b1eb21dec1edeb1c1b9c3915300658792b2e91b7ce9a35d4db6a711144456c3f984be8b53455ceed2a8820fbd007e53a59533b3957
   languageName: node
   linkType: hard
 

@@ -1642,6 +1642,38 @@
         "superstruct": true
       }
     },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
+      "globals": {
+        "URL": true,
+        "btoa": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>@metamask/utils": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
+        "@metamask/safe-event-emitter": true,
+        "browserify>browser-resolve": true,
+        "eth-rpc-errors": true,
+        "json-rpc-engine": true,
+        "lavamoat>json-stable-stringify": true,
+        "vinyl>clone": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
         "@metamask/safe-event-emitter": true,
