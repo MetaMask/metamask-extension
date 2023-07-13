@@ -12,7 +12,7 @@ Checkbox is a graphical element that allows users to select one or more options 
 
 ## Props
 
-The `Checkbox` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+The `Checkbox` accepts all props below as well as all [Box](/docs/components-componentlibrary-box--docs#props) component props
 
 <ArgsTable of={Checkbox} />
 
@@ -41,7 +41,7 @@ Use the `isChecked` boolean prop to set the checked state of the `Checkbox`
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox isChecked={true} />;
+<Checkbox isChecked={true} label="isChecked demo" />;
 ```
 
 ### IsIndeterminate
@@ -53,9 +53,57 @@ Use the `isIndeterminate` boolean prop to set the indeterminate state of the `Ch
 </Canvas>
 
 ```jsx
-import { Checkbox } from '../../component-library';
+import React from 'react';
+import { Checkbox, Box } from '../../component-library';
 
-<Checkbox isIndeterminate={true} />;
+const [checkedItems, setCheckedItems] = React.useState([false, true, false]);
+
+const allChecked = checkedItems.every(Boolean);
+const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
+
+const handleIndeterminateChange = () => {
+  if (allChecked || isIndeterminate) {
+    setCheckedItems([false, false, false]);
+  } else {
+    setCheckedItems([true, true, true]);
+  }
+};
+
+const handleCheckboxChange = (index, value) => {
+  const newCheckedItems = [...checkedItems];
+  newCheckedItems[index] = value;
+  setCheckedItems(newCheckedItems);
+};
+
+<Checkbox
+    label="isIndeterminate demo"
+    isChecked={allChecked}
+    isIndeterminate={isIndeterminate}
+    onChange={handleIndeterminateChange}
+    marginBottom={2}
+/>
+<Box
+  marginLeft={2}
+  gap={1}
+  display={Display.Flex}
+  flexDirection={FlexDirection.Column}
+>
+  <Checkbox
+    isChecked={checkedItems[0]}
+    onChange={(e) => handleCheckboxChange(0, e.target.checked)}
+    label="Checkbox 1"
+  />
+  <Checkbox
+    isChecked={checkedItems[1]}
+    onChange={(e) => handleCheckboxChange(1, e.target.checked)}
+    label="Checkbox 2"
+  />
+  <Checkbox
+    isChecked={checkedItems[2]}
+    onChange={(e) => handleCheckboxChange(2, e.target.checked)}
+    label="Checkbox 3"
+  />
+</Box>
 ```
 
 ### IsDisabled
@@ -69,7 +117,7 @@ Use the `isDisabled` boolean prop to set the disabled state of the `Checkbox`
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox isDisabled={true} />;
+<Checkbox isDisabled={true} label="isDisabled demo" />;
 ```
 
 ### IsReadOnly
@@ -83,7 +131,7 @@ Use the `isReadOnly` boolean prop to set the readOnly attribute of the `Checkbox
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox isReadOnly={true} />;
+<Checkbox isReadOnly={true} label="isReadOnly demo" />;
 ```
 
 ### OnChange
@@ -95,11 +143,16 @@ Use the `onChange` function prop to set the onChange handler of the `Checkbox`
 </Canvas>
 
 ```jsx
+import React from 'react';
 import { Checkbox } from '../../component-library';
 
 const [isChecked, setIsChecked] = React.useState(false);
 
-<Checkbox onChange={() => setIsChecked(!isChecked)} isChecked={isChecked} />;
+<Checkbox
+  onChange={() => setIsChecked(!isChecked)}
+  isChecked={isChecked}
+  label="isReadOnly demo"
+/>;
 ```
 
 ### IsRequired
@@ -113,7 +166,7 @@ Use the `isRequired` boolean prop to set the required attribute of the `Checkbox
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox isRequired={true} />;
+<Checkbox isRequired={true} label="isRequired demo" />;
 ```
 
 ### Title
@@ -128,7 +181,7 @@ The title attribute is used to provide additional context or information about t
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox title="Apples" />;
+<Checkbox title="Apples" label="Inspect to see title attribute" />;
 ```
 
 ### Name
@@ -143,7 +196,7 @@ This is best used when working with a form and submitting the value of the `Chec
 ```jsx
 import { Checkbox } from '../../component-library';
 
-<Checkbox name="pineapple" />;
+<Checkbox name="pineapple" label="Inspect to see name attribute" />;
 ```
 
 ### InputProps
@@ -159,7 +212,7 @@ If needing to pass a ref to the input element, use the `inputRef` prop
 import { Checkbox } from '../../component-library';
 
 <Checkbox
-  label="Checkbox Label with inputProps"
-  // inputProps={{ borderColor: BorderColor.errorDefault }}
+  label="inputProps demo"
+  inputProps={{ borderColor: BorderColor.errorDefault }}
 />;
 ```

@@ -1,10 +1,11 @@
 .mm-checkbox {
+  cursor: pointer;
+
   &__input-wrapper {
     position: relative;
   }
 
   &__input {
-    cursor: pointer;
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
