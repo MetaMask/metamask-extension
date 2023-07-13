@@ -23,7 +23,12 @@ import { Box, Text } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
-const SnapLegacyAuthorshipHeader = ({ snapId, className }) => {
+const SnapLegacyAuthorshipHeader = ({
+  snapId,
+  className,
+  marginLeft,
+  marginRight,
+}) => {
   const packageName = snapId && removeSnapIdPrefix(snapId);
 
   const subjectMetadata = useSelector((state) =>
@@ -42,6 +47,8 @@ const SnapLegacyAuthorshipHeader = ({ snapId, className }) => {
       padding={2}
       borderColor={BorderColor.borderDefault}
       borderRadius={BorderRadius.pill}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
     >
       <Box>
         <SnapAvatar snapId={snapId} />
@@ -77,6 +84,8 @@ SnapLegacyAuthorshipHeader.propTypes = {
    * The className of the SnapLegacyAuthorshipHeader
    */
   className: PropTypes.string,
+  marginLeft: PropTypes.number,
+  marginRight: PropTypes.number,
 };
 
 export default SnapLegacyAuthorshipHeader;
