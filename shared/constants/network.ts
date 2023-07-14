@@ -541,7 +541,7 @@ const BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME = 'ethereum';
 
 export const BUYABLE_CHAINS_MAP: {
   [K in Exclude<
-    ChainId,
+    CaipChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
     | typeof CHAIN_IDS.BSC_TESTNET
