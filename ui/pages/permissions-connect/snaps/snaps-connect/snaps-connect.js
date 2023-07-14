@@ -18,6 +18,7 @@ import {
   Display,
   FontWeight,
   BlockSize,
+  OverflowWrap,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -164,6 +165,7 @@ export default function SnapsConnect({
             variant={TextVariant.bodyMd}
             textAlign={TextAlign.Center}
             padding={[0, 4]}
+            overflowWrap={OverflowWrap.Anywhere}
           >
             {t('snapConnectionWarning', [
               <Text

@@ -1,13 +1,13 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../../helpers/constants/error-keys';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -155,7 +155,7 @@ describe('Confirm Page Container Content', () => {
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
     };
 
     const { queryByText } = renderWithProvider(

@@ -304,7 +304,7 @@
   "connectingToGoerli": {
     "message": "連線到 Goerli 測試網路"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "連線到 Linea Goerli 測試網路"
   },
   "connectingToMainnet": {
@@ -407,9 +407,6 @@
   },
   "delete": {
     "message": "刪除"
-  },
-  "deleteAccount": {
-    "message": "刪除帳戶"
   },
   "deleteNetwork": {
     "message": "刪除網路？"
@@ -803,7 +800,7 @@
   "likeToImportTokens": {
     "message": "確定要加入代幣？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli 測試網路"
   },
   "links": {
@@ -820,9 +817,6 @@
   },
   "lock": {
     "message": "鎖定"
-  },
-  "lockTimeTooGreat": {
-    "message": "鎖定時間過長"
   },
   "mainnet": {
     "message": "以太坊 主網路"
@@ -860,9 +854,6 @@
   },
   "mustSelectOne": {
     "message": "必須選擇至少 1 代幣。"
-  },
-  "myAccounts": {
-    "message": "我的帳戶"
   },
   "name": {
     "message": "名稱"

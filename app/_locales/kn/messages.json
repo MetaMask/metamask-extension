@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷಾ ನೆಟ್‌ವರ್ಕ್‌ಗೆ ಸಂಪರ್ಕಿಸಲಾಗುತ್ತಿದೆ"
   },
   "connectingToMainnet": {
@@ -210,9 +210,6 @@
   },
   "delete": {
     "message": "ಅಳಿಸಿ"
-  },
-  "deleteAccount": {
-    "message": "ಖಾತೆಯನ್ನು ಅಳಿಸಿ"
   },
   "deleteNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
@@ -406,7 +403,7 @@
   "likeToImportTokens": {
     "message": "ನೀವು ಈ ಟೋಕನ್‌ಗಳನ್ನು ಸೇರಿಸಲು ಬಯಸುತ್ತೀರಾ?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli ಪರೀಕ್ಷೆ ನೆಟ್‌ವರ್ಕ್"
   },
   "links": {
@@ -444,9 +441,6 @@
   },
   "mustSelectOne": {
     "message": "ಕನಿಷ್ಟ 1 ಟೋಕನ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು."
-  },
-  "myAccounts": {
-    "message": "ನನ್ನ ಖಾತೆಗಳು"
   },
   "needImportFile": {
     "message": "ಆಮದು ಮಾಡಲು ನೀವು ಫೈಲ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಬೇಕು.",

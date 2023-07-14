@@ -208,9 +208,6 @@
   "delete": {
     "message": "মুছুন"
   },
-  "deleteAccount": {
-    "message": "অ্যাকাউন্ট মুছুন"
-  },
   "deleteNetwork": {
     "message": "নেটওয়ার্ক মুছবেন?"
   },
@@ -438,9 +435,6 @@
   },
   "mustSelectOne": {
     "message": "অবশ্যই অন্তত 1টি টোকেন নির্বাচন করতে হবে।"
-  },
-  "myAccounts": {
-    "message": "আমার অ্যাকাউন্টগুলি"
   },
   "needImportFile": {
     "message": "আমদানি করার জন্য আপনাকে অবশ্যই একটি ফাইল নির্বাচন করতে হবে।",

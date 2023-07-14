@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Box,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -47,7 +47,6 @@ import {
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
-import Box from '../../ui/box/box';
 import {
   hideProductTour,
   toggleAccountMenu,
@@ -69,6 +68,7 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
+  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -105,17 +105,17 @@ export const AppHeader = ({ location }) => {
   // Disable the network and account pickers if the user is in
   // a critical flow
   const sendStage = useSelector(getSendStage);
+  const isTransactionEditPage = [
+    SEND_STAGES.EDIT,
+    SEND_STAGES.DRAFT,
+    SEND_STAGES.ADD_RECIPIENT,
+  ].includes(sendStage);
   const isConfirmationPage = Boolean(
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
       exact: false,
     }),
   );
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
   const isSwapsPage = Boolean(
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
@@ -123,11 +123,18 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const disablePickers =
-    isConfirmationPage ||
+  const hasUnapprovedTransactions = useSelector(
+    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
+  );
+
+  const disableAccountPicker =
+    isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
+
+  const disableNetworkPicker =
+    isSwapsPage ||
     isTransactionEditPage ||
-    (isSwapsPage && !isSwapsBuildQuotePage);
-  const disableNetworkPicker = isSwapsPage || disablePickers;
+    isConfirmationPage ||
+    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -141,6 +148,10 @@ export const AppHeader = ({ location }) => {
       },
     });
   }, [chainId, dispatch, trackEvent]);
+
+  // This is required to ensure send and confirmation screens
+  // look as desired
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
 
   return (
     <>
@@ -168,6 +179,7 @@ export const AppHeader = ({ location }) => {
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
+        marginBottom={headerBottomMargin}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={
@@ -230,6 +242,7 @@ export const AppHeader = ({ location }) => {
               )}
               {showProductTour &&
               popupStatus &&
+              isHomePage &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
@@ -261,7 +274,7 @@ export const AppHeader = ({ location }) => {
                       },
                     });
                   }}
-                  disabled={disablePickers}
+                  disabled={disableAccountPicker}
                 />
               ) : null}
               <Box
@@ -348,7 +361,6 @@ export const AppHeader = ({ location }) => {
                         setAccountOptionsMenuOpen(true);
                       }}
                       size={ButtonIconSize.Sm}
-                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
                 </Box>
