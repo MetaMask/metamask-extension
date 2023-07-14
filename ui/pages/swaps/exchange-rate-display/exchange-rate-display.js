@@ -10,6 +10,7 @@ import {
   DISPLAY,
   AlignItems,
   IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
@@ -74,6 +75,9 @@ export default function ExchangeRateDisplay({
   const quoteRateClassName = onQuotesClick
     ? 'exchange-rate-display__quote-rate'
     : 'exchange-rate-display__quote-rate--no-link';
+  const quoteRateColor = onQuotesClick
+    ? TextColor.primaryDefault
+    : TextColor.textDefault;
 
   return (
     <div className={classnames('exchange-rate-display', className)}>
@@ -82,6 +86,7 @@ export default function ExchangeRateDisplay({
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
+        color={quoteRateColor}
         className={quoteRateClassName}
         data-testid="exchange-rate-display-quote-rate"
       >
