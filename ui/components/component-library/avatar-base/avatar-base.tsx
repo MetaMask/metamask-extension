@@ -60,7 +60,7 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
         {...{ backgroundColor, borderColor, color }}
-        {...props} // TODO: Fix type error to do with spreading ...props in Box types
+        {...props} // TODO: There is a typing issue with spreading props to the Box component. It still works but TypeScript complains.
       >
         {children}
       </Text>
