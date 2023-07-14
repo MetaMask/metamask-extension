@@ -77,6 +77,14 @@ describe('network utils', () => {
       expect(isTokenDetectionEnabledForNetwork('0x4e454152')).toBe(true);
     });
 
+    it('returns true given the chain ID for Filecoin', () => {
+      expect(isTokenDetectionEnabledForNetwork('0x13a')).toBe(true);
+    });
+
+    it('returns true given the chain ID for Filecoin Testnet', () => {
+      expect(isTokenDetectionEnabledForNetwork('0x4cb2f')).toBe(true);
+    });
+
     it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
       expect(isTokenDetectionEnabledForNetwork('some other chain ID')).toBe(
         false,
