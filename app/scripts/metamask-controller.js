@@ -91,6 +91,7 @@ import {
   ERC20,
   ERC721,
   getEthChainIdDecFromCaipChainId,
+  getEthChainIdHexFromCaipChainId,
 } from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -151,7 +152,6 @@ import { parseStandardTokenTransactionData } from '../../shared/modules/transact
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
-import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 import {
@@ -218,7 +218,6 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -361,14 +360,16 @@ export default class MetamaskController extends EventEmitter {
     }
 
     // need to figure out how to fix this in migrations
-    Object.keys(initialNetworkControllerState.networkConfigurations).forEach((key) => {
-      const {chainId, ...networkConfiguration} = initialNetworkControllerState.networkConfigurations[key];
+    if (initialNetworkControllerState.networkConfigurations) {
+      Object.keys(initialNetworkControllerState.networkConfigurations).forEach((key) => {
+        const {chainId, ...networkConfiguration} = initialNetworkControllerState.networkConfigurations[key];
 
-      if (chainId) {
-        networkConfiguration.caipChainId = chainId
-      }
-      initialNetworkControllerState.networkConfigurations[key] = networkConfiguration
-    });
+        if (chainId) {
+          networkConfiguration.caipChainId = chainId
+        }
+        initialNetworkControllerState.networkConfigurations[key] = networkConfiguration
+      });
+    }
     const {chainId, ...providerConfig} = initialNetworkControllerState.providerConfig
     if (chainId) {
       providerConfig.caipChainId = chainId
