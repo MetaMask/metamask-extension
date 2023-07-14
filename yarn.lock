@@ -4121,7 +4121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^8.0.0, @metamask/eth-json-rpc-infura@npm:^8.1.0":
+"@metamask/eth-json-rpc-infura@npm:^8.1.0":
   version: 8.1.1
   resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
   dependencies:
@@ -4378,30 +4378,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:10.3.0":
-  version: 10.3.0
-  resolution: "@metamask/network-controller@npm:10.3.0"
-  dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-    "@metamask/eth-json-rpc-infura": ^8.0.0
-    "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/eth-json-rpc-provider": ^1.0.0
-    "@metamask/swappable-obj-proxy": ^2.1.0
-    "@metamask/utils": ^5.0.2
-    async-mutex: ^0.2.6
-    babel-runtime: ^6.26.0
-    eth-block-tracker: ^7.0.1
-    eth-query: ^2.1.2
-    eth-rpc-errors: ^4.0.2
-    immer: ^9.0.6
-    json-rpc-engine: ^6.1.0
-    uuid: ^8.3.2
-  checksum: f5f1621e00bd5f818405554cfb0c01a648aba5fde30ac9e4b63ef4d00dacf58d86aabd0d4dc3342e17358ea48cbcce40f68d4aa6f61fb39e80aac50b44c2dde6
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0, @metamask/network-controller@npm:^10.3.1":
+"@metamask/network-controller@npm:10.3.1":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
   dependencies:
@@ -4424,13 +4401,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch::locator=metamask-crx%40workspace%3A.":
-  version: 10.3.0
-  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.0#./.yarn/patches/@metamask-network-controller-npm-10.3.0-982bb7627c.patch::version=10.3.0&hash=100129&locator=metamask-crx%40workspace%3A."
+"@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.1#./.yarn/patches/@metamask-network-controller-npm-10.3.1-cbb9cd006b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 10.3.1
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A10.3.1#./.yarn/patches/@metamask-network-controller-npm-10.3.1-cbb9cd006b.patch::version=10.3.1&hash=100129&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.1.0
-    "@metamask/eth-json-rpc-infura": ^8.0.0
+    "@metamask/base-controller": ^3.1.0
+    "@metamask/controller-utils": ^4.2.0
+    "@metamask/eth-json-rpc-infura": ^8.1.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-json-rpc-provider": ^1.0.0
     "@metamask/swappable-obj-proxy": ^2.1.0
@@ -4443,7 +4420,7 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     uuid: ^8.3.2
-  checksum: 8f18faba69141970403d93b1eb21dec1edeb1c1b9c3915300658792b2e91b7ce9a35d4db6a711144456c3f984be8b53455ceed2a8820fbd007e53a59533b3957
+  checksum: 08ce65014da12ac4dd708d89362cad8f40791d6f09bfb72462671b0b239b9f3af0f7ddd1ff25df1613f63939b329b3d5373c747a0ea9c0fdbce78a3f6a350b98
   languageName: node
   linkType: hard
 
