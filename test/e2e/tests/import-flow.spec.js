@@ -374,7 +374,7 @@ describe('Import flow', function () {
           // choose Connect hardware wallet from the account menu
           await driver.clickElement('[data-testid="account-menu-icon"]');
           await driver.clickElement({
-            text: 'Hardware wallet',
+            text: 'Add hardware wallet',
             tag: 'button',
           });
           await driver.delay(regularDelayMs);
