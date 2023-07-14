@@ -2402,6 +2402,18 @@ export function hideModal(): Action {
   };
 }
 
+export function showImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+  };
+}
+
+export function hideImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
+  };
+}
+
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,

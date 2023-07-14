@@ -260,7 +260,7 @@ export const AccountListMenu = ({ onClose }) => {
                     }
                   }}
                 >
-                  {t('hardwareWallet')}
+                  {t('addHardwareWallet')}
                 </ButtonLink>
               </Box>
               {
