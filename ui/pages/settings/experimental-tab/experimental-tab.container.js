@@ -5,13 +5,17 @@ import {
   setUseNftDetection,
   setOpenSeaEnabled,
   setTransactionSecurityCheckEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   setSecurityAlertBlockaidEnabled,
+  ///: END:ONLY_INCLUDE_IN(blockaid)
 } from '../../../store/actions';
 import {
   getUseNftDetection,
   getOpenSeaEnabled,
   getIsTransactionSecurityCheckEnabled,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   getIsSecurityAlertBlockaidEnabled,
+  ///: END:ONLY_INCLUDE_IN(blockaid)
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
@@ -21,7 +25,9 @@ const mapStateToProps = (state) => {
     openSeaEnabled: getOpenSeaEnabled(state),
     transactionSecurityCheckEnabled:
       getIsTransactionSecurityCheckEnabled(state),
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertBlockaidEnabled: getIsSecurityAlertBlockaidEnabled(state),
+    ///: END:ONLY_INCLUDE_IN(blockaid)
   };
 };
 
@@ -31,8 +37,10 @@ const mapDispatchToProps = (dispatch) => {
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setTransactionSecurityCheckEnabled: (val) =>
       dispatch(setTransactionSecurityCheckEnabled(val)),
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertBlockaidEnabled: (val) =>
       dispatch(setSecurityAlertBlockaidEnabled(val)),
+    ///: END:ONLY_INCLUDE_IN(blockaid)
   };
 };
 
