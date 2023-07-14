@@ -47,19 +47,18 @@ export const NetworkListItem = ({
   name,
   iconSrc,
   selected = false,
+  focus = true,
   onClick,
   onDeleteClick,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
 
-  /*
   useEffect(() => {
-    if (networkRef.current && selected) {
+    if (networkRef.current && focus) {
       networkRef.current.focus();
     }
-  }, [networkRef, selected]);
-  */
+  }, [networkRef, focus]);
 
   return (
     <Box
@@ -150,4 +149,8 @@ NetworkListItem.propTypes = {
    * Executes when the delete icon is clicked
    */
   onDeleteClick: PropTypes.func,
+  /**
+   * Represents if the network item should be keyboard selected
+   */
+  focus: PropTypes.bool,
 };

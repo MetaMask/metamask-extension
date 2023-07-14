@@ -38,6 +38,7 @@ import {
   Box,
   Text,
   TextFieldSearch,
+  Text,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -88,8 +89,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   let searchResults = [...nonTestNetworks];
+  const isSearching = searchQuery !== '';
 
-  if (searchQuery) {
+  if (isSearching) {
     const fuse = new Fuse(searchResults, {
       threshold: 0.2,
       location: 0,
@@ -100,7 +102,11 @@ export const NetworkListMenu = ({ onClose }) => {
       keys: ['nickname', 'chainId', 'ticker'],
     });
     fuse.setCollection(searchResults);
-    searchResults = fuse.search(searchQuery);
+    const fuseResults = fuse.search(searchQuery);
+    // Ensure order integrity with original list
+    searchResults = searchResults.filter((network) =>
+      fuseResults.includes(network),
+    );
   }
 
   const generateMenuItems = (desiredNetworks) => {
@@ -120,6 +126,7 @@ export const NetworkListMenu = ({ onClose }) => {
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={`${network.id || network.chainId}-${index}`}
           selected={isCurrentNetwork}
+          focus={isCurrentNetwork && !isSearching}
           onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
@@ -184,7 +191,7 @@ export const NetworkListMenu = ({ onClose }) => {
           {t('networkMenuHeading')}
         </ModalHeader>
         <>
-          {nonTestNetworks.length > 4 ? (
+          {nonTestNetworks.length > 3 ? (
             <Box
               paddingLeft={4}
               paddingRight={4}
@@ -206,7 +213,7 @@ export const NetworkListMenu = ({ onClose }) => {
             </Box>
           ) : null}
           <Box className="multichain-network-list-menu">
-            {searchResults.length === 0 && searchQuery !== '' ? (
+            {searchResults.length === 0 && isSearching ? (
               <Text
                 paddingLeft={4}
                 paddingRight={4}

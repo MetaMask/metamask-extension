@@ -2508,9 +2508,6 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noNetworksFound": {
-    "message": "No networks found for the given search query"
-  },
   "noAddressForName": {
     "message": "No address has been set for this name."
   },
@@ -2522,6 +2519,12 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
+  },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
+  },
+  "noReport": {
+    "message": "No Report"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
