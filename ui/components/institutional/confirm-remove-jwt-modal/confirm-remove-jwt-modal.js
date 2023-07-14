@@ -90,7 +90,9 @@ const ConfirmRemoveJWT = ({
           borderRadius={BorderRadius.SM}
           className="confirm-action-jwt__jwt"
         >
-          {showMore && token ? token : `...${token.slice(-9)}`}
+          <Text ellipsis>
+            {showMore && token ? token : `...${token.slice(-9)}`}
+          </Text>
         </Box>
         {!showMore && (
           <Text
