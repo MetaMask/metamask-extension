@@ -44,83 +44,87 @@ exports[`Confirm Remove JWT should render correctly 1`] = `
         class="box confirm-action-jwt__accounts-list box--flex-direction-row"
       >
         <div
-          class="box box--padding-top-4 box--padding-right-7 box--padding-bottom-7 box--padding-left-7 box--flex-direction-row"
+          class="mm-box page-container"
         >
           <div
-            class="box custody-account-list box--display-flex box--flex-direction-column box--width-full"
-            data-testid="custody-account-list"
+            class="mm-box page-container__content mm-box--padding-4"
           >
             <div
-              class="box custody-account-list__item box--display-flex box--flex-direction-row"
+              class="mm-box custody-account-list mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+              data-testid="custody-account-list"
             >
               <div
-                class="box box--display-flex box--flex-direction-row box--align-items-flex-start"
-                data-testid="custody-account-list-item-radio-button"
-              />
-              <div
-                class="box box--margin-left-2 box--display-flex box--flex-direction-column box--width-full"
+                class="mm-box custody-account-list__item mm-box--display-flex"
               >
-                <label
-                  class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
-                  for="address-0"
-                >
-                  <span
-                    class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
-                  >
-                    Test name account
-                  </span>
-                </label>
-                <label
-                  class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
-                  for="address-0"
-                >
-                  <span
-                    class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
-                  >
-                    <a
-                      class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
-                      href="https://etherscan.io/address/0xaD6D458402F60fD3Bd25163575031ACDce07538D"
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      <span
-                        class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
-                      >
-                        0xaD6...538D
-                        <span
-                          class="box mm-icon mm-icon--size-md box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
-                          style="mask-image: url('./images/icons/undefined.svg');"
-                        />
-                      </span>
-                    </a>
-                    <div>
-                      <div
-                        aria-describedby="tippy-tooltip-1"
-                        class=""
-                        data-original-title="Copy to clipboard"
-                        data-tooltipped=""
-                        style="display: inline; background-color: transparent;"
-                        tabindex="0"
-                      >
-                        <button
-                          class="custody-account-list__item__clipboard"
-                        >
-                          <span
-                            class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-muted"
-                            style="mask-image: url('./images/icons/undefined.svg');"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </span>
-                </label>
                 <div
-                  class="box box--display-flex box--flex-direction-row box--justify-content-space-between"
+                  class="mm-box mm-box--display-flex mm-box--align-items-flex-start"
+                  data-testid="custody-account-list-item-radio-button"
+                />
+                <div
+                  class="mm-box mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
                 >
                   <label
-                    class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                    class="box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium box--margin-top-2 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
                     for="address-0"
-                  />
+                  >
+                    <span
+                      class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                    >
+                      Test name account
+                    </span>
+                  </label>
+                  <label
+                    class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--margin-top-2 box--margin-right-3 box--margin-left-2 box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                    for="address-0"
+                  >
+                    <span
+                      class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                    >
+                      <a
+                        class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                        href="https://etherscan.io/address/0xaD6D458402F60fD3Bd25163575031ACDce07538D"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        <span
+                          class="box mm-text mm-text--inherit box--flex-direction-row box--color-primary-default"
+                        >
+                          0xaD6...538D
+                          <span
+                            class="box mm-icon mm-icon--size-md box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+                            style="mask-image: url('./images/icons/undefined.svg');"
+                          />
+                        </span>
+                      </a>
+                      <div>
+                        <div
+                          aria-describedby="tippy-tooltip-1"
+                          class=""
+                          data-original-title="Copy to clipboard"
+                          data-tooltipped=""
+                          style="display: inline; background-color: transparent;"
+                          tabindex="0"
+                        >
+                          <button
+                            class="custody-account-list__item__clipboard"
+                          >
+                            <span
+                              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-muted"
+                              style="mask-image: url('./images/icons/undefined.svg');"
+                            />
+                          </button>
+                        </div>
+                      </div>
+                    </span>
+                  </label>
+                  <div
+                    class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+                  >
+                    <label
+                      class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+                      for="address-0"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

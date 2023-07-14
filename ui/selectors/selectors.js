@@ -34,8 +34,8 @@ import {
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
-  LINEA_MAINNET_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1170,58 +1170,34 @@ export function getNetworkConfigurations(state) {
 
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
-  const currentChainId = getCurrentChainId(state);
+  const providerConfig = getProviderConfig(state);
 
-  return allNetworks.find((network) => network.chainId === currentChainId);
+  const filter =
+    providerConfig.type === 'rpc'
+      ? (network) => network.id === providerConfig.id
+      : (network) => network.id === providerConfig.type;
+  return allNetworks.find(filter);
 }
 
 export function getAllEnabledNetworks(state) {
+  const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
   const showTestnetNetworks = getShowTestNetworks(state);
 
-  return showTestnetNetworks
-    ? allNetworks
-    : allNetworks.filter(
-        (network) => TEST_CHAINS.includes(network.chainId) === false,
-      );
+  return showTestnetNetworks ? allNetworks : nonTestNetworks;
 }
 
-export function getAllNetworks(state) {
+export function getTestNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
 
-  const networks = [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-      nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-      rpcPrefs: {
-        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_MAINNET,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
-    // Test networks
+  return [
     {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+      id: NETWORK_TYPES.GOERLI,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1229,6 +1205,7 @@ export function getAllNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+      id: NETWORK_TYPES.SEPOLIA,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1239,11 +1216,55 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+      id: NETWORK_TYPES.LINEA_GOERLI,
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
       ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
     ),
+  ];
+}
+
+export function getNonTestNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+
+  return [
+    // Mainnet always first
+    {
+      chainId: CHAIN_IDS.MAINNET,
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcPrefs: {
+        imageUrl: ETH_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.MAINNET,
+      ticker: CURRENCY_SYMBOLS.ETH,
+      id: NETWORK_TYPES.MAINNET,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+      id: NETWORK_TYPES.LINEA_MAINNET,
+    },
+    // Custom networks added by the user
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
+    ),
+  ];
+}
+
+export function getAllNetworks(state) {
+  const networks = [
+    // Mainnet and custom networks
+    ...getNonTestNetworks(state),
+    // Test networks
+    ...getTestNetworks(state),
   ];
 
   return networks;

@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Box,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -47,7 +47,6 @@ import {
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
-import Box from '../../ui/box/box';
 import {
   hideProductTour,
   toggleAccountMenu,
@@ -69,6 +68,7 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
+  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -242,6 +242,7 @@ export const AppHeader = ({ location }) => {
               )}
               {showProductTour &&
               popupStatus &&
+              isHomePage &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
@@ -360,7 +361,6 @@ export const AppHeader = ({ location }) => {
                         setAccountOptionsMenuOpen(true);
                       }}
                       size={ButtonIconSize.Sm}
-                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
                 </Box>

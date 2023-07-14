@@ -21,7 +21,11 @@ import {
   Text,
   Box,
 } from '../../component-library';
-import { getCurrentChainId, getNativeCurrencyImage } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentNetwork,
+  getNativeCurrencyImage,
+} from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -29,7 +33,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { LINEA_GOERLI_TOKEN_IMAGE_URL } from '../../../../shared/constants/network';
 
 export const TokenListItem = ({
   className,
@@ -42,14 +45,11 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const dataTheme = document.documentElement.getAttribute('data-theme');
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
-  const badgeWrapperImage =
-    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : primaryTokenImage;
-  const badgeTokenImage =
-    title === 'LineaETH' ? LINEA_GOERLI_TOKEN_IMAGE_URL : tokenImage;
 
+  // Used for badge icon
+  const currentNetwork = useSelector(getCurrentNetwork);
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
@@ -84,10 +84,10 @@ export const TokenListItem = ({
           badge={
             <AvatarNetwork
               size={Size.XS}
-              name={tokenSymbol}
-              src={badgeWrapperImage}
+              name={currentNetwork?.nickname}
+              src={currentNetwork?.rpcPrefs?.imageUrl}
               borderColor={
-                badgeWrapperImage
+                primaryTokenImage
                   ? BorderColor.borderMuted
                   : BorderColor.borderDefault
               }
@@ -97,12 +97,10 @@ export const TokenListItem = ({
         >
           <AvatarToken
             name={tokenSymbol}
-            src={badgeTokenImage}
+            src={tokenImage}
             showHalo
             borderColor={
-              badgeTokenImage
-                ? BorderColor.transparent
-                : BorderColor.borderDefault
+              tokenImage ? BorderColor.transparent : BorderColor.borderDefault
             }
           />
         </BadgeWrapper>
@@ -125,7 +123,6 @@ export const TokenListItem = ({
                 html={title}
                 disabled={title?.length < 12}
                 tooltipInnerClassName="multichain-token-list-item__tooltip"
-                theme={dataTheme === 'light' ? 'dark' : 'light'}
               >
                 <Text
                   fontWeight={FontWeight.Medium}

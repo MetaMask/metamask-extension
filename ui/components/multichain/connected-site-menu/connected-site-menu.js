@@ -20,8 +20,8 @@ import {
   Icon,
   IconName,
   IconSize,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
