@@ -528,6 +528,9 @@
     "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
   },
+  "betaMetamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Beta Version"
+  },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
   },
