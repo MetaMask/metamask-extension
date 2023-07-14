@@ -168,9 +168,13 @@
     },
     "@babel/eslint-parser": {
       "builtin": {
-        "path": true
+        "module": true,
+        "path": true,
+        "worker_threads": true
       },
       "globals": {
+        "__dirname": true,
+        "process.cwd": true,
         "process.versions": true
       },
       "packages": {
@@ -1045,17 +1049,18 @@
       "globals": {
         "__dirname": true,
         "__filename.slice": true,
+        "console.warn": true,
         "process.cwd": true,
         "setTimeout": true
       },
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>lavamoat-core": true,
+        "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "lavamoat>json-stable-stringify": true,
-        "nyc>convert-source-map": true,
+        "lavamoat>lavamoat-core": true,
         "through2": true
       }
     },
@@ -1082,26 +1087,12 @@
         "@lavamoat/lavapack>combine-source-map>inline-source-map>source-map": true
       }
     },
-    "@lavamoat/lavapack>lavamoat-core": {
-      "builtin": {
-        "events": true,
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "fs.writeFileSync": true,
-        "path.extname": true,
-        "path.join": true
-      },
+    "@lavamoat/lavapack>convert-source-map": {
       "globals": {
-        "__dirname": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true
-      },
-      "packages": {
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "@lavamoat/lavapack>readable-stream": {
@@ -1131,6 +1122,13 @@
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
+      }
+    },
+    "@sentry/cli>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "@storybook/addon-knobs>qs": {
@@ -2858,12 +2856,12 @@
         "eslint-plugin-react>estraverse": true,
         "eslint-plugin-react>jsx-ast-utils": true,
         "eslint-plugin-react>object.entries": true,
+        "eslint-plugin-react>object.fromentries": true,
         "eslint-plugin-react>object.hasown": true,
         "eslint-plugin-react>object.values": true,
         "eslint-plugin-react>resolve": true,
         "eslint-plugin-react>semver": true,
         "eslint>minimatch": true,
-        "lavamoat>object.fromentries": true,
         "prop-types": true,
         "string.prototype.matchall": true
       }
@@ -2917,6 +2915,13 @@
       }
     },
     "eslint-plugin-react>object.entries": {
+      "packages": {
+        "globalthis>define-properties": true,
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>es-abstract": true
+      }
+    },
+    "eslint-plugin-react>object.fromentries": {
       "packages": {
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
@@ -2984,6 +2989,9 @@
         "util": true
       },
       "globals": {
+        "__filename": true,
+        "process.cwd": true,
+        "process.emitWarning": true,
         "process.platform": true
       },
       "packages": {
@@ -6141,8 +6149,8 @@
         "setTimeout": true
       },
       "packages": {
+        "@lavamoat/lavapack": true,
         "duplexify": true,
-        "lavamoat-browserify>@lavamoat/lavapack": true,
         "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
@@ -6150,37 +6158,6 @@
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack": {
-      "builtin": {
-        "assert": true,
-        "buffer.Buffer.from": true,
-        "fs.promises.readFile": true,
-        "fs.promises.writeFile": true,
-        "fs.readFileSync": true,
-        "path.join": true,
-        "path.relative": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.cwd": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@lavamoat/lavapack>combine-source-map": true,
-        "@lavamoat/lavapack>umd": true,
-        "browserify>JSONStream": true,
-        "lavamoat-browserify>@lavamoat/lavapack>through2": true,
-        "lavamoat-browserify>readable-stream": true,
-        "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "nyc>convert-source-map": true
-      }
-    },
-    "lavamoat-browserify>@lavamoat/lavapack>through2": {
-      "packages": {
-        "lavamoat-browserify>readable-stream": true
       }
     },
     "lavamoat-browserify>browser-resolve": {
@@ -6319,8 +6296,7 @@
       "packages": {
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core>merge-deep": true,
-        "lavamoat>lavamoat-tofu": true,
-        "nyc>process-on-spawn>fromentries": true
+        "lavamoat>lavamoat-tofu": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep": {
@@ -6394,13 +6370,6 @@
       "packages": {
         "@babel/core>@babel/parser": true,
         "depcheck>@babel/traverse": true
-      }
-    },
-    "lavamoat>object.fromentries": {
-      "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>es-abstract": true
       }
     },
     "lodash": {
@@ -8184,14 +8153,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "@sentry/cli>mkdirp": true
       }
     },
     "stylelint>global-modules": {
@@ -8623,6 +8585,12 @@
         "jsdom>request>is-typedarray": true
       }
     },
+    "superstruct": {
+      "globals": {
+        "console.warn": true,
+        "define": true
+      }
+    },
     "terser": {
       "globals": {
         "Buffer": true,
@@ -8981,6 +8949,7 @@
       },
       "globals": {
         "Error": true,
+        "__dirname": true,
         "console": true,
         "process": true
       },
@@ -8995,6 +8964,9 @@
       }
     },
     "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
       "packages": {
         "eslint>strip-ansi": true,
         "yargs>cliui>wrap-ansi": true,

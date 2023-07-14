@@ -9,7 +9,6 @@ const [MOCK_PRIMARY_IDENTITY, MOCK_SECONDARY_IDENTITY] = Object.values(
 
 export default {
   title: 'Components/App/SignatureRequest',
-
   component: SignatureRequest,
   parameters: {
     docs: {
@@ -30,6 +29,10 @@ export default {
     clearConfirmTransaction: { action: 'Clean Confirm' },
     cancel: { action: 'Cancel' },
     sign: { action: 'Sign' },
+    showRejectTransactionsConfirmationModal: {
+      action: 'showRejectTransactionsConfirmationModal',
+    },
+    cancelAll: { action: 'cancelAll' },
   },
 };
 
@@ -79,6 +82,8 @@ DefaultStory.args = {
   fromAccount: MOCK_PRIMARY_IDENTITY,
   providerConfig: { name: 'Goerli ETH' },
   selectedAccount: MOCK_PRIMARY_IDENTITY,
+  hardwareWalletRequiresConnection: false,
+  currentCurrency: 'usd',
 };
 
 export const AccountMismatchStory = (args) => {

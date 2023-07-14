@@ -10,8 +10,8 @@ import {
   Size,
   JustifyContent,
   TextColor,
-  BLOCK_SIZES,
   BackgroundColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -69,7 +69,7 @@ export const NetworkListItem = ({
       })}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
       ref={networkRef}
     >
       {selected && (

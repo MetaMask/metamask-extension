@@ -12,7 +12,6 @@ import SimulationErrorMessage from '../../../components/ui/simulation-error-mess
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
   JustifyContent,
@@ -24,6 +23,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
@@ -594,15 +595,11 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />

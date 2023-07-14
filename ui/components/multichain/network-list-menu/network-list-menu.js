@@ -17,11 +17,12 @@ import {
   getShowTestNetworks,
   getAllEnabledNetworks,
   getCurrentChainId,
+  getCurrentNetwork,
 } from '../../../selectors';
 import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
@@ -53,6 +54,9 @@ export const NetworkListMenu = ({ onClose }) => {
   const networks = useSelector(getAllEnabledNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
+  const currentNetwork = useSelector(getCurrentNetwork);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -91,7 +95,7 @@ export const NetworkListMenu = ({ onClose }) => {
             ) {
               return null;
             }
-            const isCurrentNetwork = currentChainId === network.chainId;
+            const isCurrentNetwork = currentNetwork.id === network.id;
             const canDeleteNetwork =
               !isCurrentNetwork &&
               !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
@@ -140,7 +144,7 @@ export const NetworkListMenu = ({ onClose }) => {
         </Box>
         <Box
           padding={4}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
           <Text>{t('showTestnetNetworks')}</Text>

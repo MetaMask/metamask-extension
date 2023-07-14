@@ -911,9 +911,6 @@
   "delete": {
     "message": "Sil"
   },
-  "deleteAccount": {
-    "message": "Hesabı Sil"
-  },
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
@@ -1562,6 +1559,12 @@
     "message": "ancak dolandırıcılar talep edilebilir.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "GKİ bilgisinin gösterilmesi için tut"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "GKİ bilgini güvende tut"
+  },
   "ignoreAll": {
     "message": "Tümünü yoksay"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
-  },
-  "importNFTs": {
-    "message": "NFS'leri İçe Aktar"
   },
   "importSelectedTokens": {
     "message": "Seçilen tokenleri içe aktar?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Kilitle"
   },
-  "lockTimeTooGreat": {
-    "message": "Kilitleme süresi çok fazla"
-  },
   "logo": {
     "message": "$1 logosu",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
-  },
-  "missingNFT": {
-    "message": "NFT'nizi görmüyor musunuz?"
   },
   "missingSetting": {
     "message": "Bir ayarı bulamıyor musun?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noSnaps": {
     "message": "Hiç Snap yüklü değil"
@@ -3333,11 +3324,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "24'ten fazla sözcük içerdiği için yapıştırma başarısız oldu. Gizli bir kurtarma ifadesi en fazla 24 sözcükten oluşabilir.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Gizli kurtarma ifadenin tamamını herhangi bir alana yapıştırabilirsin",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Başla"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Gizli Kurtarma İfadenizi görmek için iki soruyu doğru cevaplamanız gerekmektedir"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Gizli Kurtarma İfadenizi kaybederseniz MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Size yardımcı olamaz"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Bir yere yazın, bir metalin üzerine kazıyın veya asla kaybetmemeniz için birden fazla noktada saklayın. Kaybederseniz sonsuza dek kaybolur."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Doğru! Hiç kimse Gizli Kurtarma İfadenizi geri almanıza yardımcı olamaz"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Size onu tekrar verebilir"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Gizli Kurtarma İfadenizi kaybederseniz sonsuza dek kaybolur. Söylediklerinin ne olduğuna bakılmaksızın hiç kimse onu geri almanıza yardımcı olamaz."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Yanlış! Hiç kimse Gizli Kurtarma İfadenizi geri almanıza yardımcı olamaz"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Herhangi birisi, bir destek temsilcisi bile sizden Gizli Kurtarma İfadenizi isterse..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Dolandırılıyorsunuzdur"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Gizli Kurtarma İfadenizi isteyen kişi size yalan söylüyordur. Kendisi ile paylaşırsanız varlıklarınızı çalacaktır."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Doğru! Gizli Kurtarma İfadenizi paylaşmak asla iyi bir fikir değildir"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Kendisine vermelisiniz"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Gizli Kurtarma İfadenizi isteyen kişi size yalan söylüyordur. Kendisi ile paylaşırsanız varlıklarınızı çalacaktır."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Hayır! Gizli Kurtarma İfadenizi asla hiç kimse ile paylaşmayın, asla"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Güvenlik testi"
   },
   "srpToggleShow": {
     "message": "Gizli kurtarma ifadesinin bu sözcüğünü göster/gizle",

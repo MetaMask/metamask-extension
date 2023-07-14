@@ -3,10 +3,10 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import {
   resolvePendingApproval,
   rejectPendingApproval,
@@ -168,7 +168,7 @@ describe('SignatureRequestOriginal', () => {
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
     };
 
     render();

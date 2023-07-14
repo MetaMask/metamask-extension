@@ -211,9 +211,6 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteAccount": {
-    "message": "Hapus Akaun"
-  },
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
   },

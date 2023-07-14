@@ -435,7 +435,10 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: END:ONLY_INCLUDE_IN
+
     return metaMetricsId;
   }
 

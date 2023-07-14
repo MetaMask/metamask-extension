@@ -1170,9 +1170,13 @@ export function getNetworkConfigurations(state) {
 
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
-  const currentChainId = getCurrentChainId(state);
+  const providerConfig = getProviderConfig(state);
 
-  return allNetworks.find((network) => network.chainId === currentChainId);
+  const filter =
+    providerConfig.type === 'rpc'
+      ? (network) => network.id === providerConfig.id
+      : (network) => network.id === providerConfig.type;
+  return allNetworks.find(filter);
 }
 
 export function getAllEnabledNetworks(state) {
@@ -1200,6 +1204,7 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
+      id: NETWORK_TYPES.MAINNET,
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1210,6 +1215,7 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_MAINNET,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+      id: NETWORK_TYPES.LINEA_MAINNET,
     },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(
@@ -1222,6 +1228,7 @@ export function getAllNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+      id: NETWORK_TYPES.GOERLI,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1229,6 +1236,7 @@ export function getAllNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+      id: NETWORK_TYPES.SEPOLIA,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1239,6 +1247,7 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+      id: NETWORK_TYPES.LINEA_GOERLI,
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
@@ -1535,5 +1544,17 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   }
 
   return snapsInstallPrivacyWarningShown;
+}
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
 }
 ///: END:ONLY_INCLUDE_IN

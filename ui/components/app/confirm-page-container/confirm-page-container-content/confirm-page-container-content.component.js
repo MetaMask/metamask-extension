@@ -10,8 +10,9 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
+import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -214,15 +215,11 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
