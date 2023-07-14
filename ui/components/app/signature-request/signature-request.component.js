@@ -127,7 +127,7 @@ export default class SignatureRequest extends PureComponent {
         onDeepLinkShown: () => {
           this.context.trackEvent({
             category: MetaMetricsEventCategory.MMI,
-            event: MetaMetricsEventName.ShowsDeeplinkForSignature,
+            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
           });
         },
       });

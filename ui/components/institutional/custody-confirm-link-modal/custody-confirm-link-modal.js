@@ -62,7 +62,7 @@ const CustodyConfirmLink = () => {
 
     trackEvent({
       category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.UserClickedDeepLink,
+      event: MetaMetricsEventName.DeeplinkClicked,
     });
     dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
     dispatch(hideModal());

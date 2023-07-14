@@ -57,7 +57,7 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
   const sendEvent = ({ actions, service }) => {
     trackEvent({
       category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.ConnectsInstitutionalFeature,
+      event: MetaMetricsEventName.InstitutionalFeatureConnected,
       properties: {
         actions,
         service,
