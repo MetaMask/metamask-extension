@@ -6,13 +6,14 @@ import { getInteractiveReplacementToken } from '../../../selectors/institutional
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { showInteractiveReplacementTokenModal } from '../../../store/institutional/institution-actions';
 import { sha256 } from '../../../../shared/modules/hash.utils';
 import {
   Size,
   IconColor,
   AlignItems,
-  DISPLAY,
-  BLOCK_SIZES,
+  Display,
+  BlockSize,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -24,9 +25,8 @@ import {
   IconSize,
   ButtonLink,
   Text,
+  Box,
 } from '../../component-library';
-
-import Box from '../../ui/box';
 
 const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   const t = useI18nContext();
@@ -48,10 +48,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
         interactiveReplacementToken &&
         Boolean(Object.keys(interactiveReplacementToken).length);
 
-      if (!/^Custody/u.test(keyring.type)) {
-        setShowNotification(false);
-        return;
-      } else if (!hasInteractiveReplacementToken) {
+      if (!/^Custody/u.test(keyring.type) || !hasInteractiveReplacementToken) {
         setShowNotification(false);
         return;
       }
@@ -98,34 +95,35 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
 
   return showNotification ? (
     <Box
-      width={BLOCK_SIZES.FULL}
-      display={DISPLAY.FLEX}
+      width={BlockSize.Full}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       padding={[1, 2]}
       backgroundColor={BackgroundColor.backgroundAlternative}
-      marginBottom={1}
       className="interactive-replacement-token-notification"
       data-testid="interactive-replacement-token-notification"
     >
       <Icon
         name={IconName.Danger}
         color={IconColor.errorDefault}
-        size={IconSize.Xl}
+        size={IconSize.Md}
       />
-      <Text variant={TextVariant.bodyXs} gap={2} color={TextColor.errorDefault}>
+      <Text variant={TextVariant.bodySm} gap={2} color={TextColor.errorDefault}>
         {t('custodySessionExpired')}
       </Text>
-      <ButtonLink
-        data-testid="show-modal"
-        size={Size.auto}
-        marginLeft={1}
-        onClick={() => {
-          dispatch(mmiActions.showInteractiveReplacementTokenModal());
-        }}
-      >
-        {t('learnMore')}
-      </ButtonLink>
+      <Text variant={TextVariant.bodySm}>
+        <ButtonLink
+          data-testid="show-modal"
+          size={Size.inherit}
+          marginLeft={1}
+          onClick={() => {
+            dispatch(showInteractiveReplacementTokenModal());
+          }}
+        >
+          {t('learnMoreUpperCase')}
+        </ButtonLink>
+      </Text>
     </Box>
   ) : null;
 };

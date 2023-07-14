@@ -4027,9 +4027,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "@metamask/controller-utils@npm:4.1.0"
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/controller-utils@npm:4.2.0"
   dependencies:
     "@metamask/utils": ^5.0.2
     "@spruceid/siwe-parser": 1.1.3
@@ -4040,7 +4040,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: b4975e6ca860b691931254aa749e8c4faddd04279609cf197155b38150e55da0e966bf9b2d61ee1cd070f79d16e0305d5a0ff1747e0b4ab2e1c3ab46ca84e4d7
+  checksum: e71779577c37038e6e605a43ef6b9c1af82e0b3887a72c01f48ae1e4e2005116fc9d09c8b690139478c04dd2929e227642c5fd80cfbc81814d667c415c714228
   languageName: node
   linkType: hard
 
@@ -4141,16 +4141,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^8.0.0":
-  version: 8.1.0
-  resolution: "@metamask/eth-json-rpc-infura@npm:8.1.0"
+"@metamask/eth-json-rpc-infura@npm:^8.1.0":
+  version: 8.1.1
+  resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
   dependencies:
-    "@metamask/utils": ^3.0.1
-    eth-json-rpc-middleware: ^9.0.0
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/utils": ^4.0.0
     eth-rpc-errors: ^4.0.3
     json-rpc-engine: ^6.1.0
     node-fetch: ^2.6.7
-  checksum: fd09383e2b3c16187b8889b53bfc431fc7ea4f6483acc23ddf77f2fd771ad0fbff41d6a62d4b05833e7cda66adafe0cb3730d7c0e9575b89683b71a82ab1ee1f
+  checksum: ab4ce53fcc1586344824d58aed4d71412b015466f697758b4849e186038ae1730c9765935dfaf1a9131ff1a8f0f36dcb66fd50355ed95ac7a4bf0bc18c4c2696
   languageName: node
   linkType: hard
 
@@ -4398,13 +4398,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0":
-  version: 10.3.0
-  resolution: "@metamask/network-controller@npm:10.3.0"
+"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0, @metamask/network-controller@npm:^10.3.1":
+  version: 10.3.1
+  resolution: "@metamask/network-controller@npm:10.3.1"
   dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.1.0
-    "@metamask/eth-json-rpc-infura": ^8.0.0
+    "@metamask/base-controller": ^3.1.0
+    "@metamask/controller-utils": ^4.2.0
+    "@metamask/eth-json-rpc-infura": ^8.1.0
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-json-rpc-provider": ^1.0.0
     "@metamask/swappable-obj-proxy": ^2.1.0
@@ -4417,7 +4417,7 @@ __metadata:
     immer: ^9.0.6
     json-rpc-engine: ^6.1.0
     uuid: ^8.3.2
-  checksum: 0c48625af9c18be3ed2a433209db770bab02e667e251be1ef4c1f61a62c25907536ff740712bdfd799ac923a4a6bb9df5430ead8d4215507bbf30dcc7a40d53c
+  checksum: 62adb90b02eae1236f9c1c3ceb70c9de0f4e390c3b68ced0c81b0b867dced7814d5d805cdfb6e0ccc9e62b82fac762f70c204f08feb3f3ee5647610d079cbdd7
   languageName: node
   linkType: hard
 
@@ -5107,7 +5107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^3.0.1, @metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.4.1":
+"@metamask/utils@npm:^3.0.3, @metamask/utils@npm:^3.4.1":
   version: 3.6.0
   resolution: "@metamask/utils@npm:3.6.0"
   dependencies:
@@ -5116,6 +5116,18 @@ __metadata:
     semver: ^7.3.8
     superstruct: ^1.0.3
   checksum: 1ebc6677bb017e4d09d4af143621fe27194d8ed815234cfd76469c3c734dc1db2ea7b577c01a2096c21c04d8c9c4d721d3035b5353fe2ded3b4737f326755e43
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/utils@npm:4.0.0"
+  dependencies:
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    semver: ^7.3.8
+    superstruct: ^1.0.3
+  checksum: 6d4edca78fe1f66504ed5e5ca021a67f4b4e0893e86484c746b87039c2161c39d3b8bd8e4b9235ddfd023b2d76dd54210af94ec5550e27bc4ad9c0d7d5f3f231
   languageName: node
   linkType: hard
 
@@ -16119,25 +16131,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-json-rpc-middleware@npm:^9.0.0":
-  version: 9.0.1
-  resolution: "eth-json-rpc-middleware@npm:9.0.1"
-  dependencies:
-    "@metamask/eth-sig-util": ^5.0.0
-    "@metamask/safe-event-emitter": ^2.0.0
-    "@metamask/utils": ^3.0.3
-    btoa: ^1.2.1
-    clone: ^2.1.1
-    eth-block-tracker: ^5.0.1
-    eth-rpc-errors: ^4.0.3
-    json-rpc-engine: ^6.1.0
-    json-stable-stringify: ^1.0.1
-    node-fetch: ^2.6.7
-    pify: ^3.0.0
-  checksum: 9512829a6958df6ef739b891a0c0804b51a140407fd2e3ddaaa6b18d975796646cfcf7f7305a18beb7903db09e0c7a91b06dc5434b6bd2d6cdb85d992d9fd3ab
-  languageName: node
-  linkType: hard
-
 "eth-lattice-keyring@npm:^0.12.4":
   version: 0.12.4
   resolution: "eth-lattice-keyring@npm:0.12.4"
@@ -24659,7 +24652,7 @@ __metadata:
     "@metamask/base-controller": ^3.1.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^4.1.0
+    "@metamask/controller-utils": ^4.2.0
     "@metamask/design-tokens": ^1.12.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
@@ -24681,7 +24674,7 @@ __metadata:
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^7.0.2
     "@metamask/metamask-eth-abis": ^3.0.0
-    "@metamask/network-controller": ^10.3.0
+    "@metamask/network-controller": ^10.3.1
     "@metamask/notification-controller": ^3.0.0
     "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^4.0.0
