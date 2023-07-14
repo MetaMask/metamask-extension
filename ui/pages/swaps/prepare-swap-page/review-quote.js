@@ -1211,6 +1211,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                 metaMaskFee,
                 <ButtonLink
                   key="view-all-quotes"
+                  data-testid="review-quote-view-all-quotes"
                   onClick={
                     /* istanbul ignore next */
                     () => {

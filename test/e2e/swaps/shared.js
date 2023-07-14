@@ -173,9 +173,7 @@ const checkNotification = async (driver, options) => {
 };
 
 const changeExchangeRate = async (driver) => {
-  await driver.clickElement(
-    '[data-testid="exchange-rate-display-base-symbol"]',
-  );
+  await driver.clickElement('[data-testid="review-quote-view-all-quotes"]');
   await driver.waitForSelector({ text: 'Quote details', tag: 'h2' });
 
   const networkFees = await driver.findElements(
