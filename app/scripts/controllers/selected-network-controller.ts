@@ -7,6 +7,7 @@ import {
   createEventEmitterProxy,
   createSwappableProxy,
 } from '@metamask/swappable-obj-proxy';
+import { NetworkClient } from '@metamask/network-controller';
 
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
@@ -19,7 +20,7 @@ const getDefaultState = () => ({
 });
 
 type Domain = string;
-type ChainId = string;
+type ChainId = `0x${string}`;
 type RequestQueue = Record<Domain, Promise<unknown>[]>;
 
 export type SelectedNetworkControllerState = {
@@ -36,7 +37,20 @@ export type GetSelectedNetworkStateChange = {
   payload: [SelectedNetworkControllerState, Patch[]];
 };
 
-export type SelectedNetworkControllerActions = GetSelectedNetworkState;
+export type GetClientForDomain = {
+  type: `SelectedNetworkController:getClientForDomain`;
+  handler: (origin: string) => NetworkClient;
+};
+
+export type GetChainForDomain = {
+  type: `SelectedNetworkController:getChainForDomain`;
+  handler: (origin: string) => `0x${string}`;
+};
+
+export type SelectedNetworkControllerActions =
+  | GetSelectedNetworkState
+  | GetClientForDomain
+  | GetChainForDomain;
 
 export type SelectedNetworkControllerEvents = GetSelectedNetworkStateChange;
 
@@ -85,6 +99,19 @@ export default class SelectedNetworkController extends BaseControllerV2<
     });
     this.switchNetwork = switchNetwork;
     this.clientsByDomain = {};
+    this.registerMessageHandlers();
+  }
+
+  private registerMessageHandlers(): void {
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getClientForDomain` as const,
+      this.getClientForDomain.bind(this),
+    );
+
+    this.messagingSystem.registerActionHandler(
+      `${controllerName}:getChainForDomain` as const,
+      this.getChainForDomain.bind(this),
+    );
   }
 
   /**
