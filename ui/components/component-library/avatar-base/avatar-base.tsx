@@ -59,7 +59,8 @@ export const AvatarBase: AvatarBaseComponent = React.forwardRef(
         borderRadius={BorderRadius.full}
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
-        {...{ backgroundColor, borderColor, color, ...props }} // TODO: Fix type error to do with spreading ...props in Box types
+        {...{ backgroundColor, borderColor, color }}
+        {...props} // TODO: Fix type error to do with spreading ...props in Box types
       >
         {children}
       </Text>
