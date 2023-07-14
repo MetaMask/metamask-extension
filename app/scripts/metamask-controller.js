@@ -1113,6 +1113,7 @@ export default class MetamaskController extends EventEmitter {
       preferences: this.preferencesController,
       tokensController: this.tokensController,
       assetsContractController: this.assetsContractController,
+      onboardingController: this.onboardingController,
       network: this.networkController,
       keyringMemStore: this.keyringController.memStore,
       tokenList: this.tokenListController,
@@ -1788,6 +1789,7 @@ export default class MetamaskController extends EventEmitter {
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
+      this.detectTokensController.restartTokenDetection();
     }
   }
 

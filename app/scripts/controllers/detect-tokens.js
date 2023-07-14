@@ -34,6 +34,7 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.onboardingController
    */
   constructor({
     messenger,
@@ -43,14 +44,16 @@ export default class DetectTokensController {
     keyringMemStore,
     tokenList,
     tokensController,
+    onboardingController,
     assetsContractController = null,
     trackMetaMetricsEvent,
   } = {}) {
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
+    this.onboardingController = onboardingController;
     this.preferences = preferences;
-    this.interval = interval;
+    this.initInterval = interval;
     this.network = network;
     this.keyringMemStore = keyringMemStore;
     this.tokenList = tokenList;
@@ -101,10 +104,11 @@ export default class DetectTokensController {
    * @param options.chainId - the chainId against which to detect for token balances
    */
   async detectNewTokens({ selectedAddress, chainId } = {}) {
+    const { completedOnboarding } = this.onboardingController.store.getState();
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
     const chainIdAgainstWhichToDetect =
       chainId ?? this.getChainIdFromNetworkStore();
-    if (!this.isActive) {
+    if (!this.isActive || !completedOnboarding) {
       return;
     }
     if (!isTokenDetectionEnabledForNetwork(chainIdAgainstWhichToDetect)) {
@@ -215,7 +219,7 @@ export default class DetectTokensController {
       selectedAddress: addressAgainstWhichToDetect,
       chainId: chainIdAgainstWhichToDetect,
     });
-    this.interval = DEFAULT_INTERVAL;
+    this.interval = this.initInterval;
   }
 
   getChainIdFromNetworkStore() {
