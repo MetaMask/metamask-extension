@@ -249,6 +249,9 @@
   "addFromAListOfPopularNetworks": {
     "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
+  "addHardwareWallet": {
+    "message": "Add hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -1757,9 +1760,6 @@
   },
   "hardware": {
     "message": "Hardware"
-  },
-  "hardwareWallet": {
-    "message": "Hardware wallet"
   },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
