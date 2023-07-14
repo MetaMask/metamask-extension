@@ -3,7 +3,7 @@ import { ObservableStore } from '@metamask/obs-store';
 /**
  * @typedef {object} CachedBalancesOptions
  * @property {object} accountTracker An {@code AccountTracker} reference
- * @property {Function} getCurrentChainId A function to get the current chain id
+ * @property {Function} getCurrentCaipChainId A function to get the current chain id
  * @property {object} initState The initial controller state
  */
 
@@ -18,10 +18,10 @@ export default class CachedBalancesController {
    * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { accountTracker, getCurrentChainId } = opts;
+    const { accountTracker, getCurrentCaipChainId } = opts;
 
     this.accountTracker = accountTracker;
-    this.getCurrentChainId = getCurrentChainId;
+    this.getCurrentCaipChainId = getCurrentCaipChainId;
 
     const initState = { cachedBalances: {}, ...opts.initState };
     this.store = new ObservableStore(initState);
@@ -38,19 +38,19 @@ export default class CachedBalancesController {
    * @returns {Promise<void>}
    */
   async updateCachedBalances({ accounts }) {
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     const balancesToCache = await this._generateBalancesToCache(
       accounts,
-      chainId,
+      caipChainId,
     );
     this.store.updateState({
       cachedBalances: balancesToCache,
     });
   }
 
-  _generateBalancesToCache(newAccounts, chainId) {
+  _generateBalancesToCache(newAccounts, caipChainId) {
     const { cachedBalances } = this.store.getState();
-    const currentChainBalancesToCache = { ...cachedBalances[chainId] };
+    const currentChainBalancesToCache = { ...cachedBalances[caipChainId] };
 
     Object.keys(newAccounts).forEach((accountID) => {
       const account = newAccounts[accountID];
@@ -61,7 +61,7 @@ export default class CachedBalancesController {
     });
     const balancesToCache = {
       ...cachedBalances,
-      [chainId]: currentChainBalancesToCache,
+      [caipChainId]: currentChainBalancesToCache,
     };
 
     return balancesToCache;

@@ -11,7 +11,7 @@ const supportedTopLevelDomains = ['eth'];
 
 export default function setupEnsIpfsResolver({
   provider,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getIpfsGateway,
 }) {
   // install listener
@@ -33,7 +33,7 @@ export default function setupEnsIpfsResolver({
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
-    if (tabId === -1 || getCurrentChainId() !== '0x1') {
+    if (tabId === -1 || getCurrentCaipChainId() !== 'eip155:1') {
       return;
     }
     // parse ens name

@@ -11,7 +11,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getRpcPrefsForCurrentProvider,
   getBlockExplorerLinkText,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -56,9 +56,9 @@ export const AccountListItemMenu = ({
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(identity.address, chainId, rpcPrefs);
+  const addressLink = getAccountLink(identity.address, caipChainId, rpcPrefs);
 
   const deviceName = useSelector(getHardwareWalletType);
 
@@ -169,7 +169,7 @@ export const AccountListItemMenu = ({
                 category: MetaMetricsEventCategory.Accounts,
                 properties: {
                   location: 'Account Options',
-                  chain_id: chainId,
+                  chain_id: caipChainId,
                 },
               });
             }}
@@ -214,7 +214,7 @@ export const AccountListItemMenu = ({
                   category: MetaMetricsEventCategory.Accounts,
                   properties: {
                     account_hardware_type: deviceName,
-                    chain_id: chainId,
+                    chain_id: caipChainId,
                     account_type: accountType,
                   },
                 });

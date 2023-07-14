@@ -57,7 +57,7 @@ import {
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
@@ -310,9 +310,9 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
 
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   const isAllowedNetwork =
-    ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);
+    ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(caipChainId);
   const smartTransactionsFeatureFlagEnabled =
     state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
       ?.extensionActive;
@@ -426,7 +426,7 @@ export const getSmartTransactionsOptInStatus = (state) => {
 
 export const getCurrentSmartTransactions = (state) => {
   return state.metamask.smartTransactionsState?.smartTransactions?.[
-    getCurrentChainId(state)
+    getCurrentCaipChainId(state)
   ];
 };
 
@@ -579,11 +579,11 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       swapsFeatureIsLive: false,
     };
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
-      if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
+      if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(caipChainId)) {
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
@@ -593,7 +593,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
         disableStxIfRegularTxInProgress(dispatch, transactions);
       }
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        chainId,
+        caipChainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -626,14 +626,14 @@ export const fetchQuotesAndSetQuoteState = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        chainId,
+        caipChainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -751,7 +751,7 @@ export const fetchQuotesAndSetQuoteState = (
             sourceTokenInfo,
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
-            chainId,
+            caipChainId,
           },
         ),
       );
@@ -875,7 +875,7 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const swapsNetworkConfig = getSwapsNetworkConfig(state);
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
 
     dispatch(
       setSmartTransactionsRefreshInterval(
@@ -924,7 +924,7 @@ export const signAndSendSwapsSmartTransaction = ({
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, caipChainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -1029,7 +1029,7 @@ export const signAndSendTransactions = (
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 =
       checkNetworkAndAccountSupports1559(state);
@@ -1039,7 +1039,7 @@ export const signAndSendTransactions = (
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
-        chainId,
+        caipChainId,
         swapsFeatureFlags,
       );
     } catch (error) {
@@ -1182,7 +1182,7 @@ export const signAndSendTransactions = (
       sensitiveProperties: swapMetaData,
     });
 
-    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+    if (!isContractAddressValid(usedTradeTxParams.to, caipChainId)) {
       captureMessage('Invalid contract address', {
         extra: {
           token_from: swapMetaData.token_from,
@@ -1281,13 +1281,13 @@ export const signAndSendTransactions = (
 export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
     let priceEstimates;
     try {
-      priceEstimates = await fetchSwapsGasPrices(chainId);
+      priceEstimates = await fetchSwapsGasPrices(caipChainId);
     } catch (e) {
       log.warn('Fetching swaps gas prices failed:', e);
 

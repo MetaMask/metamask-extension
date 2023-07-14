@@ -92,7 +92,7 @@ export default class MetaMetricsController {
    *  to access and subscribe to preferences that will be attached to events
    * @param {Function} options.onNetworkDidChange - Used to attach a listener to the
    *  networkDidChange event emitted by the networkController
-   * @param {Function} options.getCurrentChainId - Gets the current chain id from the
+   * @param {Function} options.getCurrentCaipChainId - Gets the current chain id from the
    *  network controller
    * @param {string} options.version - The version of the extension
    * @param {string} options.environment - The environment the extension is running in
@@ -104,7 +104,7 @@ export default class MetaMetricsController {
     segment,
     preferencesStore,
     onNetworkDidChange,
-    getCurrentChainId,
+    getCurrentCaipChainId,
     version,
     environment,
     initState,
@@ -119,7 +119,7 @@ export default class MetaMetricsController {
       }
     };
     const prefState = preferencesStore.getState();
-    this.chainId = getCurrentChainId();
+    this.caipChainId = getCurrentCaipChainId();
     this.locale = prefState.currentLocale.replace('_', '-');
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
@@ -148,7 +148,7 @@ export default class MetaMetricsController {
     });
 
     onNetworkDidChange(() => {
-      this.chainId = getCurrentChainId();
+      this.caipChainId = getCurrentCaipChainId();
     });
     this.segment = segment;
 
@@ -478,7 +478,7 @@ export default class MetaMetricsController {
         properties: {
           params,
           locale: this.locale,
-          chain_id: this.chainId,
+          chain_id: this.caipChainId,
           environment_type: environmentType,
         },
         context: this._buildContext(referrer, page),
@@ -697,7 +697,7 @@ export default class MetaMetricsController {
         currency,
         category,
         locale: this.locale,
-        chain_id: properties?.chain_id ?? this.chainId,
+        chain_id: properties?.chain_id ?? this.caipChainId,
         environment_type: environmentType,
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         ...mmiProps,
@@ -734,12 +734,12 @@ export default class MetaMetricsController {
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
         metamaskState.networkConfigurations,
-      ).map((networkConfiguration) => networkConfiguration.chainId),
+      ).map((networkConfiguration) => networkConfiguration.caipChainId),
       [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
         metamaskState.networkConfigurations,
       )
         .filter(({ ticker }) => !ticker)
-        .map(({ chainId }) => chainId),
+        .map(({ caipChainId }) => caipChainId),
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(

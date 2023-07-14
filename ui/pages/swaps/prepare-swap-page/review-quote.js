@@ -59,7 +59,7 @@ import {
   getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
@@ -203,7 +203,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
@@ -226,7 +226,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
-    switch (chainId) {
+    switch (caipChainId) {
       case CHAIN_IDS.MAINNET:
         return t('networkNameEthereum');
       case CHAIN_IDS.BSC:
@@ -350,7 +350,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       currentCurrency,
       approveGas,
       tokenConversionRates: memoizedTokenConversionRates,
-      chainId,
+      caipChainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
@@ -367,7 +367,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     currentCurrency,
     approveGas,
     memoizedTokenConversionRates,
-    chainId,
+    caipChainId,
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
@@ -402,7 +402,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       tradeValue,
       sourceSymbol: sourceTokenSymbol,
       sourceAmount: usedQuote.sourceAmount,
-      chainId,
+      caipChainId,
       nativeCurrencySymbol,
       multiLayerL1FeeTotal,
     });
@@ -419,7 +419,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
-    chainId,
+    caipChainId,
     nativeCurrencySymbol,
     multiLayerL1FeeTotal,
   });
@@ -439,7 +439,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     const stxMaxFeeInWeiDec =
       stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
-      chainId,
+      caipChainId,
       currentCurrency,
       conversionRate,
       USDConversionRate,
@@ -456,7 +456,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       rawEthFee: maxRawEthFee,
       feeInUsd: maxFeeInUsd,
     } = getFeeForSmartTransaction({
-      chainId,
+      caipChainId,
       currentCurrency,
       conversionRate,
       USDConversionRate,
@@ -849,7 +849,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         value: unsignedTransaction.value,
         data: unsignedTransaction.data,
         gas: unsignedTransaction.gas,
-        chainId,
+        caipChainId,
       };
       intervalId = setInterval(() => {
         if (!swapsSTXLoading) {
@@ -882,7 +882,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     unsignedTransaction.value,
     unsignedTransaction.gas,
     unsignedTransaction.to,
-    chainId,
+    caipChainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
     insufficientTokens,
   ]);
@@ -924,7 +924,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
               value: '0x0', // For approval txs we need to use "0x0" here.
             },
-            chainId,
+            caipChainId,
           });
           setMultiLayerL1ApprovalFeeTotal(l1ApprovalFeeTotal);
         }
@@ -944,7 +944,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     unsignedTransaction,
     approveTxParams,
     isMultiLayerFeeNetwork,
-    chainId,
+    caipChainId,
     usedQuote,
   ]);
 

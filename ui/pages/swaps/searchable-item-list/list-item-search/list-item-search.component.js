@@ -8,7 +8,7 @@ import TextField from '../../../../components/ui/text-field';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { fetchToken } from '../../swaps.util';
-import { getCurrentChainId } from '../../../../selectors/selectors';
+import { getCurrentCaipChainId } from '../../../../selectors/selectors';
 import SearchIcon from '../../../../components/ui/icon/search-icon';
 
 const renderAdornment = () => (
@@ -31,7 +31,7 @@ export default function ListItemSearch({
   setSearchQuery,
 }) {
   const fuseRef = useRef();
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   /**
    * Search a custom token for import based on a contract address.
@@ -40,7 +40,7 @@ export default function ListItemSearch({
    */
   const handleSearchTokenForImport = async (contractAddress) => {
     try {
-      const token = await fetchToken(contractAddress, chainId);
+      const token = await fetchToken(contractAddress, caipChainId);
       if (token) {
         token.primaryLabel = token.symbol;
         token.secondaryLabel = token.name;

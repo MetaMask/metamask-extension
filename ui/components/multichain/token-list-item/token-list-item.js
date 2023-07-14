@@ -22,7 +22,7 @@ import {
   Box,
 } from '../../component-library';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentNetwork,
   getNativeCurrencyImage,
 } from '../../../selectors';
@@ -46,7 +46,7 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -74,7 +74,7 @@ export const TokenListItem = ({
             event: MetaMetricsEventName.TokenDetailsOpened,
             properties: {
               location: 'Home',
-              chain_id: chainId,
+              chain_id: caipChainId,
               token_symbol: tokenSymbol,
             },
           });

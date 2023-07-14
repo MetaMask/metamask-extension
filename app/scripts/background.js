@@ -210,7 +210,7 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
- * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
+ * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg caipChainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
  * @property {object} contractExchangeRates - Info about current token prices.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
@@ -461,8 +461,8 @@ export function setupController(
   });
 
   setupEnsIpfsResolver({
-    getCurrentChainId: () =>
-      controller.networkController.state.providerConfig.chainId,
+    getCurrentCaipChainId: () =>
+      controller.networkController.state.providerConfig.caipChainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),

@@ -87,7 +87,7 @@ class AccountList extends Component {
   }
 
   renderAccounts() {
-    const { accounts, connectedAccounts, rpcPrefs, chainId } = this.props;
+    const { accounts, connectedAccounts, rpcPrefs, caipChainId } = this.props;
 
     return (
       <div className="hw-account-list">
@@ -138,7 +138,7 @@ class AccountList extends Component {
                 onClick={() => {
                   const accountLink = getAccountLink(
                     account.address,
-                    chainId,
+                    caipChainId,
                     rpcPrefs,
                   );
                   this.context.trackEvent({
@@ -257,7 +257,7 @@ AccountList.propTypes = {
   onAccountChange: PropTypes.func.isRequired,
   onForgetDevice: PropTypes.func.isRequired,
   getPage: PropTypes.func.isRequired,
-  chainId: PropTypes.string,
+  caipChainId: PropTypes.string,
   rpcPrefs: PropTypes.object,
   selectedAccounts: PropTypes.array.isRequired,
   onUnlockAccounts: PropTypes.func,

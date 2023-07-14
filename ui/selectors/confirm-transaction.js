@@ -29,7 +29,7 @@ import {
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
+import { getCurrentCaipChainId, deprecatedGetCurrentNetworkId } from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
@@ -51,7 +51,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   (
     unapprovedTxs = {},
     unapprovedMsgs = {},
@@ -60,7 +60,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network,
-    chainId,
+    caipChainId,
   ) =>
     txHelper(
       unapprovedTxs,
@@ -70,7 +70,7 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
       network,
-      chainId,
+      caipChainId,
     ) || [],
 );
 
@@ -82,7 +82,7 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   (
     unapprovedTxs = {},
     unapprovedMsgs = {},
@@ -91,14 +91,14 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network,
-    chainId,
+    caipChainId,
   ) => {
     const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
       (acc, address) => {
         const transactions = { ...acc };
 
         if (
-          transactionMatchesNetwork(unapprovedTxs[address], chainId, network)
+          transactionMatchesNetwork(unapprovedTxs[address], caipChainId, network)
         ) {
           transactions[address] = unapprovedTxs[address];
         }

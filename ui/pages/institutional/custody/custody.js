@@ -40,7 +40,7 @@ import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentCaipChainId } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
@@ -53,7 +53,7 @@ const CustodyPage = () => {
   const dispatch = useDispatch();
 
   const mmiActions = mmiActionsFactory();
-  const currentChainId = useSelector(getCurrentChainId);
+  const currentChainId = useSelector(getCurrentCaipChainId);
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [chainId, setChainId] = useState(0);
+  const [chainId, setChainId] = useState(0); // TODO: need to figure this file out
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 

@@ -14,7 +14,7 @@ import { transactionMatchesNetwork } from '../../shared/modules/transaction.util
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   deprecatedGetCurrentNetworkId,
   getSelectedAddress,
 } from './selectors';
@@ -32,12 +32,12 @@ export const incomingTxListSelector = (state) => {
   }
 
   const { networkId } = state.metamask;
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
       tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, networkId),
+      transactionMatchesNetwork(tx, caipChainId, networkId),
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
@@ -54,7 +54,7 @@ export const unapprovedTypedMessagesSelector = (state) =>
 
 export const smartTransactionsListSelector = (state) =>
   state.metamask.smartTransactionsState?.smartTransactions?.[
-    getCurrentChainId(state)
+    getCurrentCaipChainId(state)
   ]
     ?.filter((stx) => !stx.confirmed)
     .map((stx) => ({
@@ -83,7 +83,7 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
   deprecatedGetCurrentNetworkId,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   (
     unapprovedMsgs = {},
     unapprovedPersonalMsgs = {},
@@ -91,7 +91,7 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
     network,
-    chainId,
+    caipChainId,
   ) =>
     txHelper(
       {},
@@ -101,7 +101,7 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
       network,
-      chainId,
+      caipChainId,
     ) || [],
 );
 
@@ -544,12 +544,12 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
     ApprovalType.Transaction,
   );
 
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
 
   const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
     ({ id }) =>
       unapprovedTxs[id] &&
-      transactionMatchesNetwork(unapprovedTxs[id], chainId),
+      transactionMatchesNetwork(unapprovedTxs[id], caipChainId),
   );
 
   return filteredUnapprovedTxInCurrentNetwork.length > 0;

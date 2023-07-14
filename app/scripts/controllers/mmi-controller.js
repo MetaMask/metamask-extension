@@ -285,7 +285,7 @@ export default class MMIController extends EventEmitter {
         token: accounts[item].token,
         apiUrl: accounts[item].apiUrl,
         custodyType: custodian.keyringClass.type,
-        chainId: accounts[item].chainId,
+        caipChainId: accounts[item].caipChainId,
       })),
     );
     this.custodyController.setAccountDetails(
@@ -297,7 +297,7 @@ export default class MMIController extends EventEmitter {
         apiUrl: accounts[item].apiUrl,
         custodyType: custodian.keyringClass.type,
         custodianName,
-        chainId: accounts[item].chainId,
+        caipChainId: accounts[item].caipChainId,
       })),
     );
 
@@ -570,8 +570,8 @@ export default class MMIController extends EventEmitter {
     const extensionId = this.extension.runtime.id;
     const networks = [
       ...this.preferencesController.getRpcMethodPreferences(),
-      { chainId: CHAIN_IDS.MAINNET },
-      { chainId: CHAIN_IDS.GOERLI },
+      { caipChainId: CHAIN_IDS.MAINNET },
+      { caipChainId: CHAIN_IDS.GOERLI },
     ];
 
     return handleMmiPortfolio({
@@ -598,23 +598,20 @@ export default class MMIController extends EventEmitter {
     }
   }
 
-  async setAccountAndNetwork(origin, address, chainId) {
+  async setAccountAndNetwork(origin, address, caipChainId) { // how is this used? this needs to be checked again
     await this.appStateController.getUnlockPromise(true);
     const selectedAddress = this.preferencesController.getSelectedAddress();
     if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
       this.preferencesController.setSelectedAddress(address);
     }
-    const selectedChainId = parseInt(
-      this.networkController.state.providerConfig.chainId,
-      16,
-    );
-    if (selectedChainId !== chainId && chainId === 1) {
+    const selectedCaipChainId = this.networkController.state.providerConfig.caipChainId
+    if (selectedCaipChainId !== caipChainId && caipChainId === 'eip155:1') {
       await this.networkController.setProviderType('mainnet');
-    } else if (selectedChainId !== chainId) {
+    } else if (selectedCaipChainId !== caipChainId) {
       const foundNetworkConfiguration = Object.values(
         this.networkController.state.networkConfigurations,
       ).find((networkConfiguration) => {
-        return parseInt(networkConfiguration.chainId, 16) === chainId;
+        return networkConfiguration.caipChainId === caipChainId; // is this right?
       });
 
       if (foundNetworkConfiguration !== undefined) {
@@ -631,8 +628,8 @@ export default class MMIController extends EventEmitter {
     return true;
   }
 
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
+  async handleMmiOpenSwaps(origin, address, caipChainId) {
+    await this.setAccountAndNetwork(origin, address, caipChainId);
     this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
     return true;
   }

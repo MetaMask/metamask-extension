@@ -14,7 +14,7 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getNonTestNetworks,
   getTestNetworks,
 } from '../../../selectors';
@@ -59,7 +59,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const testNetworks = useSelector(getTestNetworks);
 
   const showTestNetworks = useSelector(getShowTestNetworks);
-  const currentChainId = useSelector(getCurrentChainId);
+  const currentCaipChainId = useSelector(getCurrentCaipChainId);
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
@@ -76,15 +76,15 @@ export const NetworkListMenu = ({ onClose }) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
-      const isCurrentNetwork = currentChainId === network.chainId;
+      const isCurrentNetwork = currentCaipChainId === network.caipChainId;
       const canDeleteNetwork =
-        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.caipChainId);
 
       return (
         <NetworkListItem
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
-          key={`${network.id || network.chainId}-${index}`}
+          key={`${network.id || network.caipChainId}-${index}`}
           selected={isCurrentNetwork}
           onClick={async () => {
             dispatch(toggleNetworkMenu());
@@ -98,9 +98,9 @@ export const NetworkListMenu = ({ onClose }) => {
               category: MetaMetricsEventCategory.Network,
               properties: {
                 location: 'Network Menu',
-                chain_id: currentChainId,
-                from_network: currentChainId,
-                to_network: network.id || network.chainId,
+                chain_id: currentCaipChainId,
+                from_network: currentCaipChainId,
+                to_network: network.id || network.caipChainId,
               },
             });
           }}
@@ -111,7 +111,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.chainId,
+                      target: network.id || network.caipChainId, // should this be turned into hex?
                       onConfirm: () => undefined,
                     }),
                   );

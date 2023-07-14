@@ -28,7 +28,7 @@ import {
   Box,
 } from '../../components/component-library';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getSuggestedNfts,
   getIpfsGateway,
@@ -56,7 +56,7 @@ const ConfirmAddSuggestedNFT = () => {
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const suggestedNfts = useSelector(getSuggestedNfts);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -166,9 +166,9 @@ const ConfirmAddSuggestedNFT = () => {
                 },
               }) => {
                 const nftImageURL = getAssetImageURL(image, ipfsGateway);
-                const blockExplorerLink = getTokenTrackerLink(
+                const blockExplorerLink = getTokenTrackerLink( // probably needs to be updated
                   address,
-                  chainId,
+                  caipChainId,
                   null,
                   null,
                   {

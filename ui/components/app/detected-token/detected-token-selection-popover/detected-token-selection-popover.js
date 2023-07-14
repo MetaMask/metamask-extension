@@ -10,7 +10,7 @@ import {
   MetaMetricsTokenEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getDetectedTokensInCurrentNetwork,
 } from '../../../../selectors';
 
@@ -30,7 +30,7 @@ const DetectedTokenSelectionPopover = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getCurrentCaipChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } =
@@ -50,7 +50,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainId,
+        chain_id: chainId, // what to do with metrics?
         tokens: eventTokensDetails,
       },
     });

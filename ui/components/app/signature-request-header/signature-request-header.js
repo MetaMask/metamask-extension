@@ -10,7 +10,7 @@ import {
 import {
   accountsWithSendEtherInfoSelector,
   conversionRateSelector,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentCurrency,
   getPreferences,
 } from '../../../selectors';
@@ -34,7 +34,7 @@ const SignatureRequestHeader = ({ txData }) => {
   const fromAccount = getAccountByAddress(allAccounts, from);
   const nativeCurrency = useSelector(getNativeCurrency);
   const currentCurrency = useSelector(getCurrentCurrency);
-  const currentChainId = useSelector(getCurrentChainId);
+  const currentCaipChainId = useSelector(getCurrentCaipChainId);
 
   const providerConfig = useSelector(getProviderConfig);
   const networkName = getNetworkNameFromProviderType(providerConfig.type);
@@ -76,7 +76,7 @@ const SignatureRequestHeader = ({ txData }) => {
         conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
       }
       accountAddress={fromAccount.address}
-      chainId={currentChainId}
+      caipChainId={currentCaipChainId}
     />
   );
 };

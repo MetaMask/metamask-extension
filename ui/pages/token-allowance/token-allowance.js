@@ -181,7 +181,7 @@ export default function TokenAllowance({
   const disableApproveButton = !isFirstPage && balanceError;
 
   const networkName =
-    NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
+    NETWORK_TO_NAME_MAP[fullTxData.caipChainId] || networkIdentifier;
 
   const customNonceMerge = (transactionData) =>
     customNonceValue
@@ -300,7 +300,7 @@ export default function TokenAllowance({
       <ContractTokenValues
         tokenName={tokenSymbol}
         address={tokenAddress}
-        chainId={fullTxData.chainId}
+        caipChainId={fullTxData.caipChainId}
         rpcPrefs={rpcPrefs}
       />
     </Box>
@@ -355,7 +355,7 @@ export default function TokenAllowance({
         accountBalance={currentTokenBalance}
         tokenName={tokenSymbol}
         accountAddress={userAddress}
-        chainId={fullTxData.chainId}
+        caipChainId={fullTxData.caipChainId}
       />
       {warning && (
         <Box className="token-allowance-container__custom-nonce-warning">
@@ -604,7 +604,7 @@ export default function TokenAllowance({
           onClose={() => setShowContractDetails(false)}
           tokenAddress={tokenAddress}
           toAddress={toAddress}
-          chainId={fullTxData.chainId}
+          caipChainId={fullTxData.caipChainId}
           rpcPrefs={rpcPrefs}
         />
       )}

@@ -2,6 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 // Snippet of the ABI that we need
 // Should we need more of it at some point, the full ABI can be found here:
@@ -21,11 +22,11 @@ const OPTIMISM_GAS_PRICE_ORACLE_ADDRESS =
   '0x420000000000000000000000000000000000000F';
 
 export default async function fetchEstimatedL1Fee(
-  chainId,
+  caipChainId,
   txMeta,
   ethersProvider,
 ) {
-  const chainIdAsDecimalNumber = Number(hexToDecimal(chainId));
+  const chainIdAsDecimalNumber = getEthChainIdIntFromCaipChainId(caipChainId);
   const provider = global.ethereumProvider
     ? new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber)
     : ethersProvider;

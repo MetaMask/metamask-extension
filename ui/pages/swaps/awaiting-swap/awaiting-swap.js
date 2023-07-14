@@ -14,7 +14,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
@@ -90,7 +90,7 @@ export default function AwaitingSwap({
   const swapsGasPrice = useSelector(getUsedSwapsGasPrice);
   const currentCurrency = useSelector(getCurrentCurrency);
   const usdConversionRate = useSelector(getUSDConversionRate);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
     useState(false);
@@ -107,7 +107,7 @@ export default function AwaitingSwap({
       tradeValue: usedQuote?.trade?.value,
       sourceSymbol: swapMetaData?.token_from,
       sourceAmount: usedQuote.sourceAmount,
-      chainId,
+      caipChainId,
     });
     feeinUnformattedFiat = renderableNetworkFees.rawNetworkFees;
   }
@@ -138,10 +138,10 @@ export default function AwaitingSwap({
 
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
-  const blockExplorerUrl = getBlockExplorerLink(
-    { hash: txHash, chainId },
+  const blockExplorerUrl = getBlockExplorerLink( // does this need to be updated?
+    { hash: txHash, caipChainId },
     { blockExplorerUrl: baseNetworkUrl },
   );
 
@@ -315,7 +315,7 @@ export default function AwaitingSwap({
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
           } else if (
-            isSwapsDefaultTokenSymbol(swapMetaData?.token_to, chainId) ||
+            isSwapsDefaultTokenSymbol(swapMetaData?.token_to, caipChainId) ||
             swapComplete
           ) {
             history.push(DEFAULT_ROUTE);

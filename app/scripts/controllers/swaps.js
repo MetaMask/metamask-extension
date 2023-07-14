@@ -112,7 +112,7 @@ export default class SwapsController {
       getProviderConfig,
       getTokenRatesState,
       fetchTradesInfo = defaultFetchTradesInfo,
-      getCurrentChainId,
+      getCurrentCaipChainId,
       getEIP1559GasFeeEstimates,
       onNetworkStateChange,
     },
@@ -135,7 +135,7 @@ export default class SwapsController {
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._getCurrentChainId = getCurrentChainId;
+    this._getCurrentCaipChainId = getCurrentCaipChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
@@ -160,9 +160,9 @@ export default class SwapsController {
     });
   }
 
-  async fetchSwapsNetworkConfig(chainId) {
+  async fetchSwapsNetworkConfig(caipChainId) {
     const response = await fetchWithCache(
-      getBaseApi('network', chainId),
+      getBaseApi('network', caipChainId),
       { method: 'GET' },
       { cacheRefreshTime: 600000 },
     );
@@ -189,10 +189,10 @@ export default class SwapsController {
 
   // Sets the network config from the MetaSwap API.
   async _setSwapsNetworkConfig() {
-    const chainId = this._getCurrentChainId();
+    const caipChainId = this._getCurrentCaipChainId();
     let swapsNetworkConfig;
     try {
-      swapsNetworkConfig = await this.fetchSwapsNetworkConfig(chainId);
+      swapsNetworkConfig = await this.fetchSwapsNetworkConfig(caipChainId);
     } catch (e) {
       console.error('Request for Swaps network config failed: ', e);
     }
@@ -257,7 +257,7 @@ export default class SwapsController {
     fetchParamsMetaData = {},
     isPolledRequest,
   ) {
-    const { chainId } = fetchParamsMetaData;
+    const { caipChainId } = fetchParamsMetaData;
     const {
       swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();
@@ -310,15 +310,15 @@ export default class SwapsController {
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }));
 
-    if (chainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+    if (caipChainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {
             const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
-              chainId,
+              caipChainId,
               {
                 txParams: quote.trade,
-                chainId,
+                caipChainId,
               },
               this.ethersProvider,
             );
@@ -333,13 +333,13 @@ export default class SwapsController {
 
     let approvalRequired = false;
     if (
-      !isSwapsDefaultTokenAddress(fetchParams.sourceToken, chainId) &&
+      !isSwapsDefaultTokenAddress(fetchParams.sourceToken, caipChainId) &&
       Object.values(newQuotes).length
     ) {
       const allowance = await this._getERC20Allowance(
         fetchParams.sourceToken,
         fetchParams.fromAddress,
-        chainId,
+        caipChainId,
       );
       const [firstQuote] = Object.values(newQuotes);
 
@@ -685,7 +685,7 @@ export default class SwapsController {
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
-    const chainId = this._getCurrentChainId();
+    const caipChainId = this._getCurrentCaipChainId();
 
     const numQuotes = Object.keys(quotes).length;
     if (!numQuotes) {
@@ -784,7 +784,7 @@ export default class SwapsController {
       // If the swap is from the selected chain's default token, subtract
       // the sourceAmount from the total cost. Otherwise, the total fee
       // is simply trade.value plus gas fees.
-      const ethFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
+      const ethFee = isSwapsDefaultTokenAddress(sourceToken, caipChainId)
         ? totalWeiCost
             .minus(new Numeric(sourceAmount, 10))
             .toDenomination(EtherDenomination.ETH)
@@ -820,7 +820,7 @@ export default class SwapsController {
 
       const conversionRateForCalculations = isSwapsDefaultTokenAddress(
         destinationToken,
-        chainId,
+        caipChainId,
       )
         ? 1
         : tokenConversionRate;
@@ -852,7 +852,7 @@ export default class SwapsController {
     const isBest =
       isSwapsDefaultTokenAddress(
         newQuotes[topAggId].destinationToken,
-        chainId,
+        caipChainId,
       ) ||
       Boolean(
         tokenConversionRates[
@@ -908,11 +908,11 @@ export default class SwapsController {
     return [topAggId, newQuotes];
   }
 
-  async _getERC20Allowance(contractAddress, walletAddress, chainId) {
+  async _getERC20Allowance(contractAddress, walletAddress, caipChainId) {
     const contract = new Contract(contractAddress, abi, this.ethersProvider);
     return await contract.allowance(
       walletAddress,
-      SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+      SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[caipChainId],
     );
   }
 }

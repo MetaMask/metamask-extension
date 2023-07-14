@@ -42,12 +42,12 @@ export function getSwapsTokensReceivedFromTxMeta(
   accountAddress,
   tokenDecimals,
   approvalTxMeta,
-  chainId,
+  caipChainId,
 ) {
   const txReceipt = txMeta?.txReceipt;
   const networkAndAccountSupports1559 =
     txMeta?.txReceipt?.type === TransactionEnvelopeType.feeMarket;
-  if (isSwapsDefaultTokenSymbol(tokenSymbol, chainId)) {
+  if (isSwapsDefaultTokenSymbol(tokenSymbol, caipChainId)) {
     if (
       !txReceipt ||
       !txMeta ||

@@ -19,7 +19,7 @@ import {
   getIsSwapsChain,
   getIsBuyableChain,
   getIsBridgeToken,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getMetaMetricsId,
 } from '../../../selectors';
 
@@ -62,7 +62,7 @@ const TokenOverview = ({ className, token }) => {
     balanceToRender,
     token.symbol,
   );
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const isBridgeToken = useSelector(getIsBridgeToken(token.address));
   const isBuyableChain = useSelector(getIsBuyableChain);
@@ -146,7 +146,7 @@ const TokenOverview = ({ className, token }) => {
                 properties: {
                   location: 'Token Overview',
                   text: 'Buy',
-                  chain_id: chainId,
+                  chain_id: caipChainId, // metrics?
                   token_symbol: token.symbol,
                 },
               });
@@ -163,7 +163,7 @@ const TokenOverview = ({ className, token }) => {
                   token_symbol: token.symbol,
                   location: MetaMetricsSwapsEventSource.TokenView,
                   text: 'Send',
-                  chain_id: chainId,
+                  chain_id: caipChainId, // metrics
                 },
               });
               try {
@@ -207,7 +207,7 @@ const TokenOverview = ({ className, token }) => {
                     token_symbol: token.symbol,
                     location: MetaMetricsSwapsEventSource.TokenView,
                     text: 'Swap',
-                    chain_id: chainId,
+                    chain_id: caipChainId, // metrics?
                   },
                 });
                 dispatch(
@@ -253,7 +253,7 @@ const TokenOverview = ({ className, token }) => {
                     location: 'Token Overview',
                     text: 'Bridge',
                     url: portfolioUrl,
-                    chain_id: chainId,
+                    chain_id: caipChainId, // metrics?
                     token_symbol: token.symbol,
                   },
                 });

@@ -30,11 +30,11 @@ export function isPrefixedFormattedHexString(value: unknown) {
 /**
  * Check if token detection is enabled for certain networks
  *
- * @param chainId - ChainID of network
+ * @param caipChainId - Caip chain id of network
  * @returns Whether the current network supports token detection
  */
-export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
-  switch (chainId) {
+export function isTokenDetectionEnabledForNetwork(caipChainId: string | undefined) {
+  switch (caipChainId) {
     case CHAIN_IDS.MAINNET:
     case CHAIN_IDS.BSC:
     case CHAIN_IDS.POLYGON:

@@ -18,7 +18,7 @@ import {
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getIpfsGateway,
   getSelectedAddress,
   getCurrentNetwork,
@@ -49,17 +49,17 @@ export default function NftsItems({
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
 
   useEffect(() => {
     if (
-      chainId !== undefined &&
+      caipChainId !== undefined &&
       selectedAddress !== undefined &&
       !isEqual(previousCollectionKeys, collectionsKeys) &&
-      (nftsDropdownState?.[selectedAddress]?.[chainId] === undefined ||
-        Object.keys(nftsDropdownState?.[selectedAddress]?.[chainId]).length ===
+      (nftsDropdownState?.[selectedAddress]?.[caipChainId] === undefined ||
+        Object.keys(nftsDropdownState?.[selectedAddress]?.[caipChainId]).length ===
           0)
     ) {
       const initState = {};
@@ -71,7 +71,7 @@ export default function NftsItems({
         ...nftsDropdownState,
         [selectedAddress]: {
           ...nftsDropdownState?.[selectedAddress],
-          [chainId]: initState,
+          [caipChainId]: initState,
         },
       };
 
@@ -82,7 +82,7 @@ export default function NftsItems({
     previousCollectionKeys,
     nftsDropdownState,
     selectedAddress,
-    chainId,
+    caipChainId,
     dispatch,
   ]);
 
@@ -108,14 +108,14 @@ export default function NftsItems({
 
   const updateNftDropDownStateKey = (key, isExpanded) => {
     const newCurrentAccountState = {
-      ...nftsDropdownState[selectedAddress][chainId],
+      ...nftsDropdownState[selectedAddress][caipChainId],
       [key]: !isExpanded,
     };
 
     const newState = {
       ...nftsDropdownState,
       [selectedAddress]: {
-        [chainId]: newCurrentAccountState,
+        [caipChainId]: newCurrentAccountState,
       },
     };
 
@@ -127,7 +127,7 @@ export default function NftsItems({
       return null;
     }
 
-    const isExpanded = nftsDropdownState[selectedAddress]?.[chainId]?.[key];
+    const isExpanded = nftsDropdownState[selectedAddress]?.[caipChainId]?.[key];
     return (
       <div className="nfts-items__collection" key={`collection-${key}`}>
         <button

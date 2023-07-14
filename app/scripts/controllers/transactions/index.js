@@ -134,7 +134,7 @@ export default class TransactionController extends EventEmitter {
     super();
     this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
-    this._getCurrentChainId = opts.getCurrentChainId;
+    this._getCurrentCaipChainId = opts.getCurrentCaipChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
       opts.getCurrentNetworkEIP1559Compatibility;
@@ -174,7 +174,7 @@ export default class TransactionController extends EventEmitter {
       txHistoryLimit: opts.txHistoryLimit,
       getNetworkId: this.getNetworkId,
       getNetworkStatus: this.getNetworkStatus,
-      getCurrentChainId: opts.getCurrentChainId,
+      getCurrentCaipChainId: opts.getCurrentCaipChainId,
     });
 
     this.store = this.txStateManager.store;
@@ -235,9 +235,9 @@ export default class TransactionController extends EventEmitter {
    *
    * @returns {number} The numerical chainId.
    */
-  getChainId() {
+  getChainId() { // i think this stays named as is since this is eth level
     const networkStatus = this.getNetworkStatus();
-    const caipChainId = this._getCurrentChainId();
+    const caipChainId = this._getCurrentCaipChainId();
     const intChainId = getEthChainIdIntFromCaipChainId(caipChainId)
     if (
       networkStatus !== NetworkStatus.Available ||
@@ -295,8 +295,8 @@ export default class TransactionController extends EventEmitter {
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
     // here
-    const caipChainId = this._getCurrentChainId();
-    const intChainId = getEthChainIdNumFromCaipChainId(caipChainId)
+    const caipChainId = this._getCurrentCaipChainId();
+    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId)
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 
@@ -963,7 +963,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta) {
-    const chainId = this._getCurrentChainId();
+    const chainId = this._getCurrentCaipChainId();
     const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
     const chainType = getChainType(chainId);
 

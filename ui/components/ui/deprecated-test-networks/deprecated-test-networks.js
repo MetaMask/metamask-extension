@@ -10,12 +10,13 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
 import ActionableMessage from '../actionable-message/actionable-message';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentCaipChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { Text, Icon, IconName, IconSize } from '../../component-library';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function DeprecatedTestNetworks() {
-  const currentChainID = useSelector(getCurrentChainId);
+  const currentChainID = getEthChainIdHexFromCaipChainId(useSelector(getCurrentCaipChainId));
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();

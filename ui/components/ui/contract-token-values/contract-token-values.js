@@ -21,7 +21,7 @@ import { ButtonIcon, IconName } from '../../component-library';
 export default function ContractTokenValues({
   address,
   tokenName,
-  chainId,
+  caipChainId,
   rpcPrefs,
 }) {
   const t = useI18nContext();
@@ -64,7 +64,7 @@ export default function ContractTokenValues({
           onClick={() => {
             const blockExplorerTokenLink = getAccountLink(
               address,
-              chainId,
+              caipChainId,
               {
                 blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
               },
@@ -91,9 +91,9 @@ ContractTokenValues.propTypes = {
    */
   tokenName: PropTypes.string,
   /**
-   * Current network chainId
+   * Current network caipChainId
    */
-  chainId: PropTypes.string,
+  caipChainId: PropTypes.string,
   /**
    * RPC prefs
    */

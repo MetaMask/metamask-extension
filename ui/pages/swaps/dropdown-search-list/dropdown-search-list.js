@@ -23,7 +23,7 @@ import ImportToken from '../import-token';
 import {
   isHardwareWallet,
   getHardwareWalletType,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors/selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
@@ -65,7 +65,7 @@ export default function DropdownSearchList({
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
@@ -104,7 +104,7 @@ export default function DropdownSearchList({
       sensitiveProperties: {
         symbol: tokenForImport?.symbol,
         address: tokenForImport?.address,
-        chain_id: chainId,
+        chain_id: caipChainId,
         is_hardware_wallet: hardwareWalletUsed,
         hardware_wallet_type: hardwareWalletType,
         stx_enabled: smartTransactionsEnabled,
@@ -158,7 +158,7 @@ export default function DropdownSearchList({
 
   const blockExplorerLink =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
 
   const blockExplorerHostName = getURLHostName(blockExplorerLink);

@@ -150,7 +150,7 @@ export default class Routes extends Component {
     isNetworkUsed: PropTypes.bool,
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
-    currentChainId: PropTypes.string,
+    currentCaipChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
     isCurrentProviderCustom: PropTypes.bool,
@@ -508,7 +508,7 @@ export default class Routes extends Component {
       isNetworkUsed,
       allAccountsOnNetworkAreEmpty,
       isTestNet,
-      currentChainId,
+      currentCaipChainId,
       shouldShowSeedPhraseReminder,
       isCurrentProviderCustom,
       completedOnboarding,
@@ -526,7 +526,7 @@ export default class Routes extends Component {
 
     const shouldShowNetworkInfo =
       isUnlocked &&
-      currentChainId &&
+      currentCaipChainId &&
       !isTestNet &&
       !isNetworkUsed &&
       !isCurrentProviderCustom &&

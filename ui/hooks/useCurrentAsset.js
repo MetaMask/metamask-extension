@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router-dom';
 import { getTokens } from '../ducks/metamask/metamask';
-import { getCurrentChainId } from '../selectors';
+import { getCurrentCaipChainId } from '../selectors';
 import { ASSET_ROUTE } from '../helpers/constants/routes';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
@@ -32,10 +32,10 @@ export function useCurrentAsset() {
     knownTokens.find(({ address }) =>
       isEqualCaseInsensitive(address, tokenAddress),
     );
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   return (
     token ??
-    (SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || ETH_SWAPS_TOKEN_OBJECT)
+    (SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId] || ETH_SWAPS_TOKEN_OBJECT)
   );
 }

@@ -70,9 +70,9 @@ export default class SignatureRequest extends PureComponent {
      */
     hardwareWalletRequiresConnection: PropTypes.bool.isRequired,
     /**
-     * Current network chainId
+     * Current network caipChainId
      */
-    chainId: PropTypes.string,
+    caipChainId: PropTypes.string,
     /**
      * RPC prefs of the current network
      */
@@ -178,7 +178,7 @@ export default class SignatureRequest extends PureComponent {
       fromAccount: { address, balance, name },
       isLedgerWallet,
       hardwareWalletRequiresConnection,
-      chainId,
+      caipChainId,
       rpcPrefs,
       txData,
       subjectMetadata,
@@ -397,7 +397,7 @@ export default class SignatureRequest extends PureComponent {
         {this.state.showContractDetails && (
           <ContractDetailsModal
             toAddress={verifyingContract}
-            chainId={chainId}
+            caipChainId={caipChainId}
             rpcPrefs={rpcPrefs}
             onClose={() => this.setState({ showContractDetails: false })}
             isContractRequestingSignature

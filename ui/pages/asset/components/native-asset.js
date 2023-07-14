@@ -7,7 +7,7 @@ import TransactionList from '../../../components/app/transaction-list';
 import { EthOverview } from '../../../components/app/wallet-overview';
 import {
   getSelectedIdentity,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getSelectedAddress,
   getIsCustomNetwork,
@@ -24,11 +24,11 @@ export default function NativeAsset({ nativeCurrency }) {
     (state) => getSelectedIdentity(state).name,
   );
 
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const address = useSelector(getSelectedAddress);
   const history = useHistory();
-  const accountLink = getAccountLink(address, chainId, rpcPrefs);
+  const accountLink = getAccountLink(address, caipChainId, rpcPrefs);
   const trackEvent = useContext(MetaMetricsContext);
   const isCustomNetwork = useSelector(getIsCustomNetwork);
 

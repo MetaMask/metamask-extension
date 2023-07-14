@@ -18,7 +18,7 @@ const addEthereumChain = {
   implementation: addEthereumChainHandler,
   hookNames: {
     upsertNetworkConfiguration: true,
-    getCurrentChainId: true,
+    getCurrentCaipChainId: true,
     getCurrentRpcUrl: true,
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
@@ -36,7 +36,7 @@ async function addEthereumChainHandler(
   end,
   {
     upsertNetworkConfiguration,
-    getCurrentChainId,
+    getCurrentCaipChainId,
     getCurrentRpcUrl,
     findNetworkConfigurationBy,
     setActiveNetwork,
@@ -152,7 +152,7 @@ async function addEthereumChainHandler(
     // If the network already exists, the request is considered successful
     res.result = null;
 
-    const currentCaipChainId = getCurrentChainId();
+    const currentCaipChainId = getCurrentCaipChainId();
     const currentRpcUrl = getCurrentRpcUrl();
 
     // If the current chainId and rpcUrl matches that of the incoming request

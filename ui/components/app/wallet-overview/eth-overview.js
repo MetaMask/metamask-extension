@@ -28,7 +28,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getSelectedAccountCachedBalance,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getMetaMetricsId,
 } from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -64,7 +64,7 @@ const EthOverview = ({ className, showAddress }) => {
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -188,7 +188,7 @@ const EthOverview = ({ className, showAddress }) => {
                   properties: {
                     location: 'Home',
                     text: 'Buy',
-                    chain_id: chainId,
+                    chain_id: caipChainId, // what to do with metrics?
                     token_symbol: defaultSwapsToken,
                   },
                 });
@@ -221,7 +221,7 @@ const EthOverview = ({ className, showAddress }) => {
                   token_symbol: 'ETH',
                   location: 'Home',
                   text: 'Send',
-                  chain_id: chainId,
+                  chain_id: caipChainId, // what to do with metrics?
                 },
               });
               dispatch(
@@ -249,7 +249,7 @@ const EthOverview = ({ className, showAddress }) => {
                     token_symbol: 'ETH',
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
-                    chain_id: chainId,
+                    chain_id: caipChainId, // metrics?
                   },
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -303,7 +303,7 @@ const EthOverview = ({ className, showAddress }) => {
                     properties: {
                       location: 'Home',
                       text: 'Bridge',
-                      chain_id: chainId,
+                      chain_id: caipChainId, // metrics?
                       token_symbol: 'ETH',
                     },
                   });
@@ -349,7 +349,7 @@ const EthOverview = ({ className, showAddress }) => {
                   properties: {
                     location: 'Home',
                     text: 'Portfolio',
-                    chain_id: chainId,
+                    chain_id: caipChainId, // metrics?
                     token_symbol: 'ETH',
                   },
                 });

@@ -1,22 +1,22 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import type { Hex } from '@metamask/utils';
-import { ChainId, CHAIN_IDS } from '../../../shared/constants/network';
-import { getCurrentChainId, getMetaMetricsId } from '../../selectors';
+import type { CaipChainId, Hex } from '@metamask/utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getCurrentCaipChainId, getMetaMetricsId } from '../../selectors';
 
 interface IUseRamps {
   openBuyCryptoInPdapp: VoidFunction;
-  getBuyURI: (chainId: ChainId) => string;
+  getBuyURI: (caipChainId: CaipChainId) => string;
 }
 
 const portfolioUrl = process.env.PORTFOLIO_URL;
 
 const useRamps = (): IUseRamps => {
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  const getBuyURI = useCallback((_chainId: Hex) => {
-    switch (_chainId) {
+  const getBuyURI = useCallback((_caipChainId: CaipChainId) => {
+    switch (_caipChainId) {
       case CHAIN_IDS.SEPOLIA:
         return 'https://faucet.sepolia.dev/';
       default: {
@@ -31,7 +31,7 @@ const useRamps = (): IUseRamps => {
   }, []);
 
   const openBuyCryptoInPdapp = useCallback(() => {
-    const buyUrl = getBuyURI(chainId);
+    const buyUrl = getBuyURI(caipChainId);
     global.platform.openTab({
       url: buyUrl,
     });

@@ -8,7 +8,7 @@ import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getSwapsDefaultToken,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getTokenList,
 } from '../selectors';
 import { getConversionRate } from '../ducks/metamask/metamask';
@@ -25,12 +25,12 @@ export function getRenderableTokenData(
   contractExchangeRates,
   conversionRate,
   currentCurrency,
-  chainId,
+  caipChainId,
   tokenList,
 ) {
   const { symbol, name, address, iconUrl, string, balance, decimals } = token;
   let contractExchangeRate;
-  if (isSwapsDefaultTokenSymbol(symbol, chainId)) {
+  if (isSwapsDefaultTokenSymbol(symbol, caipChainId)) {
     contractExchangeRate = 1;
   } else if (string && conversionRate > 0) {
     // This condition improves performance significantly, because it only gets a contract exchange rate
@@ -57,22 +57,22 @@ export function getRenderableTokenData(
       )
     : '';
 
-  const chainIdForTokenIcons =
-    chainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : chainId;
+  const caipChainIdForTokenIcons =
+    caipChainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : caipChainId;
 
   const tokenIconUrl =
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.MAINNET) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.GOERLI) ||
-    (symbol === CURRENCY_SYMBOLS.BNB && chainId === CHAIN_IDS.BSC) ||
-    (symbol === CURRENCY_SYMBOLS.MATIC && chainId === CHAIN_IDS.POLYGON) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.MAINNET) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.GOERLI) ||
+    (symbol === CURRENCY_SYMBOLS.BNB && caipChainId === CHAIN_IDS.BSC) ||
+    (symbol === CURRENCY_SYMBOLS.MATIC && caipChainId === CHAIN_IDS.POLYGON) ||
     (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
-      chainId === CHAIN_IDS.AVALANCHE) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.OPTIMISM) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.AURORA) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && chainId === CHAIN_IDS.ARBITRUM)
+      caipChainId === CHAIN_IDS.AVALANCHE) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.AURORA) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.ARBITRUM)
       ? iconUrl
       : formatIconUrlWithProxy({
-          chainId: chainIdForTokenIcons,
+          caipChainId: caipChainIdForTokenIcons,
           tokenAddress: address || '',
         });
   const usedIconUrl = tokenIconUrl || token?.image;
@@ -99,7 +99,7 @@ export function useTokensToSearch({
   shuffledTokensList,
   tokenBucketPriority = TokenBucketPriority.owned,
 }) {
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
@@ -114,7 +114,7 @@ export function useTokensToSearch({
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    chainId,
+    caipChainId,
     tokenList,
   );
   const memoizedDefaultToken = useEqualityCheck(defaultToken);
@@ -154,12 +154,12 @@ export function useTokensToSearch({
         tokenConversionRates,
         conversionRate,
         currentCurrency,
-        chainId,
+        caipChainId,
         tokenList,
       );
       if (tokenBucketPriority === TokenBucketPriority.owned) {
         if (
-          isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+          isSwapsDefaultTokenSymbol(renderableDataToken.symbol, caipChainId) ||
           usersTokensAddressMap[token.address.toLowerCase()]
         ) {
           tokensToSearchBuckets.owned.push(renderableDataToken);
@@ -175,7 +175,7 @@ export function useTokensToSearch({
           memoizedTopTokens[token.address.toLowerCase()].index
         ] = renderableDataToken;
       } else if (
-        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, chainId) ||
+        isSwapsDefaultTokenSymbol(renderableDataToken.symbol, caipChainId) ||
         usersTokensAddressMap[token.address.toLowerCase()]
       ) {
         tokensToSearchBuckets.owned.push(renderableDataToken);
@@ -210,7 +210,7 @@ export function useTokensToSearch({
     conversionRate,
     currentCurrency,
     memoizedDefaultToken,
-    chainId,
+    caipChainId,
     tokenList,
     tokenBucketPriority,
   ]);

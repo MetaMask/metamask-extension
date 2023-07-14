@@ -19,7 +19,7 @@ const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
   implementation: switchEthereumChainHandler,
   hookNames: {
-    getCurrentChainId: true,
+    getCurrentCaipChainId: true,
     findNetworkConfigurationBy: true,
     setProviderType: true,
     setActiveNetwork: true,
@@ -28,22 +28,22 @@ const switchEthereumChain = {
 };
 export default switchEthereumChain;
 
-function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+function findExistingNetwork(caipChainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
-      .map(({ chainId: id }) => id)
-      .includes(chainId)
+      .map(({ caipChainId: id }) => id)
+      .includes(caipChainId)
   ) {
     return {
-      chainId,
+      caipChainId,
       ticker: CURRENCY_SYMBOLS.ETH,
-      nickname: NETWORK_TO_NAME_MAP[chainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[chainId],
-      type: CHAIN_ID_TO_TYPE_MAP[chainId],
+      nickname: NETWORK_TO_NAME_MAP[caipChainId],
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[caipChainId],
+      type: CHAIN_ID_TO_TYPE_MAP[caipChainId],
     };
   }
 
-  return findNetworkConfigurationBy({ chainId });
+  return findNetworkConfigurationBy({ caipChainId });
 }
 
 async function switchEthereumChainHandler(
@@ -52,7 +52,7 @@ async function switchEthereumChainHandler(
   _next,
   end,
   {
-    getCurrentChainId,
+    getCurrentCaipChainId,
     findNetworkConfigurationBy,
     setProviderType,
     setActiveNetwork,
@@ -105,7 +105,7 @@ async function switchEthereumChainHandler(
 
   const requestData = findExistingNetwork(caipChainId, findNetworkConfigurationBy);
   if (requestData) {
-    const currentCaipChainId = getCurrentChainId();
+    const currentCaipChainId = getCurrentCaipChainId();
     if (currentCaipChainId === caipChainId) {
       res.result = null;
       return end();
@@ -118,8 +118,8 @@ async function switchEthereumChainHandler(
       });
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
-          .map(({ chainId: id }) => id)
-          .includes(chainId)
+          .map(({ caipChainId: id }) => id)
+          .includes(caipChainId)
       ) {
         await setProviderType(approvedRequestData.type);
       } else {

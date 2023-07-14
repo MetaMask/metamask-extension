@@ -26,7 +26,7 @@ import {
 } from '../../pages/send/send.utils';
 import {
   getAdvancedInlineGasShown,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getGasPriceInHexWei,
   getIsMainnet,
   getTargetAccount,
@@ -503,11 +503,11 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
-      gasTotalForLayer1 = await fetchEstimatedL1Fee(chainId, {
+      gasTotalForLayer1 = await fetchEstimatedL1Fee(caipChainId, {
         txParams: {
           gasPrice: draftTransaction.gas.gasPrice,
           gas: draftTransaction.gas.gasLimit,
@@ -537,7 +537,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
         value: draftTransaction.amount.value,
         data: draftTransaction.userInputHexData,
         isNonStandardEthChain,
-        chainId,
+        caipChainId,
         gasLimit: draftTransaction.gas.gasLimit,
       });
       await thunkApi.dispatch(setCustomGasLimit(gasLimit));
@@ -590,7 +590,7 @@ export const initializeSendState = createAsyncThunk(
      */
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     let eip1559support = checkNetworkAndAccountSupports1559(state);
     if (eip1559support === undefined) {
       eip1559support = await getCurrentNetworkEIP1559Compatibility();
@@ -673,7 +673,7 @@ export const initializeSendState = createAsyncThunk(
         value: draftTransaction.amount.value,
         data: draftTransaction.userInputHexData,
         isNonStandardEthChain,
-        chainId,
+        caipChainId,
       });
       gasLimit = estimatedGasLimit || gasLimit;
     }
@@ -696,7 +696,7 @@ export const initializeSendState = createAsyncThunk(
 
     return {
       account,
-      chainId: getCurrentChainId(state),
+      caipChainId: getCurrentCaipChainId(state),
       tokens: getTokens(state),
       chainHasChanged,
       gasFeeEstimates,
@@ -1336,7 +1336,7 @@ const slice = createSlice({
           draftTransaction.recipient.warning = null;
         } else {
           const {
-            chainId,
+            caipChainId,
             tokens,
             tokenAddressList,
             isProbablyAnAssetContract,
@@ -1349,7 +1349,7 @@ const slice = createSlice({
             }) &&
               !isValidDomainName(state.recipientInput))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(chainId)
+            draftTransaction.recipient.error = isDefaultMetaMaskChain(caipChainId)
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (
@@ -1602,7 +1602,7 @@ const slice = createSlice({
         if (state.stage !== SEND_STAGES.INACTIVE) {
           slice.caseReducers.validateRecipientUserInput(state, {
             payload: {
-              chainId: action.payload.chainId,
+              caipChainId: action.payload.caipChainId,
               tokens: action.payload.tokens,
               useTokenDetection: action.payload.useTokenDetection,
               tokenAddressList: action.payload.tokenAddressList,
@@ -1909,7 +1909,7 @@ export function updateRecipientUserInput(userInput) {
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
       getSelectedAddress(state);
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
     const tokenMap = getTokenList(state);
@@ -1945,7 +1945,7 @@ export function updateRecipientUserInput(userInput) {
         dispatch,
         {
           userInput,
-          chainId,
+          caipChainId,
           tokens,
           useTokenDetection,
           tokenAddressList,
@@ -2125,7 +2125,7 @@ export function updateSendAsset(
           } catch (err) {
             if (err.message.includes('Unable to verify ownership.')) {
               // this would indicate that either our attempts to verify ownership failed because of network issues,
-              // or, somehow a token has been added to NFTs state with an incorrect chainId.
+              // or, somehow a token has been added to NFTs state with an incorrect caipChainId.
             } else {
               // Any other error is unexpected and should be surfaced.
               dispatch(displayWarning(err.message));
@@ -2224,12 +2224,12 @@ export function useMyAccountsForRecipientSearch() {
 export function resetRecipientInput() {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const caipChainId = getCurrentCaipChainId(state);
     await dispatch(addHistoryEntry(`sendFlow - user cleared recipient input`));
     await dispatch(updateRecipientUserInput(''));
     await dispatch(updateRecipient({ address: '', nickname: '' }));
     await dispatch(resetDomainResolution());
-    await dispatch(validateRecipientUserInput({ chainId }));
+    await dispatch(validateRecipientUserInput({ caipChainId }));
   };
 }
 

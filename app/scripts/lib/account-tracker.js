@@ -54,7 +54,7 @@ export default class AccountTracker {
    * @param {object} opts - Options for initializing the controller
    * @param {object} opts.provider - An EIP-1193 provider instance that uses the current global network
    * @param {object} opts.blockTracker - A block tracker, which emits events for each new block
-   * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
+   * @param {Function} opts.getCurrentCaipChainId - A function that returns the `caipChainId` for the current global network
    * @param {Function} opts.getNetworkIdentifier - A function that returns the current network
    */
   constructor(opts = {}) {
@@ -78,7 +78,7 @@ export default class AccountTracker {
     });
     // bind function for easier listener syntax
     this._updateForBlock = this._updateForBlock.bind(this);
-    this.getCurrentChainId = opts.getCurrentChainId;
+    this.getCurrentCaipChainId = opts.getCurrentCaipChainId;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
@@ -252,14 +252,14 @@ export default class AccountTracker {
       addresses = [selectedAddress];
     }
 
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     const networkId = this.getNetworkIdentifier();
     const rpcUrl = 'http://127.0.0.1:8545';
 
     if (networkId === LOCALHOST_RPC_URL || networkId === rpcUrl) {
       await Promise.all(addresses.map(this._updateAccount.bind(this)));
     } else {
-      switch (chainId) {
+      switch (caipChainId) {
         case CHAIN_IDS.MAINNET:
           await this._updateAccountsViaBalanceChecker(
             addresses,

@@ -9,7 +9,7 @@ import {
   setNewTokensImported,
 } from '../../../store/actions';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getDetectedTokensInCurrentNetwork,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -50,7 +50,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentChainId);
+  const chainId = useSelector(getCurrentCaipChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
@@ -77,7 +77,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: chainId,
+          chain_id: chainId, // what to do with metrics?
         },
       });
     });

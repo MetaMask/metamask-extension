@@ -59,7 +59,7 @@ import {
   getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
@@ -183,7 +183,7 @@ export default function ViewQuote() {
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
   const smartTransactionsOptInStatus = useSelector(
@@ -306,7 +306,7 @@ export default function ViewQuote() {
       currentCurrency,
       approveGas,
       tokenConversionRates: memoizedTokenConversionRates,
-      chainId,
+      caipChainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&
         smartTransactionsOptInStatus &&
@@ -323,7 +323,7 @@ export default function ViewQuote() {
     currentCurrency,
     approveGas,
     memoizedTokenConversionRates,
-    chainId,
+    caipChainId,
     smartTransactionFees?.tradeTxFees,
     nativeCurrencySymbol,
     smartTransactionsEnabled,
@@ -360,7 +360,7 @@ export default function ViewQuote() {
       tradeValue,
       sourceSymbol: sourceTokenSymbol,
       sourceAmount: usedQuote.sourceAmount,
-      chainId,
+      caipChainId,
       nativeCurrencySymbol,
       multiLayerL1FeeTotal,
     });
@@ -377,7 +377,7 @@ export default function ViewQuote() {
     tradeValue,
     sourceSymbol: sourceTokenSymbol,
     sourceAmount: usedQuote.sourceAmount,
-    chainId,
+    caipChainId,
     nativeCurrencySymbol,
     multiLayerL1FeeTotal,
   });
@@ -401,7 +401,7 @@ export default function ViewQuote() {
     const stxMaxFeeInWeiDec =
       stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
-      chainId,
+      caipChainId,
       currentCurrency,
       conversionRate,
       USDConversionRate,
@@ -418,7 +418,7 @@ export default function ViewQuote() {
       rawEthFee: maxRawEthFee,
       feeInUsd: maxFeeInUsd,
     } = getFeeForSmartTransaction({
-      chainId,
+      caipChainId,
       currentCurrency,
       conversionRate,
       USDConversionRate,
@@ -822,7 +822,7 @@ export default function ViewQuote() {
         value: unsignedTransaction.value,
         data: unsignedTransaction.data,
         gas: unsignedTransaction.gas,
-        chainId,
+        caipChainId,
       };
       intervalId = setInterval(() => {
         if (!swapsSTXLoading) {
@@ -856,7 +856,7 @@ export default function ViewQuote() {
     unsignedTransaction.value,
     unsignedTransaction.gas,
     unsignedTransaction.to,
-    chainId,
+    caipChainId,
     swapsNetworkConfig.stxGetTransactionsRefreshTime,
     insufficientTokens,
   ]);
@@ -892,7 +892,7 @@ export default function ViewQuote() {
       try {
         let l1ApprovalFeeTotal = '0x0';
         if (approveTxParams) {
-          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(chainId, {
+          l1ApprovalFeeTotal = await fetchEstimatedL1Fee(caipChainId, {
             txParams: {
               ...approveTxParams,
               gasPrice: addHexPrefix(approveTxParams.gasPrice),
@@ -917,7 +917,7 @@ export default function ViewQuote() {
     unsignedTransaction,
     approveTxParams,
     isMultiLayerFeeNetwork,
-    chainId,
+    caipChainId,
     usedQuote,
   ]);
 
@@ -1031,7 +1031,7 @@ export default function ViewQuote() {
                   setSelectQuotePopoverShown(true);
                 }
               }
-              chainId={chainId}
+              caipChainId={caipChainId}
               maxPriorityFeePerGasDecGWEI={hexWEIToDecGWEI(
                 maxPriorityFeePerGas,
               )}

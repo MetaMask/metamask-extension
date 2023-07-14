@@ -19,7 +19,7 @@ import { I18nContext } from '../../contexts/i18n';
 
 import {
   getSelectedAccount,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getIsSwapsChain,
   isHardwareWallet,
   getHardwareWalletType,
@@ -141,7 +141,7 @@ export default function Swap() {
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const networkAndAccountSupports1559 = useSelector(
     checkNetworkAndAccountSupports1559,
@@ -194,7 +194,7 @@ export default function Swap() {
       selectedAccountAddress,
       destinationTokenInfo?.decimals,
       approveTxData,
-      chainId,
+      caipChainId,
     );
   const tradeConfirmed = tradeTxData?.status === TransactionStatus.confirmed;
   const approveError =
@@ -214,24 +214,24 @@ export default function Swap() {
     if (!isSwapsChain) {
       return undefined;
     }
-    fetchTokens(chainId)
+    fetchTokens(caipChainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
       })
       .catch((error) => console.error(error));
-    fetchTopAssets(chainId).then((topAssets) => {
+    fetchTopAssets(caipChainId).then((topAssets) => {
       dispatch(setTopAssets(topAssets));
     });
-    fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
+    fetchAggregatorMetadata(caipChainId).then((newAggregatorMetadata) => {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });
     if (!networkAndAccountSupports1559) {
-      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+      dispatch(fetchAndSetSwapsGasPriceInfo(caipChainId)); // this action doesn't take params. what lol
     }
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
+  }, [dispatch, caipChainId, networkAndAccountSupports1559, isSwapsChain]);
 
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);

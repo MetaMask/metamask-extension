@@ -54,19 +54,19 @@ export function formatDateWithYearContext(
   );
 }
 /**
- * Determines if the provided chainId is a default MetaMask chain
+ * Determines if the provided caipChainId is a default MetaMask chain
  *
- * @param {string} chainId - chainId to check
+ * @param {string} caipChainId - caipChainId to check
  */
-export function isDefaultMetaMaskChain(chainId) {
+export function isDefaultMetaMaskChain(caipChainId) {
   if (
-    !chainId ||
-    chainId === CHAIN_IDS.MAINNET ||
-    chainId === CHAIN_IDS.LINEA_MAINNET ||
-    chainId === CHAIN_IDS.GOERLI ||
-    chainId === CHAIN_IDS.SEPOLIA ||
-    chainId === CHAIN_IDS.LINEA_GOERLI ||
-    chainId === CHAIN_IDS.LOCALHOST
+    !caipChainId ||
+    caipChainId === CHAIN_IDS.MAINNET ||
+    caipChainId === CHAIN_IDS.LINEA_MAINNET ||
+    caipChainId === CHAIN_IDS.GOERLI ||
+    caipChainId === CHAIN_IDS.SEPOLIA ||
+    caipChainId === CHAIN_IDS.LINEA_GOERLI ||
+    caipChainId === CHAIN_IDS.LOCALHOST
   ) {
     return true;
   }

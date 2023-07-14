@@ -27,7 +27,7 @@ export async function estimateGasLimitForSend({
   to,
   data,
   isNonStandardEthChain,
-  chainId,
+  caipChainId,
   gasLimit,
   ...options
 }) {
@@ -126,8 +126,8 @@ export async function estimateGasLimitForSend({
   let bufferMultiplier = 1.5;
   if (isSimpleSendOnNonStandardNetwork) {
     bufferMultiplier = 1;
-  } else if (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId]) {
-    bufferMultiplier = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
+  } else if (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId]) {
+    bufferMultiplier = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId];
   }
 
   try {
@@ -146,7 +146,7 @@ export async function estimateGasLimitForSend({
       error.message.includes(
         'gas required exceeds allowance or always failing transaction',
       ) ||
-      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId] &&
+      (CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId] &&
         error.message.includes('gas required exceeds allowance'));
     if (simulationFailed) {
       const estimateWithBuffer = addGasBuffer(

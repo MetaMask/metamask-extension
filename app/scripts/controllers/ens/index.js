@@ -9,15 +9,15 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class EnsController {
-  constructor({ ens, provider, onNetworkDidChange, getCurrentChainId } = {}) {
+  constructor({ ens, provider, onNetworkDidChange, getCurrentCaipChainId } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
     };
 
     this._ens = ens;
     if (!this._ens) {
-      const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const caipChainId = getCurrentCaipChainId();
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
@@ -34,8 +34,8 @@ export default class EnsController {
 
     onNetworkDidChange(() => {
       this.store.putState(initState);
-      const chainId = getCurrentChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const caipChainId = getCurrentCaipChainId();
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,

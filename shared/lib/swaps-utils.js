@@ -16,6 +16,7 @@ import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -122,10 +123,10 @@ export const QUOTE_VALIDATORS = [
 
 /**
  * @param {string} type - Type of an API call, e.g. "tokens"
- * @param {string} chainId
+ * @param {string} caipChainId
  * @returns string
  */
-const getBaseUrlForNewSwapsApi = (type, chainId) => {
+const getBaseUrlForNewSwapsApi = (type, caipChainId) => {
   const useDevApis = process.env.SWAPS_USE_DEV_APIS;
   const v2ApiBaseUrl = useDevApis
     ? SWAPS_DEV_API_V2_BASE_URL
@@ -135,7 +136,7 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
   }
-  const chainIdDecimal = chainId && parseInt(chainId, 16);
+  const chainIdDecimal = caipChainId && getEthChainIdIntFromCaipChainId(caipChainId);
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
@@ -143,13 +144,13 @@ const getBaseUrlForNewSwapsApi = (type, chainId) => {
   return `${v2ApiBaseUrl}/networks/${chainIdDecimal}`;
 };
 
-export const getBaseApi = function (type, chainId) {
-  const _chainId = TEST_CHAIN_IDS.includes(chainId)
+export const getBaseApi = function (type, caipChainId) {
+  const _caipChainId = TEST_CHAIN_IDS.includes(caipChainId)
     ? CHAIN_IDS.MAINNET
-    : chainId;
-  const baseUrl = getBaseUrlForNewSwapsApi(type, _chainId);
+    : caipChainId;
+  const baseUrl = getBaseUrlForNewSwapsApi(type, _caipChainId);
   if (!baseUrl) {
-    throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
+    throw new Error(`Swaps API calls are disabled for caipChainId: ${_caipChainId}`);
   }
   switch (type) {
     case 'trade':
@@ -177,15 +178,15 @@ export function calcTokenValue(value, decimals) {
 }
 
 export const shouldEnableDirectWrapping = (
-  chainId,
+  caipChainId,
   sourceToken,
   destinationToken,
 ) => {
   if (!sourceToken || !destinationToken) {
     return false;
   }
-  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[chainId];
-  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.address;
+  const wrappedToken = SWAPS_WRAPPED_TOKENS_ADDRESSES[caipChainId];
+  const nativeToken = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.address;
   return (
     (isEqualCaseInsensitive(sourceToken, wrappedToken) &&
       isEqualCaseInsensitive(destinationToken, nativeToken)) ||
@@ -254,7 +255,7 @@ export async function fetchTradesInfo(
     fromAddress,
     exchangeList,
   },
-  { chainId },
+  { caipChainId },
 ) {
   const urlParams = {
     destinationToken,
@@ -268,12 +269,12 @@ export async function fetchTradesInfo(
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
   }
-  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+  if (shouldEnableDirectWrapping(caipChainId, sourceToken, destinationToken)) {
     urlParams.enableDirectWrapping = true;
   }
 
   const queryString = new URLSearchParams(urlParams).toString();
-  const tradeURL = `${getBaseApi('trade', chainId)}${queryString}`;
+  const tradeURL = `${getBaseApi('trade', caipChainId)}${queryString}`;
   const tradesResponse = await fetchWithCache(
     tradeURL,
     { method: 'GET', headers: clientIdHeader },

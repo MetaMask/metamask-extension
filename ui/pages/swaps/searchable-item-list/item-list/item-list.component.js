@@ -8,7 +8,7 @@ import Button from '../../../../components/ui/button';
 import ActionableMessage from '../../../../components/ui/actionable-message/actionable-message';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getUseCurrencyRateCheck,
 } from '../../../../selectors';
@@ -31,11 +31,11 @@ export default function ItemList({
   listContainerClassName,
 }) {
   const t = useContext(I18nContext);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const blockExplorerLink =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const blockExplorerHostName = getURLHostName(blockExplorerLink);

@@ -64,7 +64,7 @@ export default class ConfirmApproveContent extends Component {
     warning: PropTypes.string,
     txData: PropTypes.object,
     fromAddressIsLedger: PropTypes.bool,
-    chainId: PropTypes.string,
+    caipChainId: PropTypes.string,
     tokenAddress: PropTypes.string,
     rpcPrefs: PropTypes.object,
     isContract: PropTypes.bool,
@@ -374,12 +374,12 @@ export default class ConfirmApproveContent extends Component {
   }
 
   getTitleTokenDescription() {
-    const { tokenId, tokenAddress, rpcPrefs, chainId, userAddress } =
+    const { tokenId, tokenAddress, rpcPrefs, caipChainId, userAddress } =
       this.props;
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
-        chainId,
+        caipChainId,
       );
 
     const titleTokenDescription = this.getTokenName();
@@ -388,7 +388,7 @@ export default class ConfirmApproveContent extends Component {
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        chainId,
+        caipChainId,
         null,
         userAddress,
         {
@@ -528,7 +528,7 @@ export default class ConfirmApproveContent extends Component {
       txData,
       fromAddressIsLedger,
       toAddress,
-      chainId,
+      caipChainId,
       rpcPrefs,
       assetStandard,
       tokenId,
@@ -605,7 +605,7 @@ export default class ConfirmApproveContent extends Component {
               tokenName={tokenSymbol}
               tokenAddress={tokenAddress}
               toAddress={toAddress}
-              chainId={chainId}
+              caipChainId={caipChainId}
               rpcPrefs={rpcPrefs}
               tokenId={tokenId}
               assetName={assetName}

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
@@ -16,9 +16,9 @@ import { Icon, IconName } from '../../../../../component-library';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(address, chainId, rpcPrefs);
+  const addressLink = getAccountLink(address, caipChainId, rpcPrefs); // need to be updated?
 
   const AccreditationLink = () => {
     return (

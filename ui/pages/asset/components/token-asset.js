@@ -6,7 +6,7 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
 import { TokenOverview } from '../../../components/app/wallet-overview';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
   getIsCustomNetwork,
@@ -24,15 +24,15 @@ import AssetOptions from './asset-options';
 
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch();
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const selectedIdentity = useSelector(getSelectedIdentity);
   const selectedAccountName = selectedIdentity.name;
   const selectedAddress = selectedIdentity.address;
   const history = useHistory();
-  const tokenTrackerLink = getTokenTrackerLink(
+  const tokenTrackerLink = getTokenTrackerLink( // i think this needs to be updated
     token.address,
-    chainId,
+    caipChainId,
     null,
     selectedAddress,
     rpcPrefs,

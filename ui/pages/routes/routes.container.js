@@ -9,7 +9,7 @@ import {
   isNetworkLoading,
   getTheme,
   getIsTestnet,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
 } from '../../selectors';
@@ -55,7 +55,7 @@ function mapStateToProps(state) {
     isNetworkUsed: getIsNetworkUsed(state),
     allAccountsOnNetworkAreEmpty: getAllAccountsOnNetworkAreEmpty(state),
     isTestNet: getIsTestnet(state),
-    currentChainId: getCurrentChainId(state),
+    currentCaipChainId: getCurrentCaipChainId(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     forgottenPassword: state.metamask.forgottenPassword,
     isCurrentProviderCustom: isCurrentProviderCustom(state),

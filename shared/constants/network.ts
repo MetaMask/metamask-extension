@@ -1,3 +1,4 @@
+import { CaipChainId } from '@metamask/utils';
 import { capitalize, pick } from 'lodash';
 /**
  * A type representing any valid value for 'type' for setProviderType and other
@@ -5,12 +6,13 @@ import { capitalize, pick } from 'lodash';
  */
 export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
 
+// Still needed?
 /**
  * A union type of all possible hard-coded chain ids. This type is not
- * exhaustive and cannot be used for typing chainId in areas where the user or
- * dapp may specify any chainId.
+ * exhaustive and cannot be used for typing caipChainId in areas where the user or
+ * dapp may specify any caipChainId.
  */
-export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+// export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -47,7 +49,7 @@ export type RPCDefinition = {
   /**
    * The hex encoded ChainId for the network
    */
-  chainId: ChainId;
+  caipChainId: CaipChainId;
   /**
    * The nickname for the network
    */
@@ -111,7 +113,7 @@ export const NETWORK_NAMES = {
 /**
  * The Network ID for our builtin networks. This is the decimal equivalent of
  * the chain id for the network, but is expresssed as a string. Many moons ago
- * the decision was made on the extension team to expressly use chainId with
+ * the decision was made on the extension team to expressly use caipChainId with
  * hex encoding over network id. Consider that when accessing this object. Note
  * for cross product purposes: alignment with mobile on this matter has not
  * been fully achieved, thus it is possible for some dependencies to still
@@ -288,35 +290,35 @@ export const TEST_NETWORK_TICKER_MAP: {
 export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.GOERLI]: {
     networkId: NETWORK_IDS.GOERLI,
-    chainId: CHAIN_IDS.GOERLI,
+    caipChainId: CHAIN_IDS.GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
   },
   [NETWORK_TYPES.SEPOLIA]: {
     networkId: NETWORK_IDS.SEPOLIA,
-    chainId: CHAIN_IDS.SEPOLIA,
+    caipChainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_GOERLI]: {
     networkId: NETWORK_IDS.LINEA_GOERLI,
-    chainId: CHAIN_IDS.LINEA_GOERLI,
+    caipChainId: CHAIN_IDS.LINEA_GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
-    chainId: CHAIN_IDS.MAINNET,
+    caipChainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     networkId: NETWORK_IDS.LINEA_MAINNET,
-    chainId: CHAIN_IDS.LINEA_MAINNET,
+    caipChainId: CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {
     networkId: NETWORK_IDS.LOCALHOST,
-    chainId: CHAIN_IDS.LOCALHOST,
+    caipChainId: CHAIN_IDS.LOCALHOST,
   },
 } as const;
 
@@ -619,7 +621,7 @@ export const BUYABLE_CHAINS_MAP: {
 
 export const FEATURED_RPCS: RPCDefinition[] = [
   {
-    chainId: CHAIN_IDS.ARBITRUM,
+    caipChainId: CHAIN_IDS.ARBITRUM,
     nickname: ARBITRUM_DISPLAY_NAME,
     rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ARBITRUM,
@@ -629,7 +631,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.AURORA,
+    caipChainId: CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AURORA_ETH,
@@ -639,7 +641,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.AVALANCHE,
+    caipChainId: CHAIN_IDS.AVALANCHE,
     nickname: AVALANCHE_DISPLAY_NAME,
     rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AVALANCHE,
@@ -649,7 +651,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.BSC,
+    caipChainId: CHAIN_IDS.BSC,
     nickname: BNB_DISPLAY_NAME,
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     ticker: CURRENCY_SYMBOLS.BNB,
@@ -659,7 +661,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.FANTOM,
+    caipChainId: CHAIN_IDS.FANTOM,
     nickname: FANTOM_DISPLAY_NAME,
     rpcUrl: 'https://rpc.ftm.tools/',
     ticker: CURRENCY_SYMBOLS.FANTOM,
@@ -669,7 +671,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.HARMONY,
+    caipChainId: CHAIN_IDS.HARMONY,
     nickname: HARMONY_DISPLAY_NAME,
     rpcUrl: 'https://api.harmony.one/',
     ticker: CURRENCY_SYMBOLS.HARMONY,
@@ -679,7 +681,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.OPTIMISM,
+    caipChainId: CHAIN_IDS.OPTIMISM,
     nickname: OPTIMISM_DISPLAY_NAME,
     rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ETH,
@@ -689,7 +691,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.PALM,
+    caipChainId: CHAIN_IDS.PALM,
     nickname: PALM_DISPLAY_NAME,
     rpcUrl: `https://palm-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.PALM,
@@ -699,7 +701,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.POLYGON,
+    caipChainId: CHAIN_IDS.POLYGON,
     nickname: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
     rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.MATIC,
@@ -709,7 +711,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.CELO,
+    caipChainId: CHAIN_IDS.CELO,
     nickname: CELO_DISPLAY_NAME,
     rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.CELO,

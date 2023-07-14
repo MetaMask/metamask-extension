@@ -5,7 +5,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../shared/modules/swaps.utils';
-import { getCurrentChainId } from '../selectors';
+import { getCurrentCaipChainId } from '../selectors';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 
 /**
@@ -34,14 +34,14 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
   const { primaryTransaction, initialTransaction } = transactionGroup;
   const { type } = initialTransaction;
   const { from: senderAddress } = initialTransaction.txParams || {};
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   const isViewingReceivedTokenFromSwap =
     currentAsset?.symbol === primaryTransaction.destinationTokenSymbol ||
-    (isSwapsDefaultTokenAddress(currentAsset.address, chainId) &&
+    (isSwapsDefaultTokenAddress(currentAsset.address, caipChainId) &&
       isSwapsDefaultTokenSymbol(
         primaryTransaction.destinationTokenSymbol,
-        chainId,
+        caipChainId,
       ));
 
   const swapTokenValue =
@@ -53,7 +53,7 @@ export function useSwappedTokenValue(transactionGroup, currentAsset) {
           senderAddress,
           decimals,
           null,
-          chainId,
+          caipChainId,
         )
       : type === TransactionType.swap && primaryTransaction.swapTokenValue;
 

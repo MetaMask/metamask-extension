@@ -23,7 +23,7 @@ import {
 } from '../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentNetwork,
   getIpfsGateway,
   getSelectedIdentity,
@@ -74,7 +74,7 @@ export default function NftDetails({ nft }) {
   const dispatch = useDispatch();
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftContracts = useSelector(getNftContracts);
-  const currentNetwork = useSelector(getCurrentChainId);
+  const currentNetwork = useSelector(getCurrentCaipChainId); // this is named wrong?
   const currentChain = useSelector(getCurrentNetwork);
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();

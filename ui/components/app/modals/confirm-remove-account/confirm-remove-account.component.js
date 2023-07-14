@@ -12,7 +12,7 @@ export default class ConfirmRemoveAccount extends Component {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
     identity: PropTypes.object.isRequired,
-    chainId: PropTypes.string.isRequired,
+    caipChainId: PropTypes.string.isRequired,
     rpcPrefs: PropTypes.object.isRequired,
   };
 
@@ -33,7 +33,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   renderSelectedAccount() {
     const { t } = this.context;
-    const { identity, rpcPrefs, chainId } = this.props;
+    const { identity, rpcPrefs, caipChainId } = this.props;
     return (
       <div className="confirm-remove-account__account">
         <div className="confirm-remove-account__account__identicon">
@@ -56,9 +56,9 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
-              const accountLink = getAccountLink(
+              const accountLink = getAccountLink( // does this need to be updated?
                 identity.address,
-                chainId,
+                caipChainId,
                 rpcPrefs,
               );
               this.context.trackEvent({

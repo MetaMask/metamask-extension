@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getDetectedTokensInCurrentNetwork,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -29,7 +29,7 @@ export const DetectedTokensBanner = ({
     ({ address, symbol }) => `${symbol} - ${address}`,
   );
 
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   const handleOnClick = () => {
     actionButtonOnClick();
@@ -39,7 +39,7 @@ export const DetectedTokensBanner = ({
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
         tokens: detectedTokensDetails,
-        chain_id: chainId,
+        chain_id: caipChainId,
       },
     });
   };

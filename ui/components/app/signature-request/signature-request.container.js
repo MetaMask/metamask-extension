@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   accountsWithSendEtherInfoSelector,
   doesAddressRequireLedgerHidConnection,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getSubjectMetadata,
   unconfirmedMessagesHashSelector,
@@ -67,7 +67,7 @@ function mapStateToProps(state, ownProps) {
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, from);
   const isLedgerWallet = isAddressLedger(state, from);
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   const rpcPrefs = getRpcPrefsForCurrentProvider(state);
   const unconfirmedMessagesList = unconfirmedMessagesHashSelector(state);
   const unapprovedMessagesCount = getTotalUnapprovedMessagesCount(state);
@@ -77,7 +77,7 @@ function mapStateToProps(state, ownProps) {
     providerConfig,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
-    chainId,
+    caipChainId,
     rpcPrefs,
     unconfirmedMessagesList,
     unapprovedMessagesCount,
@@ -178,7 +178,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     allAccounts,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
-    chainId,
+    caipChainId,
     rpcPrefs,
     nativeCurrency,
     currentCurrency,
@@ -249,7 +249,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     txData,
     isLedgerWallet,
     hardwareWalletRequiresConnection,
-    chainId,
+    caipChainId,
     rpcPrefs,
     nativeCurrency,
     currentCurrency,

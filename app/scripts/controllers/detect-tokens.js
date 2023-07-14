@@ -62,7 +62,7 @@ export default class DetectTokensController {
     });
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
     this.detectedTokens = this.tokensController?.state.detectedTokens;
-    this.chainId = this.getChainIdFromNetworkStore();
+    this.caipChainId = this.getCaipChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
     preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
@@ -85,10 +85,10 @@ export default class DetectTokensController {
       },
     );
     messenger.subscribe('NetworkController:stateChange', () => {
-      if (this.chainId !== this.getChainIdFromNetworkStore()) {
-        const chainId = this.getChainIdFromNetworkStore();
-        this.chainId = chainId;
-        this.restartTokenDetection({ chainId: this.chainId });
+      if (this.caipChainId !== this.getCaipChainIdFromNetworkStore()) {
+        const caipChainId = this.getCaipChainIdFromNetworkStore();
+        this.caipChainId = caipChainId;
+        this.restartTokenDetection({ caipChainId: this.caipChainId });
       }
     });
   }
@@ -98,16 +98,16 @@ export default class DetectTokensController {
    *
    * @param options
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
-   * @param options.chainId - the chainId against which to detect for token balances
+   * @param options.caipChainId - the caipChainId against which to detect for token balances
    */
-  async detectNewTokens({ selectedAddress, chainId } = {}) {
+  async detectNewTokens({ selectedAddress, caipChainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect =
-      chainId ?? this.getChainIdFromNetworkStore();
+    const caipChainIdAgainstWhichToDetect =
+      caipChainId ?? this.getCaipChainIdFromNetworkStore();
     if (!this.isActive) {
       return;
     }
-    if (!isTokenDetectionEnabledForNetwork(chainIdAgainstWhichToDetect)) {
+    if (!isTokenDetectionEnabledForNetwork(caipChainIdAgainstWhichToDetect)) {
       return;
     }
     if (
@@ -190,7 +190,7 @@ export default class DetectTokensController {
           });
           await this.tokensController.addDetectedTokens(tokensWithBalance, {
             selectedAddress: addressAgainstWhichToDetect,
-            chainId: chainIdAgainstWhichToDetect,
+            caipChainId: chainIdAgainstWhichToDetect,
           });
         }
       }
@@ -203,23 +203,23 @@ export default class DetectTokensController {
    *
    * @param options
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
-   * @param options.chainId - the chainId against which to detect for token balances
+   * @param options.caipChainId - the caipChainId against which to detect for token balances
    */
-  restartTokenDetection({ selectedAddress, chainId } = {}) {
+  restartTokenDetection({ selectedAddress, caipChainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
+    const caipChainIdAgainstWhichToDetect = caipChainId ?? this.caipChainId;
     if (!(this.isActive && addressAgainstWhichToDetect)) {
       return;
     }
     this.detectNewTokens({
       selectedAddress: addressAgainstWhichToDetect,
-      chainId: chainIdAgainstWhichToDetect,
+      caipChainId: caipChainIdAgainstWhichToDetect,
     });
     this.interval = DEFAULT_INTERVAL;
   }
 
-  getChainIdFromNetworkStore() {
-    return this.network?.state.providerConfig.chainId;
+  getCaipChainIdFromNetworkStore() {
+    return this.network?.state.providerConfig.caipChainId;
   }
 
   /* eslint-disable accessor-pairs */

@@ -1538,9 +1538,9 @@ export function updateMetamaskState(
     }
 
     const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
+      newState.addressBook?.[newProviderConfig?.caipChainId] ?? {};
     const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
+      currentState.addressBook?.[providerConfig?.caipChainId] ?? {};
     const newAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
@@ -1589,10 +1589,10 @@ export function updateMetamaskState(
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
     });
-    if (providerConfig.chainId !== newProviderConfig.chainId) {
+    if (providerConfig.caipChainId !== newProviderConfig.caipChainId) {
       dispatch({
         type: actionConstants.CHAIN_CHANGED,
-        payload: newProviderConfig.chainId,
+        payload: newProviderConfig.caipChainId,
       });
       // We dispatch this action to ensure that the send state stays up to date
       // after the chain changes. This async thunk will fail gracefully in the
@@ -2178,13 +2178,13 @@ export function setProviderType(
 export function upsertNetworkConfiguration(
   {
     rpcUrl,
-    chainId,
+    caipChainId,
     nickname,
     rpcPrefs,
     ticker = EtherDenomination.ETH,
   }: {
     rpcUrl: string;
-    chainId: string;
+    caipChainId: string;
     nickname: string;
     rpcPrefs: RPCDefinition['rpcPrefs'];
     ticker: string;
@@ -2199,14 +2199,14 @@ export function upsertNetworkConfiguration(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch) => {
     log.debug(
-      `background.upsertNetworkConfiguration: ${rpcUrl} ${chainId} ${ticker} ${nickname}`,
+      `background.upsertNetworkConfiguration: ${rpcUrl} ${caipChainId} ${ticker} ${nickname}`,
     );
     let networkConfigurationId;
     try {
       networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
-          { rpcUrl, chainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          { rpcUrl, caipChainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
           { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );
@@ -2222,14 +2222,14 @@ export function editAndSetNetworkConfiguration(
   {
     networkConfigurationId,
     rpcUrl,
-    chainId,
+    caipChainId,
     nickname,
     rpcPrefs,
     ticker = EtherDenomination.ETH,
   }: {
     networkConfigurationId: string;
     rpcUrl: string;
-    chainId: string;
+    caipChainId: string;
     nickname: string;
     rpcPrefs: RPCDefinition['rpcPrefs'];
     ticker: string;
@@ -2254,7 +2254,7 @@ export function editAndSetNetworkConfiguration(
       await submitRequestToBackground('upsertNetworkConfiguration', [
         {
           rpcUrl,
-          chainId,
+          caipChainId,
           ticker,
           nickname: nickname || rpcUrl,
           rpcPrefs,
@@ -2334,14 +2334,14 @@ export function addToAddressBook(
   log.debug(`background.addToAddressBook`);
 
   return async (dispatch, getState) => {
-    const { chainId } = getProviderConfig(getState());
+    const { caipChainId } = getProviderConfig(getState());
 
     let set;
     try {
       set = await submitRequestToBackground('setAddressBook', [
         toChecksumHexAddress(recipient),
         nickname,
-        chainId,
+        caipChainId,
         memo,
       ]);
     } catch (error) {
@@ -2357,18 +2357,18 @@ export function addToAddressBook(
 
 /**
  * @description Calls the addressBookController to remove an existing address.
- * @param chainId
+ * @param caipChainId
  * @param addressToRemove - Address of the entry to remove from the address book
  */
 export function removeFromAddressBook(
-  chainId: string,
+  caipChainId: string,
   addressToRemove: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.removeFromAddressBook`);
 
   return async () => {
     await submitRequestToBackground('removeFromAddressBook', [
-      chainId,
+      caipChainId,
       toChecksumHexAddress(addressToRemove),
     ]);
   };
@@ -2438,7 +2438,7 @@ export function hideAlert(): Action {
  */
 interface NftDropDownState {
   [address: string]: {
-    [chainId: string]: {
+    [caipChainId: string]: {
       [nftAddress: string]: boolean;
     };
   };
@@ -3177,7 +3177,7 @@ export function fetchAndSetQuotes(
     sourceTokenInfo: Token;
     destinationTokenInfo: Token;
     accountBalance: string;
-    chainId: string;
+    caipChainId: string;
   },
 ): ThunkAction<
   Promise<
@@ -4114,7 +4114,7 @@ export function clearSmartTransactionFees() {
 }
 
 export function fetchSmartTransactionFees(
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
+  unsignedTransaction: Partial<TxParams> & { caipChainId: string }, // is this right?
   approveTxParams: TxParams,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4153,7 +4153,7 @@ interface TemporarySmartTransactionGasFees {
 }
 
 const createSignedTransactions = async (
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
+  unsignedTransaction: Partial<TxParams> & { caipChainId: string }, // is this right?
   fees: TemporarySmartTransactionGasFees[],
   areCancelTransactions?: boolean,
 ): Promise<TxParams[]> => {
@@ -4184,7 +4184,7 @@ export function signAndSendSmartTransaction({
   unsignedTransaction,
   smartTransactionFees,
 }: {
-  unsignedTransaction: Partial<TxParams> & { chainId: string };
+  unsignedTransaction: Partial<TxParams> & { caipChainId: string }; // is this right?
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
     cancelFees: TemporarySmartTransactionGasFees[];
@@ -4331,8 +4331,8 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
-export function setFirstTimeUsedNetwork(chainId: string) {
-  return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
+export function setFirstTimeUsedNetwork(caipChainId: string) {
+  return submitRequestToBackground('setFirstTimeUsedNetwork', [caipChainId]);
 }
 
 // QR Hardware Wallets

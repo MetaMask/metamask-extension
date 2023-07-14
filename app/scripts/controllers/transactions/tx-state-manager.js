@@ -64,7 +64,7 @@ export default class TransactionStateManager extends EventEmitter {
     txHistoryLimit,
     getNetworkId,
     getNetworkStatus,
-    getCurrentChainId,
+    getCurrentCaipChainId,
   }) {
     super();
 
@@ -75,7 +75,7 @@ export default class TransactionStateManager extends EventEmitter {
     this.txHistoryLimit = txHistoryLimit;
     this.getNetworkId = getNetworkId;
     this.getNetworkStatus = getNetworkStatus;
-    this.getCurrentChainId = getCurrentChainId;
+    this.getCurrentCaipChainId = getCurrentCaipChainId;
   }
 
   /**
@@ -92,7 +92,7 @@ export default class TransactionStateManager extends EventEmitter {
   generateTxMeta(opts = {}) {
     const networkId = this.getNetworkId();
     const networkStatus = this.getNetworkStatus();
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     if (networkStatus !== NetworkStatus.Available) {
       throw new Error('MetaMask is having trouble connecting to the network');
     }
@@ -136,7 +136,7 @@ export default class TransactionStateManager extends EventEmitter {
       metamaskNetworkId: networkId,
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
-      chainId,
+      caipChainId,
       loadingDefaults: true,
       dappSuggestedGasFees,
       sendFlowHistory: [],
@@ -153,13 +153,13 @@ export default class TransactionStateManager extends EventEmitter {
    *  by id
    */
   getUnapprovedTxList() {
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     const networkId = this.getNetworkId();
     return pickBy(
       this.store.getState().transactions,
       (transaction) =>
         transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId, networkId),
+        transactionMatchesNetwork(transaction, caipChainId, networkId),
     );
   }
 
@@ -279,8 +279,8 @@ export default class TransactionStateManager extends EventEmitter {
       .reverse()
       .filter((tx) => {
         const { nonce, from } = tx.txParams;
-        const { chainId, metamaskNetworkId, status } = tx;
-        const key = `${nonce}-${chainId ?? metamaskNetworkId}-${from}`;
+        const { caipChainId, metamaskNetworkId, status } = tx;
+        const key = `${nonce}-${caipChainId ?? metamaskNetworkId}-${from}`;
         if (nonceNetworkSet.has(key)) {
           return false;
         } else if (
@@ -417,7 +417,7 @@ export default class TransactionStateManager extends EventEmitter {
     filterToCurrentNetwork = true,
     limit,
   } = {}) {
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     const networkId = this.getNetworkId();
     // searchCriteria is an object that might have values that aren't predicate
     // methods. When providing any other value type (string, number, etc), we
@@ -447,7 +447,7 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, chainId, networkId) === false
+          transactionMatchesNetwork(transaction, caipChainId, networkId) === false
         ) {
           return false;
         }
@@ -609,7 +609,7 @@ export default class TransactionStateManager extends EventEmitter {
   wipeTransactions(address) {
     // network only tx
     const { transactions } = this.store.getState();
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     const networkId = this.getNetworkId();
 
     // Update state
@@ -618,7 +618,7 @@ export default class TransactionStateManager extends EventEmitter {
         transactions,
         (transaction) =>
           transaction.txParams.from === address &&
-          transactionMatchesNetwork(transaction, chainId, networkId),
+          transactionMatchesNetwork(transaction, caipChainId, networkId),
       ),
     });
   }

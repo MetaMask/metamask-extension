@@ -5,7 +5,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentCaipChainId } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -26,12 +26,12 @@ const PAGE_INCREMENT = 10;
 // either of those criteria
 const getTransactionGroupRecipientAddressFilter = (
   recipientAddress,
-  chainId,
+  caipChainId,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
+      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[caipChainId] &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -52,13 +52,13 @@ const getFilteredTransactionGroups = (
   transactionGroups,
   hideTokenTransactions,
   tokenAddress,
-  chainId,
+  caipChainId,
 ) => {
   if (hideTokenTransactions) {
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilter(tokenAddress, chainId),
+      getTransactionGroupRecipientAddressFilter(tokenAddress, caipChainId),
     );
   }
   return transactionGroups;
@@ -77,7 +77,7 @@ export default function TransactionList({
   const unfilteredCompletedTransactions = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   const pendingTransactions = useMemo(
     () =>
@@ -85,13 +85,13 @@ export default function TransactionList({
         unfilteredPendingTransactions,
         hideTokenTransactions,
         tokenAddress,
-        chainId,
+        caipChainId,
       ),
     [
       hideTokenTransactions,
       tokenAddress,
       unfilteredPendingTransactions,
-      chainId,
+      caipChainId,
     ],
   );
   const completedTransactions = useMemo(
@@ -100,13 +100,13 @@ export default function TransactionList({
         unfilteredCompletedTransactions,
         hideTokenTransactions,
         tokenAddress,
-        chainId,
+        caipChainId,
       ),
     [
       hideTokenTransactions,
       tokenAddress,
       unfilteredCompletedTransactions,
-      chainId,
+      caipChainId,
     ],
   );
 

@@ -28,14 +28,14 @@ export default function FeeCard({
   metaMaskFee,
   numberOfQuotes,
   onQuotesClick,
-  chainId,
+  caipChainId,
 }) {
   const t = useContext(I18nContext);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
 
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
-    switch (chainId) {
+    switch (caipChainId) {
       case CHAIN_IDS.MAINNET:
         return t('networkNameEthereum');
       case CHAIN_IDS.BSC:
@@ -198,5 +198,5 @@ FeeCard.propTypes = {
   metaMaskFee: PropTypes.string.isRequired,
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
-  chainId: PropTypes.string.isRequired,
+  caipChainId: PropTypes.string.isRequired,
 };

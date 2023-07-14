@@ -23,7 +23,7 @@ import {
   getUseNonceField,
   getCustomNonceValue,
   getNextSuggestedNonce,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
@@ -75,7 +75,7 @@ export default function ConfirmApprove({
   const useNonceField = useSelector(getUseNonceField);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
   const networkAndAccountSupports1559 = useSelector(
@@ -292,7 +292,7 @@ export default function ConfirmApprove({
               warning={submitWarning}
               txData={transaction}
               fromAddressIsLedger={fromAddressIsLedger}
-              chainId={chainId}
+              caipChainId={caipChainId}
               rpcPrefs={rpcPrefs}
               isContract={isContract}
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}

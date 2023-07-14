@@ -19,7 +19,7 @@ import {
 import {
   isHardwareWallet,
   getHardwareWalletType,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getUSDConversionRate,
   conversionRateSelector,
   getCurrentCurrency,
@@ -89,7 +89,7 @@ export default function SmartTransactionStatusPage() {
   const smartTransactionsOptInStatus = useSelector(
     getSmartTransactionsOptInStatus,
   );
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const swapsNetworkConfig = useSelector(getSwapsNetworkConfig, shallowEqual);
   const smartTransactionsEnabled = useSelector(getSmartTransactionsEnabled);
@@ -98,7 +98,7 @@ export default function SmartTransactionStatusPage() {
   );
   const baseNetworkUrl =
     rpcPrefs.blockExplorerUrl ??
-    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const conversionRate = useSelector(conversionRateSelector);
@@ -268,7 +268,7 @@ export default function SmartTransactionStatusPage() {
   }
   if (txHash && latestSmartTransactionUuid) {
     blockExplorerUrl = getBlockExplorerLink(
-      { hash: txHash, chainId },
+      { hash: txHash, caipChainId },
       { blockExplorerUrl: baseNetworkUrl },
     );
   }
@@ -278,7 +278,7 @@ export default function SmartTransactionStatusPage() {
 
   const CancelSwap = () => {
     const { feeInFiat } = getFeeForSmartTransaction({
-      chainId,
+      caipChainId,
       currentCurrency,
       conversionRate,
       USDConversionRate,

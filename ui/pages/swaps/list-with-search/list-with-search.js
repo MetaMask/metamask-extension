@@ -18,7 +18,7 @@ import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { fetchToken } from '../swaps.util';
-import { getCurrentChainId } from '../../../selectors/selectors';
+import { getCurrentCaipChainId } from '../../../selectors/selectors';
 
 let timeoutIdForSearch;
 
@@ -40,7 +40,7 @@ export default function ListWithSearch({
   const t = useContext(I18nContext);
 
   const [items, setItems] = useState(itemsToSearch);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   /**
    * Search a custom token for import based on a contract address.
@@ -49,7 +49,7 @@ export default function ListWithSearch({
    */
   const handleSearchTokenForImport = async (contractAddress) => {
     try {
-      const token = await fetchToken(contractAddress, chainId);
+      const token = await fetchToken(contractAddress, caipChainId);
       if (token) {
         token.primaryLabel = token.symbol;
         token.secondaryLabel = token.name;

@@ -114,9 +114,9 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
 
 export async function fetchToken(
   contractAddress: string,
-  chainId: any,
+  caipChainId: any,
 ): Promise<Json> {
-  const tokenUrl = getBaseApi('token', chainId);
+  const tokenUrl = getBaseApi('token', caipChainId);
   return await fetchWithCache(
     `${tokenUrl}?address=${contractAddress}`,
     { method: 'GET', headers: clientIdHeader },
@@ -126,32 +126,32 @@ export async function fetchToken(
 
 type Token = { symbol: string; address: string };
 export async function fetchTokens(
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
+  caipChainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 ): Promise<SwapsTokenObject[]> {
-  const tokensUrl = getBaseApi('tokens', chainId);
+  const tokensUrl = getBaseApi('tokens', caipChainId);
   const tokens = await fetchWithCache(
     tokensUrl,
     { method: 'GET', headers: clientIdHeader },
     { cacheRefreshTime: CACHE_REFRESH_FIVE_MINUTES },
   );
   const logError = false;
-  const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId] || null;
+  const tokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId] || null;
   return [
     tokenObject,
     ...tokens.filter((token: Token) => {
       return (
         validateData(TOKEN_VALIDATORS, token, tokensUrl, logError) &&
         !(
-          isSwapsDefaultTokenSymbol(token.symbol, chainId) ||
-          isSwapsDefaultTokenAddress(token.address, chainId)
+          isSwapsDefaultTokenSymbol(token.symbol, caipChainId) ||
+          isSwapsDefaultTokenAddress(token.address, caipChainId)
         )
       );
     }),
   ];
 }
 
-export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
-  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', chainId);
+export async function fetchAggregatorMetadata(caipChainId: any): Promise<object> {
+  const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', caipChainId);
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -172,8 +172,8 @@ export async function fetchAggregatorMetadata(chainId: any): Promise<object> {
   return filteredAggregators;
 }
 
-export async function fetchTopAssets(chainId: any): Promise<object> {
-  const topAssetsUrl = getBaseApi('topAssets', chainId);
+export async function fetchTopAssets(caipChainId: any): Promise<object> {
+  const topAssetsUrl = getBaseApi('topAssets', caipChainId);
   const response =
     (await fetchWithCache(
       topAssetsUrl,
@@ -214,7 +214,7 @@ export async function fetchTokenPrice(address: string): Promise<any> {
   return prices?.[address]?.eth;
 }
 
-export async function fetchSwapsGasPrices(chainId: any): Promise<
+export async function fetchSwapsGasPrices(caipChainId: any): Promise<
   | any
   | {
       safeLow: string;
@@ -222,7 +222,7 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
       fast: string;
     }
 > {
-  const gasPricesUrl = getBaseApi('gasPrices', chainId);
+  const gasPricesUrl = getBaseApi('gasPrices', caipChainId);
   const response = await fetchWithCache(
     gasPricesUrl,
     { method: 'GET', headers: clientIdHeader },
@@ -252,14 +252,14 @@ export async function fetchSwapsGasPrices(chainId: any): Promise<
 }
 
 export const getFeeForSmartTransaction = ({
-  chainId,
+  caipChainId,
   currentCurrency,
   conversionRate,
   USDConversionRate,
   nativeCurrencySymbol,
   feeInWeiDec,
 }: {
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
+  caipChainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   currentCurrency: string;
   conversionRate: number;
   USDConversionRate?: number;
@@ -291,7 +291,7 @@ export const getFeeForSmartTransaction = ({
   }
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
   const chainCurrencySymbolToUse =
-    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol;
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol;
   return {
     feeInUsd,
     feeInFiat: formattedNetworkFee,
@@ -310,7 +310,7 @@ export function getRenderableNetworkFeesForQuote({
   tradeValue,
   sourceSymbol,
   sourceAmount,
-  chainId,
+  caipChainId,
   nativeCurrencySymbol,
   multiLayerL1FeeTotal,
 }: {
@@ -323,7 +323,7 @@ export function getRenderableNetworkFeesForQuote({
   tradeValue: number;
   sourceSymbol: string;
   sourceAmount: number;
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
+  caipChainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   nativeCurrencySymbol?: string;
   multiLayerL1FeeTotal: string | null;
 }): {
@@ -347,7 +347,7 @@ export function getRenderableNetworkFeesForQuote({
 
   const nonGasFee = new BigNumber(tradeValue, 16)
     .minus(
-      isSwapsDefaultTokenSymbol(sourceSymbol, chainId) ? sourceAmount : 0,
+      isSwapsDefaultTokenSymbol(sourceSymbol, caipChainId) ? sourceAmount : 0,
       10,
     )
     .toString(16);
@@ -381,7 +381,7 @@ export function getRenderableNetworkFeesForQuote({
   }
 
   const chainCurrencySymbolToUse =
-    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId].symbol;
+    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId].symbol;
 
   return {
     rawNetworkFees,
@@ -400,7 +400,7 @@ export function quotesToRenderableData({
   currentCurrency,
   approveGas,
   tokenConversionRates,
-  chainId,
+  caipChainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
   multiLayerL1ApprovalFeeTotal,
@@ -411,7 +411,7 @@ export function quotesToRenderableData({
   currentCurrency: string;
   approveGas: string;
   tokenConversionRates: Record<string, any>;
-  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
+  caipChainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   smartTransactionEstimatedGas: IndividualTxFees;
   nativeCurrencySymbol: string;
   multiLayerL1ApprovalFeeTotal: string | null;
@@ -467,13 +467,13 @@ export function quotesToRenderableData({
         tradeValue: trade.value,
         sourceSymbol: sourceTokenInfo.symbol,
         sourceAmount,
-        chainId,
+        caipChainId,
         multiLayerL1FeeTotal,
       }));
 
     if (smartTransactionEstimatedGas) {
       ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
-        chainId,
+        caipChainId,
         currentCurrency,
         conversionRate,
         nativeCurrencySymbol,
@@ -490,7 +490,7 @@ export function quotesToRenderableData({
       tokenConversionRates[destinationTokenInfo.address];
     const ethValueOfTrade = isSwapsDefaultTokenSymbol(
       destinationTokenInfo.symbol,
-      chainId,
+      caipChainId,
     )
       ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
           rawEthFee,
@@ -572,17 +572,17 @@ export const getClassNameForCharLength = (
  * Checks whether a contract address is valid before swapping tokens.
  *
  * @param contractAddress - E.g. "0x881d40237659c251811cec9c364ef91dc08d300c" for mainnet
- * @param chainId - The hex encoded chain ID to check
+ * @param caipChainId - The hex encoded chain ID to check
  * @returns Whether a contract address is valid or not
  */
 export const isContractAddressValid = (
   contractAddress: string,
-  chainId: keyof typeof ALLOWED_CONTRACT_ADDRESSES,
+  caipChainId: keyof typeof ALLOWED_CONTRACT_ADDRESSES,
 ): boolean => {
-  if (!contractAddress || !ALLOWED_CONTRACT_ADDRESSES[chainId]) {
+  if (!contractAddress || !ALLOWED_CONTRACT_ADDRESSES[caipChainId]) {
     return false;
   }
-  return ALLOWED_CONTRACT_ADDRESSES[chainId].some(
+  return ALLOWED_CONTRACT_ADDRESSES[caipChainId].some(
     // Sometimes we get a contract address with a few upper-case chars and since addresses are
     // case-insensitive, we compare lowercase versions for validity.
     (allowedContractAddress: string) =>
@@ -591,11 +591,11 @@ export const isContractAddressValid = (
 };
 
 /**
- * @param chainId
+ * @param caipChainId
  * @returns string e.g. ethereum, bsc or polygon
  */
-export const getNetworkNameByChainId = (chainId: string): string => {
-  switch (chainId) {
+export const getNetworkNameByChainId = (caipChainId: string): string => {
+  switch (caipChainId) {
     case CHAIN_IDS.MAINNET:
       return ETHEREUM;
     case CHAIN_IDS.BSC:
@@ -618,17 +618,17 @@ export const getNetworkNameByChainId = (chainId: string): string => {
 /**
  * It returns info about if Swaps are enabled and if we should use our new APIs for it.
  *
- * @param chainId
+ * @param caipChainId
  * @param swapsFeatureFlags
  * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (
-  chainId: any,
+  caipChainId: any,
   swapsFeatureFlags: any = {},
 ) => {
-  const networkName = getNetworkNameByChainId(chainId);
+  const networkName = getNetworkNameByChainId(caipChainId);
   // Use old APIs for testnet and Goerli.
-  if ([CHAIN_IDS.LOCALHOST, CHAIN_IDS.GOERLI].includes(chainId)) {
+  if ([CHAIN_IDS.LOCALHOST, CHAIN_IDS.GOERLI].includes(caipChainId)) {
     return {
       swapsFeatureIsLive: true,
     };

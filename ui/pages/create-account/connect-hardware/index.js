@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getMetaMaskAccounts,
   getRpcPrefsForCurrentProvider,
   getMetaMaskAccountsConnected,
@@ -425,7 +425,7 @@ ConnectHardwareForm.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  chainId: getCurrentChainId(state),
+  chainId: getCurrentCaipChainId(state),
   rpcPrefs: getRpcPrefsForCurrentProvider(state),
   accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),

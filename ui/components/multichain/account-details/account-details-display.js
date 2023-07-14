@@ -7,7 +7,7 @@ import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getHardwareWalletType,
   getMetaMaskKeyrings,
 } from '../../../selectors';
@@ -45,7 +45,7 @@ export const AccountDetailsDisplay = ({
   const keyring = keyrings.find((kr) => kr.accounts.includes(address));
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const deviceName = useSelector(getHardwareWalletType);
 
   return (
@@ -63,7 +63,7 @@ export const AccountDetailsDisplay = ({
             event: MetaMetricsEventName.AccountRenamed,
             properties: {
               location: 'Account Details Modal',
-              chain_id: chainId,
+              chain_id: caipChainId, // metrics?
               account_hardware_type: deviceName,
             },
           });

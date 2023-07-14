@@ -5,7 +5,7 @@ import { getAccountLink } from '@metamask/etherscan-link';
 import { addToAddressBook } from '../../../../store/actions';
 import {
   getRpcPrefsForCurrentProvider,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getAddressBook,
 } from '../../../../selectors';
 import NicknamePopover from '../../../ui/nickname-popover';
@@ -22,7 +22,7 @@ const NicknamePopovers = ({ address, onClose }) => {
   );
 
   const addressBook = useSelector(getAddressBook);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   const addressBookEntryObject = addressBook.find(
     (entry) => entry.address === address,
@@ -31,9 +31,9 @@ const NicknamePopovers = ({ address, onClose }) => {
   const recipientNickname = addressBookEntryObject?.name;
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
-  const explorerLink = getAccountLink(
+  const explorerLink = getAccountLink( // does this need to be updated?
     address,
-    chainId,
+    caipChainId,
     { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
     null,
   );

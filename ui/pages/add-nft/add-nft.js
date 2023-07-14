@@ -23,7 +23,7 @@ import {
 } from '../../store/actions';
 import FormField from '../../components/ui/form-field';
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getIsMainnet,
   getSelectedAddress,
   getUseNftDetection,
@@ -50,7 +50,7 @@ export default function AddNft() {
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
   const selectedAddress = useSelector(getSelectedAddress);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const addressEnteredOnImportTokensPage =
     history?.location?.state?.addressEnteredOnImportTokensPage;
   const contractAddressToConvertFromTokenToNft =
@@ -73,8 +73,8 @@ export default function AddNft() {
         ...nftsDropdownState,
         [selectedAddress]: {
           ...nftsDropdownState?.[selectedAddress],
-          [chainId]: {
-            ...nftsDropdownState?.[selectedAddress]?.[chainId],
+          [caipChainId]: {
+            ...nftsDropdownState?.[selectedAddress]?.[caipChainId],
             [nftAddress]: true,
           },
         },

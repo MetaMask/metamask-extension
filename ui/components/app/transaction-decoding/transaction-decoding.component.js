@@ -7,7 +7,7 @@ import * as Codec from '@truffle/codec';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
-import { getSelectedAccount, getCurrentChainId } from '../../../selectors';
+import { getSelectedAccount, getCurrentCaipChainId } from '../../../selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -20,6 +20,7 @@ import {
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
 import Accreditation from './components/ui/accreditation';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
@@ -28,7 +29,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const [sourceFetchedVia, setSourceFetchedVia] = useState('');
 
   const { address: from } = useSelector(getSelectedAccount);
-  const network = hexToDecimal(useSelector(getCurrentChainId));
+  const network = getEthChainIdIntFromCaipChainId(useSelector(getCurrentCaipChainId)); // is this named wrong?
 
   const [loading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);
@@ -44,7 +45,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
 
         if (
           !networks.some(
-            (n) => n.active && Number(n.chainId) === Number(network),
+            (n) => n.active && Number(n.chainId) === network,
           )
         ) {
           throw new Error(

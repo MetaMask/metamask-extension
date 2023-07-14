@@ -25,7 +25,7 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 export default class AccountDetailsModal extends Component {
   static propTypes = {
     selectedIdentity: PropTypes.object,
-    chainId: PropTypes.string,
+    caipChainId: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
     setAccountLabel: PropTypes.func,
     keyrings: PropTypes.array,
@@ -48,7 +48,7 @@ export default class AccountDetailsModal extends Component {
   render() {
     const {
       selectedIdentity,
-      chainId,
+      caipChainId,
       showExportPrivateKeyModal,
       setAccountLabel,
       keyrings,
@@ -86,7 +86,7 @@ export default class AccountDetailsModal extends Component {
     };
 
     const openBlockExplorer = () => {
-      const accountLink = getAccountLink(address, chainId, rpcPrefs);
+      const accountLink = getAccountLink(address, caipChainId, rpcPrefs); // does this need to be updated?
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.ExternalLinkClicked,

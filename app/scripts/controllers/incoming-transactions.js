@@ -50,12 +50,12 @@ export default class IncomingTransactionsController {
     const {
       blockTracker,
       onNetworkDidChange,
-      getCurrentChainId,
+      getCurrentCaipChainId,
       preferencesController,
       onboardingController,
     } = opts;
     this.blockTracker = blockTracker;
-    this.getCurrentChainId = getCurrentChainId;
+    this.getCurrentCaipChainId = getCurrentCaipChainId;
     this.preferencesController = preferencesController;
     this.onboardingController = onboardingController;
 
@@ -67,8 +67,8 @@ export default class IncomingTransactionsController {
 
     const incomingTxLastFetchedBlockByChainId = Object.keys(
       ETHERSCAN_SUPPORTED_NETWORKS,
-    ).reduce((network, chainId) => {
-      network[chainId] = null;
+    ).reduce((network, caipChainId) => {
+      network[caipChainId] = null;
       return network;
     }, {});
 
@@ -154,7 +154,7 @@ export default class IncomingTransactionsController {
    * Determines the correct block number to begin looking for new transactions
    * from, fetches the transactions and then saves them and the next block
    * number to begin fetching from in state. Block numbers and transactions are
-   * stored per chainId.
+   * stored per caipChainId.
    *
    * @private
    * @param {string} address - address to lookup transactions for
@@ -162,9 +162,9 @@ export default class IncomingTransactionsController {
    */
   async _update(address, newBlockNumberDec) {
     const { completedOnboarding } = this.onboardingController.store.getState();
-    const chainId = this.getCurrentChainId();
+    const caipChainId = this.getCurrentCaipChainId();
     if (
-      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, chainId) ||
+      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, caipChainId) ||
       !address ||
       !completedOnboarding
     ) {
@@ -175,14 +175,14 @@ export default class IncomingTransactionsController {
       const currentBlock = parseInt(this.blockTracker.getCurrentBlock(), 16);
 
       const mostRecentlyFetchedBlock =
-        currentState.incomingTxLastFetchedBlockByChainId[chainId];
+        currentState.incomingTxLastFetchedBlockByChainId[caipChainId];
       const blockToFetchFrom =
         mostRecentlyFetchedBlock ?? newBlockNumberDec ?? currentBlock;
 
       const newIncomingTxs = await this._getNewIncomingTransactions(
         address,
         blockToFetchFrom,
-        chainId,
+        caipChainId,
       );
 
       let newMostRecentlyFetchedBlock = blockToFetchFrom;
@@ -200,7 +200,7 @@ export default class IncomingTransactionsController {
       this.store.updateState({
         incomingTxLastFetchedBlockByChainId: {
           ...currentState.incomingTxLastFetchedBlockByChainId,
-          [chainId]: newMostRecentlyFetchedBlock + 1,
+          [caipChainId]: newMostRecentlyFetchedBlock + 1,
         },
         incomingTransactions: newIncomingTxs.reduce(
           (transactions, tx) => {
@@ -224,12 +224,12 @@ export default class IncomingTransactionsController {
    * @private
    * @param {string} [address] - Address to fetch transactions for
    * @param {number} [fromBlock] - Block to look for transactions at
-   * @param {string} [chainId] - The chainId for the current network
+   * @param {string} [caipChainId] - The caipChainId for the current network
    * @returns {TransactionMeta[]}
    */
-  async _getNewIncomingTransactions(address, fromBlock, chainId) {
-    const etherscanDomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].domain;
-    const etherscanSubdomain = ETHERSCAN_SUPPORTED_NETWORKS[chainId].subdomain;
+  async _getNewIncomingTransactions(address, fromBlock, caipChainId) {
+    const etherscanDomain = ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].domain;
+    const etherscanSubdomain = ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].subdomain;
 
     const apiUrl = `https://${etherscanSubdomain}.${etherscanDomain}`;
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;
@@ -245,7 +245,7 @@ export default class IncomingTransactionsController {
       const remoteTxs = [];
       result.forEach((tx) => {
         if (!remoteTxList[tx.hash]) {
-          remoteTxs.push(this._normalizeTxFromEtherscan(tx, chainId));
+          remoteTxs.push(this._normalizeTxFromEtherscan(tx, caipChainId));
           remoteTxList[tx.hash] = 1;
         }
       });
@@ -262,10 +262,10 @@ export default class IncomingTransactionsController {
    * Transmutes a EtherscanTransaction into a TransactionMeta
    *
    * @param {EtherscanTransaction} etherscanTransaction - the transaction to normalize
-   * @param {string} chainId - The chainId of the current network
+   * @param {string} caipChainId - The caipChainId of the current network
    * @returns {TransactionMeta}
    */
-  _normalizeTxFromEtherscan(etherscanTransaction, chainId) {
+  _normalizeTxFromEtherscan(etherscanTransaction, caipChainId) {
     const time = parseInt(etherscanTransaction.timeStamp, 10) * 1000;
     const status =
       etherscanTransaction.isError === '0'
@@ -293,8 +293,8 @@ export default class IncomingTransactionsController {
     return {
       blockNumber: etherscanTransaction.blockNumber,
       id: createId(),
-      chainId,
-      metamaskNetworkId: ETHERSCAN_SUPPORTED_NETWORKS[chainId].networkId,
+      caipChainId,
+      metamaskNetworkId: ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].networkId,
       status,
       time,
       txParams,

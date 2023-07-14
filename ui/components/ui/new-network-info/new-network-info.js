@@ -39,18 +39,18 @@ const NewNetworkInfo = () => {
 
   const onCloseClick = () => {
     setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
+    setFirstTimeUsedNetwork(providerConfig.caipChainId);
   };
 
   const addTokenManually = () => {
     history.push(IMPORT_TOKEN_ROUTE);
     setShowPopup(false);
-    setFirstTimeUsedNetwork(providerConfig.chainId);
+    setFirstTimeUsedNetwork(providerConfig.caipChainId);
   };
 
   const getIsTokenDetectionSupported = async () => {
     const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.chainId}`,
+      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.caipChainId}`,
     );
 
     return !fetchedTokenData.error;

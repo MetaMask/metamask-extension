@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getCurrentChainId, getSelectedAddress } from '../selectors';
+import { getCurrentCaipChainId, getSelectedAddress } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useEqualityCheck } from './useEqualityCheck';
@@ -11,7 +11,7 @@ export function useTokenTracker(
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
 ) {
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const userAddress = useSelector(getSelectedAddress, shallowEqual);
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
@@ -89,14 +89,14 @@ export function useTokenTracker(
   // Effect to set loading state and initialize tracker when values change
   useEffect(() => {
     // This effect will only run initially and when:
-    // 1. chainId is updated,
+    // 1. caipChainId is updated,
     // 2. userAddress is changed,
     // 3. token list is updated and not equal to previous list
     // in any of these scenarios, we should indicate to the user that their token
     // values are in the process of updating by setting loading state.
     setLoading(true);
 
-    if (!userAddress || chainId === undefined || !global.ethereumProvider) {
+    if (!userAddress || caipChainId === undefined || !global.ethereumProvider) {
       // If we do not have enough information to build a TokenTracker, we exit early
       // When the values above change, the effect will be restarted. We also teardown
       // tracker because inevitably this effect will run again momentarily.
@@ -113,7 +113,7 @@ export function useTokenTracker(
   }, [
     userAddress,
     teardownTracker,
-    chainId,
+    caipChainId,
     memoizedTokens,
     updateBalances,
     buildTracker,

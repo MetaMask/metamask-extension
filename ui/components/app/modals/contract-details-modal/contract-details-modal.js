@@ -31,7 +31,7 @@ export default function ContractDetailsModal({
   tokenName,
   tokenAddress,
   toAddress,
-  chainId,
+  caipChainId,
   rpcPrefs,
   tokenId,
   assetName,
@@ -165,9 +165,9 @@ export default function ContractDetailsModal({
                     iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
-                      const blockExplorerTokenLink = getAccountLink(
+                      const blockExplorerTokenLink = getAccountLink( // need to be updated?
                         tokenAddress,
-                        chainId,
+                        caipChainId,
                         {
                           blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                         },
@@ -262,9 +262,9 @@ export default function ContractDetailsModal({
                 iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
-                  const blockExplorerTokenLink = getAccountLink(
+                  const blockExplorerTokenLink = getAccountLink( // need to be updated?
                     toAddress,
-                    chainId,
+                    caipChainId,
                     {
                       blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     },
@@ -313,9 +313,9 @@ ContractDetailsModal.propTypes = {
    */
   toAddress: PropTypes.string,
   /**
-   * Current network chainId
+   * Current network caipChainId
    */
-  chainId: PropTypes.string,
+  caipChainId: PropTypes.string,
   /**
    * RPC prefs of the current network
    */

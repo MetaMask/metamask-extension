@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getNfts, getNftContracts } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from '../selectors';
+import { getCurrentCaipChainId, getSelectedAddress } from '../selectors';
 import { usePrevious } from './usePrevious';
 import { useI18nContext } from './useI18nContext';
 
@@ -19,16 +19,16 @@ export function useNftsCollections() {
   const nfts = useSelector(getNfts);
   const [nftsLoading, setNftsLoading] = useState(() => nfts?.length >= 0);
   const selectedAddress = useSelector(getSelectedAddress);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const nftContracts = useSelector(getNftContracts);
   const prevNfts = usePrevious(nfts);
-  const prevChainId = usePrevious(chainId);
+  const prevCaipChainId = usePrevious(caipChainId);
   const prevSelectedAddress = usePrevious(selectedAddress);
 
   useEffect(() => {
     const getCollections = () => {
       setNftsLoading(true);
-      if (selectedAddress === undefined || chainId === undefined) {
+      if (selectedAddress === undefined || caipChainId === undefined) {
         return;
       }
       const newCollections = {};
@@ -61,7 +61,7 @@ export function useNftsCollections() {
     if (
       !isEqual(prevNfts, nfts) ||
       !isEqual(prevSelectedAddress, selectedAddress) ||
-      !isEqual(prevChainId, chainId)
+      !isEqual(prevCaipChainId, caipChainId)
     ) {
       getCollections();
     }
@@ -70,8 +70,8 @@ export function useNftsCollections() {
     prevNfts,
     nftContracts,
     setNftsLoading,
-    chainId,
-    prevChainId,
+    caipChainId,
+    prevCaipChainId,
     selectedAddress,
     prevSelectedAddress,
   ]);

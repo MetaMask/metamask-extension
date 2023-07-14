@@ -9,7 +9,7 @@ import {
 import {
   getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getMetaMaskAccountsOrdered,
   getBlockExplorerLinkText,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -23,7 +23,7 @@ import AccountDetailsModal from './account-details-modal.component';
 
 const mapStateToProps = (state) => {
   return {
-    chainId: getCurrentChainId(state),
+    caipChainId: getCurrentCaipChainId(state),
     selectedIdentity: getSelectedIdentity(state),
     keyrings: state.metamask.keyrings,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),

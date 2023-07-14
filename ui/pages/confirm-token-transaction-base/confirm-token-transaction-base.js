@@ -15,7 +15,7 @@ import {
 import { PRIMARY } from '../../helpers/constants/common';
 import {
   contractExchangeRateSelector,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
   getSelectedAddress,
@@ -53,7 +53,7 @@ export default function ConfirmTokenTransactionBase({
   const currentCurrency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const userAddress = useSelector(getSelectedAddress);
   const nftCollections = useSelector(getNftContracts);
 
@@ -65,7 +65,7 @@ export default function ConfirmTokenTransactionBase({
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
       [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
-        chainId,
+        caipChainId,
       );
 
     const nftCollection = nftCollections.find(
@@ -82,7 +82,7 @@ export default function ConfirmTokenTransactionBase({
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        chainId,
+        caipChainId,
         null,
         userAddress,
         {

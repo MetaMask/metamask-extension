@@ -35,7 +35,7 @@ import {
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
@@ -71,7 +71,7 @@ export const AppHeader = ({ location }) => {
   const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const selectedAddress = useSelector(getSelectedAddress);
@@ -144,10 +144,10 @@ export const AppHeader = ({ location }) => {
       category: MetaMetricsEventCategory.Navigation,
       properties: {
         location: 'App header',
-        chain_id: chainId,
+        chain_id: caipChainId,
       },
     });
-  }, [chainId, dispatch, trackEvent]);
+  }, [caipChainId, dispatch, trackEvent]);
 
   // This is required to ensure send and confirmation screens
   // look as desired

@@ -63,7 +63,7 @@ export function getIsCustodianSupportedChain(state) {
 
   return supportedChains?.supportedChains
     ? supportedChains.supportedChains.includes(
-        hexToDecimal(providerConfig.chainId),
+        hexToDecimal(providerConfig.caipChainId), // this isn't right? what is custody supported chains?
       )
     : true;
 }

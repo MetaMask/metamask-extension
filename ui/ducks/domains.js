@@ -5,7 +5,7 @@ import { isConfusing } from 'unicode-confusables';
 import { isHexString } from 'ethereumjs-util';
 import { Web3Provider } from '@ethersproject/providers';
 
-import { getCurrentChainId } from '../selectors';
+import { getCurrentCaipChainId } from '../selectors';
 import {
   CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
@@ -139,11 +139,11 @@ const {
 } = actions;
 export { resetDomainResolution };
 
-export function initializeDomainSlice() {
+export function initializeDomainSlice() { // i think all this logic can be cleaned up
   return (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
-    const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+    const caipChainId = getCurrentCaipChainId(state);
+    const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
     const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
@@ -187,14 +187,14 @@ export function lookupEnsName(domainName) {
       } catch (err) {
         error = err;
       }
-      const chainId = getCurrentChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
+      const caipChainId = getCurrentCaipChainId(state);
+      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
 
       await dispatch(
         domainLookup({
           address,
           error,
-          chainId,
+          caipChainId, // not sure if this is right
           network,
           domainType: ENS,
           domainName: trimmedDomainName,

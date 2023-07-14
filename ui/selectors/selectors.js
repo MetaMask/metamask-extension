@@ -113,9 +113,9 @@ export function getNetworkIdentifier(state) {
   return nickname || rpcUrl || type;
 }
 
-export function getCurrentChainId(state) {
-  const { chainId } = getProviderConfig(state);
-  return chainId;
+export function getCurrentCaipChainId(state) {
+  const { caipChainId } = getProviderConfig(state);
+  return caipChainId;
 }
 
 export function getMetaMetricsId(state) {
@@ -127,7 +127,7 @@ export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
-    !Object.values(CHAIN_IDS).includes(provider.chainId)
+    !Object.values(CHAIN_IDS).includes(provider.caipChainId)
   );
 }
 
@@ -269,11 +269,11 @@ export function getAccountTypeForKeyring(keyring) {
 /**
  * get the currently selected networkId which will be 'loading' when the
  * network changes. The network id should not be used in most cases,
- * instead use chainId in most situations. There are a limited number of
+ * instead use caipChainId in most situations. There are a limited number of
  * use cases to use this method still, such as when comparing transaction
- * metadata that predates the switch to using chainId.
+ * metadata that predates the switch to using caipChainId.
  *
- * @deprecated - use getCurrentChainId instead
+ * @deprecated - use getCurrentCaipChainId instead
  * @param {object} state - redux state object
  */
 export function deprecatedGetCurrentNetworkId(state) {
@@ -333,14 +333,14 @@ export function getMetaMaskAccountsRaw(state) {
 }
 
 export function getMetaMaskCachedBalances(state) {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
 
   // Fallback to fetching cached balances from network id
   // this can eventually be removed
   const network = deprecatedGetCurrentNetworkId(state);
 
   return (
-    state.metamask.cachedBalances[chainId] ??
+    state.metamask.cachedBalances[caipChainId] ??
     state.metamask.cachedBalances[network]
   );
 }
@@ -396,11 +396,11 @@ export const getTokenExchangeRates = (state) =>
   state.metamask.contractExchangeRates;
 
 export function getAddressBook(state) {
-  const chainId = getCurrentChainId(state);
-  if (!state.metamask.addressBook[chainId]) {
+  const caipChainId = getCurrentCaipChainId(state);
+  if (!state.metamask.addressBook[caipChainId]) {
     return [];
   }
-  return Object.values(state.metamask.addressBook[chainId]);
+  return Object.values(state.metamask.addressBook[caipChainId]);
 }
 
 export function getEnsResolutionByAddress(state, address) {
@@ -581,13 +581,13 @@ export function getSuggestedNfts(state) {
 }
 
 export function getIsMainnet(state) {
-  const chainId = getCurrentChainId(state);
-  return chainId === CHAIN_IDS.MAINNET;
+  const caipChainId = getCurrentCaipChainId(state);
+  return caipChainId === CHAIN_IDS.MAINNET;
 }
 
 export function getIsTestnet(state) {
-  const chainId = getCurrentChainId(state);
-  return TEST_CHAINS.includes(chainId);
+  const caipChainId = getCurrentCaipChainId(state);
+  return TEST_CHAINS.includes(caipChainId);
 }
 
 export function getIsNonStandardEthChain(state) {
@@ -743,9 +743,9 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 export function getSwapsDefaultToken(state) {
   const selectedAccount = getSelectedAccount(state);
   const { balance } = selectedAccount;
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
 
-  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
+  const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId];
 
   return {
     ...defaultTokenObject,
@@ -759,32 +759,32 @@ export function getSwapsDefaultToken(state) {
 }
 
 export function getIsSwapsChain(state) {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   const isNotDevelopment =
     process.env.METAMASK_ENVIRONMENT !== 'development' &&
     process.env.METAMASK_ENVIRONMENT !== 'testing';
   return isNotDevelopment
-    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(chainId)
-    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(chainId);
+    ? ALLOWED_PROD_SWAPS_CHAIN_IDS.includes(caipChainId)
+    : ALLOWED_DEV_SWAPS_CHAIN_IDS.includes(caipChainId);
 }
 
 export function getIsBridgeChain(state) {
-  const chainId = getCurrentChainId(state);
-  return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
+  const caipChainId = getCurrentCaipChainId(state);
+  return ALLOWED_BRIDGE_CHAIN_IDS.includes(caipChainId);
 }
 
 export const getIsBridgeToken = (tokenAddress) => (state) => {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   const isBridgeChain = getIsBridgeChain(state);
   return (
     isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
+    ALLOWED_BRIDGE_TOKEN_ADDRESSES[caipChainId].includes(tokenAddress.toLowerCase())
   );
 };
 
 export function getIsBuyableChain(state) {
-  const chainId = getCurrentChainId(state);
-  return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
+  const caipChainId = getCurrentCaipChainId(state);
+  return Object.keys(BUYABLE_CHAINS_MAP).includes(caipChainId);
 }
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
@@ -1170,9 +1170,9 @@ export function getNetworkConfigurations(state) {
 
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
-  const currentChainId = getCurrentChainId(state);
+  const currentCaipChainId = getCurrentCaipChainId(state);
 
-  return allNetworks.find((network) => network.chainId === currentChainId);
+  return allNetworks.find((network) => network.caipChainId === currentCaipChainId);
 }
 
 export function getAllEnabledNetworks(state) {
@@ -1188,21 +1188,21 @@ export function getTestNetworks(state) {
 
   return [
     {
-      chainId: CHAIN_IDS.GOERLI,
+      caipChainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     },
     {
-      chainId: CHAIN_IDS.SEPOLIA,
+      caipChainId: CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     },
     {
-      chainId: CHAIN_IDS.LINEA_GOERLI,
+      caipChainId: CHAIN_IDS.LINEA_GOERLI,
       nickname: LINEA_GOERLI_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
       rpcPrefs: {
@@ -1213,7 +1213,7 @@ export function getTestNetworks(state) {
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
+      ({ caipChainId }) => caipChainId === CHAIN_IDS.LOCALHOST,
     ),
   ];
 }
@@ -1224,7 +1224,7 @@ export function getNonTestNetworks(state) {
   return [
     // Mainnet always first
     {
-      chainId: CHAIN_IDS.MAINNET,
+      caipChainId: CHAIN_IDS.MAINNET,
       nickname: MAINNET_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
       rpcPrefs: {
@@ -1234,7 +1234,7 @@ export function getNonTestNetworks(state) {
       ticker: CURRENCY_SYMBOLS.ETH,
     },
     {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
+      caipChainId: CHAIN_IDS.LINEA_MAINNET,
       nickname: LINEA_MAINNET_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
       rpcPrefs: {
@@ -1245,7 +1245,7 @@ export function getNonTestNetworks(state) {
     },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
+      ({ caipChainId }) => ![CHAIN_IDS.LOCALHOST].includes(caipChainId),
     ),
   ];
 }
@@ -1263,8 +1263,8 @@ export function getAllNetworks(state) {
 
 export function getIsOptimism(state) {
   return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentCaipChainId(state) === CHAIN_IDS.OPTIMISM ||
+    getCurrentCaipChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
   );
 }
 
@@ -1295,14 +1295,14 @@ export function getIsAdvancedGasFeeDefault(state) {
 }
 
 /**
- * To get the name of the network that support token detection based in chainId.
+ * To get the name of the network that support token detection based in caipChainId.
  *
  * @param state
  * @returns string e.g. ethereum, bsc or polygon
  */
 export const getTokenDetectionSupportNetworkByChainId = (state) => {
-  const chainId = getCurrentChainId(state);
-  switch (chainId) {
+  const caipChainId = getCurrentCaipChainId(state);
+  switch (caipChainId) {
     case CHAIN_IDS.MAINNET:
       return MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.BSC:
@@ -1318,21 +1318,21 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
   }
 };
 /**
- * To check if the chainId supports token detection,
+ * To check if the caipChainId supports token detection,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
  */
 export function getIsDynamicTokenListAvailable(state) {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   return [
     CHAIN_IDS.MAINNET,
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.AURORA,
-  ].includes(chainId);
+  ].includes(caipChainId);
 }
 
 /**
@@ -1342,9 +1342,9 @@ export function getIsDynamicTokenListAvailable(state) {
  * @returns list of token objects
  */
 export function getDetectedTokensInCurrentNetwork(state) {
-  const currentChainId = getCurrentChainId(state);
+  const currentCaipChainId = getCurrentCaipChainId(state);
   const selectedAddress = getSelectedAddress(state);
-  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
+  return state.metamask.allDetectedTokens?.[currentCaipChainId]?.[selectedAddress];
 }
 
 /**
@@ -1373,7 +1373,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 }
 
 /**
- * To check for the chainId that supports token detection ,
+ * To check for the caipChainId that supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
@@ -1412,9 +1412,9 @@ export function getIsTransactionSecurityCheckEnabled(state) {
 }
 
 export function getIsCustomNetwork(state) {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
 
-  return !CHAIN_ID_TO_RPC_URL_MAP[chainId];
+  return !CHAIN_ID_TO_RPC_URL_MAP[caipChainId];
 }
 
 export function getBlockExplorerLinkText(
@@ -1452,10 +1452,10 @@ export function getBlockExplorerLinkText(
 }
 
 export function getIsNetworkUsed(state) {
-  const chainId = getCurrentChainId(state);
+  const caipChainId = getCurrentCaipChainId(state);
   const { usedNetworks } = state.metamask;
 
-  return Boolean(usedNetworks[chainId]);
+  return Boolean(usedNetworks[caipChainId]);
 }
 
 export function getAllAccountsOnNetworkAreEmpty(state) {

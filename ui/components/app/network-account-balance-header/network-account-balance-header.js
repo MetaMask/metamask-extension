@@ -23,10 +23,10 @@ export default function NetworkAccountBalanceHeader({
   accountBalance,
   tokenName, // Derived from nativeCurrency
   accountAddress,
-  chainId,
+  caipChainId,
 }) {
   const t = useContext(I18nContext);
-  const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];
+  const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId];
   const networkIconWrapperClass = networkIcon
     ? 'network-account-balance-header__network-account__ident-icon-ethereum'
     : 'network-account-balance-header__network-account__ident-icon-ethereum--gray';
@@ -115,5 +115,5 @@ NetworkAccountBalanceHeader.propTypes = {
   accountBalance: PropTypes.string,
   tokenName: PropTypes.string,
   accountAddress: PropTypes.string,
-  chainId: PropTypes.string,
+  caipChainId: PropTypes.string,
 };

@@ -53,7 +53,7 @@ import {
   getSwapsDefaultToken,
   getTokenExchangeRates,
   getCurrentCurrency,
-  getCurrentChainId,
+  getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
   getTokenList,
   isHardwareWallet,
@@ -139,7 +139,7 @@ export default function BuildQuote({
   const maxSlippage = useSelector(getMaxSlippage);
   const toToken = useSelector(getToToken, isEqual) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
-  const chainId = useSelector(getCurrentChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
@@ -178,7 +178,7 @@ export default function BuildQuote({
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
-    chainId,
+    caipChainId,
   )
     ? defaultSwapsToken
     : sourceTokenInfo;
@@ -189,7 +189,7 @@ export default function BuildQuote({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, chainId) && fromToken?.balance
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, caipChainId) && fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -203,7 +203,7 @@ export default function BuildQuote({
     tokenConversionRates,
     conversionRate,
     currentCurrency,
-    chainId,
+    caipChainId,
     tokenList,
   );
 
@@ -225,7 +225,7 @@ export default function BuildQuote({
     ) || toToken;
   const toTokenIsNotDefault =
     selectedToToken?.address &&
-    !isSwapsDefaultTokenAddress(selectedToToken?.address, chainId);
+    !isSwapsDefaultTokenAddress(selectedToToken?.address, caipChainId);
   const occurrences = Number(
     selectedToToken?.occurances || selectedToToken?.occurrences || 0,
   );
@@ -258,7 +258,7 @@ export default function BuildQuote({
     { showFiat: useCurrencyRateCheck },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId)
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, caipChainId)
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -334,12 +334,12 @@ export default function BuildQuote({
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     selectedToToken.address,
-    chainId,
+    caipChainId,
     null, // no networkId
     null, // no holderAddress
     {
       blockExplorerUrl:
-        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ?? null,
+        SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ?? null,
     },
   );
 
@@ -370,7 +370,7 @@ export default function BuildQuote({
   useEffect(() => {
     const notDefault = !isSwapsDefaultTokenAddress(
       tokensWithBalancesFromToken?.address,
-      chainId,
+      caipChainId,
     );
     const addressesAreTheSame = isEqualCaseInsensitive(
       tokensWithBalancesFromToken?.address,
@@ -393,13 +393,13 @@ export default function BuildQuote({
     tokensWithBalancesFromToken,
     previousTokensWithBalancesFromToken,
     fromToken,
-    chainId,
+    caipChainId,
   ]);
 
   // If the eth balance changes while on build quote, we update the selected from token
   useEffect(() => {
     if (
-      isSwapsDefaultTokenAddress(fromToken?.address, chainId) &&
+      isSwapsDefaultTokenAddress(fromToken?.address, caipChainId) &&
       fromToken?.balance !== hexToDecimal(ethBalance)
     ) {
       dispatch(
@@ -414,7 +414,7 @@ export default function BuildQuote({
         }),
       );
     }
-  }, [dispatch, fromToken, ethBalance, chainId]);
+  }, [dispatch, fromToken, ethBalance, caipChainId]);
 
   useEffect(() => {
     if (prevFromTokenBalance !== fromTokenBalance) {
@@ -504,11 +504,11 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId]?.symbol || '',
+    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol || '',
   ]);
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(
-    chainId,
+    caipChainId,
     fromTokenAddress,
     selectedToToken.address,
   );
@@ -573,7 +573,7 @@ export default function BuildQuote({
         )}
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
-          {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
+          {!isSwapsDefaultTokenSymbol(fromTokenSymbol, caipChainId) && (
             <div
               className="build-quote__max-button"
               data-testid="build-quote__max-button"

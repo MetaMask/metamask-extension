@@ -15,7 +15,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
-import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdHexFromCaipChainId, getEthChainIdNumFromCaipChainId } from '@metamask/controller-utils';
+import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdHexFromCaipChainId, getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -136,7 +136,7 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const requestChainId = getEthChainIdNumFromCaipChainId(pendingApproval.requestData.chainId)
+  const requestChainId = getEthChainIdIntFromCaipChainId(pendingApproval.requestData.chainId) // hmm... this comes from rpc, right?
   const matchedChain = safeChainsList.find(
     (chain) =>
       chain.chainId === requestChainId
@@ -178,7 +178,7 @@ async function getAlerts(pendingApproval) {
 }
 
 function getState(pendingApproval) {
-  if (parseInt(pendingApproval.requestData.chainId, 16) === 1) {
+  if (parseInt(pendingApproval.requestData.chainId, 16) === 1) { // not sure if this is right, i think so since from rpc?
     console.log("use warning modal")
     return { useWarningModal: true };
   }
@@ -188,7 +188,7 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  const caipChainId = pendingApproval.requestData.chainId;
+  const caipChainId = pendingApproval.requestData.chainId; // not sure if this is right. I think this comes for the rpc request, so it is right
   return {
     content: [
       {
