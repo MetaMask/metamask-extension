@@ -4344,7 +4344,6 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 export function setSecurityAlertBlockaidEnabled(
   securityAlertBlockaidEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -4358,7 +4357,6 @@ export function setSecurityAlertBlockaidEnabled(
     }
   };
 }
-///: END:ONLY_INCLUDE_IN
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
