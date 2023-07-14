@@ -64,7 +64,7 @@ export default function NftsTab() {
             <Box padding={4}>
               <NftsDetectionNotice />
             </Box>
-          ) : null}{' '}
+          ) : null}
           <Box
             padding={12}
             display={Display.Flex}

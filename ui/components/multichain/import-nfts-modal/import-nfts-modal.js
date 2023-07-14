@@ -204,6 +204,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
+                autoFocus
                 dataTestId="address"
                 id="address"
                 placeholder="0x..."
