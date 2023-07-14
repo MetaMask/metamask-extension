@@ -64,7 +64,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="box mm-tag box--margin-right-1 box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--color-info-default box--background-color-info-muted box--rounded-pill box--border-color-info-muted box--border-width-1 box--border-style-solid"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -86,7 +86,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="box mm-tag box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--color-info-default box--background-color-info-muted box--rounded-pill box--border-color-info-muted box--border-width-1 box--border-style-solid"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
@@ -138,7 +138,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
             class="box mm-tag box--margin-right-1 box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
           >
             <p
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               EOA
             </p>

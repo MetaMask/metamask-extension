@@ -12,7 +12,7 @@ exports[`DetectedTokensBanner should render correctly 1`] = `
     />
     <div>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
         3 new tokens found in this account
       </p>

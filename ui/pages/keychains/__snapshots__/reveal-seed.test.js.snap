@@ -80,7 +80,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     </div>
     <form>
       <label
-        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+        class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         for="password-box"
       >
         Enter password to continue
@@ -90,7 +90,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       >
         <input
           autocomplete="off"
-          class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
           data-testid="input-password"
           focused="true"
           id="password-box"
