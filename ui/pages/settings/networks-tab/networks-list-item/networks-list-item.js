@@ -85,11 +85,11 @@ const NetworksListItem = ({
       ) : (
         <Icon name={IconName.Check} color={IconColor.transparent} />
       )}
-      {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+      {network.caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
           className="networks-tab__content__custom-image"
           diameter={24}
-          image={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
+          image={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.caipChainId]}
           imageBorder
         />
       ) : (
@@ -101,7 +101,7 @@ const NetworksListItem = ({
           />
         )
       )}
-      {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
+      {network.isATestNetwork && network.caipChainId !== CHAIN_IDS.LINEA_GOERLI && (
         <UrlIcon
           name={label || getNetworkLabelKey(labelKey)}
           fallbackClassName={classnames(

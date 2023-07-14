@@ -35,7 +35,7 @@ import NetworksFormSubheader from './networks-tab-subheader';
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
   viewOnly: true,
-  isATestNetwork: TEST_CHAINS.includes(network.chainId),
+  isATestNetwork: TEST_CHAINS.includes(network.caipChainId),
 }));
 
 const NetworksTab = ({ addNewNetwork }) => {
@@ -65,10 +65,10 @@ const NetworksTab = ({ addNewNetwork }) => {
         iconColor: 'var(--color-icon-alternative)',
         providerType: NETWORK_TYPES.RPC,
         rpcUrl: networkConfiguration.rpcUrl,
-        chainId: networkConfiguration.chainId,
+        caipChainId: networkConfiguration.caipChainId,
         ticker: networkConfiguration.ticker,
         blockExplorerUrl: networkConfiguration.rpcPrefs?.blockExplorerUrl || '',
-        isATestNetwork: TEST_CHAINS.includes(networkConfiguration.chainId),
+        isATestNetwork: TEST_CHAINS.includes(networkConfiguration.caipChainId),
         networkConfigurationId,
       };
     },
@@ -78,8 +78,8 @@ const NetworksTab = ({ addNewNetwork }) => {
   if (!isLineaMainnetReleased) {
     networksToRender = networksToRender.filter(
       (network) =>
-        network.chainId !==
-        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].chainId,
+        network.caipChainId !==
+        BUILT_IN_NETWORKS[NETWORK_TYPES.LINEA_MAINNET].caipChainId,
     );
   }
   let selectedNetwork =

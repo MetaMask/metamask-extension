@@ -44,6 +44,7 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import {
   getCaipChainIdFromEthChainId,
   getEthChainIdDecFromCaipChainId,
+  getEthChainIdHexFromCaipChainId,
   isEthCaipChainId,
 } from "@metamask/controller-utils";
 
@@ -59,6 +60,7 @@ import {
  * it can't be converted.
  */
 const getDisplayChainId = (chainId) => {
+  console.log("display", chainId)
   if (!chainId || typeof chainId !== 'string') {
     return chainId;
   }
@@ -89,11 +91,12 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
+  console.log("selected network", selectedNetwork)
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
-  const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
+  const [chainId, setChainId] = useState(selectedNetwork?.caipChainId || ''); // ?
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
@@ -101,8 +104,8 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
-    (featuredRpc) => Number(featuredRpc.chainId) === Number(chainId),
+  const chainIdMatchesFeaturedRPC = chainId && FEATURED_RPCS.some(
+    (featuredRpc) => featuredRpc.caipChainId === getCaipChainIdFromEthChainId(chainId),
   );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
@@ -112,7 +115,7 @@ const NetworksForm = ({
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
     setRpcUrl(selectedNetwork.rpcUrl);
-    setChainId(getDisplayChainId(selectedNetwork.chainId));
+    setChainId(getDisplayChainId(selectedNetwork.caipChainId));
     setTicker(selectedNetwork?.ticker);
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
@@ -127,9 +130,10 @@ const NetworksForm = ({
     // was possible in versions <8.1 of the extension.
     // Basically, we always want to be able to overwrite an invalid chain ID.
     const chainIdIsUnchanged =
-      typeof selectedNetwork.chainId === 'string' &&
-      selectedNetwork.chainId.toLowerCase().startsWith('0x') &&
-      chainId === getDisplayChainId(selectedNetwork.chainId);
+      typeof selectedNetwork.caipChainId === 'string' &&
+      isEthCaipChainId(selectedNetwork.caipChainId) &&
+      chainId && // getEthChainIdHexFromCaipChainId should be updated to handle empty input
+      getEthChainIdHexFromCaipChainId(chainId) === getDisplayChainId(selectedNetwork.caipChainId);
     return (
       rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
@@ -157,7 +161,7 @@ const NetworksForm = ({
     } else if (
       (prevNetworkName.current !== selectedNetworkName ||
         prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-        prevChainId.current !== selectedNetwork.chainId ||
+        prevChainId.current !== selectedNetwork.caipChainId ||
         prevTicker.current !== selectedNetwork.ticker ||
         prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
       (!isEditing || !isEqual(selectedNetwork, previousNetwork))
@@ -514,7 +518,7 @@ const NetworksForm = ({
               rpcUrl,
               ticker,
               networkConfigurationId: selectedNetwork.networkConfigurationId,
-              chainId: caipChainId,
+              caipChainId,
               nickname: networkName,
               rpcPrefs: {
                 ...rpcPrefs,
@@ -533,7 +537,7 @@ const NetworksForm = ({
             {
               rpcUrl,
               ticker,
-              chainId: caipChainId,
+              caipChainId,
               nickname: networkName,
               rpcPrefs: {
                 ...rpcPrefs,
