@@ -384,7 +384,7 @@ class ConnectHardwareForm extends Component {
         connectedAccounts={this.props.connectedAccounts}
         selectedAccounts={this.state.selectedAccounts}
         onAccountChange={this.onAccountChange}
-        chainId={this.props.chainId}
+        caipChainId={this.props.caipChainId}
         rpcPrefs={this.props.rpcPrefs}
         getPage={this.getPage}
         onUnlockAccounts={this.onUnlockAccounts}
@@ -415,7 +415,7 @@ ConnectHardwareForm.propTypes = {
   unlockHardwareWalletAccounts: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
-  chainId: PropTypes.string,
+  caipChainId: PropTypes.string,
   rpcPrefs: PropTypes.object,
   accounts: PropTypes.object,
   connectedAccounts: PropTypes.array.isRequired,
@@ -425,7 +425,7 @@ ConnectHardwareForm.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  chainId: getCurrentCaipChainId(state),
+  caipChainId: getCurrentCaipChainId(state),
   rpcPrefs: getRpcPrefsForCurrentProvider(state),
   accounts: getMetaMaskAccounts(state),
   connectedAccounts: getMetaMaskAccountsConnected(state),
