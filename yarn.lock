@@ -4216,18 +4216,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^4.0.0":
-  version: 4.1.0
-  resolution: "@metamask/eth-token-tracker@npm:4.1.0"
+"@metamask/eth-token-tracker@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@metamask/eth-token-tracker@npm:5.0.0"
   dependencies:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     deep-equal: "npm:^2.2.0"
-    eth-block-tracker: "npm:^5.0.1"
+    eth-block-tracker: "npm:^6.1.0"
     ethjs: "npm:^0.4.0"
     ethjs-contract: "npm:^0.2.3"
     ethjs-query: "npm:^0.3.8"
     human-standard-token-abi: "npm:^2.0.0"
-  checksum: 059e532aae0ac761c03bd9aa22ea77e7411d0419497808b4ce1fe83e09d67e958ea2da6f4e5b02861c05be58a5478f7a03123bafdb45114ec35630539d5424ff
+  checksum: 99e5ba5a8af9d88a214ae21a1c9b3ca879b2918d429a970c2bc38fe52909ff2c59cf2fcc98358cd2bb452ea842ebd59b20bc021e6f8965ad747f9d063109e555
   languageName: node
   linkType: hard
 
@@ -5261,6 +5261,18 @@ __metadata:
     "@metamask/polling-controller": ^4.0.0
     "@metamask/transaction-controller": ^20.0.0
   checksum: 13e0a4ce907309f6142f2c003c83671d795de6e9f6bcf3d36f9c63a24bf50c12f2f462badf8f77b769e8c2d9547a3180a044b7b07c2fe48d14574c6da6340fcf
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^3.0.1":
+  version: 3.6.0
+  resolution: "@metamask/utils@npm:3.6.0"
+  dependencies:
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    semver: "npm:^7.3.8"
+    superstruct: "npm:^1.0.3"
+  checksum: f6a1cf9a2ddbdb9840ed3d93d961d3f7c3feb532361c84a3e54c88034d9a3149a11773948631a25c2b0355712848a6e0b226ad432844703e1f498e9602920879
   languageName: node
   linkType: hard
 
@@ -16827,14 +16839,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "eth-block-tracker@npm:5.0.1"
+"eth-block-tracker@npm:^6.1.0":
+  version: 6.1.0
+  resolution: "eth-block-tracker@npm:6.1.0"
   dependencies:
     "@metamask/safe-event-emitter": "npm:^2.0.0"
+    "@metamask/utils": "npm:^3.0.1"
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^3.0.0"
-  checksum: 64162323bfed49f2e94b5efc377dfb0e87dac22140f1f4c9923328b7261fc8a37563cb0e5f575590ecce174a53d6804aecd29293ba7f67a66094d29506a40ed9
+  checksum: b9a6c6e63f59604c7a38b82aff3b36b9104b952ffc2c1977d5a224dbf5bce2f712f9accee5ba366a9be2372e510c3a75a830dc9d7c2b52d35a724e83f919d1cf
   languageName: node
   linkType: hard
 
@@ -24745,7 +24758,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-snap-keyring": "npm:^2.1.1"
-    "@metamask/eth-token-tracker": "npm:^4.0.0"
+    "@metamask/eth-token-tracker": "npm:^5.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/ethjs": "npm:^0.5.1"
