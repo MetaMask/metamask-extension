@@ -6,7 +6,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
 import { TextVariant } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const DetectedTokenIgnoredPopover = ({
   partiallyIgnoreDetectedTokens,

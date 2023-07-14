@@ -7,13 +7,13 @@ import {
   IconName,
   ButtonLink,
   TextFieldSearch,
-  Text,
   Box,
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   BlockSize,

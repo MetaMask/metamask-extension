@@ -6,7 +6,7 @@ import CustodyAccountList from '../../../pages/institutional/connect-custody/acc
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { removeAccount } from '../../../store/actions';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box';
 import {
   BorderRadius,

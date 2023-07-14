@@ -1,4 +1,5 @@
 import React from 'react';
+import type { BoxProps } from '../../../ui/box/box.d';
 import {
   FontWeight,
   FontStyle,
@@ -6,12 +7,9 @@ import {
   TextAlign,
   TextTransform,
   OverflowWrap,
-} from '../../../helpers/constants/design-system';
-
-import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
-} from '../box';
+  TextColor,
+  Color,
+} from '../../../../helpers/constants/design-system';
 
 export enum TextDirection {
   LeftToRight = 'ltr',
@@ -74,11 +72,7 @@ export type ValidTagType =
   | 'input'
   | 'header';
 
-export interface TextStyleUtilityProps extends StyleUtilityProps {
-  /**
-   * Additional className to assign the Text component
-   */
-  className?: string;
+export interface TextProps extends BoxProps {
   /**
    * The text content of the Text component
    */
@@ -102,6 +96,11 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * `inherit`
    */
   variant?: TextVariant;
+  /**
+   * The color of the Text component Should use the COLOR object from
+   * ./ui/helpers/constants/design-system.js
+   */
+  color?: TextColor | Color;
   /**
    * The font-weight of the Text component. Should use the FontWeight enum from
    * ./ui/helpers/constants/design-system.js
@@ -136,11 +135,12 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    * Used for long strings that can be cut off...
    */
   ellipsis?: boolean;
+  /**
+   * Changes the root html element tag of the Text component.
+   */
+  as?: ValidTagType;
+  /**
+   * Additional className to assign the Text component
+   */
+  className?: string;
 }
-
-export type TextProps<C extends React.ElementType> =
-  PolymorphicComponentPropWithRef<C, TextStyleUtilityProps>;
-
-export type TextComponent = <C extends React.ElementType = 'span'>(
-  props: TextProps<C>,
-) => React.ReactElement | null;

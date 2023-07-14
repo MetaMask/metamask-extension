@@ -42,12 +42,12 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
   Box,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 
 import {
   ASSET_ROUTE,

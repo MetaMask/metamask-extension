@@ -2,7 +2,8 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import Box from '../../ui/box';
 import Dialog from '../../ui/dialog';
-import { Icon, IconName, Text } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   TextVariant,
   TextAlign,

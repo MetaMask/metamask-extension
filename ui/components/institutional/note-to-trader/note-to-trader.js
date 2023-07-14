@@ -5,7 +5,8 @@ import {
   FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Label, Text } from '../../component-library';
+import { Label } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box';
 
 const NoteToTrader = (props) => {

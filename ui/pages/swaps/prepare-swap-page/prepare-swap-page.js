@@ -115,12 +115,12 @@ import {
   IconSize,
   TextField,
   ButtonLink,
-  Text,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
