@@ -10,7 +10,6 @@ import {
   DISPLAY,
   AlignItems,
   IconColor,
-  TextColor,
 } from '../../../helpers/constants/design-system';
 import { Icon, IconName } from '../../../components/component-library';
 import { I18nContext } from '../../../contexts/i18n';
