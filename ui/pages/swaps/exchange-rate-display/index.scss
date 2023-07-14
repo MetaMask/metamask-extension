@@ -18,5 +18,11 @@
 
   &__quote-rate {
     cursor: pointer;
+    color: var(--color-primary-default);
+  }
+
+  &__quote-rate--no-link {
+    cursor: text;
+    color: var(--color-text-default);
   }
 }

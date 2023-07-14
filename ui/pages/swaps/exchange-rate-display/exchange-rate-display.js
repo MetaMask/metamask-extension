@@ -72,6 +72,10 @@ export default function ExchangeRateDisplay({
     rateToDisplay = formatSwapsValueForDisplay(rate);
   }
 
+  const quoteRateClassName = onQuotesClick
+    ? 'exchange-rate-display__quote-rate'
+    : 'exchange-rate-display__quote-rate--no-link';
+
   return (
     <div className={classnames('exchange-rate-display', className)}>
       <Box
@@ -79,8 +83,7 @@ export default function ExchangeRateDisplay({
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         onClick={onQuotesClick}
-        color={TextColor.primaryDefault}
-        className="exchange-rate-display__quote-rate"
+        className={quoteRateClassName}
         data-testid="exchange-rate-display-quote-rate"
       >
         <span>1</span>
