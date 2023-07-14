@@ -1065,8 +1065,9 @@ export function updateAndApproveTx(
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         dispatch(closeCurrentNotificationWindow());
-
+        ///: END:ONLY_INCLUDE_IN
         return txMeta;
       })
       .catch((err) => {
@@ -2990,6 +2991,22 @@ export function setOpenSeaEnabled(
   };
 }
 
+// DetectTokenController
+export function detectNewTokens(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.detectNewTokens`);
+    await submitRequestToBackground('detectNewTokens');
+    dispatch(hideLoadingIndication());
+    await forceUpdateMetamaskState(dispatch);
+  };
+}
+
 export function detectNfts(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4285,11 +4302,6 @@ export function dismissSmartTransactionsErrorMessage(): Action {
   return {
     type: actionConstants.DISMISS_SMART_TRANSACTIONS_ERROR_MESSAGE,
   };
-}
-
-// DetectTokenController
-export async function detectNewTokens() {
-  return submitRequestToBackground('detectNewTokens');
 }
 
 // App state

@@ -57,6 +57,7 @@ import InteractiveReplacementTokenNotification from '../../components/institutio
 import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
+import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -89,6 +90,7 @@ import {
   CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
@@ -336,6 +338,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_CUSTODIAN_TOKEN}
           component={ConfirmAddCustodianToken}
+        />
+        <Authenticated
+          path={CUSTODY_ACCOUNT_ROUTE}
+          component={CustodyPage}
+          exact
         />
         {
           ///: END:ONLY_INCLUDE_IN

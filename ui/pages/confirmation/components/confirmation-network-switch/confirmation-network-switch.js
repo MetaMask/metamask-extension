@@ -6,12 +6,12 @@ import SiteIcon from '../../../../components/ui/site-icon';
 import Typography from '../../../../components/ui/typography/typography';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  DISPLAY,
+  FontWeight,
+  Display,
   JustifyContent,
-  BLOCK_SIZES,
+  BlockSize,
   AlignItems,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -26,14 +26,14 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
   return (
     <Box
       className="confirmation-network-switch"
-      display={DISPLAY.FLEX}
-      height={BLOCK_SIZES.FULL}
+      display={Display.Flex}
+      height={BlockSize.Full}
       justifyContent={JustifyContent.center}
       marginTop={8}
     >
       <Box
         className="confirmation-network-switch__icon"
-        display={DISPLAY.BLOCK}
+        display={Display.Block}
       >
         {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
@@ -49,10 +49,10 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          align={TEXT_ALIGN.CENTER}
+          fontWeight={FontWeight.Normal}
+          align={TextAlign.Center}
           boxProps={{
-            display: DISPLAY.FLEX,
+            display: Display.Flex,
             justifyContent: JustifyContent.center,
           }}
         >
@@ -61,7 +61,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
       </Box>
       <Box
         className="confirmation-network-switch__center-icon"
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
       >
@@ -70,7 +70,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
       </Box>
       <Box
         className="confirmation-network-switch__icon"
-        display={DISPLAY.BLOCK}
+        display={Display.Block}
       >
         {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
@@ -86,10 +86,10 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         <Typography
           color={TextColor.textDefault}
           variant={TypographyVariant.H6}
-          fontWeight={FONT_WEIGHT.NORMAL}
-          align={TEXT_ALIGN.CENTER}
+          fontWeight={FontWeight.Normal}
+          align={TextAlign.Center}
           boxProps={{
-            display: DISPLAY.FLEX,
+            display: Display.Flex,
             justifyContent: JustifyContent.center,
           }}
         >

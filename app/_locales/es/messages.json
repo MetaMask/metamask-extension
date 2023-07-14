@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Revelar frase semilla"
   },
-  "reviewSpendingCap": {
-    "message": "Revise su límite de gasto"
-  },
   "revokeAllTokensTitle": {
     "message": "¿Revocar el permiso para acceder y transferir todos sus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprobar $1 sin límite preestablecido",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Establecer un límite de gasto para su $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Configuración"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
-  },
-  "useDefault": {
-    "message": "Uso por defecto"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"

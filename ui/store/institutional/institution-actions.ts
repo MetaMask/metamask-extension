@@ -28,12 +28,17 @@ export function showInteractiveReplacementTokenModal(): ThunkAction<
   };
 }
 
-export function showCustodyConfirmLink(
-  link: string,
-  address: string,
-  closeNotification: boolean,
-  custodyId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function showCustodyConfirmLink({
+  link,
+  address,
+  closeNotification,
+  custodyId,
+}: {
+  link: string;
+  address: string;
+  closeNotification: boolean;
+  custodyId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
     dispatch(
       showModal({
