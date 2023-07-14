@@ -195,7 +195,7 @@ ButtonBase.propTypes = {
   /**
    * textProps accepts all the props from Icon
    */
-  textProps: PropTypes.shape(Text.propTypes),
+  textProps: PropTypes.object,
   /**
    * ButtonBase accepts all the props from Box
    */
