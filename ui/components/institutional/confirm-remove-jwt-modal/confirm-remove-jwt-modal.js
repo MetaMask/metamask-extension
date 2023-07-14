@@ -13,6 +13,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
 } from '../../component-library';
 import {
   BorderRadius,
@@ -112,7 +114,16 @@ const ConfirmRemoveJWT = ({
         <Box className="confirm-action-jwt__accounts-list">
           <CustodyAccountList accounts={tokenAccounts} rawList />
         </Box>
-        <Button onClick={handleRemove}>{t('remove')}</Button>
+        <Box display={Display.Flex}>
+          <Button
+            block
+            variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            onClick={handleRemove}
+          >
+            {t('remove')}
+          </Button>
+        </Box>
       </ModalContent>
     </Modal>
   );
