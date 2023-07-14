@@ -92,6 +92,13 @@ const render = () => {
           id: 13,
           isShown: true,
         },
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        23: {
+          date: '2022-07-24',
+          id: 22,
+          isShown: false,
+        },
+        ///: END:ONLY_INCLUDE_IN(blockaid)
       },
     },
   });
@@ -118,4 +125,18 @@ describe('WhatsNewPopup', () => {
     render();
     expect(screen.getByTestId('popover-close')).toBeInTheDocument();
   });
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  it('renders WhatsNewPopup component and shows blockaid messages', () => {
+    render();
+    expect(
+      screen.getByTestId('whats-new-description-item-0'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('whats-new-description-item-1'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('whats-new-description-item-2'),
+    ).toBeInTheDocument();
+  });
+  ///: END:ONLY_INCLUDE_IN
 });
