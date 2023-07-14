@@ -439,7 +439,7 @@ function mapDispatchToProps(dispatch) {
     },
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
     ///: END:ONLY_INCLUDE_IN
   };
 }

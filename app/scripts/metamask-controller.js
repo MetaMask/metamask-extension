@@ -1478,9 +1478,6 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.setPersonalMessageInProgress.bind(
           this.signatureController,
         ),
-      setMessageMetadata: this.mmiController.setMessageMetadata.bind(
-        this.mmiController,
-      ),
       ///: END:ONLY_INCLUDE_IN
 
       processEncryptionPublicKey:
@@ -2384,6 +2381,9 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      setDeferAsSigned: this.mmiController.setDeferAsSigned.bind(
+        this.mmiController,
+      ),
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
         this.mmiController,
       ),

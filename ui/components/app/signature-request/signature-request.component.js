@@ -230,8 +230,10 @@ export default class SignatureRequest extends PureComponent {
       }
       ///: END:ONLY_INCLUDE_IN
 
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       await resolvePendingApproval(id);
       completedTx(id);
+      ///: END:ONLY_INCLUDE_IN
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,

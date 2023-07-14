@@ -364,7 +364,7 @@ export const mapDispatchToProps = (dispatch) => {
         onDeepLinkShown,
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
     ///: END:ONLY_INCLUDE_IN
   };
 };

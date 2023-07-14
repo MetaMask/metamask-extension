@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -9,7 +10,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import { hideModal, setSelectedAddress } from '../../../store/actions';
+import { setSelectedAddress } from '../../../store/actions';
 import { getMetaMaskAccountsRaw } from '../../../selectors';
 import {
   getMMIAddressFromModalOrAddress,
@@ -29,7 +30,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Text, Button, BUTTON_VARIANT } from '../../component-library';
 
-const CustodyConfirmLink = () => {
+const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
@@ -64,8 +65,8 @@ const CustodyConfirmLink = () => {
       category: MetaMetricsEventCategory.MMI,
       event: MetaMetricsEventName.UserClickedDeepLink,
     });
-    dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
-    dispatch(hideModal());
+    mmiActions.setWaitForConfirmDeepLinkDialog(false);
+    hideModal();
   };
 
   return (
@@ -130,6 +131,10 @@ const CustodyConfirmLink = () => {
       </Button>
     </Box>
   );
+};
+
+CustodyConfirmLink.propTypes = {
+  hideModal: PropTypes.func,
 };
 
 export default withModalProps(CustodyConfirmLink);

@@ -13,7 +13,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
   getSelectedAccount,
-  unapprovedTypedMessagesSelector,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import {
@@ -28,13 +27,10 @@ import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setTypedMessageInProgress,
-  setMessageMetadata,
+  setDeferAsSigned,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  showCustodyConfirmLink,
-  checkForUnapprovedMessages,
-} from '../../../store/institutional/institution-actions';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -48,9 +44,6 @@ import {
   rejectPendingApproval,
   rejectAllMessages,
   completedTx,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  goHome,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -98,7 +91,6 @@ function mapStateToProps(state, ownProps) {
     accountType: getAccountType(state),
     isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
-    unapprovedTypedMessages: unapprovedTypedMessagesSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
@@ -136,6 +128,7 @@ function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
     setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
+    setDeferAsSigned: (msgData) => dispatch(setDeferAsSigned(msgData)),
     showCustodianDeepLink: ({
       custodyId,
       fromAddress,
@@ -169,8 +162,7 @@ function mmiMapDispatchToProps(dispatch) {
         }),
       ),
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    goHome: () => dispatch(goHome()),
+      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
     resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
     completedTx: (id) => dispatch(completedTx(id)),
     rejectPendingApproval: (id, error) =>
@@ -216,7 +208,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNotification,
-    unapprovedTypedMessages,
     ///: END:ONLY_INCLUDE_IN
   } = stateProps;
   const { txData } = ownProps;
@@ -236,32 +227,19 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   const mmiOnSignCallback = async (_msgData) => {
     if (accountType === 'custody') {
       try {
-        let msgData = _msgData;
-        let id = _msgData.custodyId;
-        if (!_msgData.custodyId) {
-          msgData = await setMessageMetadata(_msgData)
-          id = msgData.custodyId;
+        await dispatchProps.setDeferAsSigned(_msgData);
 
-          const unApprovedMessages = checkForUnapprovedMessages(
-            _msgData,
-            unapprovedTypedMessages,
-          );
+        await dispatchProps.resolvePendingApproval(_msgData.id);
+        dispatchProps.completedTx(_msgData.id);
 
-          if(unApprovedMessages) {
-            id = unApprovedMessages.custodyId;
-          }
-
-        }
         dispatchProps.showCustodianDeepLink({
-          custodyId: id,
+          custodyId: null,
           fromAddress: fromAccount.address,
           closeNotification: isNotification,
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
         });
-        await dispatchProps.setMsgInProgress(msgData.id);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
-        await goHome();
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
@@ -270,6 +248,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           operationFailed: true,
         });
       }
+    } else {
+      // Non Custody accounts follow normal flow
+      await dispatchProps.resolvePendingApproval(_msgData.id);
+      dispatchProps.completedTx(_msgData.id);
     }
   };
   ///: END:ONLY_INCLUDE_IN

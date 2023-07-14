@@ -6,6 +6,9 @@ import {
   displayWarning,
   hideLoadingIndication,
   showLoadingIndication,
+  updateMetamaskState,
+  completedTx,
+  closeCurrentNotificationWindow,
 } from '../actions';
 import {
   callBackgroundMethod,
@@ -13,6 +16,7 @@ import {
 } from '../action-queue';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
+import { checkForUnapprovedMessages } from './institution-actions';
 
 export function showInteractiveReplacementTokenBanner({
   url,
@@ -20,7 +24,7 @@ export function showInteractiveReplacementTokenBanner({
 }: {
   url: string;
   oldRefreshToken: string;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+}) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('showInteractiveReplacementTokenBanner', [
@@ -36,18 +40,32 @@ export function showInteractiveReplacementTokenBanner({
   };
 }
 
-export function setMessageMetadata(msgData: any) {
+export function setDeferAsSigned(msgData: any) {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
+
+    let newState: any;
     try {
-      await submitRequestToBackground('setMessageMetadata', [msgData]);
+      newState = await submitRequestToBackground('setDeferAsSigned', [msgData]);
     } catch (error: any) {
       log.error(error);
       dispatch(displayWarning(error.message));
+      throw error;
     } finally {
-      await forceUpdateMetamaskState(dispatch);
       dispatch(hideLoadingIndication());
     }
+
+    dispatch(updateMetamaskState(newState));
+
+    const { unapprovedTypedMessages } = newState;
+
+    if (unapprovedTypedMessages) {
+      return checkForUnapprovedMessages(msgData, unapprovedTypedMessages);
+    }
+
+    dispatch(completedTx(msgData.id));
+    dispatch(closeCurrentNotificationWindow());
+    return msgData;
   };
 }
 

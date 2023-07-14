@@ -15,12 +15,10 @@ import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
+  setDeferAsSigned,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  showCustodyConfirmLink,
-  checkForUnapprovedMessages,
-} from '../../../store/institutional/institution-actions';
+import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -30,7 +28,6 @@ import {
   unconfirmedMessagesHashSelector,
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  unapprovedPersonalMsgsSelector,
   getAccountType,
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
@@ -71,7 +68,6 @@ function mapStateToProps(state, ownProps) {
     accountType: getAccountType(state),
     isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
     selectedAccount: getSelectedAccount(state),
-    unapprovedPersonalMessages: unapprovedPersonalMsgsSelector(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
@@ -112,6 +108,7 @@ function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
     setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
+    setDeferAsSigned: (msgData) => dispatch(setDeferAsSigned(msgData)),
     showCustodianDeepLink: ({
       custodyId,
       fromAddress,
@@ -145,8 +142,7 @@ function mmiMapDispatchToProps(dispatch) {
         }),
       ),
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    goHome: () => dispatch(goHome()),
+      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
       onSubmit,
@@ -185,7 +181,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNotification,
-    unapprovedPersonalMessages,
     ///: END:ONLY_INCLUDE_IN
     ...otherStateProps
   } = stateProps;
@@ -202,25 +197,19 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   const mmiOnSignCallback = async (_msgData) => {
     if (accountType === 'custody') {
       try {
-        let msgData = _msgData;
-        let id = _msgData.custodyId;
-        if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedMessages(
-            _msgData,
-            unapprovedPersonalMessages,
-          );
-          id = msgData.custodyId;
-        }
+        await dispatchProps.setDeferAsSigned(_msgData);
+
+        await dispatchProps.resolvePendingApproval(_msgData.id);
+        dispatchProps.completedTx(_msgData.id);
+
         dispatchProps.showCustodianDeepLink({
-          custodyId: id,
+          custodyId: null,
           fromAddress: fromAccount.address,
           closeNotification: isNotification,
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
         });
-        await dispatchProps.setMsgInProgress(msgData.id);
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
-        await goHome();
       } catch (err) {
         await dispatchProps.setWaitForConfirmDeepLinkDialog(true);
         await dispatchProps.showTransactionsFailedModal({
@@ -229,6 +218,10 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
           operationFailed: true,
         });
       }
+    } else {
+      // Non Custody accounts follow normal flow
+      await dispatchProps.resolvePendingApproval(_msgData.id);
+      dispatchProps.completedTx(_msgData.id);
     }
   };
   ///: END:ONLY_INCLUDE_IN

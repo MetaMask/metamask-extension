@@ -2,10 +2,6 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEqual } from 'lodash';
-import {
-  PersonalMessageManager,
-  TypedMessageManager,
-} from '@metamask/message-manager';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -51,17 +47,6 @@ export default class MMIController extends EventEmitter {
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
-
-    this.personalMessageManager = new PersonalMessageManager(
-      undefined,
-      undefined,
-      this.securityProviderRequest,
-    );
-    this.typedMessageManager = new TypedMessageManager(
-      undefined,
-      undefined,
-      this.securityProviderRequest,
-    );
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -126,8 +111,7 @@ export default class MMIController extends EventEmitter {
       getState: () => this.getState(),
       getPendingNonce: (address) => this.getPendingNonce(address),
       setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
-      typedMessageManager: this.typedMessageManager,
-      personalMessageManager: this.personalMessageManager,
+      signatureController: this.signatureController,
       txStateManager: this.txController.txStateManager,
       custodyController: this.custodyController,
       trackTransactionEvent:
@@ -200,9 +184,10 @@ export default class MMIController extends EventEmitter {
             keyring,
             type,
             txList,
-            getPendingNonce: this.getPendingNonce.bind(this),
+            getPendingNonce: (address) => this.getPendingNonce(address),
+            setTxHash: (txId, txHash) =>
+              this.txController.setTxHash(txId, txHash),
             txStateManager: this.txController.txStateManager,
-            setTxHash: this.txController.setTxHash.bind(this.txController),
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
           });
@@ -450,7 +435,6 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianSignMessageDeepLink(from, custodyTxId) {
-    debugger;
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(from),
     );
@@ -614,38 +598,31 @@ export default class MMIController extends EventEmitter {
     }
   }
 
-  async setMessageMetadata (msgParams) {
+  async setDeferAsSigned(message) {
+    const msgId = message.id;
 
+    this.signatureController.setDeferAsSigned(msgId, {
+      deferSetAsSigned: true,
+    });
+
+    return this.getState();
   }
 
   async handleSigningEvents(signature, messageId, signOperation) {
     const allMessages = this.signatureController.messages;
 
-    for (let i = 0; i < allMessages.length; i++) {
-      const message = allMessages[i][0];
-
-      /**
-       * From each "message" we have:
-       * - metamaskId?: string;
-       * - from: string;
-       * - origin?: string;
-       * - deferSetAsSigned?: boolean;
-       */
-      // if (!message.metadata?.custodyId) {
-      //   // Equivalent to the old setMsgCustodyId
-      //   this.signatureController.setMessageMetadata(messageId, {
-      //     // From "signature" we have the custodian_transactionId
-      //     custodyId: signature.custodian_transactionId,
-      //   });
-
-      //   this.transactionUpdateController.addTransactionToWatchList(
-      //     signature.custodian_transactionId,
-      //     message.from,
-      //     signOperation,
-      //     true,
-      //   );
-      // }
+    for (const message in allMessages) {
+      if (signature.custodian_transactionId) {
+        this.transactionUpdateController.addTransactionToWatchList(
+          signature.custodian_transactionId,
+          signature.from,
+          signOperation,
+          true,
+        );
+      }
     }
+
+    this.signatureController.setMessageMetadata(messageId, signature);
 
     return this.getState();
   }
