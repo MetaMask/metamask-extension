@@ -9,7 +9,3 @@ GHSA-p8p7-x288-28g6
 # Not easily patched
 # Minimal risk to us because we're using lockdown which also prevents this case of prototype pollution
 GHSA-h755-8qp9-cq85
-
-# tough-cookie
-# this will go away soon when we get rid of web3-provider-engine
-GHSA-72xf-g2v4-qvf3
