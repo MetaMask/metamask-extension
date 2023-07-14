@@ -609,17 +609,13 @@ export default class MMIController extends EventEmitter {
   }
 
   async handleSigningEvents(signature, messageId, signOperation) {
-    const allMessages = this.signatureController.messages;
-
-    for (const message in allMessages) {
-      if (signature.custodian_transactionId) {
-        this.transactionUpdateController.addTransactionToWatchList(
-          signature.custodian_transactionId,
-          signature.from,
-          signOperation,
-          true,
-        );
-      }
+    if (signature.custodian_transactionId) {
+      this.transactionUpdateController.addTransactionToWatchList(
+        signature.custodian_transactionId,
+        signature.from,
+        signOperation,
+        true,
+      );
     }
 
     this.signatureController.setMessageMetadata(messageId, signature);
