@@ -1387,11 +1387,7 @@ const state = {
       modalState: {
         name: null,
         props: {
-          token: {
-            address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-            symbol: 'DAI',
-            decimals: 18,
-          },
+          token: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
           history: {},
         },
       },
