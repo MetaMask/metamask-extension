@@ -427,7 +427,11 @@ export default class MetamaskController extends EventEmitter {
 
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
-      allowedActions: ['ApprovalController:addRequest'],
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'SelectedNetworkController:getClientForDomain',
+        'SelectedNetworkController:getChainForDomain',
+      ],
       allowedEvents: ['NetworkController:stateChange'],
     });
     this.tokensController = new TokensController({
@@ -440,6 +444,7 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: () => {},
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -2152,8 +2157,8 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       ...this.getProviderNetworkState(),
       accounts: await this.getPermittedAccounts(origin),
-      configurationsByChainId:
-        this.selectedNetworkController.getAllConfigurationsByChainId(),
+      // configurationsByChainId:
+      //   this.selectedNetworkController.getAllConfigurationsByChainId(),
     };
   }
 
@@ -3730,7 +3735,7 @@ export default class MetamaskController extends EventEmitter {
   handleWatchAssetRequest = (asset, type, origin) => {
     switch (type) {
       case ERC20:
-        return this.tokensController.watchAsset(asset, type);
+        return this.tokensController.watchAsset(asset, type, origin);
       case ERC721:
       case ERC1155:
         return this.nftController.watchNft(asset, type, origin);
@@ -4678,7 +4683,7 @@ export default class MetamaskController extends EventEmitter {
   findFullNetworkConfigurationByChainId(chainId) {
     const networkClients = this.networkController.getNetworkClientsById();
     const type = CHAIN_ID_TO_TYPE_MAP[chainId];
-    if (type) {
+    if (type && networkClients[type]) {
       return networkClients[type];
     }
     const networkConfiguration = Object.values(networkClients).find(
