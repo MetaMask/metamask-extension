@@ -1441,7 +1441,7 @@ export function getIsTransactionSecurityCheckEnabled(state) {
  * @returns Boolean
  */
 export function getIsSecurityAlertBlockaidEnabled(state) {
-  return state.metamask.securityAlertBlockaidEnabled;
+  return state.metamask.securityAlertBlockaidEnabled || state.metamask.transactionSecurityCheckEnabled;;
 }
 ///: END:ONLY_INCLUDE_IN
 
