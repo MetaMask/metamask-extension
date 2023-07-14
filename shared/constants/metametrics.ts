@@ -459,10 +459,12 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   /**
-   * Identified when the security provider feature is enabled.
+   * Identified when the blockaid security provider feature is enabled.
    */
-  SecurityAlertsEnabled = 'security_alerts_enabled',
+  SecurityAlertBlockaidEnabled = 'security_alert_blockaid_enabled',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 /**

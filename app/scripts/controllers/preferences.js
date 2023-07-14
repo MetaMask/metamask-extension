@@ -75,7 +75,9 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
-      securityAlertsEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertBlockaidEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       ...opts.initState,
     };
 
@@ -215,16 +217,18 @@ export default class PreferencesController {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   /**
-   * Setter for the `securityAlertsEnabled` property
+   * Setter for the `securityAlertBlockaidEnabled` property
    *
-   * @param securityAlertsEnabled
+   * @param securityAlertBlockaidEnabled
    */
-  securityAlertBlockaidEnabled(securityAlertsEnabled) {
+  setSecurityAlertBlockaidEnabled(securityAlertBlockaidEnabled) {
     this.store.updateState({
-      securityAlertsEnabled,
+      securityAlertBlockaidEnabled,
     });
   }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Add new methodData to state, to avoid requesting this information again through Infura

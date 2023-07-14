@@ -722,6 +722,18 @@ export default class MetaMetricsController {
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
     ///: END:ONLY_INCLUDE_IN
+
+    const securityProviders = [];
+    if (metamaskState.transactionSecurityCheckEnabled) {
+      securityProviders.push('opensea');
+    }
+
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    if (metamaskState.securityAlertBlockaidEnabled) {
+      securityProviders.push('blockaid');
+    }
+    ///: END:ONLY_INCLUDE_IN
+
     const { traits, previousUserTraits } = this.store.getState();
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
@@ -766,12 +778,11 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
       ///: END:ONLY_INCLUDE_IN
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
-      [MetaMetricsUserTrait.SecurityAlertsEnabled]:
-        metamaskState.securityAlertsEnabled || false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      [MetaMetricsUserTrait.SecurityProviders]: securityProviders,
+      [MetaMetricsUserTrait.SecurityAlertBlockaidEnabled]:
+        metamaskState.securityAlertBlockaidEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (!previousUserTraits) {

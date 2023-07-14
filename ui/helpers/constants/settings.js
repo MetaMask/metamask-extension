@@ -342,6 +342,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-flask',
   },
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   {
     tabMessage: (t) => t('experimental'),
     sectionMessage: (t) => t('securityAlerts'),
@@ -349,6 +350,7 @@ export const SETTINGS_CONSTANTS = [
     route: `${EXPERIMENTAL_ROUTE}#security-alerts`,
     icon: 'fa fa-flask',
   },
+  ///: END:ONLY_INCLUDE_IN
   {
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('backupUserData'),

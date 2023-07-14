@@ -32,8 +32,8 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
-    securityAlertsEnabled: PropTypes.bool,
-    securityAlertBlockaidEnabled: PropTypes.func,
+    securityAlertBlockaidEnabled: PropTypes.bool,
+    setSecurityAlertBlockaidEnabled: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -148,7 +148,8 @@ export default class ExperimentalTab extends PureComponent {
   renderSecurityAlertsToggle() {
     const { t } = this.context;
 
-    const { securityAlertsEnabled, securityAlertBlockaidEnabled } = this.props;
+    const { securityAlertBlockaidEnabled, setSecurityAlertBlockaidEnabled } =
+      this.props;
 
     return (
       <>
@@ -200,7 +201,7 @@ export default class ExperimentalTab extends PureComponent {
                   {t('blockaid')}
                 </Text>
                 <ToggleButton
-                  value={securityAlertsEnabled}
+                  value={securityAlertBlockaidEnabled}
                   onToggle={(value) => {
                     this.context.trackEvent({
                       category: MetaMetricsEventCategory.Settings,
@@ -210,7 +211,7 @@ export default class ExperimentalTab extends PureComponent {
                         security_alerts_enabled: !value,
                       },
                     });
-                    securityAlertBlockaidEnabled(!value);
+                    setSecurityAlertBlockaidEnabled(!value);
                   }}
                 />
               </div>

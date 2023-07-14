@@ -4344,19 +4344,21 @@ export function setTransactionSecurityCheckEnabled(
   };
 }
 
-export function securityAlertBlockaidEnabled(
-  securityAlertsEnabled: boolean,
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+export function setSecurityAlertBlockaidEnabled(
+  securityAlertBlockaidEnabled: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     try {
-      await submitRequestToBackground('securityAlertBlockaidEnabled', [
-        securityAlertsEnabled,
+      await submitRequestToBackground('setSecurityAlertBlockaidEnabled', [
+        securityAlertBlockaidEnabled,
       ]);
     } catch (error) {
       logErrorWithMessage(error);
     }
   };
 }
+///: END:ONLY_INCLUDE_IN
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
