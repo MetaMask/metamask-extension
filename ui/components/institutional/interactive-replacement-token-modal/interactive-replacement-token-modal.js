@@ -12,8 +12,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 import {
   BlockSize,

@@ -8,10 +8,9 @@ import {
   TextColor,
   TextTransform,
   TextVariant,
-  Color,
 } from '../../../helpers/constants/design-system';
 import { TextDirection } from './text.types';
-import { Text } from '.';
+import { Text } from './text';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
@@ -121,7 +120,7 @@ describe('Text', () => {
         <Text color={TextColor.textDefault}>text-default</Text>
         <Text color={TextColor.textAlternative}>text-alternative</Text>
         <Text color={TextColor.textMuted}>text-muted</Text>
-        <Text color={Color.overlayInverse}>overlay-inverse</Text>
+        <Text color={TextColor.overlayInverse}>overlay-inverse</Text>
         <Text color={TextColor.primaryDefault}>primary-default</Text>
         <Text color={TextColor.primaryInverse}>primary-inverse</Text>
         <Text color={TextColor.errorDefault}>error-default</Text>
@@ -133,30 +132,34 @@ describe('Text', () => {
         <Text color={TextColor.infoInverse}>info-inverse</Text>
       </>,
     );
-    expect(getByText('text-default')).toHaveClass('box--color-text-default');
+    expect(getByText('text-default')).toHaveClass('mm-box--color-text-default');
     expect(getByText('text-alternative')).toHaveClass(
-      'box--color-text-alternative',
+      'mm-box--color-text-alternative',
     );
-    expect(getByText('text-muted')).toHaveClass('box--color-text-muted');
+    expect(getByText('text-muted')).toHaveClass('mm-box--color-text-muted');
     expect(getByText('primary-default')).toHaveClass(
-      'box--color-primary-default',
+      'mm-box--color-primary-default',
     );
     expect(getByText('primary-inverse')).toHaveClass(
-      'box--color-primary-inverse',
+      'mm-box--color-primary-inverse',
     );
-    expect(getByText('error-default')).toHaveClass('box--color-error-default');
-    expect(getByText('error-inverse')).toHaveClass('box--color-error-inverse');
+    expect(getByText('error-default')).toHaveClass(
+      'mm-box--color-error-default',
+    );
+    expect(getByText('error-inverse')).toHaveClass(
+      'mm-box--color-error-inverse',
+    );
     expect(getByText('success-default')).toHaveClass(
-      'box--color-success-default',
+      'mm-box--color-success-default',
     );
     expect(getByText('success-inverse')).toHaveClass(
-      'box--color-success-inverse',
+      'mm-box--color-success-inverse',
     );
     expect(getByText('warning-inverse')).toHaveClass(
-      'box--color-warning-inverse',
+      'mm-box--color-warning-inverse',
     );
-    expect(getByText('info-default')).toHaveClass('box--color-info-default');
-    expect(getByText('info-inverse')).toHaveClass('box--color-info-inverse');
+    expect(getByText('info-default')).toHaveClass('mm-box--color-info-default');
+    expect(getByText('info-inverse')).toHaveClass('mm-box--color-info-inverse');
   });
 
   it('should render the Text with proper font style class name', () => {

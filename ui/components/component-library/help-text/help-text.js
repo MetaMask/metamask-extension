@@ -9,7 +9,7 @@ import {
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text';
+import { Text } from '../text/deprecated';
 
 export const HelpText = ({
   severity,

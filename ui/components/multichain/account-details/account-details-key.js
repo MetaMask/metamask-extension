@@ -5,9 +5,9 @@ import {
   ButtonIcon,
   ButtonPrimary,
   IconName,
-  Text,
   Box,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
   BorderColor,

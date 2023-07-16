@@ -50,7 +50,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           data-testid="nft-item"
         >
           <div
-            class="box mm-badge-wrapper nft-item__badge-wrapper box--flex-direction-row"
+            class="mm-box mm-badge-wrapper nft-item__badge-wrapper"
           >
             <img
               alt="MUNK #1 1"
@@ -59,7 +59,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
             />
             <div
-              class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+              class="mm-box mm-badge-wrapper__badge-container"
               style="top: -4px; right: -4px;"
             >
               <div

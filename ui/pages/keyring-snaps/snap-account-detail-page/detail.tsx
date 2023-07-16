@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, Text } from '../../../components/component-library';
+import { Box } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   FlexDirection,
   TextVariant,

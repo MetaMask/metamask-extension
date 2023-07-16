@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { render } from '@testing-library/react';
 import {
-  FONT_STYLE,
-  FONT_WEIGHT,
-  OVERFLOW_WRAP,
+  FontStyle,
+  FontWeight,
+  OverflowWrap,
   TextAlign,
   TextColor,
-  TEXT_TRANSFORM,
+  TextTransform,
   TextVariant,
   Color,
 } from '../../../../helpers/constants/design-system';
-import { Text, TEXT_DIRECTIONS } from '.';
+import { TextDirection } from './text.types';
+import { Text } from '.';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
@@ -75,10 +76,13 @@ describe('Text', () => {
         <Text variant={TextVariant.headingSm}>heading-sm</Text>
         <Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
         <Text variant={TextVariant.bodyMd}>body-md</Text>
+        <Text variant={TextVariant.bodyMdMedium}>body-md-medium</Text>
         <Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
         <Text variant={TextVariant.bodySm}>body-sm</Text>
+        <Text variant={TextVariant.bodySmMedium}>body-sm-medium</Text>
         <Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
         <Text variant={TextVariant.bodyXs}>body-xs</Text>
+        <Text variant={TextVariant.bodyXsMedium}>body-xs-medium</Text>
       </>,
     );
 
@@ -88,19 +92,22 @@ describe('Text', () => {
     expect(getByText('heading-sm')).toHaveClass('mm-text--heading-sm');
     expect(getByText('body-lg-medium')).toHaveClass('mm-text--body-lg-medium');
     expect(getByText('body-md')).toHaveClass('mm-text--body-md');
+    expect(getByText('body-md-medium')).toHaveClass('mm-text--body-md-medium');
     expect(getByText('body-md-bold')).toHaveClass('mm-text--body-md-bold');
     expect(getByText('body-sm')).toHaveClass('mm-text--body-sm');
+    expect(getByText('body-sm-medium')).toHaveClass('mm-text--body-sm-medium');
     expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
     expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
+    expect(getByText('body-xs-medium')).toHaveClass('mm-text--body-xs-medium');
     expect(container).toMatchSnapshot();
   });
 
   it('should render the Text with proper font weight class name', () => {
     const { getByText } = render(
       <>
-        <Text fontWeight={FONT_WEIGHT.BOLD}>bold</Text>
-        <Text fontWeight={FONT_WEIGHT.MEDIUM}>medium</Text>
-        <Text fontWeight={FONT_WEIGHT.NORMAL}>normal</Text>
+        <Text fontWeight={FontWeight.Bold}>bold</Text>
+        <Text fontWeight={FontWeight.Medium}>medium</Text>
+        <Text fontWeight={FontWeight.Normal}>normal</Text>
       </>,
     );
     expect(getByText('bold')).toHaveClass('mm-text--font-weight-bold');
@@ -155,8 +162,8 @@ describe('Text', () => {
   it('should render the Text with proper font style class name', () => {
     const { getByText } = render(
       <>
-        <Text fontStyle={FONT_STYLE.ITALIC}>italic</Text>
-        <Text fontStyle={FONT_STYLE.NORMAL}>normal</Text>
+        <Text fontStyle={FontStyle.Italic}>italic</Text>
+        <Text fontStyle={FontStyle.Normal}>normal</Text>
       </>,
     );
     expect(getByText('italic')).toHaveClass('mm-text--font-style-italic');
@@ -184,8 +191,8 @@ describe('Text', () => {
   it('should render the Text with proper overflow wrap class name', () => {
     const { getByText } = render(
       <>
-        <Text overflowWrap={OVERFLOW_WRAP.BREAK_WORD}>break-word</Text>
-        <Text overflowWrap={OVERFLOW_WRAP.NORMAL}>normal</Text>
+        <Text overflowWrap={OverflowWrap.BreakWord}>break-word</Text>
+        <Text overflowWrap={OverflowWrap.Normal}>normal</Text>
       </>,
     );
     expect(getByText('break-word')).toHaveClass(
@@ -206,9 +213,9 @@ describe('Text', () => {
   it('should render the Text with proper text transform class name', () => {
     const { getByText } = render(
       <>
-        <Text textTransform={TEXT_TRANSFORM.UPPERCASE}>uppercase</Text>
-        <Text textTransform={TEXT_TRANSFORM.LOWERCASE}>lowercase</Text>
-        <Text textTransform={TEXT_TRANSFORM.CAPITALIZE}>capitalize</Text>
+        <Text textTransform={TextTransform.Uppercase}>uppercase</Text>
+        <Text textTransform={TextTransform.Lowercase}>lowercase</Text>
+        <Text textTransform={TextTransform.Capitalize}>capitalize</Text>
       </>,
     );
     expect(getByText('uppercase')).toHaveClass(
@@ -230,9 +237,9 @@ describe('Text', () => {
   it('should render the Text with proper direction', () => {
     const { getByText } = render(
       <>
-        <Text textDirection={TEXT_DIRECTIONS.AUTO}>auto</Text>
-        <Text textDirection={TEXT_DIRECTIONS.LEFT_TO_RIGHT}>ltr</Text>
-        <Text textDirection={TEXT_DIRECTIONS.RIGHT_TO_LEFT}>rtl</Text>
+        <Text textDirection={TextDirection.Auto}>auto</Text>
+        <Text textDirection={TextDirection.LeftToRight}>ltr</Text>
+        <Text textDirection={TextDirection.RightToLeft}>rtl</Text>
       </>,
     );
     expect(getByText('auto')).toHaveAttribute('dir', 'auto');

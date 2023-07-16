@@ -13,7 +13,8 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text, Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 const TransactionFailedModal = ({
   hideModal,

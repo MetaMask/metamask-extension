@@ -9,14 +9,14 @@ import {
   Button,
   Icon,
   IconName,
-  Text,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Color,
+  TextColor,
   Display,
   FlexDirection,
   IconColor,
@@ -110,7 +110,7 @@ export default function SnapCard({
       </Box>
       <Text
         variant={TextVariant.bodySm}
-        color={Color.textAlternative}
+        color={TextColor.textAlternative}
         marginBottom={2}
       >
         {snapTitle}

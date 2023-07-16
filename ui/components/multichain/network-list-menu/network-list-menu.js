@@ -17,7 +17,6 @@ import {
   getCurrentChainId,
   getNonTestNetworks,
   getTestNetworks,
-  getCurrentNetwork,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -31,9 +30,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
   Box,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -58,15 +57,14 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
-
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
-
-  const currentNetwork = useSelector(getCurrentNetwork);
 
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -80,8 +78,8 @@ export const NetworkListMenu = ({ onClose }) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
-      const isCurrentNetwork = currentNetwork.id === network.id;
 
+      const isCurrentNetwork = currentChainId === network.chainId;
       const canDeleteNetwork =
         !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
 
@@ -155,6 +153,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
+              disabled={currentlyOnTestNetwork}
               onToggle={(value) => {
                 const shouldShowTestNetworks = !value;
                 dispatch(setShowTestNetworks(shouldShowTestNetworks));
@@ -167,7 +166,7 @@ export const NetworkListMenu = ({ onClose }) => {
               }}
             />
           </Box>
-          {showTestNetworks ? (
+          {showTestNetworks || currentlyOnTestNetwork ? (
             <Box className="multichain-network-list-menu">
               {generateMenuItems(testNetworks)}
             </Box>
