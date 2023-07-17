@@ -31,12 +31,6 @@ describe('AccountDetailsMenuItem', () => {
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 
-    /*
-    expect(mockSetAccountDetailsAddress).toHaveBeenCalledWith(
-      mockState.metamask.selectedAddress,
-    );
-    */
-
     expect(actions.setAccountDetailsAddress).toHaveBeenCalledWith(
       mockState.metamask.selectedAddress,
     );
