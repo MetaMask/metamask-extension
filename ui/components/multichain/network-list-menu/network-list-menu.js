@@ -77,7 +77,7 @@ export const NetworkListMenu = ({ onClose }) => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
-  });
+  }, [dispatch, currentlyOnTestNetwork]);
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network, index) => {
