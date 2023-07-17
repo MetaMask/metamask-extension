@@ -38,12 +38,13 @@ function SecurityProviderBannerAlert({
   return (
     <BannerAlert
       title={title}
-      description={description}
       severity={severity}
       marginTop={4}
       marginRight={4}
       marginLeft={4}
     >
+      <Text marginTop={2}>{description}</Text>
+
       {details && (
         <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
           {details}
