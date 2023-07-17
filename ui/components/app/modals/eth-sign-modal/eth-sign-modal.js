@@ -14,8 +14,8 @@ import {
   IconName,
   IconSize,
   Label,
-  Text,
 } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   Display,

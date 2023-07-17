@@ -11,7 +11,6 @@ import { AccountListItemMenu } from '..';
 import {
   AvatarAccount,
   Box,
-  Text,
   AvatarFavicon,
   Tag,
   ButtonLink,
@@ -20,6 +19,7 @@ import {
   IconSize,
   AvatarAccountVariant,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   Color,
   TextAlign,

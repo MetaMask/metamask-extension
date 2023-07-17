@@ -1,13 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import {
-  HeaderBase,
-  Text,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  ValidTag,
-} from '..';
+import { HeaderBase, ButtonIcon, ButtonIconSize, IconName, ValidTag } from '..';
+import { Text } from '../text/deprecated';
 import {
   TextVariant,
   TextAlign,

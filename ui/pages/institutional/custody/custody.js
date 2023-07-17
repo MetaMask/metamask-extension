@@ -14,7 +14,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ButtonIcon,
   Button,
-  Text,
   Label,
   IconName,
   IconSize,
@@ -22,6 +21,7 @@ import {
   BUTTON_VARIANT,
   Box,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Display,
