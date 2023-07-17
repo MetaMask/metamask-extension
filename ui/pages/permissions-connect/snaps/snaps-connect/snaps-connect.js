@@ -4,11 +4,8 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box';
 import SiteOrigin from '../../../../components/ui/site-origin';
-import {
-  IconSize,
-  Text,
-  ValidTag,
-} from '../../../../components/component-library';
+import { IconSize, ValidTag } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/deprecated';
 import {
   FlexDirection,
   TextVariant,

@@ -115,11 +115,8 @@ import {
   TEXT_ALIGN,
   Size,
 } from '../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  Text,
-  ButtonLink,
-} from '../../../components/component-library';
+import { BannerAlert, ButtonLink } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
@@ -1050,7 +1047,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           >
             <Text
               variant={TextVariant.bodyMd}
-              as="h6"
               marginRight={1}
               color={TextColor.textAlternative}
             >
@@ -1066,38 +1062,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               secondaryTokenValue={destinationValue}
               secondaryTokenDecimals={destinationTokenDecimals}
               secondaryTokenSymbol={destinationTokenSymbol}
-              arrowColor="var(--color-primary-default)"
               boldSymbols={false}
               className="main-quote-summary__exchange-rate-display"
-              onQuotesClick={
-                /* istanbul ignore next */
-                () => {
-                  trackAllAvailableQuotesOpened();
-                  setSelectQuotePopoverShown(true);
-                }
-              }
               showIconForSwappingTokens={false}
             />
-          </Box>
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.stretch}
-          >
-            <Text
-              variant={TextVariant.bodyMd}
-              as="h6"
-              color={TextColor.textAlternative}
-            >
-              {t('swapMetaMaskFee')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              as="h6"
-              color={TextColor.textAlternative}
-            >
-              {t('percentage', [metaMaskFee])}
-            </Text>
           </Box>
           <Box
             display={DISPLAY.FLEX}
@@ -1229,6 +1197,32 @@ export default function ReviewQuote({ setReceiveToAmount }) {
               </Text>
             </Box>
           )}
+          <Box
+            display={DISPLAY.FLEX}
+            marginTop={3}
+            justifyContent={JustifyContent.center}
+            alignItems={AlignItems.center}
+          >
+            <Text variant={TextVariant.bodySm} color={TextColor.textDefault}>
+              {t('swapIncludesMetaMaskFeeViewAllQuotes', [
+                metaMaskFee,
+                <ButtonLink
+                  key="view-all-quotes"
+                  data-testid="review-quote-view-all-quotes"
+                  onClick={
+                    /* istanbul ignore next */
+                    () => {
+                      trackAllAvailableQuotesOpened();
+                      setSelectQuotePopoverShown(true);
+                    }
+                  }
+                  size={Size.inherit}
+                >
+                  {t('viewAllQuotes')}
+                </ButtonLink>,
+              ])}
+            </Text>
+          </Box>
         </Box>
       </div>
       <SwapsFooter

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Box from '../../ui/box/box';
-import { Text } from '../text';
+import { Text } from '../text/deprecated';
 import {
   AlignItems,
   BackgroundColor,
@@ -43,7 +43,7 @@ Tag.propTypes = {
   /**
    * The label props of the component. Most Text component props can be used
    */
-  labelProps: PropTypes.shape(Text.PropTypes),
+  labelProps: PropTypes.shape(Text.propTypes),
   /**
    * Additional classNames to be added to the Tag component
    */
