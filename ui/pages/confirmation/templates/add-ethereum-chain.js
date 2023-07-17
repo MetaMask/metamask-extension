@@ -178,7 +178,7 @@ async function getAlerts(pendingApproval) {
 }
 
 function getState(pendingApproval) {
-  if (parseInt(pendingApproval.requestData.chainId, 16) === 1) { // not sure if this is right, i think so since from rpc?
+  if (pendingApproval.requestData.chainId === "eip155:1") { // not sure if this is right, based on e2e it is
     console.log("use warning modal")
     return { useWarningModal: true };
   }
@@ -394,11 +394,13 @@ function getValues(pendingApproval, t, actions, history) {
         pendingApproval.id,
         pendingApproval.requestData,
       );
+      const { chainId, ...requestData} = pendingApproval.requestData // need to bubble this all the way up?
       if (originIsMetaMask) {
         const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
-            ...pendingApproval.requestData,
-            nickname: pendingApproval.requestData.chainName,
+            ...requestData,
+            caipChainId: chainId,
+            nickname: requestData.chainName,
           },
           {
             setActive: false,

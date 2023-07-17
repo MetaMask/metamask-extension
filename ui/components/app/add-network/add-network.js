@@ -50,8 +50,8 @@ const AddNetwork = () => {
   const history = useHistory();
   const networkConfigurations = useSelector(getNetworkConfigurations);
 
-  const networkConfigurationChainIds = Object.values(networkConfigurations).map(
-    (net) => net.chainId,
+  const networkConfigurationCaipChainIds = Object.values(networkConfigurations).map(
+    (net) => net.caipChainId,
   );
 
   const infuraRegex = /infura.io/u;
@@ -61,7 +61,7 @@ const AddNetwork = () => {
   ).slice(0, FEATURED_RPCS.length);
 
   const notExistingNetworkConfigurations = nets.filter(
-    (net) => networkConfigurationChainIds.indexOf(net.chainId) === -1,
+    (net) => networkConfigurationCaipChainIds.indexOf(net.caipChainId) === -1,
   );
   const unapprovedConfirmations = useSelector(getUnapprovedConfirmations);
   const [showPopover, setShowPopover] = useState(false);
@@ -261,7 +261,7 @@ const AddNetwork = () => {
                           origin: ORIGIN_METAMASK,
                           type: ApprovalType.AddEthereumChain,
                           requestData: {
-                            chainId: item.chainId,
+                            chainId: item.caipChainId,
                             rpcUrl: item.rpcUrl,
                             ticker: item.ticker,
                             rpcPrefs: item.rpcPrefs,

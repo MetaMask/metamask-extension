@@ -267,7 +267,7 @@ async function addEthereumChainHandler(
 
     networkConfigurationId = await upsertNetworkConfiguration(
       {
-        chainId: caipChainId,
+        caipChainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
         nickname: _chainName,
         rpcUrl: firstValidRPCUrl,
