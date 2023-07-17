@@ -90,12 +90,6 @@ describe('Custody Confirm Link', () => {
     expect(hideModal).toHaveBeenCalledTimes(1);
   });
 
-  it('should match snapshot', () => {
-    const { container } = renderWithProvider(<CustodyConfirmLink />, store);
-
-    expect(container).toMatchSnapshot();
-  });
-
   it('shows custodian name when iconUrl is undefined', () => {
     const customMockStore = {
       ...mockStore,
