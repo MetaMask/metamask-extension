@@ -135,7 +135,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
@@ -146,7 +146,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -320,7 +320,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
@@ -331,7 +331,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -505,7 +505,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
@@ -516,7 +516,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -690,7 +690,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
@@ -701,7 +701,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>

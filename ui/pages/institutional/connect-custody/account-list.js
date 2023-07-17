@@ -18,7 +18,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   Button,
-  Text,
   Label,
   Icon,
   IconName,
@@ -27,6 +26,7 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZES,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const getButtonLinkHref = (account) => {

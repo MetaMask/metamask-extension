@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,9 +30,9 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
   Box,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -57,12 +57,14 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const nonTestNetworks = useSelector(getNonTestNetworks);
   const testNetworks = useSelector(getTestNetworks);
-
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
+
+  const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);
 
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
@@ -71,11 +73,18 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
+  useEffect(() => {
+    if (currentlyOnTestNetwork) {
+      dispatch(setShowTestNetworks(currentlyOnTestNetwork));
+    }
+  }, [dispatch, currentlyOnTestNetwork]);
+
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network, index) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
+
       const isCurrentNetwork = currentChainId === network.chainId;
       const canDeleteNetwork =
         !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
@@ -123,6 +132,17 @@ export const NetworkListMenu = ({ onClose }) => {
     });
   };
 
+  const handleToggle = (value) => {
+    const shouldShowTestNetworks = !value;
+    dispatch(setShowTestNetworks(shouldShowTestNetworks));
+    if (shouldShowTestNetworks) {
+      trackEvent({
+        event: MetaMetricsEventName.TestNetworksDisplayed,
+        category: MetaMetricsEventCategory.Network,
+      });
+    }
+  };
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -150,19 +170,11 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              onToggle={(value) => {
-                const shouldShowTestNetworks = !value;
-                dispatch(setShowTestNetworks(shouldShowTestNetworks));
-                if (shouldShowTestNetworks) {
-                  trackEvent({
-                    event: MetaMetricsEventName.TestNetworksDisplayed,
-                    category: MetaMetricsEventCategory.Network,
-                  });
-                }
-              }}
+              disabled={currentlyOnTestNetwork}
+              onToggle={handleToggle}
             />
           </Box>
-          {showTestNetworks ? (
+          {showTestNetworks || currentlyOnTestNetwork ? (
             <Box className="multichain-network-list-menu">
               {generateMenuItems(testNetworks)}
             </Box>

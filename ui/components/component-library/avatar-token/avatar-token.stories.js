@@ -10,13 +10,8 @@ import {
 
 import Box from '../../ui/box/box';
 
-import {
-  AvatarNetwork,
-  BUTTON_LINK_SIZES,
-  BadgeWrapper,
-  ButtonLink,
-  Text,
-} from '..';
+import { AvatarNetwork, BUTTON_LINK_SIZES, BadgeWrapper, ButtonLink } from '..';
+import { Text } from '../text/deprecated';
 
 import README from './README.mdx';
 

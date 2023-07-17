@@ -12,7 +12,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../box/box';
-import { ButtonSecondary, Text } from '../../component-library';
+import { ButtonSecondary } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
   const ONE_MINUTE = 1000 * 60;

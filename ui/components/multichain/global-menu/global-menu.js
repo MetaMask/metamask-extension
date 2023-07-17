@@ -12,12 +12,10 @@ import {
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  IconName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
-  ///: END:ONLY_INCLUDE_IN(snaps)
-} from '../../component-library';
+import { IconName } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { Text } from '../../component-library/text/deprecated';
+///: END:ONLY_INCLUDE_IN(snaps)
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
