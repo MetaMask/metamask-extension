@@ -1,10 +1,10 @@
 {
   "addressBook": {
     "addressBook": {
-      "0x539": {
+      "eip155:1337": {
         "0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb": {
           "address": "0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb",
-          "chainId": "0x539",
+          "caipChainId": "eip155:1337",
           "isEns": false,
           "memo": "",
           "name": "Test Account"
@@ -22,7 +22,7 @@
     "forgottenPassword": false,
     "frequentRpcListDetail": [
       {
-        "chainId": "0x539",
+        "caipChainId": "eip155:1337",
         "nickname": "Localhost 8545",
         "rpcPrefs": {},
         "rpcUrl": "http://localhost:8545",

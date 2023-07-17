@@ -255,8 +255,10 @@ const NetworksForm = ({
         }
       }
 
+      const caipChainId = getCaipChainIdFromEthChainId(hexChainId)
+
       const [matchingChainId] = networksToRender.filter(
-        (e) => e.chainId === hexChainId && e.rpcUrl !== rpcUrl,
+        (e) => e.caipChainId === caipChainId && e.rpcUrl !== rpcUrl,
       );
 
       if (formChainId === '') {

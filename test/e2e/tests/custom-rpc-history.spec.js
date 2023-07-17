@@ -250,14 +250,14 @@ describe('Stores custom RPC history', function () {
             networkConfigurations: {
               networkConfigurationId: {
                 rpcUrl: 'http://127.0.0.1:8545/1',
-                chainId: '0x539',
+                caipChainId: 'eip155:1337',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
               },
               networkConfigurationId2: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
-                chainId: '0x539',
+                caipChainId: 'eip155:1337',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/2',
                 rpcPrefs: {},

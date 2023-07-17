@@ -89,8 +89,8 @@ describe('Backup and Restore', function () {
         assert.notEqual(info, null);
         // Verify Json
         assert.equal(
-          Object.values(info?.network?.networkConfigurations)?.[0].chainId,
-          '0x539',
+          Object.values(info?.network?.networkConfigurations)?.[0].caipChainId,
+          'eip155:1337',
         );
       },
     );
