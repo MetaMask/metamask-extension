@@ -77,7 +77,6 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import * as PPOMModule from '@blockaid/ppom-mock';
 import { PPOMController } from '@metamask/ppom-validator';
 ///: END:ONLY_INCLUDE_IN
 
@@ -155,7 +154,8 @@ import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { createPPOMMiddleware } from './lib/ppom-middleware';
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import * as PPOMModule from './lib/ppom/ppom';
 ///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
