@@ -1,3 +1,4 @@
+const { availableParallelism } = require('os');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 const { runCommand, runInShell } = require('../development/lib/run-command');
@@ -133,10 +134,10 @@ async function start() {
         })
         .option('maxWorkers', {
           alias: ['mw'],
-          default: 2,
+          default: availableParallelism(),
           demandOption: false,
           description:
-            'The safer way to increase performance locally, sets the number of processes to use internally. Recommended 2',
+            'The safer way to increase performance locally, sets the number of processes to use internally. Defaults to using node os.availableParallelism to determine the maxWorkers.',
           type: 'number',
         })
         .strict(),
