@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "Открытый адрес"
   },
-  "queue": {
-    "message": "Очередь"
-  },
   "queued": {
     "message": "В очереди"
   },
