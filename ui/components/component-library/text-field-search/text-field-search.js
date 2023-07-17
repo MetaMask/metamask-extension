@@ -87,7 +87,7 @@ TextFieldSearch.propTypes = {
   /**
    * The props to pass to the clear button
    */
-  clearButtonProps: PropTypes.shape(ButtonIcon.propTypes),
+  clearButtonProps: PropTypes.object,
   /**
    * An additional className to apply to the TextFieldSearch
    */
