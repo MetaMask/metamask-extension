@@ -98,6 +98,16 @@ function getMockBlockTracker() {
   };
 }
 
+function getDefaultControllerOpts() {
+  return {
+    blockTracker: getMockBlockTracker(),
+    ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+    preferencesController: getMockPreferencesController(),
+    onboardingController: getMockOnboardingController(),
+    initState: getEmptyInitState(),
+  };
+}
+
 /**
  * @typedef {import(
  *  '../../../../app/scripts/controllers/incoming-transactions'
@@ -832,6 +842,97 @@ describe('IncomingTransactionsController', function () {
     });
   });
 
+  describe('block explorer lookup', function () {
+    let sandbox;
+
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+      sandbox.restore();
+    });
+
+    function stubFetch() {
+      return sandbox.stub(window, 'fetch');
+    }
+
+    function assertStubNotCalled(stub) {
+      assert(stub.callCount === 0);
+    }
+
+    async function triggerUpdate(incomingTransactionsController) {
+      const subscription =
+        incomingTransactionsController.preferencesController.store.subscribe.getCall(
+          1,
+        ).args[0];
+
+      // Sets address causing a call to _update
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS });
+    }
+
+    it('should not happen when incoming transactions feature is disabled', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          preferencesController: getMockPreferencesController({
+            showIncomingTransactions: false,
+          }),
+        },
+      );
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should not happen when onboarding is in progress', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          onboardingController: getMockOnboardingController({
+            completedOnboarding: false,
+          }),
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should not happen when chain id is not supported', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          getCurrentChainId: () => FAKE_CHAIN_ID,
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should make api call when chain id, incoming features, and onboarding status are ok', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          onboardingController: getMockOnboardingController({
+            completedOnboarding: true,
+          }),
+          preferencesController: getMockPreferencesController({
+            showIncomingTransactions: true,
+          }),
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assert(fetchStub.callCount === 1);
+    });
+  });
+
   describe('_update', function () {
     describe('when state is empty (initialized)', function () {
       it('should use provided block number and update the latest block seen', async function () {
@@ -1342,91 +1443,6 @@ describe('IncomingTransactionsController', function () {
         hash: '0xg',
         type: TransactionType.incoming,
       });
-    });
-  });
-
-  describe('_allowedToMakeFetchIncomingTx', function () {
-    it('should return true if the chainId is supported, onboarding is completed, and the showIncomingTransactions feature is on', function () {
-      const incomingTransactionsController = new IncomingTransactionsController(
-        {
-          blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(),
-          preferencesController: getMockPreferencesController({
-            showIncomingTransactions: true,
-          }),
-          onboardingController: getMockOnboardingController({
-            completedOnboarding: true,
-          }),
-          initState: getNonEmptyInitState(),
-        },
-      );
-      assert.ok(
-        incomingTransactionsController._allowedToMakeFetchIncomingTx(
-          CHAIN_IDS.GOERLI,
-        ),
-      );
-    });
-    it('should return false if the chainId is not supported', function () {
-      const incomingTransactionsController = new IncomingTransactionsController(
-        {
-          blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(),
-          preferencesController: getMockPreferencesController({
-            showIncomingTransactions: true,
-          }),
-          onboardingController: getMockOnboardingController({
-            completedOnboarding: true,
-          }),
-          initState: getNonEmptyInitState(),
-        },
-      );
-      assert.ok(
-        !incomingTransactionsController._allowedToMakeFetchIncomingTx(
-          FAKE_CHAIN_ID,
-        ),
-      );
-    });
-
-    it('should return false if the showIncomingTransactions feature is disabled', function () {
-      const incomingTransactionsController = new IncomingTransactionsController(
-        {
-          blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(),
-          preferencesController: getMockPreferencesController({
-            showIncomingTransactions: false,
-          }),
-          onboardingController: getMockOnboardingController({
-            completedOnboarding: true,
-          }),
-          initState: getNonEmptyInitState(),
-        },
-      );
-      assert.ok(
-        !incomingTransactionsController._allowedToMakeFetchIncomingTx(
-          CHAIN_IDS.GOERLI,
-        ),
-      );
-    });
-
-    it('should return false if onboarding is not completed', function () {
-      const incomingTransactionsController = new IncomingTransactionsController(
-        {
-          blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(),
-          preferencesController: getMockPreferencesController({
-            showIncomingTransactions: true,
-          }),
-          onboardingController: getMockOnboardingController({
-            completedOnboarding: false,
-          }),
-          initState: getNonEmptyInitState(),
-        },
-      );
-      assert.ok(
-        !incomingTransactionsController._allowedToMakeFetchIncomingTx(
-          CHAIN_IDS.GOERLI,
-        ),
-      );
     });
   });
 });
