@@ -12,7 +12,8 @@ import {
 
 import Box from '../../ui/box';
 
-import { ButtonLink, Text, IconName, ButtonIcon } from '..';
+import { ButtonLink, IconName, ButtonIcon } from '..';
+import { Text } from '../text/deprecated';
 
 export const BannerBase = ({
   className,
@@ -92,7 +93,7 @@ BannerBase.propTypes = {
   /**
    * Additional props to pass to the `Text` component used for the `title` text
    */
-  titleProps: PropTypes.shape(Text.PropTypes),
+  titleProps: PropTypes.shape(Text.propTypes),
   /**
    * The description is the content area below BannerBase title
    */
@@ -100,7 +101,7 @@ BannerBase.propTypes = {
   /**
    * Additional props to pass to the `Text` component used for the `description` text
    */
-  descriptionProps: PropTypes.shape(Text.PropTypes),
+  descriptionProps: PropTypes.shape(Text.propTypes),
   /**
    * The children is an alternative to using the description prop for BannerBase content below the title
    */
@@ -112,7 +113,7 @@ BannerBase.propTypes = {
   /**
    * Props for action button (ButtonLink) of the BannerBase below the children
    */
-  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
+  actionButtonProps: PropTypes.shape(ButtonLink.propTypes),
   /**
    * The onClick handler for the action button (ButtonLink)
    */
@@ -129,7 +130,7 @@ BannerBase.propTypes = {
   /**
    * The props to pass to the close button
    */
-  closeButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
+  closeButtonProps: PropTypes.shape(ButtonIcon.propTypes),
   /**
    * An additional className to apply to the BannerBase
    */

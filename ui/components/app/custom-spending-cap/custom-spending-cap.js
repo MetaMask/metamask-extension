@@ -8,7 +8,8 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text, ButtonLink, Icon, IconName } from '../../component-library';
+import { ButtonLink, Icon, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
   DISPLAY,

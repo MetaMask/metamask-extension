@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IconName, ButtonIcon, Text } from '../../component-library';
+import { IconName, ButtonIcon } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { Menu, MenuItem } from '../../ui/menu';
 import {
   TextColor,

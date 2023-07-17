@@ -1065,8 +1065,9 @@ export function updateAndApproveTx(
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         dispatch(closeCurrentNotificationWindow());
-
+        ///: END:ONLY_INCLUDE_IN
         return txMeta;
       })
       .catch((err) => {
@@ -2398,6 +2399,18 @@ export function showModal(payload: ModalPayload): PayloadAction<ModalPayload> {
 export function hideModal(): Action {
   return {
     type: actionConstants.MODAL_CLOSE,
+  };
+}
+
+export function showImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+  };
+}
+
+export function hideImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
   };
 }
 
