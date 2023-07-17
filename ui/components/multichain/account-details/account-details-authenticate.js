@@ -13,7 +13,6 @@ import {
   ButtonSecondary,
   FormTextField,
   Box,
-  Text,
 } from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
