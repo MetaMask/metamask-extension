@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "공개 주소"
   },
-  "queue": {
-    "message": "대기열"
-  },
   "queued": {
     "message": "대기열에 지정됨"
   },

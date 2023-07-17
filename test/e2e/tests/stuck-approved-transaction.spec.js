@@ -31,13 +31,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));

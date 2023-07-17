@@ -14,13 +14,13 @@ exports[`Compliance Settings shows disconnect when Compliance is activated 1`] =
       class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row box--border-style-solid box--border-color-border-muted box--border-width-1"
     >
       <button
-        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         data-testid="disconnect-compliance"
       >
         Disconnect
       </button>
       <button
-        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="start-compliance"
       >
         Open Codefi Compliance
@@ -80,7 +80,7 @@ exports[`Compliance Settings shows start btn when Compliance its not activated 1
         class="box institutional-feature__footer box--padding-4 box--sm:padding-6 box--flex-direction-row box--border-style-solid box--border-color-border-muted box--border-width-1"
       >
         <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="start-compliance"
         >
           Open Codefi Compliance

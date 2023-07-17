@@ -7,7 +7,7 @@ import {
   Display,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../text/deprecated';
+import { Text } from '..';
 
 export const Label = ({ htmlFor, className, children, ...props }) => (
   <Text

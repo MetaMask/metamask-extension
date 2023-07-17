@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "सार्वजनिक पता"
   },
-  "queue": {
-    "message": "कतार"
-  },
   "queued": {
     "message": "कतारबद्ध"
   },

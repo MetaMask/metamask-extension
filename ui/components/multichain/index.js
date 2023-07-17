@@ -2,6 +2,7 @@ export { AccountListItem } from './account-list-item';
 export { AccountListItemMenu } from './account-list-item-menu';
 export { AccountListMenu } from './account-list-menu';
 export { AccountPicker } from './account-picker';
+export { ActivityListItem } from './activity-list-item';
 export { AppHeader } from './app-header';
 export { DetectedTokensBanner } from './detected-token-banner';
 export { GlobalMenu } from './global-menu';
