@@ -292,6 +292,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             >
               <div
                 class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+                variant="inherit"
               >
                 <i
                   class="fab fa-ethereum"
@@ -299,7 +300,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 />
               </div>
               <span
-                class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
               >
                 0
               </span>
@@ -452,7 +453,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         title="0.00021"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.00021
                         </span>
@@ -470,12 +471,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         title="0.00021 ETH"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
                         >
                           ETH
                         </span>
@@ -515,12 +516,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         title="0.00021 ETH"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
                         >
                           ETH
                         </span>
@@ -555,7 +556,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         title="0.00021"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.00021
                         </span>
@@ -573,12 +574,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         title="0.00021 ETH"
                       >
                         <span
-                          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+                          class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
                         >
                           ETH
                         </span>
@@ -610,12 +611,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       title="0.00021 ETH"
                     >
                       <span
-                        class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                        class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
                       >
                         0.00021
                       </span>
                       <span
-                        class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+                        class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
                       >
                         ETH
                       </span>

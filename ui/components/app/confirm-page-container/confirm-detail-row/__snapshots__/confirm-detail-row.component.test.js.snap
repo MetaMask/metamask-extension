@@ -17,6 +17,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
       >
         <div
           class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+          variant="inherit"
         >
           <i
             class="fab fa-ethereum"
@@ -24,7 +25,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
           />
         </div>
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           0
         </span>
@@ -35,6 +36,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
       >
         <div
           class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+          variant="inherit"
         >
           <i
             class="fab fa-ethereum"
@@ -42,7 +44,7 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
           />
         </div>
         <span
-          class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+          class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
         >
           0
         </span>

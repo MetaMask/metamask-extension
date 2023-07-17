@@ -50,7 +50,7 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
               title="0.000021"
             >
               <span
-                class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
               >
                 0.000021
               </span>
@@ -66,12 +66,12 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
               title="0.000021 ETH"
             >
               <span
-                class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
               >
                 0.000021
               </span>
               <span
-                class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+                class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
               >
                 ETH
               </span>
@@ -96,12 +96,12 @@ exports[`ConfirmLegacyGasDisplay should match snapshot 1`] = `
             title="0.000021 ETH"
           >
             <span
-              class="box mm-text currency-display-component__text mm-text--body-md mm-text--ellipsis box--flex-direction-row box--color-text-default"
+              class="box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
             >
               0.000021
             </span>
             <span
-              class="box mm-text currency-display-component__suffix mm-text--body-md box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
+              class="box mm-text currency-display-component__suffix mm-text--inherit box--margin-inline-start-1 box--flex-direction-row box--color-text-default"
             >
               ETH
             </span>

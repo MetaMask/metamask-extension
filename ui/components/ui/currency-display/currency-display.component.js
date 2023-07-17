@@ -8,6 +8,7 @@ import {
   AlignItems,
   Display,
   FlexWrap,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 export default function CurrencyDisplay({
@@ -54,6 +55,7 @@ export default function CurrencyDisplay({
         <Box
           className="currency-display-component__prefix"
           marginInlineEnd={1}
+          variant={TextVariant.inherit}
           {...prefixComponentWrapperProps}
         >
           {prefixComponent}
@@ -63,6 +65,7 @@ export default function CurrencyDisplay({
         as="span"
         className="currency-display-component__text"
         ellipsis
+        variant={TextVariant.inherit}
         {...textProps}
       >
         {parts.prefix}
@@ -73,6 +76,7 @@ export default function CurrencyDisplay({
           as="span"
           className="currency-display-component__suffix"
           marginInlineStart={1}
+          variant={TextVariant.inherit}
           {...suffixProps}
         >
           {parts.suffix}
