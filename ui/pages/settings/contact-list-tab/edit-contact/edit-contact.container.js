@@ -26,11 +26,11 @@ const mapStateToProps = (state, ownProps) => {
     getAddressBookEntry(state, address) || state.metamask.identities[address];
   const { memo, name } = contact || {};
 
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
 
   return {
     address: contact ? address : null,
-    chainId,
+    caipChainId,
     name,
     memo,
     viewRoute: CONTACT_VIEW_ROUTE,

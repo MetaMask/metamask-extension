@@ -31,7 +31,7 @@ export default class EditContact extends PureComponent {
     history: PropTypes.object,
     name: PropTypes.string,
     address: PropTypes.string,
-    chainId: PropTypes.string,
+    caipChainId: PropTypes.string,
     memo: PropTypes.string,
     viewRoute: PropTypes.string,
     listRoute: PropTypes.string,
@@ -54,7 +54,7 @@ export default class EditContact extends PureComponent {
     const {
       address,
       addToAddressBook,
-      chainId,
+      caipChainId,
       history,
       listRoute,
       memo,
@@ -88,7 +88,7 @@ export default class EditContact extends PureComponent {
             type="link"
             className="settings-page__address-book-button"
             onClick={async () => {
-              await removeFromAddressBook(chainId, address);
+              await removeFromAddressBook(caipChainId, address);
               history.push(listRoute);
             }}
           >
@@ -168,7 +168,7 @@ export default class EditContact extends PureComponent {
                   mixedCaseUseChecksum: true,
                 })
               ) {
-                await removeFromAddressBook(chainId, address);
+                await removeFromAddressBook(caipChainId, address);
                 await addToAddressBook(
                   this.state.newAddress,
                   this.state.newName || name,

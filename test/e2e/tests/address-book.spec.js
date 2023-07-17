@@ -23,10 +23,10 @@ describe('Address Book', function () {
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
-              '0x539': {
+              'eip155:1337': {
                 '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
                   address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  chainId: '0x539',
+                  caipChainid: 'eip155:1337',
                   isEns: false,
                   memo: '',
                   name: 'Test Name 1',
@@ -80,10 +80,10 @@ describe('Address Book', function () {
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
-              '0x539': {
+              'eip155:1337': {
                 '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
                   address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  chainId: '0x539',
+                  caipChainid: 'eip155:1337',
                   isEns: false,
                   memo: '',
                   name: 'Test Name 1',
@@ -143,10 +143,10 @@ describe('Address Book', function () {
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
-              '0x539': {
+              'eip155:1337': {
                 '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
                   address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  chainId: '0x539',
+                  caipChainid: 'eip155:1337',
                   isEns: false,
                   memo: '',
                   name: 'Test Name 1',
