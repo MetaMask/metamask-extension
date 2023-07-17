@@ -87,9 +87,18 @@ export class AccountsController extends EventEmitter {
     console.log('Syncing accounts...');
 
     const preferences = this.#preferencesController.store.getState();
-    const accounts = (
-      await Promise.all([this.#listLegacyAccounts(), this.#listSnapAccounts()])
-    ).flat();
+
+    const legacyAccounts = await this.#listLegacyAccounts();
+    const snapAccounts = await this.#listSnapAccounts();
+    const snapAddresses = snapAccounts.map((account) =>
+      account.address.toLowerCase(),
+    );
+
+    const accounts = legacyAccounts
+      .filter(
+        (account) => !snapAddresses.includes(account.address.toLowerCase()),
+      )
+      .concat(snapAccounts);
 
     // Remove all accounts and start fresh
     this.#addressToAccount.clear();
