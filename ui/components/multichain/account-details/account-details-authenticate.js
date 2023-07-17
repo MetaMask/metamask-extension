@@ -13,8 +13,9 @@ import {
   ButtonSecondary,
   FormTextField,
   Box,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 
