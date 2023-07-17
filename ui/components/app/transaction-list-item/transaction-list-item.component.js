@@ -34,7 +34,10 @@ import {
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
   TransactionStatus,
@@ -165,13 +168,28 @@ function TransactionListItemInner({
       ].includes(displayedStatusKey),
   });
 
-  const toggleShowDetails = useCallback(() => {
-    if (isUnapproved) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
-      return;
-    }
-    setShowDetails((prev) => !prev);
-  }, [isUnapproved, history, id]);
+  const toggleShowDetails = useCallback(
+    (event) => {
+      event.stopPropagation();
+      if (isUnapproved) {
+        history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
+        return;
+      }
+      setShowDetails((prev) => {
+        trackEvent({
+          event: prev
+            ? MetaMetricsEventName.ActivityDetailsClosed
+            : MetaMetricsEventName.ActivityDetailsOpened,
+          category: MetaMetricsEventCategory.Navigation,
+          properties: {
+            activity_type: category,
+          },
+        });
+        return !prev;
+      });
+    },
+    [isUnapproved, history, id],
+  );
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const debugTransactionMeta = {
