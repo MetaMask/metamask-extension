@@ -17,7 +17,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
         Malicious third party detected
       </h5>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
       >
         This is a description to warn the user of malicious or suspicious transactions.
       </p>
@@ -29,7 +29,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
             class="disclosure__summary is-arrow"
           >
             <p
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-primary-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
             >
               [seeDetails]
             </p>
@@ -59,7 +59,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
         </details>
       </div>
       <p
-        class="box mm-text mm-text--body-sm box--margin-top-2 box--flex-direction-row box--align-items-center box--color-text-alternative box--display-flex"
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
       >
         <span
           class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
