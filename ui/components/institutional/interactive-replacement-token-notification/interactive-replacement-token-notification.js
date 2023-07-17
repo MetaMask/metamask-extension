@@ -53,7 +53,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
         return;
       }
 
-      const token = await dispatch(mmiActions.getCustodianToken());
+      const token = await dispatch(mmiActions.getCustodianToken(address));
       const custodyAccountDetails = await dispatch(
         mmiActions.getAllCustodianAccountsWithToken(
           keyring.type.split(' - ')[1],
