@@ -81,8 +81,8 @@ describe('Custody Confirm Link', () => {
 
   it('tries to open new tab with deeplink URL', () => {
     global.platform = { openTab: jest.fn() };
-    const { getByRole } = renderWithProvider(<CustodyConfirmLink />, store);
-    fireEvent.click(getByRole('button'));
+    const { getByTestId } = renderWithProvider(<CustodyConfirmLink />, store);
+    fireEvent.click(getByTestId('custody-confirm-link__btn'));
     expect(global.platform.openTab).toHaveBeenCalledWith({
       url: 'test-url',
     });

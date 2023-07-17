@@ -125,6 +125,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
             {text || t('custodyDeeplinkDescription', [displayName])}
           </Text>
           <Button
+            data-testid="custody-confirm-link__btn"
             variant={BUTTON_VARIANT.PRIMARY}
             className="custody-confirm-link__btn"
             onClick={onClick}
