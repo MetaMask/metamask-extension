@@ -1,3 +1,4 @@
+const { cpus } = require('os');
 const { hideBin } = require('yargs/helpers');
 const yargs = require('yargs/yargs');
 const { runCommand, runInShell } = require('../development/lib/run-command');
@@ -133,10 +134,10 @@ async function start() {
         })
         .option('maxWorkers', {
           alias: ['mw'],
-          default: 2,
+          default: Math.max(Math.floor(cpus().length / 2), 1), // once using node 18, we should change this to use os.availableParallelism()
           demandOption: false,
           description:
-            'The safer way to increase performance locally, sets the number of processes to use internally. Recommended 2',
+            'The safer way to increase performance locally, sets the number of processes to use internally. Defaults to half your cpu cores.',
           type: 'number',
         })
         .strict(),
