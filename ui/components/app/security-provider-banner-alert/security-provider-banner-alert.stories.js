@@ -74,9 +74,13 @@ export default {
 };
 
 export const DefaultStory = (args) => (
-  <SecurityProviderBannerAlert severity={Severity.Danger} {...args} />
+  <SecurityProviderBannerAlert severity={Severity.Warning} {...args} />
 );
 DefaultStory.storyName = 'Default';
+
+export const Danger = (args) => (
+  <SecurityProviderBannerAlert severity={Severity.Danger} {...args} />
+);
 
 export const Warning = (args) => (
   <SecurityProviderBannerAlert severity={Severity.Warning} {...args} />
