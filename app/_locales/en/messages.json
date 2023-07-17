@@ -565,12 +565,6 @@
   "blockaid": {
     "message": "Blockaid"
   },
-  "blockaidTitleDeceptive": {
-    "message": "This is a deceptive request"
-  },
-  "blockaidTitleSuspicious": {
-    "message": "This is a suspicious request"
-  },
   "blockaidDescriptionApproveFarming": {
     "message": "If you approve this request, a third party known for scams might take all your assets."
   },
@@ -588,6 +582,12 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidTitleDeceptive": {
+    "message": "This is a deceptive request"
+  },
+  "blockaidTitleSuspicious": {
+    "message": "This is a suspicious request"
   },
   "blockies": {
     "message": "Blockies"
