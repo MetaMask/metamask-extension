@@ -36,7 +36,6 @@ const ConfirmRemoveJWT = ({
   const [tokenAccounts, setTokenAccounts] = useState([]);
   let token = null;
 
-  // Sometimes the token is an object, sometimes it's a string. In MMI, almost always is a string.
   if (propsToken) {
     if (typeof propsToken === 'object') {
       token = propsToken.address;
