@@ -11,7 +11,7 @@ const mockFeatures = [
 ];
 
 export default {
-  title: 'Components/App/SecurityProviderBannerAlert/Blockaid',
+  title: 'Components/App/SecurityProviderBannerAlert/BlockaidBannerAlert',
   argTypes: {
     features: {
       control: 'array',
