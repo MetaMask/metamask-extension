@@ -134,7 +134,7 @@ async function start() {
         })
         .option('maxWorkers', {
           alias: ['mw'],
-          default: Math.max(Math.floor(cpus().length / 2), 1), // once using node 18, we should change this to use os.availableParallelism()
+          default: Math.max(Math.ceil(cpus().length / 2), 1), // once using node 18, we should change this to use os.availableParallelism()
           demandOption: false,
           description:
             'The safer way to increase performance locally, sets the number of processes to use internally. Defaults to half your cpu cores.',
