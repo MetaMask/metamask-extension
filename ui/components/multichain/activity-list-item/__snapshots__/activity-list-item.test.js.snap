@@ -16,7 +16,7 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
           class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--width-1/3 mm-box--sm:width-7/12"
         >
           <p
-            class="box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
             data-testid="activity-list-item-action"
           />
         </div>
@@ -34,7 +34,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
     tabindex="0"
   >
     <p
-      class="box mm-text mm-text--body-md box--display-flex box--flex-direction-row box--width-full box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--width-full mm-box--color-text-default"
     >
       <p>
         Content rendered at the top
@@ -58,13 +58,13 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
           class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--width-1/3 mm-box--sm:width-7/12"
         >
           <p
-            class="box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
             data-testid="activity-list-item-action"
           >
             Hello World
           </p>
           <div
-            class="box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
           >
             <p>
               I am a list item
