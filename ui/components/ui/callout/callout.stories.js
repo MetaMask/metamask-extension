@@ -5,7 +5,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import Box from '../box';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Callout from './callout';
 
 export default {

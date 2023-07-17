@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { useSelector } from 'react-redux';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   FLEX_DIRECTION,

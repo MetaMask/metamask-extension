@@ -5,10 +5,10 @@ import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
   FormTextField,
-  Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   Size,
   TextVariant,

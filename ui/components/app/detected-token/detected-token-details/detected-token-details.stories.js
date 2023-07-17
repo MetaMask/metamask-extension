@@ -7,7 +7,7 @@ export default {
 
   argTypes: {
     token: { control: 'object' },
-    handleTokenSelection: { control: 'func' },
+    handleTokenSelection: { action: 'handleTokenSelection' },
     tokensListDetected: { control: 'array' },
   },
   args: {

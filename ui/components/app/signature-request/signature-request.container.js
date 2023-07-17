@@ -30,7 +30,10 @@ import {
   setTypedMessageInProgress,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { checkForUnapprovedMessages } from '../../../store/institutional/institution-actions';
+import {
+  showCustodyConfirmLink,
+  checkForUnapprovedMessages,
+} from '../../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -101,52 +104,6 @@ function mapStateToProps(state, ownProps) {
 
 let mapDispatchToProps = null;
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-function mmiMapDispatchToProps(dispatch) {
-  const mmiActions = mmiActionsFactory();
-  return {
-    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
-    setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
-    showCustodianDeepLink: ({
-      custodyId,
-      fromAddress,
-      closeNotification,
-      onDeepLinkFetched,
-      onDeepLinkShown,
-    }) =>
-      showCustodianDeepLink({
-        dispatch,
-        mmiActions,
-        txId: undefined,
-        fromAddress,
-        custodyId,
-        isSignature: true,
-        closeNotification,
-        onDeepLinkFetched,
-        onDeepLinkShown,
-      }),
-    showTransactionsFailedModal: ({
-      errorMessage,
-      closeNotification,
-      operationFailed,
-    }) =>
-      dispatch(
-        showModal({
-          name: 'TRANSACTION_FAILED',
-          errorMessage,
-          closeNotification,
-          operationFailed,
-        }),
-      ),
-    setWaitForConfirmDeepLinkDialog: (wait) =>
-      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    goHome: () => dispatch(goHome()),
-  };
-}
-
-mapDispatchToProps = mmiMapDispatchToProps;
-///: END:ONLY_INCLUDE_IN
-
 mapDispatchToProps = function (dispatch) {
   return {
     resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
@@ -172,6 +129,73 @@ mapDispatchToProps = function (dispatch) {
     },
   };
 };
+
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+function mmiMapDispatchToProps(dispatch) {
+  const mmiActions = mmiActionsFactory();
+  return {
+    setMsgInProgress: (msgId) => dispatch(setTypedMessageInProgress(msgId)),
+    showCustodianDeepLink: ({
+      custodyId,
+      fromAddress,
+      closeNotification,
+      onDeepLinkFetched,
+      onDeepLinkShown,
+    }) =>
+      showCustodianDeepLink({
+        dispatch,
+        mmiActions,
+        txId: undefined,
+        fromAddress,
+        custodyId,
+        isSignature: true,
+        closeNotification,
+        onDeepLinkFetched,
+        onDeepLinkShown,
+        showCustodyConfirmLink,
+      }),
+    showTransactionsFailedModal: ({
+      errorMessage,
+      closeNotification,
+      operationFailed,
+    }) =>
+      dispatch(
+        showModal({
+          name: 'TRANSACTION_FAILED',
+          errorMessage,
+          closeNotification,
+          operationFailed,
+        }),
+      ),
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    goHome: () => dispatch(goHome()),
+    resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
+    completedTx: (id) => dispatch(completedTx(id)),
+    rejectPendingApproval: (id, error) =>
+      dispatch(rejectPendingApproval(id, error)),
+    clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
+    showRejectTransactionsConfirmationModal: ({
+      onSubmit,
+      unapprovedTxCount: unapprovedMessagesCount,
+    }) => {
+      return dispatch(
+        showModal({
+          name: 'REJECT_TRANSACTIONS',
+          onSubmit,
+          unapprovedTxCount: unapprovedMessagesCount,
+          isRequestType: true,
+        }),
+      );
+    },
+    cancelAllApprovals: (unconfirmedMessagesList) => {
+      dispatch(rejectAllMessages(unconfirmedMessagesList));
+    },
+  };
+}
+
+mapDispatchToProps = mmiMapDispatchToProps;
+///: END:ONLY_INCLUDE_IN
 
 function mergeProps(stateProps, dispatchProps, ownProps) {
   const {

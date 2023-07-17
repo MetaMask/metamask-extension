@@ -1,6 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
+import { HeaderBase, ButtonIcon, ButtonIconSize, IconName } from '..';
+import { Text } from '../text/deprecated';
 import {
   IconColor,
   TextVariant,
