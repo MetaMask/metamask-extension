@@ -1,12 +1,15 @@
 import React from 'react';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
-import { BlockaidResultType } from '../../../../../shared/constants/security-provider';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
 const mockPpomResponse = {
   resultType: BlockaidResultType.Warning,
-  reason: 'set_approval_for_all',
+  reason: BlockaidReason.setApprovalForAll,
   description:
     'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
   args: {
@@ -69,7 +72,10 @@ describe('Blockaid Banner Alert', () => {
   it('should render title, "This is a suspicious request", when the reason is "signature_farming"', () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert
-        ppomResponse={{ ...mockPpomResponse, reason: 'signature_farming' }}
+        ppomResponse={{
+          ...mockPpomResponse,
+          reason: BlockaidReason.signatureFarming,
+        }}
       />,
     );
 
@@ -97,30 +103,32 @@ describe('Blockaid Banner Alert', () => {
 
   describe('when rendering description', () => {
     Object.entries({
-      approval_farming:
+      [BlockaidReason.approvalFarming]:
         'If you approve this request, a third party known for scams might take all your assets.',
-      blur_farming:
+      [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
-      malicious_domain:
+      [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
-      other: 'If you approve this request, you might lose your assets.',
-      permit_farming:
+      [BlockaidReason.other]:
+        'If you approve this request, you might lose your assets.',
+      [BlockaidReason.permitFarming]:
         'If you approve this request, a third party known for scams might take all your assets.',
-      raw_native_token_transfer:
+      [BlockaidReason.rawNativeTokenTransfer]:
         'If you approve this request, a third party known for scams will take all your assets.',
-      seaport_farming:
+      [BlockaidReason.seaportFarming]:
         'If you approve this request, someone can steal your assets listed on OpenSea.',
-      set_approval_for_all:
+      [BlockaidReason.setApprovalForAll]:
         'If you approve this request, a third party known for scams might take all your assets.',
-      signature_farming:
+      [BlockaidReason.signatureFarming]:
         'If you approve this request, you might lose your assets.',
-      trade_order_farming:
+      [BlockaidReason.tradeOrderFarming]:
         'If you approve this request, you might lose your assets.',
-      transfer_from_farming:
+      [BlockaidReason.transferFromFarming]:
         'If you approve this request, a third party known for scams will take all your assets.',
-      transfer_farming:
+      [BlockaidReason.transferFarming]:
         'If you approve this request, a third party known for scams will take all your assets.',
-      unfair_trade: 'If you approve this request, you might lose your assets.',
+      [BlockaidReason.unfairTrade]:
+        'If you approve this request, you might lose your assets.',
     }).forEach(([reason, expectedDescription]) => {
       it(`should render for '${reason}' correctly`, () => {
         const { getByText } = renderWithLocalization(

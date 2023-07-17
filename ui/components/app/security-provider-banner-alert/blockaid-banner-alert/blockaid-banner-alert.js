@@ -7,36 +7,37 @@ import { Severity } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
 
 import {
+  BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 
-/** Reason to description translation key mapping grouped by translations. Grouped by translations. */
+/** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
-  approval_farming: 'blockaidDescriptionApproveFarming',
-  permit_farming: 'blockaidDescriptionApproveFarming',
-  set_approval_for_all: 'blockaidDescriptionApproveFarming',
+  [BlockaidReason.approvalFarming]: 'blockaidDescriptionApproveFarming',
+  [BlockaidReason.permitFarming]: 'blockaidDescriptionApproveFarming',
+  [BlockaidReason.setApprovalForAll]: 'blockaidDescriptionApproveFarming',
 
-  blur_farming: 'blockaidDescriptionBlurFarming',
+  [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
-  seaport_farming: 'blockaidDescriptionSeaportFarming',
+  [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
-  malicious_domain: 'blockaidDescriptionMaliciousDomain',
+  [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
 
-  signature_farming: 'blockaidDescriptionMightLoseAssets',
-  trade_order_farming: 'blockaidDescriptionMightLoseAssets',
-  unfair_trade: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.signatureFarming]: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
-  raw_native_token_transfer: 'blockaidDescriptionTransferFarming',
-  transfer_farming: 'blockaidDescriptionTransferFarming',
-  transfer_from_farming: 'blockaidDescriptionTransferFarming',
+  [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
+  [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
+  [BlockaidReason.transferFromFarming]: 'blockaidDescriptionTransferFarming',
 
-  other: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.other]: 'blockaidDescriptionMightLoseAssets',
 });
 
 /** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
-const SUSPCIOUS_REASON = ['signature_farming'];
+const SUSPCIOUS_REASON = [BlockaidReason.seaportFarming];
 
 function BlockaidBannerAlert({
   ppomResponse: { reason, resultType, features },

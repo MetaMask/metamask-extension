@@ -1,9 +1,13 @@
 import React from 'react';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
 const mockPpomResponse = {
-  resultType: 'Warning',
-  reason: 'set_approval_for_all',
+  resultType: BlockaidResultType.Warning,
+  reason: BlockaidReason.setApprovalForAll,
   description:
     'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
   args: {
