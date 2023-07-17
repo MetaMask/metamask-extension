@@ -565,6 +565,30 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidTitleDeceptive": {
+    "message": "This is a deceptive request"
+  },
+  "blockaidTitleSuspicious": {
+    "message": "This is a suspicious request"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "blockaidDescriptionBlurFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on Blur."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionMightLoseAssets": {
+    "message": "If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionSeaportFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on OpenSea."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
   "blockies": {
     "message": "Blockies"
   },
