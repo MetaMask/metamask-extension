@@ -8,11 +8,9 @@ import {
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
-import { TypographyVariant } from '../../../../../../helpers/constants/design-system';
-
 import Button from '../../../../../ui/button';
-import Typography from '../../../../../ui/typography';
-import { Icon, IconName } from '../../../../../component-library';
+import { Icon, IconName, Text } from '../../../../../component-library';
+import { TextVariant } from '../../../../../../helpers/constants/design-system';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
@@ -23,10 +21,11 @@ const Accreditation = ({ fetchVia, address }) => {
   const AccreditationLink = () => {
     return (
       <>
-        <Typography
-          variant={TypographyVariant.H7}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           className="accreditation__prefix"
-          boxProps={{ margin: 0 }}
+          margin={0}
         >
           {t('transactionDecodingAccreditationVerified', [
             <Button
@@ -45,10 +44,10 @@ const Accreditation = ({ fetchVia, address }) => {
               {fetchVia}
             </Button>,
           ])}
-        </Typography>
-        <Typography variant={TypographyVariant.H7} boxProps={{ margin: 0 }}>
+        </Text>
+        <Text variant={TextVariant.bodySm} as="h6" margin={0}>
           {t('transactionDecodingAccreditationDecoded')}
-        </Typography>
+        </Text>
       </>
     );
   };
