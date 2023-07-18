@@ -12,7 +12,8 @@ import {
   IconColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Text } from '../../../component-library';
+import { Icon, IconName, IconSize } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import SnapAvatar from '../snap-avatar';
 
 const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {

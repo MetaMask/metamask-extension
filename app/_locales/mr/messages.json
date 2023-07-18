@@ -103,9 +103,6 @@
   "password": {
     "message": "पासवर्ड"
   },
-  "queue": {
-    "message": "रांग"
-  },
   "reject": {
     "message": "नाकारा"
   },

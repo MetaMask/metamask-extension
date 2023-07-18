@@ -1,5 +1,10 @@
-
 .mm-button-link {
+  &:hover:not(&--disabled) {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
   &:active {
     color: var(--color-primary-alternative);
   }
@@ -37,5 +42,10 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
+  }
+
+  &--size-inherit:hover:not(&--disabled) {
+    text-decoration-thickness: auto;
+    text-underline-offset: 2px;
   }
 }

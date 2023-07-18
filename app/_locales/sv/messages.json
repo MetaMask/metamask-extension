@@ -544,9 +544,6 @@
   "privateNetwork": {
     "message": "Privat nätverk"
   },
-  "queue": {
-    "message": "Utskriftskö"
-  },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."
   },

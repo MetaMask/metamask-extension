@@ -33,9 +33,9 @@ import {
   ButtonIconSize,
   Icon,
   IconName,
-  Text,
   Box,
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Color,

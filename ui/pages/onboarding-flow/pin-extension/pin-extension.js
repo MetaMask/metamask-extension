@@ -18,7 +18,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {

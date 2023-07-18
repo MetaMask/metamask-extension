@@ -14,7 +14,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   ButtonIcon,
   Button,
-  Text,
   Label,
   IconName,
   IconSize,
@@ -22,6 +21,7 @@ import {
   BUTTON_VARIANT,
   Box,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Display,
@@ -40,7 +40,7 @@ import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
@@ -72,6 +72,7 @@ const CustodyPage = () => {
   const [chainId, setChainId] = useState(0);
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
+  const address = useSelector(getSelectedAddress);
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
@@ -259,7 +260,8 @@ const CustodyPage = () => {
       if (Object.keys(connectRequestValue).length) {
         setConnectRequest(connectRequestValue);
         setCurrentJwt(
-          connectRequestValue.token || dispatch(mmiActions.getCustodianToken()),
+          connectRequestValue.token ||
+            (await dispatch(mmiActions.getCustodianToken(address))),
         );
         setSelectedCustodianType(connectRequestValue.custodianType);
         setSelectedCustodianName(connectRequestValue.custodianName);
