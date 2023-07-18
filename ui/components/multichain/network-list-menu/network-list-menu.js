@@ -31,8 +31,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Box,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -95,7 +95,7 @@ export const NetworkListMenu = ({ onClose }) => {
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={`${network.id || network.chainId}-${index}`}
           selected={isCurrentNetwork}
-          onClick={async () => {
+          onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
               dispatch(setProviderType(network.providerType));

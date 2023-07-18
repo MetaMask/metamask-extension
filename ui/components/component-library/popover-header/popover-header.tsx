@@ -1,12 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, ButtonIcon, ButtonIconSize, IconName } from '..';
-import { Text } from '../text/deprecated';
+import { HeaderBase, ButtonIcon, ButtonIconSize, IconName, Text } from '..';
 import {
   IconColor,
   TextVariant,
   TextAlign,
-  Color,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PopoverHeaderProps } from '.';
@@ -58,7 +57,7 @@ export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
         <Text
           variant={TextVariant.headingSm}
           textAlign={TextAlign.Center}
-          color={Color.inherit}
+          color={TextColor.inherit}
         >
           {children}
         </Text>

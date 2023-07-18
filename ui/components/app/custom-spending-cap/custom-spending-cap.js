@@ -12,8 +12,6 @@ import { ButtonLink, Icon, IconName } from '../../component-library';
 import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
   TextAlign,
   TextVariant,
   JustifyContent,
@@ -21,6 +19,8 @@ import {
   BLOCK_SIZES,
   BackgroundColor,
   TextColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
@@ -213,15 +213,15 @@ export default function CustomSpendingCap({
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexStart}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
           justifyContent={JustifyContent.center}
-          display={DISPLAY.BLOCK}
+          display={Display.Block}
           className="custom-spending-cap__input"
         >
           <label

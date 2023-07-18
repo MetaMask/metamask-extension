@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { AvatarNetwork, IconName, Icon, IconSize } from '..';
-import { Text } from '../text/deprecated';
-import Box from '../../ui/box';
 import {
   AlignItems,
   DISPLAY,
@@ -13,6 +10,8 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+import { AvatarNetwork, IconName, Icon, IconSize, Text } from '..';
 
 export const PickerNetwork = ({
   className,
@@ -68,7 +67,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from AvatarNetwork
    */
-  avatarNetworkProps: PropTypes.shape(AvatarNetwork.propTypes),
+  avatarNetworkProps: PropTypes.object,
   /**
    * It accepts all the props from Icon
    */
