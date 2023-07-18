@@ -1672,9 +1672,6 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      this.ppomController.clear.bind(this.ppomController),
-      ///: END:ONLY_INCLUDE_IN
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
