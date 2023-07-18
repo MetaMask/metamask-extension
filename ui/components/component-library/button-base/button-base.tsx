@@ -67,7 +67,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           },
           className,
         )}
-        disabled={disabled}
+        disabled={disabled && !href ? disabled : undefined}
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
