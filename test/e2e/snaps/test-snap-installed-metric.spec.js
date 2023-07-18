@@ -34,7 +34,7 @@ describe('Snap Installed Event', function () {
             participateInMetaMetrics: true,
           })
           .build(),
-        defaultGanacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
         testSpecificMock: mockSegment,
       },
