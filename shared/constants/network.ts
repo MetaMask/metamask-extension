@@ -394,6 +394,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
 
 const defaultEtherscanDomain = 'etherscan.io';
+const defaultBasescanDomain = 'basescan.org';
 const defaultEtherscanSubdomainPrefix = 'api';
 
 /**
@@ -439,6 +440,14 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.OPTIMISM_TESTNET]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
+  },
+  [CHAIN_IDS.BASE]: {
+    domain: defaultBasescanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}`,
+  },
+  [CHAIN_IDS.BASE_TESTNET]: {
+    domain: defaultBasescanDomain,
+    subdomain: `${defaultEtherscanSubdomainPrefix}-goerli`,
   },
   [CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
