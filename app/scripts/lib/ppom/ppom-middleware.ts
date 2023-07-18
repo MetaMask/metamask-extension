@@ -1,4 +1,4 @@
-import { PPOM } from '@blockaid/ppom-mock';
+import { PPOM } from '@blockaid/ppom';
 
 import { PPOMController } from '@metamask/ppom-validator';
 
