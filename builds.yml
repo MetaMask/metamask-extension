@@ -118,7 +118,7 @@ features:
       - WEB_SOCKET_PORT: null
   blockaid:
     env:
-      - BLOCKAID_FILE_CDN: static.metafi-dev.codefi.network/api/v1/confirmations/ppom
+      - BLOCKAID_FILE_CDN: null
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
