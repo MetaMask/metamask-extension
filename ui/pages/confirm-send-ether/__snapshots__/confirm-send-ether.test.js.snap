@@ -394,7 +394,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 class="transaction-detail-item__row"
               >
                 <h6
-                  class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                 >
                   <div
                     class="box box--display-flex box--flex-direction-row"
@@ -442,7 +442,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   class="transaction-detail-item__detail-values"
                 >
                   <h6
-                    class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
                   >
                     <div
                       class="gas-details-item__currency-container"
@@ -463,7 +463,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     </div>
                   </h6>
                   <h6
-                    class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right box--margin-left-1 box--flex-direction-row box--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                   >
                     <div
                       class="gas-details-item__currency-container"
@@ -502,7 +502,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 </div>
                 <h6
                   align="end"
-                  class="box mm-text transaction-detail-item__row-subText mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
                 >
                   <div
                     class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
@@ -547,7 +547,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 class="transaction-detail-item__row"
               >
                 <h6
-                  class="box mm-text mm-text--body-md mm-text--font-weight-bold box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center box--color-text-default"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                 >
                   Total
                 </h6>
@@ -555,7 +555,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   class="transaction-detail-item__detail-values"
                 >
                   <h6
-                    class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
                   >
                     <div
                       class="confirm-page-container-content__total-value"
@@ -576,7 +576,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     </div>
                   </h6>
                   <h6
-                    class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right box--margin-left-1 box--flex-direction-row box--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                   >
                     <div
                       class="confirm-page-container-content__total-value"
@@ -607,13 +607,13 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                 class="transaction-detail-item__row"
               >
                 <h6
-                  class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                 >
                   Amount + gas fee
                 </h6>
                 <h6
                   align="end"
-                  class="box mm-text transaction-detail-item__row-subText mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
                 >
                   <div
                     class="confirm-page-container-content__total-amount"
