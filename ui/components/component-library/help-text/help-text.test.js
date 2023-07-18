@@ -40,10 +40,10 @@ describe('HelpText', () => {
         <HelpText severity={SEVERITIES.INFO}>info</HelpText>
       </>,
     );
-    expect(getByText('error')).toHaveClass('box--color-error-default');
-    expect(getByText('success')).toHaveClass('box--color-success-default');
-    expect(getByText('warning')).toHaveClass('box--color-warning-default');
-    expect(getByText('info')).toHaveClass('box--color-info-default');
+    expect(getByText('error')).toHaveClass('mm-box--color-error-default');
+    expect(getByText('success')).toHaveClass('mm-box--color-success-default');
+    expect(getByText('warning')).toHaveClass('mm-box--color-warning-default');
+    expect(getByText('info')).toHaveClass('mm-box--color-info-default');
   });
   it('should render with different colors', () => {
     const { getByText } = render(
@@ -54,12 +54,12 @@ describe('HelpText', () => {
         <HelpText color={Color.textMuted}>text muted</HelpText>
       </>,
     );
-    expect(getByText('default')).toHaveClass('box--color-text-default');
-    expect(getByText('text default')).toHaveClass('box--color-text-default');
+    expect(getByText('default')).toHaveClass('mm-box--color-text-default');
+    expect(getByText('text default')).toHaveClass('mm-box--color-text-default');
     expect(getByText('text alternative')).toHaveClass(
-      'box--color-text-alternative',
+      'mm-box--color-text-alternative',
     );
-    expect(getByText('text muted')).toHaveClass('box--color-text-muted');
+    expect(getByText('text muted')).toHaveClass('mm-box--color-text-muted');
   });
   it('should render with a different html element if children is an object', () => {
     const { getByText, getByTestId } = render(

@@ -7,8 +7,8 @@ import {
   FormTextField,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   Size,
   TextVariant,
