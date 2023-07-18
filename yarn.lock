@@ -4571,15 +4571,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@npm:^0.0.1":
-  version: 0.0.1
-  resolution: "@metamask/ppom-validator@npm:0.0.1"
+"@metamask/ppom-validator@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@metamask/ppom-validator@npm:0.1.1"
   dependencies:
-    "@blockaid/ppom-mock": ^1.0.0
     "@metamask/base-controller": ^3.0.0
     "@metamask/controller-utils": ^4.0.0
     await-semaphore: ^0.1.3
-  checksum: a94edcd618f670b392a84caa236bbc951a6a99100d8a5fa7bd89b78747c3b06b289738b42aee433659b647441eab0a8741e1951a0e29ef6aa98ffa10a3f33f5b
+  checksum: 725252271c93964411f9799ae1c3de6a2e9944b437b32fa2cbd6aaa4fdd4ee9f172df610e647ee6faa42edb5b4a643af5465ce981482c02570265f113d403856
   languageName: node
   linkType: hard
 
@@ -24682,7 +24681,7 @@ __metadata:
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/ppom-validator": ^0.0.1
+    "@metamask/ppom-validator": ^0.1.1
     "@metamask/providers": ^11.1.0
     "@metamask/rate-limit-controller": ^3.0.0
     "@metamask/rpc-methods": ^1.0.0-prerelease.1

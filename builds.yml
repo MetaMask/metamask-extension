@@ -117,6 +117,8 @@ features:
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
   blockaid:
+    env:
+      - BLOCKAID_FILE_CDN: static.metafi-dev.codefi.network/api/v1/confirmations/ppom
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
@@ -225,6 +227,8 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN
 
   ###
   # Meta variables
