@@ -2361,7 +2361,7 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addTransaction: txController.addTransaction.bind(txController),
+      addTransaction: this.addTransaction.bind(this),
       addTransactionAndWaitForPublish:
         this.addTransactionAndWaitForPublish.bind(this),
       createTransactionEventFragment:
@@ -3535,6 +3535,19 @@ export default class MetamaskController extends EventEmitter {
     );
 
     await result;
+
+    return transactionMeta;
+  }
+
+  async addTransaction(txParams, options) {
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    result.catch(() => {
+      // Not concerned with result
+    });
 
     return transactionMeta;
   }

@@ -980,9 +980,7 @@ export function addTransactionAndRouteToConfirmationPage(
     try {
       log.debug('background.addTransaction');
 
-      const { transactionMeta } = await submitRequestToBackground<{
-        transactionMeta: TransactionMeta;
-      }>(
+      const transactionMeta = await submitRequestToBackground<TransactionMeta>(
         'addTransaction',
         [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
         actionId,
