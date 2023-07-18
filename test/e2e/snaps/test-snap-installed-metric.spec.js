@@ -4,6 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   getEventPayloads,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -83,7 +84,7 @@ describe('Snap Installed Event', function () {
         });
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.SNAPS);
 
         // wait for npm installation success
         await driver.waitForSelector({

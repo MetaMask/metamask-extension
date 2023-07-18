@@ -663,6 +663,7 @@ async function waitForAccountRendered(driver) {
   );
 }
 const WINDOW_TITLES = Object.freeze({
+  TestSnaps: 'Test Snaps',
   ExtensionInFullScreenView: 'MetaMask',
   TestDApp: 'E2E Test Dapp',
   Notification: 'MetaMask Notification',
