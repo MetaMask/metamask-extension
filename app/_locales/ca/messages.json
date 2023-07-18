@@ -541,9 +541,6 @@
   "privateNetwork": {
     "message": "Xarxa privada"
   },
-  "queue": {
-    "message": "Cua"
-  },
   "readdToken": {
     "message": "Pots tornar a afegir aquesta fitxa en el futur anant a \"Afegir fitxa\" al menu d'opcions dels teus comptes."
   },

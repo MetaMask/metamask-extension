@@ -11,7 +11,6 @@ import { AccountListItemMenu } from '..';
 import {
   AvatarAccount,
   Box,
-  Text,
   AvatarFavicon,
   Tag,
   ButtonLink,
@@ -19,6 +18,7 @@ import {
   IconName,
   IconSize,
   AvatarAccountVariant,
+  Text,
 } from '../../component-library';
 import {
   Color,
@@ -60,6 +60,10 @@ function getLabel(keyring = {}, t) {
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case KeyringType.snap:
+      return t('snaps');
+    ///: END:ONLY_INCLUDE_IN
     default:
       return null;
   }

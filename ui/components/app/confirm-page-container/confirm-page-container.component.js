@@ -22,7 +22,7 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   TextVariant,
   TextAlign,

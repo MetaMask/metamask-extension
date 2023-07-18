@@ -186,6 +186,20 @@ describe('Transaction.utils', function () {
           getCodeResponse: '0xab',
         });
 
+        const resultWithEmptyValue2 = await determineTransactionType(
+          {
+            value: '0x0000',
+            to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+            data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+          },
+          new EthQuery(_provider),
+        );
+
+        expect(resultWithEmptyValue2).toMatchObject({
+          type: TransactionType.tokenMethodTransfer,
+          getCodeResponse: '0xab',
+        });
+
         const resultWithValue = await determineTransactionType(
           {
             value: '0x12345',

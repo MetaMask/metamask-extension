@@ -22,6 +22,8 @@ const addEthereumChain = {
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    startApprovalFlow: true,
+    endApprovalFlow: true,
   },
 };
 export default addEthereumChain;
@@ -38,6 +40,8 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
     setActiveNetwork,
     requestUserApproval,
+    startApprovalFlow,
+    endApprovalFlow,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -242,6 +246,9 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
+
+  const { id: approvalFlowId } = await startApprovalFlow();
+
   try {
     await requestUserApproval({
       origin,
@@ -269,6 +276,7 @@ async function addEthereumChainHandler(
     // Once the network has been added, the requested is considered successful
     res.result = null;
   } catch (error) {
+    endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
@@ -285,14 +293,24 @@ async function addEthereumChainHandler(
         networkConfigurationId,
       },
     });
-    await setActiveNetwork(networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
-      return end(error);
-    }
+    return end(
+      error.code === errorCodes.provider.userRejectedRequest
+        ? undefined
+        : error,
+    );
+  } finally {
+    endApprovalFlow({ id: approvalFlowId });
   }
+
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
+  }
+
   return end();
 }

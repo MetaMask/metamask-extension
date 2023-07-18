@@ -1,16 +1,24 @@
 import React, { memo, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import Modal from '../../app/modal';
 import CustodyAccountList from '../../../pages/institutional/connect-custody/account-list';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { removeAccount } from '../../../store/actions';
 import withModalProps from '../../../helpers/higher-order-components/with-modal-props';
-import { Text } from '../../component-library';
-import Box from '../../ui/box';
+import {
+  Box,
+  Text,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Button,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
+} from '../../component-library';
 import {
   BorderRadius,
-  DISPLAY,
+  Display,
   TextAlign,
   TextColor,
   TextVariant,
@@ -19,16 +27,25 @@ import {
 const ConfirmRemoveJWT = ({
   custodyAccountDetails,
   accounts,
-  token,
+  token: propsToken,
   hideModal,
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const [showMore, setShowMore] = useState(false);
   const [tokenAccounts, setTokenAccounts] = useState([]);
+  let token = null;
+
+  if (propsToken) {
+    if (typeof propsToken === 'object') {
+      token = propsToken.address;
+    } else {
+      token = propsToken;
+    }
+  }
 
   useEffect(() => {
-    const lowercasedTokenAddress = token.address.toLowerCase();
+    const lowercasedTokenAddress = token.toLowerCase();
 
     const filteredAccounts = custodyAccountDetails.filter((item) => {
       const addressLower = item.address.toLowerCase();
@@ -72,52 +89,60 @@ const ConfirmRemoveJWT = ({
   };
 
   return (
-    <Modal
-      headerText={`${t('removeJWT')}?`}
-      onClose={hideModal}
-      onSubmit={handleRemove}
-      onCancel={hideModal}
-      submitText={t('remove')}
-      cancelText={t('nevermind')}
-      submitType="primary"
-    >
-      <Box
-        display={DISPLAY.FLEX}
-        padding={2}
-        borderRadius={BorderRadius.SM}
-        className="confirm-action-jwt__jwt"
-      >
-        {showMore && token ? token.address : `...${token.address.slice(-9)}`}
-      </Box>
-      {!showMore && (
-        <Text
-          color={TextColor.goerli}
-          marginLeft={2}
-          className="confirm-action-jwt__show-more"
+    <Modal isOpen onClose={hideModal}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={hideModal}>{t('removeJWT')}</ModalHeader>
+        <Box
+          display={Display.Flex}
+          padding={2}
+          borderRadius={BorderRadius.SM}
+          className="confirm-action-jwt__jwt"
         >
-          <a rel="noopener noreferrer" onClick={handleShowMore}>
-            {t('showMore')}
-          </a>
+          <Text ellipsis>
+            {showMore && token ? token : `...${token.slice(-9)}`}
+          </Text>
+        </Box>
+        {!showMore && (
+          <Text
+            color={TextColor.goerli}
+            marginLeft={2}
+            className="confirm-action-jwt__show-more"
+          >
+            <a rel="noopener noreferrer" onClick={handleShowMore}>
+              {t('showMore')}
+            </a>
+          </Text>
+        )}
+        <Text
+          as="h6"
+          textAlign={TextAlign.Center}
+          variant={TextVariant.bodySm}
+          marginTop={2}
+        >
+          {t('removeJWTDescription')}
         </Text>
-      )}
-      <Text
-        as="h6"
-        textAlign={TextAlign.Center}
-        variant={TextVariant.bodySm}
-        marginTop={2}
-      >
-        {t('removeJWTDescription')}
-      </Text>
-      <Box className="confirm-action-jwt__accounts-list">
-        <CustodyAccountList accounts={tokenAccounts} rawList />
-      </Box>
+        <Box className="confirm-action-jwt__accounts-list">
+          <CustodyAccountList accounts={tokenAccounts} rawList />
+        </Box>
+        <Box display={Display.Flex}>
+          <Button
+            block
+            variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            onClick={handleRemove}
+          >
+            {t('remove')}
+          </Button>
+        </Box>
+      </ModalContent>
     </Modal>
   );
 };
 
 ConfirmRemoveJWT.propTypes = {
   hideModal: PropTypes.func.isRequired,
-  token: PropTypes.object.isRequired,
+  token: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   custodyAccountDetails: PropTypes.array.isRequired,
   accounts: PropTypes.array.isRequired,
 };

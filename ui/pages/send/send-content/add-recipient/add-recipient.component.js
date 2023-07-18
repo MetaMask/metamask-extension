@@ -7,7 +7,7 @@ import ContactList from '../../../../components/app/contact-list';
 import RecipientGroup from '../../../../components/app/contact-list/recipient-group/recipient-group.component';
 import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
-import { Text } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/deprecated';
 import Box from '../../../../components/ui/box';
 import {
   TextColor,
