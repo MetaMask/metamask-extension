@@ -367,9 +367,7 @@ export default class SecurityTab extends PureComponent {
 
   renderIpfsGatewayControl() {
     const { t } = this.context;
-    const { ipfsGatewayError } = this.state;
-    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
-      this.props;
+    let ipfsError = '';
 
     const handleIpfsGatewaySave = (gateway) => {
       const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
@@ -379,31 +377,34 @@ export default class SecurityTab extends PureComponent {
     };
 
     const handleIpfsGatewayChange = (url) => {
-      this.setState(() => {
-        let ipfsError = '';
-
+      if (url.length > 0) {
         try {
-          const urlObj = new URL(addUrlProtocolPrefix(url));
-          if (!urlObj.host) {
-            throw new Error();
+          const validUrl = addUrlProtocolPrefix(url);
+
+          if (!validUrl) {
+            ipfsError = t('invalidIpfsGateway');
           }
+
+          const urlObj = new URL(validUrl);
 
           // don't allow the use of this gateway
           if (urlObj.host === 'gateway.ipfs.io') {
-            throw new Error('Forbidden gateway');
+            ipfsError = t('forbiddenIpfsGateway');
+          }
+
+          if (ipfsError.length === 0) {
+            this.props.setIpfsGateway(urlObj.host);
           }
         } catch (error) {
-          ipfsError =
-            error.message === 'Forbidden gateway'
-              ? t('forbiddenIpfsGateway')
-              : t('invalidIpfsGateway');
+          ipfsError = t('invalidIpfsGateway');
         }
+      } else {
+        ipfsError = t('invalidIpfsGateway');
+      }
 
-        handleIpfsGatewaySave(url);
-        return {
-          ipfsGateway: url,
-          ipfsGatewayError: ipfsError,
-        };
+      this.setState({
+        ipfsGateway: url,
+        ipfsGatewayError: ipfsError,
       });
     };
 
@@ -446,7 +447,7 @@ export default class SecurityTab extends PureComponent {
                 disabled={!this.state.ipfsGateway}
                 value={this.state.ipfsGateway}
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-                error={ipfsGatewayError}
+                error={this.state.ipfsGatewayError}
                 fullWidth
                 margin="dense"
               />
@@ -508,8 +509,10 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={useAddressBarEnsResolution}
-              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
+              value={this.props.useAddressBarEnsResolution}
+              onToggle={(value) =>
+                this.props.setUseAddressBarEnsResolution(!value)
+              }
               offLabel={t('off')}
               onLabel={t('on')}
             />

@@ -1,24 +1,23 @@
+import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
-import { AccessList } from '@ethereumjs/tx';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-
 import {
-  ENVIRONMENT_TYPE_POPUP,
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_BACKGROUND,
-  PLATFORM_FIREFOX,
-  PLATFORM_OPERA,
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+  PLATFORM_BRAVE,
   PLATFORM_CHROME,
   PLATFORM_EDGE,
-  PLATFORM_BRAVE,
+  PLATFORM_FIREFOX,
+  PLATFORM_OPERA,
 } from '../../../shared/constants/app';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '../../../shared/constants/transaction';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -143,13 +142,13 @@ function checkAlarmExists(alarmList: { name: string }[], alarmName: string) {
 }
 
 export {
-  getPlatform,
-  getEnvironmentType,
-  hexToBn,
   BnMultiplyByFraction,
   addHexPrefix,
-  getChainType,
   checkAlarmExists,
+  getChainType,
+  getEnvironmentType,
+  getPlatform,
+  hexToBn,
 };
 
 // Taken from https://stackoverflow.com/a/1349426/3696652
@@ -235,10 +234,53 @@ export function previousValueComparator<A>(
 }
 
 export function addUrlProtocolPrefix(urlString: string) {
-  if (!urlString.match(/(^http:\/\/)|(^https:\/\/)/u)) {
-    return `https://${urlString}`;
+  let trimmed = urlString.trim();
+
+  if (trimmed.length > 0 && !trimmed.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+    trimmed = `https://${trimmed}`;
   }
-  return urlString;
+
+  if (isValidUrl(trimmed)) {
+    return trimmed;
+  }
+
+  return null;
+}
+
+export function isLocalhostOrHttps(urlString: string) {
+  try {
+    const url = new URL(urlString);
+    return (
+      url.hostname === 'localhost' ||
+      url.hostname === '127.0.0.1' ||
+      url.protocol === 'https:'
+    );
+  } catch (error) {
+    return false;
+  }
+}
+
+export function isValidUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+
+    return url.hostname.length > 0 && url.pathname.length > 0;
+  } catch (error) {
+    return false;
+  }
+}
+
+export function isWebUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+    return (
+      url.hostname.length > 0 &&
+      (url.protocol === 'https:' || url.protocol === 'http:') &&
+      url.pathname.length > 0
+    );
+  } catch (error) {
+    return false;
+  }
 }
 
 interface FormattedTransactionMeta {

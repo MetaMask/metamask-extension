@@ -1,5 +1,4 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
-import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -11,6 +10,7 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { isLocalhostOrHttps } from '../../util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -83,27 +83,14 @@ async function addEthereumChainHandler(
     );
   }
 
-  const isLocalhost = (strUrl) => {
-    try {
-      const url = new URL(strUrl);
-      return url.hostname === 'localhost' || url.hostname === '127.0.0.1';
-    } catch (error) {
-      return false;
-    }
-  };
-
   const firstValidRPCUrl = Array.isArray(rpcUrls)
-    ? rpcUrls.find(
-        (rpcUrl) => isLocalhost(rpcUrl) || validUrl.isHttpsUri(rpcUrl),
-      )
+    ? rpcUrls.find((rpcUrl) => isLocalhostOrHttps(rpcUrl))
     : null;
 
   const firstValidBlockExplorerUrl =
     blockExplorerUrls !== null && Array.isArray(blockExplorerUrls)
-      ? blockExplorerUrls.find(
-          (blockExplorerUrl) =>
-            isLocalhost(blockExplorerUrl) ||
-            validUrl.isHttpsUri(blockExplorerUrl),
+      ? blockExplorerUrls.find((blockExplorerUrl) =>
+          isLocalhostOrHttps(blockExplorerUrl),
         )
       : null;
 

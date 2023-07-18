@@ -1,8 +1,12 @@
 import { fireEvent, queryByRole, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import SecurityTab from './security-tab.container';
 
@@ -102,5 +106,66 @@ describe('Security Tab', () => {
     expect(
       screen.queryByTestId(`srp_stage_introduction`),
     ).not.toBeInTheDocument();
+  });
+
+  it('sets IPFS gateway', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<SecurityTab />, mockStore);
+
+    const ipfsField = screen.getByDisplayValue(mockState.metamask.ipfsGateway);
+
+    await user.click(ipfsField);
+
+    await userEvent.clear(ipfsField);
+
+    expect(ipfsField).toHaveValue('');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.type(ipfsField, 'https://');
+
+    expect(ipfsField).toHaveValue('https://');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.type(ipfsField, '//');
+
+    expect(ipfsField).toHaveValue('https:////');
+    expect(screen.queryByText(tEn('invalidIpfsGateway'))).toBeInTheDocument();
+    expect(
+      screen.queryByText(tEn('forbiddenIpfsGateway')),
+    ).not.toBeInTheDocument();
+
+    await userEvent.clear(ipfsField);
+
+    await userEvent.type(ipfsField, 'gateway.ipfs.io');
+
+    expect(ipfsField).toHaveValue('gateway.ipfs.io');
+    expect(
+      screen.queryByText(tEn('invalidIpfsGateway')),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(tEn('forbiddenIpfsGateway'))).toBeInTheDocument();
+  });
+
+  it('clicks "Add Custom Network"', async () => {
+    const user = userEvent.setup();
+    renderWithProvider(<SecurityTab />, mockStore);
+
+    // Test the default path where `getEnvironmentType() === undefined`
+    await user.click(screen.getByText(tEn('addCustomNetwork')));
+
+    // Now force it down the path where `getEnvironmentType() === ENVIRONMENT_TYPE_POPUP`
+    jest
+      .mocked(getEnvironmentType)
+      .mockImplementationOnce(() => ENVIRONMENT_TYPE_POPUP);
+
+    global.platform = { openExtensionInBrowser: jest.fn() };
+
+    await user.click(screen.getByText(tEn('addCustomNetwork')));
+    expect(global.platform.openExtensionInBrowser).toHaveBeenCalled();
   });
 });
