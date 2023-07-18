@@ -128,7 +128,7 @@ const mapStateToProps = (state, ownProps) => {
     unapprovedTxs,
     nextNonce,
   } = metamask;
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || Number(paramsTransactionId);
@@ -168,8 +168,8 @@ const mapStateToProps = (state, ownProps) => {
   const checksummedAddress = toChecksumHexAddress(toAddress);
   const addressBookObject =
     addressBook &&
-    addressBook[chainId] &&
-    addressBook[chainId][checksummedAddress];
+    addressBook[caipChainId] &&
+    addressBook[caipChainId][checksummedAddress];
   const toEns = getEnsResolutionByAddress(state, checksummedAddress);
   const toNickname = addressBookObject ? addressBookObject.name : '';
   const transactionStatus = transaction ? transaction.status : '';
@@ -185,7 +185,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
     .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
+      transactionMatchesNetwork(unapprovedTxs[key], caipChainId, networkId),
     )
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
@@ -276,7 +276,7 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     hardwareWalletRequiresConnection,
     isMultiLayerFeeNetwork,
-    chainId,
+    caipChainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
