@@ -3555,12 +3555,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@lavamoat/snow@npm:1.5.0"
-  dependencies:
-    is-cross-origin: ^1.0.1
-  checksum: cc66513df95ae2b9b965eafc28b8b9da2217ef6462c251331a58a845aeec2aea6b1b6fa2aee114bd9aa7db58565557b9a6e9e338512760eab27ccd472fab7121
+"@lavamoat/snow@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@lavamoat/snow@npm:2.0.0"
+  checksum: 163bfba0b36c5bea868ec30015afe6eeff603199c001b17f1c477c19e9410c92a383ae84e2a25987c1e032ea51f57307515be85a3246c79928de95262f081a79
   languageName: node
   linkType: hard
 
@@ -20405,15 +20403,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-cross-origin@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "is-cross-origin@npm:1.0.1"
-  dependencies:
-    is-window: ^1.0.2
-  checksum: 396efb188e986ed640b48e5ac19b3edb09ad9a95426b6e1cec18c087d97834e22baf2d1fa354eb87da4816dfa517ccd35d6788bb82ea37eba2e686b1b96ebf8f
-  languageName: node
-  linkType: hard
-
 "is-data-descriptor@npm:^0.1.4":
   version: 0.1.4
   resolution: "is-data-descriptor@npm:0.1.4"
@@ -24634,7 +24623,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": ^0.13.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^5.2.0
-    "@lavamoat/snow": ^1.5.0
+    "@lavamoat/snow": 2.0.0
     "@material-ui/core": ^4.11.0
     "@metamask-institutional/custody-controller": 0.2.6
     "@metamask-institutional/custody-keyring": ^0.0.25
