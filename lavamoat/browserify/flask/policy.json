@@ -1926,23 +1926,6 @@
         "@metamask/post-message-stream>readable-stream>safe-buffer": true
       }
     },
-    "@metamask/ppom-validator": {
-      "globals": {
-        "AbortController": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.log": true,
-        "fetch": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "await-semaphore": true
-      }
-    },
     "@metamask/providers>@metamask/object-multiplex": {
       "globals": {
         "console.warn": true
