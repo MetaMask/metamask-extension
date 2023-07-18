@@ -15,7 +15,6 @@ import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import {
   mmiActionsFactory,
   setPersonalMessageInProgress,
-  setDeferAsSigned,
 } from '../../../store/institutional/institution-background';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
@@ -108,7 +107,6 @@ function mmiMapDispatchToProps(dispatch) {
   const mmiActions = mmiActionsFactory();
   return {
     setMsgInProgress: (msgId) => dispatch(setPersonalMessageInProgress(msgId)),
-    setDeferAsSigned: (msgData) => dispatch(setDeferAsSigned(msgData)),
     showCustodianDeepLink: ({
       custodyId,
       fromAddress,
@@ -197,8 +195,6 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
   const mmiOnSignCallback = async (_msgData) => {
     if (accountType === 'custody') {
       try {
-        await dispatchProps.setDeferAsSigned(_msgData);
-
         await dispatchProps.resolvePendingApproval(_msgData.id);
         dispatchProps.completedTx(_msgData.id);
 

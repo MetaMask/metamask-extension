@@ -1449,6 +1449,7 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
         this.signatureController,
       ),
@@ -1468,8 +1469,14 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.newUnsignedPersonalMessage.bind(
           this.signatureController,
         ),
+      ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
+      processTypedMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
+      processTypedMessageV3: this.mmiController.newUnsignedMessage.bind(this.mmiController),
+      processTypedMessageV4: this.mmiController.newUnsignedMessage.bind(this.mmiController),
+      processPersonalMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
       setTypedMessageInProgress:
         this.signatureController.setTypedMessageInProgress.bind(
           this.signatureController,
@@ -2381,9 +2388,6 @@ export default class MetamaskController extends EventEmitter {
       ...getPermissionBackgroundApiMethods(permissionController),
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      setDeferAsSigned: this.mmiController.setDeferAsSigned.bind(
-        this.mmiController,
-      ),
       connectCustodyAddresses: this.mmiController.connectCustodyAddresses.bind(
         this.mmiController,
       ),
