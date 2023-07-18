@@ -113,7 +113,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.UserClickedPortfolioButton,
+                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
               window.open(mmiPortfolioUrl, '_blank');
               closeMenu();

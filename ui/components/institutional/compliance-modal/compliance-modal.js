@@ -3,14 +3,20 @@ import { useDispatch } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideModal } from '../../../store/actions';
 import Modal from '../../app/modal';
-import Box from '../../ui/box';
-import { ButtonIcon, IconSize, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+
+import {
+  ButtonIcon,
+  IconSize,
+  IconName,
+  Text,
+  Box,
+} from '../../component-library';
+
 import {
   AlignItems,
   JustifyContent,
   TextColor,
-  DISPLAY,
+  Display,
 } from '../../../helpers/constants/design-system';
 
 const ComplianceModal = () => {
@@ -35,11 +41,11 @@ const ComplianceModal = () => {
       <Box>
         <Box
           as="header"
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
         >
           <Box
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.flexStart}
             alignItems={AlignItems.center}
           >
