@@ -53,9 +53,9 @@ export default class AppStateController extends EventEmitter {
       qrHardware: {},
       nftsDropdownState: {},
       usedNetworks: {
-        '0x1': true,
-        '0x5': true,
-        '0x539': true,
+        'eip155:1': true,
+        'eip155:5': true,
+        'eip155:1337': true,
       },
       serviceWorkerLastActiveTime: 0,
     });
@@ -378,13 +378,13 @@ export default class AppStateController extends EventEmitter {
   /**
    * Updates the array of the first time used networks
    *
-   * @param chainId
+   * @param caipChainId
    * @returns {void}
    */
-  setFirstTimeUsedNetwork(chainId) {
+  setFirstTimeUsedNetwork(caipChainId) {
     const currentState = this.store.getState();
     const { usedNetworks } = currentState;
-    usedNetworks[chainId] = true;
+    usedNetworks[caipChainId] = true;
 
     this.store.updateState({ usedNetworks });
   }

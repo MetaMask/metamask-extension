@@ -81,7 +81,7 @@ describe('ENS', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
               nickname: '',
               rpcUrl: '',
               type: 'mainnet',
