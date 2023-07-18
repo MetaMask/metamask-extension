@@ -6,13 +6,13 @@ type SecurityProviderConfig = Record<
   SecurityProvider,
   {
     /** translation key for security provider name */
-    tKeyName: string;
+    readonly tKeyName: string;
     /** URL to securty provider website */
-    url: string;
+    readonly url: string;
   }
 >;
 
-export const SECURITY_PROVIDER_CONFIG: SecurityProviderConfig = {
+export const SECURITY_PROVIDER_CONFIG: Readonly<SecurityProviderConfig> = {
   [SecurityProvider.Blockaid]: {
     tKeyName: 'blockaid',
     url: 'https://blockaid.io/',
