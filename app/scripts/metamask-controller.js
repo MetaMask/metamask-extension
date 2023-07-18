@@ -218,7 +218,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { IndexedDBPPOMStorage } from './lib/indexed-db-backend';
+import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 
