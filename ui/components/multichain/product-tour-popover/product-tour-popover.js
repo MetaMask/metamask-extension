@@ -14,8 +14,13 @@ import {
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
-import { ButtonBase, ButtonIcon, IconName, Box } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import {
+  ButtonBase,
+  ButtonIcon,
+  IconName,
+  Box,
+  Text,
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Menu } from '../../ui/menu';
 

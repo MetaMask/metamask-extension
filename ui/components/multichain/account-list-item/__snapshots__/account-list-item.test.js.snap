@@ -58,7 +58,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
         >
           <div
-            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis mm-box--margin-inline-end-2 mm-box--color-text-default"
           >
             <button
               class="mm-box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--ellipsis mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent"
@@ -71,7 +71,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
             </button>
           </div>
           <div
-            class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-text-default"
           >
             <div
               class="currency-display-component"
@@ -101,13 +101,13 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             0x0dc...e7bc
           </p>
         </div>
         <div
-          class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
         >
           <div
             class="currency-display-component"

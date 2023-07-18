@@ -12,8 +12,8 @@ import {
   ModalContent,
   ModalOverlay,
   ModalHeader,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   BlockSize,

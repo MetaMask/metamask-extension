@@ -26,7 +26,7 @@ exports[`AccountPicker renders properly 1`] = `
         />
       </div>
       <span
-        class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-box--color-text-default"
       >
         Account 1
       </span>
