@@ -4,16 +4,15 @@ import classnames from 'classnames';
 import {
   BorderColor,
   Size,
-  Display,
   AlignItems,
   JustifyContent,
   BackgroundColor,
   IconColor,
   TextColor,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
+import { Box } from '../box';
 import { IconName, Icon } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
