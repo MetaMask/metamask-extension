@@ -18,8 +18,10 @@ const render = (metamaskStateChanges = {}) => {
 };
 
 const mockLockMetaMask = jest.fn();
+const mockSetAccountDetailsAddress = jest.fn();
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
+  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 describe('AccountListItem', () => {
