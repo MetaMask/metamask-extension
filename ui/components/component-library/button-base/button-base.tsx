@@ -19,9 +19,8 @@ import {
 } from './button-base.types';
 
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(
-  <C extends React.ElementType = 'button'>(
+  <C extends React.ElementType = 'button' | 'a'>(
     {
-      as = 'button',
       block,
       children,
       className = '',
@@ -43,20 +42,16 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     }: ButtonBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const Tag = href ? 'a' : as;
-    if (Tag === 'a' && externalLink) {
-      props.target = '_blank';
-      props.rel = 'noopener noreferrer';
-    }
-
     return (
       <Text
-        as={Tag}
+        as={href ? 'a' : 'button'}
         backgroundColor={BackgroundColor.backgroundAlternative}
         variant={TextVariant.bodyMdMedium}
         color={loading ? TextColor.transparent : color}
         ref={ref}
         href={href}
+        target={externalLink ? '_blank' : undefined}
+        rel={externalLink ? 'noopener noreferrer' : undefined}
         paddingLeft={4}
         paddingRight={4}
         ellipsis={ellipsis}

@@ -13,12 +13,13 @@ export enum ButtonBaseSize {
   Lg = 'lg',
 }
 
+export type ValidButtonTagType = 'button' | 'a';
 export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    *
    */
-  as?: 'button' | 'a';
+  as?: ValidButtonTagType;
   /**
    * Boolean prop to quickly activate box prop display block
    */
@@ -100,6 +101,8 @@ export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
 export type ButtonBaseProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonBaseStyleUtilityProps>;
 
-export type ButtonBaseComponent = <C extends React.ElementType = 'button'>(
+export type ButtonBaseComponent = <
+  C extends React.ElementType = 'button' | 'a',
+>(
   props: ButtonBaseProps<C>,
 ) => React.ReactElement | null;
