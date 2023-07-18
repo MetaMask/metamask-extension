@@ -3,7 +3,7 @@
 exports[`MetaFoxLogo does match snapshot with custodyImgSrc 1`] = `
 <div>
   <button
-    class="box app-header__logo-container box--flex-direction-row box--background-color-transparent"
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
     data-testid="app-header-logo"
   >
     <div />
@@ -28,7 +28,7 @@ exports[`MetaFoxLogo does match snapshot with custodyImgSrc 1`] = `
 exports[`MetaFoxLogo does not set icon height and width when unsetIconHeight is true 1`] = `
 <div>
   <button
-    class="box app-header__logo-container box--flex-direction-row box--background-color-transparent"
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
     data-testid="app-header-logo"
   >
     <div />
@@ -44,7 +44,7 @@ exports[`MetaFoxLogo does not set icon height and width when unsetIconHeight is 
 exports[`MetaFoxLogo should match snapshot with img width and height default set to 42 1`] = `
 <div>
   <button
-    class="box app-header__logo-container box--flex-direction-row box--background-color-transparent"
+    class="mm-box app-header__logo-container mm-box--background-color-transparent"
     data-testid="app-header-logo"
   >
     <div />
