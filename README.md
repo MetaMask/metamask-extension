@@ -1,8 +1,3 @@
-1. publish new snow
-2. update snow in mm
-3. set object-src in mm csp
-4. make sure snow is required in all same origin html pages served by mm ext
-
 # MetaMask Browser Extension
 
 You can find the latest version of MetaMask on [our official website](https://metamask.io/). For help using MetaMask, visit our [User Support Site](https://metamask.zendesk.com/hc/en-us).
