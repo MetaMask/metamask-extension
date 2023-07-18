@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  veryLargeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -74,6 +75,8 @@ describe('Multiple transactions', function () {
         const confirmedTxes = await driver.findElements(
           '.transaction-list__completed-transactions .activity-list-item',
         );
+
+        await driver.delay(veryLargeDelayMs);
 
         assert.equal(confirmedTxes.length, 2);
       },
