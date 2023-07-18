@@ -138,6 +138,8 @@ export const CHAIN_IDS = {
   BSC_TESTNET: '0x61',
   OPTIMISM: '0xa',
   OPTIMISM_TESTNET: '0x1a4',
+  BASE: '0x2105',
+  BASE_TESTNET: '0x14a33',
   POLYGON: '0x89',
   POLYGON_TESTNET: '0x13881',
   AVALANCHE: '0xa86a',
@@ -176,6 +178,7 @@ export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
 export const BNB_DISPLAY_NAME = 'BNB Chain';
 export const OPTIMISM_DISPLAY_NAME = 'Optimism';
+export const BASE_DISPLAY_NAME = 'Base';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
@@ -245,6 +248,7 @@ export const AETH_TOKEN_IMAGE_URL = './images/arbitrum.svg';
 export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
 export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
+export const BASE_TOKEN_IMAGE_URL = './images/base.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
@@ -379,6 +383,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BASE]: BASE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BASE_TESTNET]: BASE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
@@ -542,6 +548,8 @@ export const BUYABLE_CHAINS_MAP: {
     ChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.BASE_TESTNET
+    | typeof CHAIN_IDS.BASE
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET
@@ -686,6 +694,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://optimistic.etherscan.io/',
       imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.BASE,
+    nickname: BASE_DISPLAY_NAME,
+    rpcUrl: 'https://developer-access-mainnet.base.org',
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://basescan.org/',
+      imageUrl: BASE_TOKEN_IMAGE_URL,
     },
   },
   {
