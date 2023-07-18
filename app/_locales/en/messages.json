@@ -249,6 +249,9 @@
   "addFromAListOfPopularNetworks": {
     "message": "Add from a list of popular networks or add a network manually. Only interact with the entities you trust."
   },
+  "addHardwareWallet": {
+    "message": "Add hardware wallet"
+  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -527,6 +530,9 @@
   "betaHeaderText": {
     "message": "This is a beta version. Please report bugs $1",
     "description": "$1 represents the word 'here' in a hyperlink"
+  },
+  "betaMetamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Beta Version"
   },
   "betaMetamaskVersion": {
     "message": "MetaMask Beta Version"
@@ -1755,9 +1761,6 @@
   "hardware": {
     "message": "Hardware"
   },
-  "hardwareWallet": {
-    "message": "Hardware wallet"
-  },
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
@@ -2268,6 +2271,9 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
+  "metamaskInstitutionalVersion": {
+    "message": "MetaMask Institutional Version"
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "MetaMask Swaps is undergoing maintenance. Please check back later."
   },
@@ -2311,6 +2317,9 @@
   },
   "mmiAuthenticate": {
     "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
+  },
+  "mmiBuiltAroundTheWorld": {
+    "message": "MetaMask Institutional is designed and built around the world."
   },
   "more": {
     "message": "more"
@@ -3077,9 +3086,6 @@
     "message": "You have (1) pending transaction.",
     "description": "$1 is count of pending transactions"
   },
-  "percentage": {
-    "message": "$1%"
-  },
   "permissionRequest": {
     "message": "Permission request"
   },
@@ -3334,9 +3340,6 @@
   },
   "publicAddress": {
     "message": "Public address"
-  },
-  "queue": {
-    "message": "Queue"
   },
   "queued": {
     "message": "Queued"
@@ -4469,6 +4472,10 @@
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
   },
+  "swapIncludesMetaMaskFeeViewAllQuotes": {
+    "message": "Includes a $1% MetaMask fee – $2",
+    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+  },
   "swapLearnMore": {
     "message": "Learn more about Swaps"
   },
@@ -5232,6 +5239,9 @@
   },
   "viewAllDetails": {
     "message": "View all details"
+  },
+  "viewAllQuotes": {
+    "message": "view all quotes"
   },
   "viewContact": {
     "message": "View contact"

@@ -1051,9 +1051,6 @@
   "publicAddress": {
     "message": "公開位址"
   },
-  "queue": {
-    "message": "佇列"
-  },
   "queued": {
     "message": "已排入佇列"
   },

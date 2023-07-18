@@ -12,7 +12,8 @@ import { getSelectedAccountCachedBalance } from '../../../selectors';
 import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { Text, Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box';
 
 const WrongNetworkNotification = () => {

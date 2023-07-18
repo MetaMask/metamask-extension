@@ -23,8 +23,8 @@ import {
   Icon,
   IconName,
   IconSize,
-  Text,
 } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/deprecated';
 
 const SnapListTab = () => {
   const t = useI18nContext();

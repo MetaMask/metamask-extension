@@ -132,7 +132,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
       await driver.clickElement('[data-testid="page-container-footer-next"]');
       await driver.clickElement('[data-testid="home__activity-tab"]');
-      await driver.findElement('.transaction-list-item');
+      await driver.findElement('.activity-list-item');
       // reset view to assets tab
       await driver.clickElement('[data-testid="home__asset-tab"]');
 

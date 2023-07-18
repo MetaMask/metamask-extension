@@ -19,7 +19,7 @@ import {
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import SnapVersion from '../snap-version/snap-version';
