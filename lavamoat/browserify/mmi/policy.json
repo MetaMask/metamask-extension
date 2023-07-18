@@ -815,9 +815,16 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask-institutional/custody-controller": true,
+        "@metamask-institutional/extension>@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/sdk>@metamask-institutional/types": true
+      }
+    },
+    "@metamask-institutional/extension>@metamask-institutional/custody-controller": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask-institutional/custody-keyring": true,
+        "@metamask/obs-store": true
       }
     },
     "@metamask-institutional/institutional-features": {
@@ -996,6 +1003,9 @@
       }
     },
     "@metamask/approval-controller": {
+      "globals": {
+        "console.info": true
+      },
       "packages": {
         "@metamask/approval-controller>nanoid": true,
         "@metamask/base-controller": true,
@@ -1076,6 +1086,9 @@
       }
     },
     "@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
       "packages": {
         "immer": true
       }
@@ -1152,12 +1165,12 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
+        "@metamask/eth-json-rpc-middleware>clone": true,
         "@metamask/eth-json-rpc-middleware>pify": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "vinyl>clone": true
+        "json-rpc-engine": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/utils": {
@@ -1170,6 +1183,11 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
+      }
+    },
+    "@metamask/eth-json-rpc-middleware>clone": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "@metamask/eth-keyring-controller": {
@@ -1839,7 +1857,7 @@
       },
       "packages": {
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "node-fetch": true
@@ -1855,26 +1873,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware": {
-      "globals": {
-        "URL": true,
-        "btoa": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>eth-json-rpc-middleware>pify": true,
-        "@metamask/safe-event-emitter": true,
-        "browserify>browser-resolve": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true,
-        "lavamoat>json-stable-stringify": true,
-        "vinyl>clone": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
@@ -2069,32 +2067,11 @@
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/providers": true,
-        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
         "fast-json-patch": true,
         "lodash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
-      "globals": {
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -2106,25 +2083,6 @@
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "@metamask/smart-transactions-controller>isomorphic-fetch": {
-      "globals": {
-        "fetch.bind": true
-      },
-      "packages": {
-        "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": true
-      }
-    },
-    "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true,
-        "define": true,
-        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -4890,11 +4848,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "vinyl>clone": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "wait-on>rxjs>tslib": {

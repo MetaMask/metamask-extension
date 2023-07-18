@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   JustifyContent,
-  DISPLAY,
+  Display,
   TextColor,
-  FLEX_DIRECTION,
+  FlexDirection,
   TextVariant,
   BorderStyle,
   BorderColor,
@@ -12,12 +12,12 @@ import {
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import {
-  Text,
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box';
 
 const ComplianceSettings = () => {
   const t = useContext(I18nContext);
@@ -93,8 +93,8 @@ const ComplianceSettings = () => {
         </ol>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
       >
         <Box

@@ -50,7 +50,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const sendTransactionListItem = await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -95,7 +95,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const sendTransactionListItem = await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-list__completed-transactions .activity-list-item',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -166,10 +166,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         const sendTransactionListItem = await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -227,10 +227,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         const sendTransactionListItem = await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });

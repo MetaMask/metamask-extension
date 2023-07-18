@@ -22,9 +22,9 @@ import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorsh
 import {
   AvatarIcon,
   IconName,
-  Text,
   ValidTag,
 } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library/text/deprecated';
 import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';

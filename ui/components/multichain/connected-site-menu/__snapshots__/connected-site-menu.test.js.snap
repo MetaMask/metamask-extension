@@ -16,14 +16,14 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
         tabindex="0"
       >
         <div
-          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
             class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
-            class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+            class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
@@ -53,14 +53,14 @@ exports[`Connected Site Menu should render the site menu in not connected state 
         tabindex="0"
       >
         <div
-          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
             class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
-            class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+            class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: 2px; right: -4px; z-index: 1;"
           >
             <div
@@ -90,14 +90,14 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
         tabindex="0"
       >
         <div
-          class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
             class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
-            class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+            class="mm-box mm-badge-wrapper__badge-container"
             style="bottom: 4px; right: -1px; z-index: 1;"
           >
             <div

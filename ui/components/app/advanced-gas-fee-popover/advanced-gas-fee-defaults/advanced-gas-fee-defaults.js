@@ -16,7 +16,7 @@ import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();

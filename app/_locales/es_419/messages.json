@@ -1767,9 +1767,6 @@
   "publicAddress": {
     "message": "Dirección pública"
   },
-  "queue": {
-    "message": "Cola"
-  },
   "queued": {
     "message": "En cola"
   },

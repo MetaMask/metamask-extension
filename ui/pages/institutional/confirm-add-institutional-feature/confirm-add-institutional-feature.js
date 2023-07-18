@@ -8,10 +8,10 @@ import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/ro
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
-  Text,
   BUTTON_SIZES,
   BUTTON_VARIANT,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   TextColor,
   TextVariant,
@@ -21,6 +21,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../../components/ui/box';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 export default function ConfirmAddInstitutionalFeature({ history }) {
   const t = useI18nContext();
@@ -52,8 +56,8 @@ export default function ConfirmAddInstitutionalFeature({ history }) {
 
   const sendEvent = ({ actions, service }) => {
     trackEvent({
-      category: 'MMI',
-      event: 'Institutional feature connection',
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.InstitutionalFeatureConnected,
       properties: {
         actions,
         service,

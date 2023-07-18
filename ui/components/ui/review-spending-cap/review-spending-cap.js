@@ -3,13 +3,8 @@ import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../box';
 import Tooltip from '../tooltip';
-import {
-  ButtonLink,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../component-library';
+import { ButtonLink, Icon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
   DISPLAY,
@@ -63,7 +58,7 @@ export default function ReviewSpendingCap({
             as="h6"
             display={DISPLAY.INLINE_BLOCK}
           >
-            {t('customSpendingCap')}
+            {t('dappRequestedSpendingCap')}
           </Text>
           <Box marginLeft={2} display={DISPLAY.INLINE_BLOCK}>
             <Tooltip

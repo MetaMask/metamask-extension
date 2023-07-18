@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
@@ -18,13 +19,17 @@ import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import {
   Label,
-  Text,
   ButtonLink,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   Box,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   complianceActivated,
   getInstitutionalConnectRequests,
@@ -38,7 +43,7 @@ const ConfirmAddCustodianToken = () => {
   const mmiActions = mmiActionsFactory();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const connectRequests = useSelector(getInstitutionalConnectRequests);
+  const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const isComplianceActivated = useSelector(complianceActivated);
   const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,14 +51,20 @@ const ConfirmAddCustodianToken = () => {
 
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
+  useEffect(() => {
+    if (!connectRequest) {
+      history.push(mostRecentOverviewPage);
+      setIsLoading(false);
+    }
+  }, [connectRequest, history, mostRecentOverviewPage]);
+
   if (!connectRequest) {
-    history.push(mostRecentOverviewPage);
     return null;
   }
 
   trackEvent({
-    category: 'MMI',
-    event: 'Custodian onboarding',
+    category: MetaMetricsEventCategory.MMI,
+    event: MetaMetricsEventName.TokenAdded,
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
@@ -168,15 +179,17 @@ const ConfirmAddCustodianToken = () => {
               size={BUTTON_SIZES.LG}
               data-testid="cancel-btn"
               onClick={async () => {
-                await mmiActions.removeAddTokenConnectRequest({
-                  origin: connectRequest.origin,
-                  apiUrl: connectRequest.apiUrl,
-                  token: connectRequest.token,
-                });
+                await dispatch(
+                  mmiActions.removeAddTokenConnectRequest({
+                    origin: connectRequest.origin,
+                    apiUrl: connectRequest.apiUrl,
+                    token: connectRequest.token,
+                  }),
+                );
 
                 trackEvent({
-                  category: 'MMI',
-                  event: 'Custodian onboarding',
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.TokenAdded,
                   properties: {
                     actions: 'Custodian RPC cancel',
                     custodian: connectRequest.custodian,
@@ -220,15 +233,17 @@ const ConfirmAddCustodianToken = () => {
                     }),
                   );
 
-                  await mmiActions.removeAddTokenConnectRequest({
-                    origin: connectRequest.origin,
-                    apiUrl: connectRequest.apiUrl,
-                    token: connectRequest.token,
-                  });
+                  await dispatch(
+                    mmiActions.removeAddTokenConnectRequest({
+                      origin: connectRequest.origin,
+                      apiUrl: connectRequest.apiUrl,
+                      token: connectRequest.token,
+                    }),
+                  );
 
                   trackEvent({
-                    category: 'MMI',
-                    event: 'Custodian onboarding',
+                    category: MetaMetricsEventCategory.MMI,
+                    event: MetaMetricsEventName.TokenAdded,
                     properties: {
                       actions: 'Custodian RPC confirm',
                       custodian: connectRequest.custodian,
