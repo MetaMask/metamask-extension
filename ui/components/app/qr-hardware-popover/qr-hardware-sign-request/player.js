@@ -11,7 +11,7 @@ import {
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../ui/page-container';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 
 const Player = ({ type, cbor, cancelQRHardwareSignRequest, toRead }) => {
   const t = useI18nContext();

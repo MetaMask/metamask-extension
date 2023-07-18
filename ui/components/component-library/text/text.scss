@@ -4,7 +4,7 @@
 $text-variants: (
   display: ("md"),
   heading: ( "sm", "md", "lg"),
-  body: ("xs", "sm", "sm-bold", "md", "md-bold", "lg-medium"),
+  body: ("xs", "xs-medium", "sm", "sm-medium", "sm-bold", "md", "md-medium", "md-bold", "lg-medium"),
 );
 
 // Variable output mixin
@@ -26,13 +26,11 @@ $text-variants: (
   }
 }
 
-
-
 .mm-text {
   // Set default styles
-  color: var(--color-text-default);
   font-family: var(--font-family-sans);
 
+  &:is(strong),
   strong {
     font-weight: var(--font-weight-bold);
   }
