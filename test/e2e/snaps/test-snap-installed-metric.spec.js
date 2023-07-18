@@ -69,7 +69,7 @@ describe('Snap Installed Event', function () {
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // click send inputs on test snap page
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.SNAPS);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
