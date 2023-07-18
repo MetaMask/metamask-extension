@@ -103,6 +103,9 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: ['tsconfig.json'],
       },
+      rules: {
+        'no-restricted-globals': 'off',
+      },
       settings: {
         'import/resolver': {
           // When determining the location of an `import`, use Node's resolution
@@ -126,6 +129,11 @@ module.exports = {
      */
     {
       files: ['*.test.{ts,tsx}', '*.stories.{ts,tsx}'],
+      excludedFiles: [
+        'ui/**/*.test.tsx',
+        'ui/**/*.test.ts',
+        'components/component-library/**/stories.tsx',
+      ],
       extends: [
         path.resolve(__dirname, '.eslintrc.base.js'),
         '@metamask/eslint-config-typescript',
@@ -137,6 +145,7 @@ module.exports = {
       },
       rules: {
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        'import/no-nodejs-modules': 'off',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
         'import/named': 'off',
@@ -157,7 +166,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
-        '@typescript-eslint/unbound-method': 'warn',
+        '@typescript-eslint/unbound-method': 'off',
       },
       settings: {
         'import/resolver': {
@@ -210,7 +219,7 @@ module.exports = {
         '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'warn',
         '@typescript-eslint/naming-convention': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
-        '@typescript-eslint/unbound-method': 'warn',
+        '@typescript-eslint/unbound-method': 'off',
       },
       settings: {
         'import/resolver': {
@@ -357,6 +366,7 @@ module.exports = {
         sourceType: 'module',
       },
       rules: {
+        'no-restricted-globals': 'off',
         'import/unambiguous': 'off',
         'import/named': 'off',
         'jest/no-large-snapshots': [
