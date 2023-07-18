@@ -3,11 +3,11 @@
 exports[`BadgeWrapper should render correctly 1`] = `
 <div>
   <div
-    class="box mm-badge-wrapper box--display-inline-block box--flex-direction-row"
+    class="mm-box mm-badge-wrapper mm-box--display-inline-block"
   >
     content
     <div
-      class="box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right box--flex-direction-row"
+      class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
     >
       <div
         data-testid="badge"

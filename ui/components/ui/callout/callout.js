@@ -4,7 +4,8 @@ import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
 import { Severity, TextColor } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
-import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
+import { ButtonIcon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 /**
  * @deprecated `<Callout />` has been deprecated in favor of the `<BannerAlert />`

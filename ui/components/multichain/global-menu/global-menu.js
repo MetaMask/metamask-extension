@@ -18,6 +18,7 @@ import {
   Text,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../component-library';
+
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';

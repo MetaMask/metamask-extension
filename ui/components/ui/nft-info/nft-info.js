@@ -10,7 +10,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Identicon from '../identicon';
 import Button from '../button';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
