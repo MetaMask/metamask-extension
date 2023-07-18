@@ -59,7 +59,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="account-modal__close"
       />
       <span
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-top-2 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-top-2 mm-box--color-text-default"
       >
         Test Account
       </span>
@@ -72,7 +72,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box export-private-key-modal__divider box--margin-5 box--md:margin-3 box--flex-direction-row box--width-full"
       />
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-4 box--md:margin-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-4 mm-box--sm:margin-0 mm-box--md:margin-4 mm-box--lg:margin-0 mm-box--color-text-default"
       >
         Show Private Keys
       </p>
@@ -99,7 +99,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         </div>
       </div>
       <p
-        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-error-default"
+        class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
       />
       <div
         class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
