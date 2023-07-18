@@ -55,7 +55,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
       <BannerAlert severity={Severity.Danger} marginTop={4}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
-      <ButtonPrimary marginTop={6} onClick={onClose}>
+      <ButtonPrimary marginTop={6} onClick={onClose} block>
         {t('done')}
       </ButtonPrimary>
     </>
