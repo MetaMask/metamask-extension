@@ -322,7 +322,6 @@ export default class TransactionController extends EventEmitter {
    * @fires ${txMeta.id}:unapproved
    */
   addTransaction(txMeta) {
-    console.log('------- into addTransaction');
     this.txStateManager.addTransaction(txMeta);
     this.emit(`${txMeta.id}:unapproved`, txMeta);
     this._trackTransactionMetricsEvent(
@@ -732,15 +731,6 @@ export default class TransactionController extends EventEmitter {
     actionId,
     options,
   ) {
-    console.log('----------------------1', {
-      txMethodType,
-      txParams,
-      origin,
-      transactionType,
-      sendFlowHistory,
-      actionId,
-      options,
-    });
     const { txMeta, isExisting } = await this._createTransaction(
       txMethodType,
       txParams,
