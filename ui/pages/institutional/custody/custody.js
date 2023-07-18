@@ -44,6 +44,10 @@ import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 
 const CustodyPage = () => {
@@ -141,8 +145,8 @@ const CustodyPage = () => {
               setCurrentJwt(jwtListValue[0] || '');
               setJwtList(jwtListValue);
               trackEvent({
-                category: 'MMI',
-                event: 'Custodian Selected',
+                category: MetaMetricsEventCategory.MMI,
+                event: MetaMetricsEventName.CustodianSelected,
                 properties: {
                   custodian: custodian.name,
                 },
@@ -192,8 +196,8 @@ const CustodyPage = () => {
         `Something went wrong connecting your custodian account. Error details: ${errorMessage}`,
       );
       trackEvent({
-        category: 'MMI',
-        event: 'Connect to custodian error',
+        category: MetaMetricsEventCategory.MMI,
+        event: MetaMetricsEventName.CustodianConnectionFailed,
         properties: {
           custodian: selectedCustodianName,
         },
@@ -225,8 +229,8 @@ const CustodyPage = () => {
 
       setAccounts(accountsValue);
       trackEvent({
-        category: 'MMI',
-        event: 'Connect to custodian',
+        category: MetaMetricsEventCategory.MMI,
+        event: MetaMetricsEventName.CustodianConnected,
         properties: {
           custodian: selectedCustodianName,
           apiUrl,
@@ -553,8 +557,8 @@ const CustodyPage = () => {
                 );
 
                 trackEvent({
-                  category: 'MMI',
-                  event: 'Custodial accounts connected',
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.CustodialAccountsConnected,
                   properties: {
                     custodian: selectedCustodianName,
                     numberOfAccounts: Object.keys(selectedAccounts).length,
@@ -588,8 +592,8 @@ const CustodyPage = () => {
               }
 
               trackEvent({
-                category: 'MMI',
-                event: 'Connect to custodian cancel',
+                category: MetaMetricsEventCategory.MMI,
+                event: MetaMetricsEventName.CustodianConnectionCanceled,
                 properties: {
                   custodian: selectedCustodianName,
                   numberOfAccounts: Object.keys(selectedAccounts).length,

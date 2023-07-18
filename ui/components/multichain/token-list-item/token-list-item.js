@@ -19,8 +19,8 @@ import {
   AvatarToken,
   BadgeWrapper,
   Box,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   getCurrentChainId,
   getCurrentNetwork,

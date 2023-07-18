@@ -41,7 +41,7 @@ export const NftItem = ({
         })}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         positionObj={{ top: -4, right: -4 }}
-        display={Display.BLOCK}
+        display={Display.Block}
         badge={
           <AvatarNetwork
             className="nft-item__network-badge"
