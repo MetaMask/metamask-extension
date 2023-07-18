@@ -50,8 +50,9 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         color={loading ? TextColor.transparent : color}
         ref={ref}
         href={href}
-        target={externalLink ? '_blank' : undefined}
-        rel={externalLink ? 'noopener noreferrer' : undefined}
+        {...(externalLink
+          ? { target: '_blank', rel: 'noopener noreferrer' }
+          : {})}
         paddingLeft={4}
         paddingRight={4}
         ellipsis={ellipsis}
@@ -67,7 +68,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           },
           className,
         )}
-        disabled={disabled && !href ? disabled : undefined}
+        disabled={disabled}
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
