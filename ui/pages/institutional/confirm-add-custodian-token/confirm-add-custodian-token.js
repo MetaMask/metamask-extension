@@ -27,6 +27,10 @@ import {
 } from '../../../components/component-library';
 import { Text } from '../../../components/component-library/text/deprecated';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import {
   complianceActivated,
   getInstitutionalConnectRequests,
 } from '../../../ducks/institutional/institutional';
@@ -59,8 +63,8 @@ const ConfirmAddCustodianToken = () => {
   }
 
   trackEvent({
-    category: 'MMI',
-    event: 'Custodian onboarding',
+    category: MetaMetricsEventCategory.MMI,
+    event: MetaMetricsEventName.TokenAdded,
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
@@ -184,8 +188,8 @@ const ConfirmAddCustodianToken = () => {
                 );
 
                 trackEvent({
-                  category: 'MMI',
-                  event: 'Custodian onboarding',
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.TokenAdded,
                   properties: {
                     actions: 'Custodian RPC cancel',
                     custodian: connectRequest.custodian,
@@ -238,8 +242,8 @@ const ConfirmAddCustodianToken = () => {
                   );
 
                   trackEvent({
-                    category: 'MMI',
-                    event: 'Custodian onboarding',
+                    category: MetaMetricsEventCategory.MMI,
+                    event: MetaMetricsEventName.TokenAdded,
                     properties: {
                       actions: 'Custodian RPC confirm',
                       custodian: connectRequest.custodian,
