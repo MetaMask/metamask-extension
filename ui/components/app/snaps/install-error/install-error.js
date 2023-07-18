@@ -13,8 +13,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
-import { AvatarIcon, IconSize } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
+import { AvatarIcon, IconSize, Text } from '../../../component-library';
 
 const InstallError = ({ title, error, description, iconName }) => {
   return (

@@ -13,7 +13,7 @@ import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
 import { Box } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 
 const DetectedTokenValues = ({
   token,
