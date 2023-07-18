@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import MetaFoxLogo from '.';
 
 export default {

@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Text } from '../../component-library/text/deprecated';
 import {
   BUTTON_VARIANT,
   Button,
-  Text,
   Box,
   Modal,
   ModalOverlay,

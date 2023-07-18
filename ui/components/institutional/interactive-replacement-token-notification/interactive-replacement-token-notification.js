@@ -24,9 +24,9 @@ import {
   IconName,
   IconSize,
   ButtonLink,
-  Text,
   Box,
 } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   const t = useI18nContext();
@@ -53,7 +53,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
         return;
       }
 
-      const token = await dispatch(mmiActions.getCustodianToken());
+      const token = await dispatch(mmiActions.getCustodianToken(address));
       const custodyAccountDetails = await dispatch(
         mmiActions.getAllCustodianAccountsWithToken(
           keyring.type.split(' - ')[1],
