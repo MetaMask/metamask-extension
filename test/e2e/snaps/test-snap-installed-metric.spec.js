@@ -53,16 +53,7 @@ describe('Snap Installed Event', function () {
         await driver.delay(500);
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
         await driver.clickElement({
           text: 'Connect',
