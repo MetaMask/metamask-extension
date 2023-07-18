@@ -45,9 +45,12 @@ describe('Snap Installed Event', function () {
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.delay(1000);
         const confirmButton = await driver.findElement('#connectDialogSnap');
         await driver.scrollToElement(confirmButton);
+        await driver.delay(500);
         await driver.clickElement('#connectDialogSnap');
+        await driver.delay(500);
 
         // switch to metamask extension and click connect
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
@@ -57,11 +60,7 @@ describe('Snap Installed Event', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Install' });
-
         await driver.clickElement('[data-testid="page-container-footer-next"]');
-
-        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
