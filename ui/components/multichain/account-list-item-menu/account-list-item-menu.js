@@ -30,8 +30,8 @@ import {
   PopoverPosition,
   ModalFocus,
   PopoverRole,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,

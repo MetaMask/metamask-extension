@@ -50,7 +50,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           data-testid="nft-item"
         >
           <div
-            class="mm-box mm-badge-wrapper nft-item__badge-wrapper"
+            class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
           >
             <img
               alt="MUNK #1 1"

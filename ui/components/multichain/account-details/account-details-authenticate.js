@@ -14,7 +14,7 @@ import {
   FormTextField,
   Box,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 
@@ -60,9 +60,11 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         labelProps={{ fontWeight: FontWeight.Medium }}
         autoFocus
       />
-      <BannerAlert marginTop={6} severity={Severity.Danger}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
-      </BannerAlert>
+      <BannerAlert
+        marginTop={6}
+        severity={Severity.Danger}
+        description={t('privateKeyWarning')}
+      />
       <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
           {t('cancel')}
