@@ -229,7 +229,7 @@
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
     "@metamask/assets-controllers": "^9.2.0",
-    "@metamask/base-controller": "^3.1.0",
+    "@metamask/base-controller": "^3.2.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
     "@metamask/controller-utils": "^4.2.0",
