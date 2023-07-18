@@ -63,7 +63,7 @@
     "lint:lockfile:dedupe:fix": "yarn dedupe",
     "lint:lockfile": "lockfile-lint --path yarn.lock --allowed-hosts npm yarn github.com codeload.github.com --empty-hostname true --allowed-schemes \"https:\" \"git+https:\" \"npm:\" \"patch:\" \"workspace:\"",
     "lint:shellcheck": "./development/shellcheck.sh",
-    "lint:styles": "stylelint -- */**/*.scss",
+    "lint:styles": "stylelint '*/**/*.scss'",
     "lint:styles:fix": "yarn lint:styles --fix",
     "lint:tsc": "tsc --project tsconfig.json --noEmit",
     "validate-source-maps": "node ./development/sourcemap-validator.js",
