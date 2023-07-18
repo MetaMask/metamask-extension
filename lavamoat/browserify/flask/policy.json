@@ -1939,8 +1939,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "await-semaphore": true,
-        "eth-query>json-rpc-random-id": true
+        "await-semaphore": true
       }
     },
     "@metamask/providers>@metamask/object-multiplex": {
