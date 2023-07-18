@@ -2822,54 +2822,6 @@
         "eslint-plugin-mocha>eslint-utils>eslint-visitor-keys": true
       }
     },
-    "eslint-plugin-node": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.extname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "brfs>resolve": true,
-        "eslint-plugin-node>eslint-plugin-es": true,
-        "eslint-plugin-node>eslint-utils": true,
-        "eslint-plugin-node>semver": true,
-        "eslint>ignore": true,
-        "eslint>minimatch": true
-      }
-    },
-    "eslint-plugin-node>eslint-plugin-es": {
-      "packages": {
-        "@typescript-eslint/eslint-plugin>regexpp": true,
-        "eslint-plugin-node>eslint-plugin-es>eslint-utils": true
-      }
-    },
-    "eslint-plugin-node>eslint-plugin-es>eslint-utils": {
-      "packages": {
-        "eslint-plugin-node>eslint-plugin-es>eslint-utils>eslint-visitor-keys": true
-      }
-    },
-    "eslint-plugin-node>eslint-utils": {
-      "packages": {
-        "eslint-plugin-node>eslint-utils>eslint-visitor-keys": true
-      }
-    },
-    "eslint-plugin-node>semver": {
-      "globals": {
-        "console": true,
-        "process": true
-      }
-    },
     "eslint-plugin-prettier": {
       "packages": {
         "eslint-plugin-prettier>prettier-linter-helpers": true,
