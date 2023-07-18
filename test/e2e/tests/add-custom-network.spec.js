@@ -378,7 +378,7 @@ describe('Custom network', function () {
             networkConfigurations: {
               networkConfigurationId: {
                 rpcUrl: networkURL,
-                chainId: chainID,
+                caipChaidId: `eip155:${chainID}`,
                 nickname: networkNAME,
                 ticker: currencySYMBOL,
                 rpcPrefs: {},

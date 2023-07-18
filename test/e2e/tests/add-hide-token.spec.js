@@ -19,7 +19,7 @@ describe('Hide token', function () {
         fixtures: new FixtureBuilder()
           .withTokensController({
             allTokens: {
-              [toHex(1337)]: {
+              'eip155:1337': {
                 '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
                   {
                     address: '0x86002be4cdd922de1ccb831582bf99284b99ac12',
