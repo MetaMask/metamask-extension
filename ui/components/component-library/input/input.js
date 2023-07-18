@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box';
 
-import { Text } from '../text/deprecated';
+import { Text } from '..';
 
 import { INPUT_TYPES } from './input.constants';
 

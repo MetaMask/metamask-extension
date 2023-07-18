@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "Địa chỉ công khai"
   },
-  "queue": {
-    "message": "Hàng đợi"
-  },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
   },

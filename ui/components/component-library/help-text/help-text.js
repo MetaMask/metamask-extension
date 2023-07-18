@@ -9,7 +9,9 @@ import {
   SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '../text/deprecated';
+import Box from '../../ui/box';
+
+import { Text } from '../text';
 
 export const HelpText = ({
   severity,
@@ -60,7 +62,7 @@ HelpText.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * HelpText also accepts all Text and Box props
+   * HelpText also accepts all Box props
    */
-  ...Text.propTypes,
+  ...Box.propTypes,
 };

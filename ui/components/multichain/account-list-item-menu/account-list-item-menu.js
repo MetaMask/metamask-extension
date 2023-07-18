@@ -30,8 +30,8 @@ import {
   PopoverPosition,
   ModalFocus,
   PopoverRole,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventLinkType,
@@ -233,7 +233,9 @@ export const AccountListItemMenu = ({
                 ref={removeJWTItemRef}
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
-                  const token = await dispatch(mmiActions.getCustodianToken());
+                  const token = await dispatch(
+                    mmiActions.getCustodianToken(identity.address),
+                  );
                   const custodyAccountDetails = await dispatch(
                     mmiActions.getAllCustodianAccountsWithToken(
                       keyring.type.split(' - ')[1],

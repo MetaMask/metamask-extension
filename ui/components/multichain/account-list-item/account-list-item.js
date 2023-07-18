@@ -18,8 +18,8 @@ import {
   IconName,
   IconSize,
   AvatarAccountVariant,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   Color,
   TextAlign,
