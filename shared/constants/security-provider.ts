@@ -17,7 +17,7 @@ export const SECURITY_PROVIDER_CONFIG: Readonly<SecurityProviderConfig> = {
     tKeyName: 'blockaid',
     url: 'https://blockaid.io/',
   },
-} as const;
+};
 
 /**
  * @typedef {object} SecurityProviderMessageSeverity
