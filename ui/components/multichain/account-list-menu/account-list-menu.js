@@ -298,7 +298,7 @@ export const AccountListMenu = ({ onClose }) => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event:
-                          MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                          MetaMetricsEventName.ConnectCustodialAccountClicked,
                       });
                       if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                         global.platform.openExtensionInBrowser(
