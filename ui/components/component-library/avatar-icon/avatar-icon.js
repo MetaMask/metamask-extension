@@ -4,7 +4,6 @@ import classnames from 'classnames';
 import {
   BorderColor,
   Size,
-  // DISPLAY,
   Display,
   AlignItems,
   JustifyContent,
