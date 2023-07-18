@@ -130,8 +130,7 @@ module.exports = {
         path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
       ],
       rules: {
-        'no-restricted-globals': 'off',
-        'id-denylist': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
         // Turn these off, as it's recommended by typescript-eslint.
         // See: <https://typescript-eslint.io/docs/linting/troubleshooting#eslint-plugin-import>
         'import/named': 'off',
@@ -142,8 +141,12 @@ module.exports = {
         // See: <https://github.com/Microsoft/TypeScript/issues/15300#issuecomment-702872440>
         '@typescript-eslint/consistent-type-definitions': 'off',
         // TODO: enable
+        'import/order': 'off',
+        '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-misused-promises': 'off',
+        '@typescript-eslint/no-throw-literal': 'off',
         '@typescript-eslint/naming-convention': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
       },
       settings: {
         'import/resolver': {
@@ -192,6 +195,7 @@ module.exports = {
       },
       plugins: ['react'],
       rules: {
+        'no-restricted-globals': 'off',
         'react/no-unused-prop-types': 'error',
         'react/no-unused-state': 'error',
         'react/jsx-boolean-value': 'error',
@@ -246,6 +250,8 @@ module.exports = {
       ],
       extends: ['@metamask/eslint-config-mocha'],
       rules: {
+        // TODO: enable
+        'no-restricted-globals': 'off',
         // In Mocha tests, it is common to use `this` to store values or do
         // things like force the test to fail.
         '@babel/no-invalid-this': 'off',

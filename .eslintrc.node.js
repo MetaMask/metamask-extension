@@ -1,10 +1,10 @@
 module.exports = {
   extends: ['@metamask/eslint-config-nodejs'],
   rules: {
-    'node/no-process-env': 'off',
+    'n/no-process-env': 'off',
     // TODO: re-enable these rules
-    'node/no-sync': 'off',
-    'node/no-unpublished-import': 'off',
-    'node/no-unpublished-require': 'off',
+    'n/no-sync': 'off',
+    'n/no-unpublished-import': 'off',
+    'n/no-unpublished-require': 'off',
   },
 };
