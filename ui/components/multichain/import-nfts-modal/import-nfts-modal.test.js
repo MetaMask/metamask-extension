@@ -3,16 +3,16 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useHistory } from 'react-router-dom';
-import { renderWithProvider } from '../../../test/jest/rendering';
-import mockState from '../../../test/data/mock-state.json';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import { renderWithProvider } from '../../../../test/jest/rendering';
+import mockState from '../../../../test/data/mock-state.json';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   addNftVerifyOwnership,
   ignoreTokens,
   setNewNftAddedMessage,
   updateNftDropDownState,
-} from '../../store/actions';
-import AddNft from '.';
+} from '../../../store/actions';
+import { ImportNftsModal } from '.';
 
 const VALID_ADDRESS = '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9';
 const INVALID_ADDRESS = 'aoinsafasdfa';
@@ -33,7 +33,7 @@ jest.mock('react-router-dom', () => ({
   ),
 }));
 
-jest.mock('../../store/actions.ts', () => ({
+jest.mock('../../../store/actions.ts', () => ({
   addNftVerifyOwnership: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
@@ -47,56 +47,72 @@ jest.mock('../../store/actions.ts', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-describe('AddNft', () => {
+describe('ImportNftsModal', () => {
   const store = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.restoreAllMocks();
   });
 
-  it('should enable the "Add" button when valid entries are input into both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
-    expect(getByText('Add')).not.toBeEnabled();
-    fireEvent.change(getByTestId('address'), {
+  it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
+    const { getByText, getByPlaceholderText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
+    expect(getByText('Import')).not.toBeEnabled();
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
-    fireEvent.change(getByTestId('token-id'), {
+    fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Add')).toBeEnabled();
+    expect(getByText('Import')).toBeEnabled();
   });
 
-  it('should not enable the "Add" button when an invalid entry is input into one or both Address and TokenId fields', () => {
-    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
-    expect(getByText('Add')).not.toBeEnabled();
-    fireEvent.change(getByTestId('address'), {
+  it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
+    const { getByText, getByPlaceholderText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
+    expect(getByText('Import')).not.toBeEnabled();
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
       target: { value: INVALID_ADDRESS },
     });
-    fireEvent.change(getByTestId('token-id'), {
+    fireEvent.change(tokenIdInput, {
       target: { value: VALID_TOKENID },
     });
-    expect(getByText('Add')).not.toBeEnabled();
-    fireEvent.change(getByTestId('address'), {
+    expect(getByText('Import')).not.toBeEnabled();
+    fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
-    expect(getByText('Add')).toBeEnabled();
-    fireEvent.change(getByTestId('token-id'), {
+    expect(getByText('Import')).toBeEnabled();
+    fireEvent.change(tokenIdInput, {
       target: { value: INVALID_TOKENID },
     });
-    expect(getByText('Add')).not.toBeEnabled();
+    expect(getByText('Import')).not.toBeEnabled();
   });
 
   it('should call addNftVerifyOwnership, updateNftDropDownState, setNewNftAddedMessage, and ignoreTokens action with correct values (tokenId should not be in scientific notation)', async () => {
-    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
-    fireEvent.change(getByTestId('address'), {
+    const onClose = jest.fn();
+    const { getByPlaceholderText, getByText } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
     const LARGE_TOKEN_ID = Number.MAX_SAFE_INTEGER + 1;
-    fireEvent.change(getByTestId('token-id'), {
+    fireEvent.change(tokenIdInput, {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText('Add'));
+    fireEvent.click(getByText('Import'));
 
     await waitFor(() => {
       expect(addNftVerifyOwnership).toHaveBeenCalledWith(
@@ -127,16 +143,21 @@ describe('AddNft', () => {
       jest.fn().mockRejectedValue(new Error('error')),
     );
 
-    const { getByTestId, getByText } = renderWithProvider(<AddNft />, store);
-    fireEvent.change(getByTestId('address'), {
+    const { getByTestId, getByText, getByPlaceholderText } = renderWithProvider(
+      <ImportNftsModal />,
+      store,
+    );
+    const addressInput = getByPlaceholderText('0x...');
+    const tokenIdInput = getByPlaceholderText('Enter the token id');
+    fireEvent.change(addressInput, {
       target: { value: VALID_ADDRESS },
     });
     const LARGE_TOKEN_ID = Number.MAX_SAFE_INTEGER + 1;
-    fireEvent.change(getByTestId('token-id'), {
+    fireEvent.change(tokenIdInput, {
       target: { value: LARGE_TOKEN_ID },
     });
 
-    fireEvent.click(getByText('Add'));
+    fireEvent.click(getByText('Import'));
 
     await waitFor(() => {
       expect(setNewNftAddedMessage).toHaveBeenCalledWith('error');
@@ -148,19 +169,23 @@ describe('AddNft', () => {
   });
 
   it('should route to default route when cancel button is clicked', () => {
-    const { queryByTestId } = renderWithProvider(<AddNft />, store);
+    const onClose = jest.fn();
+    const { getByText } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
 
-    const cancelButton = queryByTestId('page-container-footer-cancel');
+    const cancelButton = getByText('Cancel');
     fireEvent.click(cancelButton);
 
     expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
   it('should route to default route when close button is clicked', () => {
-    const { queryByLabelText } = renderWithProvider(<AddNft />, store);
+    const onClose = jest.fn();
+    renderWithProvider(<ImportNftsModal onClose={onClose} />, store);
 
-    const closeButton = queryByLabelText('close');
-    fireEvent.click(closeButton);
+    fireEvent.click(document.querySelector('button[aria-label="Close"]'));
 
     expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });

@@ -322,7 +322,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             />
             <div>
               <p
-                class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
               >
                 Network is busy. Gas prices are high and estimates are less accurate.
               </p>

@@ -1,12 +1,12 @@
 import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
-import ActionableMessage from '../../ui/actionable-message';
-import { Text } from './text';
+
+import { Text } from '../text';
 
 # Text
 
-> This Text (fka Typography) component has breaking changes in variant options and the line heights associated to each variant.
-
 Good typography improves readability, legibility and hierarchy of information.
+
+> Contribute to improving the UI consistency of the extension by helping to replace the deprecated `<Typography>` with `<Text>`. [See details](#converting-from-typography-to-text)
 
 <Canvas>
   <Story id="components-componentlibrary-text--default-story" />
@@ -14,7 +14,7 @@ Good typography improves readability, legibility and hierarchy of information.
 
 ## Props
 
-The `Text` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+The `Text` accepts all props below as well as all [Box](/docs/components-componentlibrary-box--docs#props) component props
 
 <ArgsTable of={Text} />
 
@@ -280,7 +280,8 @@ You can also utilize the `ValidTag` enum from `./text.types` to ensure that you 
 </Canvas>
 
 ```jsx
-import { Text } from '../../component-library';
+import { Display } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library'
 
 <Text as="dd">dd</Text>
 <Text as="div">div</Text>
@@ -294,9 +295,12 @@ import { Text } from '../../component-library';
 <Text as="h6">h6</Text>
 <Text as="li">li</Text>
 <Text as="p">p</Text>
-<Text as="span">span</Text>
-<Text as="strong">strong</Text>
-<Text as="input" placeholder="input"></Text>
+<Text display={Display.Block} as="span">span</Text>
+<Text display={Display.Block} as="strong">strong</Text>
+<Text as="ul">ul</Text>
+<Text as="label">label</Text>
+<Text as="header">header</Text>
+<Text as="input" placeholder="input" />
 ```
 
 Renders the html:
@@ -316,6 +320,11 @@ Renders the html:
 <p>p</p>
 <span>span</span>
 <strong>strong</strong>
+<ul>
+  ul
+</ul>
+<label>label</label>
+<header>header</header>
 <input placeholder="input" />
 ```
 
@@ -360,10 +369,6 @@ import { Text } from '../../component-library';
 </Text>
 ```
 
-### Box Props
-
-Use any valid box props [Box](/?path=/story/components-ui-box--default-story) component props to the Text component.
-
 ### Class Name
 
 Adds an additional class to the `Text` component
@@ -376,7 +381,7 @@ The text content of the `Text` component
 
 # Converting from `Typography` to `Text`
 
-The `Typography` component has been deprecated in favor of the `Text` component. Below are code examples converting from `Typography` to `Text`.
+The `Typography` component has been deprecated in favor of the `Text` component. You can contribute by submitting a PR against [Replace deprecated Typography with Text component](https://github.com/MetaMask/metamask-extension/issues/17670) on GitHub. Below are code examples converting from `Typography` to `Text`.
 
 ### Variant
 
@@ -575,7 +580,7 @@ Values using the `TextAlign` object from `./ui/helpers/constants/design-system.j
 
 ### Box Props
 
-Box props are now integrated with the `Text` component. Valid box props: [Box](/?path=/story/components-ui-box--default-story)
+Box props are now integrated with the `Text` component. Valid Box props: [Box](/docs/components-componentlibrary-box--docs#props)
 
 You no longer need to pass these props as an object through `boxProps`
 

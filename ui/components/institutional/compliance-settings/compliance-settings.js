@@ -11,12 +11,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-import {
-  Text,
-  Button,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
-} from '../../component-library';
+import { Button, BUTTON_VARIANT, BUTTON_SIZES } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box';
 
 const ComplianceSettings = () => {

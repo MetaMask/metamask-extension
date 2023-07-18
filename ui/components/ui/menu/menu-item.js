@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { Text, Icon, IconSize } from '../../component-library';
+import { Icon, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { TextVariant } from '../../../helpers/constants/design-system';
 
 const MenuItem = React.forwardRef(

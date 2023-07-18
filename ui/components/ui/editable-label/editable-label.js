@@ -8,12 +8,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import {
-  ButtonIcon,
-  FormTextField,
-  IconName,
-  Text,
-} from '../../component-library';
+import { ButtonIcon, FormTextField, IconName } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import Box from '../box/box';
 
 export default class EditableLabel extends Component {
