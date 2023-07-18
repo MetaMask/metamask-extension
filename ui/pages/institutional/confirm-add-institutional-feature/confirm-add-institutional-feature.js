@@ -8,10 +8,10 @@ import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/ro
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
-  Text,
   BUTTON_SIZES,
   BUTTON_VARIANT,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   TextColor,
   TextVariant,

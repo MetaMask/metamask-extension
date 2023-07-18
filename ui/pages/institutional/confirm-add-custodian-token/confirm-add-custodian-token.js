@@ -19,13 +19,13 @@ import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import {
   Label,
-  Text,
   ButtonLink,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   Box,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import {
   complianceActivated,
   getInstitutionalConnectRequests,

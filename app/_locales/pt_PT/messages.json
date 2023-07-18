@@ -113,9 +113,6 @@
   "privacyMsg": {
     "message": "Política de Privacidade"
   },
-  "queue": {
-    "message": "Fila"
-  },
   "reject": {
     "message": "Rejeitar"
   },

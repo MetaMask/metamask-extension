@@ -17,8 +17,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import Box from '../../../components/ui/box';
 import ComplianceSettings from '../../../components/institutional/compliance-settings';
 

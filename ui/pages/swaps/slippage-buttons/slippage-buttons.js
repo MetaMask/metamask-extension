@@ -15,7 +15,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import { Slippage } from '../../../../shared/constants/swaps';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 
 export default function SlippageButtons({
   onSelect,

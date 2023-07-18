@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { Text } from '../text';
 import {
   AlignItems,
   BackgroundColor,
@@ -12,6 +10,8 @@ import {
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box/box';
+import { Text } from '..';
 
 export const Tag = ({ label, className, labelProps, ...props }) => {
   return (
@@ -43,7 +43,7 @@ Tag.propTypes = {
   /**
    * The label props of the component. Most Text component props can be used
    */
-  labelProps: PropTypes.shape(Text.PropTypes),
+  labelProps: PropTypes.object,
   /**
    * Additional classNames to be added to the Tag component
    */

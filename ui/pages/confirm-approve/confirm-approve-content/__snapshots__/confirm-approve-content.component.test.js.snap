@@ -135,18 +135,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -320,18 +320,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -505,18 +505,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -690,18 +690,18 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
               class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
               <button
-                class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium box--margin-left-3 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
               </button>
             </div>
             <h6
-              class="box mm-text custom-nonce__value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
