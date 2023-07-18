@@ -47,7 +47,12 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message';
 import LedgerInstructionField from '../ledger-instruction-field';
 import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MetaMetricsEventName,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
 import {
@@ -208,8 +213,8 @@ const SignatureRequest = ({ txData }) => {
         onDeepLinkFetched: () => undefined,
         onDeepLinkShown: () => {
           trackEvent({
-            category: 'MMI',
-            event: 'Show deeplink for signature',
+            category: MetaMetricsEventCategory.MMI,
+            event: MetaMetricsEventName.SignatureDeeplinkDisplayed,
           });
         },
         showCustodyConfirmLink,
