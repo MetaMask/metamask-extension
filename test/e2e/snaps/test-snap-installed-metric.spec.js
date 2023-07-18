@@ -60,6 +60,7 @@ describe('Snap Installed Event', function () {
           tag: 'button',
         });
 
+        // Two clicks for two screen confirmations
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
