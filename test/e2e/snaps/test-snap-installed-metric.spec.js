@@ -62,17 +62,11 @@ describe('Snap Installed Event', function () {
 
         await driver.waitForSelector({ text: 'Install' });
 
-        await driver.clickElement({
-          text: 'Install',
-          tag: 'button',
-        });
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         await driver.waitForSelector({ text: 'OK' });
 
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
+        await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // click send inputs on test snap page
         await driver.switchToWindowWithTitle(WINDOW_TITLES.SNAPS);
