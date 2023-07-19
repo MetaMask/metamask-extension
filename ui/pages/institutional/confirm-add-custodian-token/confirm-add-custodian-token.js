@@ -29,6 +29,7 @@ import {
   complianceActivated,
   getInstitutionalConnectRequests,
 } from '../../../ducks/institutional/institutional';
+import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -197,10 +198,10 @@ const ConfirmAddCustodianToken = () => {
 
                 try {
                   if (connectRequest.chainId) {
+                    const caipChainId = getCaipChainIdFromEthChainId(chainId)
                     const networkType = Object.keys(BUILT_IN_NETWORKS).find(
                       (key) =>
-                        Number(BUILT_IN_NETWORKS[key].chainId).toString(10) ===
-                        connectRequest.chainId.toString(),
+                        BUILT_IN_NETWORKS[key].caipChainId === caipChainId
                     );
                     await dispatch(setProviderType(networkType));
                   }

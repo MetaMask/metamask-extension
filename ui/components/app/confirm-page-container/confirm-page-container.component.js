@@ -135,7 +135,7 @@ const ConfirmPageContainer = (props) => {
     contentComponent && disabled && (errorKey || errorMessage);
 
   const networkName =
-    NETWORK_TO_NAME_MAP[currentTransaction.chainId] || networkIdentifier;
+    NETWORK_TO_NAME_MAP[currentTransaction.caipChainId] || networkIdentifier;
 
   const fetchCollectionBalance = useCallback(async () => {
     const tokenBalance = await fetchTokenBalance(
@@ -177,7 +177,7 @@ const ConfirmPageContainer = (props) => {
             tokenName={nativeCurrency}
             accountAddress={fromAddress}
             networkName={networkName}
-            chainId={currentTransaction.chainId}
+            caipChainId={currentTransaction.caipChainId}
           />
         ) : (
           <ConfirmPageContainerHeader

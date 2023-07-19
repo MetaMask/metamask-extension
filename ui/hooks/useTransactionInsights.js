@@ -39,9 +39,7 @@ const useTransactionInsights = ({ txData }) => {
     ({ id }) => id === selectedInsightSnapId,
   );
 
-  const { txParams, chainId, origin } = txData;
-  const networkId = CHAIN_ID_TO_NETWORK_ID_MAP[chainId];
-  const caip2ChainId = `eip155:${networkId ?? stripHexPrefix(chainId)}`;
+  const { txParams, caipChainId, origin } = txData;
 
   if (insightSnaps.length === 1) {
     return (
@@ -52,7 +50,7 @@ const useTransactionInsights = ({ txData }) => {
         <SnapInsight
           transaction={txParams}
           origin={origin}
-          chainId={caip2ChainId}
+          chainId={caipChainId} // rename this?
           selectedSnap={selectedSnap}
         />
       </Tab>
@@ -76,7 +74,7 @@ const useTransactionInsights = ({ txData }) => {
       <SnapInsight
         transaction={txParams}
         origin={origin}
-        chainId={caip2ChainId}
+        chainId={caipChainId} // rename this?
         selectedSnap={selectedSnap}
       />
     </DropdownTab>
