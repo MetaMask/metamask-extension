@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty, isObject } from '@metamask/utils';
+import { hasProperty } from '@metamask/utils';
 
 export const version = 89;
 
@@ -23,18 +23,11 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (
-    !hasProperty(state, 'PhishingController') ||
-    !isObject(state.PhishingController) ||
-    !hasProperty(state.PhishingController, 'listState')
-  ) {
+  if (!hasProperty(state, 'PhishingController')) {
     return state;
   }
 
-  const { PhishingController } = state;
-
-  PhishingController.phishingLists = [PhishingController.listState];
-  delete PhishingController.listState;
+  delete state.PhishingController;
 
   return state;
 }
