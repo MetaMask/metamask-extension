@@ -21,8 +21,7 @@ import {
   getLedgerTransportStatus,
 } from '../../../ducks/app/app';
 
-import { BannerAlert, ButtonLink } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   SEVERITIES,

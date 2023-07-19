@@ -9,12 +9,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
+  Text,
   Button,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';

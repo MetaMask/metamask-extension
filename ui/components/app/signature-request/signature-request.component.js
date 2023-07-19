@@ -48,8 +48,8 @@ import {
   Icon,
   IconName,
   ///: END:ONLY_INCLUDE_IN
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import Footer from './signature-request-footer';
 import Message from './signature-request-message';
 

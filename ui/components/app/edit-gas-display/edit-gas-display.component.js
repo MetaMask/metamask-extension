@@ -12,7 +12,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../ui/info-tooltip';

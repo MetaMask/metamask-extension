@@ -15,8 +15,8 @@ import {
   BUTTON_VARIANT,
   ButtonLink,
   Label,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import Box from '../../ui/box';
 import CheckBox from '../../ui/check-box/check-box.component';
 import {
