@@ -26,7 +26,7 @@ describe('Phishing Detection', function () {
 
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
-      // Update the fixture in phishing-detection/helpers.js if this test fails
+      // Update the fixture in phishing-controller/mocks.js if this test fails
       assert.equal(
         METAMASK_STALELIST_URL,
         'https://phishing-detection.metafi.codefi.network/v1/stalelist',

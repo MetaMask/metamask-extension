@@ -15,7 +15,7 @@ const {
 const {
   setupPhishingDetectionMocks,
   BlockProvider,
-} = require('../tests/phishing-detection/helpers');
+} = require('../tests/phishing-controller/helpers');
 
 describe('Phishing warning page', function () {
   const driverOptions = { openDevToolsForTabs: true };
