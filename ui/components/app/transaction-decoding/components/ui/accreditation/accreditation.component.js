@@ -8,8 +8,13 @@ import {
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
-import Button from '../../../../../ui/button';
-import { Icon, IconName, Text } from '../../../../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  Text,
+} from '../../../../../component-library';
 import { TextVariant } from '../../../../../../helpers/constants/design-system';
 
 const Accreditation = ({ fetchVia, address }) => {
@@ -29,7 +34,7 @@ const Accreditation = ({ fetchVia, address }) => {
         >
           {t('transactionDecodingAccreditationVerified', [
             <Button
-              type="link"
+              variant={BUTTON_VARIANT.LINK}
               className="accreditation__link"
               onClick={() => {
                 global.platform.openTab({
