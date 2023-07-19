@@ -142,12 +142,12 @@ exports[`Signature Request Component render should match snapshot when we are us
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               Localhost 8545
             </h6>
             <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
             >
               John Doe
             </h6>
@@ -157,13 +157,13 @@ exports[`Signature Request Component render should match snapshot when we are us
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             0
              
@@ -197,12 +197,12 @@ exports[`Signature Request Component render should match snapshot when we are us
         </div>
       </div>
       <h2
-        class="box mm-text signature-request__content__title mm-text--heading-lg box--margin-top-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
       >
         Signature request
       </h2>
       <h6
-        class="box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center box--margin-top-4 box--margin-right-12 box--margin-left-12 box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -215,7 +215,7 @@ exports[`Signature Request Component render should match snapshot when we are us
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
             >
               Verify third-party details
             </h6>
@@ -230,7 +230,7 @@ exports[`Signature Request Component render should match snapshot when we are us
         class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <p
-          class="box mm-text mm-text--body-md mm-text--font-weight-bold box--margin-left-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
         >
           Mail
         </p>
@@ -917,12 +917,12 @@ exports[`Signature Request Component render should match snapshot when we want t
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               Localhost 8545
             </h6>
             <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
             >
               John Doe
             </h6>
@@ -932,13 +932,13 @@ exports[`Signature Request Component render should match snapshot when we want t
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             0
              
@@ -972,12 +972,12 @@ exports[`Signature Request Component render should match snapshot when we want t
         </div>
       </div>
       <h2
-        class="box mm-text signature-request__content__title mm-text--heading-lg box--margin-top-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
       >
         Signature request
       </h2>
       <h6
-        class="box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center box--margin-top-4 box--margin-right-12 box--margin-left-12 box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -990,7 +990,7 @@ exports[`Signature Request Component render should match snapshot when we want t
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
             >
               Verify third-party details
             </h6>
@@ -1005,7 +1005,7 @@ exports[`Signature Request Component render should match snapshot when we want t
         class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <p
-          class="box mm-text mm-text--body-md mm-text--font-weight-bold box--margin-left-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
         >
           Mail
         </p>
