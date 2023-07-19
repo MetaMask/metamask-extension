@@ -21,6 +21,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch();
@@ -30,9 +31,9 @@ export default function TokenAsset({ token }) {
   const selectedAccountName = selectedIdentity.name;
   const selectedAddress = selectedIdentity.address;
   const history = useHistory();
-  const tokenTrackerLink = getTokenTrackerLink( // i think this needs to be updated
+  const tokenTrackerLink = getTokenTrackerLink(
     token.address,
-    caipChainId,
+    getEthChainIdHexFromCaipChainId(caipChainId),
     null,
     selectedAddress,
     rpcPrefs,

@@ -132,6 +132,7 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const MAX_ALLOWED_SLIPPAGE = 15;
 
@@ -436,7 +437,7 @@ export default function PrepareSwapPage({
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     selectedToToken.address,
-    caipChainId,
+    getEthChainIdHexFromCaipChainId(caipChainId),
     null, // no networkId
     null, // no holderAddress
     {

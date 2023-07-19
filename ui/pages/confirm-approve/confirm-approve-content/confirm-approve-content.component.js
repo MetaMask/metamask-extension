@@ -38,6 +38,7 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -388,7 +389,7 @@ export default class ConfirmApproveContent extends Component {
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        caipChainId,
+        getEthChainIdHexFromCaipChainId(caipChainId),
         null,
         userAddress,
         {

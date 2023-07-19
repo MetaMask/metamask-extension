@@ -32,6 +32,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -82,7 +83,7 @@ export default function ConfirmTokenTransactionBase({
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        caipChainId,
+        getEthChainIdHexFromCaipChainId(caipChainId),
         null,
         userAddress,
         {

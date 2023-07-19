@@ -101,6 +101,7 @@ import {
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -334,7 +335,7 @@ export default function BuildQuote({
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     selectedToToken.address,
-    caipChainId,
+    getEthChainIdHexFromCaipChainId(caipChainId),
     null, // no networkId
     null, // no holderAddress
     {

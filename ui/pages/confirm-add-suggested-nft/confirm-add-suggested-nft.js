@@ -47,6 +47,7 @@ import {
   TextVariant,
   BlockSize,
 } from '../../helpers/constants/design-system';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);
@@ -166,9 +167,9 @@ const ConfirmAddSuggestedNFT = () => {
                 },
               }) => {
                 const nftImageURL = getAssetImageURL(image, ipfsGateway);
-                const blockExplorerLink = getTokenTrackerLink( // probably needs to be updated
+                const blockExplorerLink = getTokenTrackerLink(
                   address,
-                  caipChainId,
+                  getEthChainIdHexFromCaipChainId(caipChainId),
                   null,
                   null,
                   {
