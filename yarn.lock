@@ -4337,7 +4337,7 @@ __metadata:
 
 "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.0.0#./.yarn/patches/@metamask-keyring-controller-npm-7.0.0-962008b200.patch::locator=metamask-crx%40workspace%3A.":
   version: 7.0.0
-  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.0.0#./.yarn/patches/@metamask-keyring-controller-npm-7.0.0-962008b200.patch::version=7.0.0&hash=21d613&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A7.0.0#./.yarn/patches/@metamask-keyring-controller-npm-7.0.0-962008b200.patch::version=7.0.0&hash=854132&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": ^0.13.1
     "@metamask/base-controller": ^3.2.0
@@ -4351,7 +4351,7 @@ __metadata:
     immer: ^9.0.6
   peerDependencies:
     "@metamask/preferences-controller": ^4.2.0
-  checksum: 67935ed387d26f4da102e4ab68c18aaf9df86a6ab089299a36e7086654f86ed690e719ddfb81b68a6c574590597bf848bf8b96904bb259b87aab80fe773e1a0a
+  checksum: 0fb9dfa2ad2f2c9fd3b1b3907c0f2f00fb82a17ceb6583a2b86d4d0619b0e85ceedd5231bc263d31a39975e8596fff7385b4b8f35d8787d9cd68de8cfa81f9ab
   languageName: node
   linkType: hard
 
