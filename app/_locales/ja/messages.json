@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "パブリックアドレス"
   },
-  "queue": {
-    "message": "キュー"
-  },
   "queued": {
     "message": "キュー待ち"
   },

@@ -9,12 +9,12 @@ exports[`ComplianceDetails should render correctly 1`] = `
       class="mm-box compliance-details__row mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--height-2/3"
     >
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
         Address
       </p>
       <p
-        class="box mm-text mm-text--body-xs box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-xs mm-box--color-text-default"
       >
         0xAddress
       </p>
@@ -26,7 +26,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
-          class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-default"
         >
           Risk rating
         </p>
@@ -60,7 +60,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="mm-box compliance-row__column-risk compliance-row__column-risk--green"
       >
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           low
         </p>
@@ -73,7 +73,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <p
-          class="box mm-text mm-text--body-md box--margin-right-2 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--margin-right-2 mm-box--color-text-default"
         >
           Report last run
         </p>
@@ -104,7 +104,7 @@ exports[`ComplianceDetails should render correctly 1`] = `
         </div>
       </div>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       />
     </div>
     <div

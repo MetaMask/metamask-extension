@@ -25,8 +25,8 @@ import {
   IconSize,
   ButtonLink,
   Box,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 
 const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   const t = useI18nContext();

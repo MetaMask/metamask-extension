@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "Δημόσια Διεύθυνση"
   },
-  "queue": {
-    "message": "Ουρά"
-  },
   "queued": {
     "message": "Σε Αναμονή"
   },

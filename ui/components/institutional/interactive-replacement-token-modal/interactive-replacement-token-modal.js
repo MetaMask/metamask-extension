@@ -12,8 +12,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 
 import {
   BlockSize,
@@ -26,6 +26,10 @@ import {
   TextAlign,
   AlignItems,
 } from '../../../helpers/constants/design-system';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 const InteractiveReplacementTokenModal = () => {
   const t = useI18nContext();
@@ -55,8 +59,8 @@ const InteractiveReplacementTokenModal = () => {
     });
 
     trackEvent({
-      category: 'MMI',
-      event: 'User clicked refresh token link',
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.ComplianceButtonClicked,
     });
   };
 
