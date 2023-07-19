@@ -352,7 +352,6 @@ export default class TransactionController extends EventEmitter {
       `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
     );
 
-    console.log('-------------- opts', opts);
     const { txMeta: initialTxMeta, isExisting } = await this._createTransaction(
       opts.method,
       txParams,
