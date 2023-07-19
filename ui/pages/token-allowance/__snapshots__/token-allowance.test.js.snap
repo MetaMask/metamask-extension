@@ -365,9 +365,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
                   >
                     <h6
-                      class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
-                      for="custom-spending-cap"
-                      tag="label"
+                      class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                     >
                       Custom spending cap
                     </h6>
@@ -417,18 +415,18 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
               class="box custom-spending-cap__description box--flex-direction-row"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--padding-top-2 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--padding-top-2 mm-box--color-text-default"
               >
                 <span>
                    
                   This allows the third party to spend 
-                  <h6
-                    class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+                  <span
+                    class="mm-box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold mm-box--color-text-default"
                   >
                     7
                      
                     TST
-                  </h6>
+                  </span>
                    from your current balance.
                    
                 </span>
