@@ -3731,9 +3731,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "@metamask-institutional/extension@npm:0.1.6"
+"@metamask-institutional/extension@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask-institutional/extension@npm:0.2.1"
   dependencies:
     "@ethereumjs/util": ^8.0.5
     "@metamask-institutional/custody-controller": ^0.2.8
@@ -3744,7 +3744,7 @@ __metadata:
     "@metamask-institutional/types": ^1.0.3
     jest-create-mock-instance: ^2.0.0
     jest-fetch-mock: 3.0.3
-  checksum: d62e30658fe6be6c6ee955148bbebf729f13070cb049f0080be3a0e2f97f9ba735fe390ad26855cdb2badcdf2bbc089e2dc9641caf5c1970adceb8e71199384f
+  checksum: 6d34c11962fe9f5029c5dcda48eabadc43a11c9a00e1dbfa494fbed3bebbeebd23667caea774a3df6602c1ab3d257d9759614c66de9da215c657003dc225671c
   languageName: node
   linkType: hard
 
@@ -24175,7 +24175,7 @@ __metadata:
     "@material-ui/core": ^4.11.0
     "@metamask-institutional/custody-controller": 0.2.6
     "@metamask-institutional/custody-keyring": ^0.0.25
-    "@metamask-institutional/extension": ^0.1.6
+    "@metamask-institutional/extension": ^0.2.1
     "@metamask-institutional/institutional-features": ^1.1.8
     "@metamask-institutional/portfolio-dashboard": ^1.1.3
     "@metamask-institutional/rpc-allowlist": ^1.0.0
