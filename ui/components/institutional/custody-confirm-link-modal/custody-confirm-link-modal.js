@@ -28,7 +28,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text, Button, BUTTON_VARIANT } from '../../component-library';
+import { Button, BUTTON_VARIANT } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();

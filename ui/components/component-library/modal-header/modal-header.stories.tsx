@@ -10,7 +10,8 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarAccount, BUTTON_SIZES, Button, Text } from '..';
+import { AvatarAccount, BUTTON_SIZES, Button } from '..';
+import { Text } from '../text/deprecated';
 
 import { ModalHeader } from './modal-header';
 import README from './README.mdx';

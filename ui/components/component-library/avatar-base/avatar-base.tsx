@@ -13,7 +13,7 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 
-import { Text, ValidTag } from '../text';
+import { Text } from '../text/deprecated';
 
 import { AvatarBaseProps, AvatarBaseSize } from './avatar-base.types';
 
@@ -47,7 +47,7 @@ export const AvatarBase = forwardRef(
           className,
         )}
         ref={ref}
-        as={ValidTag.Div}
+        as="div"
         display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}

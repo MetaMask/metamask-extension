@@ -4,7 +4,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import Button from '../../ui/button';
 import CheckBox from '../../ui/check-box';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 

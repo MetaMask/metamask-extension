@@ -2956,9 +2956,6 @@
   "revealTheSeedPhrase": {
     "message": "Ipakita ang seed phrase"
   },
-  "reviewSpendingCap": {
-    "message": "I-review ang iyong limitasyon sa paggastos"
-  },
   "revokeAllTokensTitle": {
     "message": "Bawiin ang pahintulot na i-access at ilipat ang lahat ng iyong $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3136,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprubahan ang $1 nang walang limitasyon sa paggastos",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Magtakda ng limitasyon sa paggastos para sa iyong $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Mga Setting"
@@ -4166,9 +4159,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
-  },
-  "useDefault": {
-    "message": "Gamitin ang default"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Mga kahilingan sa balanse ng batch account"

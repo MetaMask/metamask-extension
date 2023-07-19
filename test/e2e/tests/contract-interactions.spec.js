@@ -3,6 +3,9 @@ const {
   withFixtures,
   openDapp,
   locateAccountBalanceDOM,
+  unlockWallet,
+  largeDelayMs,
+  WINDOW_TITLES,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -34,34 +37,32 @@ describe('Deploy contract and call contract methods', function () {
           smartContract,
         );
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
 
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.findClickableElement('#deployButton');
+        await driver.delay(largeDelayMs);
         await driver.clickElement('#depositButton');
-        await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
-        const extension = windowHandles[0];
-        const dapp = await driver.switchToWindowWithTitle(
-          'E2E Test Dapp',
-          windowHandles,
-        );
 
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await driver.waitForSelector({
+          css: 'span',
+          text: 'Deposit initiated',
+        });
+
+        await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
         });
+
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
@@ -72,17 +73,16 @@ describe('Deploy contract and call contract methods', function () {
         });
 
         // calls and confirms a contract method where ETH is received
-        await driver.switchToWindow(dapp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
-        windowHandles = await driver.getAllWindowHandles();
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.waitForSelector(
           '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(2)',
         );
@@ -92,7 +92,9 @@ describe('Deploy contract and call contract methods', function () {
         });
 
         // renders the correct ETH balance
-        await driver.switchToWindow(extension);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await locateAccountBalanceDOM(driver, ganacheServer);
       },
     );

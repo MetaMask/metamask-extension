@@ -15,8 +15,8 @@ import {
   Icon,
   IconName,
   IconSize,
-  Text,
 } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 
 const SnapVersion = ({ version, url }) => {

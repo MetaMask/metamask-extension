@@ -22,7 +22,6 @@ import {
 
 import Box from '../../components/ui/box';
 import {
-  Text,
   Label,
   BannerAlert,
   Button,
@@ -33,6 +32,7 @@ import {
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';

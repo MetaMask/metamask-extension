@@ -1170,9 +1170,13 @@ export function getNetworkConfigurations(state) {
 
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
-  const currentChainId = getCurrentChainId(state);
+  const providerConfig = getProviderConfig(state);
 
-  return allNetworks.find((network) => network.chainId === currentChainId);
+  const filter =
+    providerConfig.type === 'rpc'
+      ? (network) => network.id === providerConfig.id
+      : (network) => network.id === providerConfig.type;
+  return allNetworks.find(filter);
 }
 
 export function getAllEnabledNetworks(state) {
@@ -1193,6 +1197,7 @@ export function getTestNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+      id: NETWORK_TYPES.GOERLI,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1200,6 +1205,7 @@ export function getTestNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+      id: NETWORK_TYPES.SEPOLIA,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1210,6 +1216,7 @@ export function getTestNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+      id: NETWORK_TYPES.LINEA_GOERLI,
     },
     // Localhosts
     ...Object.values(networkConfigurations).filter(
@@ -1232,6 +1239,7 @@ export function getNonTestNetworks(state) {
       },
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
+      id: NETWORK_TYPES.MAINNET,
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1242,6 +1250,7 @@ export function getNonTestNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_MAINNET,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+      id: NETWORK_TYPES.LINEA_MAINNET,
     },
     // Custom networks added by the user
     ...Object.values(networkConfigurations).filter(

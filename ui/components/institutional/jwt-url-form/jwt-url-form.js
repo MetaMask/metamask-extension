@@ -8,7 +8,8 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box, Button, Text } from '../../component-library';
+import { Box, Button } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import JwtDropdown from '../jwt-dropdown';
 
 const JwtUrlForm = (props) => {

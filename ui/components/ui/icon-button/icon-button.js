@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip/tooltip';
 
@@ -28,13 +28,25 @@ export default function IconButton({
       {renderWrapper(
         <>
           <div className="icon-button__circle">{Icon}</div>
-          <Text ellipsis variant={TextVariant.bodySm}>
-            {label.length > 12 ? (
-              <Tooltip title={label}>{label}</Tooltip>
-            ) : (
-              label
-            )}
-          </Text>
+          {label.length > 9 ? (
+            <Tooltip title={label} position="bottom">
+              <Text
+                className="icon-button__label"
+                ellipsis
+                variant={TextVariant.bodySm}
+              >
+                {label}
+              </Text>
+            </Tooltip>
+          ) : (
+            <Text
+              className="icon-button__label"
+              ellipsis
+              variant={TextVariant.bodySm}
+            >
+              {label}
+            </Text>
+          )}
         </>,
       )}
     </button>
