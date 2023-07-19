@@ -217,6 +217,7 @@ describe('Transaction Finalized Event', function () {
         assert.deepStrictEqual(
           transactionSubmittedNoMMId.properties,
           {
+            status: 'submitted',
             transaction_envelope_type: 'legacy',
             gas_limit: '0x5208',
             gas_price: '2',
@@ -262,7 +263,6 @@ describe('Transaction Finalized Event', function () {
             category: 'Transactions',
             locale: 'en',
             environment_type: 'background',
-            status: 'submitted',
           },
           'Transaction Submitted event without sensitive properties does not match the expected payload',
         );
@@ -270,6 +270,7 @@ describe('Transaction Finalized Event', function () {
         assert.deepStrictEqual(
           transactionFinalizedNoMMId.properties,
           {
+            status: 'confirmed',
             transaction_envelope_type: 'legacy',
             gas_limit: '0x5208',
             gas_price: '2',
@@ -316,7 +317,6 @@ describe('Transaction Finalized Event', function () {
             category: 'Transactions',
             locale: 'en',
             environment_type: 'background',
-            status: 'confirmed',
           },
           'Transaction Finalized event without sensitive properties does not match the expected payload',
         );

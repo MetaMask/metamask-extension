@@ -2483,7 +2483,7 @@ export default class TransactionController extends EventEmitter {
       uiCustomizations = null;
     }
 
-    // The transaction status property is not considered sensitive and is now included in the non-anonymous event
+    /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
       referrer,
