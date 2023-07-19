@@ -6,7 +6,7 @@ const blacklistedHosts = [
 ];
 const {
   mockEmptyStalelistAndHotlist,
-} = require('./tests/phishing-detection/helpers');
+} = require('./tests/phishing-controller/mocks');
 
 /**
  * Setup E2E network mocks.
