@@ -1,7 +1,7 @@
 import React from 'react';
-import { DISPLAY } from '../../../../helpers/constants/design-system';
+import { Display } from '../../../../helpers/constants/design-system';
 
-import Box from '../../../ui/box';
+import { Box } from '../../../component-library';
 import DetectedTokenAggregators from './detected-token-aggregators';
 
 export default {
@@ -31,7 +31,7 @@ export default {
 
 const Template = (args) => {
   return (
-    <Box display={DISPLAY.GRID}>
+    <Box display={Display.Grid}>
       <DetectedTokenAggregators aggregators={args.aggregators1} />
       <DetectedTokenAggregators aggregators={args.aggregators2} />
     </Box>

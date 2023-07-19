@@ -10,13 +10,14 @@ import {
   OverflowWrap,
   FontWeight,
   TextVariant,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { getTargetSubjectMetadata } from '../../../../selectors';
-import { Text } from '../../../component-library';
+import { Text } from '../../../component-library/text/deprecated';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
@@ -45,6 +46,9 @@ export const UI_MAPPING = {
   text: (props) => ({
     element: 'SnapUIMarkdown',
     children: props.value,
+    props: {
+      markdown: props.markdown,
+    },
   }),
   spinner: () => ({
     element: 'Spinner',
@@ -53,9 +57,12 @@ export const UI_MAPPING = {
     },
   }),
   divider: () => ({
-    element: 'hr',
+    element: 'Box',
     props: {
       className: 'snap-ui-renderer__divider',
+      backgroundColor: BorderColor.borderDefault,
+      marginTop: 2,
+      marginBottom: 2,
     },
   }),
   copyable: (props) => ({

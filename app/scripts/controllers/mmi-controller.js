@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
+import { isEqual } from 'lodash';
 import {
   PersonalMessageManager,
   TypedMessageManager,
@@ -14,11 +15,17 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
+import {
+  handleMmiPortfolio,
+  setDashboardCookie,
+} from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
 } from '../../../ui/helpers/constants/routes';
+import { previousValueComparator } from '../lib/util';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
@@ -69,6 +76,17 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
+
+    this.preferencesController.store.subscribe(
+      previousValueComparator(async (prevState, currState) => {
+        const { identities: prevIdentities } = prevState;
+        const { identities: currIdentities } = currState;
+        if (isEqual(prevIdentities, currIdentities)) {
+          return;
+        }
+        await this.prepareMmiPortfolio();
+      }, this.preferencesController.store.getState()),
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -424,25 +442,8 @@ export default class MMIController extends EventEmitter {
     return keyring.getTransactionDeepLink(from, custodyTxId);
   }
 
-  async getCustodianToken(custodianType) {
-    let currentCustodyType;
-
-    const address = this.preferencesController.getSelectedAddress();
-
-    if (!custodianType) {
-      const resultCustody = this.custodyController.getCustodyTypeByAddress(
-        toChecksumHexAddress(address),
-      );
-      currentCustodyType = resultCustody;
-    }
-    let keyring = await this.keyringController.getKeyringsByType(
-      currentCustodyType || `Custody - ${custodianType}`,
-    )[0];
-    if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(
-        currentCustodyType || `Custody - ${custodianType}`,
-      );
-    }
+  async getCustodianToken(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
     return keyring ? authDetails.jwt || authDetails.refreshToken : '';
   }
@@ -540,6 +541,44 @@ export default class MMIController extends EventEmitter {
       apiUrl,
       keyring,
     });
+  }
+
+  async handleMmiDashboardData() {
+    await this.appStateController.getUnlockPromise(true);
+    const keyringAccounts = await this.keyringController.getAccounts();
+    const { identities } = this.preferencesController.store.getState();
+    const { metaMetricsId } = this.metaMetricsController.store.getState();
+    const getAccountDetails = (address) =>
+      this.custodyController.getAccountDetails(address);
+    const extensionId = this.extension.runtime.id;
+    const networks = [
+      ...this.preferencesController.getRpcMethodPreferences(),
+      { chainId: CHAIN_IDS.MAINNET },
+      { chainId: CHAIN_IDS.GOERLI },
+    ];
+
+    return handleMmiPortfolio({
+      keyringAccounts,
+      identities,
+      metaMetricsId,
+      networks,
+      getAccountDetails,
+      extensionId,
+    });
+  }
+
+  async prepareMmiPortfolio() {
+    if (!process.env.IN_TEST) {
+      try {
+        const mmiDashboardData = await this.handleMmiDashboardData();
+        const cookieSetUrls =
+          this.mmiConfigurationController.store.mmiConfiguration?.portfolio
+            ?.cookieSetUrls;
+        setDashboardCookie(mmiDashboardData, cookieSetUrls);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   }
 
   async setAccountAndNetwork(origin, address, chainId) {

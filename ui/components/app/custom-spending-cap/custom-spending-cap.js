@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
@@ -8,11 +8,10 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text, ButtonLink, Icon, IconName } from '../../component-library';
+import { ButtonLink, Icon, IconName, Text } from '../../component-library';
+
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
   TextAlign,
   TextVariant,
   JustifyContent,
@@ -20,8 +19,9 @@ import {
   BLOCK_SIZES,
   BackgroundColor,
   TextColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { getCustomTokenAmount } from '../../../selectors';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -34,6 +34,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { estimateGas } from '../../../store/actions';
 import { getCustomTxParamsData } from '../../../pages/confirm-approve/confirm-approve.util';
 import { useGasFeeContext } from '../../../contexts/gasFee';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { CustomSpendingCapTooltip } from './custom-spending-cap-tooltip';
 
 export default function CustomSpendingCap({
@@ -45,18 +46,17 @@ export default function CustomSpendingCap({
   passTheErrorText,
   decimals,
   setInputChangeInProgress,
+  customSpendingCap,
+  setCustomSpendingCap,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { updateTransaction } = useGasFeeContext();
   const inputRef = useRef(null);
 
-  const value = useSelector(getCustomTokenAmount);
-
   const [error, setError] = useState('');
-  const [showUseDefaultButton, setShowUseDefaultButton] = useState(
-    value !== String(dappProposedValue) && true,
-  );
+  const [showUseSiteSuggestionButton, setShowUseSiteSuggestionButton] =
+    useState(customSpendingCap !== String(dappProposedValue) && true);
   const inputLogicEmptyStateText = t('inputLogicEmptyState');
 
   const replaceCommaToDot = (inputValue) => {
@@ -82,7 +82,7 @@ export default function CustomSpendingCap({
           <Text
             key="custom-spending-cap"
             variant={TextVariant.bodySmBold}
-            as="h6"
+            as="span"
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
@@ -102,7 +102,7 @@ export default function CustomSpendingCap({
   };
 
   const [customSpendingCapText, setCustomSpendingCapText] = useState(
-    getInputTextLogic(value).description,
+    getInputTextLogic(customSpendingCap).description,
   );
 
   const handleChange = async (valueInput) => {
@@ -139,37 +139,42 @@ export default function CustomSpendingCap({
         setError(spendingCapError);
       }
     }
-
+    setCustomSpendingCap(String(valueInput));
     dispatch(setCustomTokenAmount(String(valueInput)));
 
-    try {
-      const newData = getCustomTxParamsData(txParams.data, {
-        customPermissionAmount: valueInput,
-        decimals,
-      });
-      const { from, to, value: txValue } = txParams;
-      const estimatedGasLimit = await estimateGas({
-        from,
-        to,
-        value: txValue,
-        data: newData,
-      });
-      if (estimatedGasLimit) {
-        await updateTransaction({
-          gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+    if (String(valueInput) !== '') {
+      try {
+        const newData = getCustomTxParamsData(txParams.data, {
+          customPermissionAmount: valueInput,
+          decimals,
         });
+        const { from, to, value: txValue } = txParams;
+        const estimatedGasLimit = await estimateGas({
+          from,
+          to,
+          value: txValue,
+          data: newData,
+        });
+        if (estimatedGasLimit) {
+          await updateTransaction({
+            gasLimit: hexToDecimal(addHexPrefix(estimatedGasLimit)),
+          });
+        }
+      } catch (exp) {
+        console.error('Error in trying to update gas limit', exp);
       }
-    } catch (exp) {
-      console.error('Error in trying to update gas limit', exp);
     }
+
     setInputChangeInProgress(false);
   };
 
   useEffect(() => {
-    if (value !== String(dappProposedValue)) {
-      setShowUseDefaultButton(true);
+    if (customSpendingCap === String(dappProposedValue)) {
+      setShowUseSiteSuggestionButton(false);
+    } else {
+      setShowUseSiteSuggestionButton(true);
     }
-  }, [value, dappProposedValue]);
+  }, [customSpendingCap, dappProposedValue]);
 
   useEffect(() => {
     passTheErrorText(error);
@@ -185,14 +190,14 @@ export default function CustomSpendingCap({
   }, [inputRef.current]);
 
   const chooseTooltipContentText = decConversionGreaterThan(
-    value,
+    customSpendingCap,
     currentTokenBalance,
   )
     ? t('warningTooltipText', [
         <Text
           key="tooltip-text"
           variant={TextVariant.bodySmBold}
-          as="h6"
+          as="span"
           color={TextColor.errorDefault}
         >
           <Icon name={IconName.Warning} /> {t('beCareful')}
@@ -208,20 +213,20 @@ export default function CustomSpendingCap({
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexStart}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
           justifyContent={JustifyContent.center}
-          display={DISPLAY.BLOCK}
+          display={Display.Block}
           className="custom-spending-cap__input"
         >
           <label
             htmlFor={
-              decConversionGreaterThan(value, currentTokenBalance)
+              decConversionGreaterThan(customSpendingCap, currentTokenBalance)
                 ? 'custom-spending-cap-input-value'
                 : 'custom-spending-cap'
             }
@@ -231,18 +236,23 @@ export default function CustomSpendingCap({
               dataTestId="custom-spending-cap-input"
               wrappingLabelProps={{ as: 'div' }}
               id={
-                decConversionGreaterThan(value, currentTokenBalance)
+                decConversionGreaterThan(customSpendingCap, currentTokenBalance)
                   ? 'custom-spending-cap-input-value'
                   : 'custom-spending-cap'
               }
               TooltipCustomComponent={
                 <CustomSpendingCapTooltip
                   tooltipContentText={
-                    replaceCommaToDot(value) ? chooseTooltipContentText : ''
+                    replaceCommaToDot(customSpendingCap)
+                      ? chooseTooltipContentText
+                      : ''
                   }
                   tooltipIcon={
-                    replaceCommaToDot(value)
-                      ? decConversionGreaterThan(value, currentTokenBalance)
+                    replaceCommaToDot(customSpendingCap)
+                      ? decConversionGreaterThan(
+                          customSpendingCap,
+                          currentTokenBalance,
+                        )
                       : ''
                   }
                 />
@@ -251,18 +261,18 @@ export default function CustomSpendingCap({
               titleText={t('customSpendingCap')}
               placeholder={t('enterANumber')}
               error={error}
-              value={value}
+              value={customSpendingCap}
               titleDetail={
-                showUseDefaultButton && (
+                showUseSiteSuggestionButton && (
                   <ButtonLink
                     size={Size.auto}
                     onClick={(e) => {
                       e.preventDefault();
-                      setShowUseDefaultButton(false);
+                      setShowUseSiteSuggestionButton(false);
                       handleChange(dappProposedValue);
                     }}
                   >
-                    {t('useDefault')}
+                    {t('useSiteSuggestion')}
                   </ButtonLink>
                 )
               }
@@ -298,12 +308,19 @@ export default function CustomSpendingCap({
                 variant={TextVariant.bodySm}
                 as="h6"
                 paddingTop={2}
-                paddingBottom={2}
               >
-                {replaceCommaToDot(value)
+                {replaceCommaToDot(customSpendingCap)
                   ? customSpendingCapText
                   : inputLogicEmptyStateText}
               </Text>
+              <ButtonLink
+                size={Size.SM}
+                href={ZENDESK_URLS.TOKEN_ALLOWANCE_WITH_SPENDING_CAP}
+                target="_blank"
+                marginBottom={2}
+              >
+                {t('learnMoreUpperCase')}
+              </ButtonLink>
             </Box>
           </label>
         </Box>
@@ -345,4 +362,12 @@ CustomSpendingCap.propTypes = {
    * Updating input state to changing
    */
   setInputChangeInProgress: PropTypes.func.isRequired,
+  /**
+   * Custom token amount or The dapp suggested amount
+   */
+  customSpendingCap: PropTypes.string,
+  /**
+   * State method to update the custom token value
+   */
+  setCustomSpendingCap: PropTypes.func.isRequired,
 };

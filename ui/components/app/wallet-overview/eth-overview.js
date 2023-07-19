@@ -73,15 +73,15 @@ const EthOverview = ({ className, showAddress }) => {
 
   const portfolioEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Portfolio Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 
   const stakingEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Stake Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 

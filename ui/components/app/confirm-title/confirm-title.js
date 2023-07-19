@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { PRIMARY } from '../../../helpers/constants/common';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import {
   FONT_WEIGHT,
   TextVariant,

@@ -4,6 +4,7 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
+  CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
@@ -18,10 +19,14 @@ jest.mock('../../../store/actions.ts', () => ({
   toggleNetworkMenu: () => mockToggleNetworkMenu,
 }));
 
-const render = (showTestNetworks = false) => {
+const render = (showTestNetworks = false, currentChainId = '0x1') => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      providerConfig: {
+        ...mockState.metamask.providerConfig,
+        chainId: currentChainId,
+      },
       preferences: {
         showTestNetworks,
       },
@@ -53,6 +58,11 @@ describe('NetworkListMenu', () => {
     const [testNetworkToggle] = queryAllByRole('checkbox');
     fireEvent.click(testNetworkToggle);
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('disables toggle when on test network', () => {
+    const { container } = render(false, CHAIN_IDS.GOERLI);
+    expect(container.querySelector('.toggle-button--disabled')).toBeDefined();
   });
 
   it('switches networks when an item is clicked', () => {

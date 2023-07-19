@@ -42,12 +42,12 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
   Box,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
 } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
 
 import {
   ASSET_ROUTE,
@@ -62,7 +62,6 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
@@ -84,6 +83,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
+  hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   waitForConfirmDeepLinkDialog,
@@ -93,6 +93,7 @@ function shouldCloseNotificationPopup({
   let shouldCLose =
     isNotification &&
     totalUnapprovedCount === 0 &&
+    !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -139,6 +140,7 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
@@ -287,6 +289,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
+      hasApprovalFlows,
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -307,7 +310,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (hasWatchNftPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0) {
+    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -470,7 +473,6 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-
         {removeNftMessage === 'success' ? (
           <ActionableMessage
             type="danger"
@@ -574,22 +576,26 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {shouldShowSeedPhraseReminder ? (
-          <HomeNotification
-            descriptionText={t('backupApprovalNotice')}
-            acceptText={t('backupNow')}
-            onAccept={() => {
-              const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
-              if (isPopup) {
-                global.platform.openExtensionInBrowser(backUpSRPRoute);
-              } else {
-                history.push(backUpSRPRoute);
-              }
-            }}
-            infoText={t('backupApprovalInfo')}
-            key="home-backupApprovalNotice"
-          />
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          shouldShowSeedPhraseReminder ? (
+            <HomeNotification
+              descriptionText={t('backupApprovalNotice')}
+              acceptText={t('backupNow')}
+              onAccept={() => {
+                const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+                if (isPopup) {
+                  global.platform.openExtensionInBrowser(backUpSRPRoute);
+                } else {
+                  history.push(backUpSRPRoute);
+                }
+              }}
+              infoText={t('backupApprovalInfo')}
+              key="home-backupApprovalNotice"
+            />
+          ) : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {infuraBlocked && this.state.canShowBlockageNotification ? (
           <HomeNotification
             descriptionText={t('infuraBlockedNotification', [
@@ -872,11 +878,7 @@ export default class Home extends PureComponent {
                     name={this.context.t('nfts')}
                     tabKey="nfts"
                   >
-                    <NftsTab
-                      onAddNFT={() => {
-                        history.push(ADD_NFT_ROUTE);
-                      }}
-                    />
+                    <NftsTab />
                   </Tab>
                   ///: END:ONLY_INCLUDE_IN
                 }
