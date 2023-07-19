@@ -25,7 +25,7 @@ jobs:
           exempt-pr-labels: 'DO-NOT-MERGE'
           close-issue-message: 'This issue was closed because there has been no follow up activity in the last 7 days. If you feel this was closed in error, please reopen and provide evidence on the latest release of the extension. Thank you for your contributions.'
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 7 days. Thank you for your contributions.'
-          days-before-issue-stale: 90
+          days-before-issue-stale: 1725
           days-before-pr-stale: 60
           days-before-issue-close: 45
           days-before-pr-close: 14
