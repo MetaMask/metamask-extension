@@ -196,12 +196,12 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
         </div>
       </div>
       <h2
-        class="box mm-text signature-request__content__title mm-text--heading-lg box--margin-top-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
       >
         Signature request
       </h2>
       <h6
-        class="box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center box--margin-top-4 box--margin-right-12 box--margin-left-12 box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
@@ -214,7 +214,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
             >
               Verify third-party details
             </h6>

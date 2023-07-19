@@ -36,10 +36,10 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
+  Text,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';

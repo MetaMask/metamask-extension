@@ -72,12 +72,12 @@ import {
   Button,
   ButtonLink,
   TagUrl,
+  Text,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 // eslint-disable-next-line import/order
