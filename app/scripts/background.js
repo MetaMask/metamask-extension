@@ -51,7 +51,6 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
-import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
 /* eslint-enable import/first */
 
@@ -640,23 +639,6 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
-
-        const portStream = new PortStream(remotePort);
-        let counter = 0;
-        const { captpStream, abort } = makeCapTpFromStream(
-          'background',
-          harden({
-            increment: async () => {
-              counter += 1;
-              return counter;
-            },
-            getCount: async () => counter,
-          }),
-        );
-        pump(captpStream, portStream, captpStream, (err) => {
-          log.error(err);
-          abort();
-        });
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

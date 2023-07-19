@@ -254,6 +254,7 @@
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/network-controller": "^10.3.1",
     "@metamask/notification-controller": "^3.0.0",
+    "@metamask/object-multiplex": "^1.2.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^3.0.0",

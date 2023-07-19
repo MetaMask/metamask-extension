@@ -57,12 +57,14 @@ let phishingExtChannel,
   phishingPageMux;
 
 let extensionMux,
-  extensionChannel,
+  extensionProviderChannel,
+  extensionCaptpChannel,
   extensionPort,
   extensionPhishingStream,
   extensionStream,
   pageMux,
-  pageChannel;
+  pageProviderChannel,
+  pageCaptpChannel;
 
 /**
  * Injects a script tag into the current document
@@ -316,7 +318,8 @@ const setupPageStreams = () => {
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
-  pageChannel = pageMux.createStream(PROVIDER);
+  pageProviderChannel = pageMux.createStream(PROVIDER);
+  pageCaptpChannel = pageMux.createStream('metamask-captp');
 };
 
 // The field below is used to ensure that replay is done only once for each restart.
@@ -340,12 +343,27 @@ const setupExtensionStreams = () => {
   });
 
   // forward communication across inpage-background for these channels only
-  extensionChannel = extensionMux.createStream(PROVIDER);
-  pump(pageChannel, extensionChannel, pageChannel, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
-      error,
-    ),
+  extensionProviderChannel = extensionMux.createStream(PROVIDER);
+  extensionCaptpChannel = extensionMux.createStream('metamask-captp');
+  pump(
+    pageProviderChannel,
+    extensionProviderChannel,
+    pageProviderChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
+        error,
+      ),
+  );
+  pump(
+    extensionCaptpChannel,
+    extensionCaptpChannel,
+    extensionCaptpChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
+        error,
+      ),
   );
 
   // connect "phishing" channel to warning system
@@ -358,13 +376,17 @@ const setupExtensionStreams = () => {
 
 /** Destroys all of the extension streams */
 const destroyExtensionStreams = () => {
-  pageChannel.removeAllListeners();
+  pageProviderChannel.removeAllListeners();
+  pageCaptpChannel.removeAllListeners();
 
   extensionMux.removeAllListeners();
   extensionMux.destroy();
 
-  extensionChannel.removeAllListeners();
-  extensionChannel.destroy();
+  extensionProviderChannel.removeAllListeners();
+  extensionProviderChannel.destroy();
+
+  extensionCaptpChannel.removeAllListeners();
+  extensionCaptpChannel.destroy();
 
   extensionStream = null;
 };

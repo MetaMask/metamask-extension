@@ -51,6 +51,7 @@ import 'ses'; // import ses to get agoric assert and lockdown global and assert
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -76,7 +77,18 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  console.log('making captp stream');
+  // Intercept captp messages, ignoring everything else
+  const interceptingMux = new ObjectMultiplex();
+  interceptingMux.ignoreStream('metamask-provider');
+  const captpSubstream = interceptingMux.createStream('metamask-captp');
+
+  pump(metamaskStream, interceptingMux, metamaskStream, log.error);
+
+  // Forward messages in fresh multiplex with captp stream filtered out
+  const forwardingMux = new ObjectMultiplex();
+  forwardingMux.ignoreStream('metamask-captp');
+  pump(metamaskStream, forwardingMux, metamaskStream, log.error);
+
   const { captpStream, abort } = makeCapTpFromStream(
     window.location.origin,
     harden({
@@ -86,13 +98,13 @@ if (shouldInjectProvider()) {
       },
     }),
   );
-  pump(captpStream, metamaskStream, captpStream, (err) => {
+  pump(captpStream, captpSubstream, captpStream, (err) => {
     log.error(err);
     abort();
   });
 
   initializeProvider({
-    connectionStream: metamaskStream,
+    connectionStream: forwardingMux,
     logger: log,
     shouldShimWeb3: true,
   });

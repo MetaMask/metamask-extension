@@ -195,6 +195,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
 import {
   CaveatMutatorFactories,
@@ -3694,6 +3695,23 @@ export default class MetamaskController extends EventEmitter {
       // legacy streams
       this.setupPublicConfig(mux.createStream('publicConfig'));
     }
+
+    const captpSubstream = mux.createStream('metamask-captp')
+    let counter = 0;
+    const { captpStream, abort } = makeCapTpFromStream(
+      'background',
+      harden({
+        increment: async () => {
+          counter += 1;
+          return counter;
+        },
+        getCount: async () => counter,
+      }),
+    );
+    pump(captpStream, captpSubstream, captpStream, (err) => {
+      log.error(err);
+      abort();
+    });
   }
 
   /**
