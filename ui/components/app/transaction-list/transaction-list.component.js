@@ -174,11 +174,6 @@ export default function TransactionList({
         {pendingTransactions.length > 0 && (
           <Box className="transaction-list__pending-transactions">
             {pendingTransactions
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              .sort(
-                (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
-              )
-              ///: END:ONLY_INCLUDE_IN
               .map((dateGroup) => {
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
@@ -220,11 +215,6 @@ export default function TransactionList({
         <Box className="transaction-list__completed-transactions">
           {completedTransactions.length > 0 ? (
             completedTransactions
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              .sort(
-                (a, b) => b.primaryTransaction.time - a.primaryTransaction.time,
-              )
-              ///: END:ONLY_INCLUDE_IN
               .slice(0, limit)
               .map((dateGroup) => {
                 return dateGroup.transactionGroups.map(
