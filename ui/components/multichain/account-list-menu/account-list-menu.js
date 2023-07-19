@@ -12,8 +12,8 @@ import {
   ModalContent,
   ModalOverlay,
   ModalHeader,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   BlockSize,
@@ -298,7 +298,7 @@ export const AccountListMenu = ({ onClose }) => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event:
-                          MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                          MetaMetricsEventName.ConnectCustodialAccountClicked,
                       });
                       if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                         global.platform.openExtensionInBrowser(

@@ -7,8 +7,8 @@ import {
   AvatarAccountVariant,
   Icon,
   IconName,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import {
   AlignItems,
   BackgroundColor,
