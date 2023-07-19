@@ -52,6 +52,7 @@ import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
 import ObjectMultiplex from '@metamask/object-multiplex';
+import debugStream from '@stdlib/streams-node-debug';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -83,7 +84,31 @@ if (shouldInjectProvider()) {
   interceptingMux.ignoreStream('metamask-provider');
   const captpSubstream = interceptingMux.createStream('metamask-captp');
 
-  pump(metamaskStream, interceptingMux, metamaskStream, log.error);
+  const stream1 = debugStream({
+    name: 'my-stream1',
+    objectMode: true,
+  });
+  const stream2 = debugStream({
+    name: 'my-stream2',
+    objectMode: true,
+  });
+  const stream3 = debugStream({
+    name: 'my-stream3',
+    objectMode: true,
+  });
+  const stream4 = debugStream({
+    name: 'my-stream4',
+    objectMode: true,
+  });
+
+  pump(
+    metamaskStream,
+    stream1,
+    interceptingMux,
+    stream2,
+    metamaskStream,
+    log.error,
+  );
 
   const { captpStream, abort, getBootstrap } = makeCapTpFromStream(
     window.location.origin,
@@ -94,7 +119,7 @@ if (shouldInjectProvider()) {
       },
     }),
   );
-  pump(captpStream, captpSubstream, captpStream, (err) => {
+  pump(captpStream, stream3, captpSubstream, stream4, captpStream, (err) => {
     log.error(err);
     abort();
   });
