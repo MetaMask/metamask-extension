@@ -13,6 +13,7 @@ export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
+  getUseIpfsGateway,
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -50,6 +51,11 @@ export default function setupEnsIpfsResolver({
 
   async function attemptResolve({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
+    const useIpfsGateway = getUseIpfsGateway();
+
+    if (!useIpfsGateway || ipfsGateway === '') {
+      return;
+    }
 
     browser.tabs.update(tabId, { url: `loading.html` });
     let url = `https://app.ens.domains/name/${name}`;

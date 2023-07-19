@@ -67,6 +67,7 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      useIpfsGateway: true,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
@@ -478,6 +479,15 @@ export default class PreferencesController {
   async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
+  }
+
+  /**
+   * A setter for the `useIpfsGateway` property
+   *
+   * @param {boolean} useIpfsGateway - Whether or not user prefers IPFS resolution for domains
+   */
+  async setUseIpfsGateway(useIpfsGateway) {
+    this.store.updateState({ useIpfsGateway });
   }
 
   /**

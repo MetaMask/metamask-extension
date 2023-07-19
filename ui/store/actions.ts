@@ -3095,6 +3095,19 @@ export function setIpfsGateway(
   };
 }
 
+export function setUseIpfsGateway(
+  val: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setUseIpfsGateway`);
+    callBackgroundMethod('setUseIpfsGateway', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 export function updateCurrentLocale(
   key: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
