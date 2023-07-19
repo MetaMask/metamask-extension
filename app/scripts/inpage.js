@@ -31,6 +31,21 @@ const restoreContextAfterImports = () => {
 cleanContextForImports();
 
 /* eslint-disable import/first */
+import 'ses'; // import ses to get agoric assert and lockdown global
+
+try {
+  // eslint-disable-next-line no-undef,import/unambiguous
+  lockdown({
+    consoleTaming: 'unsafe',
+    errorTaming: 'unsafe',
+    mathTaming: 'unsafe',
+    dateTaming: 'unsafe',
+    domainTaming: 'unsafe',
+    overrideTaming: 'severe',
+  });
+} catch (error) {
+  console.error('Lockdown failed:', error);
+}
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
