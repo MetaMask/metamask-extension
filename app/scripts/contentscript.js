@@ -14,6 +14,36 @@ import shouldInjectProvider from '../../shared/modules/provider-injection';
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
+import { obj as through2 } from 'through2';
+function debugStream2(opts) {
+  return through2(function (chunk, enc, callback) {
+    console.log(`${opts.name} stream saw:`, chunk);
+    this.push(chunk)
+    callback()
+  })
+}
+const stream1 = debugStream2({
+  name: 'my-contentscript-stream-1',
+  objectMode: true,
+});
+const stream2 = debugStream2({
+  name: 'my-contentscript-stream-2',
+  objectMode: true,
+});
+const stream3 = debugStream2({
+  name: 'my-contentscript-stream-3',
+  objectMode: true,
+});
+const stream4 = debugStream2({
+  name: 'my-contentscript-stream-4',
+  objectMode: true,
+});
+function db(num) {
+  return debugStream2({
+    name: 'my-contentscript-stream-' + num,
+    objectMode: true,
+  })
+}
 
 const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
@@ -170,7 +200,7 @@ function setupPhishingPageStreams() {
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
-  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
+  pump(phishingPageMux, stream1, phishingPageStream, stream2, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -188,11 +218,11 @@ const setupPhishingExtStreams = () => {
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
 
-  pump(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
+  pump(phishingExtMux, stream3, phishingExtStream, stream4, phishingExtMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
       {
-        target: PHISHING_WARNING_PAGE, // the post-message-stream "target"
+        target: PHISHING_WARNING_PAGE, // the post-message-contentscript-stream- "target"
         data: {
           // this object gets passed to obj-multiplex
           name: PHISHING_SAFELIST, // the obj-multiplex channel name
@@ -208,7 +238,7 @@ const setupPhishingExtStreams = () => {
 
   // forward communication across inpage-background for these channels only
   phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
-  pump(phishingPageChannel, phishingExtChannel, phishingPageChannel, (error) =>
+  pump(phishingPageChannel, db(5), phishingExtChannel, db(6), phishingPageChannel, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
       error,
@@ -314,7 +344,7 @@ const setupPageStreams = () => {
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
-  pump(pageMux, pageStream, pageMux, (err) =>
+  pump(pageMux, db(7), pageStream, db(8), pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -337,7 +367,7 @@ const setupExtensionStreams = () => {
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
+  pump(extensionMux, db(9), extensionStream, db(10), extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     notifyInpageOfStreamFailure();
   });
@@ -347,7 +377,9 @@ const setupExtensionStreams = () => {
   extensionCaptpChannel = extensionMux.createStream('metamask-captp');
   pump(
     pageProviderChannel,
+    db(11),
     extensionProviderChannel,
+    db(12),
     pageProviderChannel,
     (error) =>
       console.debug(
@@ -357,7 +389,9 @@ const setupExtensionStreams = () => {
   );
   pump(
     extensionCaptpChannel,
+    db(13),
     extensionCaptpChannel,
+    db(14),
     extensionCaptpChannel,
     (error) =>
       console.debug(
@@ -414,7 +448,7 @@ const setupLegacyPageStreams = () => {
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
-  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+  pump(legacyPageMux, db(15), legacyPageStream, db(16), legacyPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
   );
 
@@ -432,7 +466,9 @@ const setupLegacyExtensionStreams = () => {
   notificationTransformStream = getNotificationTransformStream();
   pump(
     legacyExtMux,
+    db(17),
     extensionStream,
+    db(18),
     notificationTransformStream,
     legacyExtMux,
     (err) => {
@@ -444,7 +480,9 @@ const setupLegacyExtensionStreams = () => {
   legacyExtChannel = legacyExtMux.createStream(PROVIDER);
   pump(
     legacyPageMuxLegacyProviderChannel,
+    db(19),
     legacyExtChannel,
+    db(20),
     legacyPageMuxLegacyProviderChannel,
     (error) =>
       console.debug(
@@ -457,7 +495,9 @@ const setupLegacyExtensionStreams = () => {
     legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
   pump(
     legacyPagePublicConfigChannel,
+    db(21),
     legacyExtPublicConfigChannel,
+    db(22),
     legacyPagePublicConfigChannel,
     (error) =>
       console.debug(
@@ -590,7 +630,7 @@ function extensionStreamMessageListener(msg) {
     METAMASK_EXTENSION_CONNECT_SENT = false;
     window.postMessage(
       {
-        target: INPAGE, // the post-message-stream "target"
+        target: INPAGE, // the post-message-contentscript-stream- "target"
         data: {
           // this object gets passed to obj-multiplex
           name: PROVIDER, // the obj-multiplex channel name
@@ -608,12 +648,12 @@ function extensionStreamMessageListener(msg) {
 /**
  * This function must ONLY be called in pump destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
- * Relies on obj-multiplex and post-message-stream implementation details.
+ * Relies on obj-multiplex and post-message-contentscript-stream- implementation details.
  */
 function notifyInpageOfStreamFailure() {
   window.postMessage(
     {
-      target: INPAGE, // the post-message-stream "target"
+      target: INPAGE, // the post-message-contentscript-stream- "target"
       data: {
         // this object gets passed to obj-multiplex
         name: PROVIDER, // the obj-multiplex channel name
