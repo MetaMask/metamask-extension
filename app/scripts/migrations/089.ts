@@ -1,10 +1,10 @@
 import { cloneDeep } from 'lodash';
-import { hasProperty } from '@metamask/utils';
+import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 89;
 
 /**
- * This migration deletes the PhishingController state, allowing it to be refetched with new metadata.
+ * Explain the purpose of the migration here.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -23,11 +23,15 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (!hasProperty(state, 'PhishingController')) {
+  if (
+    !hasProperty(state, 'PhishingController') ||
+    !isObject(state.PhishingController) ||
+    !hasProperty(state.PhishingController, 'listState')
+  ) {
     return state;
   }
 
-  delete state.PhishingController;
+  delete state.PhishingController.listState;
 
   return state;
 }
