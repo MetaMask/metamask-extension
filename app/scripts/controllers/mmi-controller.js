@@ -602,12 +602,21 @@ export default class MMIController extends EventEmitter {
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: true };
 
     if (req.method.includes('eth_signTypedData')) {
-      return await this.signatureController.newUnsignedTypedMessage(updatedMsgParams, req, version);
+      return await this.signatureController.newUnsignedTypedMessage(
+        updatedMsgParams,
+        req,
+        version,
+      );
     } else if (req.method.includes('personal_sign')) {
-      return await this.signatureController.newUnsignedPersonalMessage(updatedMsgParams, req);
-    } else {
-      return await this.signatureController.newUnsignedMessage(updatedMsgParams, req);
+      return await this.signatureController.newUnsignedPersonalMessage(
+        updatedMsgParams,
+        req,
+      );
     }
+    return await this.signatureController.newUnsignedMessage(
+      updatedMsgParams,
+      req,
+    );
   }
 
   async handleSigningEvents(signature, messageId, signOperation) {

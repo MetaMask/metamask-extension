@@ -1472,11 +1472,22 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
-      processTypedMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
-      processTypedMessageV3: this.mmiController.newUnsignedMessage.bind(this.mmiController),
-      processTypedMessageV4: this.mmiController.newUnsignedMessage.bind(this.mmiController),
-      processPersonalMessage: this.mmiController.newUnsignedMessage.bind(this.mmiController),
+      /* eslint-disable no-dupe-keys */
+      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessageV3: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessageV4: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processPersonalMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
       setTypedMessageInProgress:
         this.signatureController.setTypedMessageInProgress.bind(
           this.signatureController,
@@ -1485,6 +1496,7 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.setPersonalMessageInProgress.bind(
           this.signatureController,
         ),
+      /* eslint-enable no-dupe-keys */
       ///: END:ONLY_INCLUDE_IN
 
       processEncryptionPublicKey:
