@@ -46,7 +46,10 @@ export default class PermissionConnect extends Component {
     requestState: PropTypes.object.isRequired,
     approvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    setSnapsInstallPrivacyWarningShownStatus: PropTypes.func.isRequired,
+    snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
     ///: END:ONLY_INCLUDE_IN
+    hideTopBar: PropTypes.bool,
     totalPages: PropTypes.string.isRequired,
     page: PropTypes.string.isRequired,
     targetSubjectMetadata: PropTypes.shape({
@@ -76,6 +79,9 @@ export default class PermissionConnect extends Component {
     permissionsApproved: null,
     origin: this.props.origin,
     targetSubjectMetadata: this.props.targetSubjectMetadata || {},
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    snapsInstallPrivacyWarningShown: this.props.snapsInstallPrivacyWarningShown,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   beforeUnload = () => {
@@ -291,6 +297,7 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
+      hideTopBar,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapInstallPath,
       snapUpdatePath,
@@ -298,6 +305,7 @@ export default class PermissionConnect extends Component {
       requestState,
       approvePendingApproval,
       rejectPendingApproval,
+      setSnapsInstallPrivacyWarningShownStatus,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
@@ -305,11 +313,14 @@ export default class PermissionConnect extends Component {
       permissionsApproved,
       redirecting,
       targetSubjectMetadata,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsInstallPrivacyWarningShown,
+      ///: END:ONLY_INCLUDE_IN
     } = this.state;
 
     return (
       <div className="permissions-connect">
-        {this.renderTopBar()}
+        {!hideTopBar && this.renderTopBar()}
         {redirecting && permissionsApproved ? (
           <PermissionsRedirect subjectMetadata={targetSubjectMetadata} />
         ) : (
@@ -356,6 +367,14 @@ export default class PermissionConnect extends Component {
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
+                  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+                  snapsInstallPrivacyWarningShown={
+                    snapsInstallPrivacyWarningShown
+                  }
+                  setSnapsInstallPrivacyWarningShownStatus={
+                    setSnapsInstallPrivacyWarningShownStatus
+                  }
+                  ///: END:ONLY_INCLUDE_IN
                 />
               )}
             />

@@ -6,17 +6,17 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
 } from '../../../helpers/constants/routes';
-import Button from '../../../components/ui/button';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import {
+  ButtonPrimary,
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { IconColor, Size } from '../../../helpers/constants/design-system';
 import EditContact from './edit-contact';
 import AddContact from './add-contact';
 import ViewContact from './view-contact';
@@ -33,7 +33,6 @@ export default class ContactListTab extends Component {
     viewingContact: PropTypes.bool,
     editingContact: PropTypes.bool,
     addingContact: PropTypes.bool,
-    showContactContent: PropTypes.bool,
     hideAddressBook: PropTypes.bool,
   };
 
@@ -105,35 +104,24 @@ export default class ContactListTab extends Component {
     const { history, viewingContact, editingContact } = this.props;
 
     return (
-      <div className="address-book-add-button">
-        <Button
-          className={classnames({
-            'address-book-add-button__button': true,
-            'address-book-add-button__button--hidden':
-              viewingContact || editingContact,
-          })}
-          type="secondary"
-          onClick={() => {
-            history.push(CONTACT_ADD_ROUTE);
-          }}
-        >
-          {this.context.t('addContact')}
-        </Button>
-      </div>
+      <ButtonPrimary
+        className={classnames('address-book-add-button__button', {
+          'address-book-add-button__button--hidden':
+            viewingContact || editingContact,
+        })}
+        onClick={() => {
+          history.push(CONTACT_ADD_ROUTE);
+        }}
+        margin={4}
+        size={Size.LG}
+      >
+        {this.context.t('addContact')}
+      </ButtonPrimary>
     );
   }
 
   renderContactContent() {
-    const {
-      viewingContact,
-      editingContact,
-      addingContact,
-      showContactContent,
-    } = this.props;
-
-    if (!showContactContent) {
-      return null;
-    }
+    const { viewingContact, editingContact, addingContact } = this.props;
 
     let ContactContentComponent = null;
     if (viewingContact) {

@@ -359,12 +359,6 @@
     "message": "Voulez-vous lui accorder l’autorisation d’accéder et de transférer tous vos $1 ?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Approuver et installer"
-  },
-  "approveAndUpdate": {
-    "message": "Approuver et mettre à jour"
-  },
   "approveButtonText": {
     "message": "Approuver"
   },
@@ -428,9 +422,6 @@
   },
   "back": {
     "message": "Retour"
-  },
-  "backToAll": {
-    "message": "Retour à Tous"
   },
   "backup": {
     "message": "Sauvegarder"
@@ -642,9 +633,6 @@
   "connectAccountOrCreate": {
     "message": "Connecter un compte ou en créer un nouveau"
   },
-  "connectHardwareWallet": {
-    "message": "Connecter un portefeuille matériel"
-  },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
   },
@@ -788,9 +776,6 @@
   },
   "create": {
     "message": "Créer"
-  },
-  "createAccount": {
-    "message": "Créer un compte"
   },
   "createNewWallet": {
     "message": "Créer un nouveau portefeuille"
@@ -1636,9 +1621,6 @@
   "importTokenWarning": {
     "message": "Tout un chacun peut créer un jeton avec n’importe quel nom, y compris de fausses versions de jetons existants. Ajoutez et échangez avec prudence !"
   },
-  "importTokens": {
-    "message": "importer des jetons"
-  },
   "importTokensCamelCase": {
     "message": "Importer des jetons"
   },
@@ -1990,9 +1972,6 @@
   "missingSettingRequest": {
     "message": "Demandez ici"
   },
-  "missingToken": {
-    "message": "Vous ne voyez pas votre jeton ?"
-  },
   "moreComingSoon": {
     "message": "D’autres à venir..."
   },
@@ -2234,9 +2213,6 @@
   },
   "notEnoughGas": {
     "message": "Pas assez de gaz"
-  },
-  "notifications": {
-    "message": "Notifications"
   },
   "notifications10ActionText": {
     "message": "Ouvrir les paramètres",
@@ -2817,9 +2793,6 @@
   "receive": {
     "message": "Recevoir"
   },
-  "recents": {
-    "message": "Récents"
-  },
   "recipientAddressPlaceholder": {
     "message": "Recherche, adresse publique (0x) ou ENS"
   },
@@ -3214,9 +3187,6 @@
   "showHexDataDescription": {
     "message": "Selectionner ici pour afficher le champs de données hex dans l’écran d’envoi"
   },
-  "showHide": {
-    "message": "Afficher/masquer"
-  },
   "showIncomingTransactions": {
     "message": "Afficher les transactions entrantes"
   },
@@ -3284,10 +3254,12 @@
     "message": "Installer Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "Cochez la case pour confirmer que vous avez compris."
+    "message": "Cochez la case pour confirmer que vous avez compris.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "Veuillez confirmer que vous avez bien compris en cochant toutes les cases."
+    "message": "Veuillez confirmer que vous avez bien compris en cochant toutes les cases.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
@@ -3415,9 +3387,6 @@
   },
   "status": {
     "message": "État"
-  },
-  "statusConnected": {
-    "message": "Connecté"
   },
   "statusNotConnected": {
     "message": "Non connecté"
@@ -3572,10 +3541,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "Vous avez besoin de $1 $2 de plus pour effectuer ce swap",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "Meilleures cotations de $1.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "Aucun jeton disponible correspondant à $1",
@@ -3927,10 +3892,6 @@
   "toggleEthSignField": {
     "message": "Activer/Désactiver les requêtes eth-sign"
   },
-  "toggleTestNetworks": {
-    "message": "$1 réseaux de test",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "Jeton"
   },
@@ -4097,9 +4058,6 @@
   "transfer": {
     "message": "Transfert"
   },
-  "transferBetweenAccounts": {
-    "message": "Transfert entre mes comptes"
-  },
   "transferFrom": {
     "message": "Transfert depuis"
   },
@@ -4109,10 +4067,6 @@
   },
   "troubleStarting": {
     "message": "Impossible de démarrer MetaMask. Cette erreur peut être occasionnelle, essayez donc de redémarrer lextension."
-  },
-  "troubleTokenBalances": {
-    "message": "Nous avons eu du mal à charger votre balance de jetons, vous pouvez la consulter ici :",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "En accordant cette autorisation, vous permettez au(x) $1 suivant(s) d’accéder à vos fonds"

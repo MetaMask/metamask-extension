@@ -12,8 +12,8 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
   Size,
   TextVariant,
@@ -58,8 +58,8 @@ const HoldToRevealModal = ({
   const renderHoldToRevealPrivateKeyContent = () => {
     return (
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         gap={4}
         marginBottom={6}
       >
@@ -80,7 +80,7 @@ const HoldToRevealModal = ({
               key="hold-to-reveal-4"
               variant={TextVariant.bodyMd}
               as="span"
-              display={DISPLAY.INLINE}
+              display={Display.Inline}
             >
               {t('holdToRevealContent4')}
             </Text>,
@@ -103,8 +103,8 @@ const HoldToRevealModal = ({
   const renderHoldToRevealSRPContent = () => {
     return (
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         gap={4}
         marginBottom={6}
       >
@@ -125,7 +125,7 @@ const HoldToRevealModal = ({
               key="hold-to-reveal-4"
               variant={TextVariant.bodyMd}
               as="span"
-              display={DISPLAY.INLINE}
+              display={Display.Inline}
             >
               {t('holdToRevealContent4')}
             </Text>,
@@ -148,14 +148,14 @@ const HoldToRevealModal = ({
   return (
     <Box
       className="hold-to-reveal-modal"
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       justifyContent={JustifyContent.flexStart}
       padding={6}
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         marginBottom={6}

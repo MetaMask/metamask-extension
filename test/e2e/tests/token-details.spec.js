@@ -24,7 +24,7 @@ describe('Token Details', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement({ text: 'import tokens', tag: 'a' });
+        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
         await driver.clickElement({ text: 'Custom token', tag: 'button' });
 
         const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';

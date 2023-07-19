@@ -203,6 +203,13 @@ describe('NFT Details', () => {
           providerConfig: {
             chainId: '0x89',
           },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+            },
+          },
         },
       };
       const polygonMockStore = configureMockStore([thunk])(polygonState);
@@ -262,6 +269,13 @@ describe('NFT Details', () => {
           ...mockState.metamask,
           providerConfig: {
             chainId: '0x99',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x99',
+              nickname: 'Custom Mainnet RPC',
+            },
           },
         },
       };
