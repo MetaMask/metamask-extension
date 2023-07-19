@@ -95,7 +95,7 @@ export const NetworkListMenu = ({ onClose }) => {
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={`${network.id || network.chainId}-${index}`}
           selected={isCurrentNetwork}
-          onClick={async () => {
+          onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
               dispatch(setProviderType(network.providerType));

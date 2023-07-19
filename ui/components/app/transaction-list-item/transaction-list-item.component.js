@@ -51,6 +51,7 @@ import {
 import {
   checkNetworkAndAccountSupports1559,
   getCurrentNetwork,
+  getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
@@ -77,6 +78,7 @@ function TransactionListItemInner({
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
   const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   const {
     initialTransaction: { id },
@@ -276,6 +278,7 @@ function TransactionListItemInner({
                   src={currentChain?.rpcPrefs?.imageUrl}
                   borderWidth={1}
                   borderColor={BackgroundColor.backgroundDefault}
+                  backgroundColor={testNetworkBackgroundColor}
                 />
               }
             >

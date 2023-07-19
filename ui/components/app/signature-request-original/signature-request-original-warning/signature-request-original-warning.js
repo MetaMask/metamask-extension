@@ -3,21 +3,18 @@ import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Popover from '../../../ui/popover';
-import Box from '../../../ui/box';
-import Button from '../../../ui/button';
-import Typography from '../../../ui/typography';
 import {
   IconColor,
-  DISPLAY,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  Display,
+  FlexDirection,
+  FontWeight,
   JustifyContent,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import Identicon from '../../../ui/identicon';
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Box, Text, Button } from '../../../component-library';
 
 const SignatureRequestOriginalWarning = ({
   senderAddress,
@@ -30,8 +27,8 @@ const SignatureRequestOriginalWarning = ({
   return (
     <Popover className="signature-request-warning__content">
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         padding={4}
         className="signature-request-warning__content__header"
       >
@@ -40,37 +37,36 @@ const SignatureRequestOriginalWarning = ({
           color={IconColor.errorDefault}
           className="signature-request-warning__content__header__warning-icon"
         />
-        <Typography
-          variant={TypographyVariant.H4}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
+        <Text variant={TextVariant.headingSm} fontWeight={FontWeight.Bold}>
           {t('yourFundsMayBeAtRisk')}
-        </Typography>
+        </Text>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         padding={4}
         justifyContent={JustifyContent.spaceBetween}
         className="signature-request-warning__content__account"
       >
-        <Box display={DISPLAY.FLEX}>
+        <Box display={Display.Flex}>
           <Identicon address={senderAddress} diameter={32} />
-          <Typography
-            variant={TypographyVariant.H5}
+          <Text
+            variant={TextVariant.bodyMd}
+            as="h5"
             marginLeft={2}
             className="signature-request-warning__content__account-name"
           >
             <b>{name}</b> {` (${shortenAddress(senderAddress)})`}
-          </Typography>
+          </Text>
         </Box>
       </Box>
 
-      <Typography
+      <Text
         color={TextColor.textAlternative}
         margin={4}
         marginTop={4}
         marginBottom={4}
-        variant={TypographyVariant.H6}
+        variant={TextVariant.bodySm}
+        as="h6"
       >
         {t('signatureRequestWarning', [
           <a
@@ -84,11 +80,11 @@ const SignatureRequestOriginalWarning = ({
             {t('learnMoreUpperCase')}
           </a>,
         ])}
-      </Typography>
+      </Text>
 
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.spaceBetween}
         padding={4}
         className="signature-request-warning__footer"

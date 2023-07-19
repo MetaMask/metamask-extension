@@ -1,20 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
   BackgroundColor,
-  BLOCK_SIZES,
+  BlockSize,
   IconColor,
 } from '../../../helpers/constants/design-system';
 import { getSelectedAccountCachedBalance } from '../../../selectors';
 import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
-import { Icon, IconName, IconSize } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
-import Box from '../../ui/box';
+import { Icon, IconName, IconSize, Box, Text } from '../../component-library';
 
 const WrongNetworkNotification = () => {
   const t = useI18nContext();
@@ -29,12 +27,12 @@ const WrongNetworkNotification = () => {
     <Box
       className="wrong-network-notification"
       data-testid="wrong-network-notification"
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       padding={[1, 6]}
       backgroundColor={BackgroundColor.errorMuted}
-      width={BLOCK_SIZES.FULL}
+      width={BlockSize.Full}
     >
       <Icon
         name={IconName.Danger}
