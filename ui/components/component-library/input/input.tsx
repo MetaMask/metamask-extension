@@ -7,7 +7,7 @@ import {
   BorderStyle,
 } from '../../../helpers/constants/design-system';
 
-import { Text, ValidTag } from '../text';
+import { Text } from '..';
 
 import { InputProps, InputType } from './input.types';
 
@@ -48,7 +48,7 @@ export const Input = forwardRef(
         className,
       )}
       aria-invalid={error}
-      as={ValidTag.Input}
+      as="input"
       autoComplete={autoComplete ? 'on' : 'off'}
       autoFocus={autoFocus}
       backgroundColor={BackgroundColor.transparent}
