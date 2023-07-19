@@ -8952,15 +8952,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@whitespace/storybook-addon-html@npm:^5.1.4":
-  version: 5.1.4
-  resolution: "@whitespace/storybook-addon-html@npm:5.1.4"
+"@whitespace/storybook-addon-html@npm:^5.1.6":
+  version: 5.1.6
+  resolution: "@whitespace/storybook-addon-html@npm:5.1.6"
   peerDependencies:
-    "@storybook/addons": ^6.5.8
-    "@storybook/api": ^6.5.8
-    "@storybook/components": ^6.5.8
-    "@storybook/core-events": ^6.5.8
-    "@storybook/theming": ^6.5.8
+    "@storybook/addons": ^6.5.8 || ^7.0.12
+    "@storybook/api": ^6.5.8 || ^7.0.12
+    "@storybook/components": ^6.5.8 || ^7.0.12
+    "@storybook/core-events": ^6.5.8 || ^7.0.12
+    "@storybook/theming": ^6.5.8 || ^7.0.12
     prettier: ^2.0.0
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -8970,7 +8970,7 @@ __metadata:
       optional: true
     react-dom:
       optional: true
-  checksum: cd2b3da31774bf44f6cda1f91e77d627f601caee4050a01afe2f3c61d0d7e87e27bb6d7a32dd36208b4a0992b77f537c48cc55c683d50b7334212e8131a3ee93
+  checksum: 6e4374ef5d961282623e41e7fc9a921858d9b0abd5bdd7fbf9d3aae206bde436a3f724d23e5e2a0fbd7c10b01da5d7b94ce50f14c04730bd8841027a106313c9
   languageName: node
   linkType: hard
 
@@ -14934,12 +14934,12 @@ __metadata:
   linkType: hard
 
 "enhanced-resolve@npm:^5.14.0, enhanced-resolve@npm:^5.14.1, enhanced-resolve@npm:^5.8.3":
-  version: 5.14.1
-  resolution: "enhanced-resolve@npm:5.14.1"
+  version: 5.15.0
+  resolution: "enhanced-resolve@npm:5.15.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
-  checksum: ad2a31928b6649eed40d364838449587f731baa63863e83d2629bebaa8be1eabac18b90f89c1784bc805b0818363e99b22547159edd485d7e5ccf18cdc640642
+  checksum: fbd8cdc9263be71cc737aa8a7d6c57b43d6aa38f6cc75dde6fcd3598a130cc465f979d2f4d01bb3bf475acb43817749c79f8eef9be048683602ca91ab52e4f11
   languageName: node
   linkType: hard
 
@@ -24300,7 +24300,7 @@ __metadata:
     "@types/yargs": ^17.0.8
     "@typescript-eslint/eslint-plugin": ^5.30.7
     "@typescript-eslint/parser": ^5.30.7
-    "@whitespace/storybook-addon-html": ^5.1.4
+    "@whitespace/storybook-addon-html": ^5.1.6
     "@zxing/browser": ^0.0.10
     "@zxing/library": 0.8.0
     addons-linter: ^5.2.0
