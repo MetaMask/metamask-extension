@@ -1,6 +1,8 @@
-import React, { Ref, forwardRef } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { Text, Box } from '..';
+import type { PolymorphicRef } from '../box';
+
 import {
   AlignItems,
   BackgroundColor,
@@ -11,12 +13,12 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { TagProps } from './tag.types';
+import { TagComponent, TagProps } from './tag.types';
 
-export const Tag = forwardRef(
-  (
-    { label, className = '', labelProps, ...props }: TagProps,
-    ref: Ref<HTMLElement>,
+export const Tag: TagComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
+    { label, className = '', labelProps, ...props }: TagProps<C>,
+    ref: PolymorphicRef<C>,
   ) => {
     return (
       <Box
