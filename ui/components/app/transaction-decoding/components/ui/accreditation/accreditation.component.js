@@ -45,7 +45,7 @@ const Accreditation = ({ fetchVia, address }) => {
             </Button>,
           ])}
         </Text>
-        <Text variant={TextVariant.bodySm} as="h6" margin={0}>
+        <Text variant={TextVariant.bodySm} as="h6">
           {t('transactionDecodingAccreditationDecoded')}
         </Text>
       </>
