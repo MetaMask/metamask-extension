@@ -2,3 +2,13 @@
 
 <h1>The simplest web page out there</h1>
 
+<script>
+
+console.log('attempting to increment');
+  const promise = E(getBootstrap()).increment()
+  .then((result) => {
+    alert('our result was:', result);
+  });
+  console.log(promise)
+
+</script>
