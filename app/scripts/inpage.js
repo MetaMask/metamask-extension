@@ -32,7 +32,7 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 console.log('inpage calling freeze');
-import './lib/globalDeepFreeze.js';
+import './lib/globalDeepFreeze';
 import 'ses'; // import ses to get agoric assert and lockdown global and assert
 
 // try {
@@ -55,6 +55,7 @@ import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+
 console.log('import captp stream');
 import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
