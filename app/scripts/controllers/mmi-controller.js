@@ -225,15 +225,6 @@ export default class MMIController extends EventEmitter {
     ) {
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
-
-    try {
-      if (this.institutionalFeaturesController.getComplianceProjectId()) {
-        this.institutionalFeaturesController.startPolling();
-      }
-    } catch (e) {
-      log.error('Failed to start Compliance polling');
-      log.error(e);
-    }
   }
 
   async connectCustodyAddresses(custodianType, custodianName, accounts) {
