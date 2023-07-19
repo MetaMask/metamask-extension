@@ -1,4 +1,4 @@
-import { makeCapTP, E } from '@agoric/captp';
+import { makeCapTP, E } from '@endo/captp';
 import { Duplex } from 'stream';
 
 export default function makeCapTpFromStream (streamId, bootstrap) {
