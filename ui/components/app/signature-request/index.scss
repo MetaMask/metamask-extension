@@ -14,7 +14,7 @@
   border-radius: 8px;
 
   @include screen-sm-min {
-    max-height: 80vh;
+    max-height: max-content;
     min-height: 570px;
     flex: 0 0 auto;
     margin-left: auto;
@@ -41,7 +41,7 @@
 
 .signature-request-content {
   flex: 1 40%;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   display: flex;
   align-items: center;
   flex-direction: column;
