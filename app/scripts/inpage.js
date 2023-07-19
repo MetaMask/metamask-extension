@@ -51,6 +51,7 @@ import './lockdown-run';
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
+import debugStream from '@stdlib/streams-node-debug';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
@@ -76,6 +77,9 @@ if (shouldInjectProvider()) {
   const metamaskStream = new WindowPostMessageStream({
     name: INPAGE,
     target: CONTENT_SCRIPT,
+  });
+  const metamaskDebugStream = debugStream({
+    'name': 'debug-stream-background'
   });
 
   // Intercept captp messages, ignoring everything else
