@@ -1119,11 +1119,6 @@
         "koa>is-generator-function>has-tostringtag": true
       }
     },
-    "@metamask/jazzicon>color>clone": {
-      "globals": {
-        "Buffer": true
-      }
-    },
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
@@ -5142,9 +5137,14 @@
         "process.cwd": true
       },
       "packages": {
-        "@metamask/jazzicon>color>clone": true,
+        "gulp-watch>vinyl-file>vinyl>clone": true,
         "gulp-watch>vinyl-file>vinyl>clone-stats": true,
         "gulp-watch>vinyl-file>vinyl>replace-ext": true
+      }
+    },
+    "gulp-watch>vinyl-file>vinyl>clone": {
+      "globals": {
+        "Buffer": true
       }
     },
     "gulp-watch>vinyl-file>vinyl>clone-stats": {

@@ -1165,12 +1165,12 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>clone": true,
         "@metamask/eth-json-rpc-middleware>pify": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
         "@metamask/eth-snap-keyring>@metamask/eth-sig-util": true,
         "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "json-rpc-engine": true,
+        "vinyl>clone": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/utils": {
@@ -1183,11 +1183,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>clone": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@metamask/eth-keyring-controller": {
@@ -1763,7 +1758,6 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2006,7 +2000,6 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2069,11 +2062,32 @@
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/bignumber": true,
         "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/smart-transactions-controller>@metamask/base-controller": true,
+        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
+        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
         "fast-json-patch": true,
         "lodash": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
+      "globals": {
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>isomorphic-fetch": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true,
+        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -2085,6 +2099,25 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "@metamask/smart-transactions-controller>isomorphic-fetch": {
+      "globals": {
+        "fetch.bind": true
+      },
+      "packages": {
+        "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "@metamask/smart-transactions-controller>isomorphic-fetch>whatwg-fetch": {
+      "globals": {
+        "Blob": true,
+        "FileReader": true,
+        "FormData": true,
+        "URLSearchParams.prototype.isPrototypeOf": true,
+        "XMLHttpRequest": true,
+        "define": true,
+        "setTimeout": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2109,7 +2142,6 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2145,7 +2177,6 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -4852,6 +4883,11 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
+      }
+    },
+    "vinyl>clone": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "wait-on>rxjs>tslib": {
