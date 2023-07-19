@@ -63,7 +63,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement('[data-testid="network-display"]');
         const ganacheChain = await driver.findElements({
           text: `Localhost ${port}`,
-          tag: 'span',
+          tag: 'button',
         });
         assert.ok(ganacheChain.length, 1);
       },
