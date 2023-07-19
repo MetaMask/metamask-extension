@@ -51,8 +51,6 @@ export enum ValidTag {
   Label = 'label',
   Input = 'input',
   Header = 'header',
-  A = 'a',
-  Button = 'button',
 }
 
 export type ValidTagType =

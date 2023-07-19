@@ -1,7 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { IconName, ValidTag } from '..';
+import { IconName } from '..';
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 
@@ -18,7 +18,7 @@ describe('ButtonBase', () => {
 
   it('should render anchor element correctly', () => {
     const { getByTestId, container } = render(
-      <ButtonBase as={ValidTag.A} data-testid="button-base" />,
+      <ButtonBase as="a" data-testid="button-base" />,
     );
     expect(getByTestId('button-base')).toHaveClass('mm-button-base');
     const anchor = container.getElementsByTagName('a').length;

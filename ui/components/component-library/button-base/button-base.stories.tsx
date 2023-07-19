@@ -8,7 +8,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
-import { TextDirection, IconName, ValidTag } from '..';
+import { TextDirection, IconName } from '..';
 
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
@@ -142,7 +142,7 @@ export const Block: StoryFn<typeof ButtonBase> = (args) => (
 export const As: StoryFn<typeof ButtonBase> = (args) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={2}>
     <ButtonBase {...args}>Button Element</ButtonBase>
-    <ButtonBase as={ValidTag.A} href="#" {...args}>
+    <ButtonBase as="a" href="#" {...args}>
       Anchor Element
     </ButtonBase>
   </Box>
