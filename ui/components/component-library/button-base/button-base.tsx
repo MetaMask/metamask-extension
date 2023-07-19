@@ -49,7 +49,8 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         variant={TextVariant.bodyMdMedium}
         color={loading ? TextColor.transparent : color}
         ref={ref}
-        href={href}
+        {...(href ? { href } : {})}
+        {...(disabled && !href ? { disabled: true } : {})}
         {...(externalLink
           ? { target: '_blank', rel: 'noopener noreferrer' }
           : {})}
@@ -68,7 +69,6 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
           },
           className,
         )}
-        disabled={disabled}
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
