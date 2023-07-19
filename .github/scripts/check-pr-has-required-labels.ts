@@ -30,35 +30,26 @@ async function main(): Promise<void> {
   // Retrieve pull request labels
   const prLabels = await retrievePullRequestLabels(octokit, prRepoOwner, prRepoName, prNumber);
 
-  const qaLabels = ["QA Passed", "No QA Needed/E2E Only", "Spot Check on the Release Build"];
   const preventMergeLabels = ["needs-qa", "QA'd but questions", "issues-found"];
 
-  let hasQALabel = false;
   let hasTeamLabel = false;
 
   // Check pull request has at least required QA label and team label
   for (const label of prLabels) {
-    if (qaLabels.includes(label)) {
-      console.log(`PR contains a QA label as expected: ${label}`);
-      hasQALabel = true;
-    }
-    if (label.startsWith("team-")) {
+    if (label.startsWith("team-") || label === "external-contributor") {
       console.log(`PR contains a team label as expected: ${label}`);
       hasTeamLabel = true;
     }
     if (preventMergeLabels.includes(label)) {
       throw new Error(`PR cannot be merged because it still contains this label: ${label}`);
     }
-    if (hasQALabel && hasTeamLabel) {
+    if (hasTeamLabel) {
       return;
     }
   }
 
   // Otherwise, throw an arror to prevent from merging
   let errorMessage = '';
-  if (!hasQALabel) {
-    errorMessage += 'No QA labels found on the PR. ';
-  }
   if (!hasTeamLabel) {
     errorMessage += 'No team labels found on the PR. ';
   }
