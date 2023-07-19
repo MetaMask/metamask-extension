@@ -955,6 +955,14 @@ function setupBundlerDefaults(
             : [],
         },
       ],
+      // Transpile libraries that use ES6 modules
+      [
+        babelify,
+        {
+          only: ['./**/node_modules/@endo/*'],
+          global: true,
+        },
+      ],
       // Inline `fs.readFileSync` files
       brfs,
     ],
