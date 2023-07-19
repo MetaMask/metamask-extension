@@ -50,7 +50,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         color={loading ? TextColor.transparent : color}
         ref={ref}
         {...(href ? { href } : {})}
-        {...(disabled && !href ? { disabled: true } : {})}
+        {...(disabled && !href ? { disabled } : {})}
         {...(externalLink
           ? { target: '_blank', rel: 'noopener noreferrer' }
           : {})}
