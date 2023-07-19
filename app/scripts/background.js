@@ -644,11 +644,21 @@ export function setupController(
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
+        const portStream = new PortStream(remotePort);
         let counter = 0;
-        const { getBootstrap, E } = makeCapTpFromStream('background', remotePort, harden({
+        const { getBootstrap, E, captpStream, abort } = makeCapTpFromStream('background', harden({
           increment: async () => ++counter,
           getCount: async () => counter,
         }));
+        pump(
+          captpStream,
+          portStream,
+          captpStream,
+          (err) => {
+            log.error(err);
+            abort();
+          }
+        );
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

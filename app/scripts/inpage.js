@@ -35,6 +35,7 @@ import log from 'loglevel';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -54,6 +55,21 @@ if (shouldInjectProvider()) {
     name: INPAGE,
     target: CONTENT_SCRIPT,
   });
+
+  const { getBootstrap, E, captpStream, abort } = makeCapTpFromStream(window.location.origin, harden({
+    greet: async (name) => {
+      alert(`Hello, ${name}!`);
+    },
+  }));
+  pump(
+    captpStream,
+    metamaskStream,
+    captpStream,
+    (err) => {
+      log.error(err);
+      abort();
+    }
+  );
 
   initializeProvider({
     connectionStream: metamaskStream,
