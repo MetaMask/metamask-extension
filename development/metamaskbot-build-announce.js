@@ -22,7 +22,7 @@ function getHumanReadableSize(bytes) {
 
   const k = 1024;
   const sizes = ['Bytes', 'KiB', 'MiB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
