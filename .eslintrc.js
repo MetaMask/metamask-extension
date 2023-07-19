@@ -357,6 +357,8 @@ module.exports = {
      */
     {
       files: [
+        'app/scripts/background.js',
+        'app/scripts/inpage.js',
         'app/scripts/lockdown-run.js',
         'app/scripts/lockdown-more.js',
         'test/helpers/protect-intrinsics-helpers.js',

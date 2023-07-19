@@ -41,4 +41,6 @@ export default function makeCapTpFromStream(streamId, bootstrap) {
   return { getBootstrap, abort, E, captpStream: stream };
 }
 
-function noop() {}
+function noop() {
+  // noop
+}

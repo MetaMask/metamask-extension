@@ -526,7 +526,6 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -569,8 +568,6 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
-
-
 
       // communication with popup
       controller.isClientOpen = true;
@@ -646,19 +643,20 @@ export function setupController(
 
         const portStream = new PortStream(remotePort);
         let counter = 0;
-        const { getBootstrap, E, captpStream, abort } = makeCapTpFromStream('background', harden({
-          increment: async () => ++counter,
-          getCount: async () => counter,
-        }));
-        pump(
-          captpStream,
-          portStream,
-          captpStream,
-          (err) => {
-            log.error(err);
-            abort();
-          }
+        const { captpStream, abort } = makeCapTpFromStream(
+          'background',
+          harden({
+            increment: async () => {
+              counter += 1;
+              return counter;
+            },
+            getCount: async () => counter,
+          }),
         );
+        pump(captpStream, portStream, captpStream, (err) => {
+          log.error(err);
+          abort();
+        });
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

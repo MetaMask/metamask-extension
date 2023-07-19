@@ -32,6 +32,7 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
+import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -56,20 +57,19 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
-  const { getBootstrap, E, captpStream, abort } = makeCapTpFromStream(window.location.origin, harden({
-    greet: async (name) => {
-      alert(`Hello, ${name}!`);
-    },
-  }));
-  pump(
-    captpStream,
-    metamaskStream,
-    captpStream,
-    (err) => {
-      log.error(err);
-      abort();
-    }
+  const { captpStream, abort } = makeCapTpFromStream(
+    window.location.origin,
+    harden({
+      greet: async (name) => {
+        // eslint-disable-next-line no-alert, no-undef
+        alert(`Hello, ${name}!`);
+      },
+    }),
   );
+  pump(captpStream, metamaskStream, captpStream, (err) => {
+    log.error(err);
+    abort();
+  });
 
   initializeProvider({
     connectionStream: metamaskStream,
