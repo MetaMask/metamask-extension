@@ -144,7 +144,6 @@ export default function CreateNewVault({
         data-testid="create-new-vault-submit-button"
         className="create-new-vault__submit-button"
         variant={BUTTON_VARIANT.PRIMARY}
-        submit
         disabled={!isValid}
       >
         {submitText}
