@@ -18,7 +18,6 @@ jobs:
         with:
           stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity in the last 90 days. It will be closed in 45 days. Thank you for your contributions.'
           stale-issue-label: 'stale'
-          only-issue-labels: 'type-bug'
           exempt-issue-labels: 'type-security'
           stale-pr-message: 'This PR has been automatically marked as stale because it has not had recent activity in the last 60 days. It will be closed in 14 days. Thank you for your contributions.'
           stale-pr-label: 'stale'
