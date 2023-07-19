@@ -79,7 +79,7 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
   const metamaskDebugStream = debugStream({
-    'name': 'debug-stream-background'
+    'name': 'debug-stream-inpage'
   });
 
   // Intercept captp messages, ignoring everything else
@@ -98,7 +98,7 @@ if (shouldInjectProvider()) {
       },
     }),
   );
-  pump(captpStream, captpSubstream, captpStream, (err) => {
+  pump(captpStream, metamaskDebugStream, captpSubstream, captpStream, (err) => {
     log.error(err);
     abort();
   });
