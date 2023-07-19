@@ -2,6 +2,7 @@
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
 let __define;
+import { obj as through2 } from 'through2';
 
 /**
  * Caches reference to global define object and deletes it to
@@ -72,6 +73,14 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 // setup plugin communication
 //
 
+function debugStream2(opts) {
+  return through2(function (chunk, enc, callback) {
+    console.log(`${opts.name} stream saw:`, chunk);
+    this.push(chunk)
+    callback()
+  })
+}
+
 if (shouldInjectProvider()) {
   // setup background connection
   const metamaskStream = new WindowPostMessageStream({
@@ -87,19 +96,19 @@ if (shouldInjectProvider()) {
   interceptingMux.ignoreStream('metamask-provider');
   const captpSubstream = interceptingMux.createStream('metamask-captp');
 
-  const stream1 = debugStream({
+  const stream1 = debugStream2({
     name: 'my-stream1',
     objectMode: true,
   });
-  const stream2 = debugStream({
+  const stream2 = debugStream2({
     name: 'my-stream2',
     objectMode: true,
   });
-  const stream3 = debugStream({
+  const stream3 = debugStream2({
     name: 'my-stream3',
     objectMode: true,
   });
-  const stream4 = debugStream({
+  const stream4 = debugStream2({
     name: 'my-stream4',
     objectMode: true,
   });

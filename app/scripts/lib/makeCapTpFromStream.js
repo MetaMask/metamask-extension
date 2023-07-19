@@ -3,7 +3,9 @@ import { makeCapTP, E } from '@endo/captp';
 window.E = E;
 
 export default function makeCapTpFromStream(streamId, bootstrap) {
-  const stream = new Duplex();
+  const stream = new Duplex({
+    objectMode: true,
+  });
 
   stream._read = noop;
 
