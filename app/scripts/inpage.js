@@ -31,27 +31,30 @@ const restoreContextAfterImports = () => {
 cleanContextForImports();
 
 /* eslint-disable import/first */
-import 'ses'; // import ses to get agoric assert and lockdown global
+console.log('inpage calling freeze');
+import './lib/globalDeepFreeze.js';
+import 'ses'; // import ses to get agoric assert and lockdown global and assert
 
-try {
-  // eslint-disable-next-line no-undef,import/unambiguous
-  lockdown({
-    consoleTaming: 'unsafe',
-    errorTaming: 'unsafe',
-    mathTaming: 'unsafe',
-    dateTaming: 'unsafe',
-    domainTaming: 'unsafe',
-    overrideTaming: 'severe',
-  });
-} catch (error) {
-  console.error('Lockdown failed:', error);
-}
+// try {
+//   // eslint-disable-next-line no-undef,import/unambiguous
+//   lockdown({
+//     consoleTaming: 'unsafe',
+//     errorTaming: 'unsafe',
+//     mathTaming: 'unsafe',
+//     dateTaming: 'unsafe',
+//     domainTaming: 'unsafe',
+//     overrideTaming: 'severe',
+//   });
+// } catch (error) {
+//   console.error('Lockdown failed:', error);
+// }
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+console.log('import captp stream');
 import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
 // contexts
@@ -73,6 +76,7 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
+  console.log('making captp stream');
   const { captpStream, abort } = makeCapTpFromStream(
     window.location.origin,
     harden({
