@@ -18,8 +18,7 @@ import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
 import AppLoadingSpinner from '../app-loading-spinner';
-import { Text } from '../../component-library/text/deprecated';
-import { Button, ButtonLink } from '../../component-library';
+import { Button, ButtonLink, Text } from '../../component-library';
 
 const CancelSpeedupPopover = () => {
   const {

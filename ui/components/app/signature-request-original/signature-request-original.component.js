@@ -34,8 +34,7 @@ import {
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
 import SignatureRequestHeader from '../signature-request-header';

@@ -8,8 +8,9 @@ import {
   BUTTON_VARIANT,
   BannerAlert,
   Button,
+  Text,
 } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
+
 import AccountModalContainer from '../account-modal-container';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import {

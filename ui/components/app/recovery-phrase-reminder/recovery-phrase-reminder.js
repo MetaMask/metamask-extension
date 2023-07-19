@@ -17,7 +17,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 export default function RecoveryPhraseReminder({ onConfirm, hasBackedUp }) {
   const t = useI18nContext();
