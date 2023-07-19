@@ -3702,6 +3702,7 @@ export default class MetamaskController extends EventEmitter {
       'background',
       harden({
         increment: async () => {
+          console.log('incrementing', counter);
           counter += 1;
           return counter;
         },

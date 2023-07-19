@@ -32,8 +32,9 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 console.log('inpage calling freeze');
-import './lib/globalDeepFreeze';
+// import './lib/globalDeepFreeze';
 import 'ses'; // import ses to get agoric assert and lockdown global and assert
+import './lockdown-run.js';
 
 // try {
 //   // eslint-disable-next-line no-undef,import/unambiguous
