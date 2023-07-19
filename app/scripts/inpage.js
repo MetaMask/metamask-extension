@@ -51,7 +51,7 @@ import './lockdown-run';
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
-import { obj as through2 } from 'through2';
+import { obj as createThoughStream } from 'through2';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
@@ -73,7 +73,7 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 //
 
 function debugStream(name) {
-  return through2(function (chunk, enc, callback) {
+  return createThoughStream(function (chunk, enc, callback) {
     console.log(`${name} stream saw:`, chunk);
     this.push(chunk);
     callback();

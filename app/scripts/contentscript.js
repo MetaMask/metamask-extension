@@ -14,35 +14,20 @@ import shouldInjectProvider from '../../shared/modules/provider-injection';
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
-import { obj as through2 } from 'through2';
-function debugStream2(opts) {
-  return through2(function (chunk, enc, callback) {
-    console.log(`${opts.name} stream saw:`, chunk);
-    this.push(chunk)
-    callback()
-  })
+
+function debugStream(name) {
+  return createThoughStream(function (chunk, enc, callback) {
+    console.log(`${name} stream saw:`, chunk);
+    this.push(chunk);
+    callback();
+  });
 }
-const stream1 = debugStream2({
-  name: 'my-contentscript-stream-1',
-  objectMode: true,
-});
-const stream2 = debugStream2({
-  name: 'my-contentscript-stream-2',
-  objectMode: true,
-});
-const stream3 = debugStream2({
-  name: 'my-contentscript-stream-3',
-  objectMode: true,
-});
-const stream4 = debugStream2({
-  name: 'my-contentscript-stream-4',
-  objectMode: true,
-});
+
 function db(num) {
-  return debugStream2({
-    name: 'my-contentscript-stream-' + num,
+  return debugStream({
+    name: `my-contentscript-stream-${num}`,
     objectMode: true,
-  })
+  });
 }
 
 const inpageContent = fs.readFileSync(
@@ -200,8 +185,13 @@ function setupPhishingPageStreams() {
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
-  pump(phishingPageMux, stream1, phishingPageStream, stream2, phishingPageMux, (err) =>
-    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
+  pump(
+    phishingPageMux,
+    db('phishing1'),
+    phishingPageStream,
+    db('phishing2'),
+    phishingPageMux,
+    (err) => logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
   phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
@@ -218,31 +208,44 @@ const setupPhishingExtStreams = () => {
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
 
-  pump(phishingExtMux, stream3, phishingExtStream, stream4, phishingExtMux, (err) => {
-    logStreamDisconnectWarning('MetaMask Background Multiplex', err);
-    window.postMessage(
-      {
-        target: PHISHING_WARNING_PAGE, // the post-message-contentscript-stream- "target"
-        data: {
-          // this object gets passed to obj-multiplex
-          name: PHISHING_SAFELIST, // the obj-multiplex channel name
+  pump(
+    phishingExtMux,
+    db('phishing3'),
+    phishingExtStream,
+    db('phishing4'),
+    phishingExtMux,
+    (err) => {
+      logStreamDisconnectWarning('MetaMask Background Multiplex', err);
+      window.postMessage(
+        {
+          target: PHISHING_WARNING_PAGE, // the post-message-contentscript-stream- "target"
           data: {
-            jsonrpc: '2.0',
-            method: 'METAMASK_STREAM_FAILURE',
+            // this object gets passed to obj-multiplex
+            name: PHISHING_SAFELIST, // the obj-multiplex channel name
+            data: {
+              jsonrpc: '2.0',
+              method: 'METAMASK_STREAM_FAILURE',
+            },
           },
         },
-      },
-      window.location.origin,
-    );
-  });
+        window.location.origin,
+      );
+    },
+  );
 
   // forward communication across inpage-background for these channels only
   phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
-  pump(phishingPageChannel, db(5), phishingExtChannel, db(6), phishingPageChannel, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
-      error,
-    ),
+  pump(
+    phishingPageChannel,
+    db(5),
+    phishingExtChannel,
+    db(6),
+    phishingPageChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+        error,
+      ),
   );
 
   // eslint-disable-next-line no-use-before-define
