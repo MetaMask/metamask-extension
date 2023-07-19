@@ -21,7 +21,6 @@ jobs:
           exempt-issue-labels: 'type-security'
           stale-pr-message: 'This PR has been automatically marked as stale because it has not had recent activity in the last 60 days. It will be closed in 14 days. Thank you for your contributions.'
           stale-pr-label: 'stale'
-          exempt-pr-labels: 'DO-NOT-MERGE'
           close-issue-message: 'This issue was closed because there has been no follow up activity in the last 7 days. If you feel this was closed in error, please reopen and provide evidence on the latest release of the extension. Thank you for your contributions.'
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 7 days. Thank you for your contributions.'
           # Least recently updated issue is https://github.com/MetaMask/metamask-extension/issues/5610 from October 25th, 2018, 1728 days ago
