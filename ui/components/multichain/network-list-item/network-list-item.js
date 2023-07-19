@@ -28,7 +28,7 @@ import {
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 
-const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
 function getAvatarNetworkColor(name) {
   switch (name) {
