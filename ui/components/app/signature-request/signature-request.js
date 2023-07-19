@@ -280,7 +280,13 @@ const SignatureRequest = ({ txData }) => {
           ///: END:ONLY_INCLUDE_IN
         }
         <div className="signature-request__origin">
-          <TagUrl label={origin} src={targetSubjectMetadata?.iconUrl} />
+          <TagUrl
+            label={origin}
+            labelProps={{
+              color: TextColor.textAlternative,
+            }}
+            src={targetSubjectMetadata?.iconUrl}
+          />
         </div>
         <Text
           className="signature-request__content__title"

@@ -189,7 +189,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
             />
           </div>
           <p
-            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
           >
             https://metamask.github.io
           </p>
