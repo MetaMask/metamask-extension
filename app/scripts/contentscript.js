@@ -391,11 +391,11 @@ const setupExtensionStreams = () => {
       ),
   );
   pump(
-    extensionCaptpChannel,
+    pageCaptpChannel,
     db(13),
     extensionCaptpChannel,
     db(14),
-    extensionCaptpChannel,
+    pageCaptpChannel,
     (error) =>
       console.debug(
         `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
