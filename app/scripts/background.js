@@ -1,7 +1,7 @@
 /**
  * @file The entry point for the web extension singleton process.
  */
-
+import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';

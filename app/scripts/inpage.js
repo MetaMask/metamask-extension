@@ -31,6 +31,7 @@ const restoreContextAfterImports = () => {
 cleanContextForImports();
 
 /* eslint-disable import/first */
+import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
