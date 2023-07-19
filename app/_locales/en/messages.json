@@ -796,9 +796,6 @@
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
   },
-  "connectionError": {
-    "message": "Connection error"
-  },
   "connectionFailed": {
     "message": "Connection failed"
   },
@@ -3272,9 +3269,6 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
-  "projectIdInvalid": {
-    "message": "Provided Project ID is invalid"
-  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
@@ -3392,12 +3386,6 @@
   },
   "replace": {
     "message": "replace"
-  },
-  "reportLastRun": {
-    "message": "Report last run"
-  },
-  "reportLastRunTooltip": {
-    "message": "The date and time of when the last AML/CFT report was run"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3539,9 +3527,6 @@
   },
   "rpcUrl": {
     "message": "New RPC URL"
-  },
-  "runReport": {
-    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3766,9 +3751,6 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
-  },
-  "showReport": {
-    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
