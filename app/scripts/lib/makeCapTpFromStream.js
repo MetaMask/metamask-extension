@@ -1,9 +1,7 @@
-import { makeCapTP, E } from '@endo/captp';
 import { Duplex } from 'stream';
+import { makeCapTP, E } from '@endo/captp';
 
-export default function makeCapTpFromStream (streamId, bootstrap) {
-  let dispatch, getBootstrap, abort;
-
+export default function makeCapTpFromStream(streamId, bootstrap) {
   const stream = new Duplex();
 
   stream._read = noop;
@@ -13,15 +11,15 @@ export default function makeCapTpFromStream (streamId, bootstrap) {
   };
 
   const capTp = makeCapTP(streamId, send, bootstrap);
-  ({ dispatch, getBootstrap, abort } = capTp);
+  const { dispatch, getBootstrap, abort } = capTp;
 
-  stream._write = (obj, enc, cb) => {
+  stream._write = (obj, _enc, cb) => {
     try {
       dispatch(JSON.parse(obj));
     } catch (err) {
       return cb(err);
     }
-    cb();
+    return cb();
   };
 
   stream._writev = (chunks, cb) => {
@@ -32,15 +30,15 @@ export default function makeCapTpFromStream (streamId, bootstrap) {
     } catch (err) {
       return cb(err);
     }
-    cb();
-  }
+    return cb();
+  };
 
   stream._final = (cb) => {
     abort();
     cb();
-  }
+  };
 
-  return { getBootstrap, abort, E, captpStream: stream }
-};
+  return { getBootstrap, abort, E, captpStream: stream };
+}
 
-function noop () {}
+function noop() {}
