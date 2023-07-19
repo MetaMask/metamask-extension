@@ -259,18 +259,18 @@ export const getNfts = (state) => {
   const {
     metamask: { allNfts, selectedAddress },
   } = state;
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
 
-  return allNfts?.[selectedAddress]?.[chainId] ?? [];
+  return allNfts?.[selectedAddress]?.[caipChainId] ?? [];
 };
 
 export const getNftContracts = (state) => {
   const {
     metamask: { allNftContracts, selectedAddress },
   } = state;
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
 
-  return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
+  return allNftContracts?.[selectedAddress]?.[caipChainId] ?? [];
 };
 
 export function getBlockGasLimit(state) {

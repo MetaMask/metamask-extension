@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
       selectedAddress,
     },
   } = state;
-  const { chainId } = getProviderConfig(state);
+  const { caipChainId } = getProviderConfig(state);
 
   const isTokenDetectionInactiveOnMainnet =
     getIsTokenDetectionInactiveOnMainnet(state);
@@ -43,7 +43,7 @@ const mapStateToProps = (state) => {
     tokens,
     pendingTokens,
     showSearchTab,
-    chainId,
+    caipChainId,
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     tokenList: getTokenList(state),
     useTokenDetection,

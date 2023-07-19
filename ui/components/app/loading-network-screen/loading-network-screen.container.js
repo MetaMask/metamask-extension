@@ -14,14 +14,13 @@ const DEPRECATED_TEST_NET_CHAINIDS = ['0x3', '0x2a', '0x4'];
 const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
   const providerConfig = getProviderConfig(state);
-  const { rpcUrl, chainId, ticker, nickname, type } = providerConfig;
+  const { rpcUrl, caipChainId, ticker, nickname, type } = providerConfig;
 
   const setProviderArgs =
-    type === NETWORK_TYPES.RPC ? [rpcUrl, chainId, ticker, nickname] : [type];
+    type === NETWORK_TYPES.RPC ? [rpcUrl, caipChainId, ticker, nickname] : [type];
 
-  const providerChainId = chainId;
   const isDeprecatedNetwork =
-    DEPRECATED_TEST_NET_CHAINIDS.includes(providerChainId);
+    DEPRECATED_TEST_NET_CHAINIDS.includes(caipChainId);
   const isInfuraRpcUrl = rpcUrl && new URL(rpcUrl).host.endsWith('.infura.io');
   const showDeprecatedRpcUrlWarning = isDeprecatedNetwork && isInfuraRpcUrl;
 
@@ -31,7 +30,7 @@ const mapStateToProps = (state) => {
   if (networkName === undefined) {
     const networks = getAllEnabledNetworks(state);
     const desiredNetwork = networks.find(
-      (network) => network.chainId === chainId,
+      (network) => network.caipChainId === caipChainId,
     );
     if (desiredNetwork) {
       networkName = desiredNetwork.nickname;

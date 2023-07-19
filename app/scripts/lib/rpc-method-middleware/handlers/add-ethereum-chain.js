@@ -144,7 +144,7 @@ async function addEthereumChainHandler(
 
   const caipChainId = getCaipChainIdFromEthChainId(_chainId)
 
-  const existingNetwork = findNetworkConfigurationBy({ chainId: caipChainId });
+  const existingNetwork = findNetworkConfigurationBy({ caipChainId });
 
   // if the request is to add a network that is already added and configured
   // with the same RPC gateway we shouldn't try to add it again.
@@ -155,7 +155,7 @@ async function addEthereumChainHandler(
     const currentCaipChainId = getCurrentCaipChainId();
     const currentRpcUrl = getCurrentRpcUrl();
 
-    // If the current chainId and rpcUrl matches that of the incoming request
+    // If the current caipChainId and rpcUrl matches that of the incoming request
     // We don't need to proceed further.
     if (currentCaipChainId === caipChainId && currentRpcUrl === firstValidRPCUrl) {
       return end();
@@ -169,7 +169,7 @@ async function addEthereumChainHandler(
         type: ApprovalType.SwitchEthereumChain,
         requestData: {
           rpcUrl: existingNetwork.rpcUrl,
-          chainId: existingNetwork.chainId,
+          caipChainId: existingNetwork.caipChainId,
           nickname: existingNetwork.nickname,
           ticker: existingNetwork.ticker,
         },
@@ -235,11 +235,11 @@ async function addEthereumChainHandler(
       }),
     );
   }
-  // if the chainId is the same as an existing network but the ticker is different we want to block this action
+  // if the caipChainId is the same as an existing network but the ticker is different we want to block this action
   // as it is potentially malicious and confusing
   if (
     existingNetwork &&
-    existingNetwork.chainId === _chainId &&
+    existingNetwork.caipChainId === caipChainId &&
     existingNetwork.ticker !== ticker
   ) {
     return end(
@@ -257,7 +257,7 @@ async function addEthereumChainHandler(
       origin,
       type: ApprovalType.AddEthereumChain,
       requestData: {
-        chainId: caipChainId,
+        caipChainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
         chainName: _chainName,
         rpcUrl: firstValidRPCUrl,
@@ -290,7 +290,7 @@ async function addEthereumChainHandler(
       type: ApprovalType.SwitchEthereumChain,
       requestData: {
         rpcUrl: firstValidRPCUrl,
-        chainId: caipChainId,
+        caipChainId,
         nickname: _chainName,
         ticker,
         networkConfigurationId,

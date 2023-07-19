@@ -10,7 +10,7 @@ export default async function resolveEnsToIpfsContentId({ provider, name }) {
   const hash = namehash.hash(name);
   const contract = new EthContract(eth);
   // lookup registry
-  const chainId = Number.parseInt(await eth.net_version(), 10);
+  const chainId = Number.parseInt(await eth.net_version(), 10); // is this right?
   const registryAddress = getRegistryForChainId(chainId);
   if (!registryAddress) {
     throw new Error(

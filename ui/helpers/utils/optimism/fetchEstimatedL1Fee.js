@@ -1,6 +1,5 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
@@ -26,15 +25,15 @@ export default async function fetchEstimatedL1Fee(
   txMeta,
   ethersProvider,
 ) {
-  const chainIdAsDecimalNumber = getEthChainIdIntFromCaipChainId(caipChainId);
+  const intChainId = getEthChainIdIntFromCaipChainId(caipChainId);
   const provider = global.ethereumProvider
-    ? new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber)
+    ? new Web3Provider(global.ethereumProvider, intChainId)
     : ethersProvider;
 
   if (process.env.IN_TEST) {
     provider.detectNetwork = async () => ({
       name: 'optimism',
-      chainId: chainIdAsDecimalNumber,
+      chainId: intChainId,
     });
   }
   const contract = new Contract(

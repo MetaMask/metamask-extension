@@ -337,7 +337,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const renderSimulationFailureWarning =
       hasSimulationError && !userAcknowledgedGasMissing;
-    const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
+    const networkName = NETWORK_TO_NAME_MAP[txData.caipChainId];
 
     const renderTotalMaxAmount = () => {
       if (

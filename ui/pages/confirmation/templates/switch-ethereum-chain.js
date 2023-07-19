@@ -69,7 +69,7 @@ function getValues(pendingApproval, t, actions) {
           key: 'network-being-switched',
           props: {
             newNetwork: {
-              chainId: pendingApproval.requestData.chainId,
+              caipChainId: pendingApproval.requestData.caipChainId,
               nickname: pendingApproval.requestData.nickname,
             },
           },

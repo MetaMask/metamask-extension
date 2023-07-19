@@ -658,7 +658,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    this.ppomController = new PPOMController({
+    this.ppomController = new PPOMController({ // this needs to be updated
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
       }),
@@ -4659,13 +4659,12 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.store.getState();
 
     if (transactionSecurityCheckEnabled) {
-      const chainId = getEthChainIdDecFromCaipChainId(this.networkController.state.providerConfig.caipChainId)
 
       try {
-        const securityProviderResponse = await securityProviderCheck( // should this get updated?
+        const securityProviderResponse = await securityProviderCheck(
           requestData,
           methodName,
-          chainId,
+          this.networkController.state.providerConfig.caipChainId,
           currentLocale,
         );
 

@@ -50,7 +50,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentCaipChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
@@ -77,7 +77,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: chainId, // what to do with metrics?
+          chain_id: caipChainId, // what to do with metrics?
         },
       });
     });

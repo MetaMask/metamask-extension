@@ -61,7 +61,7 @@ const ConfirmTxScreen = ({ match }) => {
     networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
-  const { chainId } = useSelector(getProviderConfig);
+  const { caipChainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -78,7 +78,7 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       networkId,
-      chainId,
+      caipChainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
@@ -103,7 +103,7 @@ const ConfirmTxScreen = ({ match }) => {
         {},
         {},
         networkId,
-        chainId,
+        caipChainId,
       );
       const prevTxData = prevUnconfTxList[prevIndex] || {};
       prevTx =
@@ -116,7 +116,7 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       networkId,
-      chainId,
+      caipChainId,
     );
 
     if (prevTx && prevTx.status === TransactionStatus.dropped) {
@@ -135,7 +135,7 @@ const ConfirmTxScreen = ({ match }) => {
 
     setPrevValues({ index, unapprovedTxs });
   }, [
-    chainId,
+    caipChainId,
     currentNetworkTxList,
     match,
     networkId,
@@ -153,7 +153,7 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedPersonalMsgs,
       unapprovedTypedMessages,
       networkId,
-      chainId,
+      caipChainId,
     );
 
     log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);

@@ -136,10 +136,10 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const requestChainId = getEthChainIdIntFromCaipChainId(pendingApproval.requestData.chainId) // hmm... this comes from rpc, right?
+  const intChainId = getEthChainIdIntFromCaipChainId(pendingApproval.requestData.caipChainId)
   const matchedChain = safeChainsList.find(
     (chain) =>
-      chain.chainId === requestChainId
+      chain.chainId === intChainId
   );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
@@ -178,7 +178,7 @@ async function getAlerts(pendingApproval) {
 }
 
 function getState(pendingApproval) {
-  if (pendingApproval.requestData.chainId === "eip155:1") { // not sure if this is right, based on e2e it is
+  if (pendingApproval.requestData.caipChainId === "eip155:1") { // not sure if this is right, based on e2e it is
     console.log("use warning modal")
     return { useWarningModal: true };
   }
@@ -188,7 +188,7 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  const caipChainId = pendingApproval.requestData.chainId; // not sure if this is right. I think this comes for the rpc request, so it is right
+  const caipChainId = pendingApproval.requestData.caipChainId;
   return {
     content: [
       {
@@ -383,7 +383,7 @@ function getValues(pendingApproval, t, actions, history) {
 
       const endpointCaipChainId = getCaipChainIdFromEthChainId(endpointChainId)
 
-      if (pendingApproval.requestData.chainId !== endpointCaipChainId) {
+      if (pendingApproval.requestData.caipChainId !== endpointCaipChainId) {
         console.error(
           `Chain ID returned by RPC URL ${customRpcUrl} does not match ${endpointChainId}`,
         );
@@ -394,12 +394,10 @@ function getValues(pendingApproval, t, actions, history) {
         pendingApproval.id,
         pendingApproval.requestData,
       );
-      const { chainId, ...requestData} = pendingApproval.requestData // need to bubble this all the way up?
       if (originIsMetaMask) {
         const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
-            ...requestData,
-            caipChainId: chainId,
+            ... pendingApproval.requestData,
             nickname: requestData.chainName,
           },
           {

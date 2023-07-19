@@ -122,10 +122,10 @@ const addHexPrefix = (str: string) => {
   return `0x${str}`;
 };
 
-function getChainType(chainId: string) {
-  if (chainId === CHAIN_IDS.MAINNET) {
+function getChainType(caipChainId: string) {
+  if (caipChainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
-  } else if ((TEST_CHAINS as string[]).includes(chainId)) {
+  } else if ((TEST_CHAINS as string[]).includes(caipChainId)) {
     return 'testnet';
   }
   return 'custom';

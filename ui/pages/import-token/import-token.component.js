@@ -28,6 +28,7 @@ import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 
@@ -81,9 +82,9 @@ class ImportToken extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
 
     /**
-     * The active chainId in use.
+     * The active caipChainId in use.
      */
-    chainId: PropTypes.string,
+    caipChainId: PropTypes.string,
 
     /**
      * The rpc preferences to use for the current provider.
@@ -281,7 +282,7 @@ class ImportToken extends Component {
       (key) => key.toLowerCase() === customAddress.toLowerCase(),
     );
 
-    const isMainnetNetwork = this.props.chainId === '0x1';
+    const isMainnetNetwork = this.props.caipChainId === 'eip155:1';
 
     let standard;
     if (addressIsValid) {
@@ -409,7 +410,7 @@ class ImportToken extends Component {
     } = this.state;
 
     const {
-      chainId,
+      caipChainId,
       rpcPrefs,
       isDynamicTokenListAvailable,
       tokenDetectionInactiveOnNonMainnetSupportedNetwork,
@@ -417,7 +418,7 @@ class ImportToken extends Component {
     } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
-      chainId,
+      getEthChainIdHexFromCaipChainId(caipChainId),
       null,
       null,
       { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },

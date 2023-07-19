@@ -64,8 +64,8 @@ export default function GasDisplay({ gasError }) {
     useSelector(getPreferences);
   const { unapprovedTxs } = useSelector((state) => state.metamask);
   const nativeCurrency = useSelector(getNativeCurrency);
-  const { chainId } = providerConfig;
-  const networkName = NETWORK_TO_NAME_MAP[chainId];
+  const { caipChainId } = providerConfig;
+  const networkName = NETWORK_TO_NAME_MAP[caipChainId];
   const isInsufficientTokenError =
     draftTransaction?.amount?.error === INSUFFICIENT_TOKENS_ERROR;
   const editingTransaction = unapprovedTxs[draftTransaction.id];

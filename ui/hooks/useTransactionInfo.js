@@ -7,10 +7,10 @@ export const useTransactionInfo = (txData = {}) => {
   const { allNftContracts, selectedAddress } = useSelector(
     (state) => state.metamask,
   );
-  const { chainId } = useSelector(getProviderConfig);
+  const { caipChainId } = useSelector(getProviderConfig);
 
   const isNftTransfer = Boolean(
-    allNftContracts?.[selectedAddress]?.[chainId]?.find((contract) => {
+    allNftContracts?.[selectedAddress]?.[caipChainId]?.find((contract) => {
       return isEqualCaseInsensitive(contract.address, txData.txParams.to);
     }),
   );

@@ -962,9 +962,9 @@ export default class TransactionController extends EventEmitter {
    * @returns {Promise<object>} Object containing the default gas limit, or the simulation failure object
    */
   async _getDefaultGasLimit(txMeta) {
-    const chainId = this._getCurrentCaipChainId();
-    const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[chainId];
-    const chainType = getChainType(chainId);
+    const caipChainId = this._getCurrentCaipChainId();
+    const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId];
+    const chainType = getChainType(caipChainId);
 
     if (txMeta.txParams.gas) {
       return {};
@@ -1380,7 +1380,7 @@ export default class TransactionController extends EventEmitter {
     latestTxMeta.postTxBalance = postTxBalance.toString(16);
     const isDefaultTokenAddress = isSwapsDefaultTokenAddress(
       txMeta.destinationTokenAddress,
-      txMeta.chainId,
+      txMeta.caipChainId,
     );
     if (
       isDefaultTokenAddress &&
@@ -2205,7 +2205,7 @@ export default class TransactionController extends EventEmitter {
           txMeta.txParams.from,
           txMeta.destinationTokenDecimals,
           approvalTxMeta,
-          txMeta.chainId,
+          txMeta.caipChainId,
         );
 
         const quoteVsExecutionRatio = tokensReceived

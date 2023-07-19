@@ -261,7 +261,7 @@ const AddNetwork = () => {
                           origin: ORIGIN_METAMASK,
                           type: ApprovalType.AddEthereumChain,
                           requestData: {
-                            chainId: item.caipChainId,
+                            caipChainId: item.caipChainId,
                             rpcUrl: item.rpcUrl,
                             ticker: item.ticker,
                             rpcPrefs: item.rpcPrefs,

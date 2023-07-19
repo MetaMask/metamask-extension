@@ -30,7 +30,7 @@ const DetectedTokenSelectionPopover = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const chainId = useSelector(getCurrentCaipChainId);
+  const caipChainId = useSelector(getCurrentCaipChainId);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const { selected: selectedTokens = [] } =
@@ -50,7 +50,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: chainId, // what to do with metrics?
+        chain_id: caipChainId, // what to do with metrics?
         tokens: eventTokensDetails,
       },
     });

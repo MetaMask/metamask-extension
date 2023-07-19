@@ -42,8 +42,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addToAddressBook: (recipient, nickname, memo) =>
       dispatch(addToAddressBook(recipient, nickname, memo)),
-    removeFromAddressBook: (chainId, addressToRemove) =>
-      dispatch(removeFromAddressBook(chainId, addressToRemove)),
+    removeFromAddressBook: (caipChainId, addressToRemove) =>
+      dispatch(removeFromAddressBook(caipChainId, addressToRemove)),
   };
 };
 

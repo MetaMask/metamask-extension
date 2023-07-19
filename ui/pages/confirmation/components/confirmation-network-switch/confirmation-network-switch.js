@@ -21,7 +21,7 @@ import {
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const { chainId, nickname, type } = useSelector(getProviderConfig);
+  const { caipChainId, nickname, type } = useSelector(getProviderConfig);
 
   return (
     <Box
@@ -35,9 +35,9 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId]}
             name={nickname}
             size={64}
           />
@@ -72,9 +72,9 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {newNetwork.caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]}
+            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.caipChainId]}
             name={newNetwork.nickname}
             size={64}
           />
@@ -102,7 +102,7 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
 
 ConfirmationNetworkSwitch.propTypes = {
   newNetwork: PropTypes.shape({
-    chainId: PropTypes.string.isRequired,
+    caipChainId: PropTypes.string.isRequired,
     nickname: PropTypes.string.isRequired,
   }),
 };

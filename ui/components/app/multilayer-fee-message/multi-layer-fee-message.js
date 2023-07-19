@@ -30,7 +30,7 @@ export default function MultilayerFeeMessage({
     const getEstimatedL1Fee = async () => {
       try {
         const result = await fetchEstimatedL1Fee(
-          transaction?.chainId,
+          transaction?.caipChainId,
           transaction,
         );
         setLayer1Total(result);
