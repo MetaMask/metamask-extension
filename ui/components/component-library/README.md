@@ -86,7 +86,7 @@ Allowing everyone to access web3 regardless of disability is an important part o
 
 ## TypeScript
 
-We are currently in the process of migrating all component-library components to TypeScript. Feel free to contribute by creating a PR against one of [these issues](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aissue+is%3Aopen+DS%2FExtension%2F2023%2FQ2%2FO1%2FKR3)
+We are currently in the process of migrating all component-library components to TypeScript. Feel free to contribute by creating a PR against one of [these issues](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aissue+is%3Aopen+Migrate+components+to+TS)
 
 ## Support
 
