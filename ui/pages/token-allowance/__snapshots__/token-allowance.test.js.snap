@@ -420,13 +420,13 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                 <span>
                    
                   This allows the third party to spend 
-                  <h6
+                  <span
                     class="mm-box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold mm-box--color-text-default"
                   >
                     7
                      
                     TST
-                  </h6>
+                  </span>
                    from your current balance.
                    
                 </span>
