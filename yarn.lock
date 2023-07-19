@@ -4571,15 +4571,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#eebd539c83a5658506eb645804be3f13139499b0":
+"@metamask/ppom-validator@npm:^0.1.2":
   version: 0.1.2
-  resolution: "@metamask/ppom-validator@git@github.com:MetaMask/ppom-validator.git#commit=eebd539c83a5658506eb645804be3f13139499b0"
+  resolution: "@metamask/ppom-validator@npm:0.1.2"
   dependencies:
     "@metamask/base-controller": ^3.0.0
     "@metamask/controller-utils": ^4.0.0
     await-semaphore: ^0.1.3
-    json-rpc-random-id: ^1.0.1
-  checksum: 80d9473e5cc760255c8c78435ada0c486350880680993e5c3774f69cec7aba1cae90ff98f99d482b392bde9b7e46c3c923e47a2a2049bc5b8d2afc50e2434ffc
+  checksum: 8d2dfc2aa66d852765abd06af2709442a44fd3f96b204c9affa80cb9e2add39eb0b538bf3666f94afc0256d4f6a871bbead66723c5854ed823cfbf59d715da20
   languageName: node
   linkType: hard
 
@@ -24682,7 +24681,7 @@ __metadata:
     "@metamask/phishing-controller": ^3.0.0
     "@metamask/phishing-warning": ^2.1.0
     "@metamask/post-message-stream": ^6.0.0
-    "@metamask/ppom-validator": "git@github.com:MetaMask/ppom-validator.git#eebd539c83a5658506eb645804be3f13139499b0"
+    "@metamask/ppom-validator": ^0.1.2
     "@metamask/providers": ^11.1.0
     "@metamask/rate-limit-controller": ^3.0.0
     "@metamask/rpc-methods": ^1.0.0-prerelease.1
