@@ -3574,6 +3574,7 @@ export default class MetamaskController extends EventEmitter {
       origin: req.origin,
       // This is the default behaviour but specified here for clarity
       requireApproval: true,
+      securityAlertResponse: req.securityAlertResponse,
     });
 
     return await result;
