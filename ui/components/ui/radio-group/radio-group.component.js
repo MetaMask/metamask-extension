@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 function Connector({ isFirst, isLast }) {
   if (isFirst) {
