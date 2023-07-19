@@ -20,10 +20,18 @@ function getHumanReadableSize(bytes) {
     return '0 Bytes';
   }
 
-  const k = 1024;
-  const sizes = ['Bytes', 'KiB', 'MiB'];
-  const i = Math.floor(Math.log(Math.abs(bytes)) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  const absBytes = Math.abs(bytes);
+  const kibibyteSize = 1024;
+  const magnitudes = ['Bytes', 'KiB', 'MiB'];
+  let magnitudeIndex = 0;
+  if (absBytes > Math.pow(kibibyteSize, 2)) {
+    magnitudeIndex = 2;
+  } else if (absBytes > kibibyteSize) {
+    magnitudeIndex = 1;
+  }
+  return `${parseFloat(
+    (bytes / Math.pow(kibibyteSize, magnitudeIndex)).toFixed(2),
+  )} ${magnitudes[magnitudeIndex]}`;
 }
 
 function getPercentageChange(from, to) {
