@@ -4,7 +4,7 @@ import { hasProperty } from '@metamask/utils';
 export const version = 89;
 
 /**
- * Explain the purpose of the migration here.
+ * This migration deletes the PhishingController state, allowing it to be refetched with new metadata.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
