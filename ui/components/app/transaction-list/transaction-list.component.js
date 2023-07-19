@@ -173,77 +173,70 @@ export default function TransactionList({
       <Box className="transaction-list__transactions">
         {pendingTransactions.length > 0 && (
           <Box className="transaction-list__pending-transactions">
-            {pendingTransactions
-              .map((dateGroup) => {
-                return dateGroup.transactionGroups.map(
-                  (transactionGroup, index) => {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                    if (
-                      transactionGroup.initialTransaction.transactionType ===
-                      TransactionType.smart
-                    ) {
-                      return (
-                        <>
-                          {renderDateStamp(index, dateGroup)}
-                          <SmartTransactionListItem
-                            isEarliestNonce={index === 0}
-                            smartTransaction={
-                              transactionGroup.initialTransaction
-                            }
-                            transactionGroup={transactionGroup}
-                            key={`${transactionGroup.nonce}:${index}`}
-                          />
-                        </>
-                      );
-                    }
-                    ///: END:ONLY_INCLUDE_IN
+            {pendingTransactions.map((dateGroup) => {
+              return dateGroup.transactionGroups.map(
+                (transactionGroup, index) => {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  if (
+                    transactionGroup.initialTransaction.transactionType ===
+                    TransactionType.smart
+                  ) {
                     return (
                       <>
                         {renderDateStamp(index, dateGroup)}
-                        <TransactionListItem
+                        <SmartTransactionListItem
                           isEarliestNonce={index === 0}
+                          smartTransaction={transactionGroup.initialTransaction}
                           transactionGroup={transactionGroup}
                           key={`${transactionGroup.nonce}:${index}`}
                         />
                       </>
                     );
-                  },
-                );
-              })}
+                  }
+                  ///: END:ONLY_INCLUDE_IN
+                  return (
+                    <>
+                      {renderDateStamp(index, dateGroup)}
+                      <TransactionListItem
+                        isEarliestNonce={index === 0}
+                        transactionGroup={transactionGroup}
+                        key={`${transactionGroup.nonce}:${index}`}
+                      />
+                    </>
+                  );
+                },
+              );
+            })}
           </Box>
         )}
         <Box className="transaction-list__completed-transactions">
           {completedTransactions.length > 0 ? (
-            completedTransactions
-              .slice(0, limit)
-              .map((dateGroup) => {
-                return dateGroup.transactionGroups.map(
-                  (transactionGroup, index) => {
-                    return (
-                      <>
-                        {renderDateStamp(index, dateGroup)}
-                        {transactionGroup.initialTransaction
-                          ?.transactionType === 'smart' ? (
-                          <SmartTransactionListItem
-                            transactionGroup={transactionGroup}
-                            smartTransaction={
-                              transactionGroup.initialTransaction
-                            }
-                            key={`${transactionGroup.nonce}:${index}`}
-                          />
-                        ) : (
-                          <TransactionListItem
-                            transactionGroup={transactionGroup}
-                            key={`${transactionGroup.nonce}:${
-                              limit + index - 10
-                            }`}
-                          />
-                        )}
-                      </>
-                    );
-                  },
-                );
-              })
+            completedTransactions.slice(0, limit).map((dateGroup) => {
+              return dateGroup.transactionGroups.map(
+                (transactionGroup, index) => {
+                  return (
+                    <>
+                      {renderDateStamp(index, dateGroup)}
+                      {transactionGroup.initialTransaction?.transactionType ===
+                      'smart' ? (
+                        <SmartTransactionListItem
+                          transactionGroup={transactionGroup}
+                          smartTransaction={transactionGroup.initialTransaction}
+                          key={`${transactionGroup.nonce}:${index}`}
+                        />
+                      ) : (
+                        <TransactionListItem
+                          transactionGroup={transactionGroup}
+                          key={`${transactionGroup.nonce}:${
+                            limit + index - 10
+                          }`}
+                        />
+                      )}
+                    </>
+                  );
+                },
+              );
+            })
           ) : (
             <Box className="transaction-list__empty">
               <Box className="transaction-list__empty-text">
