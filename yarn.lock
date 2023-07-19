@@ -3766,6 +3766,11 @@ __metadata:
     jest-fetch-mock: 3.0.3
   checksum: 6d34c11962fe9f5029c5dcda48eabadc43a11c9a00e1dbfa494fbed3bebbeebd23667caea774a3df6602c1ab3d257d9759614c66de9da215c657003dc225671c
   languageName: node
+  linkType: hard
+
+"@metamask-institutional/institutional-features@npm:^1.1.8":
+  version: 1.1.8
+  resolution: "@metamask-institutional/institutional-features@npm:1.1.8"
   dependencies:
     "@auth0/auth0-spa-js": ^2.0.4
     "@metamask-institutional/custody-keyring": ^0.0.22
@@ -3955,7 +3960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.2.0":
+"@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.1.0, @metamask/base-controller@npm:^3.2.0":
   version: 3.2.0
   resolution: "@metamask/base-controller@npm:3.2.0"
   dependencies:
@@ -4022,7 +4027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.3.0":
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0, @metamask/controller-utils@npm:^4.3.0":
   version: 4.3.0
   resolution: "@metamask/controller-utils@npm:4.3.0"
   dependencies:
@@ -4755,25 +4760,6 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^3.5.0
   checksum: cc5865e32a72386e4eb43d5c8dc64be40410d9e30c8c2d91dc50d806b367d0ec5ce30e997a02ec9588cbb9ae835dc0426cc5ccdedb9dad1bdb6baa31e5360e70
-  languageName: node
-  linkType: hard
-
-"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.1#./.yarn/patches/@metamask-signature-controller-npm-4.0.1-013e64c9fd.patch::locator=metamask-crx%40workspace%3A.":
-  version: 4.0.1
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.1#./.yarn/patches/@metamask-signature-controller-npm-4.0.1-013e64c9fd.patch::version=4.0.1&hash=7f339b&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-    "@metamask/message-manager": ^7.0.0
-    "@metamask/utils": ^5.0.2
-    eth-rpc-errors: ^4.0.2
-    ethereumjs-util: ^7.0.10
-    immer: ^9.0.6
-    lodash: ^4.17.21
-  peerDependencies:
-    "@metamask/approval-controller": ^3.3.0
-  checksum: d678cf1763cfe9e13c0e5d357fcc44bd4580efc44a6fdca61ba6eed059c47c780fafaf08a075466a4886fbb9c6332544752bf7d25d515a37213c800cfc181665
   languageName: node
   linkType: hard
 
