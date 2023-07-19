@@ -3906,9 +3906,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/auto-changelog@npm:^2.1.0":
-  version: 2.6.1
-  resolution: "@metamask/auto-changelog@npm:2.6.1"
+"@metamask/auto-changelog@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@metamask/auto-changelog@npm:3.2.0"
   dependencies:
     diff: ^5.0.0
     execa: ^5.1.1
@@ -3916,7 +3916,7 @@ __metadata:
     yargs: ^17.0.1
   bin:
     auto-changelog: dist/cli.js
-  checksum: 6ae84de492e4aec710ff2dd793f258b7cc3aba3fdeb416c0d3ab55a156da61b4ccd3272e9a6608f32b71695dc42b527a380ce62566e387240665556c8da26de3
+  checksum: 7cd19400bb60d478455fbf9ffe7c295b21df64764a01f90776beda04bfa46242f34751112b862b4bd5955f04a7d28cfa7d6b2e745f3d3baaccda7c493f761658
   languageName: node
   linkType: hard
 
@@ -24205,7 +24205,7 @@ __metadata:
     "@metamask/announcement-controller": ^4.0.0
     "@metamask/approval-controller": ^3.4.0
     "@metamask/assets-controllers": ^9.2.0
-    "@metamask/auto-changelog": ^2.1.0
+    "@metamask/auto-changelog": 3.2.0
     "@metamask/base-controller": ^3.2.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
