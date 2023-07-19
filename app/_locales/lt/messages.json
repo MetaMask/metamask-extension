@@ -560,9 +560,6 @@
   "privateNetwork": {
     "message": "Privatus tinklas"
   },
-  "queue": {
-    "message": "Eilė"
-  },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."
   },

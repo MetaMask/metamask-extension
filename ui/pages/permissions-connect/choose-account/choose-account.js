@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { SubjectType } from '@metamask/permission-controller';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
 import PermissionsConnectHeader from '../../../components/app/permissions-connect-header';
 import PermissionsConnectFooter from '../../../components/app/permissions-connect-footer';
 import AccountList from '../../../components/ui/account-list';
+import { PageContainerFooter } from '../../../components/ui/page-container';
 
 const ChooseAccount = ({
   selectedAccountAddresses,
@@ -47,6 +48,21 @@ const ChooseAccount = ({
     return accounts.length === selectedAccounts.size;
   };
 
+  const getHeaderText = () => {
+    if (accounts.length === 0) {
+      return t('connectAccountOrCreate');
+    }
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    if (targetSubjectMetadata?.subjectType === SubjectType.Snap) {
+      return t('selectAccountsForSnap');
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    return t('selectAccounts');
+  };
+
+  const headerText = getHeaderText();
+
   return (
     <>
       <div className="permissions-connect-choose-account__content">
@@ -54,12 +70,9 @@ const ChooseAccount = ({
           iconUrl={targetSubjectMetadata?.iconUrl}
           iconName={targetSubjectMetadata?.name}
           headerTitle={t('connectWithMetaMask')}
-          headerText={
-            accounts.length > 0
-              ? t('selectAccounts')
-              : t('connectAccountOrCreate')
-          }
+          headerText={headerText}
           siteOrigin={targetSubjectMetadata?.origin}
+          subjectType={targetSubjectMetadata?.subjectType}
         />
         <AccountList
           accounts={accounts}
@@ -74,22 +87,17 @@ const ChooseAccount = ({
         />
       </div>
       <div className="permissions-connect-choose-account__footer-container">
-        <PermissionsConnectFooter />
-        <div className="permissions-connect-choose-account__bottom-buttons">
-          <Button
-            onClick={() => cancelPermissionsRequest(permissionsRequestId)}
-            type="secondary"
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            onClick={() => selectAccounts(selectedAccounts)}
-            type="primary"
-            disabled={selectedAccounts.size === 0}
-          >
-            {t('next')}
-          </Button>
-        </div>
+        {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
+          <PermissionsConnectFooter />
+        )}
+        <PageContainerFooter
+          cancelButtonType="default"
+          onCancel={() => cancelPermissionsRequest(permissionsRequestId)}
+          cancelText={t('cancel')}
+          onSubmit={() => selectAccounts(selectedAccounts)}
+          submitText={t('next')}
+          disabled={selectedAccounts.size === 0}
+        />
       </div>
     </>
   );

@@ -174,8 +174,7 @@ export const BSC_DISPLAY_NAME = 'Binance Smart Chain';
 export const POLYGON_DISPLAY_NAME = 'Polygon';
 export const AVALANCHE_DISPLAY_NAME = 'Avalanche Network C-Chain';
 export const ARBITRUM_DISPLAY_NAME = 'Arbitrum One';
-export const BNB_DISPLAY_NAME =
-  'BNB Smart Chain (previously Binance Smart Chain Mainnet)';
+export const BNB_DISPLAY_NAME = 'BNB Chain';
 export const OPTIMISM_DISPLAY_NAME = 'Optimism';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
@@ -549,7 +548,6 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.FANTOM_TESTNET
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.LINEA_GOERLI
-    | typeof CHAIN_IDS.LINEA_MAINNET
     | typeof CHAIN_IDS.GOERLI
   >]: BuyableChainSettings;
 } = {
@@ -612,6 +610,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.PALM]: {
     nativeCurrency: CURRENCY_SYMBOLS.PALM,
     network: 'palm',
+  },
+  [CHAIN_IDS.LINEA_MAINNET]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    network: 'linea',
   },
 };
 

@@ -11,7 +11,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
 const defaultNumberOfWords = 12;

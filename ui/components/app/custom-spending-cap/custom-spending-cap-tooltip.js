@@ -4,17 +4,18 @@ import Box from '../../ui/box';
 import Tooltip from '../../ui/tooltip';
 import {
   TextColor,
-  DISPLAY,
   TextVariant,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-import { Icon, IconName, IconSize, Text } from '../../component-library';
+import { Icon, IconName, IconSize } from '../../component-library';
+import { Text } from '../../component-library/text/deprecated';
 
 export const CustomSpendingCapTooltip = ({
   tooltipContentText,
   tooltipIcon,
 }) => (
-  <Box display={DISPLAY.INLINE_BLOCK}>
+  <Box display={Display.InlineBlock}>
     <Tooltip
       interactive
       position="top"

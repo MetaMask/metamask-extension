@@ -8,7 +8,7 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { ConnectedSiteMenu } from './connected-site-menu';
+import { ConnectedSiteMenu } from '.';
 
 export default {
   title: 'Components/Multichain/ConnectedSiteMenu',
