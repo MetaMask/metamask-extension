@@ -90,7 +90,7 @@ if (shouldInjectProvider()) {
   forwardingMux.ignoreStream('metamask-captp');
   pump(metamaskStream, forwardingMux, metamaskStream, log.error);
 
-  const { captpStream, abort } = makeCapTpFromStream(
+  const { captpStream, abort, getBootstrap } = makeCapTpFromStream(
     window.location.origin,
     harden({
       greet: async (name) => {
@@ -103,6 +103,7 @@ if (shouldInjectProvider()) {
     log.error(err);
     abort();
   });
+  window.getBootstrap = getBootstrap;
 
   initializeProvider({
     connectionStream: forwardingMux,
