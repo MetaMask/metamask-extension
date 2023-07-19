@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import Identicon from '../../ui/identicon';
 import {
-  Display,
-  FlexDirection,
+  DISPLAY,
+  FLEX_DIRECTION,
   TextVariant,
   FontWeight,
   AlignItems,
@@ -33,22 +33,22 @@ export default function NetworkAccountBalanceHeader({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.ROW}
       padding={4}
       className="network-account-balance-header"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.ROW}
         alignItems={AlignItems.center}
         gap={2}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          display={DISPLAY.FLEX}
+          flexDirection={FLEX_DIRECTION.ROW}
           alignItems={AlignItems.center}
         >
           <Identicon address={accountAddress} diameter={32} />
@@ -60,9 +60,9 @@ export default function NetworkAccountBalanceHeader({
           />
         </Box>
         <Box
-          display={Display.Flex}
+          display={DISPLAY.FLEX}
           alignItems={AlignItems.flexStart}
-          flexDirection={FlexDirection.Column}
+          flexDirection={FLEX_DIRECTION.COLUMN}
         >
           <Text
             variant={TextVariant.bodySm}
@@ -83,9 +83,9 @@ export default function NetworkAccountBalanceHeader({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
+        display={DISPLAY.FLEX}
         alignItems={AlignItems.flexEnd}
-        flexDirection={FlexDirection.Column}
+        flexDirection={FLEX_DIRECTION.COLUMN}
       >
         <Text
           variant={TextVariant.bodySm}

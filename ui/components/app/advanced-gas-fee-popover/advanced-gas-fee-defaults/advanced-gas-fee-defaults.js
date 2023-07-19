@@ -6,8 +6,8 @@ import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
 import CheckBox from '../../../ui/check-box';
 import {
-  Display,
-  FlexDirection,
+  DISPLAY,
+  FLEX_DIRECTION,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -72,8 +72,8 @@ const AdvancedGasFeeDefaults = () => {
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
+      display={DISPLAY.FLEX}
+      flexDirection={FLEX_DIRECTION.ROW}
       marginTop={4}
       marginLeft={2}
       marginRight={2}

@@ -12,7 +12,7 @@ import Popover from '../../../ui/popover';
 import {
   FontWeight,
   TextVariant,
-  Display,
+  DISPLAY,
   Size,
   BorderStyle,
   BorderColor,
@@ -72,7 +72,7 @@ export default function ContractDetailsModal({
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={Display.Flex}
+          display={DISPLAY.FLEX}
           color={TextColor.textAlternative}
           marginTop={2}
         >
@@ -83,14 +83,14 @@ export default function ContractDetailsModal({
             <Text
               variant={TextVariant.bodySm}
               as="h6"
-              display={Display.Flex}
+              display={DISPLAY.FLEX}
               marginTop={4}
               marginBottom={2}
             >
               {nft ? t('contractNFT') : t('contractToken')}
             </Text>
             <Box
-              display={Display.Flex}
+              display={DISPLAY.FLEX}
               borderRadius={Size.SM}
               borderStyle={BorderStyle.solid}
               borderColor={BorderColor.borderDefault}
@@ -123,7 +123,7 @@ export default function ContractDetailsModal({
                   <Text
                     variant={TextVariant.bodySm}
                     as="h6"
-                    display={Display.Flex}
+                    display={DISPLAY.FLEX}
                     color={TextColor.textAlternative}
                     marginBottom={4}
                   >
@@ -146,7 +146,7 @@ export default function ContractDetailsModal({
                   }
                 >
                   <ButtonIcon
-                    display={Display.Flex}
+                    display={DISPLAY.FLEX}
                     iconName={
                       copiedTokenAddress ? IconName.CopySuccess : IconName.Copy
                     }
@@ -161,7 +161,7 @@ export default function ContractDetailsModal({
                 </Tooltip>
                 <Tooltip position="top" title={t('openInBlockExplorer')}>
                   <ButtonIcon
-                    display={Display.Flex}
+                    display={DISPLAY.FLEX}
                     iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
@@ -187,7 +187,7 @@ export default function ContractDetailsModal({
         <Text
           variant={TextVariant.bodySm}
           as="h6"
-          display={Display.Flex}
+          display={DISPLAY.FLEX}
           marginTop={4}
           marginBottom={2}
         >
@@ -198,7 +198,7 @@ export default function ContractDetailsModal({
             t('contractRequestingSpendingCap')}
         </Text>
         <Box
-          display={Display.Flex}
+          display={DISPLAY.FLEX}
           borderRadius={Size.SM}
           borderStyle={BorderStyle.solid}
           borderColor={BorderColor.borderDefault}
@@ -222,7 +222,7 @@ export default function ContractDetailsModal({
               <Text
                 variant={TextVariant.bodySm}
                 as="h6"
-                display={Display.Flex}
+                display={DISPLAY.FLEX}
                 color={TextColor.textAlternative}
                 marginBottom={4}
               >
@@ -243,7 +243,7 @@ export default function ContractDetailsModal({
               }
             >
               <ButtonIcon
-                display={Display.Flex}
+                display={DISPLAY.FLEX}
                 iconName={
                   copiedToAddress ? IconName.CopySuccess : IconName.Copy
                 }
@@ -258,7 +258,7 @@ export default function ContractDetailsModal({
             </Tooltip>
             <Tooltip position="top" title={t('openInBlockExplorer')}>
               <ButtonIcon
-                display={Display.Flex}
+                display={DISPLAY.FLEX}
                 iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
@@ -281,7 +281,7 @@ export default function ContractDetailsModal({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
+        display={DISPLAY.FLEX}
         paddingTop={6}
         paddingRight={4}
         paddingBottom={6}
