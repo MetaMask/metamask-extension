@@ -19,10 +19,10 @@ jobs:
           stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity in the last 90 days. It will be closed in 45 days. Thank you for your contributions.'
           stale-issue-label: 'stale'
           only-issue-labels: 'type-bug'
-          exempt-issue-labels: 'type-security, type-pinned, feature-request, awaiting-metamask'
+          exempt-issue-labels: 'type-security'
           stale-pr-message: 'This PR has been automatically marked as stale because it has not had recent activity in the last 60 days. It will be closed in 14 days. Thank you for your contributions.'
           stale-pr-label: 'stale'
-          exempt-pr-labels: 'work-in-progress'
+          exempt-pr-labels: 'DO-NOT-MERGE'
           close-issue-message: 'This issue was closed because there has been no follow up activity in the last 7 days. If you feel this was closed in error, please reopen and provide evidence on the latest release of the extension. Thank you for your contributions.'
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 7 days. Thank you for your contributions.'
           days-before-issue-stale: 90
