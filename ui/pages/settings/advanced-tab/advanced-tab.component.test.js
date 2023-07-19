@@ -8,11 +8,13 @@ import AdvancedTab from '.';
 
 const mockSetAutoLockTimeLimit = jest.fn();
 const mockSetShowTestNetworks = jest.fn();
+const mockSetUse4ByteResolution = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {
   return {
     setAutoLockTimeLimit: () => mockSetAutoLockTimeLimit,
     setShowTestNetworks: () => mockSetShowTestNetworks,
+    setUse4ByteResolution: () => mockSetUse4ByteResolution,
   };
 });
 
@@ -66,6 +68,17 @@ describe('AdvancedTab Component', () => {
     fireEvent.click(testNetworkToggle);
 
     expect(mockSetShowTestNetworks).toHaveBeenCalled();
+  });
+
+  it('should toggle 4byte.directory contract method name resolution', () => {
+    const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    const fourByteToggle =
+      queryByTestId('use4ByteResolution').querySelector('input');
+
+    fireEvent.click(fourByteToggle);
+
+    expect(mockSetUse4ByteResolution).toHaveBeenCalled();
   });
 
   it('should not render ledger live control with desktop pairing enabled', () => {

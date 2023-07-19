@@ -60,6 +60,8 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
+    setUse4ByteResolution: PropTypes.func.isRequired,
+    use4ByteResolution: PropTypes.bool.isRequired,
     ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
     setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
@@ -764,6 +766,38 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
+  renderUse4ByteResolutionToggle() {
+    const { t } = this.context;
+    const { use4ByteResolution, setUse4ByteResolution } = this.props;
+    return (
+      <div
+        ref={this.settingsRefs[12]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-4byte-directory"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('use4ByteResolution')}</span>
+          <div className="settings-page__content-description">
+            {t('use4ByteResolutionDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="use4ByteResolution"
+          >
+            <ToggleButton
+              value={use4ByteResolution}
+              onToggle={(value) => setUse4ByteResolution(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -784,6 +818,7 @@ export default class AdvancedTab extends PureComponent {
         {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
         {this.renderToggleEthSignControl()}
+        {this.renderUse4ByteResolutionToggle()}
       </div>
     );
   }

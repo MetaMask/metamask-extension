@@ -130,12 +130,12 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-item"
         >
           <span>
-            Use 4byte resolution
+            Use 4byte.directory
           </span>
           <div
             class="settings-page__content-description"
           >
-            Use 4byte resolution to resolve contract names
+            To improve the user experience, we customize the activity tab with different messages depending on the smart contract the user interacts with and the action performed. We rely on 4byte.directory for resolving contract method names we leak our users' IP addresses to.
           </div>
         </div>
         <div
