@@ -51,6 +51,7 @@ import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
+import makeCapTpFromStream from './lib/makeCapTpFromStream';
 
 /* eslint-enable import/first */
 
@@ -525,6 +526,7 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
+
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
@@ -567,6 +569,9 @@ export function setupController(
     if (isMetaMaskInternalProcess) {
       const portStream =
         overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+
+
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
@@ -638,6 +643,12 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
+
+        let counter = 0;
+        const { getBootstrap, E } = makeCapTpFromStream('background', remotePort, harden({
+          increment: async () => ++counter,
+          getCount: async () => counter,
+        }));
 
         remotePort.onMessage.addListener((msg) => {
           if (msg.data && msg.data.method === 'eth_requestAccounts') {

@@ -1891,6 +1891,63 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@endo/captp@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@endo/captp@npm:3.1.1"
+  dependencies:
+    "@endo/eventual-send": ^0.17.2
+    "@endo/marshal": ^0.8.5
+    "@endo/nat": ^4.1.27
+    "@endo/promise-kit": ^0.2.56
+  checksum: 9df9d143fb82dcfc390414d0dacd7a8aedf5bdc20f8c8bb8abfa5bf375f2054f98bb3c9450a3c49203ed5155f7f5c5f5c31adcf8b1e9662b7f716156436e70b4
+  languageName: node
+  linkType: hard
+
+"@endo/eventual-send@npm:^0.17.2":
+  version: 0.17.2
+  resolution: "@endo/eventual-send@npm:0.17.2"
+  checksum: 9df7e4410650bbfe7928be8bad04d4cba892abec90696ca8cbfff80795e174fb8daed0ec8975d9ed9b593eb067b938072897e1e64b5d9062df0734395194c3fc
+  languageName: node
+  linkType: hard
+
+"@endo/marshal@npm:^0.8.5":
+  version: 0.8.5
+  resolution: "@endo/marshal@npm:0.8.5"
+  dependencies:
+    "@endo/eventual-send": ^0.17.2
+    "@endo/nat": ^4.1.27
+    "@endo/pass-style": ^0.1.3
+    "@endo/promise-kit": ^0.2.56
+  checksum: 587da740d1feb07a7f56b1d88f4ca52449e8ca6094eea7efefbc3ca3475948d93a0c99001c29dbe91b34d3a5d63364785ee8bec6f512a7e795ca1842a75d7528
+  languageName: node
+  linkType: hard
+
+"@endo/nat@npm:^4.1.27":
+  version: 4.1.27
+  resolution: "@endo/nat@npm:4.1.27"
+  checksum: 9b940c08dfa651c351f569238b94c6101677d9bf01348bccacac1de4e1ddb0eb34b60a563268da09a624eed9e78159568590b992ff9eacd4a3707d3bc97a1f85
+  languageName: node
+  linkType: hard
+
+"@endo/pass-style@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@endo/pass-style@npm:0.1.3"
+  dependencies:
+    "@endo/promise-kit": ^0.2.56
+    "@fast-check/ava": ^1.1.3
+  checksum: 909d4d742b645dbccc2fcd3d06ca1d821a05450fef8123193bab016ddc2f802c98efcbdab60099208abd016af914d0be6f27ef9b5976e3ca485beebb109ccc72
+  languageName: node
+  linkType: hard
+
+"@endo/promise-kit@npm:^0.2.56":
+  version: 0.2.56
+  resolution: "@endo/promise-kit@npm:0.2.56"
+  dependencies:
+    ses: ^0.18.4
+  checksum: 5cbaed493cad3121dd2f77a746c26e011c33b4399aa7360c97c6320ac28824abdbe538d40a04a1985c8373e91e1bd1e2197ca878c812762210af2134b6b397c7
+  languageName: node
+  linkType: hard
+
 "@ensdomains/address-encoder@npm:^0.1.7":
   version: 0.1.9
   resolution: "@ensdomains/address-encoder@npm:0.1.9"
@@ -2682,6 +2739,17 @@ __metadata:
   version: 2.1.2
   resolution: "@fal-works/esbuild-plugin-global-externals@npm:2.1.2"
   checksum: c59715902b9062aa7ff38973f298b509499fd146dbf564dc338b3f9e896da5bffb4ca676c27587fde79b3586003e24d65960acb62f009bca43dca34c76f8cbf7
+  languageName: node
+  linkType: hard
+
+"@fast-check/ava@npm:^1.1.3":
+  version: 1.1.5
+  resolution: "@fast-check/ava@npm:1.1.5"
+  dependencies:
+    fast-check: ^3.0.0
+  peerDependencies:
+    ava: ">=4.0.0"
+  checksum: 3320dd2a2d79dae87e937d25b54060cdffb4f56340d9b4302facc2d0dfa97d53bf3014e0bddb0958724606b1f5c4011ab1c797e071d7dbb710eb444a8f107fc7
   languageName: node
   linkType: hard
 
@@ -17141,6 +17209,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-check@npm:^3.0.0":
+  version: 3.11.0
+  resolution: "fast-check@npm:3.11.0"
+  dependencies:
+    pure-rand: ^6.0.0
+  checksum: 6ec642fcfe69faa56a42785cb7b373905357db3c7373add4b84d97b8b0fa2a7efa0e119159d42e5fe5607f64cb3948a1986c45a0484156060ce168186bdbdb4a
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^2.0.1":
   version: 2.0.1
   resolution: "fast-deep-equal@npm:2.0.1"
@@ -24620,6 +24697,8 @@ __metadata:
     "@babel/register": ^7.5.5
     "@babel/runtime": ^7.18.9
     "@download/blockies": ^1.0.3
+    "@endo/captp": ^3.1.1
+    "@endo/eventual-send": ^0.17.2
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^3.1.1
     "@ethereumjs/tx": ^4.1.1
@@ -28878,6 +28957,13 @@ __metadata:
   version: 5.0.5
   resolution: "pure-rand@npm:5.0.5"
   checksum: 824b906f7f66695c15ed9a898ff650e925723515e999de0360b0726ebad924ce41a74cc2ac60409dc6c55f5781008855f32ecd0fe0a1f40fbce293d48bd11dd1
+  languageName: node
+  linkType: hard
+
+"pure-rand@npm:^6.0.0":
+  version: 6.0.2
+  resolution: "pure-rand@npm:6.0.2"
+  checksum: 79de33876a4f515d759c48e98d00756bbd916b4ea260cc572d7adfa4b62cace9952e89f0241d0410214554503d25061140fe325c66f845213d2b1728ba8d413e
   languageName: node
   linkType: hard
 
