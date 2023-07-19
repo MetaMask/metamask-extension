@@ -32,9 +32,8 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 console.log('inpage calling freeze');
-// import './lib/globalDeepFreeze';
 import 'ses'; // import ses to get agoric assert and lockdown global and assert
-import './lockdown-run.js';
+import './lockdown-run';
 
 // try {
 //   // eslint-disable-next-line no-undef,import/unambiguous
@@ -86,11 +85,6 @@ if (shouldInjectProvider()) {
 
   pump(metamaskStream, interceptingMux, metamaskStream, log.error);
 
-  // Forward messages in fresh multiplex with captp stream filtered out
-  const forwardingMux = new ObjectMultiplex();
-  forwardingMux.ignoreStream('metamask-captp');
-  pump(metamaskStream, forwardingMux, metamaskStream, log.error);
-
   const { captpStream, abort, getBootstrap } = makeCapTpFromStream(
     window.location.origin,
     harden({
@@ -107,7 +101,7 @@ if (shouldInjectProvider()) {
   window.getBootstrap = getBootstrap;
 
   initializeProvider({
-    connectionStream: forwardingMux,
+    connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
   });
