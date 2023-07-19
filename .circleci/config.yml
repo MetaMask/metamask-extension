@@ -342,26 +342,8 @@ jobs:
             - dependency-cache-v1-
       - gh/install
       - run:
-          name: Set IS_DRAFT environment variable
-          command: |
-            PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
-            if [ -n "$PR_NUMBER" ]
-            then
-              echo "IS_DRAFT=$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")" >> "$BASH_ENV"
-              source "$BASH_ENV"
-            else
-              echo "Not a PR; skipping"
-            fi
-      - run:
           name: Install dependencies
-          command: |
-            if [[ $IS_DRAFT == 'true' ]]
-            then
-              # Use GitHub registry on draft PRs, allowing the use of preview builds
-              METAMASK_NPM_REGISTRY=https://npm.pkg.github.com yarn --immutable
-            else
-              yarn --immutable
-            fi
+          command: .circleci/scripts/install-dependencies.sh
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
