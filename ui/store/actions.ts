@@ -2997,6 +2997,20 @@ export function setUseNftDetection(
   };
 }
 
+export function setUse4ByteResolution(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUse4ByteResolution`);
+    try {
+      await submitRequestToBackground('setUse4ByteResolution', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setUseCurrencyRateCheck(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {

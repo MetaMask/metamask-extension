@@ -3914,6 +3914,9 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
+  "smartContracts": {
+    "message": "Smart contracts"
+  },
   "smartSwap": {
     "message": "Smart swap"
   },
@@ -5206,6 +5209,12 @@
   },
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
+  },
+  "use4ByteResolution": {
+    "message": "Use 4byte.directory"
+  },
+  "use4ByteResolutionDescription": {
+    "message": "To improve the user experience, we customize the activity tab with different messages depending on the smart contract the user interacts with and the action performed. We rely on 4byte.directory for resolving contract method names we leak our users' IP addresses to."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
