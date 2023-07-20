@@ -90,7 +90,6 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  getEthChainIdDecFromCaipChainId,
   getEthChainIdHexFromCaipChainId,
 } from '@metamask/controller-utils';
 
