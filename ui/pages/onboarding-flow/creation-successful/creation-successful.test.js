@@ -28,7 +28,7 @@ jest.mock('react-router-dom', () => ({
 describe('Creation Successful Onboarding View', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },

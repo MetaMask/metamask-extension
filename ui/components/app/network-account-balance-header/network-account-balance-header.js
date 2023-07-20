@@ -3,19 +3,19 @@ import PropTypes from 'prop-types';
 import IconWithFallback from '../../ui/icon-with-fallback';
 import Identicon from '../../ui/identicon';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  TypographyVariant,
-  FONT_WEIGHT,
+  Display,
+  FlexDirection,
+  TextVariant,
+  FontWeight,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
-import Typography from '../../ui/typography';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { Text } from '../../component-library';
 
 export default function NetworkAccountBalanceHeader({
   networkName,
@@ -33,22 +33,22 @@ export default function NetworkAccountBalanceHeader({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.ROW}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
       padding={4}
       className="network-account-balance-header"
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
     >
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         gap={2}
       >
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.ROW}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
           <Identicon address={accountAddress} diameter={32} />
@@ -60,50 +60,50 @@ export default function NetworkAccountBalanceHeader({
           />
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.flexStart}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexDirection={FlexDirection.Column}
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
-            marginBottom={0}
           >
             {networkName}
-          </Typography>
+          </Text>
 
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textDefault}
-            fontWeight={FONT_WEIGHT.BOLD}
-            marginTop={0}
+            fontWeight={FontWeight.Bold}
           >
             {accountName}
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexEnd}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
       >
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textAlternative}
-          marginBottom={0}
         >
           {t('balance')}
-        </Typography>
+        </Text>
 
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           color={TextColor.textDefault}
-          fontWeight={FONT_WEIGHT.BOLD}
-          marginTop={0}
-          align={TEXT_ALIGN.END}
+          fontWeight={FontWeight.Bold}
+          align={TextAlign.End}
         >
           {accountBalance} {tokenName}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );

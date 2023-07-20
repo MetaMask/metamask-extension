@@ -4,17 +4,26 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import ConfirmAddCustodianToken from './confirm-add-custodian-token';
 
+const mockedRemoveAddTokenConnectRequest = jest
+  .fn()
+  .mockReturnValue({ type: 'TYPE' });
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    removeAddTokenConnectRequest: mockedRemoveAddTokenConnectRequest,
+  }),
+}));
+
 describe('Confirm Add Custodian Token', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests: [
           {
             labels: [
@@ -61,14 +70,13 @@ describe('Confirm Add Custodian Token', () => {
   it('tries to connect to custodian with empty token', async () => {
     const customMockedStore = {
       metamask: {
-        provider: {
+        providerConfig: {
           type: 'test',
         },
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,
         },
         institutionalFeatures: {
-          complianceProjectId: '',
           connectRequests: [
             {
               labels: [

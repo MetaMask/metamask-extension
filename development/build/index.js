@@ -14,7 +14,7 @@ const difference = require('lodash/difference');
 const { intersection } = require('lodash');
 const { getVersion } = require('../lib/get-version');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const { TASKS, ENVIRONMENT } = require('./constants');
+const { BUILD_TARGETS, TASKS } = require('./constants');
 const {
   createTask,
   composeSeries,
@@ -27,8 +27,7 @@ const createStyleTasks = require('./styles');
 const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const { getBrowserVersionMap, getEnvironment } = require('./utils');
-const { getConfig, getProductionConfig } = require('./config');
-const { BUILD_TARGETS } = require('./constants');
+const { getConfig } = require('./config');
 
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
@@ -76,11 +75,70 @@ async function defineAndRunBuildTasks() {
     platform,
   } = await parseArgv();
 
-  const isRootTask = ['dist', 'prod', 'test', 'dev'].includes(entryTask);
+  const isRootTask = Object.values(BUILD_TARGETS).includes(entryTask);
 
   if (isRootTask) {
     // scuttle on production/tests environment only
-    const shouldScuttle = ['dist', 'prod', 'test'].includes(entryTask);
+    const shouldScuttle = entryTask !== BUILD_TARGETS.DEV;
+
+    let scuttleGlobalThisExceptions = [
+      // globals used by different mm deps outside of lm compartment
+      'toString',
+      'getComputedStyle',
+      'addEventListener',
+      'removeEventListener',
+      'ShadowRoot',
+      'HTMLElement',
+      'Element',
+      'pageXOffset',
+      'pageYOffset',
+      'visualViewport',
+      'Reflect',
+      'Set',
+      'Object',
+      'navigator',
+      'harden',
+      'console',
+      'Image', // Used by browser to generate notifications
+      // globals chromedriver needs to function
+      /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
+      'performance',
+      'parseFloat',
+      'innerWidth',
+      'innerHeight',
+      'Symbol',
+      'Math',
+      'DOMRect',
+      'Number',
+      'Array',
+      'crypto',
+      'Function',
+      'Uint8Array',
+      'String',
+      'Promise',
+      'JSON',
+      'Date',
+      // globals sentry needs to function
+      '__SENTRY__',
+      'appState',
+      'extra',
+      'stateHooks',
+      'sentryHooks',
+      'sentry',
+    ];
+
+    if (
+      entryTask === BUILD_TARGETS.TEST ||
+      entryTask === BUILD_TARGETS.TEST_DEV
+    ) {
+      scuttleGlobalThisExceptions = [
+        ...scuttleGlobalThisExceptions,
+        // more globals chromedriver needs to function
+        // in the future, more of the globals above can be put in this list
+        'Proxy',
+        'ret_nodes',
+      ];
+    }
 
     console.log(
       `Building lavamoat runtime file`,
@@ -89,50 +147,11 @@ async function defineAndRunBuildTasks() {
 
     // build lavamoat runtime file
     await lavapack.buildRuntime({
-      scuttleGlobalThis: applyLavaMoat && shouldScuttle,
-      scuttleGlobalThisExceptions: [
-        // globals used by different mm deps outside of lm compartment
-        'toString',
-        'getComputedStyle',
-        'addEventListener',
-        'removeEventListener',
-        'ShadowRoot',
-        'HTMLElement',
-        'Element',
-        'pageXOffset',
-        'pageYOffset',
-        'visualViewport',
-        'Reflect',
-        'Set',
-        'Object',
-        'navigator',
-        'harden',
-        'console',
-        'Image', // Used by browser to generate notifications
-        // globals chrome driver needs to function (test env)
-        /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,
-        'performance',
-        'parseFloat',
-        'innerWidth',
-        'innerHeight',
-        'Symbol',
-        'Math',
-        'DOMRect',
-        'Number',
-        'Array',
-        'crypto',
-        'Function',
-        'Uint8Array',
-        'String',
-        'Promise',
-        // globals sentry needs to function
-        '__SENTRY__',
-        'appState',
-        'extra',
-        'stateHooks',
-        'sentryHooks',
-        'sentry',
-      ],
+      scuttleGlobalThis: {
+        enabled: applyLavaMoat && shouldScuttle,
+        scuttlerName: 'SCUTTLER',
+        exceptions: scuttleGlobalThisExceptions,
+      },
     });
   }
 
@@ -360,13 +379,8 @@ testDev: Create an unoptimized, live-reloading build for debugging e2e tests.`,
   const highLevelTasks = Object.values(BUILD_TARGETS);
   if (highLevelTasks.includes(task)) {
     const environment = getEnvironment({ buildTarget: task });
-    if (environment === ENVIRONMENT.PRODUCTION) {
-      // Output ignored, this is only called to ensure config is validated
-      await getProductionConfig(buildType);
-    } else {
-      // Output ignored, this is only called to ensure config is validated
-      await getConfig();
-    }
+    // Output ignored, this is only called to ensure config is validated
+    await getConfig(buildType, environment);
   }
 
   return {

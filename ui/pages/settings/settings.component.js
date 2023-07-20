@@ -23,12 +23,29 @@ import {
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
+  DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import AddNetwork from '../../components/app/add-network/add-network';
-import { ButtonIcon, Icon, IconName } from '../../components/component-library';
-import { Color, DISPLAY } from '../../helpers/constants/design-system';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  Box,
+} from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
+import {
+  AlignItems,
+  Color,
+  Display,
+  FlexDirection,
+  TextVariant,
+} from '../../helpers/constants/design-system';
+import MetafoxLogo from '../../components/ui/metafox-logo';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import SettingsTab from './settings-tab';
 import AlertsTab from './alerts-tab';
 import NetworksTab from './networks-tab';
@@ -109,6 +126,7 @@ class SettingsPage extends PureComponent {
 
     const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     return (
       <div
@@ -116,22 +134,60 @@ class SettingsPage extends PureComponent {
           'settings-page--selected': currentPath !== SETTINGS_ROUTE,
         })}
       >
-        <div className="settings-page__header">
+        <Box
+          className="settings-page__header"
+          padding={4}
+          paddingBottom={[2, 4]}
+        >
           <div className="settings-page__header__title-container">
-            {currentPath !== SETTINGS_ROUTE && (
-              <ButtonIcon
-                ariaLabel={t('back')}
-                iconName={IconName.ArrowLeft}
-                className="settings-page__back-button"
-                color={Color.iconDefault}
-                onClick={() => history.push(backRoute)}
-                display={[DISPLAY.FLEX, DISPLAY.NONE]}
-              />
+            {isPopup && (
+              <>
+                {currentPath === SETTINGS_ROUTE ? (
+                  <MetafoxLogo
+                    className="settings-page__header__title-container__metamask-logo"
+                    unsetIconHeight
+                    onClick={async () => history.push(DEFAULT_ROUTE)}
+                    display={[Display.Flex, Display.None]}
+                  />
+                ) : (
+                  <ButtonIcon
+                    ariaLabel={t('back')}
+                    iconName={IconName.ArrowLeft}
+                    className="settings-page__header__title-container__back-button"
+                    color={Color.iconDefault}
+                    onClick={() => history.push(backRoute)}
+                    display={[Display.Flex, Display.None]}
+                    size={ButtonIconSize.Sm}
+                  />
+                )}
+              </>
             )}
-
             {this.renderTitle()}
-            <div
+            <Box
+              className="settings-page__header__title-container__search"
+              display={[Display.BLOCK]}
+            >
+              <SettingsSearch
+                onSearch={({ searchQuery = '', results = [] }) => {
+                  this.setState({
+                    isSearchList: searchQuery !== '',
+                    searchResults: results,
+                    searchText: searchQuery,
+                  });
+                }}
+                settingsRoutesList={getSettingsRoutes()}
+              />
+              {isSearchList && searchText.length >= 3 && (
+                <SettingsSearchList
+                  results={searchResults}
+                  onClickSetting={(setting) => this.handleClickSetting(setting)}
+                />
+              )}
+            </Box>
+            <ButtonIcon
               className="settings-page__header__title-container__close-button"
+              iconName={IconName.Close}
+              ariaLabel={t('close')}
               onClick={() => {
                 if (addNewNetwork) {
                   history.push(NETWORKS_ROUTE);
@@ -139,28 +195,11 @@ class SettingsPage extends PureComponent {
                   history.push(mostRecentOverviewPage);
                 }
               }}
+              size={ButtonIconSize.Sm}
+              marginLeft="auto"
             />
           </div>
-
-          <div className="settings-page__header__search">
-            <SettingsSearch
-              onSearch={({ searchQuery = '', results = [] }) => {
-                this.setState({
-                  isSearchList: searchQuery !== '',
-                  searchResults: results,
-                  searchText: searchQuery,
-                });
-              }}
-              settingsRoutesList={getSettingsRoutes()}
-            />
-            {isSearchList && searchText.length >= 3 && (
-              <SettingsSearchList
-                results={searchResults}
-                onClickSetting={(setting) => this.handleClickSetting(setting)}
-              />
-            )}
-          </div>
-        </div>
+        </Box>
 
         <div className="settings-page__content">
           <div className="settings-page__content__tabs">
@@ -192,7 +231,7 @@ class SettingsPage extends PureComponent {
 
     return (
       <div className="settings-page__header__title-container__title">
-        {titleText}
+        <Text variant={TextVariant.headingMd}>{titleText}</Text>
       </div>
     );
   }
@@ -225,17 +264,26 @@ class SettingsPage extends PureComponent {
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
-        <div className="settings-page__subheader">
-          <div
+        <Box
+          className="settings-page__subheader"
+          padding={4}
+          paddingLeft={6}
+          paddingRight={6}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+        >
+          <Text
             className={classnames({
               'settings-page__subheader--link': initialBreadCrumbRoute,
             })}
+            variant={TextVariant.headingSm}
             onClick={() =>
               initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)
             }
           >
             {subheaderText}
-          </div>
+          </Text>
           {breadCrumbTextKey && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -248,7 +296,7 @@ class SettingsPage extends PureComponent {
               {addressName}
             </div>
           )}
-        </div>
+        </Box>
       )
     );
   }
@@ -293,17 +341,17 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('networks'),
-        icon: <i className="fa fa-plug" />,
+        icon: <Icon name={IconName.Plug} />,
         key: NETWORKS_ROUTE,
       },
       {
         content: t('experimental'),
-        icon: <i className="fa fa-flask" />,
+        icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
       },
       {
         content: t('about'),
-        icon: <i className="fa fa-info-circle" />,
+        icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
       },
     ];
@@ -313,6 +361,12 @@ class SettingsPage extends PureComponent {
         tabs={tabs}
         isActive={(key) => {
           if (key === GENERAL_ROUTE && currentPath === SETTINGS_ROUTE) {
+            return true;
+          }
+          if (
+            key === CONTACT_LIST_ROUTE &&
+            currentPath.includes(CONTACT_LIST_ROUTE)
+          ) {
             return true;
           }
           return matchPath(currentPath, { exact: true, path: key });

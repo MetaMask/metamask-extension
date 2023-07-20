@@ -14,7 +14,7 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getUseCurrencyRateCheck } from '../../../selectors';
-import { Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
@@ -29,7 +29,6 @@ export default function FeeCard({
   numberOfQuotes,
   onQuotesClick,
   chainId,
-  isBestQuote,
 }) {
   const t = useContext(I18nContext);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
@@ -72,7 +71,7 @@ export default function FeeCard({
           disableEditGasFeeButton
           rows={[
             <TransactionDetailItem
-              key="gas-item"
+              key="fee-card-gas-item"
               detailTitle={
                 <>
                   {t('transactionDetailGasHeading')}
@@ -167,9 +166,7 @@ export default function FeeCard({
                   onClick={onQuotesClick}
                   className="fee-card__quote-link-text"
                 >
-                  {isBestQuote
-                    ? t('swapBestOfNQuotes', [numberOfQuotes])
-                    : t('swapNQuotesWithDot', [numberOfQuotes])}
+                  {t('swapNQuotesWithDot', [numberOfQuotes])}
                 </span>
               )}
               {t('swapIncludesMMFee', [metaMaskFee])}
@@ -202,5 +199,4 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
   chainId: PropTypes.string.isRequired,
-  isBestQuote: PropTypes.bool,
 };

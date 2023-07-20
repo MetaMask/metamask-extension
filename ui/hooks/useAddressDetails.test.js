@@ -8,7 +8,7 @@ import useAddressDetails from './useAddressDetails';
 const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
   const mockState = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: '0x5',
       },

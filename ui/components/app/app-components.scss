@@ -1,29 +1,24 @@
 /** Please import your files in alphabetical order **/
 @import 'account-list-item/index';
-@import 'account-menu/index';
 @import 'add-network/index';
 @import 'advanced-gas-inputs/index';
 @import 'app-loading-spinner/index';
-@import 'import-token-link/index';
 @import 'advanced-gas-controls/index';
 @import 'alerts/alerts';
-@import 'app-header/index';
-@import 'asset-list-item/asset-list-item';
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
 @import 'confirm-data/index';
 @import 'confirmation-warning-modal/index';
+@import 'custom-nonce/index';
 @import 'nfts-items/index';
 @import 'nfts-tab/index';
 @import 'nft-details/index';
 @import 'nft-default-image/index';
 @import 'nft-options/index';
-@import 'nfts-detection-notice/index';
 @import 'connected-accounts-list/index';
 @import 'connected-accounts-permissions/index';
 @import 'connected-sites-list/index';
-@import 'connected-status-indicator/index';
 @import 'create-new-vault/create-new-vault.scss';
 @import 'custom-spending-cap/index';
 @import 'edit-gas-display/index';
@@ -41,7 +36,6 @@
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
 @import 'snaps/snap-settings-card/index';
-@import 'snaps/update-snap-permission-list/index';
 @import 'snaps/copyable/index';
 @import 'snaps/snap-version/index';
 @import 'gas-details-item/index';
@@ -50,7 +44,6 @@
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
 @import 'info-box/index';
-@import 'menu-bar/index';
 @import 'modal/index';
 @import 'modals/index';
 @import 'multilayer-fee-message/index';
@@ -70,6 +63,7 @@
 @import 'signature-request-original/index';
 @import 'signature-request-original/signature-request-original-warning/index';
 @import 'srp-input/srp-input';
+@import 'snaps/snap-privacy-warning/index';
 @import 'tab-bar/index';
 @import 'token-cell/token-cell';
 @import 'token-list-display/token-list-display';
@@ -95,7 +89,6 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
-@import 'asset-list/detected-tokens-link/index';
 @import 'detected-token/detected-token-address/index';
 @import 'detected-token/detected-token-aggregators/index';
 @import 'detected-token/detected-token-values/index';
@@ -106,6 +99,7 @@
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+@import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';

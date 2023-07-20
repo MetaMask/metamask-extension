@@ -9,6 +9,9 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -18,9 +21,6 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  MESSAGE_TYPE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
   REJECT_NOTIFICATION_CLOSE,
@@ -219,9 +219,9 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} provider - The current selected network provider.
- * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
+ * @property {object} providerConfig - The current selected network provider.
+ * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
+ * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkId - The stringified number of the current network ID.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
@@ -462,7 +462,7 @@ export function setupController(
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.store.getState().provider.chainId,
+      controller.networkController.state.providerConfig.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
@@ -676,8 +676,8 @@ export function setupController(
   //
   // User Interface setup
   //
-
   updateBadge();
+
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -690,7 +690,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.signController.hub.on(
+  controller.signatureController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -703,6 +703,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
+
+  controller.txController.initApprovals();
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -749,7 +751,9 @@ export function setupController(
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
+    controller.signatureController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE_SIG,
+    );
     controller.decryptMessageController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );
@@ -762,11 +766,11 @@ export function setupController(
       ({ id, type }) => {
         switch (type) {
           ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
-          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+          case ApprovalType.SnapDialogAlert:
+          case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
             break;
-          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+          case ApprovalType.SnapDialogConfirmation:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN

@@ -2,18 +2,18 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import {
-  BLOCK_SIZES,
+  BlockSize,
   BorderStyle,
   BorderRadius,
   TextColor,
   BorderColor,
   BackgroundColor,
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
-  TEXT_ALIGN,
-  FLEX_DIRECTION,
-  FLEX_WRAP,
+  TextAlign,
+  FlexDirection,
+  FlexWrap,
 } from '../../../helpers/constants/design-system';
 
 import { Text } from '../../component-library';
@@ -41,7 +41,7 @@ const sizeControlOptions = [
 const marginSizeControlOptions = [...sizeControlOptions, 'auto'];
 
 export default {
-  title: 'Components/UI/Box',
+  title: 'Components/UI/Box (deprecated)',
   component: Box,
   parameters: {
     docs: {
@@ -53,17 +53,17 @@ export default {
       table: { category: 'children' },
     },
     display: {
-      options: Object.values(DISPLAY),
+      options: Object.values(Display),
       control: 'select',
       table: { category: 'display' },
     },
     width: {
-      options: Object.values(BLOCK_SIZES),
+      options: Object.values(BlockSize),
       control: 'multi-select',
       table: { category: 'display' },
     },
     height: {
-      options: Object.values(BLOCK_SIZES),
+      options: Object.values(BlockSize),
       control: 'select',
       table: { category: 'display' },
     },
@@ -105,12 +105,12 @@ export default {
       table: { category: 'border' },
     },
     flexWrap: {
-      options: Object.values(FLEX_WRAP),
+      options: Object.values(FlexWrap),
       control: 'select',
       table: { category: 'display' },
     },
     flexDirection: {
-      options: Object.values(FLEX_DIRECTION),
+      options: Object.values(FlexDirection),
       control: 'select',
       table: { category: 'display' },
     },
@@ -125,7 +125,7 @@ export default {
       table: { category: 'display' },
     },
     textAlign: {
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
       control: 'select',
       table: { category: 'text' },
     },
@@ -223,11 +223,11 @@ export const DefaultStory: ComponentStory<typeof Box> = (args) => (
 
 DefaultStory.args = {
   children: 'Box component',
-  display: DISPLAY.FLEX,
+  display: Display.Flex,
   justifyContent: JustifyContent.center,
   alignItems: AlignItems.center,
-  width: BLOCK_SIZES.HALF,
-  height: BLOCK_SIZES.HALF,
+  width: BlockSize.Half,
+  height: BlockSize.Half,
   borderColor: BorderColor.borderDefault,
   padding: 4,
 };
@@ -497,7 +497,7 @@ export const BorderRadiusStory = () => {
   return (
     <>
       <Box
-        display={DISPLAY.GRID}
+        display={Display.Grid}
         style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}
         gap={4}
       >
@@ -572,7 +572,7 @@ export const BorderRadiusStory = () => {
         borderWidth={2}
         borderRadius={BorderRadius.full}
         margin={4}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         style={{ height: '250px', width: '250px' }}
       >
@@ -596,31 +596,40 @@ export const ResponsiveProps = () => {
         marginBottom={[0]}
         padding={[2, 4]}
         gap={[2, 4]}
-        display={[DISPLAY.FLEX, null, null, DISPLAY.NONE]}
+        display={[Display.Flex, null, null, Display.None]}
         flexDirection={[
-          FLEX_DIRECTION.COLUMN,
-          FLEX_DIRECTION.COLUMN,
-          FLEX_DIRECTION.ROW,
+          FlexDirection.Column,
+          FlexDirection.Column,
+          FlexDirection.Row,
         ]}
         borderColor={BorderColor.borderDefault}
       >
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           responsive
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           props
         </Box>
         <Box
           padding={[4, 8]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           example
@@ -633,7 +642,10 @@ export const ResponsiveProps = () => {
             BorderRadius.MD,
             BorderRadius.LG,
           ]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 1
@@ -646,7 +658,10 @@ export const ResponsiveProps = () => {
             BorderRadius.none,
             BorderRadius.full,
           ]}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={[
+            BackgroundColor.backgroundAlternative,
+            BackgroundColor.primaryMuted,
+          ]}
           borderColor={BorderColor.borderMuted}
         >
           Responsive Border Radius 2
@@ -684,7 +699,7 @@ export const Width: ComponentStory<typeof Box> = () => {
               ? BackgroundColor.errorMuted
               : BackgroundColor.warningMuted
           }
-          width={BLOCK_SIZES.ONE_TWELFTH}
+          width={BlockSize.OneTwelfth}
         />,
       );
     }
@@ -697,7 +712,7 @@ export const Width: ComponentStory<typeof Box> = () => {
         <b>Static widths</b>
       </p>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         borderColor={BorderColor.borderMuted}
         style={{
           height: '100vh',
@@ -708,9 +723,9 @@ export const Width: ComponentStory<typeof Box> = () => {
         {getColumns()}
 
         <Box
-          width={BLOCK_SIZES.FULL}
-          display={DISPLAY.FLEX}
-          flexWrap={FLEX_WRAP.WRAP}
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexWrap={FlexWrap.Wrap}
           style={{
             position: 'absolute',
             top: 0,
@@ -723,107 +738,107 @@ export const Width: ComponentStory<typeof Box> = () => {
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.FULL}
-            display={DISPLAY.FLEX}
+            width={BlockSize.Full}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.FULL
+            BlockSize.Full
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.HALF}
-            display={DISPLAY.FLEX}
+            width={BlockSize.Half}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.HALF
+            BlockSize.Half
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.HALF}
-            display={DISPLAY.FLEX}
+            width={BlockSize.Half}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.HALF
+            BlockSize.Half
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.ONE_THIRD}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneThird}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_THIRD
+            BlockSize.OneThird
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.ONE_THIRD}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneThird}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_THIRD
+            BlockSize.OneThird
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             marginBottom={6}
-            width={BLOCK_SIZES.ONE_THIRD}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneThird}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_THIRD
+            BlockSize.OneThird
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
-            width={BLOCK_SIZES.ONE_FOURTH}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneFourth}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_FOURTH
+            BlockSize.OneFourth
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
-            width={BLOCK_SIZES.ONE_FOURTH}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneFourth}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_FOURTH
+            BlockSize.OneFourth
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
-            width={BLOCK_SIZES.ONE_FOURTH}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneFourth}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_FOURTH
+            BlockSize.OneFourth
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
-            width={BLOCK_SIZES.ONE_FOURTH}
-            display={DISPLAY.FLEX}
+            width={BlockSize.OneFourth}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.ONE_FOURTH
+            BlockSize.OneFourth
           </Box>
         </Box>
       </Box>
@@ -831,16 +846,16 @@ export const Width: ComponentStory<typeof Box> = () => {
         <b>Responsive widths</b>
       </p>
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         borderColor={BorderColor.borderMuted}
         style={{ height: '100vh', position: 'relative', textAlign: 'center' }}
       >
         {getColumns()}
 
         <Box
-          width={BLOCK_SIZES.FULL}
-          display={DISPLAY.FLEX}
-          flexWrap={FLEX_WRAP.WRAP}
+          width={BlockSize.Full}
+          display={Display.Flex}
+          flexWrap={FlexWrap.Wrap}
           style={{
             position: 'absolute',
             top: 0,
@@ -853,65 +868,65 @@ export const Width: ComponentStory<typeof Box> = () => {
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
-              BLOCK_SIZES.FULL,
-              BLOCK_SIZES.HALF,
-              BLOCK_SIZES.ONE_THIRD,
-              BLOCK_SIZES.ONE_FOURTH,
+              BlockSize.Full,
+              BlockSize.Half,
+              BlockSize.OneThird,
+              BlockSize.OneFourth,
             ]}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_FOURTH,
+            BlockSize.Full, BlockSize.Half, BlockSize.OneThird,
+            BlockSize.OneFourth,
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
-              BLOCK_SIZES.FULL,
-              BLOCK_SIZES.HALF,
-              BLOCK_SIZES.ONE_THIRD,
-              BLOCK_SIZES.ONE_FOURTH,
+              BlockSize.Full,
+              BlockSize.Half,
+              BlockSize.OneThird,
+              BlockSize.OneFourth,
             ]}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_FOURTH,
+            BlockSize.Full, BlockSize.Half, BlockSize.OneThird,
+            BlockSize.OneFourth,
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
-              BLOCK_SIZES.FULL,
-              BLOCK_SIZES.HALF,
-              BLOCK_SIZES.ONE_THIRD,
-              BLOCK_SIZES.ONE_FOURTH,
+              BlockSize.Full,
+              BlockSize.Half,
+              BlockSize.OneThird,
+              BlockSize.OneFourth,
             ]}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_FOURTH,
+            BlockSize.Full, BlockSize.Half, BlockSize.OneThird,
+            BlockSize.OneFourth,
           </Box>
           <Box
             borderColor={BorderColor.borderMuted}
             borderWidth={6}
             width={[
-              BLOCK_SIZES.FULL,
-              BLOCK_SIZES.HALF,
-              BLOCK_SIZES.ONE_THIRD,
-              BLOCK_SIZES.ONE_FOURTH,
+              BlockSize.Full,
+              BlockSize.Half,
+              BlockSize.OneThird,
+              BlockSize.OneFourth,
             ]}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
-            BLOCK_SIZES.FULL, BLOCK_SIZES.HALF, BLOCK_SIZES.ONE_THIRD,
-            BLOCK_SIZES.ONE_FOURTH,
+            BlockSize.Full, BlockSize.Half, BlockSize.OneThird,
+            BlockSize.OneFourth,
           </Box>
         </Box>
       </Box>
@@ -921,9 +936,9 @@ export const Width: ComponentStory<typeof Box> = () => {
 
 Width.args = {
   width: [
-    BLOCK_SIZES.HALF,
-    BLOCK_SIZES.ONE_FIFTH,
-    BLOCK_SIZES.THREE_FOURTHS,
-    BLOCK_SIZES.ONE_FOURTH,
+    BlockSize.Half,
+    BlockSize.OneFifth,
+    BlockSize.ThreeFourths,
+    BlockSize.OneFourth,
   ],
 };

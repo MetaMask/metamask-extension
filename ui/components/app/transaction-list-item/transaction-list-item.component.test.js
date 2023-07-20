@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
   getConversionRate,
@@ -8,6 +10,7 @@ import {
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
+  getCurrentNetwork,
 } from '../../../selectors';
 import {
   renderWithProvider,
@@ -51,7 +54,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: () => jest.fn(),
+    useDispatch: jest.fn(),
   };
 });
 
@@ -72,6 +75,20 @@ jest.mock('react', () => {
   };
 });
 
+jest.mock('../../../store/actions.ts', () => ({
+  tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    getCustodianTransactionDeepLink: jest
+      .fn()
+      .mockReturnValue({ type: 'TYPE' }),
+  }),
+}));
+
+const mockStore = configureStore();
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
@@ -81,6 +98,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     };
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
+  } else if (selector === getCurrentNetwork) {
+    return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
     return (
       opts.preferences ?? {
@@ -145,6 +164,50 @@ describe('TransactionListItem', () => {
       const cancelButton = getByText('Cancel');
       fireEvent.click(cancelButton);
       expect(getByText('Cancel transaction')).toBeInTheDocument();
+    });
+
+    it('should have a custodian Tx and show the custody icon', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+      expect(queryByTestId('custody-icon')).toBeInTheDocument();
+    });
+
+    it('should click the custody list item and view the send screen', () => {
+      const store = mockStore(mockState);
+
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+        store,
+      );
+
+      const custodyListItem = queryByTestId('custody-icon');
+      fireEvent.click(custodyListItem);
+
+      const sendTextExists = screen.queryAllByText('Send');
+      expect(sendTextExists).toBeTruthy();
     });
   });
 });

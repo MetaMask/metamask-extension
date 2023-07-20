@@ -1,11 +1,11 @@
 import React from 'react';
 import Box from '../box/box';
-import Typography from '../typography/typography';
+import { Icon, IconName, Text } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import Tooltip from '.';
 
 export default {
   title: 'Components/UI/Tooltip',
-
   argTypes: {
     containerClassName: {
       control: 'text',
@@ -58,12 +58,9 @@ export default {
 
 export const DefaultStory = (args) => (
   <Box display="flex">
-    <Typography>Hover over the info icon to see the tooltip</Typography>
+    <Text>Hover over the info icon to see the tooltip</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
-      />
+      <Icon name={IconName.Info} color={IconColor.iconAlternative} />
     </Tooltip>
   </Box>
 );
@@ -72,12 +69,9 @@ DefaultStory.storyName = 'Default';
 
 export const HTML = (args) => (
   <Box display="flex">
-    <Typography>This tooltips content is html</Typography>
+    <Text>This tooltips content is html</Text>
     <Tooltip {...args}>
-      <i
-        className="fa fa-sm fa-info-circle"
-        style={{ color: 'var(--color-icon-alternative)' }}
-      />
+      <Icon name={IconName.Info} color={IconColor.iconAlternative} />
     </Tooltip>
   </Box>
 );

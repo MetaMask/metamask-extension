@@ -16,6 +16,7 @@ const {
   validate,
   nullable,
   never,
+  literal,
 } = require('superstruct');
 const yaml = require('js-yaml');
 const { uniqWith } = require('lodash');
@@ -65,7 +66,7 @@ const BuildTypeStruct = object({
   features: optional(unique(array(string()))),
   env: optional(EnvArrayStruct),
   isPrerelease: optional(boolean()),
-  manifestOverrides: optional(string()),
+  manifestOverrides: union([string(), literal(false)]),
 });
 
 const CopyAssetStruct = object({ src: string(), dest: string() });

@@ -9,6 +9,7 @@ import {
   CombinedBackgroundAndReduxState,
   MetaMaskReduxState,
   TemporaryMessageDataType,
+  MessagesIndexedById,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 
@@ -27,12 +28,17 @@ export function showInteractiveReplacementTokenModal(): ThunkAction<
   };
 }
 
-export function showCustodyConfirmLink(
-  link: string,
-  address: string,
-  closeNotification: boolean,
-  custodyId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function showCustodyConfirmLink({
+  link,
+  address,
+  closeNotification,
+  custodyId,
+}: {
+  link: string;
+  address: string;
+  closeNotification: boolean;
+  custodyId: string;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch) => {
     dispatch(
       showModal({
@@ -108,21 +114,18 @@ export function updateCustodyState(
   }
 }
 
-export function checkForUnapprovedTypedMessages(
+export function checkForUnapprovedMessages(
   msgData: TemporaryMessageDataType['msgParams'],
-  newState: MetaMaskReduxState['metamask'],
+  unapprovedMessages: MessagesIndexedById,
 ) {
-  const custodianUnapprovedMessages = Object.keys(
-    newState.unapprovedTypedMessages,
-  )
-    .map((key) => newState.unapprovedTypedMessages[key])
+  const custodianUnapprovedMessages = Object.keys(unapprovedMessages)
+    .map((key) => unapprovedMessages[key])
     .filter((message) => message.custodyId && message.status === 'unapproved');
 
   if (custodianUnapprovedMessages && custodianUnapprovedMessages.length > 0) {
     return {
       ...msgData,
-      custodyId:
-        newState.unapprovedTypedMessages[msgData.metamaskId]?.custodyId,
+      custodyId: unapprovedMessages[msgData.metamaskId]?.custodyId,
     };
   }
 

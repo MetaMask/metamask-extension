@@ -158,10 +158,6 @@
   "addCustomToken": {
     "message": "Aggiungi token personalizzato"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -203,6 +199,10 @@
   },
   "addToken": {
     "message": "Aggiungi Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Indirizzo"
@@ -290,12 +290,6 @@
     "message": "Consenti l'accesso e il trasferimento di tutti i tuoi $1?",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "Approva & installa"
-  },
-  "approveAndUpdate": {
-    "message": "Approva & aggiorna"
-  },
   "approveButtonText": {
     "message": "Approva"
   },
@@ -314,9 +308,6 @@
   },
   "assetOptions": {
     "message": "Opzioni asset"
-  },
-  "assets": {
-    "message": "Patrimonio"
   },
   "attemptSendingAssets": {
     "message": "Se si tenta di inviare risorse direttamente da una rete all'altra, ciò potrebbe comportare una perdita permanente della risorca coinvolta. Assicurati di usare un bridge."
@@ -341,9 +332,6 @@
   },
   "back": {
     "message": "Indietro"
-  },
-  "backToAll": {
-    "message": "Torna a \"Tutti\""
   },
   "backupApprovalInfo": {
     "message": "Questo codice è necessario per recuperare il tuo portafoglio nel caso in cui perdi il tuo dispositivo, dimentichi la tua password, debba reinstallare MetaMask o voglia accedere al tuo portafoglio su un altro dispositivo."
@@ -431,13 +419,6 @@
     "message": "Per $1 una transazione la commissione di gas deve crescere almeno del 10% per essere riconosciuto dalla rete.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Annulla scambio per ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Annulla scambio gratuitamente"
-  },
   "cancelled": {
     "message": "Annullata"
   },
@@ -487,9 +468,6 @@
   },
   "connectAccountOrCreate": {
     "message": "Connetti un account o creane uno nuovo"
-  },
-  "connectHardwareWallet": {
-    "message": "Connetti Portafoglio Hardware"
   },
   "connectManually": {
     "message": "Connettiti al sito manualmente"
@@ -547,7 +525,7 @@
   "connectingToGoerli": {
     "message": "Connessione alla Rete di Test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connessione alla Rete di test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -618,9 +596,6 @@
   },
   "create": {
     "message": "Crea"
-  },
-  "createAccount": {
-    "message": "Crea Account"
   },
   "createNewWallet": {
     "message": "Crea un nuovo portafoglio"
@@ -740,9 +715,6 @@
   },
   "delete": {
     "message": "Elimina"
-  },
-  "deleteAccount": {
-    "message": "Cancella account"
   },
   "deleteNetwork": {
     "message": "Cancella la rete?"
@@ -1124,7 +1096,7 @@
   "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rete di test Linea Goerli"
   },
   "links": {
@@ -1141,9 +1113,6 @@
   },
   "lock": {
     "message": "Disconnetti"
-  },
-  "lockTimeTooGreat": {
-    "message": "Tempo di inattività troppo lungo"
   },
   "mainnet": {
     "message": "Rete Ethereum Principale"
@@ -1174,9 +1143,6 @@
   },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
-  },
-  "myAccounts": {
-    "message": "Miei Account"
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
@@ -1335,9 +1301,6 @@
   "provide": {
     "message": "Fornisci"
   },
-  "queue": {
-    "message": "Coda"
-  },
   "queued": {
     "message": "In coda"
   },
@@ -1346,9 +1309,6 @@
   },
   "receive": {
     "message": "Ricevi"
-  },
-  "recents": {
-    "message": "Recenti"
   },
   "recipientAddressPlaceholder": {
     "message": "Ricerca, indirizzo pubblico (0x) o ENS"
@@ -1542,9 +1502,6 @@
   },
   "stateLogsDescription": {
     "message": "I log di stato contengono i tuoi indirizzi pubblici e le transazioni effettuate."
-  },
-  "statusConnected": {
-    "message": "Connesso"
   },
   "statusNotConnected": {
     "message": "Non connesso"
@@ -1836,19 +1793,12 @@
   "transfer": {
     "message": "Trasferisci"
   },
-  "transferBetweenAccounts": {
-    "message": "Trasferimento tra i miei account"
-  },
   "transferFrom": {
     "message": "Trasferisci Da"
   },
   "troubleConnectingToWallet": {
     "message": "Abbiamo riscontrato un errore nella connessione a $1, guarda la documentazione $2 e prova di nuovo.",
     "description": "$1 is the wallet device name; $2 is a link to wallet connection guide"
-  },
-  "troubleTokenBalances": {
-    "message": "Abbiamo avuto un problema a caricare il bilancio dei tuoi token. Puoi vederlo ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Prova di nuovo"

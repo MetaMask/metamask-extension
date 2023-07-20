@@ -14,14 +14,14 @@ import {
 import Box from '../../../ui/box';
 import {
   AvatarIcon,
-  Text,
   IconName,
   IconSize,
+  Text,
 } from '../../../component-library';
 import {
   DelineatorType,
   getDelineatorTitle,
-} from '../../../../helpers/constants/flask';
+} from '../../../../helpers/constants/snaps';
 
 export const SnapDelineator = ({
   snapName,
@@ -47,19 +47,20 @@ export const SnapDelineator = ({
       >
         <AvatarIcon
           iconName={IconName.Snaps}
-          size={IconSize.Xs}
+          size={IconSize.Sm}
           backgroundColor={
             isError ? IconColor.errorDefault : IconColor.infoDefault
           }
-          margin={1}
+          borderColor={BackgroundColor.backgroundDefault}
+          borderWidth={2}
           iconProps={{
-            size: IconSize.Xs,
+            size: IconSize.Sm,
             color: IconColor.infoInverse,
           }}
         />
         <Text
           variant={TextVariant.bodySm}
-          color={isError ? TextColor.errorDefault : TextColor.default}
+          color={isError ? TextColor.errorDefault : TextColor.textAlternative}
           className="snap-delineator__header__text"
           marginLeft={1}
           marginTop={0}

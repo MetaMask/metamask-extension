@@ -17,6 +17,7 @@ import {
 } from '../../../store/actions';
 import { getPreferences } from '../../../selectors';
 import { doesUserHaveALedgerAccount } from '../../../ducks/metamask/metamask';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import AdvancedTab from './advanced-tab.component';
 
 export const mapStateToProps = (state) => {
@@ -37,7 +38,7 @@ export const mapStateToProps = (state) => {
   const {
     showFiatInTestnets,
     showTestNetworks,
-    autoLockTimeLimit = 0,
+    autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
   const userHasALedgerAccount = doesUserHaveALedgerAccount(state);
@@ -68,6 +69,7 @@ export const mapDispatchToProps = (dispatch) => {
     displayWarning: (warning) => dispatch(displayWarning(warning)),
     showResetAccountConfirmationModal: () =>
       dispatch(showModal({ name: 'CONFIRM_RESET_ACCOUNT' })),
+    showEthSignModal: () => dispatch(showModal({ name: 'ETH_SIGN' })),
     setUseNonceField: (value) => dispatch(setUseNonceField(value)),
     setShowFiatConversionOnTestnetsPreference: (value) => {
       return dispatch(setShowFiatConversionOnTestnetsPreference(value));

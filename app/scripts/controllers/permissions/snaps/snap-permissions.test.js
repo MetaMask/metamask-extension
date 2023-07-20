@@ -1,6 +1,7 @@
 import {
   EndowmentPermissions,
   RestrictedMethods,
+  ExcludedSnapEndowments,
 } from '../../../../../shared/constants/permissions';
 import {
   buildSnapEndowmentSpecifications,
@@ -28,7 +29,7 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
 
     Object.values(specifications).forEach((specification) => {
       expect(specification).toMatchObject({
-        targetKey: expect.stringMatching(/^(snap_|wallet_)/u),
+        targetName: expect.stringMatching(/^(snap_|wallet_)/u),
         methodImplementation: expect.any(Function),
       });
     });
@@ -39,6 +40,13 @@ describe('buildSnapEndowmentSpecifications', () => {
   it('creates valid permission specification objects', () => {
     expect(
       Object.keys(buildSnapEndowmentSpecifications()).sort(),
-    ).toStrictEqual(Object.keys(EndowmentPermissions).sort());
+    ).toStrictEqual(
+      Object.keys(EndowmentPermissions)
+        .filter(
+          (targetName) =>
+            !Object.keys(ExcludedSnapEndowments).includes(targetName),
+        )
+        .sort(),
+    );
   });
 });

@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Popover from '../../ui/popover/popover.component';
 import { NetworkListItem } from '../network-list-item';
 import {
   setActiveNetwork,
@@ -15,16 +14,25 @@ import {
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
-  getAllEnabledNetworks,
   getCurrentChainId,
+  getNonTestNetworks,
+  getTestNetworks,
 } from '../../../selectors';
-import Box from '../../ui/box/box';
 import ToggleButton from '../../ui/toggle-button';
 import {
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Button, BUTTON_VARIANT, Text } from '../../component-library';
+import {
+  BUTTON_SECONDARY_SIZES,
+  ButtonSecondary,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Box,
+  Text,
+} from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -33,115 +41,173 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  getCompletedOnboarding,
+  isLineaMainnetNetworkReleased,
+} from '../../../ducks/metamask/metamask';
 
-const UNREMOVABLE_CHAIN_IDS = [CHAIN_IDS.MAINNET, ...TEST_CHAINS];
+const UNREMOVABLE_CHAIN_IDS = [
+  CHAIN_IDS.MAINNET,
+  CHAIN_IDS.LINEA_MAINNET,
+  ...TEST_CHAINS,
+];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
-  const networks = useSelector(getAllEnabledNetworks);
+
+  const nonTestNetworks = useSelector(getNonTestNetworks);
+  const testNetworks = useSelector(getTestNetworks);
   const showTestNetworks = useSelector(getShowTestNetworks);
   const currentChainId = useSelector(getCurrentChainId);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);
+
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
 
-  return (
-    <Popover onClose={onClose} centerTitle title={t('networkMenuHeading')}>
-      <>
-        <Box className="multichain-network-list-menu">
-          {networks.map((network) => {
-            const isCurrentNetwork = currentChainId === network.chainId;
-            const canDeleteNetwork =
-              !isCurrentNetwork &&
-              !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
 
-            return (
-              <NetworkListItem
-                name={network.nickname}
-                iconSrc={network?.rpcPrefs?.imageUrl}
-                key={network.id || network.chainId}
-                selected={isCurrentNetwork}
-                onClick={() => {
+  const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
+
+  useEffect(() => {
+    if (currentlyOnTestNetwork) {
+      dispatch(setShowTestNetworks(currentlyOnTestNetwork));
+    }
+  }, [dispatch, currentlyOnTestNetwork]);
+
+  const generateMenuItems = (desiredNetworks) => {
+    return desiredNetworks.map((network, index) => {
+      if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
+        return null;
+      }
+
+      const isCurrentNetwork = currentChainId === network.chainId;
+      const canDeleteNetwork =
+        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+
+      return (
+        <NetworkListItem
+          name={network.nickname}
+          iconSrc={network?.rpcPrefs?.imageUrl}
+          key={`${network.id || network.chainId}-${index}`}
+          selected={isCurrentNetwork}
+          onClick={() => {
+            dispatch(toggleNetworkMenu());
+            if (network.providerType) {
+              dispatch(setProviderType(network.providerType));
+            } else {
+              dispatch(setActiveNetwork(network.id));
+            }
+            trackEvent({
+              event: MetaMetricsEventName.NavNetworkSwitched,
+              category: MetaMetricsEventCategory.Network,
+              properties: {
+                location: 'Network Menu',
+                chain_id: currentChainId,
+                from_network: currentChainId,
+                to_network: network.id || network.chainId,
+              },
+            });
+          }}
+          onDeleteClick={
+            canDeleteNetwork
+              ? () => {
                   dispatch(toggleNetworkMenu());
-                  if (network.providerType) {
-                    dispatch(setProviderType(network.providerType));
-                  } else {
-                    dispatch(setActiveNetwork(network.id));
-                  }
-                  trackEvent({
-                    event: MetaMetricsEventName.NavNetworkSwitched,
-                    category: MetaMetricsEventCategory.Network,
-                    properties: {
-                      location: 'Network Menu',
-                      chain_id: currentChainId,
-                      from_network: currentChainId,
-                      to_network: network.id || network.chainId,
-                    },
-                  });
-                }}
-                onDeleteClick={
-                  canDeleteNetwork
-                    ? () => {
-                        dispatch(toggleNetworkMenu());
-                        dispatch(
-                          showModal({
-                            name: 'CONFIRM_DELETE_NETWORK',
-                            target: network.id || network.chainId,
-                            onConfirm: () => undefined,
-                          }),
-                        );
-                      }
-                    : null
+                  dispatch(
+                    showModal({
+                      name: 'CONFIRM_DELETE_NETWORK',
+                      target: network.id || network.chainId,
+                      onConfirm: () => undefined,
+                    }),
+                  );
                 }
-              />
-            );
-          })}
-        </Box>
-        <Box
-          padding={4}
-          display={DISPLAY.FLEX}
-          justifyContent={JustifyContent.spaceBetween}
+              : null
+          }
+        />
+      );
+    });
+  };
+
+  const handleToggle = (value) => {
+    const shouldShowTestNetworks = !value;
+    dispatch(setShowTestNetworks(shouldShowTestNetworks));
+    if (shouldShowTestNetworks) {
+      trackEvent({
+        event: MetaMetricsEventName.TestNetworksDisplayed,
+        category: MetaMetricsEventCategory.Network,
+      });
+    }
+  };
+
+  return (
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent
+        className="multichain-network-list-menu-content-wrapper"
+        modalDialogProps={{ padding: 0 }}
+      >
+        <ModalHeader
+          paddingTop={4}
+          paddingRight={4}
+          paddingBottom={6}
+          onClose={onClose}
         >
-          <Text>{t('showTestnetNetworks')}</Text>
-          <ToggleButton
-            value={showTestNetworks}
-            onToggle={(value) => {
-              const shouldShowTestNetworks = !value;
-              dispatch(setShowTestNetworks(shouldShowTestNetworks));
-              if (shouldShowTestNetworks) {
-                trackEvent({
-                  event: MetaMetricsEventName.TestNetworksDisplayed,
-                  category: MetaMetricsEventCategory.Network,
-                });
-              }
-            }}
-          />
-        </Box>
-        <Box padding={4}>
-          <Button
-            variant={BUTTON_VARIANT.SECONDARY}
-            block
-            onClick={() => {
-              isFullScreen
-                ? history.push(ADD_POPULAR_CUSTOM_NETWORK)
-                : global.platform.openExtensionInBrowser(
+          {t('networkMenuHeading')}
+        </ModalHeader>
+        <>
+          <Box className="multichain-network-list-menu">
+            {generateMenuItems(nonTestNetworks)}
+          </Box>
+          <Box
+            padding={4}
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+          >
+            <Text>{t('showTestnetNetworks')}</Text>
+            <ToggleButton
+              value={showTestNetworks}
+              disabled={currentlyOnTestNetwork}
+              onToggle={handleToggle}
+            />
+          </Box>
+          {showTestNetworks || currentlyOnTestNetwork ? (
+            <Box className="multichain-network-list-menu">
+              {generateMenuItems(testNetworks)}
+            </Box>
+          ) : null}
+          <Box padding={4}>
+            <ButtonSecondary
+              size={BUTTON_SECONDARY_SIZES.LG}
+              block
+              onClick={() => {
+                if (isFullScreen) {
+                  if (completedOnboarding) {
+                    history.push(ADD_POPULAR_CUSTOM_NETWORK);
+                  } else {
+                    dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
+                  }
+                } else {
+                  global.platform.openExtensionInBrowser(
                     ADD_POPULAR_CUSTOM_NETWORK,
                   );
-              dispatch(toggleNetworkMenu());
-              trackEvent({
-                event: MetaMetricsEventName.AddNetworkButtonClick,
-                category: MetaMetricsEventCategory.Network,
-              });
-            }}
-          >
-            {t('addNetwork')}
-          </Button>
-        </Box>
-      </>
-    </Popover>
+                }
+                dispatch(toggleNetworkMenu());
+                trackEvent({
+                  event: MetaMetricsEventName.AddNetworkButtonClick,
+                  category: MetaMetricsEventCategory.Network,
+                });
+              }}
+            >
+              {t('addNetwork')}
+            </ButtonSecondary>
+          </Box>
+        </>
+      </ModalContent>
+    </Modal>
   );
 };
 

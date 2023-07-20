@@ -93,9 +93,6 @@
   "back": {
     "message": "Atpakaļ"
   },
-  "backToAll": {
-    "message": "Atgriezties pie visiem"
-  },
   "backupApprovalInfo": {
     "message": "Šis slepenais kods ir nepieciešams, lai atjaunotu jūsu maku, ja pazaudējat ierīci, aizmirstat paroli, jāpārinstalē MetaMask vai vēlaties piekļūt makam no citas ierīces."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Pievienošana"
   },
-  "connectHardwareWallet": {
-    "message": "Pieslēgt aparatūras maku"
-  },
   "connectingTo": {
     "message": "Pieslēdzas $1"
   },
   "connectingToGoerli": {
     "message": "Pieslēdzas Goerli testa tīklam"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Pieslēdzas Linea Goerli testa tīklam"
   },
   "connectingToMainnet": {
@@ -193,9 +187,6 @@
   "create": {
     "message": "Izveidot"
   },
-  "createAccount": {
-    "message": "Izveidot kontu"
-  },
   "createPassword": {
     "message": "Izveidot paroli"
   },
@@ -219,9 +210,6 @@
   },
   "delete": {
     "message": "Dzēst"
-  },
-  "deleteAccount": {
-    "message": "Dzēst kontu"
   },
   "deleteNetwork": {
     "message": "Dzēst tīklu?"
@@ -411,7 +399,7 @@
   "likeToImportTokens": {
     "message": "Vai vēlaties pievienot šos marķierus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testa tīkls"
   },
   "links": {
@@ -449,9 +437,6 @@
   },
   "mustSelectOne": {
     "message": "Jāatlasa vismaz 1 marķieris."
-  },
-  "myAccounts": {
-    "message": "Mani konti"
   },
   "needImportFile": {
     "message": "Jums jāatlasa fails, ko importēt",
@@ -571,14 +556,8 @@
   "privateNetwork": {
     "message": "Privātais tīkls"
   },
-  "queue": {
-    "message": "Rinda"
-  },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."
-  },
-  "recents": {
-    "message": "Nesenie"
   },
   "recipientAddressPlaceholder": {
     "message": "Meklēšana, publiskā adrese (0x) vai ENS"
@@ -803,15 +782,8 @@
   "transfer": {
     "message": "Pārsūtīt"
   },
-  "transferBetweenAccounts": {
-    "message": "Pārsūtīt starp saviem kontiem"
-  },
   "transferFrom": {
     "message": "Nosūtīt no"
-  },
-  "troubleTokenBalances": {
-    "message": "Mums neizdevās ielādēt marķieru bilanci. Varat tos skatīt",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Mēģināt vēlreiz"

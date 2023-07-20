@@ -123,12 +123,17 @@
         "crypto.getRandomValues": true
       }
     },
+    "@metamask/snaps-controllers-flask>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
+      }
+    },
     "@metamask/rpc-methods>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/controllers>nanoid": {
+    "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
       }

@@ -1,12 +1,11 @@
 import { useSelector } from 'react-redux';
 import React, { useEffect } from 'react';
-
 import { EditGasModes, PriorityLevels } from '../../../../shared/constants/gas';
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
-  TypographyVariant,
+  Display,
+  FlexDirection,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
@@ -16,11 +15,10 @@ import { useTransactionModalContext } from '../../../contexts/transaction-modal'
 import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
-import Button from '../../ui/button';
 import InfoTooltip from '../../ui/info-tooltip';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography';
 import AppLoadingSpinner from '../app-loading-spinner';
+import { Button, ButtonLink, Text } from '../../component-library';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -97,11 +95,13 @@ const CancelSpeedupPopover = () => {
     >
       <AppLoadingSpinner className="cancel-speedup-popover__spinner" />
       <div className="cancel-speedup-popover__wrapper">
-        <Typography
-          boxProps={{ alignItems: AlignItems.center, display: DISPLAY.FLEX }}
-          variant={TypographyVariant.H6}
-          marginTop={0}
+        <Text
+          alignItems={AlignItems.center}
+          display={Display.Flex}
+          variant={TextVariant.bodySm}
           marginBottom={2}
+          paddingBottom={2}
+          className="cancel-speedup-popover__description"
         >
           {t('cancelSpeedUpLabel', [
             <strong key="cancelSpeedupReplace">{t('replace')}</strong>,
@@ -109,42 +109,39 @@ const CancelSpeedupPopover = () => {
           <InfoTooltip
             position="top"
             contentText={
-              <Box>
-                {t('cancelSpeedUpTransactionTooltip', [
-                  editGasMode === EditGasModes.cancel
-                    ? t('cancel')
-                    : t('speedUp'),
-                ])}
-                <div>
-                  <a
-                    href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {t('learnMoreUpperCase')}
-                  </a>
-                </div>
-              </Box>
+              <>
+                <Text variant={TextVariant.bodySm}>
+                  {t('cancelSpeedUpTransactionTooltip', [
+                    editGasMode === EditGasModes.cancel
+                      ? t('cancel')
+                      : t('speedUp'),
+                  ])}
+                </Text>
+                <ButtonLink
+                  variant={TextVariant.bodySm}
+                  href="https://community.metamask.io/t/how-to-speed-up-or-cancel-transactions-on-metamask/3296"
+                  target="_blank"
+                >
+                  {t('learnMoreUpperCase')}
+                </ButtonLink>
+              </>
             }
           />
-        </Typography>
-        <div className="cancel-speedup-popover__separator" />
+        </Text>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
-          flexDirection={FLEX_DIRECTION.COLUMN}
-          marginTop={4}
+          flexDirection={FlexDirection.Column}
+          marginTop={2}
         >
-          <Box className="cancel-speedup-popover__edit-gas-button">
+          <div className="cancel-speedup-popover__edit-gas-button">
             {!appIsLoading && <EditGasFeeButton />}
-          </Box>
-          <Box className="cancel-speedup-popover__gas-details">
+          </div>
+          <div className="cancel-speedup-popover__gas-details">
             <GasDetailsItem />
-          </Box>
+          </div>
         </Box>
-        <Button type="primary" onClick={submitTransactionChange}>
-          {t('submit')}
-        </Button>
+        <Button onClick={submitTransactionChange}>{t('submit')}</Button>
       </div>
     </Popover>
   );

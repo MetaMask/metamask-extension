@@ -5,7 +5,6 @@ import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import NftsTab from '.';
 
 const NFTS = [
@@ -151,28 +150,26 @@ const render = ({
   selectedAddress,
   chainId = '0x1',
   useNftDetection,
-  onAddNFT = jest.fn(),
 }) => {
-  const chainIdAsDecimal = hexToDecimal(chainId);
   const store = configureStore({
     metamask: {
       allNfts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: nfts,
+          [chainId]: nfts,
         },
       },
       allNftContracts: {
         [ACCOUNT_1]: {
-          [chainIdAsDecimal]: nftContracts,
+          [chainId]: nftContracts,
         },
       },
-      provider: { chainId },
+      providerConfig: { chainId },
       selectedAddress,
       useNftDetection,
       nftsDropdownState,
     },
   });
-  return renderWithProvider(<NftsTab onAddNFT={onAddNFT} />, store);
+  return renderWithProvider(<NftsTab />, store);
 };
 
 describe('NFT Items', () => {
@@ -296,17 +293,6 @@ describe('NFT Items', () => {
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
       expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
-    });
-    it('should render a link "Import NFTs" when some NFTs are present, which, when clicked calls the passed in onAddNFT method', () => {
-      const onAddNFTStub = jest.fn();
-      render({
-        selectedAddress: ACCOUNT_1,
-        nfts: NFTS,
-        onAddNFT: onAddNFTStub,
-      });
-      expect(onAddNFTStub).toHaveBeenCalledTimes(0);
-      fireEvent.click(screen.queryByText('Import NFTs'));
-      expect(onAddNFTStub).toHaveBeenCalledTimes(1);
     });
   });
 });

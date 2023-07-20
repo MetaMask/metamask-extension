@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useRef, useEffect, useMemo, useState } from 'react';
 import classnames from 'classnames';
 import {
   BLOCK_SIZES,
@@ -23,7 +23,7 @@ export const HeaderBase: React.FC<HeaderBaseProps> = ({
   const endAccessoryRef = useRef<HTMLDivElement>(null);
   const [accessoryMinWidth, setAccessoryMinWidth] = useState<number>();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     function handleResize() {
       if (startAccessoryRef.current && endAccessoryRef.current) {
         const accMinWidth = Math.max(

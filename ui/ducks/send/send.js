@@ -78,6 +78,7 @@ import {
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
+  getProviderConfig,
   getTokens,
   getUnapprovedTxs,
 } from '../metamask/metamask';
@@ -1967,7 +1968,7 @@ export function updateRecipientUserInput(userInput) {
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
     const state = getState();
-    const { metamask } = state;
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     let logAmount = amount;
@@ -1992,9 +1993,7 @@ export function updateSendAmount(amount) {
         toCurrency: EtherDenomination.ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${
-        metamask?.provider?.ticker || EtherDenomination.ETH
-      }`;
+      logAmount = `${ethValue} ${ticker || EtherDenomination.ETH}`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
@@ -2016,14 +2015,16 @@ export function updateSendAmount(amount) {
  * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
+ * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
 export function updateSendAsset(
-  { type, details: providedDetails },
+  { type, details: providedDetails, skipComputeEstimatedGasLimit },
   { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     const sendingAddress =
@@ -2038,7 +2039,7 @@ export function updateSendAsset(
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${AssetType.native} with symbol ${
-            state.metamask.provider?.ticker ?? EtherDenomination.ETH
+            ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
@@ -2149,7 +2150,7 @@ export function updateSendAsset(
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (initialAssetSet === false) {
+    if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2393,6 +2394,7 @@ export function startNewDraftTransaction(asset) {
       updateSendAsset({
         type: asset.type ?? AssetType.native,
         details: asset.details,
+        skipComputeEstimatedGasLimit: true,
       }),
     );
 

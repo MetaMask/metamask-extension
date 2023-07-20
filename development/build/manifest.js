@@ -135,9 +135,12 @@ function createManifestTasks({
       .trim()
       .substring(0, 8);
 
-    manifest.name = `MetaMask ${capitalize(
-      buildType,
-    )}${mv3Str}${lavamoatStr}${snowStr}`;
+    const buildName =
+      buildType === 'mmi'
+        ? `MetaMask Institutional ${mv3Str}${lavamoatStr}${snowStr}`
+        : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
+
+    manifest.name = buildName;
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;
   }
@@ -176,7 +179,7 @@ async function getBuildModifications(buildType, platform) {
   }
 
   const overridesPath = buildConfig.buildTypes[buildType].manifestOverrides;
-  if (overridesPath === undefined) {
+  if (!overridesPath) {
     return {};
   }
 

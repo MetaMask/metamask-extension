@@ -1,5 +1,4 @@
 import React from 'react';
-import type { BoxProps } from '../../ui/box/box.d';
 import {
   FontWeight,
   FontStyle,
@@ -7,9 +6,12 @@ import {
   TextAlign,
   TextTransform,
   OverflowWrap,
-  TextColor,
-  Color,
 } from '../../../helpers/constants/design-system';
+
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+} from '../box';
 
 export enum TextDirection {
   LeftToRight = 'ltr',
@@ -22,6 +24,14 @@ export enum TextDirection {
  * takes up vertical space even if it's empty.
  */
 export const InvisibleCharacter = '\u200B';
+
+/**
+ * @deprecated ValidTag enum is deprecated in favor of a union of strings.
+ * To change the root html element tag of the Text component, use the `as` prop and string value.
+ * e.g. `<Text as="h1">Hello World</Text>`
+ *
+ * Contribute to replacing the enum with a union of string by submitting a PR
+ */
 
 export enum ValidTag {
   Dd = 'dd',
@@ -41,13 +51,38 @@ export enum ValidTag {
   Ul = 'ul',
   Label = 'label',
   Input = 'input',
+  Header = 'header',
 }
 
-export interface TextProps extends BoxProps {
+export type ValidTagType =
+  | 'dd'
+  | 'div'
+  | 'dt'
+  | 'em'
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'h4'
+  | 'h5'
+  | 'h6'
+  | 'li'
+  | 'p'
+  | 'span'
+  | 'strong'
+  | 'ul'
+  | 'label'
+  | 'input'
+  | 'header';
+
+export interface TextStyleUtilityProps extends StyleUtilityProps {
+  /**
+   * Additional className to assign the Text component
+   */
+  className?: string;
   /**
    * The text content of the Text component
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * The variation of font styles including sizes and weights of the Text component
    * Possible values:
@@ -57,18 +92,16 @@ export interface TextProps extends BoxProps {
    * `headingSm` large screen: 18px / small screen: 16px,
    * `bodyLgMedium` large screen: 18px / small screen: 16px,
    * `bodyMd` large screen: 16px / small screen: 14px,
+   * `bodyMdMedium` large screen: 16px / small screen: 14px,
    * `bodyMdBold` large screen: 16px / small screen: 14px,
    * `bodySm` large screen: 14px / small screen: 12px,
+   * `bodySmMedium` large screen: 14px / small screen: 12px,
    * `bodySmBold` large screen: 14px / small screen: 12px,
+   * `bodyXsMedium` large screen: 12px / small screen: 10px,
    * `bodyXs` large screen: 12px / small screen: 10px,
    * `inherit`
    */
   variant?: TextVariant;
-  /**
-   * The color of the Text component Should use the COLOR object from
-   * ./ui/helpers/constants/design-system.js
-   */
-  color?: TextColor | Color;
   /**
    * The font-weight of the Text component. Should use the FontWeight enum from
    * ./ui/helpers/constants/design-system.js
@@ -103,12 +136,11 @@ export interface TextProps extends BoxProps {
    * Used for long strings that can be cut off...
    */
   ellipsis?: boolean;
-  /**
-   * Changes the root html element tag of the Text component.
-   */
-  as?: ValidTag;
-  /**
-   * Additional className to assign the Text component
-   */
-  className?: string;
 }
+
+export type TextProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, TextStyleUtilityProps>;
+
+export type TextComponent = <C extends React.ElementType = 'span'>(
+  props: TextProps<C>,
+) => React.ReactElement | null;

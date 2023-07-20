@@ -33,7 +33,7 @@ const HIGH_GAS_OPTION = {
 const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
-      provider: {},
+      providerConfig: {},
       cachedBalances: {},
       accounts: {
         '0xAddress': {

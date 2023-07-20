@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "添加自定义代币"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到。",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "这将允许在 MetaMask 中使用此网络。"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "添加代币"
+  },
+  "addTokenByContractAddress": {
+    "message": "找不到代币？您可以通过粘贴其地址手动添加任何代币。代币合约地址可以在 $1 上找到",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "地址"
@@ -359,12 +359,6 @@
     "message": "是否允许访问您的所有$1？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "批准并安装"
-  },
-  "approveAndUpdate": {
-    "message": "批准并更新"
-  },
   "approveButtonText": {
     "message": "批准"
   },
@@ -398,9 +392,6 @@
   "assetOptions": {
     "message": "资产选项"
   },
-  "assets": {
-    "message": "资产"
-  },
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。必须使用桥来进行。"
   },
@@ -427,13 +418,10 @@
     "message": "设置 MetaMask 将被锁定前的空闲时间（单位：分钟）。"
   },
   "average": {
-    "message": "平均值"
+    "message": "中等"
   },
   "back": {
     "message": "返回"
-  },
-  "backToAll": {
-    "message": "返回全部"
   },
   "backup": {
     "message": "备份"
@@ -560,13 +548,6 @@
     "message": "若要$1交易，燃料费用必须增加至少10%才能被网络认可。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "以~$1取消兑换",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "免费取消兑换"
-  },
   "cancelled": {
     "message": "已取消"
   },
@@ -645,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "连接账户或创建新账户"
   },
-  "connectHardwareWallet": {
-    "message": "连接硬件钱包"
-  },
   "connectManually": {
     "message": "手动连接到当前站点"
   },
@@ -704,7 +682,7 @@
   "connectingToGoerli": {
     "message": "正在连接 Goerli 测试网络"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "正在连接Linea测试网络"
   },
   "connectingToMainnet": {
@@ -791,9 +769,6 @@
   },
   "create": {
     "message": "创建"
-  },
-  "createAccount": {
-    "message": "创建账户"
   },
   "createNewWallet": {
     "message": "创建新钱包"
@@ -935,9 +910,6 @@
   },
   "delete": {
     "message": "删除"
-  },
-  "deleteAccount": {
-    "message": "删除账户"
   },
   "deleteNetwork": {
     "message": "删除网络？"
@@ -1217,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
-  },
-  "enableSmartTransactions": {
-    "message": "启用智能交易"
   },
   "enableToken": {
     "message": "启用 $1",
@@ -1570,9 +1539,6 @@
   "history": {
     "message": "历史记录"
   },
-  "holdToReveal": {
-    "message": "按住以显示 SRP"
-  },
   "holdToRevealContent1": {
     "message": "您的助记词提供 $1",
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
@@ -1593,8 +1559,11 @@
     "message": "但网络钓鱼者可能会。",
     "description": "The text link in 'holdToRevealContent3'"
   },
-  "holdToRevealTitle": {
-    "message": "确保 SRP 的安全"
+  "holdToRevealSRP": {
+    "message": "按住以显示 助记词"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "保护您的 助记词 安全"
   },
   "ignoreAll": {
     "message": "忽略所有"
@@ -1630,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importNFTs": {
-    "message": "添加收藏品"
-  },
   "importSelectedTokens": {
     "message": "要导入所选代币吗？"
   },
@@ -1644,9 +1610,6 @@
   },
   "importTokenWarning": {
     "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
-  },
-  "importTokens": {
-    "message": "添加资产"
   },
   "importTokensCamelCase": {
     "message": "添加代币"
@@ -1832,7 +1795,7 @@
     "message": "打开和解锁 Ledger Live 应用程序"
   },
   "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 Metamask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
+    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
     "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
   },
   "ledgerDeviceOpenFailureMessage": {
@@ -1867,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "您想导入这些代币吗？"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea测试网络"
   },
   "link": {
@@ -1893,9 +1856,6 @@
   },
   "lock": {
     "message": "注销"
-  },
-  "lockTimeTooGreat": {
-    "message": "锁定时间过长"
   },
   "logo": {
     "message": "$1标志",
@@ -1990,26 +1950,17 @@
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
   },
-  "missingNFT": {
-    "message": "找不到您的 NFT？"
-  },
   "missingSetting": {
     "message": "找不到设置吗？"
   },
   "missingSettingRequest": {
     "message": "在这里请求"
   },
-  "missingToken": {
-    "message": "没有看到您的代币？"
-  },
   "moreComingSoon": {
     "message": "更多即将到来……"
   },
   "mustSelectOne": {
     "message": "至少选择1种代币。"
-  },
-  "myAccounts": {
-    "message": "我的账户"
   },
   "name": {
     "message": "名称"
@@ -2205,9 +2156,6 @@
   "noConversionRateAvailable": {
     "message": "无可用汇率"
   },
-  "noNFTs": {
-    "message": "尚无 NFT"
-  },
   "noSnaps": {
     "message": "没有安装Snap"
   },
@@ -2243,9 +2191,6 @@
   },
   "notEnoughGas": {
     "message": "燃料不足"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "在设置中访问",
@@ -2346,7 +2291,7 @@
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionThree": {
-    "message": "在 Metamask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
+    "message": "在 MetaMask 中与您的 Ledger 账户交互时，将打开一个新选项卡，并且将要求您打开 Ledger Live 应用程序。应用程序打开后，您将被要求允许 WebSocket 连接到您的 MetaMask 账户。就是这样！",
     "description": "Description of a notification in the 'See What's New' popup. Describes the Ledger support update."
   },
   "notifications6DescriptionTwo": {
@@ -2808,9 +2753,6 @@
   "publicAddress": {
     "message": "公共地址"
   },
-  "queue": {
-    "message": "队列"
-  },
   "queued": {
     "message": "队列中"
   },
@@ -2825,9 +2767,6 @@
   },
   "receive": {
     "message": "接收"
-  },
-  "recents": {
-    "message": "最近"
   },
   "recipientAddressPlaceholder": {
     "message": "搜索、公共地址 (0x) 或 ENS"
@@ -3014,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "显示助记词"
   },
-  "reviewSpendingCap": {
-    "message": "检查您的支出上限"
-  },
   "revokeAllTokensTitle": {
     "message": "撤销访问和转移您的所有 $1 的权限？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3058,9 +2994,6 @@
   },
   "searchResults": {
     "message": "搜索结果"
-  },
-  "searchSettings": {
-    "message": "在设置中搜索"
   },
   "searchTokens": {
     "message": "搜索代币"
@@ -3201,10 +3134,6 @@
     "message": "批准$1，且无消费限制",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "为 $1 设置支出上限",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "设置"
   },
@@ -3225,9 +3154,6 @@
   },
   "showHexDataDescription": {
     "message": "选择此项以在发送屏幕上显示十六进制数据字段"
-  },
-  "showHide": {
-    "message": "显示/隐藏"
   },
   "showIncomingTransactions": {
     "message": "显示传入的交易"
@@ -3281,9 +3207,6 @@
   "skipAccountSecurityDetails": {
     "message": "我明白，在我备份我的账户助记词之前，我可能会丢失我的账户及其所有资产。"
   },
-  "smartTransaction": {
-    "message": "智能交易"
-  },
   "snapContent": {
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3296,10 +3219,12 @@
     "message": "安装Snap"
   },
   "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。"
+    "message": "请勾选选项框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。"
+    "message": "请勾选所有方框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "您正在向snap \"$1\"授予$2的密钥访问权限。此操作不可撤销，并会向\"$1\"授予对您的$2账户和资产的控制权。在继续之前，请确保您信任\"$1\"。",
@@ -3389,11 +3314,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "粘贴失败，因为它包含超过24个单词。一个助记词最多可包含24个单词。",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "您可以将整个助记词粘贴到任何字段中",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "开始"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "要查看助记词，您需要答对两个问题"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "如果您丢失了助记词，MetaMask......"
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "无法帮助您"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "将它写下来、刻在金属上，或保存在多个秘密位置，这样您就不会丢失它。如果丢失了，它就会永远消失。"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "答对了！没有人能够帮您找回您的助记词"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "可以为您找回来"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "一旦遗失助记词，它将永远消失。无论他人如何保证，无人能够帮您找回。"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "答错了！没有人能够帮您找回您的助记词"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "如果有人（即使是技术支持人员）查问您的助记词......"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "就是在对您进行诈骗"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "答对了！分享您的助记词绝对不是个好主意"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "您应该交给他们"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "任何声称需要您的助记词的人都在对您进行欺诈。如果您与他们分享助记词，他们就会偷窃您的资产。"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "不！永远不要与任何人分享您的助记词"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "安全问答"
   },
   "srpToggleShow": {
     "message": "显示/隐藏助记词中的这个单词",
@@ -3427,9 +3403,6 @@
   },
   "status": {
     "message": "状态"
-  },
-  "statusConnected": {
-    "message": "已连接"
   },
   "statusNotConnected": {
     "message": "未连接"
@@ -3468,9 +3441,6 @@
   "strong": {
     "message": "强"
   },
-  "stxAreHere": {
-    "message": "智能交易已推出！"
-  },
   "stxBenefit1": {
     "message": "将交易成本减至最低"
   },
@@ -3492,15 +3462,6 @@
   "stxCancelledSubDescription": {
     "message": "再次尝试进行交换。下次我们会在这里保护您免受类似风险。 "
   },
-  "stxDescription": {
-    "message": "MetaMask Swap变得更加智能！启用智能交易将允许MetaMask从编程上优化您的交换，以帮助："
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "没有足够的资金进行智能交易。"
-  },
-  "stxErrorUnavailable": {
-    "message": "智能交易暂时不可用。"
-  },
   "stxFailure": {
     "message": "交换失败"
   },
@@ -3513,9 +3474,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "正在公开提交您的Swap..."
-  },
-  "stxSubDescription": {
-    "message": "*智能交易将尝试多次隐秘提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的交换能成功进行。"
   },
   "stxSuccess": {
     "message": "交换完成！"
@@ -3584,10 +3542,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "您还需要 $1 的 $2 来完成这笔交换",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "$1 报价中最棒的。",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "没有与 $1 匹配的代币",
@@ -3920,9 +3874,6 @@
   "thingsToKeep": {
     "message": "注意事项:"
   },
-  "thisIsBasedOn": {
-    "message": "所根据的信息是来自"
-  },
   "time": {
     "message": "时间"
   },
@@ -3941,10 +3892,6 @@
   },
   "toggleEthSignField": {
     "message": "切换eth_sign请求"
-  },
-  "toggleTestNetworks": {
-    "message": "$1 测试网络",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
   },
   "token": {
     "message": "代币"
@@ -4112,9 +4059,6 @@
   "transfer": {
     "message": "转移"
   },
-  "transferBetweenAccounts": {
-    "message": "在我的账户之间转移"
-  },
   "transferFrom": {
     "message": "转移自"
   },
@@ -4124,10 +4068,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask无法启动。可能发生间歇性错误，因此请尝试重新启动扩展程序。"
-  },
-  "troubleTokenBalances": {
-    "message": "我们在加载您的代币余额时遇到问题。您可以查看它们 ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "通过授予权限，您允许以下 $1 访问您的资金"
@@ -4216,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
-  },
-  "useDefault": {
-    "message": "使用默认值"
   },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"

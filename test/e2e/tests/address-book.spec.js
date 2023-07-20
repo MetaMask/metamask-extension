@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  logInWithBalanceValidation,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
@@ -12,6 +16,7 @@ describe('Address Book', function () {
       },
     ],
   };
+
   it('Sends to an address book entry', async function () {
     await withFixtures(
       {
@@ -33,10 +38,9 @@ describe('Address Book', function () {
         ganacheOptions,
         title: this.test.title,
       },
-      async ({ driver }) => {
+      async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await logInWithBalanceValidation(driver, ganacheServer);
 
         await driver.clickElement('[data-testid="eth-overview-send"]');
         const recipientRowTitle = await driver.findElement(
@@ -58,13 +62,13 @@ describe('Address Book', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-2 ETH',
         });
       },
@@ -96,23 +100,25 @@ describe('Address Book', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.identicon__address-wrapper');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        await driver.clickElement('[data-testid="recipient"]');
+        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         const inputUsername = await driver.findElement('#nickname');
         await inputUsername.fill('Test Name Edit');
-
         const inputAddress = await driver.findElement('#address');
+
         await inputAddress.fill('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74');
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         const recipientUsername = await driver.findElement({
           text: 'Test Name Edit',
-          tag: 'div',
+          tag: 'p',
         });
         assert.equal(
           await recipientUsername.getText(),
@@ -157,13 +163,15 @@ describe('Address Book', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.identicon__address-wrapper');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
 
-        await driver.clickElement({ text: 'Test Name 1', tag: 'div' });
+        await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await driver.clickElement({ text: 'Delete account', tag: 'a' });
+        await driver.clickElement({ text: 'Delete contact', tag: 'a' });
         // it checks if account is deleted
         const contact = await driver.findElement(
           '.send__select-recipient-wrapper__group-item',

@@ -205,6 +205,7 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
             fromAddressIsLedger={fromAddressIsLedger}
+            warning={submitWarning}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
@@ -319,6 +320,7 @@ export default function ConfirmApprove({
         hideSenderToRecipient
         customTxParamsData={customData}
         assetStandard={assetStandard}
+        displayAccountBalanceHeader
       />
     </GasFeeContextProvider>
   );

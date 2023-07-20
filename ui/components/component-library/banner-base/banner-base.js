@@ -1,19 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { ButtonIcon } from '../button-icon/deprecated';
-import { ButtonLink, Text } from '..';
-import { ICON_NAMES } from '../icon/deprecated';
-
-import Box from '../../ui/box';
 
 import {
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ButtonLink, IconName, ButtonIcon, Text } from '..';
 
 export const BannerBase = ({
   className,
@@ -33,7 +32,7 @@ export const BannerBase = ({
   return (
     <Box
       className={classnames('mm-banner-base', className)}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       gap={2}
       backgroundColor={BackgroundColor.backgroundDefault}
       borderRadius={BorderRadius.SM}
@@ -47,6 +46,7 @@ export const BannerBase = ({
           <Text
             className="mm-banner-base__title"
             variant={TextVariant.bodyLgMedium}
+            data-testid="mm-banner-base-title"
             as="h5"
             {...titleProps}
           >
@@ -73,7 +73,7 @@ export const BannerBase = ({
         <ButtonIcon
           className="mm-banner-base__close-button"
           marginLeft="auto"
-          iconName={ICON_NAMES.CLOSE}
+          iconName={IconName.Close}
           size={Size.SM}
           ariaLabel="Close" // TODO: i18n
           onClick={onClose}
@@ -92,7 +92,7 @@ BannerBase.propTypes = {
   /**
    * Additional props to pass to the `Text` component used for the `title` text
    */
-  titleProps: PropTypes.shape(Text.PropTypes),
+  titleProps: PropTypes.object,
   /**
    * The description is the content area below BannerBase title
    */
@@ -100,7 +100,7 @@ BannerBase.propTypes = {
   /**
    * Additional props to pass to the `Text` component used for the `description` text
    */
-  descriptionProps: PropTypes.shape(Text.PropTypes),
+  descriptionProps: PropTypes.object,
   /**
    * The children is an alternative to using the description prop for BannerBase content below the title
    */
@@ -112,7 +112,7 @@ BannerBase.propTypes = {
   /**
    * Props for action button (ButtonLink) of the BannerBase below the children
    */
-  actionButtonProps: PropTypes.shape(ButtonLink.PropTypes),
+  actionButtonProps: PropTypes.object,
   /**
    * The onClick handler for the action button (ButtonLink)
    */
@@ -129,7 +129,7 @@ BannerBase.propTypes = {
   /**
    * The props to pass to the close button
    */
-  closeButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
+  closeButtonProps: PropTypes.object,
   /**
    * An additional className to apply to the BannerBase
    */

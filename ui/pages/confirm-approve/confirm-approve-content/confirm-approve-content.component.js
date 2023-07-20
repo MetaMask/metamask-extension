@@ -12,10 +12,8 @@ import SimulationErrorMessage from '../../../components/ui/simulation-error-mess
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import {
   BLOCK_SIZES,
-  JustifyContent,
   DISPLAY,
   TextColor,
   IconColor,
@@ -24,6 +22,8 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+
 import { TokenStandard } from '../../../../shared/constants/transaction';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
@@ -31,12 +31,13 @@ import {
   ButtonIcon,
   Icon,
   IconName,
-  Text,
 } from '../../../components/component-library';
+import { Text } from '../../../components/component-library/text/deprecated';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
+import CustomNonce from '../../../components/app/custom-nonce';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -187,7 +188,7 @@ export default class ConfirmApproveContent extends Component {
         {isMultiLayerFeeNetwork ? (
           <div className="confirm-approve-content__transaction-details-extra-content">
             <TransactionDetailItem
-              key="total-item"
+              key="confirm-approve-content-min-tx-fee"
               detailTitle={t('transactionDetailLayer2GasHeading')}
               detailTotal={
                 <UserPreferencedCurrencyDisplay
@@ -290,6 +291,11 @@ export default class ConfirmApproveContent extends Component {
   renderDataContent() {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { tokenAddress } = this.props;
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <div className="flex-column">
         <div className="confirm-approve-content__small-text">
@@ -300,6 +306,11 @@ export default class ConfirmApproveContent extends Component {
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <div className="confirm-approve-content__small-text">
             {`${t('parameters')}: ${isApprovalOrRejection}`}
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              `${t('tokenContractAddress')}: ${tokenAddress}`
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
@@ -340,55 +351,6 @@ export default class ConfirmApproveContent extends Component {
     return null;
   }
 
-  renderCustomNonceContent() {
-    const { t } = this.context;
-    const {
-      useNonceField,
-      customNonceValue,
-      updateCustomNonce,
-      getNextNonce,
-      nextNonce,
-      showCustomizeNonceModal,
-    } = this.props;
-    return (
-      <>
-        {useNonceField && (
-          <div className="confirm-approve-content__custom-nonce-content">
-            <Box
-              className="confirm-approve-content__custom-nonce-header"
-              justifyContent={JustifyContent.flexStart}
-            >
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('nonce')}
-              </Text>
-              <Button
-                type="link"
-                className="confirm-approve-content__custom-nonce-edit"
-                onClick={() =>
-                  showCustomizeNonceModal({
-                    nextNonce,
-                    customNonceValue,
-                    updateCustomNonce,
-                    getNextNonce,
-                  })
-                }
-              >
-                {t('edit')}
-              </Button>
-            </Box>
-            <Text
-              className="confirm-approve-content__custom-nonce-value"
-              variant={TextVariant.bodySmBold}
-              as="h6"
-            >
-              {customNonceValue || nextNonce}
-            </Text>
-          </div>
-        )}
-      </>
-    );
-  }
-
   getTokenName() {
     const { tokenId, assetName, assetStandard, tokenSymbol } = this.props;
     const { t } = this.context;
@@ -416,7 +378,9 @@ export default class ConfirmApproveContent extends Component {
       this.props;
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET].includes(chainId);
+      [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
+        chainId,
+      );
 
     const titleTokenDescription = this.getTokenName();
     const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';
@@ -573,6 +537,11 @@ export default class ConfirmApproveContent extends Component {
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
       renderSimulationFailureWarning,
+      nextNonce,
+      getNextNonce,
+      customNonceValue,
+      updateCustomNonce,
+      showCustomizeNonceModal,
     } = this.props;
     const { showFullTxDetails, setShowContractDetails } = this.state;
 
@@ -582,15 +551,11 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
             <ConfirmPageContainerWarning warning={warning} />
@@ -700,7 +665,20 @@ export default class ConfirmApproveContent extends Component {
           {useNonceField &&
             this.renderApproveContentCard({
               showHeader: false,
-              content: this.renderCustomNonceContent(),
+              content: (
+                <CustomNonce
+                  nextNonce={nextNonce}
+                  customNonceValue={customNonceValue}
+                  showCustomizeNonceModal={() => {
+                    showCustomizeNonceModal({
+                      nextNonce,
+                      customNonceValue,
+                      updateCustomNonce,
+                      getNextNonce,
+                    });
+                  }}
+                />
+              ),
               useNonceField,
               noBorder: !showFullTxDetails,
               footer: (

@@ -28,7 +28,7 @@ let openTabSpy;
 describe('EthOverview', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
@@ -71,7 +71,7 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'home__portfolio-site';
+  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
@@ -150,7 +150,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          provider: { ...mockStore.metamask.provider, chainId: '0xa86a' },
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xa86a',
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -193,7 +196,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          provider: { ...mockStore.metamask.provider, chainId: '0xfa' },
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xfa',
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -245,7 +251,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -265,7 +271,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -285,7 +291,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

@@ -2,7 +2,7 @@ import React from 'react';
 import SnapAvatar from '.';
 
 export default {
-  title: 'Components/App/Flask/SnapAvatar',
+  title: 'Components/App/Snaps/SnapAvatar',
 
   component: SnapAvatar,
   argTypes: {

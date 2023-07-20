@@ -4,6 +4,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
 <div>
   <div
     class="transaction-detail-item"
+    data-testid="confirm-gas-display"
   >
     <div
       class="transaction-detail-item__row"
@@ -28,6 +29,7 @@ exports[`ConfirmGasDisplay should match snapshot 1`] = `
           </span>
           <div
             class="info-tooltip"
+            data-testid="info-tooltip"
           >
             <div>
               <div

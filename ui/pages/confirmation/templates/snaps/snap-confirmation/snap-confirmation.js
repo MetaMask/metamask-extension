@@ -1,5 +1,5 @@
 import { mapToTemplate } from '../../../../../components/app/snaps/snap-ui-renderer';
-import { DelineatorType } from '../../../../../helpers/constants/flask';
+import { DelineatorType } from '../../../../../helpers/constants/snaps';
 
 function getValues(pendingApproval, t, actions) {
   const {
@@ -14,6 +14,7 @@ function getValues(pendingApproval, t, actions) {
         element: 'Box',
         key: 'snap-dialog-content-wrapper',
         props: {
+          marginTop: 4,
           marginLeft: 4,
           marginRight: 4,
         },

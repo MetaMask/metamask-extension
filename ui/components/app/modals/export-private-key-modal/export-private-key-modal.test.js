@@ -59,7 +59,8 @@ describe('Export PrivateKey Modal', () => {
       mockStore,
     );
 
-    const passwordInput = queryByTestId('password-input');
+    const passwordInput =
+      queryByTestId('password-input').querySelector('input');
 
     const passwordInputEvent = {
       target: {

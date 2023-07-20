@@ -1,16 +1,19 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { TRANSACTION_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  TRANSACTION_ERROR_KEY,
+} from '../../../../helpers/constants/error-keys';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: '0x5',
       },
@@ -147,14 +150,12 @@ describe('Confirm Page Container Content', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeInTheDocument();
-    expect(
-      queryByText('This is based on information from'),
-    ).toBeInTheDocument();
+    expect(queryByText('OpenSea')).toBeInTheDocument();
   });
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
     };
 
     const { queryByText } = renderWithProvider(
@@ -168,6 +169,32 @@ describe('Confirm Page Container Content', () => {
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       ),
     ).toBeNull();
-    expect(queryByText('This is based on information from')).toBeNull();
+    expect(queryByText('OpenSea')).toBeNull();
+  });
+
+  it('should show insufficient funds error for EIP-1559 network', () => {
+    const { getByRole } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        errorKey={INSUFFICIENT_FUNDS_ERROR_KEY}
+        isBuyableChain
+        supportsEIP1559
+      />,
+      store,
+    );
+    expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
+  });
+
+  it('should show insufficient funds error for legacy network', () => {
+    const { getByRole } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        errorKey={INSUFFICIENT_FUNDS_ERROR_KEY}
+        isBuyableChain
+        supportsEIP1559={false}
+      />,
+      store,
+    );
+    expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
   });
 });

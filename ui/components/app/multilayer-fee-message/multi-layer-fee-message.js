@@ -92,7 +92,7 @@ export default function MultilayerFeeMessage({
   return (
     <div className="multi-layer-fee-message">
       <TransactionDetailItem
-        key="total-item-gas-fee"
+        key="multi-layer-fee-message-total-item-gas-fee"
         detailTitle={t('layer1Fees')}
         detailTotal={layer1Total}
         detailText={useCurrencyRateCheck && feeTotalInFiat}
@@ -100,7 +100,7 @@ export default function MultilayerFeeMessage({
         flexWidthValues={plainStyle}
       />
       <TransactionDetailItem
-        key="total-item-total"
+        key="multi-layer-fee-message-total-item-total"
         detailTitle={t('total')}
         detailTotal={totalInEth}
         detailText={totalInFiat}

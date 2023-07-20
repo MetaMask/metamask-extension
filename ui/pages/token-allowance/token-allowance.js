@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -6,18 +6,17 @@ import BigNumber from 'bignumber.js';
 import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
-import Typography from '../../components/ui/typography/typography';
 import {
   AlignItems,
   BorderStyle,
   Color,
   DISPLAY,
   FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FontWeight,
   JustifyContent,
-  TEXT_ALIGN,
+  TextAlign,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
@@ -30,11 +29,12 @@ import {
   transactionFeeSelector,
   getKnownMethodData,
   getRpcPrefsForCurrentProvider,
-  getCustomTokenAmount,
   getUnapprovedTxCount,
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   getTargetAccountWithSendEtherInfo,
+  getCustomNonceValue,
+  getNextSuggestedNonce,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -42,6 +42,7 @@ import {
   cancelTxs,
   showModal,
   updateAndApproveTx,
+  getNextNonce,
   updateCustomNonce,
 } from '../../store/actions';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -58,13 +59,16 @@ import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
+import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import { Icon, IconName } from '../../components/component-library';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../components/app/security-provider-banner-message/security-provider-banner-message.constants';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { Icon, IconName } from '../../components/component-library';
+import { Text } from '../../components/component-library/text/deprecated';
+import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
+import CustomNonce from '../../components/app/custom-nonce';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -93,6 +97,7 @@ export default function TokenAllowance({
   toAddress,
   tokenSymbol,
   fromAddressIsLedger,
+  warning,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -102,6 +107,9 @@ export default function TokenAllowance({
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
+  const [customSpendingCap, setCustomSpendingCap] = useState(
+    dappProposedTokenAmount,
+  );
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
@@ -123,24 +131,22 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  let customTokenAmount = useSelector(getCustomTokenAmount);
-  if (thisOriginIsAllowedToSkipFirstPage && dappProposedTokenAmount) {
-    customTokenAmount = dappProposedTokenAmount;
-  }
+  const nextNonce = useSelector(getNextSuggestedNonce);
+  const customNonceValue = useSelector(getCustomNonceValue);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
   };
 
   let customPermissionAmount = NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX.test(
-    customTokenAmount,
+    customSpendingCap,
   )
-    ? replaceCommaToDot(customTokenAmount).toString()
+    ? replaceCommaToDot(customSpendingCap).toString()
     : '0';
 
   const maxTokenAmount = calcTokenAmount(MAX_TOKEN_ALLOWANCE_AMOUNT, decimals);
-  if (customTokenAmount.length > 1 && Number(customTokenAmount)) {
-    const customSpendLimitNumber = new BigNumber(customTokenAmount);
+  if (customSpendingCap.length > 1 && Number(customSpendingCap)) {
+    const customSpendLimitNumber = new BigNumber(customSpendingCap);
     if (customSpendLimitNumber.greaterThan(maxTokenAmount)) {
       customPermissionAmount = 0;
     }
@@ -171,14 +177,13 @@ export default function TokenAllowance({
   const { balanceError } = useGasFeeContext();
 
   const disableNextButton =
-    isFirstPage && (customTokenAmount === '' || errorText !== '');
+    isFirstPage && (customSpendingCap === '' || errorText !== '');
 
   const disableApproveButton = !isFirstPage && balanceError;
 
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
-  const customNonceValue = '';
   const customNonceMerge = (transactionData) =>
     customNonceValue
       ? {
@@ -213,9 +218,9 @@ export default function TokenAllowance({
       fullTxData.originalApprovalAmount = dappProposedTokenAmount;
     }
 
-    if (customTokenAmount) {
-      fullTxData.customTokenAmount = customTokenAmount;
-      fullTxData.finalApprovalAmount = customTokenAmount;
+    if (customSpendingCap) {
+      fullTxData.customTokenAmount = customSpendingCap;
+      fullTxData.finalApprovalAmount = customSpendingCap;
     } else if (dappProposedTokenAmount !== undefined) {
       fullTxData.finalApprovalAmount = dappProposedTokenAmount;
     }
@@ -256,7 +261,40 @@ export default function TokenAllowance({
     );
   };
 
-  const isEmpty = customTokenAmount === '';
+  const handleNextNonce = () => {
+    dispatch(getNextNonce());
+  };
+
+  useEffect(() => {
+    handleNextNonce();
+  }, [dispatch]);
+
+  const handleUpdateCustomNonce = (value) => {
+    dispatch(updateCustomNonce(value));
+  };
+
+  const handleCustomizeNonceModal = (
+    /* eslint-disable no-shadow */
+    useNonceField,
+    nextNonce,
+    customNonceValue,
+    updateCustomNonce,
+    getNextNonce,
+    /* eslint-disable no-shadow */
+  ) => {
+    dispatch(
+      showModal({
+        name: 'CUSTOMIZE_NONCE',
+        useNonceField,
+        nextNonce,
+        customNonceValue,
+        updateCustomNonce,
+        getNextNonce,
+      }),
+    );
+  };
+
+  const isEmpty = customSpendingCap === '';
 
   const renderContractTokenValues = (
     <Box marginTop={4} key={tokenAddress}>
@@ -274,15 +312,11 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
-      {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-        txData?.securityProviderResponse?.flagAsDangerous !==
-          SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-      (txData?.securityProviderResponse &&
-        Object.keys(txData.securityProviderResponse).length === 0) ? (
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
-      ) : null}
+      )}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -294,24 +328,26 @@ export default function TokenAllowance({
         <Box>
           {!isFirstPage && (
             <Button type="inline" onClick={() => handleBackClick()}>
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textMuted}
-                fontWeight={FONT_WEIGHT.BOLD}
+                fontWeight={FontWeight.Bold}
               >
                 {'<'} {t('back')}
-              </Typography>
+              </Text>
             </Button>
           )}
         </Box>
-        <Box textAlign={TEXT_ALIGN.END}>
-          <Typography
-            variant={TypographyVariant.H7}
+        <Box textAlign={TextAlign.End}>
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textMuted}
-            fontWeight={FONT_WEIGHT.BOLD}
+            fontWeight={FontWeight.Bold}
           >
             {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <NetworkAccountBalanceHeader
@@ -322,6 +358,11 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
+      {warning && (
+        <Box className="token-allowance-container__custom-nonce-warning">
+          <ConfirmPageContainerWarning warning={warning} />
+        </Box>
+      )}
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
@@ -349,37 +390,28 @@ export default function TokenAllowance({
             name={origin}
             url={siteImage}
           />
-          <Typography
-            variant={TypographyVariant.H6}
-            fontWeight={FONT_WEIGHT.NORMAL}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.textAlternative}
-            boxProps={{ marginLeft: 1, marginTop: 2 }}
+            marginLeft={1}
           >
             {origin}
-          </Typography>
+          </Text>
         </Box>
       </Box>
       <Box marginLeft={4} marginRight={4}>
-        <Typography
-          variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
-          align={TEXT_ALIGN.CENTER}
-        >
+        <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
           {isFirstPage ? (
-            t('setSpendingCap', [renderContractTokenValues])
+            t('spendingCapRequest', [renderContractTokenValues])
           ) : (
             <Box>
-              {customTokenAmount === '0' || isEmpty ? (
-                t('revokeSpendingCap', [renderContractTokenValues])
-              ) : (
-                <Box>
-                  {t('reviewSpendingCap')}
-                  {renderContractTokenValues}
-                </Box>
-              )}
+              {customSpendingCap === '0' || isEmpty
+                ? t('revokeSpendingCap', [renderContractTokenValues])
+                : t('spendingCapRequest', [renderContractTokenValues])}
             </Box>
           )}
-        </Typography>
+        </Text>
       </Box>
       <Box
         marginTop={1}
@@ -392,12 +424,13 @@ export default function TokenAllowance({
           onClick={() => setShowContractDetails(true)}
           className="token-allowance-container__verify-link"
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={Color.primaryDefault}
           >
             {t('verifyContractDetails')}
-          </Typography>
+          </Text>
         </Button>
       </Box>
       <Box margin={[4, 4, 3, 4]}>
@@ -411,15 +444,17 @@ export default function TokenAllowance({
             passTheErrorText={(value) => setErrorText(value)}
             decimals={decimals}
             setInputChangeInProgress={setInputChangeInProgress}
+            customSpendingCap={customSpendingCap}
+            setCustomSpendingCap={setCustomSpendingCap}
           />
         ) : (
           <ReviewSpendingCap
             tokenName={tokenSymbol}
             currentTokenBalance={currentTokenBalance}
             tokenValue={
-              isNaN(parseFloat(customTokenAmount))
+              isNaN(parseFloat(customSpendingCap))
                 ? dappProposedTokenAmount
-                : replaceCommaToDot(customTokenAmount)
+                : replaceCommaToDot(customSpendingCap)
             }
             onEdit={() => handleBackClick()}
           />
@@ -470,6 +505,23 @@ export default function TokenAllowance({
           />
         </Box>
       )}
+      {useNonceField && (
+        <Box marginTop={4} marginRight={4} marginLeft={4}>
+          <CustomNonce
+            nextNonce={nextNonce}
+            customNonceValue={customNonceValue}
+            showCustomizeNonceModal={() =>
+              handleCustomizeNonceModal(
+                useNonceField,
+                nextNonce,
+                customNonceValue,
+                handleUpdateCustomNonce,
+                handleNextNonce,
+              )
+            }
+          />
+        </Box>
+      )}
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
@@ -480,13 +532,14 @@ export default function TokenAllowance({
           onClick={() => setShowFullTxDetails(!showFullTxDetails)}
           className="token-allowance-container__view-details"
         >
-          <Typography
-            variant={TypographyVariant.H6}
+          <Text
+            variant={TextVariant.bodySm}
+            as="h6"
             color={TextColor.primaryDefault}
             marginRight={1}
           >
             {t('viewDetails')}
-          </Typography>
+          </Text>
           {showFullTxDetails ? (
             <i className="fa fa-sm fa-angle-up" />
           ) : (
@@ -657,4 +710,8 @@ TokenAllowance.propTypes = {
    * Whether the address sending the transaction is a ledger address
    */
   fromAddressIsLedger: PropTypes.bool,
+  /**
+   * Customize nonce warning message
+   */
+  warning: PropTypes.string,
 };

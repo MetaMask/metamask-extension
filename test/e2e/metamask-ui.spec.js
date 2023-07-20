@@ -4,14 +4,15 @@ const path = require('path');
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
+  TEST_SEED_PHRASE_TWO,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
+  openDapp,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
-const { ensureXServerIsRunning } = require('./x-server');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -20,9 +21,6 @@ describe('MetaMask', function () {
   let driver;
   let dappServer;
   let tokenAddress;
-
-  const testSeedPhrase =
-    'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
   this.bail(true);
 
@@ -45,12 +43,6 @@ describe('MetaMask', function () {
       dappServer.on('listening', resolve);
       dappServer.on('error', reject);
     });
-    if (
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.CI === 'true'
-    ) {
-      await ensureXServerIsRunning();
-    }
     const result = await buildWebDriver();
     driver = result.driver;
     await driver.navigate();
@@ -136,13 +128,13 @@ describe('MetaMask', function () {
 
   describe('Import Secret Recovery Phrase', function () {
     it('logs out of the vault', async function () {
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.delay(regularDelayMs);
 
       const lockButton = await driver.findClickableElement(
-        '.account-menu__lock-button',
+        '[data-testid="global-menu-lock"]',
       );
-      assert.equal(await lockButton.getText(), 'Lock');
+      assert.equal(await lockButton.getText(), 'Lock MetaMask');
       await lockButton.click();
       await driver.delay(regularDelayMs);
     });
@@ -157,7 +149,7 @@ describe('MetaMask', function () {
 
       await driver.pasteIntoField(
         '[data-testid="import-srp__srp-word-0"]',
-        testSeedPhrase,
+        TEST_SEED_PHRASE_TWO,
       );
 
       await driver.fill('#password', 'correct horse battery staple');
@@ -171,7 +163,7 @@ describe('MetaMask', function () {
 
     it('balance renders', async function () {
       await driver.waitForSelector({
-        css: '[data-testid="wallet-balance"] .list-item__heading',
+        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
         text: '1000',
       });
       await driver.delay(regularDelayMs);
@@ -184,7 +176,7 @@ describe('MetaMask', function () {
     let popup;
     let dapp;
     it('connects the dapp', async function () {
-      await driver.openNewPage('http://127.0.0.1:8080/');
+      await openDapp(driver);
       await driver.delay(regularDelayMs);
 
       await driver.clickElement({ text: 'Connect', tag: 'button' });
@@ -254,7 +246,7 @@ describe('MetaMask', function () {
 
     it('clicks on the import tokens button', async function () {
       await driver.clickElement(`[data-testid="home__asset-tab"]`);
-      await driver.clickElement({ text: 'import tokens', tag: 'a' });
+      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
       await driver.delay(regularDelayMs);
     });
 
@@ -290,7 +282,7 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
 
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
@@ -299,13 +291,12 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(largeDelayMs);
     });
 
     it('displays the token transfer data', async function () {
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
@@ -348,12 +339,12 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1 TST',
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
@@ -379,10 +370,12 @@ describe('MetaMask', function () {
 
       await driver.findElements('.transaction-list__pending-transactions');
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item__primary-currency');
+      await driver.clickElement(
+        '[data-testid="transaction-list-item-primary-currency"]',
+      );
       await driver.delay(regularDelayMs);
 
       const transactionAmounts = await driver.findElements(
@@ -424,24 +417,24 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
 
     it('checks balance', async function () {
       await driver.clickElement({
-        text: 'Assets',
+        text: 'Tokens',
         tag: 'button',
       });
 
       await driver.waitForSelector({
-        css: '.asset-list-item__token-button',
+        css: '[data-testid="multichain-token-list-item-value"]',
         text: '7.5 TST',
       });
 
@@ -471,25 +464,25 @@ describe('MetaMask', function () {
       });
 
       await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
+      await driver.delay(veryLargeDelayMs);
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(
-          '.transaction-list__pending-transactions .transaction-list-item',
+          '.transaction-list__pending-transactions .activity-list-item',
         );
         return pendingTxes.length === 1;
       }, 10000);
 
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item');
+      await driver.clickElement('.activity-list-item');
       await driver.delay(regularDelayMs);
     });
 
     it('submits the transaction', async function () {
-      await driver.delay(largeDelayMs * 2);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs * 2);
     });
@@ -498,12 +491,12 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
     });

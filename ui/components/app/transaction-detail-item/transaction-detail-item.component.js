@@ -5,17 +5,18 @@ import classnames from 'classnames';
 import Typography from '../../ui/typography/typography';
 import {
   Color,
-  FONT_WEIGHT,
+  FontWeight,
   TypographyVariant,
   DISPLAY,
   FLEX_WRAP,
   AlignItems,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 export default function TransactionDetailItem({
+  'data-testid': dataTestId,
   detailTitle = '',
-  detailText = '',
+  detailText,
   detailTitleColor = Color.textDefault,
   detailTotal = '',
   subTitle = '',
@@ -24,11 +25,11 @@ export default function TransactionDetailItem({
   flexWidthValues = false,
 }) {
   return (
-    <div className="transaction-detail-item">
+    <div className="transaction-detail-item" data-testid={dataTestId}>
       <div className="transaction-detail-item__row">
         <Typography
           color={detailTitleColor}
-          fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
+          fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
           variant={TypographyVariant.H6}
           boxProps={{
             display: DISPLAY.FLEX,
@@ -54,12 +55,12 @@ export default function TransactionDetailItem({
           )}
           <Typography
             color={Color.textDefault}
-            fontWeight={boldHeadings ? FONT_WEIGHT.BOLD : FONT_WEIGHT.NORMAL}
+            fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
             variant={TypographyVariant.H6}
             marginTop={1}
             marginBottom={1}
             marginLeft={1}
-            boxProps={{ textAlign: TEXT_ALIGN.RIGHT }}
+            boxProps={{ textAlign: TextAlign.Right }}
           >
             {detailTotal}
           </Typography>
@@ -91,6 +92,10 @@ export default function TransactionDetailItem({
 }
 
 TransactionDetailItem.propTypes = {
+  /**
+   * An identifier for use in end-to-end tests.
+   */
+  'data-testid': PropTypes.string,
   /**
    * Detail title text wrapped in Typography component.
    */

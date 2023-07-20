@@ -19,21 +19,20 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import ImportTokenPage from '../import-token';
-import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
-import CreateAccountPage from '../create-account';
+import CreateAccountPage from '../create-account/create-account.component';
+import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
-import NetworkDropdown from '../../components/app/dropdowns/network-dropdown';
-import AccountMenu from '../../components/app/account-menu';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
-import AppHeader from '../../components/app/app-header';
 import {
-  AppHeader as MultichainAppHeader,
+  AppHeader,
   AccountListMenu,
   NetworkListMenu,
+  AccountDetails,
+  ImportNftsModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -43,24 +42,27 @@ import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceFeaturePage from '../institutional/compliance-feature-page';
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
+import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IN
 
 import {
   IMPORT_TOKEN_ROUTE,
   ASSET_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -76,19 +78,20 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   ONBOARDING_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
@@ -113,6 +116,7 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { Box } from '../../components/component-library';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -152,6 +156,9 @@ export default class Routes extends Component {
     toggleAccountMenu: PropTypes.func,
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
+    accountDetailsAddress: PropTypes.string,
+    isImportNftsModalOpen: PropTypes.bool.isRequired,
+    hideImportNftsModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -274,7 +281,6 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -283,6 +289,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
+        <Authenticated
+          path={CONFIRM_ADD_SUGGESTED_NFT_ROUTE}
+          component={ConfirmAddSuggestedNftPage}
           exact
         />
         <Authenticated
@@ -313,21 +324,26 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={COMPLIANCE_FEATURE_ROUTE}
-          component={ComplianceFeaturePage}
-        />
-        <Authenticated
-          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
-          component={ConfirmAddInstitutionalFeature}
-        />
-        <Authenticated
           path={CONFIRM_ADD_CUSTODIAN_TOKEN}
           component={ConfirmAddCustodianToken}
+        />
+        <Authenticated
+          path={CUSTODY_ACCOUNT_ROUTE}
+          component={CustodyPage}
+          exact
         />
         {
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          <Authenticated
+            path={ADD_SNAP_ACCOUNT_ROUTE}
+            component={AddSnapAccountPage}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
@@ -495,6 +511,10 @@ export default class Routes extends Component {
       toggleAccountMenu,
       isNetworkMenuOpen,
       toggleNetworkMenu,
+      accountDetailsAddress,
+      location,
+      isImportNftsModalOpen,
+      hideImportNftsModal,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -537,40 +557,30 @@ export default class Routes extends Component {
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />
-        {!this.hideAppHeader() &&
-          (process.env.MULTICHAIN ? (
-            <MultichainAppHeader />
-          ) : (
-            <AppHeader
-              hideNetworkIndicator={this.onInitializationUnlockPage()}
-              disableNetworkIndicator={this.onSwapsPage()}
-              onClick={this.onAppHeaderClick}
-              disabled={
-                this.onConfirmPage() ||
-                this.onEditTransactionPage() ||
-                (this.onSwapsPage() && !this.onSwapsBuildQuotePage())
-              }
-            />
-          ))}
+        {!this.hideAppHeader() && <AppHeader location={location} />}
         {this.showOnboardingHeader() && <OnboardingAppHeader />}
-        {completedOnboarding ? <NetworkDropdown /> : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           isUnlocked ? <InteractiveReplacementTokenNotification /> : null
           ///: END:ONLY_INCLUDE_IN
         }
-        {process.env.MULTICHAIN ? null : <AccountMenu />}
-        {process.env.MULTICHAIN && isAccountMenuOpen ? (
+        {isAccountMenuOpen ? (
           <AccountListMenu onClose={() => toggleAccountMenu()} />
         ) : null}
-        {process.env.MULTICHAIN && isNetworkMenuOpen ? (
+        {isNetworkMenuOpen ? (
           <NetworkListMenu onClose={() => toggleNetworkMenu()} />
         ) : null}
-        <div className="main-container-wrapper">
+        {accountDetailsAddress ? (
+          <AccountDetails address={accountDetailsAddress} />
+        ) : null}
+        {isImportNftsModalOpen ? (
+          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+        ) : null}
+        <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
-        </div>
+        </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );
@@ -604,8 +614,10 @@ export default class Routes extends Component {
         return t('connectingToGoerli');
       case NETWORK_TYPES.SEPOLIA:
         return t('connectingToSepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('connectingToLineaTestnet');
+      case NETWORK_TYPES.LINEA_GOERLI:
+        return t('connectingToLineaGoerli');
+      case NETWORK_TYPES.LINEA_MAINNET:
+        return t('connectingToLineaMainnet');
       default:
         return t('connectingTo', [providerId]);
     }
