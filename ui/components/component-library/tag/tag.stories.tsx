@@ -25,7 +25,7 @@ export const DefaultStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Label = (args: TagProps) => <Tag {...args}>Anchor Element</Tag>;
+export const Label: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
 Label.args = {
   label: 'Label Story',
