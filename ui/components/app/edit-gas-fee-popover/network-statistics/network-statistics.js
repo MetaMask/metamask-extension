@@ -8,7 +8,7 @@ import { isNullish } from '../../../../helpers/utils/util';
 import { formatGasFeeOrFeeRange } from '../../../../helpers/utils/gas';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 import { BaseFeeTooltip, PriorityFeeTooltip } from './tooltips';
 import StatusSlider from './status-slider';
 

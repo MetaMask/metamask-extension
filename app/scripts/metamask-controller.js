@@ -2488,30 +2488,6 @@ export default class MetamaskController extends EventEmitter {
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
         ),
-      setComplianceAuthData:
-        this.institutionalFeaturesController.setComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      deleteComplianceAuthData:
-        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      generateComplianceReport:
-        this.institutionalFeaturesController.generateComplianceReport.bind(
-          this.institutionalFeaturesController,
-        ),
-      syncReportsInProgress:
-        this.institutionalFeaturesController.syncReportsInProgress.bind(
-          this.institutionalFeaturesController,
-        ),
-      removeConnectInstitutionalFeature:
-        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
-          this.institutionalFeaturesController,
-        ),
-      getComplianceHistoricalReportsByAddress:
-        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
-          this.institutionalFeaturesController,
-        ),
       removeAddTokenConnectRequest:
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
