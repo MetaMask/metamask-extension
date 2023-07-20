@@ -1940,6 +1940,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@endo/far@npm:^0.2.19":
+  version: 0.2.19
+  resolution: "@endo/far@npm:0.2.19"
+  dependencies:
+    "@endo/eventual-send": ^0.17.3
+    "@endo/pass-style": ^0.1.4
+  checksum: 9db0756027eb27336404a15b3ecd93278d7b79ba16a0490632abb0ae7b8e33f4a9076a61a29ee524b6629da2aaa7b7500d83cd9b9e2f82ad11f73e2990036e52
+  languageName: node
+  linkType: hard
+
 "@endo/init@npm:^0.5.57":
   version: 0.5.57
   resolution: "@endo/init@npm:0.5.57"
@@ -1987,6 +1997,16 @@ __metadata:
     "@endo/promise-kit": ^0.2.56
     "@fast-check/ava": ^1.1.3
   checksum: 909d4d742b645dbccc2fcd3d06ca1d821a05450fef8123193bab016ddc2f802c98efcbdab60099208abd016af914d0be6f27ef9b5976e3ca485beebb109ccc72
+  languageName: node
+  linkType: hard
+
+"@endo/pass-style@npm:^0.1.4":
+  version: 0.1.4
+  resolution: "@endo/pass-style@npm:0.1.4"
+  dependencies:
+    "@endo/promise-kit": ^0.2.57
+    "@fast-check/ava": ^1.1.5
+  checksum: 4afa8e0bf8659a596c2c63f11b139249cafccb72830129533f3332fc28080c0fd1c4472b8c38f593d81711a77d68c7e84b18892de55333bf4a3beb4f8aa5b149
   languageName: node
   linkType: hard
 
@@ -2802,7 +2822,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fast-check/ava@npm:^1.1.3":
+"@fast-check/ava@npm:^1.1.3, @fast-check/ava@npm:^1.1.5":
   version: 1.1.5
   resolution: "@fast-check/ava@npm:1.1.5"
   dependencies:
@@ -24760,6 +24780,7 @@ __metadata:
     "@download/blockies": ^1.0.3
     "@endo/captp": ^3.1.1
     "@endo/eventual-send": ^0.17.3
+    "@endo/far": ^0.2.19
     "@endo/init": ^0.5.57
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^3.1.1

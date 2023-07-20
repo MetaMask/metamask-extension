@@ -206,6 +206,7 @@
     "@download/blockies": "^1.0.3",
     "@endo/captp": "^3.1.1",
     "@endo/eventual-send": "^0.17.3",
+    "@endo/far": "^0.2.19",
     "@endo/init": "^0.5.57",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",

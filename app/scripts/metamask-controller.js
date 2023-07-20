@@ -198,6 +198,7 @@ import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import makeCapTpFromStream from './lib/makeCapTpFromStream';
+import { Far } from '@endo/far';
 
 import {
   CaveatMutatorFactories,
@@ -231,6 +232,16 @@ export const METAMASK_CONTROLLER_EVENTS = {
 
 // stream channels
 const PHISHING_SAFELIST = 'metamask-phishing-safelist';
+
+let counter = 0;
+const bootstrap = Far('metamask-api', {
+  increment: async () => {
+    console.log('incrementing', counter);
+    counter += 1;
+    return counter;
+  },
+  getCount: async () => counter,
+})
 
 export default class MetamaskController extends EventEmitter {
   /**
@@ -3699,17 +3710,9 @@ export default class MetamaskController extends EventEmitter {
     }
 
     const captpSubstream = mux.createStream('metamask-captp')
-    let counter = 0;
     const { captpStream, abort } = makeCapTpFromStream(
       'background',
-      harden({
-        increment: async () => {
-          console.log('incrementing', counter);
-          counter += 1;
-          return counter;
-        },
-        getCount: async () => counter,
-      }),
+      bootstrap,
     );
     const metamaskDebugStream = db('debug-stream-background');
     pump(captpStream, db('captp-into-substream'), captpSubstream, db('substream-to-captp'), captpStream, (err) => {
