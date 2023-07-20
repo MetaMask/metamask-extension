@@ -33,7 +33,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-0"
             >
               <span
-                class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
               >
                 Test Account 1
               </span>
@@ -43,7 +43,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-0"
             >
               <span
-                class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
               >
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -108,7 +108,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-1"
             >
               <span
-                class="box mm-text custody-account-list__item__name mm-text--inherit box--padding-right-1 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
               >
                 Test Account 2
               </span>
@@ -118,7 +118,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
               for="address-1"
             >
               <span
-                class="box mm-text custody-account-list__item mm-text--body-md box--display-flex box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
               >
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
