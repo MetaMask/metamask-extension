@@ -8,7 +8,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { AvatarNetwork } from './avatar-network';
+import { AvatarNetwork, AvatarNetworkSize } from '.';
 
 describe('AvatarNetwork', () => {
   const args = {
@@ -131,6 +131,53 @@ describe('AvatarNetwork', () => {
     );
     expect(getByTestId(BorderColor.errorDefault)).toHaveClass(
       `mm-box--border-color-${BorderColor.errorDefault}`,
+    );
+  });
+  // AvatarNetworkSize
+  it('should render with different AvatarNetworkSize', () => {
+    const { getByTestId } = render(
+      <>
+        <AvatarNetwork
+          {...args}
+          size={AvatarNetworkSize.Xs}
+          data-testid={AvatarNetworkSize.Xs}
+        />
+        <AvatarNetwork
+          {...args}
+          size={AvatarNetworkSize.Sm}
+          data-testid={AvatarNetworkSize.Sm}
+        />
+        <AvatarNetwork
+          {...args}
+          size={AvatarNetworkSize.Md}
+          data-testid={AvatarNetworkSize.Md}
+        />
+        <AvatarNetwork
+          {...args}
+          size={AvatarNetworkSize.Lg}
+          data-testid={AvatarNetworkSize.Lg}
+        />
+        <AvatarNetwork
+          {...args}
+          size={AvatarNetworkSize.Xl}
+          data-testid={AvatarNetworkSize.Xl}
+        />
+      </>,
+    );
+    expect(getByTestId(AvatarNetworkSize.Xs)).toHaveClass(
+      `mm-avatar-base--size-${AvatarNetworkSize.Xs}`,
+    );
+    expect(getByTestId(AvatarNetworkSize.Sm)).toHaveClass(
+      `mm-avatar-base--size-${AvatarNetworkSize.Sm}`,
+    );
+    expect(getByTestId(AvatarNetworkSize.Md)).toHaveClass(
+      `mm-avatar-base--size-${AvatarNetworkSize.Md}`,
+    );
+    expect(getByTestId(AvatarNetworkSize.Lg)).toHaveClass(
+      `mm-avatar-base--size-${AvatarNetworkSize.Lg}`,
+    );
+    expect(getByTestId(AvatarNetworkSize.Xl)).toHaveClass(
+      `mm-avatar-base--size-${AvatarNetworkSize.Xl}`,
     );
   });
   it('should forward a ref to the root html element', () => {
