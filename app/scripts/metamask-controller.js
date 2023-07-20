@@ -1760,6 +1760,9 @@ export default class MetamaskController extends EventEmitter {
           this.interfaceController.resolveInterface(...args),
         readInterface: (...args) =>
           this.interfaceController.readInterface(...args),
+        getInterfaceState: (...args) => {
+          this.interfaceController.getInterfaceState(...args);
+        },
       }),
     };
   }
