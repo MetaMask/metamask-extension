@@ -365,7 +365,7 @@ export default function WhatsNewPopup({
     setSeenNotifications,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     trackEvent,
-    ///: END:ONLY_INCLUDE_IN`
+    ///: END:ONLY_INCLUDE_IN
   ]);
 
   // Display the swaps notification with full image
