@@ -3,32 +3,19 @@ import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import ObjectMultiplex from 'obj-multiplex';
 import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
-import { obj as createThoughStream } from 'through2';
+import { obj as createThroughStream } from 'through2';
 import log from 'loglevel';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { db } from './lib/debugStream.js';
 
 // These require calls need to use require to be statically recognized by browserify
 const fs = require('fs');
 const path = require('path');
 
-function debugStream(name) {
-  return createThoughStream(function (chunk, enc, callback) {
-    console.log(`${name} stream saw:`, chunk);
-    this.push(chunk);
-    callback();
-  });
-}
-
-function db(num) {
-  return debugStream({
-    name: `my-contentscript-stream-${num}`,
-    objectMode: true,
-  });
-}
 
 const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
@@ -591,7 +578,7 @@ const initStreams = () => {
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
-  return createThoughStream((chunk, _, cb) => {
+  return createThroughStream((chunk, _, cb) => {
     if (chunk?.name === PROVIDER) {
       if (chunk.data?.method === 'metamask_accountsChanged') {
         chunk.data.method = 'wallet_accountsChanged';

@@ -51,11 +51,11 @@ import './lockdown-run';
 import '@endo/eventual-send/shim'; // install `HandledPromise` shim
 import log from 'loglevel';
 import pump from 'pump';
-import { obj as createThoughStream } from 'through2';
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { debugStream } from './lib/debugStream.js';
 
 console.log('import captp stream');
 import makeCapTpFromStream from './lib/makeCapTpFromStream';
@@ -71,14 +71,6 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn');
 //
 // setup plugin communication
 //
-
-function debugStream(name) {
-  return createThoughStream(function (chunk, enc, callback) {
-    console.log(`${name} stream saw:`, chunk);
-    this.push(chunk);
-    callback();
-  });
-}
 
 if (shouldInjectProvider()) {
   // setup background connection

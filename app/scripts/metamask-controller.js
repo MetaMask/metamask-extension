@@ -50,6 +50,8 @@ import {
   SubjectType,
 } from '@metamask/subject-metadata-controller';
 import SmartTransactionsController from '@metamask/smart-transactions-controller';
+import { db } from './lib/debugStream.js';
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
@@ -3709,10 +3711,8 @@ export default class MetamaskController extends EventEmitter {
         getCount: async () => counter,
       }),
     );
-    const metamaskDebugStream = debugStream({
-      'name': 'debug-stream-background'
-    });
-    pump(captpStream, metamaskDebugStream, captpSubstream, captpStream, (err) => {
+    const metamaskDebugStream = db('debug-stream-background');
+    pump(captpStream, db('captp-into-substream'), captpSubstream, db('substream-to-captp'), captpStream, (err) => {
       log.error(err);
       abort();
     });
@@ -3892,7 +3892,7 @@ export default class MetamaskController extends EventEmitter {
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, providerStream, outStream, (err) => {
+    pump(outStream, db('out to provider'), providerStream, db('provider to out'), outStream, (err) => {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
