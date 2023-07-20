@@ -24,8 +24,8 @@ import {
   BUTTON_SIZES,
   BUTTON_VARIANT,
   Box,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,

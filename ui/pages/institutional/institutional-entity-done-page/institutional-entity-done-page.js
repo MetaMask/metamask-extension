@@ -7,8 +7,8 @@ import {
   Box,
   Button,
   BUTTON_VARIANT,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   TextColor,
   TypographyVariant,

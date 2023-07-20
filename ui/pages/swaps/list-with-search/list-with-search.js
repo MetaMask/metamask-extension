@@ -14,7 +14,7 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 import { TextFieldSearch } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import ItemList from '../searchable-item-list/item-list';
 import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { I18nContext } from '../../../contexts/i18n';
