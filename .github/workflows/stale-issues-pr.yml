@@ -25,10 +25,10 @@ jobs:
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 7 days. Thank you for your contributions.'
           # Least recently updated issue is https://github.com/MetaMask/metamask-extension/issues/5610 from October 25th, 2018, 1728 days ago
           # days-before-issue-stale: 90
-          days-before-issue-stale: 1500
+          days-before-issue-stale: 90
           # Least recently updated PR is https://github.com/MetaMask/metamask-extension/pull/9311 from August 26th, 2020, 1057 days ago
           # days-before-pr-stale: 60
-          days-before-pr-stale: 200
+          days-before-pr-stale: 60
           days-before-issue-close: 45
           days-before-pr-close: 14
           operations-per-run: 200
