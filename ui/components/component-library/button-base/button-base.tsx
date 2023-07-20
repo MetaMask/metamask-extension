@@ -12,6 +12,7 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
+import type { TextProps } from '../text';
 import {
   ButtonBaseProps,
   ButtonBaseSize,
@@ -73,7 +74,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.pill}
-        {...props}
+        {...(props as TextProps<C>)}
       >
         {startIconName && (
           <Icon

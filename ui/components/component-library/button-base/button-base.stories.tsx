@@ -7,9 +7,7 @@ import {
   FlexDirection,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { TextDirection, IconName } from '..';
-
+import { Box, TextDirection, IconName } from '..';
 import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 import README from './README.mdx';
