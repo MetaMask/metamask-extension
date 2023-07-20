@@ -16,7 +16,11 @@ const Paragraph = (props) => (
   />
 );
 
-export const SnapUIMarkdown = ({ children }) => {
+export const SnapUIMarkdown = ({ children, markdown }) => {
+  if (markdown === false) {
+    return <Paragraph>{children}</Paragraph>;
+  }
+
   return (
     <ReactMarkdown
       allowedElements={['p', 'strong', 'em']}
@@ -29,4 +33,5 @@ export const SnapUIMarkdown = ({ children }) => {
 
 SnapUIMarkdown.propTypes = {
   children: PropTypes.string,
+  markdown: PropTypes.bool,
 };

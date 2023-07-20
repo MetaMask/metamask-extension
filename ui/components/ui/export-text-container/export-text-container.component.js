@@ -6,14 +6,12 @@ import {
   AlignItems,
   BorderColor,
   BorderRadius,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../box/box';
-import { ButtonSecondary } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { ButtonSecondary, Text, Box } from '../../component-library';
 
 function ExportTextContainer({ text = '', onClickCopy = null }) {
   const ONE_MINUTE = 1000 * 60;
@@ -22,9 +20,9 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       borderColor={BorderColor.borderDefault}
       borderRadius={BorderRadius.MD}
@@ -32,8 +30,8 @@ function ExportTextContainer({ text = '', onClickCopy = null }) {
       gap={4}
     >
       <Text
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.CENTER}
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
         className="notranslate"
         variant={TextVariant.bodyLgMedium}
         data-testid="srp_text"

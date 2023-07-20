@@ -40,8 +40,8 @@ import {
   IconName,
   IconSize,
   AvatarNetwork,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { MetaMetricsNetworkEventSource } from '../../../../shared/constants/metametrics';
 
 const AddNetwork = () => {
