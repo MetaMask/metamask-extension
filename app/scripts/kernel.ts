@@ -36,7 +36,7 @@ namesToObjects.set('default-greeter', greeter);
 objectsToNames.set(greeter, 'default-greeter');
 
 interface IBootstrap {
-  request: (descriptors: IMethodDescriptor[]) => Promise<any>;
+  request: (descriptors: { [key: string]: IMethodDescriptor } ) => Promise<any>;
   registerRestrictedObject: (object: IRestrictedObject) => void;
 }
 
@@ -85,7 +85,7 @@ export function createKernel (options = {}) {
     },
   }
 
-  return Far(bootstrap);
+  return Far('metamask-bootstrap', bootstrap);
 }
 
 function register (petName: string, object: IRestrictedObject) {
@@ -114,4 +114,3 @@ function getRestrictedObjectsForDescriptor (
 
   return matchedObjects;
 }
-
