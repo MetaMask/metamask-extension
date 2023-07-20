@@ -72,7 +72,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
       category: MetaMetricsEventCategory.MMI,
       event: MetaMetricsEventName.DeeplinkClicked,
     });
-    mmiActions.setWaitForConfirmDeepLinkDialog(false);
+    dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
     hideModal();
   };
 

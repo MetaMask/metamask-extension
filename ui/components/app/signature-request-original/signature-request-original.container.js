@@ -140,7 +140,7 @@ function mmiMapDispatchToProps(dispatch) {
         }),
       ),
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     clearConfirmTransaction: () => dispatch(clearConfirmTransaction()),
     showRejectTransactionsConfirmationModal: ({
       onSubmit,

@@ -160,7 +160,7 @@ function mmiMapDispatchToProps(dispatch) {
         }),
       ),
     setWaitForConfirmDeepLinkDialog: (wait) =>
-      mmiActions.setWaitForConfirmDeepLinkDialog(wait),
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     resolvePendingApproval: (id) => dispatch(resolvePendingApproval(id)),
     completedTx: (id) => dispatch(completedTx(id)),
     rejectPendingApproval: (id, error) =>
