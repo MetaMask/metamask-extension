@@ -284,7 +284,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
           >
             <div
               class="currency-display-component"

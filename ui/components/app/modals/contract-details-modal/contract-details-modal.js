@@ -24,8 +24,7 @@ import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { getAddressBookEntry } from '../../../../selectors';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import NftCollectionImage from '../../../ui/nft-collection-image/nft-collection-image';
-import { ButtonIcon, IconName } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
 
 export default function ContractDetailsModal({
   onClose,

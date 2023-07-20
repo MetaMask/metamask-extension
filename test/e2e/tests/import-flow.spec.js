@@ -79,7 +79,7 @@ describe('Import flow', function () {
         await driver.delay(largeDelayMs);
         await driver.clickElement('[data-testid="network-display"]');
         await driver.clickElement('.toggle-button');
-        await driver.clickElement({ text: 'Localhost', tag: 'span' });
+        await driver.clickElement({ text: 'Localhost', tag: 'button' });
 
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');

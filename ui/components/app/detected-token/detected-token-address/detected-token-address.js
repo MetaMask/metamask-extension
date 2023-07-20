@@ -15,7 +15,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();

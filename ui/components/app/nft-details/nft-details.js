@@ -51,8 +51,7 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../shared/constants/transaction';
-import { ButtonIcon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { ButtonIcon, IconName, Text } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
 import { decWEIToDecETH } from '../../../../shared/modules/conversion.utils';
 import { NftItem } from '../../multichain/nft-item';
