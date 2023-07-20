@@ -35,4 +35,4 @@ jobs:
           days-before-pr-close: 14
           # operations-per-run: 300
           # operations-per-run: 600
-          operations-per-run: 10
+          operations-per-run: 100
