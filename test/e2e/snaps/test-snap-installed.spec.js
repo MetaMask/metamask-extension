@@ -109,7 +109,7 @@ describe('Test Snap Installed', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#installedSnapsResult',
-          text: 'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
+          text: 'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         });
       },
     );

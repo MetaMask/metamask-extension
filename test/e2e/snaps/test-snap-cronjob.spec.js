@@ -86,7 +86,10 @@ describe('Test Snap Cronjob', function () {
         // look for the dialog popup to verify cronjob fired
         const error = await driver.findElement('.snap-delineator__content');
         const text = await error.getText();
-        assert.equal(text.includes(`Cronjob\nfired`), true);
+        assert.equal(
+          text.includes(`Cronjob\nThis dialog was triggered by a cronjob.`),
+          true,
+        );
 
         // try to click on the Ok button and pass test if it works
         await driver.clickElement({

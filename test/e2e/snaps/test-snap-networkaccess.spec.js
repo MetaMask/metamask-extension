@@ -80,7 +80,7 @@ describe('Test Snap networkAccess', function () {
 
         // check for result correctness
         await driver.waitForSelector({
-          css: '#networkaccessResult',
+          css: '#networkAccessResult',
           text: '"hello": "world"',
         });
       },
