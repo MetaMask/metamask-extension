@@ -34,10 +34,10 @@ function getMockPreferencesController() {
 function getMockAddressBookController() {
   const mcState = {
     addressBook: {
-      '0x61': {
+      'eip155:97': {
         '0x42EB768f2244C8811C63729A21A3569731535f06': {
           address: '0x42EB768f2244C8811C63729A21A3569731535f06',
-          chainId: '0x61',
+          caipChainId: 'eip155:97',
           isEns: false,
           memo: '',
           name: '',
@@ -71,10 +71,10 @@ function getMockNetworkController() {
 const jsonData = JSON.stringify({
   addressBook: {
     addressBook: {
-      '0x61': {
+      'eip155:97': {
         '0x42EB768f2244C8811C63729A21A3569731535f06': {
           address: '0x42EB768f2244C8811C63729A21A3569731535f06',
-          chainId: '0x61',
+          caipChainId: 'eip155:97',
           isEns: false,
           memo: '',
           name: '',
@@ -85,14 +85,14 @@ const jsonData = JSON.stringify({
   network: {
     networkConfigurations: {
       'network-configuration-id-1': {
-        chainId: '0x539',
+        caipChainId: 'eip155:1337',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
         rpcUrl: 'http://localhost:8545',
         ticker: 'ETH',
       },
       'network-configuration-id-2': {
-        chainId: '0x38',
+        caipChainId: 'eip155:56',
         nickname: 'Binance Smart Chain Mainnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://bscscan.com',
@@ -101,7 +101,7 @@ const jsonData = JSON.stringify({
         ticker: 'BNB',
       },
       'network-configuration-id-3': {
-        chainId: '0x61',
+        caipChainId: 'eip155:97',
         nickname: 'Binance Smart Chain Testnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://testnet.bscscan.com',
@@ -110,7 +110,7 @@ const jsonData = JSON.stringify({
         ticker: 'tBNB',
       },
       'network-configuration-id-4': {
-        chainId: '0x89',
+        caipChainId: 'eip155:137',
         nickname: 'Polygon Mainnet',
         rpcPrefs: {
           blockExplorerUrl: 'https://polygonscan.com',
@@ -176,26 +176,26 @@ describe('BackupController', function () {
       assert.equal(
         backupController.networkController.state.networkConfigurations[
           'network-configuration-id-1'
-        ].chainId,
-        '0x539',
+        ].caipChainId,
+        'eip155:1337',
       );
       assert.equal(
         backupController.networkController.state.networkConfigurations[
           'network-configuration-id-2'
-        ].chainId,
-        '0x38',
+        ].caipChainId,
+        'eip155:56',
       );
       assert.equal(
         backupController.networkController.state.networkConfigurations[
           'network-configuration-id-3'
-        ].chainId,
-        '0x61',
+        ].caipChainId,
+        'eip155:97',
       );
       assert.equal(
         backupController.networkController.state.networkConfigurations[
           'network-configuration-id-4'
-        ].chainId,
-        '0x89',
+        ].caipChainId,
+        'eip155:137',
       );
       // make sure identities are not lost after restore
       assert.equal(
@@ -229,19 +229,19 @@ describe('BackupController', function () {
       );
       // check address book backup
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backupController.addressBookController.store.addressBook['eip155:97'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
-        ].chainId,
-        '0x61',
+        ].caipChainId,
+        'eip155:97',
       );
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backupController.addressBookController.store.addressBook['eip155:97'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].address,
         '0x42EB768f2244C8811C63729A21A3569731535f06',
       );
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backupController.addressBookController.store.addressBook['eip155:97'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].isEns,
         false,

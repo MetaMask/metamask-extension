@@ -1492,7 +1492,7 @@ describe('MetaMaskController', function () {
         it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', function () {
           assert.strictEqual(
             metamaskController.findNetworkConfigurationBy({
-              chainId: '0xnone',
+              caipChainId: '0xnone',
             }),
             null,
           );
@@ -1506,13 +1506,13 @@ describe('MetaMaskController', function () {
           );
         });
 
-        it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', function () {
+        it('returns matching networkConfiguration when passed a caipChainId that matches an existing configuration', function () {
           assert.deepStrictEqual(
             metamaskController.findNetworkConfigurationBy({
-              chainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CHAIN_ID,
             }),
             {
-              chainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CHAIN_ID,
               nickname: 'Alt Mainnet',
               id: NETWORK_CONFIGURATION_ID_1,
               rpcUrl: ALT_MAINNET_RPC_URL,
@@ -1530,7 +1530,7 @@ describe('MetaMaskController', function () {
             {
               rpcUrl: POLYGON_RPC_URL,
               type: NETWORK_TYPES.RPC,
-              chainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CHAIN_ID,
               ticker: MATIC,
               nickname: 'Polygon',
               id: NETWORK_CONFIGURATION_ID_2,
@@ -1544,7 +1544,7 @@ describe('MetaMaskController', function () {
               nickname: 'Alt Mainnet',
             }),
             {
-              chainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CHAIN_ID,
               nickname: 'Alt Mainnet',
               id: NETWORK_CONFIGURATION_ID_1,
               rpcUrl: ALT_MAINNET_RPC_URL,
@@ -1566,12 +1566,12 @@ describe('MetaMaskController', function () {
         it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', function () {
           assert.deepStrictEqual(
             metamaskController.findNetworkConfigurationBy({
-              chainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CHAIN_ID,
             }),
             {
               rpcUrl: POLYGON_RPC_URL,
               type: NETWORK_TYPES.RPC,
-              chainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CHAIN_ID,
               ticker: MATIC,
               nickname: 'Polygon',
               id: NETWORK_CONFIGURATION_ID_2,

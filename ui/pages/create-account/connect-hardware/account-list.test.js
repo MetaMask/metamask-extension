@@ -49,7 +49,7 @@ const render = () => {
       '0x5E2003....98f417b',
     ].map((a) => a.toLowerCase()),
     selectedAccounts: [],
-    chainId: '0x1',
+    caipChainId: 'eip155:1',
     rpcPrefs: {},
     hdPaths: {
       ledger: LEDGER_HD_PATHS,

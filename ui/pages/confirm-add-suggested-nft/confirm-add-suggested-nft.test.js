@@ -69,7 +69,7 @@ const renderComponent = (pendingNfts = {}) => {
   const store = configureStore({
     metamask: {
       pendingApprovals: pendingNfts,
-      providerConfig: { chainId: '0x1' },
+      providerConfig: { caipChainId: 'eip155:1' },
     },
     history: {
       mostRecentOverviewPage: '/',

@@ -328,7 +328,7 @@ describe('txUtils', function () {
   describe('#normalizeTxParams', function () {
     it('should normalize txParams', function () {
       const txParams = {
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
         from: 'a7df1beDBF813f57096dF77FCd515f0B3900e402',
         to: null,
         data: '68656c6c6f20776f726c64',

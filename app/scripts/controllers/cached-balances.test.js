@@ -7,7 +7,7 @@ describe('CachedBalancesController', function () {
   describe('updateCachedBalances', function () {
     it('should update the cached balances', async function () {
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => CHAIN_IDS.GOERLI,
+        getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: () => undefined,
@@ -128,7 +128,7 @@ describe('CachedBalancesController', function () {
     it('should subscribe to the account tracker with the updateCachedBalances method', async function () {
       const subscribeSpy = sinon.spy();
       const controller = new CachedBalancesController({
-        getCurrentChainId: () => CHAIN_IDS.GOERLI,
+        getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
         accountTracker: {
           store: {
             subscribe: subscribeSpy,

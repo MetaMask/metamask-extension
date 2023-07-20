@@ -61,7 +61,7 @@ const renderComponent = (tokens = []) => {
     metamask: {
       pendingApprovals: PENDING_APPROVALS,
       tokens,
-      providerConfig: { chainId: '0x1' },
+      providerConfig: { caipChainId: 'eip155:1' },
     },
     history: {
       mostRecentOverviewPage: '/',

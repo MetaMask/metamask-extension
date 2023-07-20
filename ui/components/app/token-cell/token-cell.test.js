@@ -16,7 +16,7 @@ describe('Token Cell', () => {
       conversionRate: 7.0,
       preferences: {},
       providerConfig: {
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
         ticker: 'ETH',
         type: 'mainnet',
       },

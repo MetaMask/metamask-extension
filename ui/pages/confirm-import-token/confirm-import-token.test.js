@@ -36,7 +36,7 @@ const renderComponent = (mockPendingTokens = MOCK_PENDING_TOKENS) => {
   const store = configureStore({
     metamask: {
       pendingTokens: { ...mockPendingTokens },
-      providerConfig: { chainId: '0x1' },
+      providerConfig: { caipChainId: 'eip155:1' },
     },
     history: {
       mostRecentOverviewPage: '/',

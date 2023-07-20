@@ -6,12 +6,12 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 describe('EnsController', function () {
-  let currentChainId;
-  let getCurrentChainId;
+  let currentCaipChainId;
+  let getCurrentCaipChainId;
   let onNetworkDidChange;
   beforeEach(function () {
-    currentChainId = '0x5';
-    getCurrentChainId = () => currentChainId;
+    currentCaipChainId = 'eip155:5';
+    getCurrentCaipChainId = () => currentCaipChainId;
     onNetworkDidChange = sinon.spy();
   });
   afterEach(function () {
@@ -21,7 +21,7 @@ describe('EnsController', function () {
     it('should construct the controller given a provider and a network', async function () {
       const ens = new EnsController({
         provider: sinon.fake(),
-        getCurrentChainId,
+        getCurrentCaipChainId,
         onNetworkDidChange,
       });
 
@@ -31,7 +31,7 @@ describe('EnsController', function () {
     it('should construct the controller given an existing ENS instance', async function () {
       const ens = new EnsController({
         ens: {},
-        getCurrentChainId,
+        getCurrentCaipChainId,
         onNetworkDidChange,
       });
 
@@ -48,7 +48,7 @@ describe('EnsController', function () {
           lookup: sinon.stub().withArgs('peaksignal.eth').returns(address),
         },
         onNetworkDidChange,
-        getCurrentChainId,
+        getCurrentCaipChainId,
       });
 
       const name = await ens.reverseResolveAddress(address);
@@ -64,7 +64,7 @@ describe('EnsController', function () {
           reverse,
           lookup,
         },
-        getCurrentChainId,
+        getCurrentCaipChainId,
         onNetworkDidChange,
       });
 
@@ -82,7 +82,7 @@ describe('EnsController', function () {
           lookup: sinon.stub().withArgs('peaksignal.eth').returns('0x00'),
         },
         onNetworkDidChange,
-        getCurrentChainId,
+        getCurrentCaipChainId,
       });
 
       const name = await ens.reverseResolveAddress(address);
@@ -96,7 +96,7 @@ describe('EnsController', function () {
           reverse: sinon.stub().withArgs(address).returns('peaksignal.eth'),
           lookup: sinon.stub().withArgs('peaksignal.eth').returns(ZERO_ADDRESS),
         },
-        getCurrentChainId,
+        getCurrentCaipChainId,
         onNetworkDidChange,
       });
 
@@ -119,7 +119,7 @@ describe('EnsController', function () {
             .returns(ZERO_X_ERROR_ADDRESS),
         },
         onNetworkDidChange,
-        getCurrentChainId,
+        getCurrentCaipChainId,
       });
 
       try {

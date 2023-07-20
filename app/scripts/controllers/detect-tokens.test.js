@@ -9,7 +9,6 @@ import {
   TokensController,
   AssetsContractController,
 } from '@metamask/assets-controllers';
-import { toHex } from '@metamask/controller-utils';
 import { NetworkController } from '@metamask/network-controller';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
@@ -211,7 +210,7 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: toHex(1),
+      caipChainId: 'eip155:1',
       preventPollingOnNetworkRestart: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
@@ -300,7 +299,7 @@ describe('DetectTokensController', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: toHex(11155111),
+      caipChainId: 'eip155:11155111',
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessengerSepolia,

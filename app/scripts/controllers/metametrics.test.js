@@ -16,7 +16,7 @@ import MetaMetricsController from './metametrics';
 const segment = createSegmentMock(2, 10000);
 
 const VERSION = '0.0.1-test';
-const FAKE_CHAIN_ID = '0x1338';
+const FAKE_CAIP_CHAIN_ID = 'eip155:1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
@@ -55,7 +55,7 @@ const DEFAULT_TEST_CONTEXT = {
 };
 
 const DEFAULT_SHARED_PROPERTIES = {
-  chain_id: FAKE_CHAIN_ID,
+  chain_id: FAKE_CAIP_CHAIN_ID,
   locale: LOCALE.replace('_', '-'),
   environment_type: 'background',
 };
@@ -116,7 +116,7 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
-  getCurrentChainId = () => FAKE_CHAIN_ID,
+  getCurrentCaipChainId = () => FAKE_CAIP_CHAIN_ID,
   onNetworkDidChange = () => {
     // do nothing
   },
@@ -124,7 +124,7 @@ function getMetaMetricsController({
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId,
+    getCurrentCaipChainId,
     onNetworkDidChange,
     preferencesStore,
     version: '0.0.1',
@@ -169,7 +169,7 @@ describe('MetaMetricsController', function () {
         });
       const metaMetricsController = getMetaMetricsController();
       assert.strictEqual(metaMetricsController.version, VERSION);
-      assert.strictEqual(metaMetricsController.chainId, FAKE_CHAIN_ID);
+      assert.strictEqual(metaMetricsController.caipChainId, FAKE_CAIP_CHAIN_ID);
       assert.strictEqual(
         metaMetricsController.state.participateInMetaMetrics,
         true,
@@ -189,20 +189,20 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', function () {
-      let chainId = '0x111';
+      let caipChainId = 'eip155:111';
       let networkDidChangeListener;
       const onNetworkDidChange = (listener) => {
         networkDidChangeListener = listener;
       };
       const metaMetricsController = getMetaMetricsController({
-        getCurrentChainId: () => chainId,
+        getCurrentCaipChainId: () => caipChainId,
         onNetworkDidChange,
       });
 
-      chainId = '0x222';
+      caipChainId = 'eip155:222';
       networkDidChangeListener();
 
-      assert.strictEqual(metaMetricsController.chainId, '0x222');
+      assert.strictEqual(metaMetricsController.caipChainId, 'eip155:222');
     });
 
     it('should update when preferences changes', function () {
@@ -927,14 +927,14 @@ describe('MetaMetricsController', function () {
         allTokens: MOCK_ALL_TOKENS,
         networkConfigurations: {
           'network-configuration-id-1': {
-            chainId: CHAIN_IDS.MAINNET,
+            caipChainId: CHAIN_IDS.MAINNET,
             ticker: CURRENCY_SYMBOLS.ETH,
           },
           'network-configuration-id-2': {
-            chainId: CHAIN_IDS.GOERLI,
+            caipChainId: CHAIN_IDS.GOERLI,
             ticker: CURRENCY_SYMBOLS.TEST_ETH,
           },
-          'network-configuration-id-3': { chainId: '0xaf' },
+          'network-configuration-id-3': { caipChainId: 'eip155:175' },
         },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
@@ -953,9 +953,9 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.NetworksAdded]: [
           CHAIN_IDS.MAINNET,
           CHAIN_IDS.GOERLI,
-          '0xaf',
+          'eip155:175',
         ],
-        [MetaMetricsUserTrait.NetworksWithoutTicker]: ['0xaf'],
+        [MetaMetricsUserTrait.NetworksWithoutTicker]: ['eip155:175'],
         [MetaMetricsUserTrait.NftAutodetectionEnabled]: false,
         [MetaMetricsUserTrait.NumberOfAccounts]: 2,
         [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
@@ -984,8 +984,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1002,13 +1002,13 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
-          [toHex(1)]: {
+          'eip155:1': {
             '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
           },
         },
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -1036,8 +1036,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1055,8 +1055,8 @@ describe('MetaMetricsController', function () {
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { chainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,

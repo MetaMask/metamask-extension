@@ -300,7 +300,7 @@ const state = {
         status: 'unapproved',
         metamaskNetworkId: '5',
         msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: false,
         txParams: {
           from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -319,7 +319,7 @@ const state = {
             time: 1620710815484,
             status: 'unapproved',
             metamaskNetworkId: '5',
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             loadingDefaults: true,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -529,7 +529,7 @@ const state = {
       ticker: 'ETH',
       nickname: '',
       rpcUrl: '',
-      chainId: '0x5',
+      caipChainId: 'eip155:5',
     },
     network: '5',
     accounts: {
@@ -549,13 +549,13 @@ const state = {
     currentBlockGasLimit: '0x793af4',
     currentNetworkTxList: [
       {
-        chainId: '0x38',
+        caipChainId: 'eip155:56',
         dappSuggestedGasFees: null,
         firstRetryBlockNumber: '0x9c2686',
         hash: '0xf45e7a751adfc0fbadccc972816baf33eb34543e52ace51f0f8d0d7f357afdc6',
         history: [
           {
-            chainId: '0x38',
+            caipChainId: 'eip155:56',
             dappSuggestedGasFees: null,
             id: 2360388496987298,
             loadingDefaults: true,
@@ -1107,13 +1107,13 @@ const state = {
     networkConfigurations: {
       'test-networkConfigurationId-1': {
         rpcUrl: 'https://testrpc.com',
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
         nickname: 'mainnet',
         rpcPrefs: { blockExplorerUrl: 'https://etherscan.io' },
       },
       'test-networkConfigurationId-2': {
         rpcUrl: 'http://localhost:8545',
-        chainId: '0x539',
+        caipChainId: 'eip155:1337',
         ticker: 'ETH',
         nickname: 'Localhost 8545',
         rpcPrefs: {},
@@ -1456,7 +1456,7 @@ const state = {
       time: 1620723786838,
       status: 'unapproved',
       metamaskNetworkId: '5',
-      chainId: '0x5',
+      caipChainId: 'eip155:5',
       loadingDefaults: false,
       txParams: {
         from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -1475,7 +1475,7 @@ const state = {
           time: 1620723786838,
           status: 'unapproved',
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           loadingDefaults: true,
           txParams: {
             from: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',
@@ -1602,7 +1602,7 @@ const state = {
 export const networkList =  [
   {
     blockExplorerUrl: 'https://etherscan.io',
-    chainId: '0x1',
+    caipChainId: 'eip155:1',
     iconColor: 'var(--mainnet)',
     isATestNetwork: false,
     labelKey: 'mainnet',
@@ -1613,7 +1613,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: 'https://goerli.etherscan.io',
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     iconColor: 'var(--color-network-goerli-default)',
     isATestNetwork: true,
     labelKey: 'goerli',
@@ -1624,7 +1624,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: 'https://sepolia.etherscan.io',
-    chainId: '0xaa36a7',
+    caipChainId: 'eip155:669351',
     iconColor: 'var(--color-network-sepolia-default)',
     isATestNetwork: true,
     labelKey: 'sepolia',
@@ -1635,7 +1635,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: '',
-    chainId: '0x539',
+    caipChainId: 'eip155:1337',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: true,
     label: 'Localhost 8545',
@@ -1645,7 +1645,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: 'https://bscscan.com',
-    chainId: '0x38',
+    caipChainId: 'eip155:56',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
     label: 'Binance Smart Chain',
@@ -1655,7 +1655,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: 'https://cchain.explorer.avax.network/',
-    chainId: '0xa86a',
+    caipChainId: 'eip155:43114',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
     label: 'Avalanche',
@@ -1665,7 +1665,7 @@ export const networkList =  [
   },
   {
     blockExplorerUrl: 'https://polygonscan.com',
-    chainId: '0x89',
+    caipChainId: 'eip155:137',
     iconColor: 'var(--color-network-localhost-default)',
     isATestNetwork: false,
     label: 'Polygon',

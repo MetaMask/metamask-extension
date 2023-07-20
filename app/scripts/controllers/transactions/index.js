@@ -2305,7 +2305,7 @@ export default class TransactionController extends EventEmitter {
       type,
       time,
       status,
-      chainId,
+      caipChainId,
       origin: referrer,
       txParams: {
         gasPrice,
@@ -2488,7 +2488,7 @@ export default class TransactionController extends EventEmitter {
     }
 
     let properties = {
-      chain_id: chainId,
+      chain_id: caipChainId, // what to do here?
       referrer,
       source,
       network,

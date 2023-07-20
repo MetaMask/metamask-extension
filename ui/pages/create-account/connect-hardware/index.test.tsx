@@ -49,7 +49,7 @@ const mockProps = {
 const mockState = {
   metamask: {
     providerConfig: {
-      chainId: '0x1',
+      caipChainId: 'eip155:1',
     },
   },
   appState: {
@@ -67,7 +67,7 @@ const mockState = {
       },
     },
     warning: null,
-    chainId: '0x1',
+    caipChainId: 'eip155:1',
     rpcPrefs: null,
     accounts: [],
     connectedAccounts: [],

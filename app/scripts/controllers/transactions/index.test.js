@@ -4,7 +4,10 @@ import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  getEthChainIdIntFromCaipChainId,
+} from '@metamask/controller-utils';
 import sinon from 'sinon';
 
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
@@ -39,7 +42,7 @@ import TransactionController from '.';
 
 const noop = () => true;
 const currentNetworkId = '5';
-const currentChainId = '0x5';
+const currentCaipChainId = 'eip155:5';
 const currentNetworkStatus = NetworkStatus.Available;
 const providerConfig = {
   type: 'goerli',
@@ -59,7 +62,7 @@ describe('Transaction Controller', function () {
     fromAccount,
     fragmentExists,
     networkStatusStore,
-    getCurrentChainId,
+    getCurrentCaipChainId,
     messengerMock,
     resultCallbacksMock,
     updateSpy;
@@ -77,7 +80,7 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: parseInt(currentChainId, 16),
+      chainId: getEthChainIdIntFromCaipChainId(currentCaipChainId),
     }).provider;
 
     networkStatusStore = new ObservableStore(currentNetworkStatus);
@@ -87,7 +90,7 @@ describe('Transaction Controller', function () {
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
 
-    getCurrentChainId = sinon.stub().callsFake(() => currentChainId);
+    getCurrentCaipChainId = sinon.stub().callsFake(() => currentCaipChainId);
 
     resultCallbacksMock = {
       success: sinon.spy(),
@@ -117,7 +120,7 @@ describe('Transaction Controller', function () {
         }),
       getProviderConfig: () => providerConfig,
       getPermittedAccounts: () => undefined,
-      getCurrentChainId,
+      getCurrentCaipChainId,
       getParticipateInMetrics: () => false,
       trackMetaMetricsEvent: () => undefined,
       createEventFragment: () => undefined,
@@ -1776,7 +1779,7 @@ describe('Transaction Controller', function () {
         type: TransactionType.simpleSend,
         transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
         origin: ORIGIN_METAMASK,
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
       };
@@ -1828,7 +1831,7 @@ describe('Transaction Controller', function () {
 
     it('returns 0 when the chain ID cannot be parsed as a hex string', function () {
       networkStatusStore.putState(NetworkStatus.Available);
-      getCurrentChainId.returns('$fdsjfldf');
+      getCurrentCaipChainId.returns('$fdsjfldf');
       assert.equal(txController.getChainId(), 0);
     });
   });
@@ -2386,7 +2389,7 @@ describe('Transaction Controller', function () {
           },
           type: TransactionType.simpleSend,
           origin: ORIGIN_METAMASK,
-          chainId: currentChainId,
+          caipChainId: currentCaipChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
           defaultGasEstimates: {
@@ -2409,7 +2412,7 @@ describe('Transaction Controller', function () {
           category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
-            chain_id: '0x5',
+            chain_id: 'eip155:5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
@@ -2496,7 +2499,7 @@ describe('Transaction Controller', function () {
           category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
-            chain_id: '0x5',
+            chain_id: 'eip155:5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
@@ -2572,7 +2575,7 @@ describe('Transaction Controller', function () {
           },
           type: TransactionType.simpleSend,
           origin: 'other',
-          chainId: currentChainId,
+          caipChainId: currentCaipChainId,
           time: 1624408066355,
           metamaskNetworkId: currentNetworkId,
           defaultGasEstimates: {
@@ -2595,7 +2598,7 @@ describe('Transaction Controller', function () {
           category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
-            chain_id: '0x5',
+            chain_id: 'eip155:5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
@@ -2684,7 +2687,7 @@ describe('Transaction Controller', function () {
           category: MetaMetricsEventCategory.Transactions,
           persist: true,
           properties: {
-            chain_id: '0x5',
+            chain_id: 'eip155:5',
             eip_1559_version: '0',
             gas_edit_attempted: 'none',
             gas_edit_type: 'none',
@@ -2759,7 +2762,7 @@ describe('Transaction Controller', function () {
         },
         type: TransactionType.simpleSend,
         origin: 'other',
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
@@ -2775,7 +2778,7 @@ describe('Transaction Controller', function () {
         category: MetaMetricsEventCategory.Transactions,
         persist: true,
         properties: {
-          chain_id: '0x5',
+          chain_id: 'eip155:5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
@@ -2831,7 +2834,7 @@ describe('Transaction Controller', function () {
         },
         type: TransactionType.simpleSend,
         origin: 'other',
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
@@ -2851,7 +2854,7 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
-          chain_id: '0x5',
+          chain_id: 'eip155:5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
@@ -2905,7 +2908,7 @@ describe('Transaction Controller', function () {
         },
         type: TransactionType.simpleSend,
         origin: 'other',
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
@@ -2925,7 +2928,7 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
-          chain_id: '0x5',
+          chain_id: 'eip155:5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
@@ -2979,7 +2982,7 @@ describe('Transaction Controller', function () {
         },
         type: TransactionType.simpleSend,
         origin: 'other',
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         securityProviderResponse: {
@@ -2999,7 +3002,7 @@ describe('Transaction Controller', function () {
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
           transaction_type: TransactionType.simpleSend,
-          chain_id: '0x5',
+          chain_id: 'eip155:5',
           eip_1559_version: '0',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',
@@ -3056,7 +3059,7 @@ describe('Transaction Controller', function () {
         },
         type: TransactionType.simpleSend,
         origin: 'other',
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1624408066355,
         metamaskNetworkId: currentNetworkId,
         defaultGasEstimates: {
@@ -3077,7 +3080,7 @@ describe('Transaction Controller', function () {
         persist: true,
         category: MetaMetricsEventCategory.Transactions,
         properties: {
-          chain_id: '0x5',
+          chain_id: 'eip155:5',
           eip_1559_version: '2',
           gas_edit_attempted: 'none',
           gas_edit_type: 'none',

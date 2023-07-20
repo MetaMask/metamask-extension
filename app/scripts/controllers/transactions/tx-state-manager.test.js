@@ -20,7 +20,7 @@ const VALID_ADDRESS_TWO = '0x0000000000000000000000000000000000000001';
 function generateTransactions(
   numToGen,
   {
-    chainId,
+    caipChainId,
     to,
     from,
     status,
@@ -34,7 +34,8 @@ function generateTransactions(
       id: i,
       time: new Date() * i,
       status: typeof status === 'function' ? status(i) : status,
-      chainId: typeof chainId === 'function' ? chainId(i) : chainId,
+      caipChainId:
+        typeof caipChainId === 'function' ? caipChainId(i) : caipChainId,
       txParams: {
         nonce: nonce(i),
         to,
@@ -50,7 +51,7 @@ describe('TransactionStateManager', function () {
   let txStateManager;
   const currentNetworkId = NETWORK_IDS.GOERLI;
   const currentNetworkStatus = NetworkStatus.Available;
-  const currentChainId = CHAIN_IDS.MAINNET;
+  const currentCaipChainId = CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
 
   beforeEach(function () {
@@ -61,7 +62,7 @@ describe('TransactionStateManager', function () {
       txHistoryLimit: 10,
       getNetworkId: () => currentNetworkId,
       getNetworkStatus: () => currentNetworkStatus,
-      getCurrentChainId: () => currentChainId,
+      getCurrentCaipChainId: () => currentCaipChainId,
     });
   });
 
@@ -189,7 +190,7 @@ describe('TransactionStateManager', function () {
         },
         getNetworkId: () => currentNetworkId,
         getNetworkStatus: () => currentNetworkStatus,
-        getCurrentChainId: () => currentChainId,
+        getCurrentCaipChainId: () => currentCaipChainId,
       });
 
       assert.deepEqual(txm.getTransactions(), [submittedTx, confirmedTx]);
@@ -255,7 +256,7 @@ describe('TransactionStateManager', function () {
         },
         getNetworkId: () => currentNetworkId,
         getNetworkStatus: () => currentNetworkStatus,
-        getCurrentChainId: () => currentChainId,
+        getCurrentCaipChainId: () => currentCaipChainId,
       });
 
       assert.deepEqual(txm.getTransactions({ limit: 2 }), [
@@ -291,7 +292,7 @@ describe('TransactionStateManager', function () {
       const unapprovedTx1 = {
         id: 2,
         metamaskNetworkId: currentNetworkId,
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 1,
         txParams: {
           from: '0xAddress',
@@ -315,7 +316,7 @@ describe('TransactionStateManager', function () {
       const approvedTx2Dupe = {
         id: 4,
         metamaskNetworkId: currentNetworkId,
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 2,
         txParams: {
           from: '0xAddress',
@@ -339,7 +340,7 @@ describe('TransactionStateManager', function () {
       const failedTx3Dupe = {
         id: 6,
         metamaskNetworkId: currentNetworkId,
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         time: 3,
         txParams: {
           from: '0xAddress',
@@ -365,7 +366,7 @@ describe('TransactionStateManager', function () {
         },
         getNetworkId: () => currentNetworkId,
         getNetworkStatus: () => currentNetworkStatus,
-        getCurrentChainId: () => currentChainId,
+        getCurrentCaipChainId: () => currentCaipChainId,
       });
 
       assert.deepEqual(txm.getTransactions({ limit: 2 }), [
@@ -582,7 +583,7 @@ describe('TransactionStateManager', function () {
     it('cuts off early txs beyond a limit', function () {
       const limit = txStateManager.txHistoryLimit;
       const txs = generateTransactions(limit + 1, {
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         status: TransactionStatus.confirmed,
@@ -596,7 +597,7 @@ describe('TransactionStateManager', function () {
     it('cuts off early txs beyond a limit whether or not it is confirmed or rejected', function () {
       const limit = txStateManager.txHistoryLimit;
       const txs = generateTransactions(limit + 1, {
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         status: TransactionStatus.rejected,
@@ -615,7 +616,7 @@ describe('TransactionStateManager', function () {
         // one more beyond the first additional.
         limit + 2,
         {
-          chainId: currentChainId,
+          caipChainId: currentCaipChainId,
           to: VALID_ADDRESS,
           from: VALID_ADDRESS_TWO,
           status: (i) =>
@@ -649,7 +650,7 @@ describe('TransactionStateManager', function () {
       // of transactions with a unique nonce/network combo, then add an additional new transaction
       // to trigger the removal of one group of nonces.
       const txs = generateTransactions(limit + 2, {
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         nonce: (i) => (i === 1 ? `0` : `${i}`),
@@ -681,13 +682,13 @@ describe('TransactionStateManager', function () {
       // single transaction but the other shouldn't be dropped until adding the fifth additional
       // transaction
       const txs = generateTransactions(limit + 5, {
-        chainId: (i) => {
+        caipChainId: (i) => {
           if (i === 0 || i === 1) {
             return CHAIN_IDS.MAINNET;
           } else if (i === 4 || i === 5) {
             return CHAIN_IDS.GOERLI;
           }
-          return currentChainId;
+          return currentCaipChainId;
         },
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
@@ -715,7 +716,7 @@ describe('TransactionStateManager', function () {
       assert.equal(
         result.some(
           (tx) =>
-            tx.chainId === CHAIN_IDS.MAINNET && tx.txParams.nonce === '0x0',
+            tx.caipChainId === CHAIN_IDS.MAINNET && tx.txParams.nonce === '0x0',
         ),
         false,
         'the mainnet transactions with nonce 0x0 should not be present in the result',
@@ -728,7 +729,8 @@ describe('TransactionStateManager', function () {
       // different network. None of these should be dropped because we haven't yet reached the limit
       const limit = txStateManager.txHistoryLimit;
       const txs = generateTransactions(limit - 1, {
-        chainId: (i) => ([0, 1, 4, 5].includes(i) ? currentChainId : '0x1'),
+        caipChainId: (i) =>
+          [0, 1, 4, 5].includes(i) ? currentCaipChainId : 'eip155:1',
         to: VALID_ADDRESS,
         from: VALID_ADDRESS_TWO,
         nonce: (i) => {

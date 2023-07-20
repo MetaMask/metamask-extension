@@ -1426,7 +1426,7 @@ describe('Send Slice', () => {
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1479,7 +1479,7 @@ describe('Send Slice', () => {
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1531,7 +1531,7 @@ describe('Send Slice', () => {
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: getInitialSendStateWithExistingTxState({
@@ -1883,7 +1883,7 @@ describe('Send Slice', () => {
             addressBook: {},
             identities: {},
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: {
@@ -1942,7 +1942,7 @@ describe('Send Slice', () => {
               ],
             },
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: {
@@ -1993,7 +1993,7 @@ describe('Send Slice', () => {
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
-              chainId: '0x1',
+              caipChainId: 'eip155:1',
             },
           },
           send: {

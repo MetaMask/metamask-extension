@@ -20,7 +20,7 @@ jest.mock('../../store/actions.ts', () => ({
 }));
 
 const providerConfigState = {
-  chainId: '0x1',
+  caipChainId: 'eip155:1',
   nickname: '',
   rpcPrefs: {},
   rpcUrl: '',

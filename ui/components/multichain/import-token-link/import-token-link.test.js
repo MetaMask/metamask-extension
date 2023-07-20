@@ -43,7 +43,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x1',
+          caipChainId: 'eip155:1',
         },
       },
     };

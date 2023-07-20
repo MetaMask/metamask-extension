@@ -21,7 +21,7 @@ const IncomingTransactionsController = proxyquire('./incoming-transactions', {
   '../../../shared/modules/random-id': { default: () => 54321 },
 }).default;
 
-const FAKE_CHAIN_ID = '0x1338';
+const FAKE_CAIP_CHAIN_ID = 'eip155:1338';
 const MOCK_SELECTED_ADDRESS = '0x0101';
 const SET_STATE_TIMEOUT = MILLISECOND * 10;
 
@@ -36,8 +36,8 @@ const PREPOPULATED_BLOCKS_BY_NETWORK = {
 };
 const EMPTY_BLOCKS_BY_NETWORK = Object.keys(
   ETHERSCAN_SUPPORTED_NETWORKS,
-).reduce((network, chainId) => {
-  network[chainId] = null;
+).reduce((network, caipChainId) => {
+  network[caipChainId] = null;
   return network;
 }, {});
 
@@ -55,9 +55,9 @@ function getNonEmptyInitState() {
   };
 }
 
-function getMockNetworkControllerMethods(chainId = FAKE_CHAIN_ID) {
+function getMockNetworkControllerMethods(caipChainId = FAKE_CAIP_CHAIN_ID) {
   return {
-    getCurrentChainId: () => chainId,
+    getCurrentCaipChainId: () => caipChainId,
     onNetworkDidChange: sinon.spy(),
   };
 }
@@ -306,7 +306,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -323,7 +323,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfakeeip1559',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -609,7 +609,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -752,7 +752,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -813,7 +813,8 @@ describe('IncomingTransactionsController', function () {
       const subscription =
         mockedNetworkMethods.onNetworkDidChange.getCall(0).args[0];
 
-      incomingTransactionsController.getCurrentChainId = () => FAKE_CHAIN_ID;
+      incomingTransactionsController.getCurrentCaipChainId = () =>
+        FAKE_CAIP_CHAIN_ID;
       await subscription();
 
       try {
@@ -841,7 +842,7 @@ describe('IncomingTransactionsController', function () {
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
-            getCurrentChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
           });
         sinon.spy(incomingTransactionsController.store, 'updateState');
 
@@ -878,7 +879,7 @@ describe('IncomingTransactionsController', function () {
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
-            getCurrentChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
           });
 
         const NEW_TRANSACTION_ONE = {
@@ -932,7 +933,7 @@ describe('IncomingTransactionsController', function () {
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getNonEmptyInitState(),
-            getCurrentChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
           });
         sinon.spy(incomingTransactionsController.store, 'updateState');
         incomingTransactionsController._getNewIncomingTransactions = sinon
@@ -973,7 +974,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
-          getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
         },
       );
 
@@ -1041,7 +1042,7 @@ describe('IncomingTransactionsController', function () {
       mockFetch.resetHistory();
     });
 
-    it('should call fetch with the expected url when passed an address, block number and supported chainId', async function () {
+    it('should call fetch with the expected url when passed an address, block number and supported caipChainId', async function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
@@ -1065,7 +1066,7 @@ describe('IncomingTransactionsController', function () {
       );
     });
 
-    it('should call fetch with the expected url when passed an address, block number and MAINNET chainId', async function () {
+    it('should call fetch with the expected url when passed an address, block number and MAINNET caipChainId', async function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
@@ -1089,7 +1090,7 @@ describe('IncomingTransactionsController', function () {
       );
     });
 
-    it('should call fetch with the expected url when passed an address and supported chainId, but a falsy block number', async function () {
+    it('should call fetch with the expected url when passed an address and supported caipChainId, but a falsy block number', async function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
@@ -1231,7 +1232,7 @@ describe('IncomingTransactionsController', function () {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        chainId: CHAIN_IDS.GOERLI,
+        caipChainId: CHAIN_IDS.GOERLI,
         status: TransactionStatus.failed,
         time: 4444000,
         txParams: {
@@ -1278,7 +1279,7 @@ describe('IncomingTransactionsController', function () {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        chainId: CHAIN_IDS.GOERLI,
+        caipChainId: CHAIN_IDS.GOERLI,
         status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
@@ -1326,7 +1327,7 @@ describe('IncomingTransactionsController', function () {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        chainId: CHAIN_IDS.GOERLI,
+        caipChainId: CHAIN_IDS.GOERLI,
         status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {

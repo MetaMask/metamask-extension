@@ -143,7 +143,7 @@ describe('NFT Details', () => {
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {
-    it('should open opeasea link with goeli testnet chainId', async () => {
+    it('should open opeasea link with goeli testnet caipChainId', async () => {
       global.platform = { openTab: jest.fn() };
 
       const { queryByTestId } = renderWithProvider(
@@ -172,7 +172,7 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0x1',
+            caipChainId: 'eip155:1',
           },
         },
       };
@@ -202,12 +202,12 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0x89',
+            caipChainId: 'eip155:137',
           },
           networkConfigurations: {
             testNetworkConfigurationId: {
               rpcUrl: 'https://testrpc.com',
-              chainId: '0x89',
+              caipChainId: 'eip155:137',
               nickname: 'Custom Mainnet RPC',
             },
           },
@@ -239,7 +239,7 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0xaa36a7',
+            caipChainId: '0xaa36a7',
           },
         },
       };
@@ -269,12 +269,12 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            chainId: '0x99',
+            caipChainId: 'eip155:153',
           },
           networkConfigurations: {
             testNetworkConfigurationId: {
               rpcUrl: 'https://testrpc.com',
-              chainId: '0x99',
+              caipChainId: 'eip155:153',
               nickname: 'Custom Mainnet RPC',
             },
           },

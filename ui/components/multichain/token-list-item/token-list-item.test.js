@@ -10,7 +10,7 @@ const state = {
     providerConfig: {
       ticker: 'ETH',
       nickname: '',
-      chainId: '0x1',
+      caipChainId: 'eip155:1',
       type: 'mainnet',
     },
     useTokenDetection: false,

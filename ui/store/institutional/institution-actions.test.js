@@ -15,7 +15,7 @@ const defaultState = {
   metamask: {
     currentLocale: 'test',
     selectedAddress: '0xFirstAddress',
-    providerConfig: { chainId: '0x1' },
+    providerConfig: { caipChainId: 'eip155:1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
@@ -199,7 +199,7 @@ describe('#updateCustodyState', () => {
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
       },
       featureFlags: {
         showIncomingTransactions: false,
@@ -225,7 +225,7 @@ describe('#updateCustodyState', () => {
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
       },
       featureFlags: {
         showIncomingTransactions: false,
@@ -280,7 +280,7 @@ describe('#updateCustodyState', () => {
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
-        chainId: '0x1',
+        caipChainId: 'eip155:1',
       },
       featureFlags: {
         showIncomingTransactions: false,

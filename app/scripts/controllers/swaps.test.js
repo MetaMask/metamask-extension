@@ -81,7 +81,7 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
-  chainId: CHAIN_IDS.MAINNET,
+  caipChainId: CHAIN_IDS.MAINNET,
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
@@ -140,8 +140,8 @@ const EMPTY_INIT_STATE = {
 
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
-const getCurrentChainIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
+const getCurrentCaipChainIdStub = sandbox.stub();
+getCurrentCaipChainIdStub.returns(CHAIN_IDS.MAINNET);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -163,7 +163,7 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      getCurrentChainId: getCurrentChainIdStub,
+      getCurrentCaipChainId: getCurrentCaipChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
   };
@@ -218,7 +218,7 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
+        getCurrentCaipChainId: getCurrentCaipChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
 
@@ -250,7 +250,7 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
+        getCurrentCaipChainId: getCurrentCaipChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
 
@@ -282,7 +282,7 @@ describe('SwapsController', function () {
         getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
         getTokenRatesState: MOCK_TOKEN_RATES_STORE,
         fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
+        getCurrentCaipChainId: getCurrentCaipChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
 
@@ -730,7 +730,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resetHistory();
         const OPTIMISM_MOCK_FETCH_METADATA = {
           ...MOCK_FETCH_METADATA,
-          chainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CHAIN_IDS.OPTIMISM,
         };
         const optimismProviderResultStub = {
           // 1 gwei
