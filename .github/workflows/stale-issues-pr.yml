@@ -1,7 +1,11 @@
 name: 'Close stale issues and PRs'
+# on:
+#   pull_request:
+#     types: [assigned, opened, synchronize, reopened]
+
 on:
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
+  schedule:
+    - cron: '0 */2 * * *'
 
 # on:
 #   schedule:
