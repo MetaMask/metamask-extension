@@ -18,22 +18,22 @@ exports[`LedgerInstructionField Component rendering should render properly with 
             class="ledger-live-dialog"
           >
             <h6
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               Prior to clicking confirm:
             </h6>
             <h6
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               • Be sure your Ledger is plugged in and to select the Ethereum app.
             </h6>
             <h6
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               • Enable "smart contract data" or "blind signing" on your Ledger device.
             </h6>
             <h6
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
             >
               <span>
                 <button

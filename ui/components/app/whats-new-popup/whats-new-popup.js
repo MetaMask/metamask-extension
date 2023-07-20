@@ -9,12 +9,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
+  Text,
   Button,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
@@ -347,10 +347,26 @@ export default function WhatsNewPopup({
       observer.observe(ref.current);
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent({
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.MMIPortfolioDashboardModalOpen,
+      properties: {
+        action: 'Modal was opened',
+      },
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     return () => {
       observer.disconnect();
     };
-  }, [idRefMap, setSeenNotifications]);
+  }, [
+    idRefMap,
+    setSeenNotifications,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
 
   // Display the swaps notification with full image
   // Displays the NFTs & OpenSea notifications 18,19 with full image
@@ -377,6 +393,15 @@ export default function WhatsNewPopup({
             completed_all: true,
           },
         });
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        trackEvent({
+          category: MetaMetricsEventCategory.MMI,
+          event: MetaMetricsEventName.MMIPortfolioDashboardModalButton,
+          properties: {
+            action: 'Button was clicked',
+          },
+        });
+        ///: END:ONLY_INCLUDE_IN
         onClose();
       }}
       popoverRef={popoverRef}

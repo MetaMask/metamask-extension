@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text } from '../../component-library/text/deprecated';
 import {
   BUTTON_VARIANT,
   Button,
@@ -9,6 +8,7 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
