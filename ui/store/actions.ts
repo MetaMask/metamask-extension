@@ -1528,11 +1528,11 @@ export function updateMetamaskState(
     // sentry instance needs to either be enabled or disabled.
     if (
       isEqual(
-        newState.participateInMetaMetrics,
-        currentState.participateInMetaMetrics,
+        newState?.participateInMetaMetrics,
+        currentState?.participateInMetaMetrics,
       ) === false
     ) {
-      toggleSentryMonitoring(global.sentry, newState.participateInMetaMetrics);
+      toggleSentryMonitoring(global.sentry, newState?.participateInMetaMetrics);
     }
 
     const { currentLocale, selectedAddress } = currentState;

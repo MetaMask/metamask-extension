@@ -146,7 +146,7 @@ export default class MetaMetricsController {
 
     // Start sentry monitoring of the background process if
     // participateInMetaMetrics is true.
-    toggleSentryMonitoring(global.sentry, initState.participateInMetaMetrics);
+    toggleSentryMonitoring(global.sentry, initState?.participateInMetaMetrics);
 
     preferencesStore.subscribe(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');

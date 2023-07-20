@@ -110,7 +110,10 @@ async function startApp(metamaskState, backgroundConnection, opts) {
 
   // Sentry defaults to being disabled. Call this toggle with
   // participateInMetaMetrics flag to ensure it is enabled if necessary.
-  toggleSentryMonitoring(global.sentry, metamaskState.participateInMetaMetrics);
+  toggleSentryMonitoring(
+    global.sentry,
+    metamaskState?.participateInMetaMetrics,
+  );
 
   const draftInitialState = {
     activeTab: opts.activeTab,
