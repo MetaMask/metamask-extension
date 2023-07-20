@@ -1,9 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  getCaipChainIdFromEthChainId,
-} from '@metamask/controller-utils';
+import { getCaipChainIdFromEthChainId } from '@metamask/controller-utils';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -200,7 +198,9 @@ const ConfirmAddCustodianToken = () => {
 
                 try {
                   if (connectRequest.chainId) {
-                    const caipChainId = getCaipChainIdFromEthChainId(connectRequest.chainId);
+                    const caipChainId = getCaipChainIdFromEthChainId(
+                      connectRequest.chainId,
+                    );
                     const networkType = Object.keys(BUILT_IN_NETWORKS).find(
                       (key) =>
                         BUILT_IN_NETWORKS[key].caipChainId === caipChainId,
