@@ -30,7 +30,6 @@ const Accreditation = ({ fetchVia, address }) => {
           variant={TextVariant.bodySm}
           as="h6"
           className="accreditation__prefix"
-          margin={0}
         >
           {t('transactionDecodingAccreditationVerified', [
             <Button
