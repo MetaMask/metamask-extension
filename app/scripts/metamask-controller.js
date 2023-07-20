@@ -649,6 +649,11 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      securityAlertsEnabled:
+        this.preferencesController.store.getState().securityAlertsEnabled,
+      onPreferencesChange: this.preferencesController.store.subscribe.bind(
+        this.preferencesController.store,
+      ),
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -1596,6 +1601,9 @@ export default class MetamaskController extends EventEmitter {
         this.institutionalFeaturesController.store,
       MmiConfigurationController: this.mmiConfigurationController.store,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      PPOMController: this.ppomController,
+      ///: END:ONLY_INCLUDE_IN
       ...resetOnRestartStore,
     });
 
@@ -2153,6 +2161,12 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      setSecurityAlertsEnabled:
+        preferencesController.setSecurityAlertsEnabled.bind(
+          preferencesController,
+        ),
+      ///: END:ONLY_INCLUDE_IN
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -2471,33 +2485,13 @@ export default class MetamaskController extends EventEmitter {
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
         ),
-      setComplianceAuthData:
-        this.institutionalFeaturesController.setComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      deleteComplianceAuthData:
-        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      generateComplianceReport:
-        this.institutionalFeaturesController.generateComplianceReport.bind(
-          this.institutionalFeaturesController,
-        ),
-      syncReportsInProgress:
-        this.institutionalFeaturesController.syncReportsInProgress.bind(
-          this.institutionalFeaturesController,
-        ),
-      removeConnectInstitutionalFeature:
-        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
-          this.institutionalFeaturesController,
-        ),
-      getComplianceHistoricalReportsByAddress:
-        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
-          this.institutionalFeaturesController,
-        ),
       removeAddTokenConnectRequest:
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(
           this.institutionalFeaturesController,
+        ),
+      showInteractiveReplacementTokenBanner:
+        appStateController.showInteractiveReplacementTokenBanner.bind(
+          appStateController,
         ),
       ///: END:ONLY_INCLUDE_IN
 

@@ -33,8 +33,8 @@ import {
   ButtonIconSize,
   Icon,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../components/component-library';
 import {
   AlignItems,

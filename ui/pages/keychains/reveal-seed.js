@@ -22,7 +22,6 @@ import {
 
 import Box from '../../components/ui/box';
 import {
-  Text,
   Label,
   BannerAlert,
   Button,
@@ -32,6 +31,7 @@ import {
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
+  Text,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';

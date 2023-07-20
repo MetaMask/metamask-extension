@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "Genel adres"
   },
-  "queue": {
-    "message": "Kuyruğa al"
-  },
   "queued": {
     "message": "Kuyruğa alındı"
   },

@@ -42,11 +42,11 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
   Box,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
+  Text,
 } from '../../components/component-library';
 
 import {
@@ -62,10 +62,8 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
@@ -101,7 +99,7 @@ function shouldCloseNotificationPopup({
   shouldCLose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian or compliance
+    // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IN
 
@@ -248,12 +246,6 @@ export default class Home extends PureComponent {
       ) {
         history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
       }
-    } else if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature !== 'custodian'
-    ) {
-      history.push(CONFIRM_INSTITUTIONAL_FEATURE_CONNECT);
     }
   }
 
@@ -879,11 +871,7 @@ export default class Home extends PureComponent {
                     name={this.context.t('nfts')}
                     tabKey="nfts"
                   >
-                    <NftsTab
-                      onAddNFT={() => {
-                        history.push(ADD_NFT_ROUTE);
-                      }}
-                    />
+                    <NftsTab />
                   </Tab>
                   ///: END:ONLY_INCLUDE_IN
                 }

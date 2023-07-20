@@ -41,6 +41,7 @@ import {
   getOriginOfCurrentTab,
   getSelectedIdentity,
   getShowProductTour,
+  getTestNetworkBackgroundColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
   ///: END:ONLY_INCLUDE_IN
@@ -89,8 +90,8 @@ export const AppHeader = ({ location }) => {
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
-  // Used to get the environment and connection status
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -206,6 +207,9 @@ export const AppHeader = ({ location }) => {
                 <Box className="multichain-app-header__contents__container">
                   <Tooltip title={currentNetwork?.nickname} position="right">
                     <PickerNetwork
+                      avatarNetworkProps={{
+                        backgroundColor: testNetworkBackgroundColor,
+                      }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
@@ -225,6 +229,9 @@ export const AppHeader = ({ location }) => {
               ) : (
                 <div>
                   <PickerNetwork
+                    avatarNetworkProps={{
+                      backgroundColor: testNetworkBackgroundColor,
+                    }}
                     margin={2}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
@@ -411,6 +418,9 @@ export const AppHeader = ({ location }) => {
             >
               <div>
                 <PickerNetwork
+                  avatarNetworkProps={{
+                    backgroundColor: testNetworkBackgroundColor,
+                  }}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

@@ -40,9 +40,6 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Edit the NFT, ensure same address, and move forward
-        await driver.isElementPresentAndVisible(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
         await driver.clickElement(
           '[data-testid="confirm-page-back-edit-button"]',
         );
@@ -64,13 +61,13 @@ describe('Send NFT', function () {
         // When transaction complete, check the send NFT is displayed in activity tab
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const sendNftItem = await driver.findElement({
-          css: 'h2',
+          css: '[data-testid="activity-list-item-action"]',
           text: 'Send Test Dapp NFTs',
         });
         assert.equal(await sendNftItem.isDisplayed(), true);

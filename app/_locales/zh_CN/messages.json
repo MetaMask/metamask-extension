@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "公共地址"
   },
-  "queue": {
-    "message": "队列"
-  },
   "queued": {
     "message": "队列中"
   },

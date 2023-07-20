@@ -17,7 +17,6 @@ import {
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -26,6 +25,7 @@ import {
   FontWeight,
   TextAlign,
   TextColor,
+  Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
@@ -34,12 +34,20 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
-import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import {
+  ButtonLink,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Icon,
+  IconName,
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+
 import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
@@ -387,13 +395,13 @@ export default class SignatureRequestOriginal extends Component {
         )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
-          <Button
-            type="link"
+          <ButtonLink
+            size={Size.inherit}
             className="request-signature__container__reject"
             onClick={() => this.handleCancelAll()}
           >
             {rejectNText}
-          </Button>
+          </ButtonLink>
         ) : null}
       </div>
     );

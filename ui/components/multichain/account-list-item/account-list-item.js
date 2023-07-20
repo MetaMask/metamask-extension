@@ -4,14 +4,12 @@ import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getRpcPrefsForCurrentProvider } from '../../../selectors';
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '..';
 import {
   AvatarAccount,
   Box,
-  Text,
   AvatarFavicon,
   Tag,
   ButtonLink,
@@ -19,6 +17,7 @@ import {
   IconName,
   IconSize,
   AvatarAccountVariant,
+  Text,
 } from '../../component-library';
 import {
   Color,
@@ -91,10 +90,6 @@ export const AccountListItem = ({
     findKeyringForAddress(state, identity.address),
   );
   const label = getLabel(keyring, t);
-
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const { blockExplorerUrl } = rpcPrefs;
-  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -250,7 +245,6 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
         identity={identity}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}

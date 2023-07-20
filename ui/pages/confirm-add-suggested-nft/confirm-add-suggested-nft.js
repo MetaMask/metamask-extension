@@ -24,8 +24,8 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../components/component-library';
 import {
   getCurrentChainId,
