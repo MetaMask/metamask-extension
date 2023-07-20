@@ -13,6 +13,7 @@ import {
   BUTTON_VARIANT,
   BannerAlert,
   Button,
+  HelpText,
   HelpTextSeverity,
   Label,
   TEXT_FIELD_SIZES,

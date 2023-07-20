@@ -39,7 +39,7 @@ export const AccountDetailsAuthenticate = ({
       dispatch(hideWarning());
       return res;
     });
-  }, [dispatch, password, address]);
+  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal]);
 
   const handleKeyPress = useCallback(
     (e) => {

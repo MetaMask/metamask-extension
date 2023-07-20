@@ -41,10 +41,14 @@ export default function HoldToRevealModal({
   const holdToRevealButton =
     holdToRevealType === 'SRP' ? 'holdToRevealSRP' : 'holdToRevealPrivateKey';
 
-  const textShown =
+  const holdToRevealContent =
     holdToRevealType === 'SRP'
       ? 'holdToRevealContent'
       : 'holdToRevealContentPrivateKey';
+
+  // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
+  const holdToRevealContent1 = `${holdToRevealContent}1`;
+  const holdToRevealContent2 = `${holdToRevealContent}2`;
 
   // This is here to stop yarn verify-locales from removing these strings
   t('holdToRevealContentPrivateKey1');
@@ -62,13 +66,13 @@ export default function HoldToRevealModal({
         marginBottom={6}
       >
         <Text variant={TextVariant.bodyMd}>
-          {t(`${textShown}1`, [
+          {t(holdToRevealContent1, [
             <Text
               key="hold-to-reveal-2"
               variant={TextVariant.bodyMdBold}
               as="span"
             >
-              {t(`${textShown}2`)}
+              {t(holdToRevealContent2)}
             </Text>,
           ])}
         </Text>
