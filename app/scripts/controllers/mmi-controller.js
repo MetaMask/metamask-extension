@@ -542,8 +542,11 @@ export default class MMIController extends EventEmitter {
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
+
+    const { networkConfigurations } = this.networkController.state;
+
     const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
+      ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
       { chainId: CHAIN_IDS.GOERLI },
     ];
