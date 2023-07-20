@@ -399,8 +399,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <div />
                     <h6
-                      align="end"
-                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
+                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                     >
                       <strong>
                         Max fee:
@@ -469,8 +468,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       Amount + gas fee
                     </h6>
                     <h6
-                      align="end"
-                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
+                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                     >
                       <div
                         class="confirm-page-container-content__total-amount"
