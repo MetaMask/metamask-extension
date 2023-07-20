@@ -1,4 +1,5 @@
 import { Far } from '@endo/far';
+import { i } from '@storybook/preview-api/dist/hooks-55c56a89';
 
 interface IMethodDescriptor {
   methodName: string;
@@ -36,8 +37,7 @@ objectsToNames.set(greeter, 'default-greeter');
 
 interface IBootstrap {
   request: (descriptors: IMethodDescriptor[]) => Promise<any>;
-  registerRestrictedObject: (descriptor: IMethodDescriptor, objectToRestrict: any) => void;
-  proposeAdditionalDescriptor: (descriptorId: IMethodDescriptor, compareFn: (restrictedDescriptor: IMethodDescriptor, descriptorRequest: IMethodDescriptor) => boolean) => void;
+  registerRestrictedObject: (object: IRestrictedObject) => void;
 }
 
 export function createKernel (options = {}) {
@@ -45,21 +45,53 @@ export function createKernel (options = {}) {
   const bootstrap: IBootstrap = {
     async request (descriptors) {
       const matchedObjects = Object.keys(descriptors)
-      .map((descriptor) => {
+      .map((descriptor: string) => {
         return getRestrictedObjectsForDescriptor(restrictedObjects, descriptor, descriptors[descriptor]);
       })
 
-      const approved = prompt(`The site would like access to the following objects: `)
+      const approved = confirm(`The site would like access to the following objects: `)
       if (!approved) {
         throw new Error('User rejected request');
       }
       return matchedObjects;
     },
-    // registerRestrictedObject,
-    // proposeAdditionalDescriptor,
+    async registerRestrictedObject (restricted: IRestrictedObject) {
+      const approved = confirm(`Would you like to add a method to your wallet?: ${JSON.stringify(restricted.description)}`);
+      if (!approved) {
+        throw new Error('User rejected request');
+      }
+
+      let petName;
+      let promptText = 'What would you like to name it?'
+      while (!petName) {
+        const petName = prompt(promptText);
+        if (!petName || petName === '') {
+          throw new Error('Must provide a name.');
+        }
+
+        // Check if it exists already:
+        const existing = namesToObjects.get(petName);
+        if (existing) {
+          promptText = `That name is already taken. Are you sure?`
+          const sure = confirm(promptText);
+          if (sure) {
+            register(petName, restricted);
+          }
+          promptText = `What would you like to name it?`
+        }
+
+        register(petName, restricted);
+      }
+    },
   }
 
   return Far(bootstrap);
+}
+
+function register (petName: string, object: IRestrictedObject) {
+  restrictedObjects.add(object);
+  objectsToNames.set(object, petName);
+  namesToObjects.set(petName, object);
 }
 
 function getRestrictedObjectsForDescriptor (
