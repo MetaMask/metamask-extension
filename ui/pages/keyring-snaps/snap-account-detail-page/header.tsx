@@ -9,8 +9,8 @@ import {
   Icon,
   IconName,
   Tag,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   BackgroundColor,

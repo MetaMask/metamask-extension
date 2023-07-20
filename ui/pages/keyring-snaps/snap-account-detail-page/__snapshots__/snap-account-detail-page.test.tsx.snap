@@ -21,7 +21,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           style="mask-image: url('./images/icons/arrow-right.svg');"
         />
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           Metamask Simple Keyring
         </p>
@@ -33,7 +33,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <h2
-            class="box mm-text mm-text--heading-lg box--margin-right-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-box--margin-right-1 mm-box--color-text-default"
           >
             Metamask Simple Keyring
           </h2>
@@ -75,7 +75,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
               />
                
               <p
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
               >
                 By MetaMask
               </p>
@@ -97,7 +97,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
               />
                
               <p
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
               >
                 Audited
               </p>
