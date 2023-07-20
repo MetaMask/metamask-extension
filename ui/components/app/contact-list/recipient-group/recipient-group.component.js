@@ -8,7 +8,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();

@@ -12,8 +12,8 @@ import {
   ButtonLink,
   IconName,
   IconSize,
+  Text,
 } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   BackgroundColor,

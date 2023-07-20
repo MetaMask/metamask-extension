@@ -15,7 +15,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           class="customize-nonce-modal__main-header"
         >
           <h4
-            class="box mm-text customize-nonce-modal__main-title mm-text--heading-sm box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text customize-nonce-modal__main-title mm-text--heading-sm mm-box--color-text-default"
           >
             Edit nonce
           </h4>
@@ -33,7 +33,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           class="mm-box mm-box--margin-top-2 mm-box--display-inline-flex mm-box--align-items-center"
         >
           <h6
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             This is an advanced feature, use cautiously.
             <a
@@ -53,7 +53,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
             class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
             <h6
-              class="box mm-text mm-text--body-md-bold box--flex-direction-row box--width-5/6 box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-bold mm-box--width-5/6 mm-box--color-text-default"
             >
               Edit nonce
             </h6>
