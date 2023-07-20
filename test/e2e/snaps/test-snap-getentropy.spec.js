@@ -51,9 +51,9 @@ describe('Test Snap getEntropy', function () {
           tag: 'button',
         });
 
-        await driver.clickElement('[data-testid="snap-install-scroll"]');
-
         await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElement('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
           text: 'Install',
