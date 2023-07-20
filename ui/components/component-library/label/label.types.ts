@@ -1,6 +1,7 @@
-import { TextProps } from '../text';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { TextStyleUtilityProps } from '../text';
 
-export interface LabelProps extends TextProps {
+export interface LabelStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The id of the input associated with the label
    */
@@ -14,3 +15,10 @@ export interface LabelProps extends TextProps {
    */
   children: string | React.ReactNode;
 }
+
+export type LabelProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, LabelStyleUtilityProps>;
+
+export type LabelComponent = <C extends React.ElementType = 'label'>(
+  props: LabelProps<C>,
+) => React.ReactElement | null;
