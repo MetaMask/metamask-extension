@@ -31,8 +31,8 @@ import {
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
+  Text,
 } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
