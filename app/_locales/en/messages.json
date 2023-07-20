@@ -3567,6 +3567,15 @@
   "securityAlert": {
     "message": "Security alert from $1 and $2"
   },
+  "securityAlerts": {
+    "message": "Security alerts"
+  },
+  "securityAlertsDescription1": {
+    "message": "Enable this to have your transactions and signature requests reviewed locally (no data shared with third parties) and warnings displayed when malicious activity is detected."
+  },
+  "securityAlertsDescription2": {
+    "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
+  },
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
