@@ -33,7 +33,7 @@ export const Tag: TagComponent = React.forwardRef(
         paddingRight={1}
         borderRadius={BorderRadius.pill}
         display={Display.InlineBlock}
-        {...props}
+        {...(props as BoxProps<C>)}
       >
         <Text variant={TextVariant.bodySm} {...labelProps}>
           {label}
