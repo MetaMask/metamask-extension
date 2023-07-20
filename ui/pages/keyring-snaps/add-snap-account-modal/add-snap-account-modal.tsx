@@ -7,7 +7,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
 } from '../../../components/component-library';
 import {
   AlignItems,

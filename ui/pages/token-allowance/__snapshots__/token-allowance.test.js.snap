@@ -85,7 +85,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         class="box box--flex-direction-row box--text-align-end"
       >
         <h6
-          class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-muted"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
         >
           1
            
@@ -207,7 +207,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io
         </h6>
@@ -218,7 +218,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
     >
       <h3
         align="center"
-        class="box mm-text mm-text--heading-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
       >
         <span>
            
@@ -334,7 +334,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         tabindex="0"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
         >
           Verify third-party details
         </h6>
@@ -452,7 +452,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         tabindex="0"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--margin-right-1 box--flex-direction-row box--color-primary-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-right-1 mm-box--color-primary-default"
         >
           View details
         </h6>
