@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Ref } from 'react';
+import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
 import {
   Display,
@@ -8,12 +8,12 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-import { AvatarBase } from '../avatar-base';
-
+import type { PolymorphicRef } from '../box';
+import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
 export const AvatarNetwork = React.forwardRef(
-  (
+  <C extends React.ElementType = 'div'>(
     {
       size = AvatarNetworkSize.Md,
       name,
@@ -24,8 +24,8 @@ export const AvatarNetwork = React.forwardRef(
       borderColor = BorderColor.transparent,
       className = '',
       ...props
-    }: AvatarNetworkProps,
-    ref: Ref<HTMLElement>,
+    }: AvatarNetworkProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     const [showFallback, setShowFallback] = useState(false);
 
@@ -51,7 +51,12 @@ export const AvatarNetwork = React.forwardRef(
           showHalo ? 'mm-avatar-network--with-halo' : '',
           className,
         )}
-        {...{ backgroundColor, borderColor, color, ...props }}
+        {...{
+          backgroundColor,
+          borderColor,
+          color,
+          ...(props as AvatarBaseProps<C>),
+        }}
       >
         {showFallback ? (
           fallbackString

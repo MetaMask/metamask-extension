@@ -1,17 +1,20 @@
-import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
+import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 
 export enum AvatarNetworkSize {
-  Xs = 'xs',
-  Sm = 'sm',
-  Md = 'md',
-  Lg = 'lg',
-  Xl = 'xl',
+  Xs = AvatarBaseSize.Xs,
+  Sm = AvatarBaseSize.Sm,
+  Md = AvatarBaseSize.Md,
+  Lg = AvatarBaseSize.Lg,
+  Xl = AvatarBaseSize.Xl,
 }
 
 /**
  * Props for the AvatarNetwork component
  */
-export interface AvatarNetworkProps extends Omit<AvatarBaseProps, 'children'> {
+export interface AvatarNetworkStyleUtilityProps
+  extends Omit<AvatarBaseStyleUtilityProps, 'size'> {
   /**
    * The name accepts the string to render the first alphabet of the Avatar Name
    */
@@ -31,3 +34,10 @@ export interface AvatarNetworkProps extends Omit<AvatarBaseProps, 'children'> {
    */
   size?: AvatarNetworkSize;
 }
+
+export type AvatarNetworkProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, AvatarNetworkStyleUtilityProps>;
+
+export type AvatarNetworkComponent = <C extends React.ElementType = 'span'>(
+  props: AvatarNetworkProps<C>,
+) => React.ReactElement | null;
