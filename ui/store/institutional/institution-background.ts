@@ -189,24 +189,6 @@ export function mmiActionsFactory() {
         'setWaitForConfirmDeepLinkDialog',
         waitForConfirmDeepLinkDialog,
       ),
-    setComplianceAuthData: (clientId: string, projectId: string) =>
-      createAsyncAction('setComplianceAuthData', [{ clientId, projectId }]),
-    deleteComplianceAuthData: () =>
-      createAsyncAction('deleteComplianceAuthData', []),
-    generateComplianceReport: (address: string) =>
-      createAction('generateComplianceReport', address),
-    getComplianceHistoricalReportsByAddress: (
-      address: string,
-      projectId: string,
-    ) =>
-      createAsyncAction('getComplianceHistoricalReportsByAddress', [
-        address,
-        projectId,
-      ]),
-    syncReportsInProgress: (address: string, historicalReports: []) =>
-      createAction('syncReportsInProgress', { address, historicalReports }),
-    removeConnectInstitutionalFeature: (origin: string, projectId: string) =>
-      createAction('removeConnectInstitutionalFeature', { origin, projectId }),
     removeAddTokenConnectRequest: ({
       origin,
       apiUrl,

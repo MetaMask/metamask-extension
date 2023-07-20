@@ -1433,6 +1433,18 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+/**
+ * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsEnabled(state) {
+  return state.metamask.securityAlertsEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 

@@ -4,8 +4,8 @@ import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../box';
-import { Text } from '../../component-library/text/deprecated';
+
+import { Text, Box } from '../../component-library';
 import Callout from './callout';
 
 export default {

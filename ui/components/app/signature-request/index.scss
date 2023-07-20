@@ -14,7 +14,7 @@
   border-radius: 8px;
 
   @include screen-sm-min {
-    max-height: 80vh;
+    max-height: max-content;
     min-height: 570px;
     flex: 0 0 auto;
     margin-left: auto;
@@ -22,7 +22,7 @@
   }
 
   &__reject-all-button {
-    margin-top: -15px;
+    padding-bottom: 20px;
   }
 
   &__origin {
@@ -57,12 +57,6 @@
     @include Paragraph;
 
     font-weight: 500;
-  }
-
-  p {
-    @include H6;
-
-    color: var(--color-text-muted);
   }
 }
 
