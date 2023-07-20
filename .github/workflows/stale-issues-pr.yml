@@ -28,7 +28,7 @@ jobs:
           days-before-issue-stale: 1725
           # Least recently updated PR is https://github.com/MetaMask/metamask-extension/pull/9311 from August 26th, 2020, 1057 days ago
           # days-before-pr-stale: 60
-          days-before-pr-stale: 700
+          days-before-pr-stale: 315
           days-before-issue-close: 45
           days-before-pr-close: 14
           operations-per-run: 200
