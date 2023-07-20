@@ -1,5 +1,5 @@
 import React from 'react';
-import { Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { Tag } from './tag';
 import { TagProps } from './tag.types';
 import README from './README.mdx';
