@@ -489,12 +489,23 @@
         "Intl": true
       },
       "packages": {
-        "@formatjs/intl-relativetimeformat>@formatjs/intl-utils": true
+        "@formatjs/intl-relativetimeformat>@formatjs/ecma402-abstract": true,
+        "@formatjs/intl-relativetimeformat>tslib": true
       }
     },
-    "@formatjs/intl-relativetimeformat>@formatjs/intl-utils": {
+    "@formatjs/intl-relativetimeformat>@formatjs/ecma402-abstract": {
       "globals": {
+        "Intl.NumberFormat": true,
+        "Intl.PluralRules": true,
         "Intl.getCanonicalLocales": true
+      },
+      "packages": {
+        "@formatjs/intl-relativetimeformat>tslib": true
+      }
+    },
+    "@formatjs/intl-relativetimeformat>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@keystonehq/bc-ur-registry-eth": {
@@ -511,10 +522,10 @@
         "define": true
       },
       "packages": {
+        "@formatjs/intl-relativetimeformat>tslib": true,
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
-        "ethereumjs-wallet>bs58check": true,
-        "wait-on>rxjs>tslib": true
+        "ethereumjs-wallet>bs58check": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -1546,10 +1557,10 @@
         "setTimeout": true
       },
       "packages": {
+        "@formatjs/intl-relativetimeformat>tslib": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "browserify>events": true,
-        "wait-on>rxjs>tslib": true
+        "browserify>events": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
@@ -1563,8 +1574,8 @@
         "navigator": true
       },
       "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "wait-on>rxjs>tslib": true
+        "@formatjs/intl-relativetimeformat>tslib": true,
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -3509,7 +3520,7 @@
         "setTimeout": true
       },
       "packages": {
-        "wait-on>rxjs>tslib": true
+        "@formatjs/intl-relativetimeformat>tslib": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4558,7 +4569,7 @@
         "setTimeout": true
       },
       "packages": {
-        "wait-on>rxjs>tslib": true
+        "@formatjs/intl-relativetimeformat>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4577,9 +4588,9 @@
         "console.error": true
       },
       "packages": {
+        "@formatjs/intl-relativetimeformat>tslib": true,
         "react": true,
-        "react-focus-lock>use-sidecar>detect-node-es": true,
-        "wait-on>rxjs>tslib": true
+        "react-focus-lock>use-sidecar>detect-node-es": true
       }
     },
     "react-idle-timer": {
@@ -4942,11 +4953,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "wait-on>rxjs>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "web3": {
