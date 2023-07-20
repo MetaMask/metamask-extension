@@ -44,12 +44,12 @@ export interface MessagesIndexedById {
  */
 interface TemporaryBackgroundState {
   addressBook: {
-    [chainId: string]: {
+    [caipChainId: string]: {
       name: string;
     }[];
   };
   providerConfig: {
-    chainId: string;
+    caipChainId: string;
   };
   currentNetworkTxList: TransactionMeta[];
   selectedAddress: string;
