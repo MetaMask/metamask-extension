@@ -18,8 +18,8 @@ import {
   IconName,
   Button,
   BUTTON_VARIANT,
+  Text,
 } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
 
 const SetApproveForAllWarning = ({
   collectionName,

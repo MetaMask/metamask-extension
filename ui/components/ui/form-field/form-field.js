@@ -12,8 +12,7 @@ import {
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
-import { Box } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Text, Box } from '../../component-library';
 
 /**
  * @deprecated The `<FormField />` component has been deprecated in favor of the new `<FormTextField>` component from the component-library.
@@ -70,10 +69,8 @@ export default function FormField({
             {TitleTextCustomComponent ||
               (titleText && (
                 <Text
-                  tag="label"
-                  htmlFor={id}
-                  variant={TextVariant.bodySmBold}
                   as="h6"
+                  variant={TextVariant.bodySmBold}
                   display={Display.InlineBlock}
                 >
                   {titleText}
@@ -82,9 +79,8 @@ export default function FormField({
             {TitleUnitCustomComponent ||
               (titleUnit && (
                 <Text
-                  tag={TextVariant.bodySm}
-                  variant={TextVariant.bodySm}
                   as="h6"
+                  variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
                   display={Display.InlineBlock}
                 >
