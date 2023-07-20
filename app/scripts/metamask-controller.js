@@ -2293,6 +2293,9 @@ export default class MetamaskController extends EventEmitter {
             this.interfaceController.resolveInterface(...args),
           readInterface: (...args) =>
             this.interfaceController.readInterface(...args),
+          getInterfaceState: (...args) => {
+            this.interfaceController.getInterfaceState(...args);
+          },
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
