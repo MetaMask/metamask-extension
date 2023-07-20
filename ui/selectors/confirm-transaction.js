@@ -29,7 +29,10 @@ import {
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentCaipChainId, deprecatedGetCurrentNetworkId } from './selectors';
+import {
+  getCurrentCaipChainId,
+  deprecatedGetCurrentNetworkId,
+} from './selectors';
 import { checkNetworkAndAccountSupports1559 } from '.';
 
 const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
@@ -98,7 +101,11 @@ export const unconfirmedTransactionsHashSelector = createSelector(
         const transactions = { ...acc };
 
         if (
-          transactionMatchesNetwork(unapprovedTxs[address], caipChainId, network)
+          transactionMatchesNetwork(
+            unapprovedTxs[address],
+            caipChainId,
+            network,
+          )
         ) {
           transactions[address] = unapprovedTxs[address];
         }

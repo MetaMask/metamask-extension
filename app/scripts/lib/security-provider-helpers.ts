@@ -1,8 +1,8 @@
 import { CaipChainId, Json } from '@metamask/utils';
 import { MessageParams } from '@metamask/message-manager';
+import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 import getFetchWithTimeout from '../../../shared/modules/fetch-with-timeout';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 
 const fetchWithTimeout = getFetchWithTimeout();
 
@@ -39,7 +39,7 @@ export async function securityProviderCheck(
   // Core message managers use messageParams but frontend uses msgParams with lots of references
   const params = requestData.msgParams || requestData.messageParams;
 
-  const chainId = getEthChainIdDecFromCaipChainId(caipChainId)
+  const chainId = getEthChainIdDecFromCaipChainId(caipChainId);
 
   if (methodName === MESSAGE_TYPE.ETH_SIGN_TYPED_DATA) {
     dataToValidate = {

@@ -31,7 +31,8 @@ const NicknamePopovers = ({ address, onClose }) => {
   const recipientNickname = addressBookEntryObject?.name;
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
-  const explorerLink = getAccountLink( // does this need to be updated?
+  const explorerLink = getAccountLink(
+    // does this need to be updated?
     address,
     caipChainId,
     { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },

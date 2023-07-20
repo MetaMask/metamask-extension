@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { I18nContext } from '../../contexts/i18n';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
@@ -32,7 +33,6 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function ConfirmTokenTransactionBase({
   image = '',

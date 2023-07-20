@@ -32,28 +32,24 @@ export async function migrate(
 }
 
 function migrateData(state: Record<string, unknown>): void {
-  if (hasProperty(state, 'NetworkController') && isObject(state.NetworkController)) {
+  if (
+    hasProperty(state, 'NetworkController') &&
+    isObject(state.NetworkController)
+  ) {
     // TODO. Actually implement this
-
     // const networkControllerState = state.NetworkController
     // const networkConfigurations = state.networkConfigurations;
-
     // Object.keys(networkConfigurations).forEach((id) => {
     //   const networkConfiguration = networkConfigurations[id];
-
     //   if (isObject(networkConfiguration)) {
     //     const chainId = networkConfiguration.chainId || ""
     //     if (!chainId) {
     //       return
     //     }
-
     //     if (chainId.startsWith('0x')) { // 0X ?
-
     //     }
     //   }
     // });
-
-
     // networkControllerState.networkConfigurations = {};
   }
 }

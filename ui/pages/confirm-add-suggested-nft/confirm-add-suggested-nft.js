@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -47,7 +48,6 @@ import {
   TextVariant,
   BlockSize,
 } from '../../helpers/constants/design-system';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const ConfirmAddSuggestedNFT = () => {
   const t = useContext(I18nContext);

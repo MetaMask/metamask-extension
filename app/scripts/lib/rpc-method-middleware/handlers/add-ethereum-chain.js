@@ -1,7 +1,10 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  getCaipChainIdFromEthChainId,
+} from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
@@ -11,7 +14,6 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import { getCaipChainIdFromEthChainId } from "@metamask/controller-utils";
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -142,7 +144,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const caipChainId = getCaipChainIdFromEthChainId(_chainId)
+  const caipChainId = getCaipChainIdFromEthChainId(_chainId);
 
   const existingNetwork = findNetworkConfigurationBy({ caipChainId });
 
@@ -157,7 +159,10 @@ async function addEthereumChainHandler(
 
     // If the current caipChainId and rpcUrl matches that of the incoming request
     // We don't need to proceed further.
-    if (currentCaipChainId === caipChainId && currentRpcUrl === firstValidRPCUrl) {
+    if (
+      currentCaipChainId === caipChainId &&
+      currentRpcUrl === firstValidRPCUrl
+    ) {
       return end();
     }
 

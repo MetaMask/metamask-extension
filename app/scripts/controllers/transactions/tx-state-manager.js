@@ -447,7 +447,8 @@ export default class TransactionStateManager extends EventEmitter {
         // when filterToCurrentNetwork is true.
         if (
           filterToCurrentNetwork &&
-          transactionMatchesNetwork(transaction, caipChainId, networkId) === false
+          transactionMatchesNetwork(transaction, caipChainId, networkId) ===
+            false
         ) {
           return false;
         }

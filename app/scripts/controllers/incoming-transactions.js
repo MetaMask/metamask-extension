@@ -229,7 +229,8 @@ export default class IncomingTransactionsController {
    */
   async _getNewIncomingTransactions(address, fromBlock, caipChainId) {
     const etherscanDomain = ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].domain;
-    const etherscanSubdomain = ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].subdomain;
+    const etherscanSubdomain =
+      ETHERSCAN_SUPPORTED_NETWORKS[caipChainId].subdomain;
 
     const apiUrl = `https://${etherscanSubdomain}.${etherscanDomain}`;
     let url = `${apiUrl}/api?module=account&action=txlist&address=${address}&tag=latest&page=1`;

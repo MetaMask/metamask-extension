@@ -600,13 +600,15 @@ export default class MMIController extends EventEmitter {
     }
   }
 
-  async setAccountAndNetwork(origin, address, caipChainId) { // how is this used? this needs to be checked again
+  async setAccountAndNetwork(origin, address, caipChainId) {
+    // how is this used? this needs to be checked again
     await this.appStateController.getUnlockPromise(true);
     const selectedAddress = this.preferencesController.getSelectedAddress();
     if (selectedAddress.toLowerCase() !== address.toLowerCase()) {
       this.preferencesController.setSelectedAddress(address);
     }
-    const selectedCaipChainId = this.networkController.state.providerConfig.caipChainId
+    const selectedCaipChainId =
+      this.networkController.state.providerConfig.caipChainId;
     if (selectedCaipChainId !== caipChainId && caipChainId === 'eip155:1') {
       await this.networkController.setProviderType('mainnet');
     } else if (selectedCaipChainId !== caipChainId) {

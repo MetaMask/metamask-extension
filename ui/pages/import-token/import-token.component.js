@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   checkExistingAddresses,
@@ -28,7 +29,6 @@ import { TokenStandard } from '../../../shared/constants/transaction';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import TokenSearch from './token-search';
 import TokenList from './token-list';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const emptyAddr = '0x0000000000000000000000000000000000000000';
 

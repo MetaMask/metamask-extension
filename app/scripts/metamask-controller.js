@@ -360,21 +360,26 @@ export default class MetamaskController extends EventEmitter {
 
     // need to figure out how to fix this in migrations
     if (initialNetworkControllerState.networkConfigurations) {
-      Object.keys(initialNetworkControllerState.networkConfigurations).forEach((key) => {
-        const {chainId, ...networkConfiguration} = initialNetworkControllerState.networkConfigurations[key];
+      Object.keys(initialNetworkControllerState.networkConfigurations).forEach(
+        (key) => {
+          const { chainId, ...networkConfiguration } =
+            initialNetworkControllerState.networkConfigurations[key];
 
-        if (chainId) {
-          networkConfiguration.caipChainId = chainId
-        }
-        initialNetworkControllerState.networkConfigurations[key] = networkConfiguration
-      });
+          if (chainId) {
+            networkConfiguration.caipChainId = chainId;
+          }
+          initialNetworkControllerState.networkConfigurations[key] =
+            networkConfiguration;
+        },
+      );
     }
-    const {chainId, ...providerConfig} = initialNetworkControllerState.providerConfig
+    const { chainId, ...providerConfig } =
+      initialNetworkControllerState.providerConfig;
     if (chainId) {
-      providerConfig.caipChainId = chainId
+      providerConfig.caipChainId = chainId;
     }
-    initialNetworkControllerState.providerConfig = providerConfig
-    console.log(initialNetworkControllerState)
+    initialNetworkControllerState.providerConfig = providerConfig;
+    console.log(initialNetworkControllerState);
 
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
@@ -440,7 +445,8 @@ export default class MetamaskController extends EventEmitter {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
-      onTokenListStateChange: (tokenListState) => console.log("onTokenListStateChange", tokenListState), // this is missing
+      onTokenListStateChange: (tokenListState) =>
+        console.log('onTokenListStateChange', tokenListState), // this is missing
       config: { provider: this.provider },
       state: initState.TokensController,
     });
@@ -611,7 +617,8 @@ export default class MetamaskController extends EventEmitter {
         const { caipChainId } = this.networkController.state.providerConfig;
         return caipChainId === CHAIN_IDS.BSC;
       },
-      getCaipChainId: () => this.networkController.state.providerConfig.caipChainId,
+      getCaipChainId: () =>
+        this.networkController.state.providerConfig.caipChainId,
     });
 
     this.qrHardwareKeyring = new QRHardwareKeyring();
@@ -657,7 +664,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    this.ppomController = new PPOMController({ // this needs to be updated
+    this.ppomController = new PPOMController({
+      // this needs to be updated
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
       }),
@@ -2084,7 +2092,9 @@ export default class MetamaskController extends EventEmitter {
     const { networkId } = memState || this.getState();
 
     return {
-      chainId: getEthChainIdHexFromCaipChainId(this.networkController.state.providerConfig.caipChainId),
+      chainId: getEthChainIdHexFromCaipChainId(
+        this.networkController.state.providerConfig.caipChainId,
+      ),
       networkVersion: networkId ?? 'loading',
     };
   }
@@ -4369,7 +4379,7 @@ export default class MetamaskController extends EventEmitter {
     this.isClientOpenAndUnlocked = newState.isUnlocked && this._isClientOpen;
     this.notifyAllConnections({
       method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(newState)
+      params: this.getProviderNetworkState(newState),
     });
   }
 
@@ -4658,7 +4668,6 @@ export default class MetamaskController extends EventEmitter {
       this.preferencesController.store.getState();
 
     if (transactionSecurityCheckEnabled) {
-
       try {
         const securityProviderResponse = await securityProviderCheck(
           requestData,

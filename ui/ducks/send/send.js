@@ -1349,7 +1349,9 @@ const slice = createSlice({
             }) &&
               !isValidDomainName(state.recipientInput))
           ) {
-            draftTransaction.recipient.error = isDefaultMetaMaskChain(caipChainId)
+            draftTransaction.recipient.error = isDefaultMetaMaskChain(
+              caipChainId,
+            )
               ? INVALID_RECIPIENT_ADDRESS_ERROR
               : INVALID_RECIPIENT_ADDRESS_NOT_ETH_NETWORK_ERROR;
           } else if (

@@ -778,7 +778,9 @@ export const getIsBridgeToken = (tokenAddress) => (state) => {
   const isBridgeChain = getIsBridgeChain(state);
   return (
     isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[caipChainId].includes(tokenAddress.toLowerCase())
+    ALLOWED_BRIDGE_TOKEN_ADDRESSES[caipChainId].includes(
+      tokenAddress.toLowerCase(),
+    )
   );
 };
 
@@ -1172,7 +1174,9 @@ export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
   const currentCaipChainId = getCurrentCaipChainId(state);
 
-  return allNetworks.find((network) => network.caipChainId === currentCaipChainId);
+  return allNetworks.find(
+    (network) => network.caipChainId === currentCaipChainId,
+  );
 }
 
 export function getAllEnabledNetworks(state) {
@@ -1344,7 +1348,9 @@ export function getIsDynamicTokenListAvailable(state) {
 export function getDetectedTokensInCurrentNetwork(state) {
   const currentCaipChainId = getCurrentCaipChainId(state);
   const selectedAddress = getSelectedAddress(state);
-  return state.metamask.allDetectedTokens?.[currentCaipChainId]?.[selectedAddress];
+  return state.metamask.allDetectedTokens?.[currentCaipChainId]?.[
+    selectedAddress
+  ];
 }
 
 /**

@@ -50,9 +50,9 @@ const AddNetwork = () => {
   const history = useHistory();
   const networkConfigurations = useSelector(getNetworkConfigurations);
 
-  const networkConfigurationCaipChainIds = Object.values(networkConfigurations).map(
-    (net) => net.caipChainId,
-  );
+  const networkConfigurationCaipChainIds = Object.values(
+    networkConfigurations,
+  ).map((net) => net.caipChainId);
 
   const infuraRegex = /infura.io/u;
 

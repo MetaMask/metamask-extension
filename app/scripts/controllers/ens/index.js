@@ -9,7 +9,12 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const ZERO_X_ERROR_ADDRESS = '0x';
 
 export default class EnsController {
-  constructor({ ens, provider, onNetworkDidChange, getCurrentCaipChainId } = {}) {
+  constructor({
+    ens,
+    provider,
+    onNetworkDidChange,
+    getCurrentCaipChainId,
+  } = {}) {
     const initState = {
       ensResolutionsByAddress: {},
     };

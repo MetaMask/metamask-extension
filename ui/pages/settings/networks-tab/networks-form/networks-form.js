@@ -11,6 +11,12 @@ import validUrl from 'valid-url';
 import log from 'loglevel';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import {
+  getCaipChainIdFromEthChainId,
+  getEthChainIdDecFromCaipChainId,
+  getEthChainIdHexFromCaipChainId,
+  isEthCaipChainId,
+} from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   isPrefixedFormattedHexString,
@@ -41,12 +47,6 @@ import {
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
-import {
-  getCaipChainIdFromEthChainId,
-  getEthChainIdDecFromCaipChainId,
-  getEthChainIdHexFromCaipChainId,
-  isEthCaipChainId,
-} from "@metamask/controller-utils";
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -60,7 +60,7 @@ import {
  * it can't be converted.
  */
 const getDisplayChainId = (chainId) => {
-  console.log("display", chainId)
+  console.log('display', chainId);
   if (!chainId || typeof chainId !== 'string') {
     return chainId;
   }
@@ -91,7 +91,7 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  console.log("selected network", selectedNetwork)
+  console.log('selected network', selectedNetwork);
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
@@ -104,9 +104,12 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const chainIdMatchesFeaturedRPC = chainId && FEATURED_RPCS.some(
-    (featuredRpc) => featuredRpc.caipChainId === getCaipChainIdFromEthChainId(chainId),
-  );
+  const chainIdMatchesFeaturedRPC =
+    chainId &&
+    FEATURED_RPCS.some(
+      (featuredRpc) =>
+        featuredRpc.caipChainId === getCaipChainIdFromEthChainId(chainId),
+    );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
@@ -133,7 +136,8 @@ const NetworksForm = ({
       typeof selectedNetwork.caipChainId === 'string' &&
       isEthCaipChainId(selectedNetwork.caipChainId) &&
       chainId && // getEthChainIdHexFromCaipChainId should be updated to handle empty input
-      getEthChainIdHexFromCaipChainId(chainId) === getDisplayChainId(selectedNetwork.caipChainId);
+      getEthChainIdHexFromCaipChainId(chainId) ===
+        getDisplayChainId(selectedNetwork.caipChainId);
     return (
       rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
@@ -255,7 +259,7 @@ const NetworksForm = ({
         }
       }
 
-      const caipChainId = getCaipChainIdFromEthChainId(hexChainId)
+      const caipChainId = getCaipChainIdFromEthChainId(hexChainId);
 
       const [matchingChainId] = networksToRender.filter(
         (e) => e.caipChainId === caipChainId && e.rpcUrl !== rpcUrl,

@@ -150,7 +150,9 @@ export async function fetchTokens(
   ];
 }
 
-export async function fetchAggregatorMetadata(caipChainId: any): Promise<object> {
+export async function fetchAggregatorMetadata(
+  caipChainId: any,
+): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', caipChainId);
   const aggregators = await fetchWithCache(
     aggregatorMetadataUrl,
@@ -291,7 +293,8 @@ export const getFeeForSmartTransaction = ({
   }
   const formattedNetworkFee = formatCurrency(rawNetworkFees, currentCurrency);
   const chainCurrencySymbolToUse =
-    nativeCurrencySymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol;
+    nativeCurrencySymbol ||
+    SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol;
   return {
     feeInUsd,
     feeInFiat: formattedNetworkFee,

@@ -78,7 +78,8 @@ export const NetworkListMenu = ({ onClose }) => {
       }
       const isCurrentNetwork = currentCaipChainId === network.caipChainId;
       const canDeleteNetwork =
-        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.caipChainId);
+        !isCurrentNetwork &&
+        !UNREMOVABLE_CHAIN_IDS.includes(network.caipChainId);
 
       return (
         <NetworkListItem

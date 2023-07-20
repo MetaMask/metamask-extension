@@ -112,14 +112,14 @@ export default class DetectTokensController {
     }
     if (
       !this.useTokenDetection &&
-      chainIdAgainstWhichToDetect !== CHAIN_IDS.MAINNET
+      caipChainIdAgainstWhichToDetect !== CHAIN_IDS.MAINNET
     ) {
       return;
     }
 
     const isTokenDetectionInactiveInMainnet =
       !this.useTokenDetection &&
-      chainIdAgainstWhichToDetect === CHAIN_IDS.MAINNET;
+      caipChainIdAgainstWhichToDetect === CHAIN_IDS.MAINNET;
     const { tokenList } = this._tokenList.state;
 
     const tokenListUsed = isTokenDetectionInactiveInMainnet
@@ -190,7 +190,7 @@ export default class DetectTokensController {
           });
           await this.tokensController.addDetectedTokens(tokensWithBalance, {
             selectedAddress: addressAgainstWhichToDetect,
-            caipChainId: chainIdAgainstWhichToDetect,
+            caipChainId: caipChainIdAgainstWhichToDetect,
           });
         }
       }

@@ -1,7 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import buildUnserializedTransaction from './buildUnserializedTransaction';
 import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
+import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 // Snippet of the ABI that we need
 // Should we need more of it at some point, the full ABI can be found here:

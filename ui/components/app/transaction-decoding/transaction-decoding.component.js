@@ -4,13 +4,13 @@ import inspect from 'browser-util-inspect';
 import { forAddress } from '@truffle/decoder';
 import { useSelector } from 'react-redux';
 import * as Codec from '@truffle/codec';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { getSelectedAccount, getCurrentCaipChainId } from '../../../selectors';
 import { I18nContext } from '../../../contexts/i18n';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { transformTxDecoding } from './transaction-decoding.util';
 import {
   FETCH_PROJECT_INFO_URI,
@@ -20,7 +20,6 @@ import {
 import Address from './components/decoding/address';
 import CopyRawData from './components/ui/copy-raw-data';
 import Accreditation from './components/ui/accreditation';
-import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const t = useContext(I18nContext);
@@ -29,7 +28,9 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const [sourceFetchedVia, setSourceFetchedVia] = useState('');
 
   const { address: from } = useSelector(getSelectedAccount);
-  const network = getEthChainIdIntFromCaipChainId(useSelector(getCurrentCaipChainId)); // is this named wrong?
+  const network = getEthChainIdIntFromCaipChainId(
+    useSelector(getCurrentCaipChainId),
+  ); // is this named wrong?
 
   const [loading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);
@@ -43,11 +44,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
           method: 'GET',
         });
 
-        if (
-          !networks.some(
-            (n) => n.active && Number(n.chainId) === network,
-          )
-        ) {
+        if (!networks.some((n) => n.active && Number(n.chainId) === network)) {
           throw new Error(
             t('transactionDecodingUnsupportedNetworkError', [network]),
           );

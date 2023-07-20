@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -101,7 +102,6 @@ import {
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const fuseSearchKeys = [
   { name: 'name', weight: 0.499 },
@@ -190,7 +190,8 @@ export default function BuildQuote({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, caipChainId) && fromToken?.balance
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, caipChainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -259,7 +260,10 @@ export default function BuildQuote({
     { showFiat: useCurrencyRateCheck },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, caipChainId)
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(
+    fromTokenSymbol,
+    caipChainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
@@ -505,7 +509,9 @@ export default function BuildQuote({
 
   const swapYourTokenBalance = t('swapYourTokenBalance', [
     fromTokenString || '0',
-    fromTokenSymbol || SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol || '',
+    fromTokenSymbol ||
+      SWAPS_CHAINID_DEFAULT_TOKEN_MAP[caipChainId]?.symbol ||
+      '',
   ]);
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(

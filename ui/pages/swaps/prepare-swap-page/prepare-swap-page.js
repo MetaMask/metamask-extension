@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -132,7 +133,6 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const MAX_ALLOWED_SLIPPAGE = 15;
 
@@ -241,7 +241,8 @@ export default function PrepareSwapPage({
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
   // the balance of the token can appear in the from token selection dropdown
   const fromTokenArray =
-    !isSwapsDefaultTokenSymbol(fromToken?.symbol, caipChainId) && fromToken?.balance
+    !isSwapsDefaultTokenSymbol(fromToken?.symbol, caipChainId) &&
+    fromToken?.balance
       ? [fromToken]
       : [];
   const usersTokens = uniqBy(
@@ -310,7 +311,10 @@ export default function PrepareSwapPage({
     { showFiat: true },
     true,
   );
-  const swapFromFiatValue = isSwapsDefaultTokenSymbol(fromTokenSymbol, caipChainId)
+  const swapFromFiatValue = isSwapsDefaultTokenSymbol(
+    fromTokenSymbol,
+    caipChainId,
+  )
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 

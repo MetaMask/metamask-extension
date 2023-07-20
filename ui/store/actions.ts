@@ -2206,7 +2206,13 @@ export function upsertNetworkConfiguration(
       networkConfigurationId = await submitRequestToBackground(
         'upsertNetworkConfiguration',
         [
-          { rpcUrl, caipChainId, ticker, nickname: nickname || rpcUrl, rpcPrefs },
+          {
+            rpcUrl,
+            caipChainId,
+            ticker,
+            nickname: nickname || rpcUrl,
+            rpcPrefs,
+          },
           { setActive, source, referrer: ORIGIN_METAMASK },
         ],
       );

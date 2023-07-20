@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -38,7 +39,6 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {

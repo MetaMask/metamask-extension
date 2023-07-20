@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
@@ -16,7 +17,6 @@ import { isEqualCaseInsensitive } from '../modules/string-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
-import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
 
@@ -136,7 +136,8 @@ const getBaseUrlForNewSwapsApi = (type, caipChainId) => {
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
   }
-  const chainIdDecimal = caipChainId && getEthChainIdIntFromCaipChainId(caipChainId);
+  const chainIdDecimal =
+    caipChainId && getEthChainIdIntFromCaipChainId(caipChainId);
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.
@@ -150,7 +151,9 @@ export const getBaseApi = function (type, caipChainId) {
     : caipChainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, _caipChainId);
   if (!baseUrl) {
-    throw new Error(`Swaps API calls are disabled for caipChainId: ${_caipChainId}`);
+    throw new Error(
+      `Swaps API calls are disabled for caipChainId: ${_caipChainId}`,
+    );
   }
   switch (type) {
     case 'trade':

@@ -165,7 +165,8 @@ export default function ContractDetailsModal({
                     iconName={IconName.Export}
                     color={Color.iconMuted}
                     onClick={() => {
-                      const blockExplorerTokenLink = getAccountLink( // need to be updated?
+                      const blockExplorerTokenLink = getAccountLink(
+                        // need to be updated?
                         tokenAddress,
                         caipChainId,
                         {
@@ -262,7 +263,8 @@ export default function ContractDetailsModal({
                 iconName={IconName.Export}
                 color={Color.iconMuted}
                 onClick={() => {
-                  const blockExplorerTokenLink = getAccountLink( // need to be updated?
+                  const blockExplorerTokenLink = getAccountLink(
+                    // need to be updated?
                     toAddress,
                     caipChainId,
                     {

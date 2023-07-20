@@ -56,7 +56,8 @@ export default class ConfirmRemoveAccount extends Component {
         <div className="confirm-remove-account__account__link">
           <a
             onClick={() => {
-              const accountLink = getAccountLink( // does this need to be updated?
+              const accountLink = getAccountLink(
+                // does this need to be updated?
                 identity.address,
                 caipChainId,
                 rpcPrefs,

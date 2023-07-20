@@ -22,7 +22,8 @@ import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 
-export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => { // rename this all the way down? chainId is in caip-2 format at this point
+export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
+  // rename this all the way down? chainId is in caip-2 format at this point
   const t = useI18nContext();
   const {
     data: response,

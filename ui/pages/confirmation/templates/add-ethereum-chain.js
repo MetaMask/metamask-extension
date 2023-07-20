@@ -1,5 +1,11 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import {
+  getCaipChainIdFromEthChainId,
+  getEthChainIdDecFromCaipChainId,
+  getEthChainIdHexFromCaipChainId,
+  getEthChainIdIntFromCaipChainId,
+} from '@metamask/controller-utils';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Severity,
@@ -15,7 +21,6 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
-import { getCaipChainIdFromEthChainId, getEthChainIdDecFromCaipChainId, getEthChainIdHexFromCaipChainId, getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -136,10 +141,11 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const intChainId = getEthChainIdIntFromCaipChainId(pendingApproval.requestData.caipChainId)
+  const intChainId = getEthChainIdIntFromCaipChainId(
+    pendingApproval.requestData.caipChainId,
+  );
   const matchedChain = safeChainsList.find(
-    (chain) =>
-      chain.chainId === intChainId
+    (chain) => chain.chainId === intChainId,
   );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
@@ -178,8 +184,9 @@ async function getAlerts(pendingApproval) {
 }
 
 function getState(pendingApproval) {
-  if (pendingApproval.requestData.caipChainId === "eip155:1") { // not sure if this is right, based on e2e it is
-    console.log("use warning modal")
+  if (pendingApproval.requestData.caipChainId === 'eip155:1') {
+    // not sure if this is right, based on e2e it is
+    console.log('use warning modal');
     return { useWarningModal: true };
   }
   return {};
@@ -188,7 +195,7 @@ function getState(pendingApproval) {
 function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  const caipChainId = pendingApproval.requestData.caipChainId;
+  const { caipChainId } = pendingApproval.requestData;
   return {
     content: [
       {
@@ -350,9 +357,8 @@ function getValues(pendingApproval, t, actions, history) {
                   '',
                 )
               : pendingApproval.requestData.rpcUrl,
-            [t('chainId')]:
-              originIsMetaMask ?
-                getEthChainIdDecFromCaipChainId(caipChainId)
+            [t('chainId')]: originIsMetaMask
+              ? getEthChainIdDecFromCaipChainId(caipChainId)
               : getEthChainIdHexFromCaipChainId(caipChainId),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
@@ -381,7 +387,7 @@ function getValues(pendingApproval, t, actions, history) {
         return [ERROR_CONNECTING_TO_RPC];
       }
 
-      const endpointCaipChainId = getCaipChainIdFromEthChainId(endpointChainId)
+      const endpointCaipChainId = getCaipChainIdFromEthChainId(endpointChainId);
 
       if (pendingApproval.requestData.caipChainId !== endpointCaipChainId) {
         console.error(
@@ -397,8 +403,8 @@ function getValues(pendingApproval, t, actions, history) {
       if (originIsMetaMask) {
         const networkConfigurationId = await actions.upsertNetworkConfiguration(
           {
-            ... pendingApproval.requestData,
-            nickname: requestData.chainName,
+            ...pendingApproval.requestData,
+            nickname: pendingApproval.requestData.chainName,
           },
           {
             setActive: false,

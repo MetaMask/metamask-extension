@@ -310,7 +310,10 @@ export default class SwapsController {
       destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
     }));
 
-    if (caipChainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+    if (
+      caipChainId === CHAIN_IDS.OPTIMISM &&
+      Object.values(newQuotes).length > 0
+    ) {
       await Promise.all(
         Object.values(newQuotes).map(async (quote) => {
           if (quote.trade) {

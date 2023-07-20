@@ -139,7 +139,7 @@ const {
 } = actions;
 export { resetDomainResolution };
 
-export function initializeDomainSlice() { // i think all this logic can be cleaned up
+export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const caipChainId = getCurrentCaipChainId(state);

@@ -140,7 +140,8 @@ export default function AwaitingSwap({
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
-  const blockExplorerUrl = getBlockExplorerLink( // does this need to be updated?
+  const blockExplorerUrl = getBlockExplorerLink(
+    // does this need to be updated?
     { hash: txHash, caipChainId },
     { blockExplorerUrl: baseNetworkUrl },
   );

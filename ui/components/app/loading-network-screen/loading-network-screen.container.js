@@ -17,7 +17,9 @@ const mapStateToProps = (state) => {
   const { rpcUrl, caipChainId, ticker, nickname, type } = providerConfig;
 
   const setProviderArgs =
-    type === NETWORK_TYPES.RPC ? [rpcUrl, caipChainId, ticker, nickname] : [type];
+    type === NETWORK_TYPES.RPC
+      ? [rpcUrl, caipChainId, ticker, nickname]
+      : [type];
 
   const isDeprecatedNetwork =
     DEPRECATED_TEST_NET_CHAINIDS.includes(caipChainId);

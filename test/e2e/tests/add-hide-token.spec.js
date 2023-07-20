@@ -1,5 +1,4 @@
 const { strict: assert } = require('assert');
-const { toHex } = require('@metamask/controller-utils');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 

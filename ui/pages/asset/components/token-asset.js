@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import TransactionList from '../../../components/app/transaction-list';
 import { TokenOverview } from '../../../components/app/wallet-overview';
 import {
@@ -21,7 +22,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function TokenAsset({ token }) {
   const dispatch = useDispatch();

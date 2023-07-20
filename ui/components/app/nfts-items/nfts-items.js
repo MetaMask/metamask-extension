@@ -59,8 +59,8 @@ export default function NftsItems({
       selectedAddress !== undefined &&
       !isEqual(previousCollectionKeys, collectionsKeys) &&
       (nftsDropdownState?.[selectedAddress]?.[caipChainId] === undefined ||
-        Object.keys(nftsDropdownState?.[selectedAddress]?.[caipChainId]).length ===
-          0)
+        Object.keys(nftsDropdownState?.[selectedAddress]?.[caipChainId])
+          .length === 0)
     ) {
       const initState = {};
       collectionsKeys.forEach((key) => {

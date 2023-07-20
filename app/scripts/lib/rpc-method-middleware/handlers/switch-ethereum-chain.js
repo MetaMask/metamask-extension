@@ -1,6 +1,9 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
-import { ApprovalType } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  getCaipChainIdFromEthChainId,
+} from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
@@ -13,7 +16,6 @@ import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { getCaipChainIdFromEthChainId } from "@metamask/controller-utils";
 
 const switchEthereumChain = {
   methodNames: [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN],
@@ -101,9 +103,12 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const caipChainId = getCaipChainIdFromEthChainId(_chainId)
+  const caipChainId = getCaipChainIdFromEthChainId(_chainId);
 
-  const requestData = findExistingNetwork(caipChainId, findNetworkConfigurationBy);
+  const requestData = findExistingNetwork(
+    caipChainId,
+    findNetworkConfigurationBy,
+  );
   if (requestData) {
     const currentCaipChainId = getCurrentCaipChainId();
     if (currentCaipChainId === caipChainId) {

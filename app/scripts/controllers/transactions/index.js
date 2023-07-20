@@ -5,7 +5,10 @@ import EthQuery from 'ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { getEthChainIdIntFromCaipChainId, ApprovalType } from '@metamask/controller-utils';
+import {
+  getEthChainIdIntFromCaipChainId,
+  ApprovalType,
+} from '@metamask/controller-utils';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -234,14 +237,12 @@ export default class TransactionController extends EventEmitter {
    *
    * @returns {number} The numerical chainId.
    */
-  getChainId() { // i think this stays named as is since this is eth level
+  getChainId() {
+    // i think this stays named as is since this is eth level
     const networkStatus = this.getNetworkStatus();
     const caipChainId = this._getCurrentCaipChainId();
-    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId)
-    if (
-      networkStatus !== NetworkStatus.Available ||
-      Number.isNaN(intChainId)
-    ) {
+    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId);
+    if (networkStatus !== NetworkStatus.Available || Number.isNaN(intChainId)) {
       return 0;
     }
     return intChainId;
@@ -295,10 +296,9 @@ export default class TransactionController extends EventEmitter {
     // `forCustomChain` static method on the Common class.
     // here
     const caipChainId = this._getCurrentCaipChainId();
-    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId)
+    const intChainId = getEthChainIdIntFromCaipChainId(caipChainId);
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
-
 
     return Common.custom({
       name,
@@ -963,7 +963,8 @@ export default class TransactionController extends EventEmitter {
    */
   async _getDefaultGasLimit(txMeta) {
     const caipChainId = this._getCurrentCaipChainId();
-    const customNetworkGasBuffer = CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId];
+    const customNetworkGasBuffer =
+      CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP[caipChainId];
     const chainType = getChainType(caipChainId);
 
     if (txMeta.txParams.gas) {
