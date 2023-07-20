@@ -76,6 +76,7 @@ export default function TransactionDetailItem({
           as="h6"
           variant={TextVariant.bodySm}
           color={Color.textAlternative}
+          textAlign={TextAlign.End}
           className="transaction-detail-item__row-subText"
         >
           {subText}
