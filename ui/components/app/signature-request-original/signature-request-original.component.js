@@ -62,8 +62,10 @@ export default class SignatureRequestOriginal extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
@@ -233,8 +235,10 @@ export default class SignatureRequestOriginal extends Component {
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       resolvePendingApproval,
       completedTx,
+      ///: END:ONLY_INCLUDE_IN
       txData,
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -247,9 +251,10 @@ export default class SignatureRequestOriginal extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await resolvePendingApproval(txData.id);
     completedTx(txData.id);
+    ///: END:ONLY_INCLUDE_IN
+
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
-    ///: END:ONLY_INCLUDE_IN
   };
 
   onCancel = async () => {
@@ -277,7 +282,9 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       resolvePendingApproval,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const { t } = this.context;
 
@@ -306,9 +313,10 @@ export default class SignatureRequestOriginal extends Component {
 
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             await resolvePendingApproval(txData.id);
+            ///: END:ONLY_INCLUDE_IN
+
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
-            ///: END:ONLY_INCLUDE_IN
           }
         }}
         disabled={

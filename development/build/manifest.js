@@ -137,7 +137,7 @@ function createManifestTasks({
 
     const buildName =
       buildType === 'mmi'
-        ? `MetaMask Institutional ${mv3Str}${lavamoatStr}${snowStr}`
+        ? `MetaMask Institutional ${mv3Str}`
         : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
 
     manifest.name = buildName;

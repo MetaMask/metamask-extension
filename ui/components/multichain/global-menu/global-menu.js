@@ -33,7 +33,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -41,7 +43,9 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
@@ -67,7 +71,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const metaMetricsId = useSelector(getMetaMetricsId);
+  ///: END:ONLY_INCLUDE_IN
   const address = useSelector(getSelectedAddress);
 
   const hasUnapprovedTransactions = useSelector(

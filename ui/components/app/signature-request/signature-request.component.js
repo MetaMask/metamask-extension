@@ -93,9 +93,11 @@ export default class SignatureRequest extends PureComponent {
     mostRecentOverviewPage: PropTypes.string,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
-    resolvePendingApproval: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
+    ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     showCustodianDeepLink: PropTypes.func,
     isNotification: PropTypes.bool,
@@ -191,9 +193,11 @@ export default class SignatureRequest extends PureComponent {
       currentCurrency,
       conversionRate,
       unapprovedMessagesCount,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       resolvePendingApproval,
-      rejectPendingApproval,
       completedTx,
+      ///: END:ONLY_INCLUDE_IN
+      rejectPendingApproval,
     } = this.props;
 
     const { t, trackEvent } = this.context;
