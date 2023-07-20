@@ -12,7 +12,7 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
    * The label props of the component. Most Text component props can be used
    */
-  labelProps?: TextProps<'div'>;
+  labelProps?: TextProps<'span'>;
   /**
    * Additional classNames to be added to the Tag component
    */
