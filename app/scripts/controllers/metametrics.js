@@ -21,6 +21,7 @@ import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import { toggleSentryMonitoring } from '../../../shared/modules/sentry.utils';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
 
@@ -142,6 +143,10 @@ export default class MetaMetricsController {
         ...segmentApiCalls,
       },
     });
+
+    // Start sentry monitoring of the background process if
+    // participateInMetaMetrics is true.
+    toggleSentryMonitoring(global.sentry, initState.participateInMetaMetrics);
 
     preferencesStore.subscribe(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');
@@ -438,6 +443,10 @@ export default class MetaMetricsController {
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     ///: END:ONLY_INCLUDE_IN
+
+    // Start or stop sentry monitoring of the background process if the status
+    // changed to a different state then what is currently reflected in sentry.
+    toggleSentryMonitoring(global.sentry, participateInMetaMetrics);
 
     return metaMetricsId;
   }

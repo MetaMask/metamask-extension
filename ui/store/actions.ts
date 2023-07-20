@@ -22,6 +22,7 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
+import { toggleSentryMonitoring } from '../../shared/modules/sentry.utils';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -1522,6 +1523,17 @@ export function updateMetamaskState(
     const state = getState();
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
+
+    // If the state of participateInMetaMetrics changes between updates the
+    // sentry instance needs to either be enabled or disabled.
+    if (
+      isEqual(
+        newState.participateInMetaMetrics,
+        currentState.participateInMetaMetrics,
+      ) === false
+    ) {
+      toggleSentryMonitoring(global.sentry, newState.participateInMetaMetrics);
+    }
 
     const { currentLocale, selectedAddress } = currentState;
     const {

@@ -133,6 +133,16 @@ export default function setupSentry({ release, getState }) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    // Sentry defaults to a state of disabled so that we can control when the
+    // instance is enabled based on the state of the user's preference for
+    // participating in the MetaMetrics program. Sentry is enabled in multiple
+    // locations based on state.
+    // First load of UI: ui/index.js, startApp function
+    // First load of background: controllers/metametrics.js, constructor
+    // State changes in UI: ui/redux/actions.ts updateMetaMaskState
+    // State changes in background: controllers/metametrics.js,
+    //  setParticipateInMetaMetrics method.
+    enabled: false,
     environment,
     integrations: [
       new FilterEvents({ getMetaMetricsEnabled }),

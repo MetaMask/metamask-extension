@@ -12,6 +12,7 @@ import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
+import { toggleSentryMonitoring } from '../shared/modules/sentry.utils';
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -106,6 +107,10 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   if (metamaskState.textDirection === 'rtl') {
     await switchDirection('rtl');
   }
+
+  // Sentry defaults to being disabled. Call this toggle with
+  // participateInMetaMetrics flag to ensure it is enabled if necessary.
+  toggleSentryMonitoring(global.sentry, metamaskState.participateInMetaMetrics);
 
   const draftInitialState = {
     activeTab: opts.activeTab,

@@ -2,6 +2,8 @@
 // declared using var and not const or let, which is why this rule is disabled
 /* eslint-disable no-var */
 
+import { Client } from '@sentry/types';
+
 declare class Platform {
   openTab: (opts: { url: string }) => void;
 
@@ -17,4 +19,6 @@ export declare global {
       toNeverResolve(): Promise<R>;
     }
   }
+
+  var sentry: Client;
 }
