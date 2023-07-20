@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { Text, Box } from '..';
-import type { PolymorphicRef } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box';
 
 import {
   AlignItems,
