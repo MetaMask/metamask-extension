@@ -2342,6 +2342,9 @@ export default class MetamaskController extends EventEmitter {
       addKnownMethodData: preferencesController.addKnownMethodData.bind(
         preferencesController,
       ),
+      clearKnownMethodData: preferencesController.clearKnownMethodData.bind(
+        preferencesController,
+      ),
       setDismissSeedBackUpReminder:
         preferencesController.setDismissSeedBackUpReminder.bind(
           preferencesController,

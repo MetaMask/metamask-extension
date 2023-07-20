@@ -3005,6 +3005,11 @@ export function setUse4ByteResolution(
     log.debug(`background.setUse4ByteResolution`);
     try {
       await submitRequestToBackground('setUse4ByteResolution', [val]);
+      if (val === false) {
+        log.debug(`background.clearKnownMethodData`);
+        await submitRequestToBackground('clearKnownMethodData');
+      }
+      await forceUpdateMetamaskState(dispatch);
     } finally {
       dispatch(hideLoadingIndication());
     }
@@ -3789,7 +3794,7 @@ export function getContractMethodData(
     if (fourBytePrefix.length < 10) {
       return {};
     }
-    const { knownMethodData } = getState().metamask;
+    const { knownMethodData, use4ByteResolution } = getState().metamask;
     if (
       knownMethodData?.[fourBytePrefix] &&
       Object.keys(knownMethodData[fourBytePrefix]).length !== 0
@@ -3799,7 +3804,10 @@ export function getContractMethodData(
 
     log.debug(`loadingMethodData`);
 
-    const { name, params } = (await getMethodDataAsync(fourBytePrefix)) as {
+    const { name, params } = (await getMethodDataAsync(
+      fourBytePrefix,
+      use4ByteResolution,
+    )) as {
       name: string;
       params: unknown;
     };
