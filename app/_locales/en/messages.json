@@ -870,9 +870,6 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
-  "copyPrivateKey": {
-    "message": "This is your private key (click to copy)"
-  },
   "copyRawTransactionData": {
     "message": "Copy raw transaction data"
   },
@@ -1429,9 +1426,6 @@
   "enterOptionalPassword": {
     "message": "Enter optional password"
   },
-  "enterPassword": {
-    "message": "Enter password"
-  },
   "enterPasswordContinue": {
     "message": "Enter password to continue"
   },
@@ -1507,9 +1501,6 @@
   },
   "exploreMetaMaskSnaps": {
     "message": "Explore MetaMask Snaps"
-  },
-  "exportPrivateKey": {
-    "message": "Export private key"
   },
   "extendWalletWithSnaps": {
     "message": "Extend the wallet experience."
@@ -3765,9 +3756,6 @@
   "showPrivateKey": {
     "message": "Show private key"
   },
-  "showPrivateKeys": {
-    "message": "Show Private Keys"
-  },
   "showTestnetNetworks": {
     "message": "Show test networks"
   },
@@ -5026,9 +5014,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Transaction insights not supported for this contract at this time."
-  },
-  "typePassword": {
-    "message": "Type your MetaMask password"
   },
   "typeYourSRP": {
     "message": "Type your Secret Recovery Phrase"

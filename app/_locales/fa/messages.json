@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "کاپی آدرس به کلیپ بورد"
   },
-  "copyPrivateKey": {
-    "message": "این کلید خصوصی شما است (برای کاپی نمودن کلیک کنید)"
-  },
   "copyToClipboard": {
     "message": "کپی در بریده‌دان"
   },
@@ -244,9 +241,6 @@
   "ensRegistrationError": {
     "message": "خطا در ثبت نام ENS"
   },
-  "enterPassword": {
-    "message": "رمز عبور را وارد کنید"
-  },
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
@@ -258,9 +252,6 @@
   },
   "expandView": {
     "message": "توسعه ساحه دید"
-  },
-  "exportPrivateKey": {
-    "message": "صدور کلید شخصی"
   },
   "failed": {
     "message": "ناموفق شد"
@@ -669,9 +660,6 @@
   "showHexDataDescription": {
     "message": "برای نمایش بخش اطلاعات hex در صفحه ارسال این را انتخاب نمایید"
   },
-  "showPrivateKeys": {
-    "message": "نمایش کلید های شخصی"
-  },
   "sigRequest": {
     "message": "درخواست امضاء"
   },
@@ -791,9 +779,6 @@
   },
   "tryAgain": {
     "message": "امتحان مجدد"
-  },
-  "typePassword": {
-    "message": "رمز عبور MetaMask تان را تایپ نمایید"
   },
   "unapproved": {
     "message": "تصدیق ناشده"

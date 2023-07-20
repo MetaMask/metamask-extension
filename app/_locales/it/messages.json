@@ -582,9 +582,6 @@
   "copyAddress": {
     "message": "Copia l'indirizzo"
   },
-  "copyPrivateKey": {
-    "message": "Questa è la tua chiave privata (clicca per copiare)"
-  },
   "copyRawTransactionData": {
     "message": "Copia i dati grezzi della transazione"
   },
@@ -846,9 +843,6 @@
   "enterMaxSpendLimit": {
     "message": "Inserisici Limite Spesa"
   },
-  "enterPassword": {
-    "message": "Inserisci password"
-  },
   "enterPasswordContinue": {
     "message": "Inserisci la tua password per continuare"
   },
@@ -880,9 +874,6 @@
   },
   "expandView": {
     "message": "Espandi Vista"
-  },
-  "exportPrivateKey": {
-    "message": "Esporta Chiave Privata"
   },
   "externalExtension": {
     "message": "Estensione Esterna"
@@ -1448,9 +1439,6 @@
   "showPermissions": {
     "message": "Mostra permessi"
   },
-  "showPrivateKeys": {
-    "message": "Mostra Chiave Privata"
-  },
   "sigRequest": {
     "message": "Firma Richiesta"
   },
@@ -1802,9 +1790,6 @@
   },
   "tryAgain": {
     "message": "Prova di nuovo"
-  },
-  "typePassword": {
-    "message": "Inserisci Password"
   },
   "unapproved": {
     "message": "Non approvata"

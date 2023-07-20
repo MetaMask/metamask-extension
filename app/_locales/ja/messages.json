@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "アドレスをクリップボードにコピー"
   },
-  "copyPrivateKey": {
-    "message": "これは秘密鍵です (クリックしてコピー)"
-  },
   "copyRawTransactionData": {
     "message": "未処理のトランザクションデータをコピー"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "使用限度額の最大値を入力してください"
   },
-  "enterPassword": {
-    "message": "パスワードを入力してください"
-  },
   "enterPasswordContinue": {
     "message": "続行するには、パスワードを入力してください"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "実験的"
-  },
-  "exportPrivateKey": {
-    "message": "秘密鍵のエクスポート"
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -3165,9 +3156,6 @@
   "showPermissions": {
     "message": "表示許可"
   },
-  "showPrivateKeys": {
-    "message": "秘密鍵を表示"
-  },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
   },
@@ -4086,9 +4074,6 @@
   },
   "txInsightsNotSupported": {
     "message": "現時点ではこのコントラクトでトランザクションインサイトはサポートされていません。"
-  },
-  "typePassword": {
-    "message": "MetaMaskパスワードを入力してください"
   },
   "typeYourSRP": {
     "message": "秘密のリカバリーフレーズを入力してください"

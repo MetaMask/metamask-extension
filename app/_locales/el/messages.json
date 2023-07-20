@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "Αντιγράψτε τη διεύθυνση στο πρόχειρο"
   },
-  "copyPrivateKey": {
-    "message": "Αυτό είναι το ιδιωτικό σας κλειδί (κάντε κλικ για αντιγραφή)"
-  },
   "copyRawTransactionData": {
     "message": "Αντιγραφή ακατέργαστων δεδομένων συναλλαγών"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "Εισάγετε Το Μέγιστο Όριο Δαπάνης"
   },
-  "enterPassword": {
-    "message": "Εισάγετε τον κωδικό πρόσβασης"
-  },
   "enterPasswordContinue": {
     "message": "Πληκτρολογήστε τον κωδικό πρόσβασης για να συνεχίσετε"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "Πειραματικό"
-  },
-  "exportPrivateKey": {
-    "message": "Εξαγωγή Ιδιωτικού Κλειδιού"
   },
   "externalExtension": {
     "message": "Εξωτερική Επέκταση"
@@ -3162,9 +3153,6 @@
   "showPermissions": {
     "message": "Εμφάνιση δικαιωμάτων"
   },
-  "showPrivateKeys": {
-    "message": "Εμφάνιση Ιδιωτικών Κλειδιών"
-  },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
   },
@@ -4083,9 +4071,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Οι αναλύσεις συναλλαγών εις βάθος δεν υποστηρίζονται για αυτό το συμβόλαιο αυτή τη στιγμή."
-  },
-  "typePassword": {
-    "message": "Πληκτρολογήστε τον κωδικό πρόσβασής σας MetaMask"
   },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"

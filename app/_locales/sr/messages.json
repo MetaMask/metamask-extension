@@ -172,9 +172,6 @@
   "copyAddress": {
     "message": "Kopirajte adresu u ostavu"
   },
-  "copyPrivateKey": {
-    "message": "Ovo je vaš privatni ključ (kliknite kako biste ga kopirali)"
-  },
   "copyToClipboard": {
     "message": "Копирај у меморију"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Greška u registraciji ENS imena."
   },
-  "enterPassword": {
-    "message": "Unesite lozinku"
-  },
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Proširite prikaz"
-  },
-  "exportPrivateKey": {
-    "message": "Izvezite privatni ključ"
   },
   "failed": {
     "message": "Neuspešno"
@@ -660,9 +651,6 @@
   "showHexDataDescription": {
     "message": "Izaberite ovo da bi se pokazalo polje sa hex podacima na „Pošalji” ekranu "
   },
-  "showPrivateKeys": {
-    "message": "Prikažite privatne ključeve"
-  },
   "sigRequest": {
     "message": "Zahtev za potpisom"
   },
@@ -779,9 +767,6 @@
   },
   "tryAgain": {
     "message": "Пробај поново"
-  },
-  "typePassword": {
-    "message": "Ukucajte svoju MetaMask šifru"
   },
   "unapproved": {
     "message": "Neodobren"

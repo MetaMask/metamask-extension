@@ -1,6 +1,6 @@
+import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
   Display,
   FontWeight,
@@ -9,16 +9,21 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   BannerAlert,
+  Box,
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  Box,
 } from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 
-export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
+export const AccountDetailsAuthenticate = ({
+  address,
+  onCancel,
+  setPrivateKey,
+  setShowHoldToReveal,
+}) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -28,7 +33,9 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
   const warning = useSelector((state) => state.appState.warning);
 
   const onSubmit = useCallback(() => {
-    dispatch(exportAccount(password, address)).then((res) => {
+    dispatch(
+      exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
+    ).then((res) => {
       dispatch(hideWarning());
       return res;
     });
@@ -80,4 +87,6 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
 AccountDetailsAuthenticate.propTypes = {
   address: PropTypes.string.isRequired,
   onCancel: PropTypes.func.isRequired,
+  setPrivateKey: PropTypes.func.isRequired,
+  setShowHoldToReveal: PropTypes.func.isRequired,
 };

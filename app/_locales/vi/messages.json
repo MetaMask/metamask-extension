@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "Sao chép địa chỉ vào bộ nhớ đệm"
   },
-  "copyPrivateKey": {
-    "message": "Đây là khóa riêng tư của bạn (hãy nhấn vào để sao chép)"
-  },
   "copyRawTransactionData": {
     "message": "Sao chép dữ liệu giao dịch thô"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "Nhập giới hạn chi tiêu tối đa"
   },
-  "enterPassword": {
-    "message": "Nhập mật khẩu"
-  },
   "enterPasswordContinue": {
     "message": "Nhập mật khẩu để tiếp tục"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "Thử nghiệm"
-  },
-  "exportPrivateKey": {
-    "message": "Xuất khóa riêng tư"
   },
   "externalExtension": {
     "message": "Tiện ích bên ngoài"
@@ -3165,9 +3156,6 @@
   "showPermissions": {
     "message": "Hiển thị quyền"
   },
-  "showPrivateKeys": {
-    "message": "Hiện khóa riêng tư"
-  },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
   },
@@ -4086,9 +4074,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Thông tin chi tiết về giao dịch không được hỗ trợ cho hợp đồng này tại thời điểm này."
-  },
-  "typePassword": {
-    "message": "Nhập mật khẩu MetaMask của bạn"
   },
   "typeYourSRP": {
     "message": "Nhập Cụm từ khôi phục bí mật của bạn"

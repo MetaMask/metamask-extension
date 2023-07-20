@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Salin alamat kepada papan klip"
   },
-  "copyPrivateKey": {
-    "message": "Ini kunci persendirian anda (klik untuk menyalin)"
-  },
   "copyToClipboard": {
     "message": "Salin ke papan keratan"
   },
@@ -241,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
   },
-  "enterPassword": {
-    "message": "Masukkan kata laluan"
-  },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
@@ -255,9 +249,6 @@
   },
   "expandView": {
     "message": "Kembangkan Paparan"
-  },
-  "exportPrivateKey": {
-    "message": "Eksport Kekunci Persendirian"
   },
   "failed": {
     "message": "Gagal"
@@ -649,9 +640,6 @@
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
   },
-  "showPrivateKeys": {
-    "message": "Tunjukkan Kunci Persendirian"
-  },
   "sigRequest": {
     "message": "Permintaan Tandatangan"
   },
@@ -768,9 +756,6 @@
   },
   "tryAgain": {
     "message": "Cuba lagi"
-  },
-  "typePassword": {
-    "message": "Taip kata laluan MetaMask anda"
   },
   "unapproved": {
     "message": "Belum Diluluskan"

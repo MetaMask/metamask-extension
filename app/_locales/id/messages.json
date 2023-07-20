@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "Salin alamat ke papan klip"
   },
-  "copyPrivateKey": {
-    "message": "Ini adalah kunci privat Anda (klik untuk menyalin)"
-  },
   "copyRawTransactionData": {
     "message": "Salin data transaksi mentah"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "Masukkan batas penggunaan maksimum"
   },
-  "enterPassword": {
-    "message": "Masukkan kata sandi"
-  },
   "enterPasswordContinue": {
     "message": "Masukkan kata sandi untuk melanjutkan"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "Eksperimental"
-  },
-  "exportPrivateKey": {
-    "message": "Ekspor kunci privat"
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -3165,9 +3156,6 @@
   "showPermissions": {
     "message": "Tampilkan Izin"
   },
-  "showPrivateKeys": {
-    "message": "Tampilkan Kunci Privat"
-  },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
   },
@@ -4086,9 +4074,6 @@
   },
   "txInsightsNotSupported": {
     "message": "Pemahaman transaksi tidak didukung untuk kontrak ini saat ini."
-  },
-  "typePassword": {
-    "message": "Ketikkan kata sandi MetaMask Anda"
   },
   "typeYourSRP": {
     "message": "Ketik Frasa Pemulihan Rahasia"

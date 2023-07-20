@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "주소를 클립보드에 복사"
   },
-  "copyPrivateKey": {
-    "message": "이는 귀하의 비공개 키입니다(클릭하여 복사)"
-  },
   "copyRawTransactionData": {
     "message": "원시 거래 데이터 복사"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "최대 지출 한도 입력"
   },
-  "enterPassword": {
-    "message": "비밀번호 입력"
-  },
   "enterPasswordContinue": {
     "message": "계속하려면 비밀번호를 입력하세요"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "실험적"
-  },
-  "exportPrivateKey": {
-    "message": "비공개 키 내보내기"
   },
   "externalExtension": {
     "message": "외부 확장"
@@ -3165,9 +3156,6 @@
   "showPermissions": {
     "message": "권한 표시"
   },
-  "showPrivateKeys": {
-    "message": "비공개 키 표시"
-  },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 보기"
   },
@@ -4086,9 +4074,6 @@
   },
   "txInsightsNotSupported": {
     "message": "현재 이 계약에 대해 거래 인사이트가 지원되지 않습니다."
-  },
-  "typePassword": {
-    "message": "MetaMask 비밀번호를 입력하세요"
   },
   "typeYourSRP": {
     "message": "비밀 복구 구문을 입력하세요"

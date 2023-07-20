@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Aceasta este cheia dumneavoastră privată (clic pentru a copia)"
-  },
   "copyToClipboard": {
     "message": "Copiați în clipboard"
   },
@@ -244,9 +241,6 @@
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
   },
-  "enterPassword": {
-    "message": "Introduceți parola"
-  },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
   },
@@ -258,9 +252,6 @@
   },
   "expandView": {
     "message": "Extindeți vizualizarea"
-  },
-  "exportPrivateKey": {
-    "message": "Exportați cheia privată"
   },
   "failed": {
     "message": "Eșuat"
@@ -656,9 +647,6 @@
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
   },
-  "showPrivateKeys": {
-    "message": "Afișați cheile private"
-  },
   "sigRequest": {
     "message": "Solicitare de semnătură"
   },
@@ -772,9 +760,6 @@
   },
   "tryAgain": {
     "message": "Încearcă din nou"
-  },
-  "typePassword": {
-    "message": "Scrieți parola dvs. pentru MetaMask"
   },
   "unapproved": {
     "message": "Neaprobat"

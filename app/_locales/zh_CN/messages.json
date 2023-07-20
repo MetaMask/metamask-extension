@@ -755,9 +755,6 @@
   "copyAddress": {
     "message": "复制地址到剪贴板"
   },
-  "copyPrivateKey": {
-    "message": "这是您的私钥（点击以复制）"
-  },
   "copyRawTransactionData": {
     "message": "复制原始交易数据"
   },
@@ -1229,9 +1226,6 @@
   "enterMaxSpendLimit": {
     "message": "输入最大消费限额"
   },
-  "enterPassword": {
-    "message": "输入密码"
-  },
   "enterPasswordContinue": {
     "message": "输入密码继续"
   },
@@ -1287,9 +1281,6 @@
   },
   "experimental": {
     "message": "试验"
-  },
-  "exportPrivateKey": {
-    "message": "导出私钥"
   },
   "externalExtension": {
     "message": "外部扩展程序"
@@ -3165,9 +3156,6 @@
   "showPermissions": {
     "message": "显示权限"
   },
-  "showPrivateKeys": {
-    "message": "显示私钥"
-  },
   "showTestnetNetworks": {
     "message": "显示测试网络"
   },
@@ -4086,9 +4074,6 @@
   },
   "txInsightsNotSupported": {
     "message": "此合约目前不支持交易见解。"
-  },
-  "typePassword": {
-    "message": "输入您的 MetaMask 密码"
   },
   "typeYourSRP": {
     "message": "输入助记词"
