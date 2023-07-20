@@ -6,9 +6,9 @@ import type {
 
 export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
-   * The text content of the Tag component
+   * The text content of the Tag component, can either be a string or ReactNode
    */
-  label?: string;
+  label?: string | React.ReactNode;
   /**
    * The label props of the component. Most Text component props can be used
    */
