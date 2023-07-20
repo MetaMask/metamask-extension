@@ -29,3 +29,5 @@ export const ExcludedSnapEndowments = Object.freeze({
     'endowment:long-running is deprecated. For more information please see https://github.com/MetaMask/snaps-monorepo/issues/945.',
   ///: END:ONLY_INCLUDE_IN
 });
+
+export const DynamicSnapPermissions = Object.freeze(['eth_accounts']);
