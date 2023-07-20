@@ -21,7 +21,7 @@ export default {
   },
 } as Meta<typeof Tag>;
 
-export const DefaultStory = (args: TagProps) => <Tag {...args} />;
+export const DefaultStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
 DefaultStory.storyName = 'Default';
 
