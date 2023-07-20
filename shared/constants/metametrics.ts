@@ -586,6 +586,8 @@ export enum MetaMetricsEventName {
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
   MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
+  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
+  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
   StakeButtonClicked = 'Stake Button Clicked',
   InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
   RefreshTokenListClicked = 'Refresh Token List Clicked',
