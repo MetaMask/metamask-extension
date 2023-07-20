@@ -48,8 +48,8 @@ async function mockSegment(mockServer) {
   ];
 }
 
-describe('Wallet Created Event', function () {
-  it('Successfully tracked when onboarding', async function () {
+describe('Wallet Created Events', function () {
+  it('are sent when onboarding user who chooses to opt in metrics', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -73,6 +73,7 @@ describe('Wallet Created Event', function () {
         await onboardingPinExtension(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.equal(events.length, 2);
         assert.deepStrictEqual(events[0].properties, {
           account_type: 'metamask',
           category: 'Onboarding',
@@ -87,6 +88,38 @@ describe('Wallet Created Event', function () {
           chain_id: '0x539',
           environment_type: 'fullscreen',
         });
+      },
+    );
+  });
+
+  it('are not sent when onboarding user who chooses to opt out metrics', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+          })
+          .build(),
+        defaultGanacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockSegment,
+      },
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
+        await driver.navigate();
+        await onboardingBeginCreateNewWallet(driver);
+        await onboardingChooseMetametricsOption(driver, false);
+
+        await onboardingCreatePassword(driver, WALLET_PASSWORD);
+        await onboardingRevealAndConfirmSRP(driver);
+        await onboardingCompleteWalletCreation(driver);
+        await onboardingPinExtension(driver);
+
+        const mockedRequests = await getEventPayloads(
+          driver,
+          mockedEndpoints,
+          false,
+        );
+        assert.equal(mockedRequests.length, 0);
       },
     );
   });

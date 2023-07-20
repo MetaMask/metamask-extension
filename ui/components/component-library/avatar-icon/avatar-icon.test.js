@@ -100,9 +100,9 @@ describe('AvatarIcon', () => {
       />,
     );
 
-    expect(getByTestId('success')).toHaveClass('box--color-success-default');
+    expect(getByTestId('success')).toHaveClass('mm-box--color-success-default');
     expect(getByTestId('success')).toHaveClass(
-      'box--background-color-success-muted',
+      'mm-box--background-color-success-muted',
     );
   });
   it('should forward a ref to the root html element', () => {

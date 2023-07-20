@@ -18,7 +18,6 @@ import TransactionDetailItem from '../../transaction-detail-item';
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display';
 import InfoTooltip from '../../../ui/info-tooltip';
 import LoadingHeartBeat from '../../../ui/loading-heartbeat';
-import { Text } from '../../../component-library/text';
 import {
   FONT_STYLE,
   TextVariant,
@@ -27,7 +26,7 @@ import {
 import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 import MultilayerFeeMessage from '../../multilayer-fee-message/multi-layer-fee-message';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Text } from '../../../component-library';
 
 const renderHeartBeatIfNotInTest = () =>
   process.env.IN_TEST ? null : <LoadingHeartBeat />;

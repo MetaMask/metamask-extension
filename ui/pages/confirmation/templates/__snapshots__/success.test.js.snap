@@ -20,7 +20,7 @@ exports[`success template matches the snapshot 1`] = `
           class="box box--padding-top-2 box--padding-bottom-2 box--flex-direction-column box--justify-content-center box--align-items-center box--height-full box--display-flex"
         >
           <div
-            class="box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-success-default box--background-color-success-muted box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-success-default mm-box--background-color-success-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
             <span
               class="box mm-icon mm-icon--size-xl box--display-inline-block box--flex-direction-row box--color-inherit"

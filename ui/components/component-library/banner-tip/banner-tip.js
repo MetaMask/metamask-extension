@@ -60,11 +60,11 @@ BannerTip.propTypes = {
   /**
    * logoProps accepts all the props from Box
    */
-  logoProps: PropTypes.shape(Box.propTypes),
+  logoProps: PropTypes.object,
   /**
    * logoWrapperProps accepts all the props from Box
    */
-  logoWrapperProps: PropTypes.shape(Box.propTypes),
+  logoWrapperProps: PropTypes.object,
   /**
    * The start(defualt left) content area of BannerBase
    */

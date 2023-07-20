@@ -313,10 +313,10 @@ const onboardingBeginCreateNewWallet = async (driver) => {
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
  *
  * @param {WebDriver} driver
- * @param {boolean} optin - true to opt into metrics, default is false
+ * @param {boolean} option - true to opt into metrics, default is false
  */
-const onboardingChooseMetametricsOption = async (driver, optin = false) => {
-  const optionIdentifier = optin ? 'i-agree' : 'no-thanks';
+const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
 };
@@ -744,15 +744,17 @@ async function switchToNotificationWindow(driver) {
  *
  * @param {WebDriver} driver
  * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {boolean} hasRequest
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
-async function getEventPayloads(driver, mockedEndpoints) {
+async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
-    return isPending === false;
+
+    return isPending === !hasRequest;
   }, 10000);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {

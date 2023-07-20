@@ -1,5 +1,4 @@
 /** Please import your files in alphabetical order **/
-@import 'add-nft/index';
 @import 'keyring-snaps/index';
 @import 'import-token/index';
 @import 'asset/asset';
@@ -14,13 +13,12 @@
 @import 'connected-accounts/index';
 @import 'connected-sites/index';
 @import 'create-account/connect-hardware/index';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "institutional/connect-custody/index";
 @import "institutional/institutional-entity-done-page/index";
-@import "institutional/compliance-feature-page/index";
 @import "institutional/confirm-add-custodian-token/index";
 @import "institutional/interactive-replacement-token-page/index";
-@import 'institutional/interactive-replacement-token-page/index';
-@import 'institutional/confirm-add-custodian-token/index';
+///: END:ONLY_INCLUDE_IN
 @import 'error/index';
 @import 'send/gas-display/index';
 @import 'home/index';
