@@ -153,9 +153,6 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
-  "activated": {
-    "message": "Active"
-  },
   "active": {
     "message": "Active"
   },
@@ -375,9 +372,6 @@
   "allowWithdrawAndSpend": {
     "message": "Allow $1 to withdraw and spend up to the following amount:",
     "description": "The url of the site that requested permission to 'withdraw and spend'"
-  },
-  "amlCompliance": {
-    "message": "AML/CFT Compliance"
   },
   "amount": {
     "message": "Amount"
@@ -676,44 +670,8 @@
   "close": {
     "message": "Close"
   },
-  "codefiCompliance": {
-    "message": "Codefi Compliance"
-  },
   "coingecko": {
     "message": "CoinGecko"
-  },
-  "complianceActivatedDesc": {
-    "message": "You can now use compliance in MetaMask Institutional. Receiving AML/CFT analysis within the confirmation screen on all the addresses you interact with."
-  },
-  "complianceActivatedTitle": {
-    "message": "Your compliance feature is activated"
-  },
-  "complianceBlurb0": {
-    "message": "DeFi raises AML/CFT risk for institutions, given the decentralised pools and pseudonymous counterparties."
-  },
-  "complianceBlurb1": {
-    "message": "Codefi Compliance is the only product capable of running AML/CFT analysis on DeFi pools. This allows you to identify and avoid pools and counterparties that fail your risk setting."
-  },
-  "complianceBlurbStep1": {
-    "message": "Sign up to Codefi Compliance below"
-  },
-  "complianceBlurbStep2": {
-    "message": "Create an organisation"
-  },
-  "complianceBlurbStep3": {
-    "message": "Create a project"
-  },
-  "complianceBlurbStep4": {
-    "message": "Set your compliance settings"
-  },
-  "complianceBlurbStep5": {
-    "message": "Click the \"Enable Compliance in MMI\" button"
-  },
-  "complianceBlurpStep0": {
-    "message": "Steps to enable AML/CFT Compliance:"
-  },
-  "complianceSettingsExplanation": {
-    "message": "Change your settings or view reports by opening up Codefi Compliance or disconnect below."
   },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
@@ -837,9 +795,6 @@
   },
   "connectingToSepolia": {
     "message": "Connecting to Sepolia test network"
-  },
-  "connectionError": {
-    "message": "Connection error"
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1974,9 +1929,6 @@
     "message": "Installed on $1",
     "description": "$1 is the date when the snap has been installed"
   },
-  "institutionalFeatures": {
-    "message": "Institutional Features"
-  },
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
@@ -2315,9 +2267,6 @@
   "mmiAddToken": {
     "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
-  "mmiAuthenticate": {
-    "message": "The page at $1 would like to authorise the following project’s compliance settings in MetaMask Institutional"
-  },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."
   },
@@ -2543,9 +2492,6 @@
   },
   "noNFTs": {
     "message": "No NFTs yet"
-  },
-  "noReport": {
-    "message": "No Report"
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
@@ -2988,9 +2934,6 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
-  "openCodefiCompliance": {
-    "message": "Open Codefi Compliance"
-  },
   "openFullScreenForLedgerWebHid": {
     "message": "Go to full screen to connect your Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -3326,12 +3269,6 @@
   "proceedWithTransaction": {
     "message": "I want to proceed anyway"
   },
-  "projectIdInvalid": {
-    "message": "Provided Project ID is invalid"
-  },
-  "projectName": {
-    "message": "Project Name"
-  },
   "proposedApprovalLimit": {
     "message": "Proposed approval limit"
   },
@@ -3449,12 +3386,6 @@
   },
   "replace": {
     "message": "replace"
-  },
-  "reportLastRun": {
-    "message": "Report last run"
-  },
-  "reportLastRunTooltip": {
-    "message": "The date and time of when the last AML/CFT report was run"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -3594,17 +3525,8 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
-  "riskRating": {
-    "message": "Risk rating"
-  },
-  "riskRatingTooltip": {
-    "message": "The risk rating of the address you are interacting with based on your risk settings"
-  },
   "rpcUrl": {
     "message": "New RPC URL"
-  },
-  "runReport": {
-    "message": "Run report"
   },
   "safeTransferFrom": {
     "message": "Safe transfer from"
@@ -3829,9 +3751,6 @@
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
-  },
-  "showReport": {
-    "message": "Show report"
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
