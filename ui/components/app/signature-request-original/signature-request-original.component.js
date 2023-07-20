@@ -178,6 +178,7 @@ export default class SignatureRequestOriginal extends Component {
 
         <div className="request-signature__origin">
           {
+            // Use legacy authorship header for snaps
             ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
               <SnapLegacyAuthorshipHeader
