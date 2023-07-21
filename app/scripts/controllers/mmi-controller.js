@@ -543,8 +543,9 @@ export default class MMIController extends EventEmitter {
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
 
-    const { networkConfigurations: networkConfigurationId } = this.networkController.state;
-    const networkConfigurations = Object.values(networkConfigurationId);
+    const { networkConfigurations: networkConfigurationsById } =
+      this.networkController.state;
+    const networkConfigurations = Object.values(networkConfigurationsById);
 
     const networks = [
       ...networkConfigurations,
