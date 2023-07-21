@@ -54,11 +54,7 @@ describe('Test Snap bip-44', function () {
         });
         await driver.waitForSelector({ text: 'Install' });
 
-        try {
-          await driver.clickElement('[data-testid="snap-install-scroll"]');
-        } catch (_) {
-          console.log('Missing scroll');
-        }
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
           text: 'Install',
