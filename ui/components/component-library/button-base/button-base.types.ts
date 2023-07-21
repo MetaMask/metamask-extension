@@ -14,8 +14,7 @@ export enum ButtonBaseSize {
 }
 
 export type ValidButtonTagType = 'button' | 'a';
-export interface ButtonBaseStyleUtilityProps
-  extends Omit<StyleUtilityProps, 'as'> {
+export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    *
