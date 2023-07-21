@@ -755,12 +755,43 @@ async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
     }
 
     return isPending === !hasRequest;
-  }, 10000);
+  }, driver.timeout);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
-  return mockedRequests.map((req) => req.body.json.batch).flat();
+
+  return mockedRequests.map((req) => req.body.json?.batch).flat();
+}
+
+// Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
+function assertInAnyOrder(requests, assertions) {
+  // Clone the array to avoid mutating the original
+  const assertionsClone = [...assertions];
+
+  return (
+    requests.every((request) => {
+      for (let a = 0; a < assertionsClone.length; a++) {
+        const assertionArray = assertionsClone[a];
+        const passed = assertionArray.reduce(
+          (acc, currAssertionFn) => currAssertionFn(request) && acc,
+          true,
+        );
+
+        if (passed) {
+          // Remove the used assertion array
+          assertionsClone.splice(a, 1);
+          // Exit the loop early since we found a matching assertion
+          return true;
+        }
+      }
+
+      // No matching assertion found for this request
+      return false;
+    }) &&
+    // Ensure all assertions were used
+    assertionsClone.length === 0
+  );
 }
 
 module.exports = {
@@ -816,4 +847,5 @@ module.exports = {
   onboardingRevealAndConfirmSRP,
   onboardingCompleteWalletCreation,
   onboardingPinExtension,
+  assertInAnyOrder,
 };
