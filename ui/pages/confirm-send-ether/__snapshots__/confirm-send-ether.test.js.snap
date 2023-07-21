@@ -501,8 +501,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   </h6>
                 </div>
                 <h6
-                  align="end"
-                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                 >
                   <div
                     class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
@@ -612,8 +611,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   Amount + gas fee
                 </h6>
                 <h6
-                  align="end"
-                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                 >
                   <div
                     class="confirm-page-container-content__total-amount"
