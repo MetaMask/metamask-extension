@@ -65,7 +65,7 @@ export default function setupEnsIpfsResolver({
     let url = `https://app.ens.domains/name/${name}`;
 
     // If we're testing ENS domain resolution support,
-    // we can simplpy redirect to ENS Domains site
+    // we can redirect to ENS Domains site
     if (process.env.IN_TEST) {
       browser.tabs.update(tabId, { url });
       return;
