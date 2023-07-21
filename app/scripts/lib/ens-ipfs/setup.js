@@ -34,7 +34,10 @@ export default function setupEnsIpfsResolver({
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
-    if (tabId === -1 || getCurrentChainId() !== '0x1') {
+    if (
+      (tabId === -1 || getCurrentChainId() !== '0x1') &&
+      !process.env.IN_TEST
+    ) {
       return;
     }
     // parse ens name
@@ -58,7 +61,16 @@ export default function setupEnsIpfsResolver({
     }
 
     browser.tabs.update(tabId, { url: `loading.html` });
+
     let url = `https://app.ens.domains/name/${name}`;
+
+    // If we're testing ENS domain resolution support,
+    // we can simplpy redirect to ENS Domains site
+    if (process.env.IN_TEST) {
+      browser.tabs.update(tabId, { url });
+      return;
+    }
+
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({
         provider,

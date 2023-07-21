@@ -380,7 +380,10 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfs-gateway-resolution-container"
+          >
             <ToggleButton
               value={useIpfsGateway}
               onToggle={(value) => setUseIpfsGateway(!value)}

@@ -466,7 +466,8 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
-    getUseIpfsGateway: () => controller.preferencesController.store.getState().useIpfsGateway,
+    getUseIpfsGateway: () =>
+      controller.preferencesController.store.getState().useIpfsGateway,
     provider: controller.provider,
   });
 
