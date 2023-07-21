@@ -194,7 +194,7 @@ export function lookupEnsName(domainName) {
         domainLookup({
           address,
           error,
-          caipChainId, // not sure if this is right
+          caipChainId, // this isn't even used in the slice?
           network,
           domainType: ENS,
           domainName: trimmedDomainName,

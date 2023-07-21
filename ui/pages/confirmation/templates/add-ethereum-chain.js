@@ -185,7 +185,6 @@ async function getAlerts(pendingApproval) {
 
 function getState(pendingApproval) {
   if (pendingApproval.requestData.caipChainId === 'eip155:1') {
-    // not sure if this is right, based on e2e it is
     console.log('use warning modal');
     return { useWarningModal: true };
   }

@@ -10,8 +10,6 @@ const {
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL } = require('./helpers');
 
-// not sure if these states are correct
-
 function defaultFixture() {
   return {
     data: {
