@@ -28,7 +28,7 @@ export default function CurrencyDisplay({
   prefixComponentWrapperProps = {},
   textProps = {},
   suffixProps = {},
-  boxProps = {},
+  ...props
 }) {
   const [title, parts] = useCurrencyDisplay(value, {
     displayValue,
@@ -49,7 +49,7 @@ export default function CurrencyDisplay({
       display={Display.Flex}
       alignItems={AlignItems.center}
       flexWrap={FlexWrap.Wrap}
-      {...boxProps}
+      {...props}
     >
       {prefixComponent ? (
         <Box
@@ -106,5 +106,4 @@ CurrencyDisplay.propTypes = {
   prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
-  boxProps: PropTypes.object,
 };
