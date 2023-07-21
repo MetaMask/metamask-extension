@@ -131,8 +131,6 @@ const SignatureRequest = ({ txData }) => {
   );
   const { address } = getAccountByAddress(allAccounts, from) || {};
   const { custodySignFn } = useMMICustodySignMessage();
-
-  console.log('1');
   ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
