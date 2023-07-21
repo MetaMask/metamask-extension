@@ -87,7 +87,7 @@ export const SnapDetailHeader = ({
                   color: TextColor.textAlternative,
                 }}
                 className=""
-                height={BlockSize.TwoTwelfths}
+                height={2}
               />
             )}
           </Box>

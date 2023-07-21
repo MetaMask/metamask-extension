@@ -1,4 +1,4 @@
-import { TextProps } from '../text/text.types';
+import { TextProps, ValidTagType } from '../text/text.types';
 import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
@@ -12,7 +12,7 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
    * The label props of the component. Most Text component props can be used
    */
-  labelProps?: TextProps<'span'>;
+  labelProps?: TextProps<ValidTagType>;
   /**
    * Additional classNames to be added to the Tag component
    */
