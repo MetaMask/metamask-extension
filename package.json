@@ -197,8 +197,8 @@
     "request@^2.83.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.88.2": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
     "request@^2.85.0": "patch:request@npm%3A2.88.2#./.yarn/patches/request-npm-2.88.2-f4a57c72c4.patch",
-    "@metamask/signature-controller@^4.0.1": "patch:@metamask/signature-controller@npm%3A4.0.1#./.yarn/patches/@metamask-signature-controller-npm-4.0.1-013e64c9fd.patch",
-    "lavamoat-core@^14.2.0": "patch:lavamoat-core@npm%3A14.2.0#./.yarn/patches/lavamoat-core-npm-14.2.0-c453f4f755.patch"
+    "lavamoat-core@^14.2.0": "patch:lavamoat-core@npm%3A14.2.0#./.yarn/patches/lavamoat-core-npm-14.2.0-c453f4f755.patch",
+    "@metamask/signature-controller@^5.3.0": "patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
@@ -219,7 +219,7 @@
     "@material-ui/core": "^4.11.0",
     "@metamask-institutional/custody-controller": "0.2.6",
     "@metamask-institutional/custody-keyring": "^0.0.25",
-    "@metamask-institutional/extension": "^0.1.6",
+    "@metamask-institutional/extension": "^0.2.1",
     "@metamask-institutional/institutional-features": "^1.1.8",
     "@metamask-institutional/portfolio-dashboard": "^1.1.3",
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
@@ -261,7 +261,7 @@
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.37.1-flask.1",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/signature-controller": "^4.0.1",
+    "@metamask/signature-controller": "^5.3.0",
     "@metamask/slip44": "^3.0.0",
     "@metamask/smart-transactions-controller": "^4.0.0",
     "@metamask/snaps-controllers": "^1.0.0-prerelease.1",

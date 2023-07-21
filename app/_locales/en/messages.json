@@ -3579,6 +3579,13 @@
   "securityAndPrivacy": {
     "message": "Security & privacy"
   },
+  "securityProviderAdviceBy": {
+    "message": "Security advice by $1",
+    "description": "The security provider that is providing data"
+  },
+  "seeDetails": {
+    "message": "See details"
+  },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"
   },
