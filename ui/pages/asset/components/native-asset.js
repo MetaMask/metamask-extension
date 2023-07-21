@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import TransactionList from '../../../components/app/transaction-list';
 import { EthOverview } from '../../../components/app/wallet-overview';
 import {
@@ -28,7 +29,11 @@ export default function NativeAsset({ nativeCurrency }) {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const address = useSelector(getSelectedAddress);
   const history = useHistory();
-  const accountLink = getAccountLink(address, caipChainId, rpcPrefs);
+  const accountLink = getAccountLink(
+    address,
+    getEthChainIdHexFromCaipChainId(caipChainId),
+    rpcPrefs,
+  );
   const trackEvent = useContext(MetaMetricsContext);
   const isCustomNetwork = useSelector(getIsCustomNetwork);
 

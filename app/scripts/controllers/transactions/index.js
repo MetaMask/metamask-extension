@@ -238,7 +238,6 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    // i think this stays named as is since this is eth level
     const networkStatus = this.getNetworkStatus();
     const caipChainId = this._getCurrentCaipChainId();
     const intChainId = getEthChainIdIntFromCaipChainId(caipChainId);

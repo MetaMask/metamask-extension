@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -58,7 +59,11 @@ export const AccountListItemMenu = ({
 
   const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(identity.address, caipChainId, rpcPrefs);
+  const addressLink = getAccountLink(
+    identity.address,
+    getEthChainIdHexFromCaipChainId(caipChainId),
+    rpcPrefs,
+  );
 
   const deviceName = useSelector(getHardwareWalletType);
 

@@ -226,7 +226,7 @@ export default function Swap() {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });
     if (!networkAndAccountSupports1559) {
-      dispatch(fetchAndSetSwapsGasPriceInfo(caipChainId)); // this action doesn't take params. what lol
+      dispatch(fetchAndSetSwapsGasPriceInfo());
     }
     return () => {
       dispatch(prepareToLeaveSwaps());

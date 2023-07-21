@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import {
   getCurrentCaipChainId,
   getRpcPrefsForCurrentProvider,
@@ -18,7 +19,11 @@ const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
   const caipChainId = useSelector(getCurrentCaipChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(address, caipChainId, rpcPrefs); // need to be updated?
+  const addressLink = getAccountLink(
+    address,
+    getEthChainIdHexFromCaipChainId(caipChainId),
+    rpcPrefs,
+  );
 
   const AccreditationLink = () => {
     return (
