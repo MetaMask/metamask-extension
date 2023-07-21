@@ -495,15 +495,13 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent({
             event: MetaMetricsEventName.NftAdded,
             category: MetaMetricsEventCategory.Wallet,
-            properties: {
+            sensitiveProperties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: AssetType.NFT,
+              token_id: tokenId,
               token_standard: standard,
+              asset_type: AssetType.NFT,
               source,
-            },
-            sensitiveProperties: {
-              tokenId,
             },
           }),
       },
