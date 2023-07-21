@@ -107,6 +107,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setFeatureFlagStub.mock.calls[1][1]).toStrictEqual(true);
     expect(setUsePhishDetectStub.mock.calls[1][0]).toStrictEqual(true);
+    expect(setUse4ByteResolutionStub.mock.calls[1][0]).toStrictEqual(true);
     expect(setUseTokenDetectionStub.mock.calls[1][0]).toStrictEqual(true);
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[1][0]).toStrictEqual(
       true,
