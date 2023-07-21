@@ -44,19 +44,17 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     }: ButtonBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const Tag = href ? 'a' : as || 'button';
-
-    const tagProps = href && Tag === 'a' ? { href, ...props } : props;
-    delete tagProps.as; // Remove the as prop when not using the 'a' tag
+    const tag = href ? 'a' : as || 'button';
+    const tagProps = href && tag === 'a' ? { href, ...props } : props;
 
     return (
       <Text
-        as={Tag}
+        as={tag}
         backgroundColor={BackgroundColor.backgroundAlternative}
         variant={TextVariant.bodyMdMedium}
         color={loading ? TextColor.transparent : color}
         ref={ref}
-        {...(Tag === 'button' ? { disabled } : {})}
+        {...(tag === 'button' ? { disabled } : {})}
         {...(href && externalLink
           ? { target: '_blank', rel: 'noopener noreferrer' }
           : {})}
