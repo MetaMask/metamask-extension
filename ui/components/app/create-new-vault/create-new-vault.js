@@ -145,6 +145,7 @@ export default function CreateNewVault({
         className="create-new-vault__submit-button"
         variant={BUTTON_VARIANT.PRIMARY}
         disabled={!isValid}
+        type="submit"
       >
         {submitText}
       </Button>
