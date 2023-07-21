@@ -60,7 +60,7 @@ export default {
         type: 'number',
       },
     },
-    chainId: {
+    caipChainId: {
       control: {
         type: 'text',
       },
@@ -90,7 +90,7 @@ export default {
     tokenApprovalSourceTokenSymbol: 'ABC',
     metaMaskFee: '0.875',
     numberOfQuotes: 6,
-    chainId: CHAIN_IDS.MAINNET,
+    caipChainId: CHAIN_IDS.MAINNET,
   },
 };
 

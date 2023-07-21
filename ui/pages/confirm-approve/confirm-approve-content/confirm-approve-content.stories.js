@@ -82,7 +82,7 @@ export default {
     fromAddressIsLedger: {
       control: 'boolean',
     },
-    chainId: {
+    caipChainId: {
       control: 'text',
     },
     rpcPrefs: {
@@ -130,7 +130,7 @@ export default {
     nextNonce: 1,
     customNonceValue: '2',
     txData: { simulationFails: null },
-    chainId: '1337',
+    caipChainId: 'eip155:1337',
     rpcPrefs: {},
     isContract: true,
   },

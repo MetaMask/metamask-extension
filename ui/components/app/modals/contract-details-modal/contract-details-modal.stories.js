@@ -23,7 +23,7 @@ export default {
         type: 'text',
       },
     },
-    chainId: {
+    caipChainId: {
       control: {
         type: 'text',
       },
@@ -38,7 +38,7 @@ export default {
     tokenName: 'DAI',
     tokenAddress: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
     toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
-    chainId: '0x3',
+    caipChainId: 'eip155:3',
     rpcPrefs: {},
   },
 };

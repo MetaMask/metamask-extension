@@ -67,7 +67,7 @@ export default {
         type: 'text',
       },
     },
-    chainId: {
+    caipChainId: {
       control: {
         type: 'text',
       },
@@ -105,7 +105,7 @@ export default {
     identities,
     showSearchTab: true,
     mostRecentOverviewPage: DEFAULT_ROUTE,
-    chainId: networkConfigurations['test-networkConfigurationId-1'].chainId,
+    caipChainId: networkConfigurations['test-networkConfigurationId-1'].caipChainId,
     rpcPrefs: networkConfigurations['test-networkConfigurationId-1'].rpcPrefs,
     tokenList,
     useTokenDetection: false,
