@@ -2523,9 +2523,6 @@
   "noNetworksFound": {
     "message": "No networks found for the given search query"
   },
-  "noReport": {
-    "message": "No Report"
-  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
