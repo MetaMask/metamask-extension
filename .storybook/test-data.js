@@ -382,7 +382,7 @@ const state = {
       },
     ],
     allDetectedTokens: {
-      '0x5': {
+      'eip155:5': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
@@ -1050,17 +1050,17 @@ const state = {
       },
     ],
     cachedBalances: {
-      1: {
+      'eip155:1': {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x0',
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0xcaf5317161f400',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x0',
       },
-      3: {
+      'eip155:3': {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x18d289d450bace66',
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
       },
-      5: {
+      'eip155:5': {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x176e5b6f173ebe66',
         '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
@@ -1121,7 +1121,7 @@ const state = {
     },
     accountTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        '0x1': [
+        'eip155:1': [
           {
             address: '0x6b175474e89094c44da98b954eedeac495271d0f',
             symbol: 'DAI',
@@ -1133,7 +1133,7 @@ const state = {
             decimals: 18,
           },
         ],
-        '0x5': [
+        'eip155:5': [
           {
             address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
             symbol: 'DAI',
@@ -1146,7 +1146,7 @@ const state = {
     },
     accountHiddenTokens: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        '0x5': [],
+        'eip155:5': [],
       },
     },
     assetImages: {

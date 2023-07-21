@@ -30,7 +30,7 @@ describe('EthOverview', () => {
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
         '0x1': {
@@ -152,7 +152,7 @@ describe('EthOverview', () => {
           ...mockStore.metamask,
           providerConfig: {
             ...mockStore.metamask.providerConfig,
-            chainId: '0xa86a',
+            caipChainId: 'eip155:43114',
           },
         },
       };
@@ -198,7 +198,7 @@ describe('EthOverview', () => {
           ...mockStore.metamask,
           providerConfig: {
             ...mockStore.metamask.providerConfig,
-            chainId: '0xfa',
+            caipChainId: 'eip155:250',
           },
         },
       };
@@ -251,7 +251,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -271,7 +271,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -291,7 +291,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

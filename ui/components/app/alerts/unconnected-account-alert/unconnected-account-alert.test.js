@@ -65,7 +65,7 @@ describe('Unconnected Account Alert', () => {
       cachedBalances,
       keyrings,
       providerConfig: {
-        chainId: CHAIN_IDS,
+        caipChainId: CHAIN_IDS,
       },
       permissionHistory: {
         'https://test.dapp': {

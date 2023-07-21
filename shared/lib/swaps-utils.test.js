@@ -81,7 +81,7 @@ describe('Swaps Utils', () => {
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
         },
-        { chainId: CHAIN_IDS.MAINNET },
+        { caipChainId: CHAIN_IDS.MAINNET },
       );
       expect(result).toStrictEqual(expectedResult2);
     });

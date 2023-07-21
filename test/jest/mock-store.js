@@ -138,7 +138,7 @@ export const createSwapsMockStore = () => {
         },
       },
       providerConfig: {
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: 5,
@@ -155,7 +155,7 @@ export const createSwapsMockStore = () => {
           metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           loadingDefaults: false,
           dappSuggestedGasFees: null,
           sendFlowHistory: null,

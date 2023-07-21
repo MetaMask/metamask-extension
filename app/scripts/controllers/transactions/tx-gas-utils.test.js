@@ -31,7 +31,7 @@ describe('txUtils', function () {
         gasPrice: '0x199c82cc00',
         data: '0x',
         nonce: '0x3',
-        chainId: 5,
+        caipChainId: 'eip155:5',
       };
       const ethTx = TransactionFactory.fromTxData(txParams, {
         common: new Common({ chain: 'goerli' }),

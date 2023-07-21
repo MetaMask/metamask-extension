@@ -3,7 +3,7 @@ export const currentNetworkTxListSample = {
   "time": 1621395091737,
   "status": "unapproved",
   "metamaskNetworkId": "1337",
-  "chainId": "0x539",
+  "caipChainId": "eip155:1337",
   "loadingDefaults": false,
   "txParams": {
     "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
@@ -21,7 +21,7 @@ export const currentNetworkTxListSample = {
       "time": 1621395091737,
       "status": "unapproved",
       "metamaskNetworkId": "1337",
-      "chainId": "0x539",
+      "caipChainId": "eip155:1337",
       "loadingDefaults": true,
       "txParams": {
         "from": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",

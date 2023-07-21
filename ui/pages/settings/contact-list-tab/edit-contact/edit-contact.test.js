@@ -22,7 +22,7 @@ describe('AddContact component', () => {
     history: { push: jest.fn() },
     name: '',
     address: '0x0000000000000000001',
-    chainId: '',
+    caipChainId: '',
     memo: '',
     viewRoute: '',
     listRoute: '',

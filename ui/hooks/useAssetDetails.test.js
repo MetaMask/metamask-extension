@@ -16,7 +16,7 @@ const renderUseAssetDetails = ({
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
       tokenList: {},
       tokens: [],

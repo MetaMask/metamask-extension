@@ -24,7 +24,7 @@ describe('TransactionActivityLog utils', () => {
               time: 1543958845581,
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
               loadingDefaults: true,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -72,7 +72,7 @@ describe('TransactionActivityLog utils', () => {
           id: 6400627574331058,
           loadingDefaults: false,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           status: TransactionStatus.dropped,
           submittedTime: 1543958848135,
           time: 1543958845581,
@@ -94,7 +94,7 @@ describe('TransactionActivityLog utils', () => {
               time: 1543958857697,
               status: TransactionStatus.unapproved,
               metamaskNetworkId: '5',
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
               loadingDefaults: false,
               txParams: {
                 from: '0x50a9d56c2b8ba9a5c7f2c08c3d26e0499f23a706',
@@ -165,7 +165,7 @@ describe('TransactionActivityLog utils', () => {
           lastGasPrice: '0x4190ab00',
           loadingDefaults: false,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           status: TransactionStatus.confirmed,
           submittedTime: 1543958860054,
           time: 1543958857697,
@@ -188,7 +188,7 @@ describe('TransactionActivityLog utils', () => {
         {
           id: 6400627574331058,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionCreated',
           timestamp: 1543958845581,
@@ -197,7 +197,7 @@ describe('TransactionActivityLog utils', () => {
         {
           id: 6400627574331058,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
           timestamp: 1543958848147,
@@ -206,7 +206,7 @@ describe('TransactionActivityLog utils', () => {
         {
           id: 6400627574331060,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
           timestamp: 1543958860061,
@@ -215,7 +215,7 @@ describe('TransactionActivityLog utils', () => {
         {
           id: 6400627574331060,
           metamaskNetworkId: '5',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
           timestamp: 1543958897165,
@@ -253,7 +253,7 @@ describe('TransactionActivityLog utils', () => {
             id: 5559712943815343,
             loadingDefaults: true,
             metamaskNetworkId: '5',
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             status: TransactionStatus.unapproved,
             time: 1535507561452,
             txParams: {
@@ -393,7 +393,7 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2386f26fc10000',
         },
         hash: '0xabc',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         metamaskNetworkId: '5',
       };
 
@@ -404,7 +404,7 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2386f26fc10000',
           id: 1,
           hash: '0xabc',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           metamaskNetworkId: '5',
         },
         {
@@ -413,7 +413,7 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           metamaskNetworkId: '5',
         },
         {
@@ -422,7 +422,7 @@ describe('TransactionActivityLog utils', () => {
           value: '0x2632e314a000',
           id: 1,
           hash: '0xabc',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           metamaskNetworkId: '5',
         },
       ];

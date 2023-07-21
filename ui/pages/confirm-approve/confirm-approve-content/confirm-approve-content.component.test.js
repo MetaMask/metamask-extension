@@ -7,7 +7,7 @@ import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: { providerConfig: { chainId: '0x0' } },
+    metamask: { providerConfig: { caipChainId: 'eip155:0' } },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
@@ -33,7 +33,7 @@ const props = {
   setUserAcknowledgedGasMissing: jest.fn(),
   renderSimulationFailureWarning: false,
   showCustomizeNonceModal: jest.fn(),
-  chainId: '1337',
+  caipChainId: 'eip155:1337',
   rpcPrefs: {},
   isContract: true,
   useCurrencyRateCheck: true,

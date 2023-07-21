@@ -427,19 +427,19 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.POLYGON;
+      state.metamask.providerConfig.caipChainId = CHAIN_IDS.POLYGON;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.BSC;
+      state.metamask.providerConfig.caipChainId = CHAIN_IDS.BSC;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.chainId = CHAIN_IDS.GOERLI;
+      state.metamask.providerConfig.caipChainId = CHAIN_IDS.GOERLI;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 

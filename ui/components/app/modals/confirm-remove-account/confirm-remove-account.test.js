@@ -8,7 +8,7 @@ describe('Confirm Remove Account', () => {
   const state = {
     metamask: {
       providerConfig: {
-        chainId: '0x99',
+        caipChainId: 'eip155:153',
       },
     },
   };
@@ -20,7 +20,7 @@ describe('Confirm Remove Account', () => {
       address: '0x0',
       name: 'Account 1',
     },
-    chainId: '0x99',
+    caipChainId: 'eip155:153',
     rpcPrefs: {},
   };
 

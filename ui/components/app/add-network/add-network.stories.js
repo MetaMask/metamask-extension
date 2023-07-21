@@ -27,7 +27,7 @@ export default {
   args: {
     featuredRPCS: [
       {
-        chainId: '42161',
+        caipChainId: 'eip155:42161',
         nickname: 'Arbitrum One',
         rpcUrl: 'https://arbitrum-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'AETH',
@@ -37,7 +37,7 @@ export default {
         },
       },
       {
-        chainId: '43114',
+        caipChainId: 'eip155:43114',
         nickname: 'Avalanche Mainnet C-Chain',
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         ticker: 'AVAX',
@@ -47,7 +47,7 @@ export default {
         },
       },
       {
-        chainId: '56',
+        caipChainId: 'eip155:56',
         nickname: 'BNB Smart Chain',
         rpcUrl: 'https://bsc-dataseed.binance.org/',
         ticker: 'BNB',
@@ -57,7 +57,7 @@ export default {
         },
       },
       {
-        chainId: '250',
+        caipChainId: 'eip155:250',
         nickname: 'Fantom Opera',
         rpcUrl: 'https://rpc.ftm.tools/',
         ticker: 'FTM',
@@ -67,7 +67,7 @@ export default {
         },
       },
       {
-        chainId: '1666600000',
+        caipChainId: 'eip155:1666600000',
         nickname: 'Harmony Mainnet Shard 0',
         rpcUrl: 'https://api.harmony.one/',
         ticker: 'ONE',
@@ -77,7 +77,7 @@ export default {
         },
       },
       {
-        chainId: '10',
+        caipChainId: 'eip155:10',
         nickname: 'Optimism',
         rpcUrl: 'https://optimism-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'KOR',
@@ -87,7 +87,7 @@ export default {
         },
       },
       {
-        chainId: '137',
+        caipChainId: 'eip155:137',
         nickname: 'Polygon Mainnet',
         rpcUrl: 'https://polygon-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'MATIC',
@@ -97,7 +97,7 @@ export default {
         },
       },
       {
-        chainId: '11297108109',
+        caipChainId: 'eip155:11297108109',
         nickname: 'Palm',
         rpcUrl: 'https://palm-mainnet.infura.io/v3/{INFURA_API_KEY}',
         ticker: 'PALM',

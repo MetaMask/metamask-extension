@@ -12,7 +12,7 @@ const sendEther = {
   metamaskNetworkId: '5',
   originalGasEstimate: '0x5208',
   userEditedGasLimit: false,
-  chainId: '0x5',
+  caipChainId: 'eip155:5',
   loadingDefaults: false,
   dappSuggestedGasFees: {
     maxPriorityFeePerGas: '0x3b9aca00',

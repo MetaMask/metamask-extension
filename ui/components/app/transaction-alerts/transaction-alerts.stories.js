@@ -19,7 +19,7 @@ const customTransaction = ({
     blockNumber: `${10902987 + i}`,
     id: 4678200543090545 + i,
     metamaskNetworkId: testData?.metamask?.networkId,
-    chainId: testData?.metamask?.providerConfig?.chainId,
+    caipChainId: testData?.metamask?.providerConfig?.caipChainId,
     status: 'confirmed',
     time: 1600654021000,
     txParams: {

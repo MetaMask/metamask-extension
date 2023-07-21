@@ -80,14 +80,14 @@ describe('Account Details Modal', () => {
         ...mockState.metamask,
         networkConfigurations: {
           networkConfigurationId: {
-            chainId: '0x99',
+            caipChainId: 'eip155:153',
             rpcPrefs: {
               blockExplorerUrl,
             },
           },
         },
         providerConfig: {
-          chainId: '0x99',
+          caipChainId: 'eip155:153',
         },
       },
     };
@@ -129,7 +129,7 @@ describe('Account Details Modal', () => {
       metamask: {
         providerConfig: {
           type: 'rpc',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           ticker: 'ETH',
           id: 'testNetworkConfigurationId',
         },

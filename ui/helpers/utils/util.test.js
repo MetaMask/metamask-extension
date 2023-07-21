@@ -910,11 +910,11 @@ describe('util', () => {
   });
 
   describe('isDefaultMetaMaskChain()', () => {
-    it('should return true if the provided chainId is a default MetaMask chain', () => {
+    it('should return true if the provided caipChainId is a default MetaMask chain', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
     });
 
-    it('should return false if the provided chainId is a not default MetaMask chain', () => {
+    it('should return false if the provided caipChainId is a not default MetaMask chain', () => {
       expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
     });
   });

@@ -32,7 +32,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           providerConfig: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
           },
         },
       };
@@ -62,7 +62,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           providerConfig: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
           },
         },
       };
@@ -93,7 +93,7 @@ describe('Transaction Selectors', () => {
             1: msg,
           },
           providerConfig: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
           },
         },
       };
@@ -111,7 +111,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           providerConfig: {
             nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+            caipChainId: CHAIN_IDS.MAINNET,
           },
           featureFlags: {
             showIncomingTransactions: false,
@@ -175,7 +175,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           providerConfig: {
             nickname: 'mainnet',
-            chainId: CHAIN_IDS.MAINNET,
+            caipChainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
           featureFlags: {
@@ -259,7 +259,7 @@ describe('Transaction Selectors', () => {
       metamask: {
         providerConfig: {
           nickname: 'mainnet',
-          chainId: CHAIN_IDS.MAINNET,
+          caipChainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
         featureFlags: {
@@ -337,7 +337,7 @@ describe('Transaction Selectors', () => {
     const mockedState = {
       metamask: {
         providerConfig: {
-          chainId: mockNetworkId,
+          caipChainId: mockNetworkId,
         },
         pendingApprovalCount: 2,
         pendingApprovals: {
@@ -361,7 +361,7 @@ describe('Transaction Selectors', () => {
         unapprovedTxs: {
           2: {
             id: '2',
-            chainId: mockNetworkId,
+            caipChainId: mockNetworkId,
           },
         },
       },
@@ -372,7 +372,8 @@ describe('Transaction Selectors', () => {
       expect(result).toBe(true);
     });
     it('should return false if there is a pending transaction on different network', () => {
-      mockedState.metamask.unapprovedTxs['2'].chainId = 'differentNetworkId';
+      mockedState.metamask.unapprovedTxs['2'].caipChainId =
+        'differentNetworkId';
       const result = hasTransactionPendingApprovals(mockedState);
       expect(result).toBe(false);
     });

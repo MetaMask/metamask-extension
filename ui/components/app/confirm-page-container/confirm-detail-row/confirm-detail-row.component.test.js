@@ -9,7 +9,7 @@ describe('Confirm Detail Row Component', () => {
     metamask: {
       providerConfig: {
         type: 'rpc',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,

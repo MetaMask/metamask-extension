@@ -84,7 +84,7 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    chainId: CHAIN_IDS.MAINNET,
+    caipChainId: CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     ...customProps,
   };

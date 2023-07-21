@@ -96,7 +96,7 @@ export default {
       metamaskNetworkId: '3',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
-      chainId: '0x3',
+      caipChainId: 'eip155:3',
       loadingDefaults: false,
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',
@@ -122,7 +122,7 @@ export default {
           metamaskNetworkId: '3',
           originalGasEstimate: '0xea60',
           userEditedGasLimit: false,
-          chainId: '0x3',
+          caipChainId: 'eip155:3',
           loadingDefaults: true,
           dappSuggestedGasFees: {
             gasPrice: '0x4a817c800',

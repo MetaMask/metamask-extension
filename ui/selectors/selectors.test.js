@@ -275,13 +275,13 @@ describe('Selectors', () => {
       const networkConfigurations = {
         testNetworkConfigurationId1: {
           rpcUrl: 'https://mock-rpc-url-1',
-          chainId: '0xtest',
+          caipChainId: 'eip155:test',
           ticker: 'TEST',
           id: 'testNetworkConfigurationId1',
         },
         testNetworkConfigurationId2: {
           rpcUrl: 'https://mock-rpc-url-2',
-          chainId: '0x1337',
+          caipChainId: 'eip155:1337',
           ticker: 'RPC',
           id: 'testNetworkConfigurationId2',
         },
@@ -305,7 +305,7 @@ describe('Selectors', () => {
           },
           networkConfigurations: {
             'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CHAIN_IDS.LOCALHOST,
               nickname: LOCALHOST_DISPLAY_NAME,
             },
           },
@@ -449,7 +449,7 @@ describe('Selectors', () => {
       expect(selectors.getAddressBook(mockState)).toStrictEqual([
         {
           address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           isEns: false,
           memo: '',
           name: 'Address Book Account 1',
@@ -629,17 +629,17 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
+    mockState.metamask.providerConfig.caipChainId = 'eip155:10';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.providerConfig.chainId = '0xfa';
+    mockState.metamask.providerConfig.caipChainId = 'eip155:250';
     const isFantomSupported = selectors.getIsBridgeChain(mockState);
     expect(isFantomSupported).toBeFalsy();
   });
 
   it('#getIsBridgeToken', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
+    mockState.metamask.providerConfig.caipChainId = 'eip155:10';
     const isOptimismTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);
@@ -650,7 +650,7 @@ describe('Selectors', () => {
     )(mockState);
     expect(isOptimismUnknownTokenSupported).toBeFalsy();
 
-    mockState.metamask.providerConfig.chainId = '0xfa';
+    mockState.metamask.providerConfig.caipChainId = 'eip155:250';
     const isFantomTokenSupported = selectors.getIsBridgeToken(
       '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
     )(mockState);

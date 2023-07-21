@@ -25,7 +25,7 @@ describe('Eth Sign Modal', () => {
     metamask: {
       provider: {
         type: 'rpc',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
       disabledRpcMethodPreferences: { eth_sign: true },
     },

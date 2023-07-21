@@ -45,7 +45,7 @@ describe('MetaMask Reducers', () => {
         networkStatus: 'available',
         providerConfig: {
           type: 'testnet',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
           ticker: 'TestETH',
         },
         accounts: {
@@ -75,11 +75,11 @@ describe('MetaMask Reducers', () => {
           },
         },
         addressBook: {
-          '0x5': {
+          'eip155:5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
               address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
               name: 'Address Book Account 1',
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
             },
           },
         },
@@ -316,7 +316,7 @@ describe('MetaMask Reducers', () => {
           {
             address: '0x06195827297c7a80a443b6894d3bdb8824b43896',
             name: 'Address Book Account 1',
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
           },
         ]);
       });

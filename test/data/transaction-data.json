@@ -867,7 +867,7 @@
         "metamaskNetworkId": "5",
         "originalGasEstimate": "0x118e0",
         "userEditedGasLimit": false,
-        "chainId": "0x5",
+        "caipChainId": "eip155:5",
         "loadingDefaults": false,
         "dappSuggestedGasFees": {
           "maxPriorityFeePerGas": "0x3B9ACA00",
@@ -983,7 +983,7 @@
       "metamaskNetworkId": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
-      "chainId": "0x5",
+      "caipChainId": "eip155:5",
       "loadingDefaults": false,
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",
@@ -1098,7 +1098,7 @@
       "metamaskNetworkId": "5",
       "originalGasEstimate": "0x118e0",
       "userEditedGasLimit": false,
-      "chainId": "0x5",
+      "caipChainId": "eip155:5",
       "loadingDefaults": false,
       "dappSuggestedGasFees": {
         "maxPriorityFeePerGas": "0x3B9ACA00",

@@ -34,7 +34,7 @@ const state = {
     addressBook: [
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         isEns: false,
         memo: '',
         name: 'Address Book Account 1',
@@ -162,7 +162,7 @@ describe('TokenAllowancePage', () => {
       metamaskNetworkId: '3',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
-      chainId: '0x3',
+      caipChainId: 'eip155:3',
       loadingDefaults: false,
       dappSuggestedGasFees: {
         gasPrice: '0x4a817c800',

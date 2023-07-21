@@ -13,7 +13,7 @@ describe('preferences controller', function () {
       name: 'TokenListController',
     });
     tokenListController = new TokenListController({
-      chainId: '1',
+      caipChainId: 'eip155:1',
       preventPollingOnNetworkRestart: false,
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),

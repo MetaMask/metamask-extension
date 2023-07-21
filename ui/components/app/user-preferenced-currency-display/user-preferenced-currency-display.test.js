@@ -8,7 +8,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x99',
+          caipChainId: 'eip155:153',
         },
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,

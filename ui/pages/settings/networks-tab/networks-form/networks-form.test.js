@@ -9,6 +9,7 @@ import {
   getRpcUrl,
 } from '../../../../../shared/constants/network';
 import NetworksForm from '.';
+import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: {} });
@@ -28,7 +29,7 @@ const propNewNetwork = {
 const propNetworkDisplay = {
   selectedNetwork: {
     rpcUrl: 'http://localhost:8545',
-    chainId: '1337',
+    caipChainId: 'eip155:1337',
     ticker: 'ETH',
     label: 'LocalHost',
     blockExplorerUrl: '',
@@ -70,7 +71,7 @@ describe('NetworkForm Component', () => {
             decimals: 18,
           },
           shortName: 'MATIC',
-          chainId: 137,
+          chainId: '0x89',
         },
       ]);
 
@@ -148,7 +149,7 @@ describe('NetworkForm Component', () => {
       getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
     ).toBeInTheDocument();
     expect(
-      getByDisplayValue(propNetworkDisplay.selectedNetwork.chainId),
+      getByDisplayValue(getEthChainIdDecFromCaipChainId(propNetworkDisplay.selectedNetwork.caipChainId)),
     ).toBeInTheDocument();
     expect(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.ticker),

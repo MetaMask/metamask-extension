@@ -5,12 +5,12 @@ const testAccounts = [
   {
     address: '0x1234567890123456789012345678901234567890',
     name: 'Test Account 1',
-    chainId: 1,
+    caipChainId: 'eip155:1',
   },
   {
     address: '0x0987654321098765432109876543210987654321',
     name: 'Test Account 2',
-    chainId: 1,
+    caipChainId: 'eip155:1',
   },
 ];
 

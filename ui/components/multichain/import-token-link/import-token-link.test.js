@@ -23,11 +23,11 @@ jest.mock('../../../store/actions.ts', () => ({
 }));
 
 describe('Import Token Link', () => {
-  it('should match snapshot for goerli chainId', () => {
+  it('should match snapshot for goerli caipChainId', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
         },
       },
     };
@@ -39,7 +39,7 @@ describe('Import Token Link', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match snapshot for mainnet chainId', () => {
+  it('should match snapshot for mainnet caipChainId', () => {
     const mockState = {
       metamask: {
         providerConfig: {
@@ -59,7 +59,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
         },
       },
     };
@@ -78,7 +78,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
         },
       },
     };

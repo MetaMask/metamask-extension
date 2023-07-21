@@ -12,12 +12,12 @@ jest.mock('../../../../shared/constants/network', () => ({
   ...jest.requireActual('../../../../shared/constants/network'),
   BUYABLE_CHAINS_MAP: {
     // MAINNET
-    '0x1': {
+    'eip155:1': {
       nativeCurrency: 'ETH',
       network: 'ethereum',
     },
     // POLYGON
-    '0x89': {
+    'eip155:137': {
       nativeCurrency: 'MATIC',
       network: 'polygon',
     },
@@ -30,7 +30,7 @@ describe('TokenOverview', () => {
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
@@ -110,7 +110,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.PALM },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.PALM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -143,7 +143,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -163,7 +163,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -188,7 +188,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -208,7 +208,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -286,7 +286,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -324,7 +324,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -350,7 +350,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

@@ -31,7 +31,7 @@ const mockState = {
       },
     },
     unapprovedTypedMessagesCount: 1,
-    providerConfig: { chainId: '0x5', type: 'goerli' },
+    providerConfig: { caipChainId: 'eip155:5', type: 'goerli' },
     keyrings: [],
     networkConfigurations: {},
     subjectMetadata: {},

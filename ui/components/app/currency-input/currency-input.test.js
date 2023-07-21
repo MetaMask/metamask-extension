@@ -11,7 +11,7 @@ describe('CurrencyInput Component', () => {
       currentCurrency: 'usd',
       conversionRate: 231.06,
       providerConfig: {
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
       preferences: {
         showFiatInTestnets: true,

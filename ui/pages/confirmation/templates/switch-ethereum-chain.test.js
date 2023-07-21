@@ -23,7 +23,7 @@ const mockApproval = {
     },
     chainName: 'Test chain',
     ticker: 'TST',
-    chainId: '0x9999',
+    caipChainId: 'eip155:9999',
     nickname: 'Test chain',
   },
 };
@@ -38,7 +38,7 @@ const mockBaseStore = {
     providerConfig: {
       type: 'rpc',
       rpcUrl: 'http://example-custom-rpc.metamask.io',
-      chainId: '0x9999',
+      caipChainId: 'eip155:9999',
       nickname: 'Test initial state',
     },
   },

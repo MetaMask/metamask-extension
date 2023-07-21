@@ -335,14 +335,14 @@
     },
     "nftsDropdownState": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "0x5": {
+        "eip155:5": {
           "0x495f947276749Ce646f68AC8c248420045cb7b5e": false
         }
       }
     },
     "allNftContracts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "0x1": [
+        "eip155:1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -355,7 +355,7 @@
             "externalLink": null
           }
         ],
-        "0x89": [
+        "eip155:137": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -368,7 +368,7 @@
             "externalLink": null
           }
         ],
-        "0xaa36a7": [
+        "eip155:11155111": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -381,7 +381,7 @@
             "externalLink": null
           }
         ],
-        "0x5": [
+        "eip155:5": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -405,7 +405,7 @@
             "externalLink": null
           }
         ],
-        "0x99": [
+        "eip155:153": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -422,7 +422,7 @@
     },
     "allNfts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "0x1": [
+        "eip155:1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -432,7 +432,7 @@
             "standard": "ERC721"
           }
         ],
-        "0x89": [
+        "eip155:137": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -442,7 +442,7 @@
             "standard": "ERC721"
           }
         ],
-        "0xaa36a7": [
+        "eip155:11155111": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -452,7 +452,7 @@
             "standard": "ERC721"
           }
         ],
-        "0x5": [
+        "eip155:5": [
           {
             "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
             "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -563,7 +563,7 @@
             "standard": "ERC721"
           }
         ],
-        "0x99": [
+        "eip155:153": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",

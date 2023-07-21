@@ -69,7 +69,7 @@ const props = {
     metamaskNetworkId: '80001',
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
-    chainId: '0x13881',
+    caipChainId: 'eip155:80001',
     loadingDefaults: false,
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
@@ -95,7 +95,7 @@ const props = {
         metamaskNetworkId: '80001',
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
-        chainId: '0x13881',
+        caipChainId: 'eip155:80001',
         loadingDefaults: true,
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
@@ -307,10 +307,10 @@ describe('Confirm Page Container Container Test', () => {
       const addressBookName = 'test save name';
 
       const addressBook = {
-        '0x5': {
+        'eip155:5': {
           '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8': {
             address: '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8',
-            chainId: '054',
+            caipChainId: 'eip155:5',
             isEns: false,
             memo: '',
             name: addressBookName,

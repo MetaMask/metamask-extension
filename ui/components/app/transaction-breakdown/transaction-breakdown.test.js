@@ -22,7 +22,7 @@ describe('TransactionBreakdown', () => {
       nativeCurrency: null,
       preferences: {},
       providerConfig: {
-        chainId: null,
+        caipChainId: null,
       },
     },
   });

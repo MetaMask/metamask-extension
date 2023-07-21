@@ -7,7 +7,7 @@ describe('Identicon', () => {
   const mockState = {
     metamask: {
       providerConfig: {
-        chainId: '0x99',
+        caipChainId: 'eip155:153',
       },
       useBlockie: false,
     },

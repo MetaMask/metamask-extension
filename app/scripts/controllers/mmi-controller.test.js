@@ -23,7 +23,7 @@ describe('MMIController', function () {
       txController: new TransactionController({
         initState: {},
         provider: {
-          chainId: 'fail',
+          caipChainId: 'eip155:fail',
           nickname: '',
           rpcTarget: 'https://api.myetherwallet.com/eth',
           ticker: 'ETH',

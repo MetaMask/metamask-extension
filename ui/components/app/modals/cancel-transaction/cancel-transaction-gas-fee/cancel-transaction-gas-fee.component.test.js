@@ -7,7 +7,7 @@ describe('CancelTransactionGasFee Component', () => {
   const mockState = {
     metamask: {
       providerConfig: {
-        chainId: '0x4',
+        caipChainId: 'eip155:4',
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,

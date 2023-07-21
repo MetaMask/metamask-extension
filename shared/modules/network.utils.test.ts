@@ -58,27 +58,27 @@ describe('network utils', () => {
 
   describe('isTokenDetectionEnabledForNetwork', () => {
     it('returns true given the chain ID for Mainnet', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x1')).toBe(true);
+      expect(isTokenDetectionEnabledForNetwork('eip155:1')).toBe(true);
     });
 
     it('returns true given the chain ID for BSC', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x38')).toBe(true);
+      expect(isTokenDetectionEnabledForNetwork('eip155:56')).toBe(true);
     });
 
     it('returns true given the chain ID for Polygon', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x89')).toBe(true);
+      expect(isTokenDetectionEnabledForNetwork('eip155:137')).toBe(true);
     });
 
     it('returns true given the chain ID for Avalanche', () => {
-      expect(isTokenDetectionEnabledForNetwork('0xa86a')).toBe(true);
+      expect(isTokenDetectionEnabledForNetwork('eip155:43114')).toBe(true);
     });
 
     it('returns true given the chain ID for Aurora', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x4e454152')).toBe(true);
+      expect(isTokenDetectionEnabledForNetwork('eip155:1313161554')).toBe(true);
     });
 
     it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
-      expect(isTokenDetectionEnabledForNetwork('some other chain ID')).toBe(
+      expect(isTokenDetectionEnabledForNetwork('eip155:otherid')).toBe(
         false,
       );
     });

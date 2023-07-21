@@ -60,7 +60,6 @@ import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
  * it can't be converted.
  */
 const getDisplayChainId = (chainId) => {
-  console.log('display', chainId);
   if (!chainId || typeof chainId !== 'string') {
     return chainId;
   }
@@ -91,7 +90,6 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  console.log('selected network', selectedNetwork);
   const selectedNetworkName =
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');

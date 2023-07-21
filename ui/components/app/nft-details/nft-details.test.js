@@ -239,7 +239,7 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            caipChainId: '0xaa36a7',
+            caipChainId: 'eip155:11155111',
           },
         },
       };

@@ -94,7 +94,7 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
+      caipChainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -223,7 +223,7 @@ describe('Send Page', () => {
             time: 1620723786838,
             status: 'unapproved',
             metamaskNetworkId: '5',
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             loadingDefaults: false,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -261,7 +261,7 @@ describe('Send Page', () => {
             time: 1620723786838,
             status: 'unapproved',
             metamaskNetworkId: '5',
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             loadingDefaults: false,
             txParams: {
               from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',

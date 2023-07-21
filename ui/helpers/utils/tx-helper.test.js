@@ -4,7 +4,7 @@ import txHelper from './tx-helper';
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {
     const metamaskNetworkId = NETWORK_IDS.MAINNET;
-    const chainId = CHAIN_IDS.MAINNET;
+    const caipChainId = CHAIN_IDS.MAINNET;
     const mockUnapprovedTxs = {
       a: { metamaskNetworkId, time: 3 },
       b: { metamaskNetworkId, time: 6 },
@@ -25,7 +25,7 @@ describe('txHelper', () => {
       null,
       null,
       metamaskNetworkId,
-      chainId,
+      caipChainId,
     );
 
     expect(sorted[0].time).toStrictEqual(1);

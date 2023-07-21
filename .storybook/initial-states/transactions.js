@@ -27,7 +27,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '5208',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: null,
     sendFlowHistory: [],
@@ -53,7 +53,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         metamaskNetworkId: '5',
         originalGasEstimate: '5208',
         userEditedGasLimit: false,
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: false,
         dappSuggestedGasFees: null,
         sendFlowHistory: [],
@@ -204,7 +204,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     submittedTime: 1653527035924,
   },
   [MOCK_TX_TYPE.CONTRACT_INTERACTION]: {
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     dappSuggestedGasFees: {
       gas: '0x118f4',
       maxFeePerGas: '0x9502f91a',
@@ -349,7 +349,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '14609',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: null,
     sendFlowHistory: [],
@@ -379,7 +379,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         metamaskNetworkId: '5',
         originalGasEstimate: '14609',
         userEditedGasLimit: false,
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: false,
         dappSuggestedGasFees: null,
         sendFlowHistory: [],
@@ -667,7 +667,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0xb427',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
@@ -695,7 +695,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         metamaskNetworkId: '5',
         originalGasEstimate: '0xb427',
         userEditedGasLimit: false,
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: true,
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
@@ -921,7 +921,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0x118e0',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: {
       maxPriorityFeePerGas: '0x3B9ACA00',
@@ -1045,7 +1045,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: {
       gasPrice: '0x4a817c800',
@@ -1073,7 +1073,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         metamaskNetworkId: '5',
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: true,
         dappSuggestedGasFees: {
           gasPrice: '0x4a817c800',
@@ -1449,7 +1449,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     metamaskNetworkId: '5',
     originalGasEstimate: '0x10896',
     userEditedGasLimit: false,
-    chainId: '0x5',
+    caipChainId: 'eip155:5',
     loadingDefaults: false,
     dappSuggestedGasFees: null,
     sendFlowHistory: [
@@ -1499,7 +1499,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         metamaskNetworkId: '5',
         originalGasEstimate: '0x10896',
         userEditedGasLimit: false,
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         loadingDefaults: true,
         dappSuggestedGasFees: null,
         sendFlowHistory: [

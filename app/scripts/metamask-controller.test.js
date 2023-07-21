@@ -121,7 +121,7 @@ const firstTimeState = {
     providerConfig: {
       type: NETWORK_TYPES.RPC,
       rpcUrl: ALT_MAINNET_RPC_URL,
-      chainId: MAINNET_CHAIN_ID,
+      caipChainId: MAINNET_CHAIN_ID,
       ticker: ETH,
       nickname: 'Alt Mainnet',
       id: NETWORK_CONFIGURATION_ID_1,
@@ -130,7 +130,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_1]: {
         rpcUrl: ALT_MAINNET_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        chainId: MAINNET_CHAIN_ID,
+        caipChainId: MAINNET_CHAIN_ID,
         ticker: ETH,
         nickname: 'Alt Mainnet',
         id: NETWORK_CONFIGURATION_ID_1,
@@ -138,7 +138,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_2]: {
         rpcUrl: POLYGON_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
+        caipChainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Polygon',
         id: NETWORK_CONFIGURATION_ID_2,
@@ -146,7 +146,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_3]: {
         rpcUrl: POLYGON_RPC_URL_2,
         type: NETWORK_TYPES.RPC,
-        chainId: POLYGON_CHAIN_ID,
+        caipChainId: POLYGON_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Alt Polygon',
         id: NETWORK_CONFIGURATION_ID_1,

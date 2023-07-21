@@ -1104,7 +1104,7 @@ describe('Actions', () => {
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
-        chainId: '0x',
+        caipChainId: 'eip155:0',
         ticker: 'ETH',
         nickname: 'nickname',
         rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
@@ -1158,7 +1158,7 @@ describe('Actions', () => {
           {
             networkConfigurationId: 'networkConfigurationId',
             rpcUrl: 'newRpc',
-            chainId: '0x',
+            caipChainId: 'eip155:0',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
@@ -1176,7 +1176,7 @@ describe('Actions', () => {
           actions.editAndSetNetworkConfiguration({
             networkConfigurationId: 'networkConfigurationId',
             rpcUrl: 'newRpc',
-            chainId: '0x',
+            caipChainId: 'eip155:0',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
@@ -1207,7 +1207,7 @@ describe('Actions', () => {
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
-        chainId: '0x',
+        caipChainId: 'eip155:0',
         ticker: 'ETH',
         nickname: 'nickname',
         rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
@@ -1235,7 +1235,7 @@ describe('Actions', () => {
           actions.upsertNetworkConfiguration({
             networkConfigurationId: 'networkConfigurationId',
             rpcUrl: 'newRpc',
-            chainId: '0x',
+            caipChainId: 'eip155:0',
             ticker: 'ETH',
             nickname: 'nickname',
             rpcPrefs: { blockExplorerUrl: 'etherscan.io' },
@@ -1264,7 +1264,7 @@ describe('Actions', () => {
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
-        chainId: '0x',
+        caipChainId: 'eip155:0',
         ticker: 'ETH',
         nickname: 'nickname',
         rpcPrefs: { blockExplorerUrl: 'etherscan.io' },

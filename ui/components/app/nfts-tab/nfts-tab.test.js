@@ -148,7 +148,7 @@ const render = ({
   nftContracts = [],
   nfts = [],
   selectedAddress,
-  chainId = '0x1',
+  caipChainId = 'eip155:1',
   useNftDetection,
   onAddNFT = jest.fn(),
 }) => {
@@ -156,15 +156,15 @@ const render = ({
     metamask: {
       allNfts: {
         [ACCOUNT_1]: {
-          [chainId]: nfts,
+          [caipChainId]: nfts,
         },
       },
       allNftContracts: {
         [ACCOUNT_1]: {
-          [chainId]: nftContracts,
+          [caipChainId]: nftContracts,
         },
       },
-      providerConfig: { chainId },
+      providerConfig: { caipChainId },
       selectedAddress,
       useNftDetection,
       nftsDropdownState,
@@ -275,7 +275,7 @@ describe('NFT Items', () => {
 
     it('should render a link "Refresh list" when some NFTs are present on a non-mainnet chain, which, when clicked calls a method checkAndUpdateNftsOwnershipStatus', () => {
       render({
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         selectedAddress: ACCOUNT_1,
         nfts: NFTS,
         useNftDetection: true,

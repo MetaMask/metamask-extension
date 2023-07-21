@@ -76,7 +76,7 @@ const getStateTree = ({
   metamask: {
     providerConfig: {
       nickname: 'mainnet',
-      chainId: CHAIN_IDS.MAINNET,
+      caipChainId: CHAIN_IDS.MAINNET,
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,

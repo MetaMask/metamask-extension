@@ -39,7 +39,7 @@ describe('Onboarding Flow', () => {
       identities: {},
       providerConfig: {
         type: NETWORK_TYPES.GOERLI,
-        chainId: '0x0',
+        caipChainId: 'eip155:0',
       },
     },
     localeMessages: {

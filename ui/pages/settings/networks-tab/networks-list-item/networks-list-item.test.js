@@ -7,7 +7,7 @@ import NetworksListItem from '.';
 const mockState = {
   metamask: {
     providerConfig: {
-      chainId: '0x5',
+      caipChainId: 'eip155:5',
       nickname: '',
       rpcPrefs: {},
       rpcUrl: 'https://goerli.infura.io/v3/undefined',

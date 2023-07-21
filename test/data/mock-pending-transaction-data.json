@@ -6,7 +6,7 @@
     "time": 1631558469046,
     "status": "approved",
     "metamaskNetworkId": "5",
-    "chainId": "0x5",
+    "caipChainId": "eip155:5",
     "loadingDefaults": false,
     "dappSuggestedGasFees": null,
     "txParams": {
@@ -26,7 +26,7 @@
         "time": 1631558469046,
         "status": "unapproved",
         "metamaskNetworkId": "5",
-        "chainId": "0x5",
+        "caipChainId": "eip155:5",
         "loadingDefaults": true,
         "dappSuggestedGasFees": null,
         "txParams": {
@@ -82,7 +82,7 @@
     "time": 1631558469046,
     "status": "approved",
     "metamaskNetworkId": "5",
-    "chainId": "0x5",
+    "caipChainId": "eip155:5",
     "loadingDefaults": false,
     "dappSuggestedGasFees": null,
     "txParams": {
@@ -102,7 +102,7 @@
         "time": 1631558469046,
         "status": "unapproved",
         "metamaskNetworkId": "5",
-        "chainId": "0x5",
+        "caipChainId": "eip155:5",
         "loadingDefaults": true,
         "dappSuggestedGasFees": null,
         "txParams": {
@@ -159,7 +159,7 @@
       "time": 1631558469046,
       "status": "approved",
       "metamaskNetworkId": "5",
-      "chainId": "0x5",
+      "caipChainId": "eip155:5",
       "loadingDefaults": false,
       "dappSuggestedGasFees": null,
       "txParams": {
@@ -179,7 +179,7 @@
           "time": 1631558469046,
           "status": "unapproved",
           "metamaskNetworkId": "5",
-          "chainId": "0x5",
+          "caipChainId": "eip155:5",
           "loadingDefaults": true,
           "dappSuggestedGasFees": null,
           "txParams": {

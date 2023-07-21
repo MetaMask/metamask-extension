@@ -15,7 +15,7 @@ describe('Confirm Detail Row Component', () => {
       networkStatus: 'available',
       providerConfig: {
         type: 'rpc',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
     },
   };

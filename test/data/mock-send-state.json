@@ -32,7 +32,7 @@
       "time": 1620723786838,
       "status": "unapproved",
       "metamaskNetworkId": "5",
-      "chainId": "0x5",
+      "caipChainId": "eip155:5",
       "loadingDefaults": false,
       "txParams": {
         "from": "0x64a845a5b02460acf8a3d84503b0d68d028b4bb4",
@@ -117,7 +117,7 @@
     "network": "5",
     "providerConfig": {
       "type": "rpc",
-      "chainId": "0x5"
+      "caipChainId": "eip155:5"
     },
     "keyrings": [
       {
@@ -277,7 +277,7 @@
       "0x5": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
           "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-          "chainId": "0x5",
+          "caipChainId": "eip155:5",
           "isEns": false,
           "memo": "",
           "name": "Address Book Account 1"

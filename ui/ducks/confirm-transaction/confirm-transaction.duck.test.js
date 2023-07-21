@@ -346,7 +346,7 @@ describe('Confirm Transaction Duck', () => {
           networkId: '5',
           networkStatus: 'available',
           providerConfig: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
           },
           unapprovedTxs: {
             2603411941761054: {

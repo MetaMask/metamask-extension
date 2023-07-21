@@ -6,7 +6,7 @@ import NetworksTab from '.';
 const mockState = {
   metamask: {
     providerConfig: {
-      chainId: '0x539',
+      caipChainId: 'eip155:1337',
       nickname: '',
       rpcPrefs: {},
       rpcUrl: 'http://localhost:8545',

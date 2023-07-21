@@ -106,7 +106,7 @@ describe('AddNft', () => {
 
       expect(updateNftDropDownState).toHaveBeenCalledWith({
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          '0x5': {
+          'eip155:5': {
             '0x312BE6a98441F9F6e3F6246B13CA19701e0AC3B9': true,
             '0x495f947276749Ce646f68AC8c248420045cb7b5e': false,
           },

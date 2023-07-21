@@ -180,7 +180,8 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
           unapprovedTxs: {
             ...mockStoreInitialState.metamask.unapprovedTxs,
             '0x12333': {
-              chainId: mockStoreInitialState.metamask.providerConfig.chainId,
+              caipChainId:
+                mockStoreInitialState.metamask.providerConfig.caipChainId,
             },
           },
           unapprovedMsgCount: 2,

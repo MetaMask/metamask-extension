@@ -41,7 +41,7 @@ const customNetworkData = {
   metamask: {
     ...testData.metamask,
     providerConfig: {
-      chainId: '0x1',
+      caipChainId: 'eip155:1',
     },
   },
 };

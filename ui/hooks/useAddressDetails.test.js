@@ -10,7 +10,7 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
       },
       tokenList: {},
       ...stateVariables,
@@ -39,11 +39,11 @@ describe('useAddressDetails', () => {
       '0x06195827297c7A80a443b6894d3BDB8824b43896',
       {
         addressBook: {
-          '0x5': {
+          'eip155:5': {
             '0x06195827297c7A80a443b6894d3BDB8824b43896': {
               address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
               name: 'Address Book Account 1',
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
             },
           },
         },

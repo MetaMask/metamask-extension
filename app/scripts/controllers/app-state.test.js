@@ -338,10 +338,10 @@ describe('AppStateController', () => {
 
   describe('setFirstTimeUsedNetwork', () => {
     it('updates the array of the first time used networks', () => {
-      const chainId = '0x1';
+      const caipChainId = 'eip155:1';
 
-      appStateController.setFirstTimeUsedNetwork(chainId);
-      expect(appStateController.store.getState().usedNetworks[chainId]).toBe(
+      appStateController.setFirstTimeUsedNetwork(caipChainId);
+      expect(appStateController.store.getState().usedNetworks[caipChainId]).toBe(
         true,
       );
     });

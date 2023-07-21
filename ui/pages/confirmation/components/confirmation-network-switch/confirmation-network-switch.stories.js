@@ -11,7 +11,7 @@ export default {
   },
   args: {
     newNetwork: {
-      chainId: 'chainId',
+      caipChainId: 'caipChainId',
       name: 'Binance Smart Chain Mainnet',
     },
   },

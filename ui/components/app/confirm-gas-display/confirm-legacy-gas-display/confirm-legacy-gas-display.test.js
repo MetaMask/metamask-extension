@@ -39,7 +39,7 @@ const mmState = {
     txData: {
       id: 8393540981007587,
       status: 'unapproved',
-      chainId: '0x5',
+      caipChainId: 'eip155:5',
       txParams: {
         from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
@@ -111,21 +111,21 @@ describe('ConfirmLegacyGasDisplay', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', async () => {
-    mmState.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
-    mmState.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    mmState.metamask.providerConfig.caipChainId = CHAIN_IDS.OPTIMISM;
+    mmState.confirmTransaction.txData.caipChainId = CHAIN_IDS.OPTIMISM;
     const state = {
       metamask: {
         ...mmState.metamask,
         providerConfig: {
           ...mmState.metamask.providerConfig,
-          chainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CHAIN_IDS.OPTIMISM,
         },
       },
       confirmTransaction: {
         ...mmState.confirmTransaction,
         txData: {
           ...mmState.confirmTransaction.txData,
-          chainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CHAIN_IDS.OPTIMISM,
         },
       },
     };

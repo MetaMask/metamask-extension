@@ -23,13 +23,13 @@ const customNetworkStore = configureStore({
       ...{
         'test-networkConfigurationId-3': {
           rpcUrl: 'https://testrpc.com',
-          chainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CHAIN_IDS.OPTIMISM,
           nickname: OPTIMISM_DISPLAY_NAME,
           rpcPrefs: { imageUrl: OPTIMISM_TOKEN_IMAGE_URL },
         },
         'test-networkConfigurationId-4': {
           rpcUrl: 'https://testrpc.com',
-          chainId: CHAIN_IDS.BSC,
+          caipChainId: CHAIN_IDS.BSC,
           nickname: BSC_DISPLAY_NAME,
           rpcPrefs: { imageUrl: BNB_TOKEN_IMAGE_URL },
         },

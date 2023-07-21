@@ -366,7 +366,7 @@ describe('Swaps Util', () => {
         rawEthFee: '0.00323',
       };
       const actual = getFeeForSmartTransaction({
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
         currentCurrency: 'usd',
         conversionRate: 5,
         USDConversionRate: 5,
@@ -384,7 +384,7 @@ describe('Swaps Util', () => {
         rawEthFee: '0.00323',
       };
       const actual = getFeeForSmartTransaction({
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
         currentCurrency: 'gbp',
         conversionRate: 5,
         USDConversionRate: 5,
@@ -421,7 +421,7 @@ describe('Swaps Util', () => {
         accountAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
         tokenDecimals: 6,
         approvalTxMeta: null,
-        chainId: CHAIN_IDS.MAINNET,
+        caipChainId: CHAIN_IDS.MAINNET,
       };
     };
 
@@ -435,7 +435,7 @@ describe('Swaps Util', () => {
           props.accountAddress,
           props.tokenDecimals,
           props.approvalTxMeta,
-          props.chainId,
+          props.caipChainId,
         ),
       ).toBe(props.txMeta.swapMetaData.token_to_amount);
     });
@@ -451,7 +451,7 @@ describe('Swaps Util', () => {
           props.accountAddress,
           props.tokenDecimals,
           props.approvalTxMeta,
-          props.chainId,
+          props.caipChainId,
         ),
       ).toBeNull();
     });
@@ -467,7 +467,7 @@ describe('Swaps Util', () => {
           props.accountAddress,
           props.tokenDecimals,
           props.approvalTxMeta,
-          props.chainId,
+          props.caipChainId,
         ),
       ).toBeNull();
     });
@@ -483,7 +483,7 @@ describe('Swaps Util', () => {
           props.accountAddress,
           props.tokenDecimals,
           props.approvalTxMeta,
-          props.chainId,
+          props.caipChainId,
         ),
       ).toBeNull();
     });
@@ -499,7 +499,7 @@ describe('Swaps Util', () => {
           props.accountAddress,
           props.tokenDecimals,
           props.approvalTxMeta,
-          props.chainId,
+          props.caipChainId,
         ),
       ).toBeNull();
     });

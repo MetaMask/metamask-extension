@@ -13,11 +13,11 @@ describe('Wrong Network Notification', function () {
       ...testData.metamask,
       providerConfig: {
         type: 'test',
-        chainId: '3',
+        caipChainId: 'eip155:3',
       },
       selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       cachedBalances: {
-        '0x1': {
+        'eip155:1': {
           '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
         },
       },
@@ -64,10 +64,10 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          caipChainId: 'eip155:3',
         },
         cachedBalances: {
-          '0x1': {
+          'eip155:1': {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
           },
         },
@@ -90,10 +90,10 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          caipChainId: 'eip155:3',
         },
         cachedBalances: {
-          3: {
+          'eip155:3': {
             '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
           },
         },

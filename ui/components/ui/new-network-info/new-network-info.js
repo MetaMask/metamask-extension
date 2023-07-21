@@ -27,6 +27,7 @@ import { setFirstTimeUsedNetwork } from '../../../store/actions';
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Icon, IconName, Text } from '../../component-library';
 import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -50,7 +51,7 @@ const NewNetworkInfo = () => {
 
   const getIsTokenDetectionSupported = async () => {
     const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${providerConfig.caipChainId}`,
+      `${TOKEN_API_METASWAP_CODEFI_URL}${getEthChainIdHexFromCaipChainId(providerConfig.caipChainId)}`,
     );
 
     return !fetchedTokenData.error;

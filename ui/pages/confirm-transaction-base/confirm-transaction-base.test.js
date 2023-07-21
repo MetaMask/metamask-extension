@@ -94,7 +94,7 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     providerConfig: {
-      chainId: CHAIN_IDS.GOERLI,
+      caipChainId: CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
@@ -132,7 +132,7 @@ const baseStore = {
       status: TransactionStatus.unapproved,
       originalGasEstimate: '0x5208',
       userEditedGasLimit: false,
-      chainId: '0x5',
+      caipChainId: 'eip155:5',
       loadingDefaults: false,
       dappSuggestedGasFees: null,
       sendFlowHistory: [],
@@ -197,8 +197,8 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
-    mockedStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
-    mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.metamask.providerConfig.caipChainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.confirmTransaction.txData.caipChainId = CHAIN_IDS.OPTIMISM;
     const store = configureMockStore(middleware)(mockedStore);
     const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,

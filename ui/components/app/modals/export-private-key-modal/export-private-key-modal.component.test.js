@@ -29,7 +29,7 @@ describe('Export Private Key Modal', () => {
       },
       providerConfig: {
         type: 'rpc',
-        chainId: '0x5',
+        caipChainId: 'eip155:5',
         ticker: 'ETH',
         id: 'testNetworkConfigurationId',
       },
