@@ -1,0 +1,26 @@
+diff --git a/dist/SignatureController.js b/dist/SignatureController.js
+index a2f064efa2a2700db00767daa4ce6bd22b1932c4..17edb51b6c526f27fb4c19f2d2fda3d7140c66b4 100644
+--- a/dist/SignatureController.js
++++ b/dist/SignatureController.js
+@@ -283,8 +283,11 @@ _SignatureController_keyringController = new WeakMap(), _SignatureController_isE
+                 resultCallbacks = acceptResult.resultCallbacks;
+             }
+             catch (_a) {
++                signaturePromise.catch(() => {
++                    // Expecting reject error but throwing manually rather than waiting
++                });
+                 __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_cancelAbstractMessage).call(this, messageManager, messageId);
+-                throw eth_rpc_errors_1.ethErrors.provider.userRejectedRequest('User rejected the request.');
++                throw eth_rpc_errors_1.ethErrors.provider.userRejectedRequest(`MetaMask ${messageName} Signature: User denied message signature.`);
+             }
+             yield signMessage(messageParamsWithId, signingOpts);
+             const signatureResult = yield signaturePromise;
+@@ -305,7 +308,7 @@ _SignatureController_keyringController = new WeakMap(), _SignatureController_isE
+     return __awaiter(this, void 0, void 0, function* () {
+         return yield __classPrivateFieldGet(this, _SignatureController_instances, "m", _SignatureController_signAbstractMessage).call(this, __classPrivateFieldGet(this, _SignatureController_personalMessageManager, "f"), controller_utils_1.ApprovalType.PersonalSign, msgParams, (cleanMsgParams) => __awaiter(this, void 0, void 0, function* () { return yield __classPrivateFieldGet(this, _SignatureController_keyringController, "f").signPersonalMessage(cleanMsgParams); }));
+     });
+-}, _SignatureController_signTypedMessage = function _SignatureController_signTypedMessage(msgParams,
++}, _SignatureController_signTypedMessage = function _SignatureController_signTypedMessage(msgParams,
+ /* istanbul ignore next */
+ opts = { parseJsonData: true }) {
+     return __awaiter(this, void 0, void 0, function* () {
