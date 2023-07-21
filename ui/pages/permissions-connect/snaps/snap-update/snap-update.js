@@ -26,8 +26,8 @@ import {
   AvatarIcon,
   IconName,
   ValidTag,
+  Text,
 } from '../../../../components/component-library';
-import { Text } from '../../../../components/component-library/text/deprecated';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';

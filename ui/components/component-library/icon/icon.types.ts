@@ -108,7 +108,6 @@ export enum IconName {
   People = 'people',
   ProgrammingArrows = 'programming-arrows',
   MmmiPortfolioDashboard = 'portfolio-dashboard',
-  Compliance = 'compliance',
   Custody = 'custody',
   Question = 'question',
   Received = 'received',

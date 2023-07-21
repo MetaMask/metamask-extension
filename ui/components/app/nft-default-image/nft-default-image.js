@@ -12,7 +12,7 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import Box from '../../ui/box/box';
 
 export default function NftDefaultImage({

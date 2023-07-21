@@ -8,8 +8,8 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { ButtonLink, Icon, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { ButtonLink, Icon, IconName, Text } from '../../component-library';
+
 import {
   AlignItems,
   TextAlign,
@@ -82,7 +82,7 @@ export default function CustomSpendingCap({
           <Text
             key="custom-spending-cap"
             variant={TextVariant.bodySmBold}
-            as="h6"
+            as="span"
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
@@ -197,7 +197,7 @@ export default function CustomSpendingCap({
         <Text
           key="tooltip-text"
           variant={TextVariant.bodySmBold}
-          as="h6"
+          as="span"
           color={TextColor.errorDefault}
         >
           <Icon name={IconName.Warning} /> {t('beCareful')}

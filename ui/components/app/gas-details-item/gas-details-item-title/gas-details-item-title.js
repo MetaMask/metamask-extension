@@ -6,7 +6,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIsMainnet } from '../../../../selectors';
 import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 
 const GasDetailsItemTitle = () => {
   const t = useI18nContext();

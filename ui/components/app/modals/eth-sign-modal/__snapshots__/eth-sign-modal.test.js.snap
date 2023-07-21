@@ -23,12 +23,12 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
       </button>
     </div>
     <h3
-      class="box mm-text mm-text--heading-md mm-text--text-align-center box--margin-bottom-6 box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--margin-bottom-6 mm-box--color-text-default"
     >
       Use at your own risk
     </h3>
     <p
-      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code.
       <a
@@ -67,7 +67,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
         for="eth-sign__checkbox"
       >
         <span
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. 
         </span>
