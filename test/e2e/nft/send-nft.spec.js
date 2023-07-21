@@ -40,9 +40,6 @@ describe('Send NFT', function () {
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
         // Edit the NFT, ensure same address, and move forward
-        await driver.isElementPresentAndVisible(
-          '[data-testid="confirm-page-back-edit-button"]',
-        );
         await driver.clickElement(
           '[data-testid="confirm-page-back-edit-button"]',
         );

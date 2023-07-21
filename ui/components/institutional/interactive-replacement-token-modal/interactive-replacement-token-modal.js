@@ -60,7 +60,7 @@ const InteractiveReplacementTokenModal = () => {
 
     trackEvent({
       category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.ComplianceButtonClicked,
+      event: MetaMetricsEventName.InteractiveReplacementTokenButtonClicked,
     });
   };
 

@@ -7,8 +7,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Display,

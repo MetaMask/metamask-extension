@@ -1,33 +1,98 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
-import SignatureRequest from './signature-request.component';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../ducks/metamask/metamask';
+import {
+  accountsWithSendEtherInfoSelector,
+  conversionRateSelector,
+  getCurrentCurrency,
+  getMemoizedAddressBook,
+  getMemoizedMetaMaskIdentities,
+  getPreferences,
+  getSelectedAccount,
+  getTotalUnapprovedMessagesCount,
+  unconfirmedTransactionsHashSelector,
+} from '../../../selectors';
+import SignatureRequest from './signature-request';
 
 const baseProps = {
-  hardwareWalletRequiresConnection: false,
-  clearConfirmTransaction: () => undefined,
-  cancel: () => undefined,
-  cancelAll: () => undefined,
-  mostRecentOverviewPage: '/',
-  showRejectTransactionsConfirmationModal: () => undefined,
-  sign: () => undefined,
-  history: { push: '/' },
-  providerConfig: { type: 'rpc' },
-  nativeCurrency: 'ABC',
-  currentCurrency: 'def',
-  fromAccount: {
-    address: '0x123456789abcdef',
-    balance: '0x346ba7725f412cbfdb',
-    name: 'Antonio',
-  },
-  selectedAccount: {
-    address: '0x123456789abcdef',
+  clearConfirmTransaction: () => jest.fn(),
+  cancel: () => jest.fn(),
+  cancelAll: () => jest.fn(),
+  showRejectTransactionsConfirmationModal: () => jest.fn(),
+  sign: () => jest.fn(),
+};
+const mockStore = {
+  metamask: {
+    providerConfig: {
+      chainId: '0x539',
+      nickname: 'Localhost 8545',
+      rpcPrefs: {},
+      rpcUrl: 'http://localhost:8545',
+      ticker: 'ETH',
+      type: 'rpc',
+    },
+    preferences: {
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    accounts: {
+      '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+        address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        balance: '0x03',
+        name: 'John Doe',
+      },
+    },
+    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    nativeCurrency: 'ETH',
+    currentCurrency: 'usd',
+    conversionRate: null,
+    unapprovedTypedMessagesCount: 2,
   },
 };
+jest.mock('react-redux', () => {
+  const actual = jest.requireActual('react-redux');
 
+  return {
+    ...actual,
+    useSelector: jest.fn(),
+    useDispatch: () => jest.fn(),
+  };
+});
+
+const generateUseSelectorRouter = (opts) => (selector) => {
+  switch (selector) {
+    case getProviderConfig:
+      return opts.metamask.providerConfig;
+    case getCurrentCurrency:
+      return opts.metamask.currentCurrency;
+    case getNativeCurrency:
+      return opts.metamask.nativeCurrency;
+    case getTotalUnapprovedMessagesCount:
+      return opts.metamask.unapprovedTypedMessagesCount;
+    case getPreferences:
+      return opts.metamask.preferences;
+    case conversionRateSelector:
+      return opts.metamask.conversionRate;
+    case getSelectedAccount:
+      return opts.metamask.accounts[opts.metamask.selectedAddress];
+    case getMemoizedAddressBook:
+      return [];
+    case accountsWithSendEtherInfoSelector:
+      return Object.values(opts.metamask.accounts);
+    case unconfirmedTransactionsHashSelector:
+    case getMemoizedMetaMaskIdentities:
+      return {};
+    default:
+      return undefined;
+  }
+};
 describe('Signature Request Component', () => {
   const store = configureMockStore()(mockState);
 
@@ -35,6 +100,7 @@ describe('Signature Request Component', () => {
     let messageData;
 
     beforeEach(() => {
+      useSelector.mockImplementation(generateUseSelectorRouter(mockStore));
       messageData = {
         domain: {
           chainId: 97,
@@ -84,7 +150,17 @@ describe('Signature Request Component', () => {
     });
 
     it('should match snapshot when we want to switch to fiat', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            conversionRate: 231.06,
+          },
+        }),
+      );
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -95,7 +171,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={1567}
         />,
         store,
       );
@@ -105,6 +180,7 @@ describe('Signature Request Component', () => {
 
     it('should match snapshot when we are using eth', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -115,7 +191,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
         />,
         store,
       );
@@ -125,6 +200,7 @@ describe('Signature Request Component', () => {
 
     it('should render navigation', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -135,7 +211,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
         />,
         store,
       );
@@ -149,6 +224,7 @@ describe('Signature Request Component', () => {
         do_not_display: 'two',
       };
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -159,7 +235,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
         />,
         store,
       );
@@ -171,7 +246,17 @@ describe('Signature Request Component', () => {
     });
 
     it('should not render a reject multiple requests link if there is not multiple requests', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            unapprovedTypedMessagesCount: 0,
+          },
+        }),
+      );
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -182,7 +267,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
         />,
         store,
       );
@@ -194,6 +278,7 @@ describe('Signature Request Component', () => {
 
     it('should render a reject multiple requests link if there is multiple requests (greater than 1)', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -204,8 +289,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
@@ -217,6 +300,7 @@ describe('Signature Request Component', () => {
 
     it('should call reject all button when button is clicked', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -227,8 +311,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
@@ -242,6 +324,7 @@ describe('Signature Request Component', () => {
 
     it('should render text of reject all button', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -252,8 +335,6 @@ describe('Signature Request Component', () => {
           txData={{
             msgParams,
           }}
-          conversionRate={null}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
@@ -263,6 +344,7 @@ describe('Signature Request Component', () => {
 
     it('should render SecurityProviderBannerMessage component properly', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -271,7 +353,6 @@ describe('Signature Request Component', () => {
       const { queryByText } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
-          conversionRate={null}
           txData={{
             msgParams,
             securityProviderResponse: {
@@ -280,7 +361,6 @@ describe('Signature Request Component', () => {
               reason_header: 'Some reason header...',
             },
           }}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
@@ -296,6 +376,7 @@ describe('Signature Request Component', () => {
 
     it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
@@ -304,14 +385,12 @@ describe('Signature Request Component', () => {
       const { queryByText } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
-          conversionRate={null}
           txData={{
             msgParams,
             securityProviderResponse: {
               flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
             },
           }}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
@@ -327,27 +406,39 @@ describe('Signature Request Component', () => {
 
     it('should render a warning when the selected account is not the one being used to sign', () => {
       const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
         data: JSON.stringify(messageData),
         version: 'V4',
         origin: 'test',
       };
 
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          ...mockStore,
+          metamask: {
+            ...mockStore.metamask,
+            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            accounts: {
+              ...mockStore.metamask.accounts,
+              '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                balance: '0x0',
+                name: 'Account 1',
+              },
+            },
+          },
+        }),
+      );
+
       const { container } = renderWithProvider(
         <SignatureRequest
           {...baseProps}
-          selectedAccount={{
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            balance: '0x0',
-            name: 'Account 1',
-          }}
-          conversionRate={null}
           txData={{
             msgParams,
             securityProviderResponse: {
               flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
             },
           }}
-          unapprovedMessagesCount={2}
         />,
         store,
       );
