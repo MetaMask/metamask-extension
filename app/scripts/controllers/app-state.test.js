@@ -341,9 +341,9 @@ describe('AppStateController', () => {
       const caipChainId = 'eip155:1';
 
       appStateController.setFirstTimeUsedNetwork(caipChainId);
-      expect(appStateController.store.getState().usedNetworks[caipChainId]).toBe(
-        true,
-      );
+      expect(
+        appStateController.store.getState().usedNetworks[caipChainId],
+      ).toBe(true);
     });
   });
 

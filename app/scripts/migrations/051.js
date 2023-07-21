@@ -86,7 +86,7 @@ const BUILT_IN_NETWORKS = {
     networkId: NETWORK_IDS.LOCALHOST,
     chainId: CHAIN_IDS.LOCALHOST,
   },
-}
+};
 
 const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,

@@ -13,7 +13,7 @@ const customData = {
       caipChainId: 'eip155:3',
     },
     cachedBalances: {
-      ['eip155:3']: {
+      'eip155:3': {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
       },
     },

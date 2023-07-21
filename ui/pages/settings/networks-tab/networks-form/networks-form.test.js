@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
+import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import {
@@ -9,7 +10,6 @@ import {
   getRpcUrl,
 } from '../../../../../shared/constants/network';
 import NetworksForm from '.';
-import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({ metamask: {} });
@@ -149,7 +149,11 @@ describe('NetworkForm Component', () => {
       getByDisplayValue(propNetworkDisplay.selectedNetwork.rpcUrl),
     ).toBeInTheDocument();
     expect(
-      getByDisplayValue(getEthChainIdDecFromCaipChainId(propNetworkDisplay.selectedNetwork.caipChainId)),
+      getByDisplayValue(
+        getEthChainIdDecFromCaipChainId(
+          propNetworkDisplay.selectedNetwork.caipChainId,
+        ),
+      ),
     ).toBeInTheDocument();
     expect(
       getByDisplayValue(propNetworkDisplay.selectedNetwork.ticker),

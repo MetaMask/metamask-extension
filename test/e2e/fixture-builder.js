@@ -530,7 +530,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          ['eip155:1337']: [
+          'eip155:1337': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
             },
@@ -539,7 +539,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          ['eip155:1337']: [
+          'eip155:1337': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.ERC1155}`,
               tokenId: '1',
@@ -562,7 +562,7 @@ class FixtureBuilder {
     return this.withNftController({
       allNftContracts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          ['eip155:1337']: [
+          'eip155:1337': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               name: 'TestDappNFTs',
@@ -573,7 +573,7 @@ class FixtureBuilder {
       },
       allNfts: {
         '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
-          ['eip155:1337']: [
+          'eip155:1337': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
               description: 'Test Dapp NFTs for testing.',
@@ -733,7 +733,7 @@ class FixtureBuilder {
       ignoredTokens: [],
       detectedTokens: [],
       allTokens: {
-        ['eip155:1337)]: {
+        'eip155:1337': {
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.HST}`,

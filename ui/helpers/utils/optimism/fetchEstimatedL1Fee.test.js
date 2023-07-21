@@ -1,6 +1,5 @@
 import { HttpProvider } from 'ethjs';
 import nock from 'nock';
-import { toHex } from '@metamask/controller-utils';
 import fetchEstimatedL1Fee from './fetchEstimatedL1Fee';
 
 describe('fetchEstimatedL1Fee', () => {

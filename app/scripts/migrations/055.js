@@ -86,7 +86,7 @@ const BUILT_IN_NETWORKS = {
     networkId: NETWORK_IDS.LOCALHOST,
     chainId: CHAIN_IDS.LOCALHOST,
   },
-}
+};
 
 const version = 55;
 

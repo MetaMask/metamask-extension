@@ -78,9 +78,7 @@ describe('network utils', () => {
     });
 
     it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
-      expect(isTokenDetectionEnabledForNetwork('eip155:otherid')).toBe(
-        false,
-      );
+      expect(isTokenDetectionEnabledForNetwork('eip155:otherid')).toBe(false);
     });
 
     it('returns false given undefined', () => {

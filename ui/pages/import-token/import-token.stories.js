@@ -105,7 +105,8 @@ export default {
     identities,
     showSearchTab: true,
     mostRecentOverviewPage: DEFAULT_ROUTE,
-    caipChainId: networkConfigurations['test-networkConfigurationId-1'].caipChainId,
+    caipChainId:
+      networkConfigurations['test-networkConfigurationId-1'].caipChainId,
     rpcPrefs: networkConfigurations['test-networkConfigurationId-1'].rpcPrefs,
     tokenList,
     useTokenDetection: false,

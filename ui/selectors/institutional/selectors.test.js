@@ -174,7 +174,7 @@ describe('Institutional selectors', () => {
           },
           selectedAddress: accountAddress,
           providerConfig: {
-            caipChainId: 'eip155:1'
+            caipChainId: 'eip155:1',
           },
         },
       });
@@ -206,7 +206,7 @@ describe('Institutional selectors', () => {
           },
           selectedAddress: accountAddress,
           providerConfig: {
-            caipChainId: 'eip155:1'
+            caipChainId: 'eip155:1',
           },
         },
       });
@@ -238,7 +238,7 @@ describe('Institutional selectors', () => {
           },
           selectedAddress: accountAddress,
           providerConfig: {
-            caipChainId: 'eip155:1'
+            caipChainId: 'eip155:1',
           },
         },
       });

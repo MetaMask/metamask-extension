@@ -67,7 +67,7 @@ describe('add-ethereum-chain confirmation', () => {
         getByText('MetaMask does not verify custom networks.'),
       ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
-      // expect(container).toMatchSnapshot(); // caipChainId gets rendered as hex but snapshot has decimal
+      // expect(container).toMatchSnapshot(); // caipChainId gets rendered as hex but snapshot has decimal. snapshot should be updated
     });
   });
 });

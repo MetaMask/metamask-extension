@@ -61,7 +61,7 @@ describe('CustodyAccountList', () => {
       address: '0x1234567890123456789012345678901234567890',
       custodianDetails: undefined,
       labels: undefined,
-      caipChainId: 'eip155:1'
+      caipChainId: 'eip155:1',
     });
   });
 

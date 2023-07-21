@@ -1,6 +1,6 @@
 import migration55 from './055';
 
-const { CHAIN_IDS, NETWORK_TYPES } = migration55
+const { CHAIN_IDS, NETWORK_TYPES } = migration55;
 
 describe('migration #55', () => {
   it('should update the version metadata', async () => {
