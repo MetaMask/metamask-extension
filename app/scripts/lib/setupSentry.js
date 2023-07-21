@@ -133,6 +133,33 @@ export default function setupSentry({ release, getState }) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    /**
+     * autoSessionTracking defaults to true and operates by sending a session
+     * packet to sentry. This session packet does not appear to be filtered out
+     * via our beforeSend or FilterEvents integration. To avoid sending a
+     * request before we have the state tree and can validate the users
+     * preferences, we initiate this to false. Later, in startSession and
+     * endSession we modify this option and start the session or end the
+     * session manually.
+     *
+     * In sentry-install we call toggleSession after the page loads and state
+     * is available, this handles initiating the session for a user who has
+     * opted into MetaMetrics. This script is ran in both the background and UI
+     * so it should be effective at starting the session in both places.
+     *
+     * In the MetaMetricsController the session is manually started or stopped
+     * when the user opts in or out of MetaMetrics. This occurs in the
+     * setParticipateInMetaMetrics function which is exposed to the UI via the
+     * MetaMaskController.
+     *
+     * In actions.ts, when receiving an updated background state payload from
+     * the MetaMaskController, the session is toggled after confirming that the
+     * participateInMetaMetrics flag changed as part of that update.
+     *
+     * Types for the global Sentry object, and the new methods added as part of
+     * this effort were added to global.d.ts in the types folder.
+     */
+    autoSessionTracking: false,
     environment,
     integrations: [
       new FilterEvents({ getMetaMetricsEnabled }),
@@ -140,11 +167,85 @@ export default function setupSentry({ release, getState }) {
       new ExtraErrorData(),
     ],
     release,
-    beforeSend: (report) => rewriteReport(report, getState),
+    /**
+     * As additional insurance over the FilterEvents integration, we check the
+     * participateInMetaMetrics flag here and return null if the user has
+     * opted out of metrics. This prevents the payload from being sent. This
+     * change may result in the FilterEvents integration no longer being
+     * necessary, but that should be tested and executed in a future PR.
+     *
+     * TODO: Potentially remove the FilterEvents integration.
+     *
+     * @param {import('@sentry/types').Event} report - A sentry error event
+     * @returns {import('@sentry/types').Event} the modified report
+     */
+    beforeSend: (report) => {
+      if (getMetaMetricsEnabled() === false) {
+        return null;
+      }
+      return rewriteReport(report, getState);
+    },
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
 
-  return Sentry;
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted into MetaMetrics, change the autoSessionTracking option and start
+   * a new sentry session.
+   */
+  const startSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && getMetaMetricsEnabled() === true) {
+      options.autoSessionTracking = true;
+      hub.startSession();
+    }
+  };
+
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted out of MetaMetrics, change the autoSessionTracking option and end
+   * the current sentry session.
+   */
+  const endSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && getMetaMetricsEnabled() === false) {
+      options.autoSessionTracking = false;
+      hub.endSession();
+    }
+  };
+
+  /**
+   * Call the appropriate method (either startSession or endSession) depending
+   * on the state of metaMetrics optin and the state of autoSessionTracking on
+   * the Sentry client.
+   */
+  const toggleSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {
+      autoSessionTracking: false,
+    };
+    const isMetaMetricsEnabled = getMetaMetricsEnabled();
+    if (
+      isMetaMetricsEnabled === true &&
+      options.autoSessionTracking === false
+    ) {
+      startSession();
+    } else if (
+      isMetaMetricsEnabled === false &&
+      options.autoSessionTracking === true
+    ) {
+      endSession();
+    }
+  };
+
+  return {
+    ...Sentry,
+    startSession,
+    endSession,
+    toggleSession,
+  };
 }
 
 /**
