@@ -1,8 +1,7 @@
-import {
-  INFURA_PROVIDER_TYPES,
-  BUILT_IN_NETWORKS,
-} from '../../../shared/constants/network';
 import migration51 from './051';
+
+const { BUILT_IN_NETWORKS, INFURA_PROVIDER_TYPES } = migration51
+
 
 describe('migration #51', () => {
   it('should update the version metadata', async () => {

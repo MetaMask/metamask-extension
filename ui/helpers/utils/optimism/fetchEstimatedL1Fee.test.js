@@ -34,7 +34,7 @@ describe('fetchEstimatedL1Fee', () => {
         result: `0x0000000000000000000000000000000000000000000000000000${expectedGasFeeResult}`,
       });
 
-    const gasFee = await fetchEstimatedL1Fee(toHex(10), {
+    const gasFee = await fetchEstimatedL1Fee('eip155:10', {
       txParams: {
         gasPrice: '0xf4240',
         gas: '0xcf08',

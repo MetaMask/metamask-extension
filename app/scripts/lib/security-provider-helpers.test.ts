@@ -85,7 +85,7 @@ describe('securityProviderCheck', () => {
       const result = await securityProviderCheck(
         requestData,
         methodName,
-        '1',
+        'eip155:1',
         'en',
       );
 

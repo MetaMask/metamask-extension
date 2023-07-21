@@ -36,7 +36,7 @@ describe('Signature Request Data', () => {
         },
         providerConfig: {
           type: 'test',
-          chainId: '0x5',
+          caipChainId: 'eip155:5',
         },
         identities: {
           '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': {
@@ -49,11 +49,11 @@ describe('Signature Request Data', () => {
           },
         },
         addressBook: {
-          '0x5': {
+          'eip155:5': {
             '0x06195827297c7A80a443b6894d3BDB8824b43896': {
               address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
               name: 'Address Book Account 1',
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
             },
           },
         },

@@ -44,7 +44,7 @@ describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress]['eip155:5'];
 
   const props = {
     nft: nfts[5],

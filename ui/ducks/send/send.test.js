@@ -644,7 +644,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '',
+            caipChainId: '',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -669,7 +669,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x55',
+            caipChainId: 'eip155:85',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -693,7 +693,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '',
+            caipChainId: '',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -725,7 +725,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x514910771af9ca656af840dff83e8264ecf986ca'],
@@ -749,7 +749,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             tokens: [],
             useTokenDetection: true,
             tokenAddressList: ['0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'],
@@ -774,7 +774,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             tokens: [{ address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' }],
             useTokenDetection: true,
             tokenAddressList: [],
@@ -799,7 +799,7 @@ describe('Send Slice', () => {
         const action = {
           type: 'send/validateRecipientUserInput',
           payload: {
-            chainId: '0x5',
+            caipChainId: 'eip155:5',
             tokens: [{ address: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' }],
             useTokenDetection: true,
             tokenAddressList: ['0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'],
@@ -1294,7 +1294,7 @@ describe('Send Slice', () => {
               },
             },
             providerConfig: {
-              chainId: '0x5',
+              caipChainId: 'eip155:5',
             },
             useTokenDetection: true,
             tokenList: {
@@ -1576,7 +1576,7 @@ describe('Send Slice', () => {
           blockGasLimit: '',
           selectedAddress: '',
           providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
+            caipChainId: CHAIN_IDS.GOERLI,
           },
           cachedBalances: {
             [CHAIN_IDS.GOERLI]: {
@@ -1746,7 +1746,7 @@ describe('Send Slice', () => {
       const updateRecipientUserInputState = {
         metamask: {
           providerConfig: {
-            chainId: '',
+            caipChainId: '',
           },
           tokens: [],
           useTokenDetection: true,
@@ -1811,7 +1811,7 @@ describe('Send Slice', () => {
           'send/validateRecipientUserInput',
         );
         expect(actionResult[4].payload).toStrictEqual({
-          chainId: '',
+          caipChainId: '',
           tokens: [],
           useTokenDetection: true,
           isProbablyAnAssetContract: false,
@@ -2041,7 +2041,7 @@ describe('Send Slice', () => {
             addressBook: {},
             identities: {},
             providerConfig: {
-              chainId: '',
+              caipChainId: '',
             },
             tokens: [],
             useTokenDetection: true,
@@ -2166,7 +2166,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2215,7 +2215,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2373,7 +2373,7 @@ describe('Send Slice', () => {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
@@ -2508,7 +2508,7 @@ describe('Send Slice', () => {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
             providerConfig: {
-              chainId: CHAIN_IDS.GOERLI,
+              caipChainId: CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
@@ -2680,7 +2680,7 @@ describe('Send Slice', () => {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
           providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
+            caipChainId: CHAIN_IDS.GOERLI,
           },
           tokens: [
             {
@@ -2910,7 +2910,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2923,7 +2923,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: '0x539' },
+                providerConfig: { caipChainId: 'eip155:1337' },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2936,7 +2936,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: initialState,
@@ -2948,7 +2948,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2962,7 +2962,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2976,7 +2976,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { chainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: {
@@ -3117,7 +3117,7 @@ describe('Send Slice', () => {
               identities: {},
               addressBook: {},
               providerConfig: {
-                chainId: '0x5',
+                caipChainId: 'eip155:5',
               },
             },
           }),
@@ -3132,7 +3132,7 @@ describe('Send Slice', () => {
               addressBook: {},
               identities: {},
               providerConfig: {
-                chainId: '0x5',
+                caipChainId: 'eip155:5',
               },
             },
           }),
@@ -3180,7 +3180,7 @@ describe('Send Slice', () => {
               identities: {},
               addressBook: {},
               providerConfig: {
-                chainId: '0x5',
+                caipChainId: 'eip155:5',
               },
             },
           }),

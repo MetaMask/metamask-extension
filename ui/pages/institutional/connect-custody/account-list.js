@@ -77,7 +77,7 @@ export default function CustodyAccountList({
                         address: e.target.value,
                         custodianDetails: account.custodianDetails,
                         labels: account.labels,
-                        chainId: account.chainId,
+                        caipchainId: account.caipChainId,
                       })
                     }
                     checked={

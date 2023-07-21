@@ -131,7 +131,7 @@ export const WETH_OPTIMISM_CONTRACT_ADDRESS =
 export const WETH_ARBITRUM_CONTRACT_ADDRESS =
   '0x82af49447d8a07e3bd95bd0d56f35241523fbab1';
 
-const SWAPS_TESTNET_CHAIN_ID = '0x539';
+const SWAPS_TESTNET_CHAIN_ID = 'eip155:1337';
 
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';

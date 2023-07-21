@@ -60,8 +60,8 @@ export default class MMIController extends EventEmitter {
       undefined,
       undefined,
       this.securityProviderRequest,
-      // this is should be set now?
-      // getCurrentCaipChainId: ...
+      // is this needed now?
+      () => this.networkController.state.providerConfig.caipChainId,
     );
 
     // Prepare event listener after transactionUpdateController gets initiated

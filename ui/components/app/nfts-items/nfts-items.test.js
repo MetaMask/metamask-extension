@@ -25,7 +25,7 @@ jest.mock('../../../store/actions.ts', () => ({
 
 describe('NFTs Item Component', () => {
   const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress]['eip155:5'];
   const props = {
     collections: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -57,7 +57,7 @@ describe('NFTs Item Component', () => {
 
     const expectedParams = {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        '0x5': {
+        'eip155:5': {
           '0x495f947276749Ce646f68AC8c248420045cb7b5e': false,
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': true,
         },

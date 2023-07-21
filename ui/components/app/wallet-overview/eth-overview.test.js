@@ -12,12 +12,12 @@ jest.mock('../../../../shared/constants/network', () => ({
   ...jest.requireActual('../../../../shared/constants/network'),
   BUYABLE_CHAINS_MAP: {
     // MAINNET
-    '0x1': {
+    'eip155:1': {
       nativeCurrency: 'ETH',
       network: 'ethereum',
     },
     // POLYGON
-    '0x89': {
+    'eip155:137': {
       nativeCurrency: 'MATIC',
       network: 'polygon',
     },
@@ -33,7 +33,7 @@ describe('EthOverview', () => {
         caipChainId: CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
-        '0x1': {
+        'eip155:1': {
           '0x1': '0x1F4',
         },
       },
@@ -116,7 +116,7 @@ describe('EthOverview', () => {
             },
           },
           cachedBalances: {
-            '0x1': {
+            'eip155:1': {
               '0x1': '0x24da51d247e8b8',
             },
           },

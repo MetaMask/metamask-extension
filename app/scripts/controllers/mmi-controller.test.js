@@ -29,7 +29,7 @@ describe('MMIController', function () {
           ticker: 'ETH',
           type: 'rinkeby',
         },
-        getCurrentChainId: jest.fn(),
+        getCurrentCaipChainId: jest.fn(),
         getNetworkId: jest.fn(),
         onNetworkStateChange: jest.fn(),
       }),

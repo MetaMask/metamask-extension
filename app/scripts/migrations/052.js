@@ -1,5 +1,42 @@
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+
+const CHAIN_IDS = {
+  MAINNET: '0x1',
+  GOERLI: '0x5',
+  LOCALHOST: '0x539',
+  BSC: '0x38',
+  BSC_TESTNET: '0x61',
+  OPTIMISM: '0xa',
+  OPTIMISM_TESTNET: '0x1a4',
+  POLYGON: '0x89',
+  POLYGON_TESTNET: '0x13881',
+  AVALANCHE: '0xa86a',
+  AVALANCHE_TESTNET: '0xa869',
+  FANTOM: '0xfa',
+  FANTOM_TESTNET: '0xfa2',
+  CELO: '0xa4ec',
+  ARBITRUM: '0xa4b1',
+  HARMONY: '0x63564c40',
+  PALM: '0x2a15c308d',
+  SEPOLIA: '0xaa36a7',
+  LINEA_GOERLI: '0xe704',
+  LINEA_MAINNET: '0xe708',
+  AURORA: '0x4e454152',
+  MOONBEAM: '0x504',
+  MOONBEAM_TESTNET: '0x507',
+  MOONRIVER: '0x505',
+  CRONOS: '0x19',
+};
+
+const NETWORK_TYPES = {
+  GOERLI: 'goerli',
+  LOCALHOST: 'localhost',
+  MAINNET: 'mainnet',
+  RPC: 'rpc',
+  SEPOLIA: 'sepolia',
+  LINEA_GOERLI: 'linea-goerli',
+  LINEA_MAINNET: 'linea-mainnet',
+};
 
 const version = 52;
 
@@ -10,6 +47,8 @@ const version = 52;
  * chainId.
  */
 export default {
+  CHAIN_IDS,
+  NETWORK_TYPES,
   version,
   async migrate(originalVersionedData) {
     const versionedData = cloneDeep(originalVersionedData);

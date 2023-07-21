@@ -33,7 +33,7 @@ const props = {
   setUserAcknowledgedGasMissing: jest.fn(),
   renderSimulationFailureWarning: false,
   showCustomizeNonceModal: jest.fn(),
-  caipChainId: 'eip155:1337',
+  caipChainId: 'eip155:1338',
   rpcPrefs: {},
   isContract: true,
   useCurrencyRateCheck: true,

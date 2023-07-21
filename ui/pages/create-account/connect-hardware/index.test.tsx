@@ -18,7 +18,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../selectors', () => ({
-  getCurrentChainId: () => '0x1',
+  getCurrentCaipChainId: () => 'eip155:1',
   getRpcPrefsForCurrentProvider: () => {
     return {};
   },
