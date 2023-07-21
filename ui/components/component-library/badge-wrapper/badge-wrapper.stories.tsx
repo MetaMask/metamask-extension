@@ -9,7 +9,6 @@ import {
   BackgroundColor,
   DISPLAY,
   IconColor,
-  Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
