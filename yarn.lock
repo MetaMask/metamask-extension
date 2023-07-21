@@ -3731,9 +3731,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "@metamask-institutional/extension@npm:0.1.6"
+"@metamask-institutional/extension@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask-institutional/extension@npm:0.2.1"
   dependencies:
     "@ethereumjs/util": ^8.0.5
     "@metamask-institutional/custody-controller": ^0.2.8
@@ -3744,7 +3744,7 @@ __metadata:
     "@metamask-institutional/types": ^1.0.3
     jest-create-mock-instance: ^2.0.0
     jest-fetch-mock: 3.0.3
-  checksum: d62e30658fe6be6c6ee955148bbebf729f13070cb049f0080be3a0e2f97f9ba735fe390ad26855cdb2badcdf2bbc089e2dc9641caf5c1970adceb8e71199384f
+  checksum: 6d34c11962fe9f5029c5dcda48eabadc43a11c9a00e1dbfa494fbed3bebbeebd23667caea774a3df6602c1ab3d257d9759614c66de9da215c657003dc225671c
   languageName: node
   linkType: hard
 
@@ -3969,20 +3969,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "@metamask/controller-utils@npm:4.2.0"
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.0.1, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0, @metamask/controller-utils@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@metamask/controller-utils@npm:4.3.0"
   dependencies:
-    "@metamask/utils": ^5.0.2
+    "@metamask/utils": ^6.2.0
     "@spruceid/siwe-parser": 1.1.3
-    babel-runtime: ^6.26.0
     eth-ens-namehash: ^2.0.8
     eth-query: ^2.1.2
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     ethjs-unit: ^0.1.6
     fast-deep-equal: ^3.1.3
-  checksum: e71779577c37038e6e605a43ef6b9c1af82e0b3887a72c01f48ae1e4e2005116fc9d09c8b690139478c04dd2929e227642c5fd80cfbc81814d667c415c714228
+  checksum: e3e8f681289e451575181dab79efabcd04358d9a8acec83e1129d4c1e00ecfb39b4b7c7c149674c9645d818a0f192c268ef75ddb5442d229055f91edec60c76c
   languageName: node
   linkType: hard
 
@@ -4176,6 +4175,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-sig-util@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/eth-sig-util@npm:6.0.0"
+  dependencies:
+    "@ethereumjs/util": ^8.0.6
+    bn.js: ^4.12.0
+    ethereum-cryptography: ^2.0.0
+    ethjs-util: ^0.1.6
+    tweetnacl: ^1.0.3
+    tweetnacl-util: ^0.15.1
+  checksum: 76c173faed20d0d896561dbf3eb4ec3173e33288bf8844919643fd3e9fb6bc78f1ba8bd8a82252f4d13526ded4cc1aee27ae78f5b32642d9f97ef15fa230a12e
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-simple-keyring@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/eth-simple-keyring@npm:5.0.0"
@@ -4331,19 +4344,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/message-manager@npm:^7.0.0, @metamask/message-manager@npm:^7.0.2":
-  version: 7.0.2
-  resolution: "@metamask/message-manager@npm:7.0.2"
+"@metamask/message-manager@npm:^7.0.2, @metamask/message-manager@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@metamask/message-manager@npm:7.2.0"
   dependencies:
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.1.0
-    "@metamask/utils": ^5.0.2
+    "@metamask/base-controller": ^3.2.0
+    "@metamask/controller-utils": ^4.3.0
+    "@metamask/eth-sig-util": ^6.0.0
+    "@metamask/utils": ^6.2.0
     "@types/uuid": ^8.3.0
-    eth-sig-util: ^3.0.0
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: ee2f11a44fd7fae662aa72a0bfc02cb51327d1a42812c73aca291284a0dd2575836fd9e2a390e788da5e6515334e51863d839719762ceff65a56e60be14c046b
+  checksum: 450132c11d621218613f9769794d362da756b38235103d100fdd41ce571f891df96e665f1f111f0a5210e53b895c206bfd156d14e776b39c2c70a9855be1d530
   languageName: node
   linkType: hard
 
@@ -4671,41 +4684,41 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@npm:4.0.1":
-  version: 4.0.1
-  resolution: "@metamask/signature-controller@npm:4.0.1"
+"@metamask/signature-controller@npm:5.3.0":
+  version: 5.3.0
+  resolution: "@metamask/signature-controller@npm:5.3.0"
   dependencies:
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-    "@metamask/message-manager": ^7.0.0
-    "@metamask/utils": ^5.0.2
+    "@metamask/approval-controller": ^3.5.0
+    "@metamask/base-controller": ^3.2.0
+    "@metamask/controller-utils": ^4.3.0
+    "@metamask/message-manager": ^7.2.0
+    "@metamask/utils": ^6.2.0
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
     lodash: ^4.17.21
   peerDependencies:
-    "@metamask/approval-controller": ^3.3.0
-  checksum: 8d510fe3761f2c0ac39bb6b9891497012e3608559480aee11f8f76556573521b01ecde334f1ffd71e8fc674243ae7fa111d0f2aaa36f4466d2e9466998af6618
+    "@metamask/approval-controller": ^3.5.0
+  checksum: cc5865e32a72386e4eb43d5c8dc64be40410d9e30c8c2d91dc50d806b367d0ec5ce30e997a02ec9588cbb9ae835dc0426cc5ccdedb9dad1bdb6baa31e5360e70
   languageName: node
   linkType: hard
 
-"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.1#./.yarn/patches/@metamask-signature-controller-npm-4.0.1-013e64c9fd.patch::locator=metamask-crx%40workspace%3A.":
-  version: 4.0.1
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A4.0.1#./.yarn/patches/@metamask-signature-controller-npm-4.0.1-013e64c9fd.patch::version=4.0.1&hash=7f339b&locator=metamask-crx%40workspace%3A."
+"@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::locator=metamask-crx%40workspace%3A.":
+  version: 5.3.0
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::version=5.3.0&hash=98d890&locator=metamask-crx%40workspace%3A."
   dependencies:
-    "@metamask/approval-controller": ^3.3.0
-    "@metamask/base-controller": ^3.0.0
-    "@metamask/controller-utils": ^4.0.0
-    "@metamask/message-manager": ^7.0.0
-    "@metamask/utils": ^5.0.2
+    "@metamask/approval-controller": ^3.5.0
+    "@metamask/base-controller": ^3.2.0
+    "@metamask/controller-utils": ^4.3.0
+    "@metamask/message-manager": ^7.2.0
+    "@metamask/utils": ^6.2.0
     eth-rpc-errors: ^4.0.2
     ethereumjs-util: ^7.0.10
     immer: ^9.0.6
     lodash: ^4.17.21
   peerDependencies:
-    "@metamask/approval-controller": ^3.3.0
-  checksum: d678cf1763cfe9e13c0e5d357fcc44bd4580efc44a6fdca61ba6eed059c47c780fafaf08a075466a4886fbb9c6332544752bf7d25d515a37213c800cfc181665
+    "@metamask/approval-controller": ^3.5.0
+  checksum: 9d7d541c1a057b9174745593e1f5acd3616d12474a33cbfa8818cd5a79a525a36f1b7fa3f6b2fff71fc59dee59ee7aa7bdbf68a763c34b689ad83b340e738d66
   languageName: node
   linkType: hard
 
@@ -24195,7 +24208,7 @@ __metadata:
     "@material-ui/core": ^4.11.0
     "@metamask-institutional/custody-controller": 0.2.6
     "@metamask-institutional/custody-keyring": ^0.0.25
-    "@metamask-institutional/extension": ^0.1.6
+    "@metamask-institutional/extension": ^0.2.1
     "@metamask-institutional/institutional-features": ^1.1.8
     "@metamask-institutional/portfolio-dashboard": ^1.1.3
     "@metamask-institutional/rpc-allowlist": ^1.0.0
@@ -24245,7 +24258,7 @@ __metadata:
     "@metamask/rpc-methods-flask": "npm:@metamask/rpc-methods@0.37.1-flask.1"
     "@metamask/safe-event-emitter": ^2.0.0
     "@metamask/scure-bip39": ^2.0.3
-    "@metamask/signature-controller": ^4.0.1
+    "@metamask/signature-controller": ^5.3.0
     "@metamask/slip44": ^3.0.0
     "@metamask/smart-transactions-controller": ^4.0.0
     "@metamask/snaps-controllers": ^1.0.0-prerelease.1

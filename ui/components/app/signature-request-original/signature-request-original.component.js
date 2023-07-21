@@ -263,13 +263,21 @@ export default class SignatureRequestOriginal extends Component {
       mostRecentOverviewPage,
       resolvePendingApproval,
       completedTx,
-      txData: { id },
+      txData,
     } = this.props;
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (this.props.mmiOnSignCallback) {
+      await this.props.mmiOnSignCallback(txData);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
-    await resolvePendingApproval(id);
-    completedTx(id);
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    await resolvePendingApproval(txData.id);
+    completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
+    ///: END:ONLY_INCLUDE_IN
   };
 
   onCancel = async () => {
@@ -324,9 +332,11 @@ export default class SignatureRequestOriginal extends Component {
             }
             ///: END:ONLY_INCLUDE_IN
 
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
+            ///: END:ONLY_INCLUDE_IN
           }
         }}
         disabled={
