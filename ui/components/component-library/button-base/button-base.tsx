@@ -22,6 +22,7 @@ import {
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(
   <C extends React.ElementType = 'button' | 'a'>(
     {
+      as,
       block,
       children,
       className = '',
@@ -43,16 +44,20 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     }: ButtonBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const Tag = href ? 'a' : as || 'button';
+
+    const tagProps = href && Tag === 'a' ? { href, ...props } : props;
+    delete tagProps.as; // Remove the as prop when not using the 'a' tag
+
     return (
       <Text
-        as={href ? 'a' : 'button'}
+        as={Tag}
         backgroundColor={BackgroundColor.backgroundAlternative}
         variant={TextVariant.bodyMdMedium}
         color={loading ? TextColor.transparent : color}
         ref={ref}
-        {...(href ? { href } : {})}
-        {...(disabled && !href ? { disabled } : {})}
-        {...(externalLink
+        {...(Tag === 'button' ? { disabled } : {})}
+        {...(href && externalLink
           ? { target: '_blank', rel: 'noopener noreferrer' }
           : {})}
         paddingLeft={4}
@@ -74,7 +79,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.pill}
-        {...(props as TextProps<C>)}
+        {...(tagProps as TextProps<C>)}
       >
         {startIconName && (
           <Icon
