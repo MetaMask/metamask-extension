@@ -143,6 +143,8 @@ export default class MetaMetricsController {
       },
     });
 
+    global.sentry.toggleSentry(initState.participateInMetaMetrics ?? false);
+
     preferencesStore.subscribe(({ currentLocale }) => {
       this.locale = currentLocale.replace('_', '-');
     });
@@ -429,6 +431,7 @@ export default class MetaMetricsController {
     } else if (participateInMetaMetrics === false) {
       metaMetricsId = null;
     }
+    global.sentry.toggleSentry(participateInMetaMetrics);
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();

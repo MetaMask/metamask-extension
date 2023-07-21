@@ -99,6 +99,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.featureFlags = {};
   }
 
+  global.sentry.toggleSentry(metamaskState.participateInMetaMetrics);
+
   const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
     metamaskState.currentLocale,
   );

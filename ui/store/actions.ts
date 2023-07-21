@@ -1558,6 +1558,15 @@ export function updateMetamaskState(
         });
       }
     });
+    if (
+      isEqual(
+        newState.participateInMetaMetrics,
+        currentState.participateInMetaMetrics,
+      ) === false &&
+      newState.participateInMetaMetrics !== null
+    ) {
+      global.sentry.toggleSentry(newState.participateInMetaMetrics);
+    }
     // Also emit an event for the selected account changing, either due to a
     // property update or if the entire account changes.
     if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
