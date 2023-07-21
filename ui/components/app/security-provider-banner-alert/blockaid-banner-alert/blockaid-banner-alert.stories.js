@@ -16,17 +16,17 @@ export default {
     features: {
       control: 'array',
       description:
-        'ppomResponse.features value which is a list displayed as SecurityProviderBannerAlert details',
+        'securityAlertResponse.features value which is a list displayed as SecurityProviderBannerAlert details',
     },
     reason: {
       control: 'select',
       options: Object.values(BlockaidReason),
-      description: 'ppomResponse.reason value',
+      description: 'securityAlertResponse.reason value',
     },
     resultType: {
       control: 'select',
       options: Object.values(BlockaidResultType),
-      description: 'ppomResponse.resultType value',
+      description: 'securityAlertResponse.resultType value',
     },
   },
   args: {
@@ -37,6 +37,6 @@ export default {
 };
 
 export const DefaultStory = (args) => (
-  <BlockaidBannerAlert ppomResponse={args} />
+  <BlockaidBannerAlert securityAlertResponse={args} />
 );
 DefaultStory.storyName = 'Default';

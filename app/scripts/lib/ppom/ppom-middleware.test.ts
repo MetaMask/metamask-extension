@@ -30,9 +30,12 @@ describe('PPOMMiddleware', () => {
       usePPOM: async () => Promise.resolve('VALIDATION_RESULT'),
     };
     const middlewareFunction = createPPOMMiddleware(controller as any);
-    const req = { method: 'eth_sendTransaction', ppomResponse: undefined };
+    const req = {
+      method: 'eth_sendTransaction',
+      securityAlertResponse: undefined,
+    };
     await middlewareFunction(req, undefined, () => undefined);
-    expect(req.ppomResponse).toBeDefined();
+    expect(req.securityAlertResponse).toBeDefined();
   });
 
   it('should call next method when ppomController.usePPOM completes', async () => {

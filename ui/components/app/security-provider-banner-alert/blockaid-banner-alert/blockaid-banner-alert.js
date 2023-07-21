@@ -39,10 +39,14 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 /** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
 const SUSPCIOUS_REASON = [BlockaidReason.rawSignatureFarming];
 
-function BlockaidBannerAlert({
-  ppomResponse: { reason, resultType, features },
-}) {
+function BlockaidBannerAlert({ securityAlertResponse }) {
   const t = useContext(I18nContext);
+
+  if (!securityAlertResponse) {
+    return null;
+  }
+
+  const { reason, resultType, features } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
     return null;
@@ -84,7 +88,7 @@ function BlockaidBannerAlert({
 }
 
 BlockaidBannerAlert.propTypes = {
-  ppomResponse: PropTypes.object,
+  securityAlertResponse: PropTypes.object,
 };
 
 export default BlockaidBannerAlert;

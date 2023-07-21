@@ -7,7 +7,7 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-const mockPpomResponse = {
+const mockSecurityAlertResponse = {
   resultType: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
   description:
@@ -19,11 +19,19 @@ const mockPpomResponse = {
 };
 
 describe('Blockaid Banner Alert', () => {
-  it(`should not render when ppomResponse.resultType is '${BlockaidResultType.Benign}'`, () => {
+  it('should not render when securityAlertResponse is not present', () => {
+    const { container } = renderWithLocalization(
+      <BlockaidBannerAlert securityAlertResponse={undefined} />,
+    );
+
+    expect(container.querySelector('.mm-banner-alert')).toBeNull();
+  });
+
+  it(`should not render when securityAlertResponse.resultType is '${BlockaidResultType.Benign}'`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
-        ppomResponse={{
-          ...mockPpomResponse,
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
           resultType: BlockaidResultType.Benign,
         }}
       />,
@@ -32,11 +40,11 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should render '${Severity.Danger}' UI when ppomResponse.resultType is '${BlockaidResultType.Malicious}`, () => {
+  it(`should render '${Severity.Danger}' UI when securityAlertResponse.resultType is '${BlockaidResultType.Malicious}`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
-        ppomResponse={{
-          ...mockPpomResponse,
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
           resultType: BlockaidResultType.Malicious,
         }}
       />,
@@ -49,9 +57,9 @@ describe('Blockaid Banner Alert', () => {
     expect(dangerBannerAlert).toMatchSnapshot();
   });
 
-  it(`should render '${Severity.Warning}' UI when ppomResponse.resultType is '${BlockaidResultType.Warning}`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.resultType is '${BlockaidResultType.Warning}`, () => {
     const { container } = renderWithLocalization(
-      <BlockaidBannerAlert ppomResponse={mockPpomResponse} />,
+      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
     );
     const warningBannerAlert = container.querySelector(
       '.mm-banner-alert--severity-warning',
@@ -63,7 +71,7 @@ describe('Blockaid Banner Alert', () => {
 
   it('should render title, "This is a deceptive request"', () => {
     const { getByText } = renderWithLocalization(
-      <BlockaidBannerAlert ppomResponse={mockPpomResponse} />,
+      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
     );
 
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
@@ -72,8 +80,8 @@ describe('Blockaid Banner Alert', () => {
   it('should render title, "This is a suspicious request", when the reason is "raw_signature_farming"', () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert
-        ppomResponse={{
-          ...mockPpomResponse,
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
           reason: BlockaidReason.rawSignatureFarming,
         }}
       />,
@@ -90,7 +98,10 @@ describe('Blockaid Banner Alert', () => {
 
     const { container, getByText } = renderWithLocalization(
       <BlockaidBannerAlert
-        ppomResponse={{ ...mockPpomResponse, features: mockFeatures }}
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
+          features: mockFeatures,
+        }}
       />,
     );
 
@@ -133,7 +144,7 @@ describe('Blockaid Banner Alert', () => {
       it(`should render for '${reason}' correctly`, () => {
         const { getByText } = renderWithLocalization(
           <BlockaidBannerAlert
-            ppomResponse={{ ...mockPpomResponse, reason }}
+            securityAlertResponse={{ ...mockSecurityAlertResponse, reason }}
           />,
         );
 
