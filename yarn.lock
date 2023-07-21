@@ -4705,7 +4705,7 @@ __metadata:
 
 "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::locator=metamask-crx%40workspace%3A.":
   version: 5.3.0
-  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::version=5.3.0&hash=b8c6ab&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/signature-controller@patch:@metamask/signature-controller@npm%3A5.3.0#./.yarn/patches/@metamask-signature-controller-npm-5.3.0-225628460b.patch::version=5.3.0&hash=98d890&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": ^3.5.0
     "@metamask/base-controller": ^3.2.0
@@ -4718,7 +4718,7 @@ __metadata:
     lodash: ^4.17.21
   peerDependencies:
     "@metamask/approval-controller": ^3.5.0
-  checksum: dcc094dc6fd37ceeff614d53af4cf483f2f9fed034f9fec107290c27d7a12da7ba2db24f59fe98cde2bb4781383d82d904fe10d33f0bd8fac1af5833e1b5903c
+  checksum: 9d7d541c1a057b9174745593e1f5acd3616d12474a33cbfa8818cd5a79a525a36f1b7fa3f6b2fff71fc59dee59ee7aa7bdbf68a763c34b689ad83b340e738d66
   languageName: node
   linkType: hard
 
