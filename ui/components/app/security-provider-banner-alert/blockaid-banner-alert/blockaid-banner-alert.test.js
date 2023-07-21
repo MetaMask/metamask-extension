@@ -69,12 +69,12 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it('should render title, "This is a suspicious request", when the reason is "signature_farming"', () => {
+  it('should render title, "This is a suspicious request", when the reason is "raw_signature_farming"', () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert
         ppomResponse={{
           ...mockPpomResponse,
-          reason: BlockaidReason.signatureFarming,
+          reason: BlockaidReason.rawSignatureFarming,
         }}
       />,
     );
@@ -115,12 +115,12 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.rawNativeTokenTransfer]:
         'If you approve this request, a third party known for scams will take all your assets.',
+      [BlockaidReason.rawSignatureFarming]:
+        'If you approve this request, you might lose your assets.',
       [BlockaidReason.seaportFarming]:
         'If you approve this request, someone can steal your assets listed on OpenSea.',
       [BlockaidReason.setApprovalForAll]:
         'If you approve this request, a third party known for scams might take all your assets.',
-      [BlockaidReason.signatureFarming]:
-        'If you approve this request, you might lose your assets.',
       [BlockaidReason.tradeOrderFarming]:
         'If you approve this request, you might lose your assets.',
       [BlockaidReason.transferFromFarming]:

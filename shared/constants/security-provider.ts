@@ -31,12 +31,12 @@ export enum BlockaidReason {
   permitFarming = 'permit_farming',
   /** Direct theft of native assets (ETH/MATIC/AVAX/ etc …)  */
   rawNativeTokenTransfer = 'raw_native_token_transfer',
+  /** Malicious raw signature from the user   */
+  rawSignatureFarming = 'raw_signature_farming',
   /** Malicious signature on a Seaport order  */
   seaportFarming = 'seaport_farming',
   /** setApprovalForAll for a malicious operator  */
   setApprovalForAll = 'set_approval_for_all',
-  /** Malicious raw signature from the user   */
-  signatureFarming = 'signature_farming',
   /** Malicious signature on other type of trade order (Zero-X / Rarible / etc..)   */
   tradeOrderFarming = 'trade_order_farming',
   /** Direct theft of assets using transfer  */

@@ -25,7 +25,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
 
-  [BlockaidReason.signatureFarming]: 'blockaidDescriptionMightLoseAssets',
+  [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
@@ -37,7 +37,7 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 });
 
 /** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
-const SUSPCIOUS_REASON = [BlockaidReason.seaportFarming];
+const SUSPCIOUS_REASON = [BlockaidReason.rawSignatureFarming];
 
 function BlockaidBannerAlert({
   ppomResponse: { reason, resultType, features },
