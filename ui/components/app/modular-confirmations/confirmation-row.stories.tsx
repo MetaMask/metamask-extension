@@ -18,7 +18,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   label: 'Key',
-  value: 'Value',
+  children: 'Value',
 };
 
 export default ConfirmationRowStory;
