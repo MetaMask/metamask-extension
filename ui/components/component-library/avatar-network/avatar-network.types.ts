@@ -1,6 +1,5 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
-import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 
 export enum AvatarNetworkSize {
   Xs = 'xs',

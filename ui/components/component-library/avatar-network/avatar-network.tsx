@@ -10,9 +10,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
-export const AvatarNetwork = React.forwardRef(
+export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
     {
       size = AvatarNetworkSize.Md,
@@ -87,5 +88,3 @@ export const AvatarNetwork = React.forwardRef(
     );
   },
 );
-
-AvatarNetwork.displayName = 'AvatarNetwork';
