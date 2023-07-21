@@ -13,10 +13,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
-  Text,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';

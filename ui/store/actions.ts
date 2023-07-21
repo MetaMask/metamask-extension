@@ -2402,6 +2402,18 @@ export function hideModal(): Action {
   };
 }
 
+export function showImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_OPEN,
+  };
+}
+
+export function hideImportNftsModal(): Action {
+  return {
+    type: actionConstants.IMPORT_NFTS_MODAL_CLOSE,
+  };
+}
+
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4331,6 +4343,16 @@ export function setTransactionSecurityCheckEnabled(
     }
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+export function setSecurityAlertsEnabled(val: boolean): void {
+  try {
+    submitRequestToBackground('setSecurityAlertsEnabled', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);

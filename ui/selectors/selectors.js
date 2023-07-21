@@ -92,6 +92,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
+import { BackgroundColor } from '../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -601,6 +602,18 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+export function getTestNetworkBackgroundColor(state) {
+  const currentNetwork = state.metamask.providerConfig.ticker;
+  switch (true) {
+    case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
+      return BackgroundColor.goerli;
+    case currentNetwork?.includes(SEPOLIA_DISPLAY_NAME):
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
 }
 
 export function getDisabledRpcMethodPreferences(state) {
@@ -1419,6 +1432,18 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+/**
+ * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsEnabled(state) {
+  return state.metamask.securityAlertsEnabled;
+}
+///: END:ONLY_INCLUDE_IN
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);

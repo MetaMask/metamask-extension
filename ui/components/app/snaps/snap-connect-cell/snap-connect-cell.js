@@ -13,8 +13,8 @@ import {
   Icon,
   IconName,
   IconSize,
-  Text,
   ValidTag,
+  Text,
 } from '../../../component-library';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

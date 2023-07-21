@@ -17,8 +17,8 @@ import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
   Icon,
+  Text,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,

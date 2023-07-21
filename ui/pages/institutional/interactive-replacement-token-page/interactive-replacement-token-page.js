@@ -17,7 +17,6 @@ import {
   showInteractiveReplacementTokenBanner,
 } from '../../../store/institutional/institution-background';
 import {
-  Text,
   Label,
   Icon,
   ButtonLink,
@@ -27,6 +26,7 @@ import {
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
 import {
   OverflowWrap,

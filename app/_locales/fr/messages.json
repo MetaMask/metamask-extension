@@ -2753,9 +2753,6 @@
   "publicAddress": {
     "message": "Adresse publique"
   },
-  "queue": {
-    "message": "File d’attente"
-  },
   "queued": {
     "message": "En attente"
   },

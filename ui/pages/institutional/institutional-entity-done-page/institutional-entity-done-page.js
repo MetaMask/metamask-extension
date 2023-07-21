@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Text,
   Box,
   Button,
   BUTTON_VARIANT,
+  Text,
 } from '../../../components/component-library';
 import {
   TextColor,
