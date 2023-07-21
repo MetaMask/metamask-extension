@@ -3,11 +3,11 @@ import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.typ
 import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
 
 export enum AvatarNetworkSize {
-  Xs = AvatarBaseSize.Xs,
-  Sm = AvatarBaseSize.Sm,
-  Md = AvatarBaseSize.Md,
-  Lg = AvatarBaseSize.Lg,
-  Xl = AvatarBaseSize.Xl,
+  Xs = 'xs',
+  Sm = 'sm',
+  Md = 'md',
+  Lg = 'lg',
+  Xl = 'xl',
 }
 
 /**
