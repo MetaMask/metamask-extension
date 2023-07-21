@@ -6,7 +6,7 @@ import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
 import { Text } from '../../../components/component-library/text/deprecated';
-import { BannerAlert } from '../../../components/component-library';
+import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   TextVariant,
   FONT_WEIGHT,
@@ -55,7 +55,7 @@ export default function ImportToken({
         display={DISPLAY.FLEX}
         className="import-token"
       >
-        <BannerAlert severity="danger" description={t('importTokenWarning')} />
+        <ActionableMessage type="danger" message={t('importTokenWarning')} />
         <UrlIcon
           url={tokenForImport.iconUrl}
           className="import-token__token-icon"
