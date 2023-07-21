@@ -5687,18 +5687,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:^1.58.0":
-  version: 1.58.0
-  resolution: "@sentry/cli@npm:1.58.0"
+"@sentry/cli@npm:^2.19.4":
+  version: 2.19.4
+  resolution: "@sentry/cli@npm:2.19.4"
   dependencies:
     https-proxy-agent: ^5.0.0
-    mkdirp: ^0.5.5
-    node-fetch: ^2.6.0
+    node-fetch: ^2.6.7
     progress: ^2.0.3
     proxy-from-env: ^1.1.0
+    which: ^2.0.2
   bin:
     sentry-cli: bin/sentry-cli
-  checksum: fc781bbffcf5cd970bb023168421ad89bca4184c2ddfbfddde92f4f5333c8b9075e9e16a8a4b192ecc3b197ac97062715e7b350c306ccc538fc01b955b06c3bb
+  checksum: 1f2442857a5eec2bc6f872a633d88fc2f11ed7f434db36627a034d904390f4cbbb4dccc33c571a8815e423cd36b863c72621298d49a1541b28370c7f7308f0dc
   languageName: node
   linkType: hard
 
@@ -24275,7 +24275,7 @@ __metadata:
     "@reduxjs/toolkit": ^1.6.2
     "@segment/loosely-validate-event": ^2.0.0
     "@sentry/browser": ^7.53.0
-    "@sentry/cli": ^1.58.0
+    "@sentry/cli": ^2.19.4
     "@sentry/integrations": ^7.53.0
     "@sentry/types": ^7.53.0
     "@sentry/utils": ^7.53.0
@@ -25863,7 +25863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2, node-fetch@npm:^2.6.0, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.11, node-fetch@npm:^2.6.7, node-fetch@npm:~2.6.1":
+"node-fetch@npm:^2, node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.11, node-fetch@npm:^2.6.7, node-fetch@npm:~2.6.1":
   version: 2.6.11
   resolution: "node-fetch@npm:2.6.11"
   dependencies:
