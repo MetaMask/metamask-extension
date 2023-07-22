@@ -152,9 +152,9 @@ export default function setupSentry({ release, getState }) {
      * setParticipateInMetaMetrics function which is exposed to the UI via the
      * MetaMaskController.
      *
-     * In actions.ts, when receiving an updated background state payload from
-     * the MetaMaskController, the session is toggled after confirming that the
-     * participateInMetaMetrics flag changed as part of that update.
+     * In actions.ts, after sending the updated participateInMetaMetrics flag
+     * to the background, we call toggleSession to ensure sentry is kept in
+     * sync with the user's preference.
      *
      * Types for the global Sentry object, and the new methods added as part of
      * this effort were added to global.d.ts in the types folder.
