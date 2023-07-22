@@ -14,7 +14,6 @@ import {
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderColor,
   Display,
   FlexDirection,
