@@ -2889,7 +2889,7 @@ export function setParticipateInMetaMetrics(
            * changed. The logic to determine which way to toggle is in the
            * toggleSession handler in setupSentry.js.
            */
-          global.sentry.toggleSession();
+          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,

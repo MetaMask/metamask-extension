@@ -10,16 +10,22 @@ declare class Platform {
 }
 
 declare class SentryObject extends Sentry {
+  // Verifies that the user has opted into metrics and then updates the sentry
+  // instance to track sessions and begins the session.
   startSession: () => void;
 
+  // Verifies that the user has opted out of metrics and then updates the
+  // sentry instance to NOT track sessions and ends the current session.
   endSession: () => void;
 
+  // Calls either startSession or endSession based on optin status
   toggleSession: () => void;
 }
 
 export declare global {
   var platform: Platform;
-  var sentry: Sentry;
+  // Sentry is undefined in dev, so use optional chaining
+  var sentry: SentryObject | undefined;
 
   namespace jest {
     interface Matchers<R> {

@@ -16,7 +16,11 @@ global.sentry = setupSentry({
  */
 function waitForStateHooks() {
   if (global.stateHooks.getSentryState) {
-    global.sentry.toggleSession();
+    // sentry is not defined in dev mode, so if sentry doesn't exist at this
+    // point it means that we are in dev mode and do not need to toggle the
+    // session. Using optional chaining is sufficient to prevent the error in
+    // development.
+    global.sentry?.toggleSession();
   } else {
     setTimeout(waitForStateHooks, 100);
   }
