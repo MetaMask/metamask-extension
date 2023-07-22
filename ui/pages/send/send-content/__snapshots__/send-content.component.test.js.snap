@@ -273,8 +273,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                   </h6>
                 </div>
                 <h6
-                  align="end"
-                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-box--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                 >
                   <div
                     class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
