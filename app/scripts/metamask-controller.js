@@ -499,15 +499,13 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController.trackEvent({
             event: MetaMetricsEventName.NftAdded,
             category: MetaMetricsEventCategory.Wallet,
-            properties: {
+            sensitiveProperties: {
               token_contract_address: address,
               token_symbol: symbol,
-              asset_type: AssetType.NFT,
+              token_id: tokenId,
               token_standard: standard,
+              asset_type: AssetType.NFT,
               source,
-            },
-            sensitiveProperties: {
-              tokenId,
             },
           }),
       },
@@ -1196,28 +1194,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.mmiController = new MMIController({
-      mmiConfigurationController: this.mmiConfigurationController,
-      keyringController: this.keyringController,
-      txController: this.txController,
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-      preferencesController: this.preferencesController,
-      appStateController: this.appStateController,
-      transactionUpdateController: this.transactionUpdateController,
-      custodyController: this.custodyController,
-      institutionalFeaturesController: this.institutionalFeaturesController,
-      getState: this.getState.bind(this),
-      getPendingNonce: this.getPendingNonce.bind(this),
-      accountTracker: this.accountTracker,
-      metaMetricsController: this.metaMetricsController,
-      networkController: this.networkController,
-      permissionController: this.permissionController,
-      platform: this.platform,
-      extension: this.extension,
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
         status === TransactionStatus.confirmed ||
@@ -1379,6 +1355,29 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.mmiController = new MMIController({
+      mmiConfigurationController: this.mmiConfigurationController,
+      keyringController: this.keyringController,
+      txController: this.txController,
+      securityProviderRequest: this.securityProviderRequest.bind(this),
+      preferencesController: this.preferencesController,
+      appStateController: this.appStateController,
+      transactionUpdateController: this.transactionUpdateController,
+      custodyController: this.custodyController,
+      institutionalFeaturesController: this.institutionalFeaturesController,
+      getState: this.getState.bind(this),
+      getPendingNonce: this.getPendingNonce.bind(this),
+      accountTracker: this.accountTracker,
+      metaMetricsController: this.metaMetricsController,
+      networkController: this.networkController,
+      permissionController: this.permissionController,
+      signatureController: this.signatureController,
+      platform: this.platform,
+      extension: this.extension,
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     this.swapsController = new SwapsController(
       {
         getBufferedGasLimit:
@@ -1496,6 +1495,7 @@ export default class MetamaskController extends EventEmitter {
       // tx signing
       processTransaction: this.newUnapprovedTransaction.bind(this),
       // msg signing
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
         this.signatureController,
       ),
@@ -1515,8 +1515,25 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.newUnsignedPersonalMessage.bind(
           this.signatureController,
         ),
+      ///: END:ONLY_INCLUDE_IN
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      /* eslint-disable no-dupe-keys */
+      processEthSignMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessageV3: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processTypedMessageV4: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
+      processPersonalMessage: this.mmiController.newUnsignedMessage.bind(
+        this.mmiController,
+      ),
       setTypedMessageInProgress:
         this.signatureController.setTypedMessageInProgress.bind(
           this.signatureController,
@@ -1525,6 +1542,7 @@ export default class MetamaskController extends EventEmitter {
         this.signatureController.setPersonalMessageInProgress.bind(
           this.signatureController,
         ),
+      /* eslint-enable no-dupe-keys */
       ///: END:ONLY_INCLUDE_IN
 
       processEncryptionPublicKey:
@@ -2487,30 +2505,6 @@ export default class MetamaskController extends EventEmitter {
       getMmiConfiguration:
         this.mmiConfigurationController.getConfiguration.bind(
           this.mmiConfigurationController,
-        ),
-      setComplianceAuthData:
-        this.institutionalFeaturesController.setComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      deleteComplianceAuthData:
-        this.institutionalFeaturesController.deleteComplianceAuthData.bind(
-          this.institutionalFeaturesController,
-        ),
-      generateComplianceReport:
-        this.institutionalFeaturesController.generateComplianceReport.bind(
-          this.institutionalFeaturesController,
-        ),
-      syncReportsInProgress:
-        this.institutionalFeaturesController.syncReportsInProgress.bind(
-          this.institutionalFeaturesController,
-        ),
-      removeConnectInstitutionalFeature:
-        this.institutionalFeaturesController.removeConnectInstitutionalFeature.bind(
-          this.institutionalFeaturesController,
-        ),
-      getComplianceHistoricalReportsByAddress:
-        this.institutionalFeaturesController.getComplianceHistoricalReportsByAddress.bind(
-          this.institutionalFeaturesController,
         ),
       removeAddTokenConnectRequest:
         this.institutionalFeaturesController.removeAddTokenConnectRequest.bind(

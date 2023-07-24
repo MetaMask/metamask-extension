@@ -8,8 +8,8 @@ import {
   BUTTON_VARIANT,
   ButtonIcon,
   IconName,
+  Text,
 } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
 import {
   AlignItems,
   Display,

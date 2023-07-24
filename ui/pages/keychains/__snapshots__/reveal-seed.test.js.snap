@@ -6,12 +6,12 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
   >
     <h2
-      class="box mm-text mm-text--heading-lg box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
     >
       Secret Recovery Phrase
     </h2>
     <p
-      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
          
@@ -26,7 +26,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         </a>
          provides 
         <strong
-          class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
         >
           full access to your wallet and funds.
 
@@ -36,7 +36,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </span>
     </p>
     <p
-      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
          
@@ -62,13 +62,13 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       />
       <div>
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           <span>
              
             Make sure no one is looking at your screen. 
             <strong
-              class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
             >
               MetaMask Support will never request this.
             </strong>
