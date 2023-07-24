@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   setAccountDetailsAddress,
   clearAccountDetails,
@@ -97,10 +96,7 @@ export const AccountDetails = ({ address }) => {
               >
                 {name}
               </Text>
-              <AddressCopyButton
-                address={toChecksumHexAddress(address)}
-                shorten
-              />
+              <AddressCopyButton address={address} shorten />
             </Box>
             {privateKey ? (
               <AccountDetailsKey
