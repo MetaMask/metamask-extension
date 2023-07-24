@@ -5,6 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
 import { BannerAlert, Text } from '../../component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 import Dropdown from '../../ui/dropdown';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
@@ -133,7 +134,7 @@ export default function SrpInput({ onChange, srpText }) {
       </label>
       <BannerAlert
         className="import-srp__paste-tip"
-        severity="info"
+        severity={Severity.Info}
         description={t('srpPasteTip')}
       />
       <Dropdown
@@ -200,14 +201,14 @@ export default function SrpInput({ onChange, srpText }) {
       {srpError ? (
         <BannerAlert
           className="import-srp__srp-error"
-          severity="danger"
+          severity={Severity.Danger}
           description={srpError}
         />
       ) : null}
       {pasteFailed ? (
         <BannerAlert
           className="import-srp__srp-too-many-words-error"
-          severity="danger"
+          severity={Severity.Danger}
           actionButtonLabel={t('dismiss')}
           actionButtonOnClick={() => setPasteFailed(false)}
           description={t('srpPasteFailedTooManyWords')}
