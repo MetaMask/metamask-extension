@@ -3,14 +3,12 @@ const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
-  roundToXDecimalPlaces,
-  generateRandNumBetween,
   generateGanacheOptions,
   DEFAULT_GANACHE_OPTIONS,
-  generateETHBalance,
   unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
+  genRandInitBal,
 } = require('../helpers');
 const {
   buildQuote,
@@ -101,13 +99,10 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
   ];
 }
 
-const initialBalance = roundToXDecimalPlaces(
-  generateRandNumBetween(10, 100),
-  4,
-);
-
 describe('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
+    const { initialBalanceInHex } = genRandInitBal();
+
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -120,7 +115,7 @@ describe('Swap Eth for another Token', function () {
           accounts: [
             {
               secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
-              balance: generateETHBalance(initialBalance),
+              balance: initialBalanceInHex,
             },
           ],
         }),

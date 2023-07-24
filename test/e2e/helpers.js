@@ -582,9 +582,10 @@ function mockPhishingDetection(mockServer) {
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
-const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
+
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
@@ -647,7 +648,7 @@ const DEFAULT_GANACHE_OPTIONS = {
   accounts: [
     {
       secretKey: DEFAULT_PRIVATE_KEY,
-      balance: generateETHBalance(25),
+      balance: convertETHToHexGwei(25),
     },
   ],
 };
@@ -680,6 +681,10 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
 
+async function sleepSeconds(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
 }
@@ -692,8 +697,15 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
+  const initialBalance = roundToXDecimalPlaces(
+    generateRandNumBetween(minETHBal, maxETHBal),
+    decimalPlaces,
+  );
+
+  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
+
+  return { initialBalance, initialBalanceInHex };
 }
 
 async function terminateServiceWorker(driver) {
@@ -834,7 +846,7 @@ module.exports = {
   WALLET_PASSWORD,
   WINDOW_TITLES,
   DEFAULT_GANACHE_OPTIONS,
-  generateETHBalance,
+  convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
   sleepSeconds,
@@ -848,4 +860,5 @@ module.exports = {
   onboardingCompleteWalletCreation,
   onboardingPinExtension,
   assertInAnyOrder,
+  genRandInitBal,
 };
