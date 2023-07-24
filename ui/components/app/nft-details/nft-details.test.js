@@ -51,7 +51,6 @@ describe('NFT Details', () => {
 
   const nfts =
     mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
-  console.log("nidhi", nfts)
 
   const props = {
     nft: nfts[5],
