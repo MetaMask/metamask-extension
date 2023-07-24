@@ -565,6 +565,30 @@
   "blockaid": {
     "message": "Blockaid"
   },
+  "blockaidDescriptionApproveFarming": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "blockaidDescriptionBlurFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on Blur."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionMightLoseAssets": {
+    "message": "If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionSeaportFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on OpenSea."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidTitleDeceptive": {
+    "message": "This is a deceptive request"
+  },
+  "blockaidTitleSuspicious": {
+    "message": "This is a suspicious request"
+  },
   "blockies": {
     "message": "Blockies"
   },
@@ -1729,8 +1753,11 @@
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
+  "hardwareWalletsInfo": {
+    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
+  },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask."
+    "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "here": {
     "message": "here",
@@ -3578,6 +3605,13 @@
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
+  },
+  "securityProviderAdviceBy": {
+    "message": "Security advice by $1",
+    "description": "The security provider that is providing data"
+  },
+  "seeDetails": {
+    "message": "See details"
   },
   "seedPhraseConfirm": {
     "message": "Confirm Secret Recovery Phrase"

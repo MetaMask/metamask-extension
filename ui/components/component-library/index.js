@@ -6,7 +6,7 @@ export {
 } from './avatar-account';
 export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
-export { AvatarNetwork, AVATAR_NETWORK_SIZES } from './avatar-network';
+export { AvatarNetwork, AvatarNetworkSize } from './avatar-network';
 export { AvatarToken } from './avatar-token';
 export { AvatarBase } from './avatar-base';
 export {
@@ -24,7 +24,7 @@ export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
 export { Checkbox } from './checkbox';
 export { FormTextField } from './form-text-field';
 export { HeaderBase } from './header-base';
-export { HelpText } from './help-text';
+export { HelpText, HelpTextSeverity } from './help-text';
 export { Icon, IconName, IconSize } from './icon';
 export { Label } from './label';
 export { PickerNetwork } from './picker-network';
