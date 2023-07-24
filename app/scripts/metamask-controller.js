@@ -665,14 +665,16 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     this.ppomController = new PPOMController({
-      // this needs to be updated
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
       state: initState.PPOMController,
-      caipChainId: this.networkController.state.providerConfig.caipChainId,
+      chainId: () =>
+        getEthChainIdHexFromCaipChainId(
+          this.networkController.state.providerConfig.caipChainId,
+        ),
       onNetworkChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
