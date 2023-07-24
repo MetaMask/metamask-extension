@@ -112,7 +112,7 @@ $spacer-break-small: 16px;
   }
 
   &__send-button {
-    margin-inline-end: 8px;
+    margin: 8px;
 
     @include screen-sm-min {
       max-width: 160px;
