@@ -1,20 +1,17 @@
 import React from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  Size,
-  DISPLAY,
+  Display,
   TextColor,
   BackgroundColor,
   BorderColor,
-  Color,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box/box';
-
+import { Box } from '..';
+import { AvatarNetworkSize } from './avatar-network.types';
 import README from './README.mdx';
 
 import { AvatarNetwork } from './avatar-network';
-import { AVATAR_NETWORK_SIZES } from './avatar-network.constants';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarNetwork',
@@ -27,7 +24,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(AVATAR_NETWORK_SIZES),
+      options: Object.values(AvatarNetworkSize),
     },
     color: {
       options: Object.values(TextColor),
@@ -54,38 +51,38 @@ export default {
   args: {
     name: 'Arbitrum One',
     src: './images/arbitrum.svg',
-    size: Size.MD,
+    size: AvatarNetworkSize.Md,
     showHalo: false,
   },
-};
+} as Meta<typeof AvatarNetwork>;
 
-const Template = (args) => {
+const Template: StoryFn<typeof AvatarNetwork> = (args) => {
   return <AvatarNetwork {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
+export const SizeStory: StoryFn<typeof AvatarNetwork> = (args) => (
   <>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexEnd}
       gap={1}
       marginBottom={4}
     >
-      <AvatarNetwork {...args} size={Size.XS} />
-      <AvatarNetwork {...args} size={Size.SM} />
-      <AvatarNetwork {...args} size={Size.MD} />
-      <AvatarNetwork {...args} size={Size.LG} />
-      <AvatarNetwork {...args} size={Size.XL} />
+      <AvatarNetwork {...args} size={AvatarNetworkSize.Xs} />
+      <AvatarNetwork {...args} size={AvatarNetworkSize.Sm} />
+      <AvatarNetwork {...args} size={AvatarNetworkSize.Md} />
+      <AvatarNetwork {...args} size={AvatarNetworkSize.Lg} />
+      <AvatarNetwork {...args} size={AvatarNetworkSize.Xl} />
     </Box>
-    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={1}>
-      <AvatarNetwork {...args} src="" size={Size.XS} />
-      <AvatarNetwork {...args} src="" size={Size.SM} />
-      <AvatarNetwork {...args} src="" size={Size.MD} />
-      <AvatarNetwork {...args} src="" size={Size.LG} />
-      <AvatarNetwork {...args} src="" size={Size.XL} />
+    <Box display={Display.Flex} alignItems={AlignItems.flexEnd} gap={1}>
+      <AvatarNetwork {...args} src="" size={AvatarNetworkSize.Xs} />
+      <AvatarNetwork {...args} src="" size={AvatarNetworkSize.Sm} />
+      <AvatarNetwork {...args} src="" size={AvatarNetworkSize.Md} />
+      <AvatarNetwork {...args} src="" size={AvatarNetworkSize.Lg} />
+      <AvatarNetwork {...args} src="" size={AvatarNetworkSize.Xl} />
     </Box>
   </>
 );
@@ -96,8 +93,8 @@ Name.args = {
   src: '',
 };
 
-export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const Src: StoryFn<typeof AvatarNetwork> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarNetwork {...args} src="./images/matic-token.png" />
     <AvatarNetwork {...args} src="./images/arbitrum.svg" />
     <AvatarNetwork {...args} src="./images/optimism.svg" />
@@ -115,21 +112,23 @@ ShowHalo.args = {
   showHalo: true,
 };
 
-export const ColorBackgroundColorAndBorderColor = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const ColorBackgroundColorAndBorderColor: StoryFn<
+  typeof AvatarNetwork
+> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarNetwork
       {...args}
       backgroundColor={BackgroundColor.goerli}
       borderColor={BorderColor.goerli}
       name="G"
-      color={Color.goerliInverse}
+      color={TextColor.goerliInverse}
     />
     <AvatarNetwork
       {...args}
       backgroundColor={BackgroundColor.sepolia}
       borderColor={BorderColor.sepolia}
       name="S"
-      color={Color.goerliInverse}
+      color={TextColor.goerliInverse}
     />
   </Box>
 );
