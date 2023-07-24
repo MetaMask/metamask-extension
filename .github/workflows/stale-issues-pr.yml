@@ -4,9 +4,15 @@ on:
   pull_request:
     types: [assigned, opened, synchronize, reopened]
 
+# run once a day at 12
 # on:
 #   schedule:
 #     - cron: '0 12 * * *'
+
+# run every 2 hours
+# on:
+#   schedule:
+#     - cron: '0 */2 * * *'
 
 jobs:
   stale:
@@ -29,4 +35,5 @@ jobs:
           stale-pr-message: 'This PR has been automatically marked as stale because it has not had recent activity in the last 60 days. It will be closed in 14 days. Thank you for your contributions.'
           days-before-pr-close: 14
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 14 days. Thank you for your contributions.'
-          operations-per-run: 600
+          # operations-per-run: 600 // at 10:34
+          operations-per-run: 1000
