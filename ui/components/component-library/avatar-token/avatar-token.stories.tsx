@@ -1,7 +1,7 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   TextColor,
   BackgroundColor,
@@ -65,19 +65,19 @@ export default {
     size: AvatarTokenSize.Md,
     showHalo: false,
   },
-} as ComponentMeta<typeof AvatarToken>;
+} as Meta<typeof AvatarToken>;
 
-const Template: ComponentStory<typeof AvatarToken> = (args) => {
+const Template: StoryFn<typeof AvatarToken> = (args) => {
   return <AvatarToken {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
+export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
   <>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.baseline}
       gap={2}
       marginBottom={4}
@@ -89,7 +89,7 @@ export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
       <AvatarToken {...args} size={AvatarTokenSize.Xl} />
     </Box>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexEnd}
       gap={2}
       marginBottom={4}
@@ -118,7 +118,7 @@ export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
       components
     </Text>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexEnd}
       gap={2}
       marginBottom={4}
@@ -189,7 +189,7 @@ export const SizeStory: ComponentStory<typeof AvatarToken> = (args) => (
         <AvatarToken {...args} name="ETH" size={AvatarTokenSize.Xl} />
       </BadgeWrapper>
     </Box>
-    <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexEnd} gap={2}>
+    <Box display={Display.Flex} alignItems={AlignItems.flexEnd} gap={2}>
       <BadgeWrapper
         badge={
           <AvatarNetwork
@@ -295,8 +295,8 @@ Name.args = {
   src: '',
 };
 
-export const Src: ComponentStory<typeof AvatarToken> = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const Src: StoryFn<typeof AvatarToken> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarToken {...args} src="./images/eth_logo.png" />
     <AvatarToken {...args} src="./images/arbitrum.svg" />
     <AvatarToken {...args} src="./images/bnb.png" />
@@ -324,10 +324,10 @@ ShowHalo.args = {
   showHalo: true,
 };
 
-export const ColorBackgroundColorAndBorderColor: ComponentStory<
-  typeof AvatarToken
-> = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const ColorBackgroundColorAndBorderColor: StoryFn<typeof AvatarToken> = (
+  args,
+) => (
+  <Box display={Display.Flex} gap={1}>
     <AvatarToken
       {...args}
       backgroundColor={BackgroundColor.goerli}

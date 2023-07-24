@@ -1,10 +1,4 @@
-import { ValidTag } from '../text';
-import type { BoxProps } from '../../ui/box/box.d';
-import {
-  BackgroundColor,
-  BorderColor,
-  TextColor,
-} from 'ui/helpers/constants/design-system';
+import { AvatarBaseProps } from '../avatar-base';
 
 export enum AvatarTokenSize {
   Xs = 'xs',
@@ -17,7 +11,7 @@ export enum AvatarTokenSize {
 /**
  * Props for the AvatarToken component
  */
-export interface AvatarTokenProps extends BoxProps {
+export interface AvatarTokenProps extends Omit<AvatarBaseProps, 'children'> {
   /**
    * The name accepts the string to render the first letter of the AvatarToken. This will be used as the fallback display if no image url is passed to the src
    */
@@ -36,27 +30,4 @@ export interface AvatarTokenProps extends BoxProps {
    * Defaults to AvatarTokenSize.Md
    */
   size?: AvatarTokenSize;
-  /**
-   * The background color of the AvatarToken
-   * Defaults to Color.backgroundAlternative
-   */
-  backgroundColor?: BackgroundColor;
-  /**
-   * The background color of the AvatarToken
-   * Defaults to Color.borderDefault
-   */
-  borderColor?: BorderColor;
-  /**
-   * The color of the text inside the AvatarToken
-   * Defaults to Color.textDefault
-   */
-  color?: TextColor;
-  /**
-   * Additional classNames to be added to the AvatarToken
-   */
-  className?: string;
-  /**
-   * Changes the root html element tag of the Text component.
-   */
-  as?: ValidTag;
 }

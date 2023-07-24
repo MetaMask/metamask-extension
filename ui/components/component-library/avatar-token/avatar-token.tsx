@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Ref } from 'react';
 import classnames from 'classnames';
-import { AvatarBase, AvatarBaseSize } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
   TextColor,
@@ -41,8 +41,8 @@ export const AvatarToken = React.forwardRef(
     return (
       <AvatarBase
         ref={ref}
-        size={size as unknown as AvatarBaseSize}
-        display={DISPLAY.FLEX}
+        size={size}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         className={classnames(
