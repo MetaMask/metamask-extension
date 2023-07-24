@@ -14,8 +14,16 @@ import {
   Icon,
   IconName,
   Text,
+  Box,
+  BUTTON_SIZES,
 } from '../../../../../component-library';
-import { TextVariant } from '../../../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  TextVariant,
+  FlexDirection,
+  FlexWrap,
+} from '../../../../../../helpers/constants/design-system';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
@@ -23,48 +31,37 @@ const Accreditation = ({ fetchVia, address }) => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
 
-  const AccreditationLink = () => {
-    return (
-      <>
-        <Text
-          variant={TextVariant.bodySm}
-          as="h6"
-          className="accreditation__prefix"
-        >
+  return (
+    <Box
+      className="accreditation"
+      marginTop={2}
+      alignItems={AlignItems.center}
+      display={Display.Flex}
+    >
+      <Icon name={IconName.Info} marginRight={2} />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        flexWrap={FlexWrap.Wrap}
+      >
+        <Text variant={TextVariant.bodySm}>
           {t('transactionDecodingAccreditationVerified', [
             <Button
               variant={BUTTON_VARIANT.LINK}
-              className="accreditation__link"
-              onClick={() => {
-                global.platform.openTab({
-                  url: addressLink,
-                });
-              }}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={t('etherscanView')}
+              href={addressLink}
+              externalLink
               key="accreditation-link-button"
+              size={BUTTON_SIZES.INHERIT}
             >
               {fetchVia}
             </Button>,
           ])}
         </Text>
-        <Text variant={TextVariant.bodySm} as="h6">
+        <Text variant={TextVariant.bodySm}>
           {t('transactionDecodingAccreditationDecoded')}
         </Text>
-      </>
-    );
-  };
-
-  return (
-    <div className="accreditation">
-      <div className="accreditation__icon">
-        <Icon name={IconName.Info} />
-      </div>
-      <div className="accreditation__info">
-        <AccreditationLink />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
