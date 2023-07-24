@@ -1,23 +1,21 @@
 import React from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   IconColor,
   TextColor,
-  SEVERITIES,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-
-import { Icon, IconName, IconSize } from '..';
+import { Box, Icon, IconName, IconSize } from '..';
 
 import { HelpText } from './help-text';
+import { HelpTextSeverity } from './help-text.types';
 
 import README from './README.mdx';
 
 export default {
   title: 'Components/ComponentLibrary/HelpText',
-
   component: HelpText,
   parameters: {
     docs: {
@@ -33,7 +31,7 @@ export default {
     },
     severity: {
       control: 'select',
-      options: Object.values(SEVERITIES),
+      options: Object.values(HelpTextSeverity),
     },
     color: {
       control: 'select',
@@ -43,15 +41,15 @@ export default {
   args: {
     children: 'Help text',
   },
-};
+} as Meta<typeof HelpText>;
 
-const Template = (args) => <HelpText {...args} />;
+const Template: StoryFn<typeof HelpText> = (args) => <HelpText {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Children: StoryFn<typeof HelpText> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <HelpText {...args}>Plain text</HelpText>
     <HelpText>
       <span>Text and icon</span>
@@ -66,28 +64,28 @@ export const Children = (args) => (
   </Box>
 );
 
-export const SeverityStory = (args) => (
+export const SeverityStory: StoryFn<typeof HelpText> = (args) => (
   <>
     <HelpText {...args}>HelpText without severity prop</HelpText>
-    <HelpText {...args} severity={SEVERITIES.DANGER}>
-      HelpText with severity: SEVERITY.DANGER
+    <HelpText {...args} severity={HelpTextSeverity.Danger}>
+      HelpText with severity: HelpTextSeverity.Danger
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.SUCCESS}>
-      HelpText with severity: SEVERITY.SUCCESS
+    <HelpText {...args} severity={HelpTextSeverity.Success}>
+      HelpText with severity: HelpTextSeverity.Success
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.WARNING}>
-      HelpText with severity: SEVERITY.WARNING
+    <HelpText {...args} severity={HelpTextSeverity.Warning}>
+      HelpText with severity: HelpTextSeverity.Warning
     </HelpText>
-    <HelpText {...args} severity={SEVERITIES.INFO}>
-      HelpText with severity: SEVERITY.INFO
+    <HelpText {...args} severity={HelpTextSeverity.Info}>
+      HelpText with severity: HelpTextSeverity.Info
     </HelpText>
   </>
 );
 
 SeverityStory.storyName = 'Severity';
 
-export const ColorStory = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const ColorStory: StoryFn<typeof HelpText> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <HelpText color={TextColor.textDefault} {...args}>
       This HelpText default color is TextColor.textDefault
     </HelpText>

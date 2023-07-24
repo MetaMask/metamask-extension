@@ -127,7 +127,7 @@ describe('Test Snap update', function () {
         // look for the correct version text
         await driver.waitForSelector({
           css: '#updateSnapVersion',
-          text: '"5.1.2"',
+          text: '"0.35.2-flask.1"',
         });
       },
     );
