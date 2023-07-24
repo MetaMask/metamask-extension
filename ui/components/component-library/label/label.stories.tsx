@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
@@ -37,21 +38,21 @@ export default {
   args: {
     children: 'Label',
   },
-};
+} as ComponentMeta<typeof Label>;
 
-const Template = (args) => <Label {...args} />;
+const Template: ComponentStory<typeof Label> = (args) => <Label {...args} />;
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children = (args) => (
+export const Children: ComponentStory<typeof Label> = (args) => (
   <Box
-    display={DISPLAY.INLINE_FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.InlineFlex}
+    flexDirection={FlexDirection.Column}
     gap={2}
   >
     <Label {...args}>Plain text</Label>
-    <Label {...args} display={DISPLAY.FLEX} alignItems={AlignItems.flexStart}>
+    <Label {...args} display={Display.Flex} alignItems={AlignItems.flexStart}>
       Text and icon
       <Icon
         color={IconColor.iconAlternative}
@@ -61,8 +62,8 @@ export const Children = (args) => (
     </Label>
     <Label
       {...args}
-      display={DISPLAY.INLINE_FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Column}
       alignItems={AlignItems.flexStart}
     >
       Label that wraps an input
@@ -71,13 +72,13 @@ export const Children = (args) => (
   </Box>
 );
 
-export const HtmlFor = (args) => {
+export const HtmlFor: ComponentStory<typeof Label> = (args) => {
   const [value, setValue] = useState('');
   const handleOnChange = (e) => {
     setValue(e.target.value);
   };
   return (
-    <Box display={DISPLAY.INLINE_FLEX} flexDirection={FLEX_DIRECTION.COLUMN}>
+    <Box display={Display.InlineFlex} flexDirection={FlexDirection.Column}>
       <Label {...args} />
       <TextField
         id="add-network"
