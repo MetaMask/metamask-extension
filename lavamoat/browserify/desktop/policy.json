@@ -156,11 +156,27 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "@ethereumjs/tx>@ethereumjs/util>micro-ftch": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "browserify>insert-module-globals>is-buffer": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util>micro-ftch": {
@@ -187,7 +203,6 @@
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
@@ -1164,6 +1179,7 @@
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true,
         "ganache>secp256k1>elliptic": true
@@ -4049,20 +4065,12 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethereum-cryptography": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ethereumjs-wallet>safe-buffer": true,
         "ganache>secp256k1>elliptic": true
-      }
-    },
-    "eth-sig-util>ethereumjs-util>ethereum-cryptography": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
-        "ethereumjs-wallet>randombytes": true
       }
     },
     "eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -4105,6 +4113,7 @@
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ganache>secp256k1>elliptic": true
       }
@@ -4291,14 +4300,6 @@
         "ethereumjs-wallet>safe-buffer": true
       }
     },
-    "ethereumjs-wallet>ethereum-cryptography": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
-        "ethereumjs-wallet>randombytes": true
-      }
-    },
     "ethereumjs-wallet>ethereumjs-util": {
       "packages": {
         "bn.js": true,
@@ -4306,6 +4307,7 @@
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
         "ganache>secp256k1>elliptic": true
       }
