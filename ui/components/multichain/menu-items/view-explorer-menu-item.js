@@ -18,7 +18,6 @@ import {
   getBlockExplorerLinkText,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
-  getSelectedAddress,
 } from '../../../selectors';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
@@ -27,15 +26,15 @@ export const ViewExplorerMenuItem = ({
   metricsLocation,
   closeMenu,
   textProps,
+  address,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
-  const currentAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(currentAddress, chainId, rpcPrefs);
+  const addressLink = getAccountLink(address, chainId, rpcPrefs);
 
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
@@ -94,4 +93,5 @@ ViewExplorerMenuItem.propTypes = {
   metricsLocation: PropTypes.string.isRequired,
   closeMenu: PropTypes.func,
   textProps: PropTypes.object,
+  address: PropTypes.string.isRequired,
 };
