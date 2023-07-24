@@ -23,7 +23,7 @@ const mockApproval = {
     },
     chainName: 'Test chain',
     ticker: 'TST',
-    caipChainId: 'eip155:9999',
+    caipChainId: 'eip155:39321',
     nickname: 'Test chain',
   },
 };
@@ -38,7 +38,7 @@ const mockBaseStore = {
     providerConfig: {
       type: 'rpc',
       rpcUrl: 'http://example-custom-rpc.metamask.io',
-      caipChainId: 'eip155:9999',
+      caipChainId: 'eip155:39321',
       nickname: 'Test initial state',
     },
   },
@@ -67,7 +67,7 @@ describe('add-ethereum-chain confirmation', () => {
         getByText('MetaMask does not verify custom networks.'),
       ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
-      // expect(container).toMatchSnapshot(); // caipChainId gets rendered as hex but snapshot has decimal. snapshot should be updated
+      expect(container).toMatchSnapshot();
     });
   });
 });

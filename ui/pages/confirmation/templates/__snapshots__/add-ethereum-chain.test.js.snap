@@ -144,7 +144,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
           <dd
             class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
-            39321
+            0x9999
           </dd>
           <dt
             class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
@@ -351,7 +351,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           <dd
             class="box box--margin-bottom-2 box--flex-direction-row typography definition-list__definition typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative typography--overflowwrap-break-word"
           >
-            39321
+            0x9999
           </dd>
           <dt
             class="box box--margin-bottom-1 box--flex-direction-row typography definition-list__term typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
