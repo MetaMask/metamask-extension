@@ -4120,7 +4120,7 @@ export function clearSmartTransactionFees() {
 }
 
 export function fetchSmartTransactionFees(
-  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId }, // is this right?
+  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId },
   approveTxParams: TxParams,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4159,7 +4159,7 @@ interface TemporarySmartTransactionGasFees {
 }
 
 const createSignedTransactions = async (
-  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId }, // is this right?
+  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId },
   fees: TemporarySmartTransactionGasFees[],
   areCancelTransactions?: boolean,
 ): Promise<TxParams[]> => {
@@ -4190,7 +4190,7 @@ export function signAndSendSmartTransaction({
   unsignedTransaction,
   smartTransactionFees,
 }: {
-  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId }; // is this right?
+  unsignedTransaction: Partial<TxParams> & { caipChainId: CaipChainId };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
     cancelFees: TemporarySmartTransactionGasFees[];
