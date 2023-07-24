@@ -7,9 +7,7 @@ import {
   BorderColor,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box/box';
-
+import { Box } from '..';
 import { AvatarNetworkSize } from './avatar-network.types';
 import README from './README.mdx';
 
