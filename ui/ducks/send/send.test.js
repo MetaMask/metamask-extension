@@ -1934,7 +1934,7 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {
-              '0x1': [
+              'eip155:1': [
                 {
                   address: TEST_RECIPIENT_ADDRESS,
                   name: TEST_RECIPIENT_NAME,
