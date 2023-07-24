@@ -1753,8 +1753,11 @@
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
   },
+  "hardwareWalletsInfo": {
+    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
+  },
   "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you'd like to use with MetaMask."
+    "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "here": {
     "message": "here",
