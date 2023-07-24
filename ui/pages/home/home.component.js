@@ -2,7 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   MetaMetricsContextProp,
+  ///: END:ONLY_INCLUDE_IN
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
