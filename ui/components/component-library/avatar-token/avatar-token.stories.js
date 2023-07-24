@@ -12,6 +12,7 @@ import Box from '../../ui/box/box';
 
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BUTTON_LINK_SIZES,
   BadgeWrapper,
   ButtonLink,
@@ -128,7 +129,7 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -141,7 +142,7 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -154,7 +155,7 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -167,7 +168,7 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -180,7 +181,7 @@ export const SizeStory = (args) => (
           <AvatarNetwork
             src="./images/eth_logo.png"
             name="ETH"
-            size={Size.SM}
+            size={AvatarNetworkSize.Sm}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -194,7 +195,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -213,7 +214,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -232,7 +233,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -251,7 +252,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.XS}
+            size={AvatarNetworkSize.Xs}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
@@ -270,7 +271,7 @@ export const SizeStory = (args) => (
         badge={
           <AvatarNetwork
             name="ETH"
-            size={Size.SM}
+            size={AvatarNetworkSize.Sm}
             borderColor={BackgroundColor.backgroundDefault}
             borderWidth={2}
           />
