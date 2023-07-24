@@ -88,4 +88,23 @@ describe('PPOMMiddleware', () => {
     );
     expect(validateMock).toHaveBeenCalledTimes(1);
   });
+
+  it('should not call ppom.validateJsonRpc when request is not for confirmation method', async () => {
+    const validateMock = jest.fn();
+    const ppom = {
+      validateJsonRpc: validateMock,
+    };
+    const controller = {
+      usePPOM: async (callback: any) => {
+        callback(ppom);
+      },
+    };
+    const middlewareFunction = createPPOMMiddleware(controller as any);
+    await middlewareFunction(
+      { method: 'eth_someRequest' },
+      undefined,
+      () => undefined,
+    );
+    expect(validateMock).toHaveBeenCalledTimes(0);
+  });
 });

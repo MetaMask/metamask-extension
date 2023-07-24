@@ -2,7 +2,7 @@ import { PPOM } from '@blockaid/ppom';
 
 import { PPOMController } from '@metamask/ppom-validator';
 
-const ConfirmationMethods = [
+const ConfirmationMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
   'eth_sign',
@@ -11,7 +11,7 @@ const ConfirmationMethods = [
   'eth_signTypedData_v3',
   'eth_signTypedData_v4',
   'personal_sign',
-];
+]);
 
 /**
  * Middleware function that handles JSON RPC requests.
