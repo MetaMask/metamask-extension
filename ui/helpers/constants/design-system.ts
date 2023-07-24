@@ -206,7 +206,6 @@ export enum Size {
   XL = 'xl',
   inherit = 'inherit', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   auto = 'auto',
-  none = 'none',
 }
 
 export enum BorderStyle {

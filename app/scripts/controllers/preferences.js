@@ -41,6 +41,9 @@ export default class PreferencesController {
       useNftDetection: false,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -184,6 +187,19 @@ export default class PreferencesController {
       openSeaEnabled,
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * Setter for the `securityAlertsEnabled` property
+   *
+   * @param {boolean} securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
+   */
+  setSecurityAlertsEnabled(securityAlertsEnabled) {
+    this.store.updateState({
+      securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Setter for the `advancedGasFee` property

@@ -33,10 +33,10 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // find and scroll down to snapId5 and connect
-        const snapButton = await driver.findElement('#connectNotification');
+        const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectNotification');
+        await driver.clickElement('#connectnotifications');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -74,8 +74,8 @@ describe('Test Snap Notification', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectNotification',
-          text: 'Reconnect to Notification Snap',
+          css: '#connectnotifications',
+          text: 'Reconnect to Notifications Snap',
         });
 
         await driver.clickElement('#sendInAppNotification');
@@ -113,7 +113,7 @@ describe('Test Snap Notification', function () {
         );
         assert.equal(
           await notificationResultMessage.getText(),
-          'TEST INAPP NOTIFICATION',
+          'Hello from within MetaMask!',
         );
       },
     );

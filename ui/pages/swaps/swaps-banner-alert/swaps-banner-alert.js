@@ -11,8 +11,8 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ButtonLink } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { ButtonLink, Text } from '../../../components/component-library';
+
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,

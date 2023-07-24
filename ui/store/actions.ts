@@ -3511,10 +3511,13 @@ export function resolvePendingApproval(
     await submitRequestToBackground('resolvePendingApproval', [id, value]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
     if (Object.values(pendingApprovals).length === 0) {
       dispatch(closeCurrentNotificationWindow());
     }
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -4343,6 +4346,16 @@ export function setTransactionSecurityCheckEnabled(
     }
   };
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+export function setSecurityAlertsEnabled(val: boolean): void {
+  try {
+    submitRequestToBackground('setSecurityAlertsEnabled', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+///: END:ONLY_INCLUDE_IN
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
