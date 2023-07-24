@@ -75,7 +75,7 @@ const CustodyPage = () => {
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const [connectRequest, setConnectRequest] = useState(undefined);
-  const [accounts, setAccounts] = useState([]);
+  const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
 
   const custodianButtons = useMemo(() => {
@@ -286,8 +286,11 @@ const CustodyPage = () => {
       }
     }
 
-    setChainId(parseInt(currentChainId, 16));
-    handleNetworkChange();
+    if (parseInt(chainId, 16) !== chainId) {
+      setChainId(parseInt(currentChainId, 16));
+      handleNetworkChange();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentChainId]);
 
@@ -492,7 +495,7 @@ const CustodyPage = () => {
           </Box>
         </>
       )}
-      {accounts.length > 0 && (
+      {accounts && accounts.length > 0 && (
         <>
           <Box padding={[5, 7, 2]} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
