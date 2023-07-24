@@ -85,8 +85,6 @@ export const SnapDetailHeader = ({
                 labelProps={{
                   color: TextColor.textAlternative,
                 }}
-                className=""
-                height={2}
               />
             )}
           </Box>
