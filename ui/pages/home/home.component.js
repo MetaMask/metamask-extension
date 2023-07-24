@@ -46,8 +46,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
+  Text,
 } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
 
 import {
   ASSET_ROUTE,

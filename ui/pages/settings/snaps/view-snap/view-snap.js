@@ -33,8 +33,7 @@ import {
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import { BUTTON_VARIANT } from '../../../../components/component-library';
-import { Text } from '../../../../components/component-library/text/deprecated';
+import { Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -138,7 +137,7 @@ function ViewSnap() {
             {shouldDisplayMoreButton && (
               <Button
                 className="view-snap__description__more-button"
-                type={BUTTON_VARIANT.LINK}
+                type="link"
                 onClick={handleMoreClick}
               >
                 <Text color={Color.infoDefault}>{t('more')}</Text>

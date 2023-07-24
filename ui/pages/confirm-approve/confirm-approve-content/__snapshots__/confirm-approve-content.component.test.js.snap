@@ -21,7 +21,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -195,7 +195,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -380,7 +380,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -565,7 +565,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
