@@ -17,7 +17,7 @@ exports[`SnapCard should render 1`] = `
           class="mm-box snap-detail-icon mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
         >
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             M
           </p>
@@ -31,12 +31,12 @@ exports[`SnapCard should render 1`] = `
       </button>
     </div>
     <p
-      class="box mm-text mm-text--body-sm box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
     >
       Metamask Simple Keyring
     </p>
     <h3
-      class="box mm-text mm-text--heading-md box--margin-bottom-auto box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--heading-md mm-box--margin-bottom-auto mm-box--color-text-default"
     >
       Secure your account with MetaMask Mobile
     </h3>

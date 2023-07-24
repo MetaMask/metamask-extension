@@ -131,7 +131,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 category: MetaMetricsEventCategory.Navigation,
                 event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
-              window.open(`${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`, '_blank');
+              window.open(
+                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
+                '_blank',
+              );
               closeMenu();
             }}
             data-testid="global-menu-mmi-portfolio"

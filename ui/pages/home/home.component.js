@@ -23,7 +23,6 @@ import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
 
-
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
   FONT_WEIGHT,
@@ -46,8 +45,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
+  Text,
 } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
 
 import {
   ASSET_ROUTE,
@@ -66,7 +65,6 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
@@ -102,7 +100,7 @@ function shouldCloseNotificationPopup({
   shouldCLose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian or compliance
+    // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IN
 
@@ -251,12 +249,6 @@ export default class Home extends PureComponent {
       ) {
         history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
       }
-    } else if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature !== 'custodian'
-    ) {
-      history.push(CONFIRM_INSTITUTIONAL_FEATURE_CONNECT);
     }
   }
 

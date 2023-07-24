@@ -225,15 +225,6 @@ export default class MMIController extends EventEmitter {
     ) {
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
     }
-
-    try {
-      if (this.institutionalFeaturesController.getComplianceProjectId()) {
-        this.institutionalFeaturesController.startPolling();
-      }
-    } catch (e) {
-      log.error('Failed to start Compliance polling');
-      log.error(e);
-    }
   }
 
   async connectCustodyAddresses(custodianType, custodianName, accounts) {
@@ -551,8 +542,13 @@ export default class MMIController extends EventEmitter {
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
+
+    const { networkConfigurations: networkConfigurationsById } =
+      this.networkController.state;
+    const networkConfigurations = Object.values(networkConfigurationsById);
+
     const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
+      ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
       { chainId: CHAIN_IDS.GOERLI },
     ];

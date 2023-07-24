@@ -15,6 +15,29 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function getHumanReadableSize(bytes) {
+  if (!bytes) {
+    return '0 Bytes';
+  }
+
+  const absBytes = Math.abs(bytes);
+  const kibibyteSize = 1024;
+  const magnitudes = ['Bytes', 'KiB', 'MiB'];
+  let magnitudeIndex = 0;
+  if (absBytes > Math.pow(kibibyteSize, 2)) {
+    magnitudeIndex = 2;
+  } else if (absBytes > kibibyteSize) {
+    magnitudeIndex = 1;
+  }
+  return `${parseFloat(
+    (bytes / Math.pow(kibibyteSize, magnitudeIndex)).toFixed(2),
+  )} ${magnitudes[magnitudeIndex]}`;
+}
+
+function getPercentageChange(from, to) {
+  return parseFloat(((to - from) / Math.abs(from)) * 100).toFixed(2);
+}
+
 async function start() {
   const { GITHUB_COMMENT_TOKEN, CIRCLE_PULL_REQUEST } = process.env;
   console.log('CIRCLE_PULL_REQUEST', CIRCLE_PULL_REQUEST);
@@ -278,7 +301,11 @@ async function start() {
     }, {});
 
     const sizeDiffRows = Object.keys(diffs).map(
-      (part) => `${part}: ${diffs[part]} bytes`,
+      (part) =>
+        `${part}: ${getHumanReadableSize(diffs[part])} (${getPercentageChange(
+          devSizes[part],
+          prSizes[part],
+        )}%)`,
     );
 
     const sizeDiffHiddenContent = `<ul>${sizeDiffRows
