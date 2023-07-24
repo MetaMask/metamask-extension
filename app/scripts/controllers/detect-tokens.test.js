@@ -1,5 +1,3 @@
-// Fix
-// Broken because new version of TokensController was pulled in
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
@@ -217,6 +215,8 @@ describe('DetectTokensController', function () {
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessenger,
+      onTokenListStateChange: (tokenListState) =>
+        console.log('onTokenListStateChange', tokenListState), // this is missing
     });
     await tokenListController.start();
 
