@@ -36,4 +36,4 @@ jobs:
           days-before-pr-close: 14
           close-pr-message: 'This PR was closed because there has been no follow up activity in the last 14 days. Thank you for your contributions.'
           # operations-per-run: 600 // at 10:34
-          operations-per-run: 1000
+          operations-per-run: 800
