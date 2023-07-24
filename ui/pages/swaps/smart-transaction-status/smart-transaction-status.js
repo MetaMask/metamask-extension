@@ -65,6 +65,7 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
@@ -268,7 +269,7 @@ export default function SmartTransactionStatusPage() {
   }
   if (txHash && latestSmartTransactionUuid) {
     blockExplorerUrl = getBlockExplorerLink(
-      { hash: txHash, caipChainId },
+      { hash: txHash, chainId: getEthChainIdHexFromCaipChainId(caipChainId) },
       { blockExplorerUrl: baseNetworkUrl },
     );
   }

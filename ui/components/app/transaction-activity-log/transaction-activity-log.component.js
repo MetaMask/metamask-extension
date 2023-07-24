@@ -31,7 +31,15 @@ export default class TransactionActivityLog extends PureComponent {
 
   handleActivityClick = (activity) => {
     const { rpcPrefs } = this.props;
-    const etherscanUrl = getBlockExplorerLink(activity, rpcPrefs);
+    const { hash, metamaskNetworkId, caipChainId } = activity
+    const etherscanUrl = getBlockExplorerLink(
+      {
+        hash,
+        metamaskNetworkId,
+        chainId: caipChainId ? getEthChainIdHexFromCaipChainId(caipChainId) : ""
+      },
+      rpcPrefs
+    )
 
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Transactions,

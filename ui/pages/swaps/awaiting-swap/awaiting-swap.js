@@ -66,6 +66,7 @@ import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import SwapFailureIcon from './swap-failure-icon';
 import SwapSuccessIcon from './swap-success-icon';
 import QuotesTimeoutIcon from './quotes-timeout-icon';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function AwaitingSwap({
   swapComplete,
@@ -141,8 +142,7 @@ export default function AwaitingSwap({
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
   const blockExplorerUrl = getBlockExplorerLink(
-    // does this need to be updated?
-    { hash: txHash, caipChainId },
+    { hash: txHash, chainId: getEthChainIdHexFromCaipChainId(caipChainId) },
     { blockExplorerUrl: baseNetworkUrl },
   );
 
