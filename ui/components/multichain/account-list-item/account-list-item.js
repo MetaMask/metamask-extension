@@ -151,7 +151,6 @@ export const AccountListItem = ({
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
-                color={Color.textDefault}
                 padding={0}
                 backgroundColor={BackgroundColor.transparent}
                 width={BlockSize.Full}
