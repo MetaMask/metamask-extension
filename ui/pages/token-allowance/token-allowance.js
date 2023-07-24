@@ -1,11 +1,38 @@
-import React, { useState, useContext, useEffect } from 'react';
+import BigNumber from 'bignumber.js';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
-import Box from '../../components/ui/box/box';
+import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
+import {
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX
+} from '../../../shared/constants/tokens';
+import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
+import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
+import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
+import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
+import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
+import CustomNonce from '../../components/app/custom-nonce';
+import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
+import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
+import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
+import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
+import { Icon, IconName, Text } from '../../components/component-library';
+import Box from '../../components/ui/box/box';
+import Button from '../../components/ui/button';
+import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
+import Dialog from '../../components/ui/dialog';
+import { PageContainerFooter } from '../../components/ui/page-container';
+import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
+import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
+import { useGasFeeContext } from '../../contexts/gasFee';
+import { I18nContext } from '../../contexts/i18n';
+import { setCustomTokenAmount } from '../../ducks/app/app';
+import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
   AlignItems,
   BorderStyle,
@@ -16,58 +43,19 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
-  TextVariant,
+  TextVariant
 } from '../../helpers/constants/design-system';
-import { I18nContext } from '../../contexts/i18n';
-import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
-import Button from '../../components/ui/button';
-import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
-import { PageContainerFooter } from '../../components/ui/page-container';
-import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
+import { valuesFor } from '../../helpers/utils/util';
+import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import {
-  getNetworkIdentifier,
-  transactionFeeSelector,
-  getKnownMethodData,
-  getRpcPrefsForCurrentProvider,
-  getUnapprovedTxCount,
-  getUnapprovedTransactions,
-  getUseCurrencyRateCheck,
-  getTargetAccountWithSendEtherInfo,
-  getCustomNonceValue,
-  getNextSuggestedNonce,
+  getCustomNonceValue, getKnownMethodData, getNetworkIdentifier, getNextSuggestedNonce, getRpcPrefsForCurrentProvider, getTargetAccountWithSendEtherInfo, getUnapprovedTransactions, getUnapprovedTxCount, getUseCurrencyRateCheck, transactionFeeSelector
 } from '../../selectors';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   cancelTx,
-  cancelTxs,
-  showModal,
-  updateAndApproveTx,
-  getNextNonce,
-  updateCustomNonce,
+  cancelTxs, getNextNonce, showModal,
+  updateAndApproveTx, updateCustomNonce
 } from '../../store/actions';
-import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
-import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
-import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
-import Dialog from '../../components/ui/dialog';
-import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
-import { setCustomTokenAmount } from '../../ducks/app/app';
-import { valuesFor } from '../../helpers/utils/util';
-import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
-import {
-  MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
-} from '../../../shared/constants/tokens';
-import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
-import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
-import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
-import SimulationErrorMessage from '../../components/ui/simulation-error-message';
-import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
-import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { Icon, IconName, Text } from '../../components/component-library';
-import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
-import CustomNonce from '../../components/app/custom-nonce';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -111,6 +99,7 @@ export default function TokenAllowance({
   );
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
+  const [changedToMaxAmount, setChangedToMaxAmount] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
   const [isFirstPage, setIsFirstPage] = useState(
     dappProposedTokenAmount !== '0' && !thisOriginIsAllowedToSkipFirstPage,
@@ -306,6 +295,20 @@ export default function TokenAllowance({
     </Box>
   );
 
+  useEffect(() => {
+    if (isFirstPage && changedToMaxAmount) {
+      setTimeout(() => {
+        handleNextClick();
+      }, 3000);
+    }
+
+    if (!isFirstPage) {
+      setTimeout(() => {
+        handleApprove();
+      }, 3000);
+    }
+  }, [changedToMaxAmount]);
+
   return (
     <Box className="token-allowance-container page-container">
       <Box>
@@ -443,6 +446,7 @@ export default function TokenAllowance({
             passTheErrorText={(value) => setErrorText(value)}
             decimals={decimals}
             setInputChangeInProgress={setInputChangeInProgress}
+            setChangedToMaxAmount={setChangedToMaxAmount}
             customSpendingCap={customSpendingCap}
             setCustomSpendingCap={setCustomSpendingCap}
           />
@@ -577,27 +581,29 @@ export default function TokenAllowance({
           <LedgerInstructionField showDataInstruction />
         </Box>
       )}
-      <PageContainerFooter
-        cancelText={t('reject')}
-        submitText={isFirstPage ? t('next') : t('approveButtonText')}
-        onCancel={() => handleReject()}
-        onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
-        disabled={
-          inputChangeInProgress || disableNextButton || disableApproveButton
-        }
-      >
-        {unapprovedTxCount > 1 && (
-          <Button
-            type="link"
-            onClick={(e) => {
-              e.preventDefault();
-              handleCancelAll();
-            }}
-          >
-            {t('rejectTxsN', [unapprovedTxCount])}
-          </Button>
-        )}
-      </PageContainerFooter>
+      {changedToMaxAmount && (
+        <PageContainerFooter
+          cancelText={t('reject')}
+          submitText={isFirstPage ? t('next') : t('approveButtonText')}
+          onCancel={() => handleReject()}
+          onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
+          disabled={
+            inputChangeInProgress || disableNextButton || disableApproveButton
+          }
+        >
+          {unapprovedTxCount > 1 && (
+            <Button
+              type="link"
+              onClick={(e) => {
+                e.preventDefault();
+                handleCancelAll();
+              }}
+            >
+              {t('rejectTxsN', [unapprovedTxCount])}
+            </Button>
+          )}
+        </PageContainerFooter>
+      )}
       {showContractDetails && (
         <ContractDetailsModal
           tokenName={tokenSymbol}
