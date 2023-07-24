@@ -7,7 +7,7 @@ import {
   BorderStyle,
 } from '../../../helpers/constants/design-system';
 
-import { Text } from '..';
+import { Text, TextProps } from '../text';
 import { PolymorphicRef } from '../box';
 import { InputProps, InputType, InputComponent } from './input.types';
 
@@ -70,7 +70,7 @@ export const Input: InputComponent = React.forwardRef(
       value={value}
       variant={textVariant}
       type={type}
-      {...props}
+      {...(props as TextProps<C>)}
     />
   ),
 );
