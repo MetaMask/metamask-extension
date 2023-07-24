@@ -43,9 +43,7 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
@@ -71,9 +69,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const metaMetricsId = useSelector(getMetaMetricsId);
-  ///: END:ONLY_INCLUDE_IN
   const address = useSelector(getSelectedAddress);
 
   const hasUnapprovedTransactions = useSelector(
@@ -135,7 +131,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 category: MetaMetricsEventCategory.Navigation,
                 event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
-              window.open(mmiPortfolioUrl, '_blank');
+              window.open(`${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`, '_blank');
               closeMenu();
             }}
             data-testid="global-menu-mmi-portfolio"
