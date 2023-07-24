@@ -2,12 +2,12 @@ import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../translate';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default class ExtensionPlatform {
   //
@@ -177,16 +177,17 @@ export default class ExtensionPlatform {
   async _showConfirmedTransaction(txMeta, rpcPrefs) {
     this._subscribeToNotificationClicked();
 
-
-    const { hash, metamaskNetworkId, caipChainId } = txMeta
+    const { hash, metamaskNetworkId, caipChainId } = txMeta;
     const url = getBlockExplorerLink(
       {
         hash,
         metamaskNetworkId,
-        chainId: caipChainId ? getEthChainIdHexFromCaipChainId(caipChainId) : ""
+        chainId: caipChainId
+          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          : '',
       },
-      rpcPrefs
-    )
+      rpcPrefs,
+    );
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const view = startCase(
       toLower(getURLHostName(url).replace(/([.]\w+)$/u, '')),

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
@@ -22,7 +23,6 @@ import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
 import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -80,12 +80,14 @@ export default class TransactionListItemDetails extends PureComponent {
       history,
       onClose,
     } = this.props;
-    const { hash, metamaskNetworkId, caipChainId } = primaryTransaction
+    const { hash, metamaskNetworkId, caipChainId } = primaryTransaction;
     const blockExplorerLink = getBlockExplorerLink(
       {
         hash,
         metamaskNetworkId,
-        chainId: caipChainId ? getEthChainIdHexFromCaipChainId(caipChainId) : ""
+        chainId: caipChainId
+          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          : '',
       },
       rpcPrefs,
     );

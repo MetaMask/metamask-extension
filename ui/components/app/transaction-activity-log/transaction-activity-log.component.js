@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
@@ -31,15 +32,17 @@ export default class TransactionActivityLog extends PureComponent {
 
   handleActivityClick = (activity) => {
     const { rpcPrefs } = this.props;
-    const { hash, metamaskNetworkId, caipChainId } = activity
+    const { hash, metamaskNetworkId, caipChainId } = activity;
     const etherscanUrl = getBlockExplorerLink(
       {
         hash,
         metamaskNetworkId,
-        chainId: caipChainId ? getEthChainIdHexFromCaipChainId(caipChainId) : ""
+        chainId: caipChainId
+          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          : '',
       },
-      rpcPrefs
-    )
+      rpcPrefs,
+    );
 
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Transactions,

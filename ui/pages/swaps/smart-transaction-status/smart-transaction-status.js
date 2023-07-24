@@ -3,6 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -65,7 +66,6 @@ import CanceledIcon from './canceled-icon';
 import UnknownIcon from './unknown-icon';
 import ArrowIcon from './arrow-icon';
 import TimerIcon from './timer-icon';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 
 export default function SmartTransactionStatusPage() {
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);

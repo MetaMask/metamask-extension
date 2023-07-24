@@ -3,11 +3,11 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { CaipChainId } from '@metamask/utils';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import { TransactionMeta } from '../../shared/constants/transaction';
 import type { NetworkStatus } from '../../shared/constants/network';
-import { CaipChainId } from '@metamask/utils';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file

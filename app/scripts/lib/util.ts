@@ -1,6 +1,7 @@
 import BN from 'bn.js';
 import { memoize } from 'lodash';
 import { AccessList } from '@ethereumjs/tx';
+import { CaipChainId } from '@metamask/utils';
 import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
@@ -19,7 +20,6 @@ import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '../../../shared/constants/transaction';
-import { CaipChainId } from '@metamask/utils';
 
 /**
  * @see {@link getEnvironmentType}
