@@ -19,6 +19,7 @@ import {
   TransactionEnvelopeType,
   TransactionMeta,
 } from '../../../shared/constants/transaction';
+import { CaipChainId } from '@metamask/utils';
 
 /**
  * @see {@link getEnvironmentType}
@@ -122,7 +123,7 @@ const addHexPrefix = (str: string) => {
   return `0x${str}`;
 };
 
-function getChainType(caipChainId: string) {
+function getChainType(caipChainId: CaipChainId) {
   if (caipChainId === CHAIN_IDS.MAINNET) {
     return 'mainnet';
   } else if ((TEST_CHAINS as string[]).includes(caipChainId)) {

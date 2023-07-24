@@ -112,7 +112,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.caipChainId, // should this be turned into hex?
+                      target: network.id || network.caipChainId,
                       onConfirm: () => undefined,
                     }),
                   );

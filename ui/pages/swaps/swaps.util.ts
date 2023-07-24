@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Json } from '@metamask/utils';
+import { CaipChainId, Json } from '@metamask/utils';
 import { IndividualTxFees } from '@metamask/smart-transactions-controller/dist/types';
 import {
   ALLOWED_CONTRACT_ADDRESSES,
@@ -597,7 +597,7 @@ export const isContractAddressValid = (
  * @param caipChainId
  * @returns string e.g. ethereum, bsc or polygon
  */
-export const getNetworkNameByChainId = (caipChainId: string): string => {
+export const getNetworkNameByChainId = (caipChainId: CaipChainId): string => {
   switch (caipChainId) {
     case CHAIN_IDS.MAINNET:
       return ETHEREUM;

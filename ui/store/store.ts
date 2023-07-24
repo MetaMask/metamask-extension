@@ -7,6 +7,7 @@ import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import { TransactionMeta } from '../../shared/constants/transaction';
 import type { NetworkStatus } from '../../shared/constants/network';
+import { CaipChainId } from '@metamask/utils';
 
 /**
  * This interface is temporary and is copied from the message-manager.js file
@@ -44,12 +45,12 @@ export interface MessagesIndexedById {
  */
 interface TemporaryBackgroundState {
   addressBook: {
-    [caipChainId: string]: {
+    [caipChainId: CaipChainId]: {
       name: string;
     }[];
   };
   providerConfig: {
-    caipChainId: string;
+    caipChainId: CaipChainId;
   };
   currentNetworkTxList: TransactionMeta[];
   selectedAddress: string;

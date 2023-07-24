@@ -1,3 +1,4 @@
+import { CaipChainId } from '@metamask/utils';
 import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
@@ -34,7 +35,7 @@ export function isPrefixedFormattedHexString(value: unknown) {
  * @returns Whether the current network supports token detection
  */
 export function isTokenDetectionEnabledForNetwork(
-  caipChainId: string | undefined,
+  caipChainId: CaipChainId | undefined,
 ) {
   switch (caipChainId) {
     case CHAIN_IDS.MAINNET:

@@ -4,9 +4,9 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

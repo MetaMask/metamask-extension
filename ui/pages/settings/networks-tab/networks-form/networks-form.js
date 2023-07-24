@@ -94,7 +94,7 @@ const NetworksForm = ({
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
-  const [chainId, setChainId] = useState(selectedNetwork?.caipChainId || ''); // ?
+  const [chainId, setChainId] = useState(selectedNetwork?.caipChainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
