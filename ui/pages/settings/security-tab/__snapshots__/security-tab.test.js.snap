@@ -143,7 +143,7 @@ exports[`Security Tab should match snapshot 1`] = `
         >
           <div
             class="settings-page__content-item-col"
-            data-testid="use4ByteResolution"
+            data-testid="4byte-resolution-container"
           >
             <label
               class="toggle-button toggle-button--off"

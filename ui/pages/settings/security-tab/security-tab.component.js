@@ -270,7 +270,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <div
             className="settings-page__content-item-col"
-            data-testid="use4ByteResolution"
+            data-testid="4byte-resolution-container"
           >
             <ToggleButton
               value={use4ByteResolution}
