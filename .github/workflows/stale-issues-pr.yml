@@ -1,18 +1,9 @@
 name: 'Close stale issues and PRs'
 
-on:
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
-
-# run once a day at 12
-# on:
-#   schedule:
-#     - cron: '0 12 * * *'
-
 # run every 2 hours
-# on:
-#   schedule:
-#     - cron: '0 */2 * * *'
+on:
+  schedule:
+    - cron: '0 */2 * * *'
 
 jobs:
   stale:
