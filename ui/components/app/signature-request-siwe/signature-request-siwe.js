@@ -50,7 +50,6 @@ export default function SignatureRequestSIWE({ txData }) {
   const t = useContext(I18nContext);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);

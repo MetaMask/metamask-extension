@@ -7,7 +7,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import Typography from '../../../components/ui/typography/typography';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import {
   FONT_WEIGHT,
   TextColor,

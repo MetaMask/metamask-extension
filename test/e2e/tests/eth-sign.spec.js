@@ -136,7 +136,7 @@ describe('Eth sign', function () {
 
         await driver.waitForSelector({
           text: 'Reject 2 requests',
-          tag: 'a',
+          tag: 'button',
         });
 
         await verifyAndAssertEthSign(driver, DAPP_URL, expectedEthSignMessage);

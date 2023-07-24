@@ -5,7 +5,7 @@ import UrlIcon from '../../../components/ui/url-icon';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
 import Box from '../../../components/ui/box';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   TextVariant,

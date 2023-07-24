@@ -7,8 +7,8 @@ import {
   Box,
   Button,
   Tag,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import {
   BlockSize,
   Display,
