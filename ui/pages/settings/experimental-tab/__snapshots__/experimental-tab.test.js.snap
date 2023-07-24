@@ -6,7 +6,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
     class="settings-page__body"
   >
     <h4
-      class="box mm-text mm-text--heading-sm box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
+      class="mm-box mm-text mm-text--heading-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
     >
       Security
     </h4>
@@ -23,17 +23,17 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="settings-page__content-description"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Enable this to have your transactions and signature requests reviewed locally (no data shared with third parties) and warnings displayed when malicious activity is detected.
           </p>
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature.
           </p>
           <p
-            class="box mm-text mm-text--body-sm box--margin-top-3 box--margin-bottom-1 box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
           >
             Select providers:
           </p>
@@ -41,7 +41,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
             <p
-              class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-0 mm-box--color-text-default"
             >
               Blockaid
             </p>
@@ -88,7 +88,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </label>
           </div>
           <p
-            class="box mm-text mm-text--body-md box--margin-top-2 box--flex-direction-row box--color-text-muted"
+            class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-muted"
           >
             More coming soon...
           </p>
@@ -279,7 +279,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           class="settings-page__content-description"
         >
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           >
             We use third-party APIs to detect NFTs in your wallet, which means your IP address may be exposed to centralized servers. There are a few things to be cautious about when enabling this feature.
           </p>
@@ -297,7 +297,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             </li>
           </ul>
           <p
-            class="box mm-text mm-text--body-md box--padding-top-4 box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-top-4 mm-box--color-text-alternative"
           >
             Leave this feature off if you don't want the app to pull data from those services.
           </p>
