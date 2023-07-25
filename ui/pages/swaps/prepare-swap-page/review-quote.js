@@ -523,8 +523,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     } else if (balanceError && !insufficientTokens && !insufficientEth) {
       dispatch(setBalanceError(false));
     }
-    // eslint-disable-next-line
-  }, [insufficientTokens, insufficientEth, dispatch, isSmartTransaction]);
+  }, [
+    insufficientTokens,
+    insufficientEth,
+    dispatch,
+    isSmartTransaction,
+    balanceError,
+  ]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -733,6 +738,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     ethBalanceNeededStx,
     isSmartTransaction,
     trackEvent,
+    prevEthBalanceNeededStx,
+    ethBalanceNeeded,
+    eventObjectBase,
   ]);
 
   const metaMaskFee = usedQuote.fee;
@@ -831,6 +839,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       10,
     );
   }
+  const prevPriceDifferencePercentage = usePrevious(priceDifferencePercentage);
 
   const shouldShowPriceDifferenceWarning =
     !tokenBalanceUnavailable &&
@@ -883,12 +892,20 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     if (
       shouldShowPriceDifferenceWarning &&
       acknowledgedPriceDifference &&
-      quotesLastFetched !== prevQuotesLastFetched
+      quotesLastFetched !== prevQuotesLastFetched &&
+      priceDifferencePercentage !== prevPriceDifferencePercentage
     ) {
       // Reset price difference acknowledgement if price diff % changed.
       setAcknowledgedPriceDifference(false);
     }
-  }, [priceDifferencePercentage]);
+  }, [
+    acknowledgedPriceDifference,
+    prevQuotesLastFetched,
+    quotesLastFetched,
+    shouldShowPriceDifferenceWarning,
+    priceDifferencePercentage,
+    prevPriceDifferencePercentage,
+  ]);
 
   useEffect(() => {
     if (isSmartTransaction && !insufficientTokens) {
