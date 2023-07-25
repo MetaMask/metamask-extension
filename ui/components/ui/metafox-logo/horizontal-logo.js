@@ -13,11 +13,11 @@ export default function MetaFoxHorizontalLogo({
   theme: themeProps,
   className,
 }) {
-  const [theme, setTheme] = useState(themeProps);
-
-  useEffect(() => {
-    setTheme(document.documentElement.getAttribute('data-theme'));
-  }, []);
+  const [theme, setTheme] = useState(() =>
+    themeProps === undefined
+      ? document.documentElement.getAttribute('data-theme')
+      : themeProps,
+  );
 
   useEffect(() => {
     if (themeProps !== undefined) {
