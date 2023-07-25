@@ -10,7 +10,7 @@ const BSC_IMAGE_URL = './images/bsc-filled.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
-  argTypes: {
+  argTypes: { // this component doesn't take props. what are these?
     onBackClick: {
       action: 'onBackClick',
     },

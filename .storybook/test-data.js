@@ -1119,7 +1119,7 @@ const state = {
         rpcPrefs: {},
       },
     },
-    accountTokens: {
+    accountTokens: { // this state is stale
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         'eip155:1': [
           {
