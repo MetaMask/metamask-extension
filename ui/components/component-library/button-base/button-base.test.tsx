@@ -2,7 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { BUTTON_BASE_SIZES } from './button-base.constants';
+import { ButtonBaseSize } from './button-base.types';
 import { ButtonBase } from './button-base';
 
 describe('ButtonBase', () => {
@@ -51,17 +51,8 @@ describe('ButtonBase', () => {
     expect(getByTestId('button-base')).toHaveAttribute(
       'href',
       'https://www.test.com/',
-      'target',
-      '_blank',
-      'rel',
-      'noopener noreferrer',
     );
-    expect(getByTestId('button-base')).toHaveAttribute(
-      'target',
-      '_blank',
-      'rel',
-      'noopener noreferrer',
-    );
+    expect(getByTestId('button-base')).toHaveAttribute('target', '_blank');
     expect(getByTestId('button-base')).toHaveAttribute(
       'rel',
       'noopener noreferrer',
@@ -79,28 +70,19 @@ describe('ButtonBase', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonBase
-          size={BUTTON_BASE_SIZES.SM}
-          data-testid={BUTTON_BASE_SIZES.SM}
-        />
-        <ButtonBase
-          size={BUTTON_BASE_SIZES.MD}
-          data-testid={BUTTON_BASE_SIZES.MD}
-        />
-        <ButtonBase
-          size={BUTTON_BASE_SIZES.LG}
-          data-testid={BUTTON_BASE_SIZES.LG}
-        />
+        <ButtonBase size={ButtonBaseSize.Sm} data-testid={ButtonBaseSize.Sm} />
+        <ButtonBase size={ButtonBaseSize.Md} data-testid={ButtonBaseSize.Md} />
+        <ButtonBase size={ButtonBaseSize.Lg} data-testid={ButtonBaseSize.Lg} />
       </>,
     );
-    expect(getByTestId(BUTTON_BASE_SIZES.SM)).toHaveClass(
-      `mm-button-base--size-${BUTTON_BASE_SIZES.SM}`,
+    expect(getByTestId(ButtonBaseSize.Sm)).toHaveClass(
+      `mm-button-base--size-${ButtonBaseSize.Sm}`,
     );
-    expect(getByTestId(BUTTON_BASE_SIZES.MD)).toHaveClass(
-      `mm-button-base--size-${BUTTON_BASE_SIZES.MD}`,
+    expect(getByTestId(ButtonBaseSize.Md)).toHaveClass(
+      `mm-button-base--size-${ButtonBaseSize.Md}`,
     );
-    expect(getByTestId(BUTTON_BASE_SIZES.LG)).toHaveClass(
-      `mm-button-base--size-${BUTTON_BASE_SIZES.LG}`,
+    expect(getByTestId(ButtonBaseSize.Lg)).toHaveClass(
+      `mm-button-base--size-${ButtonBaseSize.Lg}`,
     );
   });
 

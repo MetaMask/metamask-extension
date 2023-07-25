@@ -84,7 +84,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           style="visibility: initial;"
         >
           <span
-            class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
           <span
@@ -287,19 +287,20 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             class="mm-box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
           >
             <div
-              class="currency-display-component"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0"
             >
-              <span
-                class="currency-display-component__prefix"
+              <div
+                class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+                variant="inherit"
               >
                 <i
                   class="fab fa-ethereum"
                   style="font-size: 24px;"
                 />
-              </span>
+              </div>
               <span
-                class="currency-display-component__text"
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
                 0
               </span>
@@ -317,7 +318,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
           >
             <span
-              class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-warning-default"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
               style="mask-image: url('./images/icons/warning.svg');"
             />
             <div>
@@ -352,7 +353,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   Site suggested
                 </span>
                 <span
-                  class="box mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-primary-default"
+                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
                   style="mask-image: url('./images/icons/arrow-right.svg');"
                 />
               </button>
@@ -448,14 +449,11 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.00021
                         </span>
@@ -469,19 +467,16 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="currency-display-component__suffix"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
                           ETH
                         </span>
@@ -517,19 +512,16 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="currency-display-component__suffix"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
                           ETH
                         </span>
@@ -560,14 +552,11 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="confirm-page-container-content__total-value"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.00021
                         </span>
@@ -581,19 +570,16 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                       class="confirm-page-container-content__total-value"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.00021 ETH"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.00021
                         </span>
                         <span
-                          class="currency-display-component__suffix"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
                           ETH
                         </span>
@@ -621,19 +607,16 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     </strong>
                      
                     <div
-                      class="currency-display-component"
+                      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       title="0.00021 ETH"
                     >
                       <span
-                        class="currency-display-component__prefix"
-                      />
-                      <span
-                        class="currency-display-component__text"
+                        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                       >
                         0.00021
                       </span>
                       <span
-                        class="currency-display-component__suffix"
+                        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                       >
                         ETH
                       </span>

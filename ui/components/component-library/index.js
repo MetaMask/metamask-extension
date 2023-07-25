@@ -16,7 +16,7 @@ export {
 } from './badge-wrapper';
 export { Box } from './box';
 export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
-export { ButtonBase, BUTTON_BASE_SIZES } from './button-base';
+export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
 export { ButtonPrimary, BUTTON_PRIMARY_SIZES } from './button-primary';
