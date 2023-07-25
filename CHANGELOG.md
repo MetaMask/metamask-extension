@@ -5,7 +5,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Uncategorized
 
 ## [10.35.0]
 ### Uncategorized
@@ -52,6 +51,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 - Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
+### Added
+- [MMI] Added missing locales ([#20024](https://github.com/MetaMask/metamask-extension/pull/20024))
+- Added customize tx nonce on ERC20 approve screen when feature is enabled ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
+- Approval flow adding success and error pages ([#19778](https://github.com/MetaMask/metamask-extension/pull/19778))
+- Add loading indicator when clicking Refresh list on tokens screen ([#19952](https://github.com/MetaMask/metamask-extension/pull/19952))
+- [MMI] Adds dev MMI configuration url ([#19899](https://github.com/MetaMask/metamask-extension/pull/19899))
+- [MMI] Adds missing return for MMI ([#19869](https://github.com/MetaMask/metamask-extension/pull/19869))
+
 ### Changed
 - Bolden "Done" text for priv key export button ([#20059](https://github.com/MetaMask/metamask-extension/pull/20059))
 - Removed footer from connected sites modal ([#20036](https://github.com/MetaMask/metamask-extension/pull/20036))
@@ -76,13 +83,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move Token Options Menu from right to left ([#19765](https://github.com/MetaMask/metamask-extension/pull/19765))
 - Update BNB Chain name from "BNB Smart Chain" to "BNB Chain" ([#19836](https://github.com/MetaMask/metamask-extension/pull/19836))
 
-### Added
-- [MMI] Added missing locales ([#20024](https://github.com/MetaMask/metamask-extension/pull/20024))
-- Added customize tx nonce on ERC20 approve screen when feature is enabled ([#17945](https://github.com/MetaMask/metamask-extension/pull/17945))
-- Approval flow adding success and error pages ([#19778](https://github.com/MetaMask/metamask-extension/pull/19778))
-- Add loading indicator when clicking Refresh list on tokens screen ([#19952](https://github.com/MetaMask/metamask-extension/pull/19952))
-- [MMI] Adds dev MMI configuration url ([#19899](https://github.com/MetaMask/metamask-extension/pull/19899))
-- [MMI] Adds missing return for MMI ([#19869](https://github.com/MetaMask/metamask-extension/pull/19869))
 
 ### Fixed
 - [MMI] Fixed remove custodian token ([#20021](https://github.com/MetaMask/metamask-extension/pull/20021))
