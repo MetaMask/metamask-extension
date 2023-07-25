@@ -88,5 +88,3 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
     );
   },
 );
-
-AvatarToken.displayName = 'AvatarToken';

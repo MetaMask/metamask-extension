@@ -7,22 +7,17 @@ import {
   BackgroundColor,
   BorderColor,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box/box';
-
 import {
   AvatarNetwork,
   AvatarNetworkSize,
-  BUTTON_LINK_SIZES,
   BadgeWrapper,
+  Box,
   ButtonLink,
+  BUTTON_LINK_SIZES,
   Text,
 } from '..';
-
 import README from './README.mdx';
-
-import { AvatarToken } from './avatar-token';
-import { AvatarTokenSize } from './avatar-token.types';
+import { AvatarToken, AvatarTokenSize } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/AvatarToken',
@@ -129,7 +124,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
             src="./images/eth_logo.png"
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -142,7 +137,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
             src="./images/eth_logo.png"
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -155,7 +150,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
             src="./images/eth_logo.png"
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -168,7 +163,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
             src="./images/eth_logo.png"
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -181,7 +176,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
             src="./images/eth_logo.png"
             name="ETH"
             size={AvatarNetworkSize.Sm}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -195,7 +190,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           <AvatarNetwork
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -206,7 +201,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           name="ETH"
           size={AvatarTokenSize.Xs}
           borderColor={BorderColor.borderDefault}
-          borderSize={2}
+          borderWidth={2}
         />
       </BadgeWrapper>
       <BadgeWrapper
@@ -214,7 +209,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           <AvatarNetwork
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -225,7 +220,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           src=""
           size={AvatarTokenSize.Sm}
           borderColor={BorderColor.borderDefault}
-          borderSize={2}
+          borderWidth={2}
         />
       </BadgeWrapper>
       <BadgeWrapper
@@ -233,7 +228,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           <AvatarNetwork
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -244,7 +239,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           src=""
           size={AvatarTokenSize.Md}
           borderColor={BorderColor.borderDefault}
-          borderSize={2}
+          borderWidth={2}
         />
       </BadgeWrapper>
       <BadgeWrapper
@@ -252,7 +247,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           <AvatarNetwork
             name="ETH"
             size={AvatarNetworkSize.Xs}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -263,7 +258,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           src=""
           size={AvatarTokenSize.Lg}
           borderColor={BorderColor.borderDefault}
-          borderSize={2}
+          borderWidth={2}
         />
       </BadgeWrapper>
       <BadgeWrapper
@@ -271,7 +266,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           <AvatarNetwork
             name="ETH"
             size={AvatarNetworkSize.Sm}
-            borderColor={BackgroundColor.backgroundDefault}
+            borderColor={BorderColor.backgroundDefault}
             borderWidth={2}
           />
         }
@@ -282,7 +277,7 @@ export const SizeStory: StoryFn<typeof AvatarToken> = (args) => (
           src=""
           size={AvatarTokenSize.Xl}
           borderColor={BorderColor.borderDefault}
-          borderSize={2}
+          borderWidth={2}
         />
       </BadgeWrapper>
     </Box>

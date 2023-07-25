@@ -13,7 +13,7 @@ export enum AvatarTokenSize {
  * Props for the AvatarToken component
  */
 export interface AvatarTokenStyleUtilityProps
-  extends Omit<AvatarBaseStyleUtilityProps, 'size'> {
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children'> {
   /**
    * The name accepts the string to render the first letter of the AvatarToken. This will be used as the fallback display if no image url is passed to the src
    */
