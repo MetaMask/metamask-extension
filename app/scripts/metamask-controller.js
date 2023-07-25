@@ -2943,12 +2943,10 @@ export default class MetamaskController extends EventEmitter {
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await this.coreKeyringController.addNewAccount(accounts.length);
+        const { addedAccountAddress } =
+          await this.coreKeyringController.addNewAccount(accounts.length);
         accounts = await this.coreKeyringController.getAccounts();
-        lastBalance = await this.getBalance(
-          accounts[accounts.length - 1],
-          ethQuery,
-        );
+        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
       }
 
       // remove extra zero balance account potentially created from seeking ahead
