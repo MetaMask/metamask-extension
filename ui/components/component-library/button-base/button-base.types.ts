@@ -5,7 +5,8 @@ import type {
 } from '../box';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { TextDirection, TextProps } from '../text';
-import { IconName, IconProps } from '../icon';
+import { IconName } from '../icon';
+import type { IconProps } from '../icon';
 
 export enum ButtonBaseSize {
   Sm = 'sm',
@@ -52,7 +53,7 @@ export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  startIconProps?: IconProps;
+  startIconProps?: IconProps<'span'>;
   /**
    * Add icon to end (right side) of button text passing icon name
    * The name of the icon to display. Should be one of IconName
@@ -61,11 +62,11 @@ export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  endIconProps?: IconProps;
+  endIconProps?: IconProps<'span'>;
   /**
    * iconLoadingProps accepts all the props from Icon
    */
-  iconLoadingProps?: IconProps;
+  iconLoadingProps?: IconProps<'span'>;
   /**
    * Boolean to show loading spinner in button
    */
