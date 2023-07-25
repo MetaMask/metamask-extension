@@ -103,10 +103,6 @@
   "addCustomToken": {
     "message": "Añadir token personalizado"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "¿No encuentra un token? Para agregar un token, copie su dirección. Puede encontrar la dirección de contrato del token en $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Esto permitirá que la red se utilice en MetaMask."
   },
@@ -138,6 +134,10 @@
   },
   "addToken": {
     "message": "Agregar token"
+  },
+  "addTokenByContractAddress": {
+    "message": "¿No encuentra un token? Para agregar un token, copie su dirección. Puede encontrar la dirección de contrato del token en $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Dirección"
@@ -442,7 +442,7 @@
   "connectingToGoerli": {
     "message": "Estableciendo conexión a la red de prueba Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Estableciendo conexión a la red de prueba Linea Goerli"
   },
   "connectingToMainnet": {
@@ -1245,7 +1245,7 @@
   "likeToImportTokens": {
     "message": "¿Quiere agregar estos tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Red de prueba Linea Goerli"
   },
   "link": {
@@ -1268,9 +1268,6 @@
   },
   "lock": {
     "message": "Bloquear"
-  },
-  "lockTimeTooGreat": {
-    "message": "El tiempo de bloqueo es demasiado largo"
   },
   "low": {
     "message": "Baja"
@@ -1341,9 +1338,6 @@
   },
   "mustSelectOne": {
     "message": "Debe seleccionar al menos 1 token."
-  },
-  "myAccounts": {
-    "message": "Mis cuentas"
   },
   "name": {
     "message": "Nombre"

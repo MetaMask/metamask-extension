@@ -7,15 +7,23 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
   TextVariant,
+  Display,
+  FlexDirection,
   JustifyContent,
   AlignItems,
   TextColor,
   Size,
   IconColor,
 } from '../../../../helpers/constants/design-system';
-import Button from '../../../ui/button';
-import Box from '../../../ui/box/box';
-import { Icon, IconName, Text } from '../../../component-library';
+
+import {
+  Icon,
+  IconName,
+  Text,
+  Box,
+  ButtonLink,
+  BUTTON_LINK_SIZES,
+} from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
   const t = useI18nContext();
@@ -28,10 +36,13 @@ export default function SnapContentFooter({ snapName, snapId }) {
   // TODO: add truncation to the snap name, need to pick a character length at which to cut off
   return (
     <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       paddingTop={4}
       paddingBottom={4}
+      gap={2}
       className="snap-content-footer"
     >
       <Icon
@@ -42,9 +53,13 @@ export default function SnapContentFooter({ snapName, snapId }) {
       />
       <Text color={TextColor.textMuted} variant={TextVariant.bodySm} as="h6">
         {t('snapContent', [
-          <Button type="inline" onClick={handleNameClick} key="button">
+          <ButtonLink
+            size={BUTTON_LINK_SIZES.INHERIT}
+            onClick={handleNameClick}
+            key="button"
+          >
             {snapName}
-          </Button>,
+          </ButtonLink>,
         ])}
       </Text>
     </Box>

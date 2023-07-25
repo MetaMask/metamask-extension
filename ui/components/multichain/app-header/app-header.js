@@ -20,13 +20,11 @@ import {
 import {
   AlignItems,
   BackgroundColor,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
 import {
-  AvatarNetwork,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -107,17 +105,17 @@ export const AppHeader = ({ location }) => {
   // Disable the network and account pickers if the user is in
   // a critical flow
   const sendStage = useSelector(getSendStage);
+  const isTransactionEditPage = [
+    SEND_STAGES.EDIT,
+    SEND_STAGES.DRAFT,
+    SEND_STAGES.ADD_RECIPIENT,
+  ].includes(sendStage);
   const isConfirmationPage = Boolean(
     matchPath(location.pathname, {
       path: CONFIRM_TRANSACTION_ROUTE,
       exact: false,
     }),
   );
-  const isTransactionEditPage = [
-    SEND_STAGES.EDIT,
-    SEND_STAGES.DRAFT,
-    SEND_STAGES.ADD_RECIPIENT,
-  ].includes(sendStage);
   const isSwapsPage = Boolean(
     matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
   );
@@ -125,11 +123,18 @@ export const AppHeader = ({ location }) => {
     matchPath(location.pathname, { path: BUILD_QUOTE_ROUTE, exact: false }),
   );
 
-  const disablePickers =
-    isConfirmationPage ||
+  const hasUnapprovedTransactions = useSelector(
+    (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
+  );
+
+  const disableAccountPicker =
+    isConfirmationPage || (isSwapsPage && !isSwapsBuildQuotePage);
+
+  const disableNetworkPicker =
+    isSwapsPage ||
     isTransactionEditPage ||
-    (isSwapsPage && !isSwapsBuildQuotePage);
-  const disableNetworkPicker = isSwapsPage || disablePickers;
+    isConfirmationPage ||
+    hasUnapprovedTransactions;
 
   // Callback for network dropdown
   const networkOpenCallback = useCallback(() => {
@@ -148,7 +153,7 @@ export const AppHeader = ({ location }) => {
     <>
       {isUnlocked && !popupStatus ? (
         <Box
-          display={[DISPLAY.NONE, DISPLAY.FLEX]}
+          display={[Display.None, Display.Flex]}
           alignItems={AlignItems.center}
           margin={2}
           className="multichain-app-header-logo"
@@ -166,12 +171,12 @@ export const AppHeader = ({ location }) => {
         </Box>
       ) : null}
       <Box
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
         alignItems={AlignItems.center}
-        width={BLOCK_SIZES.FULL}
+        width={BlockSize.Full}
         backgroundColor={
           !isUnlocked || popupStatus
             ? BackgroundColor.backgroundDefault
@@ -185,7 +190,7 @@ export const AppHeader = ({ location }) => {
                 'multichain-app-header-shadow': isUnlocked && !popupStatus,
               })}
               alignItems={AlignItems.center}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.Full}
               backgroundColor={BackgroundColor.backgroundDefault}
               padding={2}
               paddingLeft={4}
@@ -195,21 +200,19 @@ export const AppHeader = ({ location }) => {
               {popupStatus ? (
                 <Box className="multichain-app-header__contents__container">
                   <Tooltip title={currentNetwork?.nickname} position="right">
-                    <AvatarNetwork
+                    <PickerNetwork
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
-                      aria-label={t('networkMenu')}
-                      padding={0}
-                      name={currentNetwork?.nickname}
                       src={currentNetwork?.rpcPrefs?.imageUrl}
-                      size={Size.SM}
+                      label={currentNetwork?.nickname}
+                      aria-label={t('networkMenu')}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
                         networkOpenCallback();
                       }}
-                      display={[DISPLAY.FLEX, DISPLAY.NONE]} // show on popover hide on desktop
+                      display={[Display.Flex, Display.None]} // show on popover hide on desktop
                       disabled={disableNetworkPicker}
                     />
                   </Tooltip>
@@ -225,7 +228,7 @@ export const AppHeader = ({ location }) => {
                       e.preventDefault();
                       networkOpenCallback();
                     }}
-                    display={[DISPLAY.NONE, DISPLAY.FLEX]} // show on desktop hide on popover
+                    display={[Display.None, Display.Flex]} // show on desktop hide on popover
                     className="multichain-app-header__contents__network-picker"
                     disabled={disableNetworkPicker}
                     data-testid="network-display"
@@ -265,15 +268,15 @@ export const AppHeader = ({ location }) => {
                       },
                     });
                   }}
-                  disabled={disablePickers}
+                  disabled={disableAccountPicker}
                 />
               ) : null}
               <Box
-                display={DISPLAY.FLEX}
+                display={Display.Flex}
                 alignItems={AlignItems.center}
                 justifyContent={JustifyContent.flexEnd}
               >
-                <Box display={DISPLAY.FLEX} gap={4}>
+                <Box display={Display.Flex} gap={4}>
                   {showStatus ? (
                     <Box ref={menuRef}>
                       <ConnectedStatusIndicator
@@ -291,7 +294,7 @@ export const AppHeader = ({ location }) => {
                     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                     custodianIcon && (
                       <Box
-                        display={DISPLAY.FLEX}
+                        display={Display.Flex}
                         alignItems={AlignItems.center}
                         className="custody-logo"
                         data-testid="custody-logo"
@@ -333,9 +336,9 @@ export const AppHeader = ({ location }) => {
                   ) : null}
                   <Box
                     ref={menuRef}
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     justifyContent={JustifyContent.flexEnd}
-                    width={BLOCK_SIZES.FULL}
+                    width={BlockSize.Full}
                   >
                     <ButtonIcon
                       iconName={IconName.MoreVertical}
@@ -390,12 +393,12 @@ export const AppHeader = ({ location }) => {
             </Box>
           ) : (
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               className={classnames('multichain-app-header__lock-contents', {
                 'multichain-app-header-shadow': isUnlocked && !popupStatus,
               })}
               alignItems={AlignItems.center}
-              width={BLOCK_SIZES.FULL}
+              width={BlockSize.Full}
               justifyContent={JustifyContent.spaceBetween}
               backgroundColor={BackgroundColor.backgroundDefault}
               padding={2}
