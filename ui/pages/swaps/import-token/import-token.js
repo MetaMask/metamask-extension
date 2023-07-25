@@ -11,6 +11,7 @@ import {
   FONT_WEIGHT,
   AlignItems,
   DISPLAY,
+  Severity,
 } from '../../../helpers/constants/design-system';
 
 export default function ImportToken({
@@ -54,7 +55,10 @@ export default function ImportToken({
         display={DISPLAY.FLEX}
         className="import-token"
       >
-        <BannerAlert severity="danger" description={t('importTokenWarning')} />
+        <BannerAlert
+          severity={Severity.Danger}
+          description={t('importTokenWarning')}
+        />
         <UrlIcon
           url={tokenForImport.iconUrl}
           className="import-token__token-icon"
