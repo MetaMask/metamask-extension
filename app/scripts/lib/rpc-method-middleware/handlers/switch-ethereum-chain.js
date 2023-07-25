@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
   CHAIN_ID_TO_TYPE_MAP,
@@ -109,13 +110,13 @@ async function switchEthereumChainHandler(
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)
-          .includes(chainId)
+          .includes(_chainId)
       ) {
         await setProviderType(approvedRequestData.type);
       } else {

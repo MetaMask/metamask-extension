@@ -1,0 +1,22 @@
+name: Sonar
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+jobs:
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for better relevancy of analysis
+      - name: SonarCloud Scan
+        # v1.9.1
+        uses: SonarSource/sonarcloud-github-action@5875562561d22a34be0c657405578705a169af6c
+        with:
+          args: >
+            -Dsonar.javascript.lcov.reportPaths=tests/coverage/lcov.info
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

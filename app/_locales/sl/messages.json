@@ -93,9 +93,6 @@
   "back": {
     "message": "Nazaj"
   },
-  "backToAll": {
-    "message": "Nazaj na vse"
-  },
   "backupApprovalInfo": {
     "message": "Ta skrivna koda je potrebna za obnovitev denarnice, če izgubite napravo, pozabite geslo, ponovno namestite MetaMask ali želite dostopati do denarnice v drugi napravi."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Poveži"
   },
-  "connectHardwareWallet": {
-    "message": "Poveži strojno denarnico"
-  },
   "connectingTo": {
     "message": "Povezovanje na $1"
   },
   "connectingToGoerli": {
     "message": "Povezovanje na testno omrežje Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Povezovanje na testno omrežje Linea Goerli"
   },
   "connectingToMainnet": {
@@ -193,9 +187,6 @@
   "create": {
     "message": "Ustvari"
   },
-  "createAccount": {
-    "message": "Ustvari račun"
-  },
   "createPassword": {
     "message": "Ustvari geslo"
   },
@@ -219,9 +210,6 @@
   },
   "delete": {
     "message": "Izbriši"
-  },
-  "deleteAccount": {
-    "message": "Izbriši račun"
   },
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
@@ -409,7 +397,7 @@
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Testno omrežje Linea Goerli"
   },
   "links": {
@@ -441,9 +429,6 @@
   },
   "mustSelectOne": {
     "message": "Izbran mora biti vsaj 1 žeton."
-  },
-  "myAccounts": {
-    "message": "Moji računi"
   },
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
@@ -563,14 +548,8 @@
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },
-  "queue": {
-    "message": "Čakalna vrsta"
-  },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
-  },
-  "recents": {
-    "message": "Nedavno"
   },
   "recipientAddressPlaceholder": {
     "message": "Iskanje, javni naslov (0x) ali ENS"
@@ -795,15 +774,8 @@
   "transfer": {
     "message": "Prenesi"
   },
-  "transferBetweenAccounts": {
-    "message": "Prenos med mojimi računi"
-  },
   "transferFrom": {
     "message": "Prenesi od"
-  },
-  "troubleTokenBalances": {
-    "message": "Če imate težave pri ogledu zneskov žetonov si jih lahko ogledate ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Poskusi znova"

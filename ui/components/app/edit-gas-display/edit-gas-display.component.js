@@ -7,8 +7,8 @@ import { EditGasModes } from '../../../../shared/constants/gas';
 import Button from '../../ui/button';
 
 import {
-  TEXT_ALIGN,
-  FONT_WEIGHT,
+  TextAlign,
+  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -101,7 +101,7 @@ export default function EditGasDisplay({
               color={TextColor.textDefault}
               variant={TextVariant.bodySm}
               as="h6"
-              fontWeight={FONT_WEIGHT.BOLD}
+              fontWeight={FontWeight.Bold}
             >
               {t('speedUpTooltipText')}{' '}
               <InfoTooltip
@@ -115,7 +115,7 @@ export default function EditGasDisplay({
           color={TextColor.textDefault}
           variant={TextVariant.displayMd}
           as="h1"
-          textAlign={TEXT_ALIGN.CENTER}
+          textAlign={TextAlign.Center}
         >
           {estimatedMinimumNative}
         </Text>

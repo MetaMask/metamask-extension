@@ -4,16 +4,15 @@ import classnames from 'classnames';
 import {
   BorderColor,
   Size,
-  DISPLAY,
   AlignItems,
   JustifyContent,
   BackgroundColor,
   IconColor,
   TextColor,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
+import { Box } from '../box';
 import { IconName, Icon } from '../icon';
 import { AvatarBase } from '../avatar-base';
 
@@ -35,7 +34,7 @@ export const AvatarIcon = React.forwardRef(
     <AvatarBase
       ref={ref}
       size={size}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
       color={color}

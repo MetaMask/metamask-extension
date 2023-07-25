@@ -3,16 +3,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
-  SEVERITIES,
+  Display,
+  FlexDirection,
   Size,
 } from '../../../helpers/constants/design-system';
 
 import Box from '../../ui/box/box';
 
 import { TextField } from '../text-field';
-import { HelpText } from '../help-text';
+import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 
 export const FormTextField = ({
@@ -52,8 +51,8 @@ export const FormTextField = ({
       { 'mm-form-text-field--disabled': disabled },
       className,
     )}
-    display={DISPLAY.FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
     {...props}
   >
     {label && (
@@ -102,7 +101,7 @@ export const FormTextField = ({
     />
     {helpText && (
       <HelpText
-        severity={error && SEVERITIES.DANGER}
+        severity={error && HelpTextSeverity.Danger}
         marginTop={1}
         {...helpTextProps}
         className={classnames(

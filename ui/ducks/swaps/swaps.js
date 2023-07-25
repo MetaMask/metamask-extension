@@ -6,7 +6,7 @@ import { captureMessage } from '@sentry/browser';
 
 import {
   addToken,
-  addUnapprovedTransaction,
+  addTransactionAndWaitForPublish,
   fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
@@ -14,18 +14,12 @@ import {
   setInitialGasEstimate,
   setSwapsErrorKey,
   setSwapsTxGasPrice,
-  setApproveTxId,
-  setTradeTxId,
   stopPollingForQuotes,
-  updateAndApproveTx,
-  updateSwapApprovalTransaction,
-  updateSwapTransaction,
   resetBackgroundSwapsState,
   setSwapsLiveness,
   setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
-  cancelTx,
   fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
@@ -126,6 +120,7 @@ const initialState = {
   },
   currentSmartTransactionsError: '',
   swapsSTXLoading: false,
+  transactionSettingsOpened: false,
 };
 
 const slice = createSlice({
@@ -208,11 +203,14 @@ const slice = createSlice({
     setCurrentSmartTransactionsError: (state, action) => {
       const errorType = Object.values(StxErrorTypes).includes(action.payload)
         ? action.payload
-        : StxErrorTypes.UNAVAILABLE;
+        : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
     },
     setSwapsSTXSubmitLoading: (state, action) => {
       state.swapsSTXLoading = action.payload || false;
+    },
+    setTransactionSettingsOpened: (state, action) => {
+      state.transactionSettingsOpened = Boolean(action.payload);
     },
   },
 });
@@ -274,6 +272,9 @@ export const getSwapsFallbackGasPrice = (state) =>
 export const getCurrentSmartTransactionsError = (state) =>
   state.swaps.currentSmartTransactionsError;
 
+export const getTransactionSettingsOpened = (state) =>
+  state.swaps.transactionSettingsOpened;
+
 export function shouldShowCustomPriceTooLowWarning(state) {
   const { average } = getSwapGasPriceEstimateData(state);
 
@@ -329,6 +330,15 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
   const currentSmartTransactionsError = getCurrentSmartTransactionsError(state);
   return smartTransactionsEnabled && !currentSmartTransactionsError;
+};
+
+export const getSwapRedesignEnabled = (state) => {
+  const swapRedesign =
+    state.metamask.swapsState?.swapsFeatureFlags?.swapRedesign;
+  if (swapRedesign === undefined) {
+    return true; // By default show the redesign if we don't have feature flags returned yet.
+  }
+  return swapRedesign.extensionActive;
 };
 
 export const getSwapsQuoteRefreshTime = (state) =>
@@ -484,6 +494,7 @@ const {
   swapCustomGasModalClosed,
   setCurrentSmartTransactionsError,
   setSwapsSTXSubmitLoading,
+  setTransactionSettingsOpened,
 } = actions;
 
 export {
@@ -503,6 +514,7 @@ export {
   swapCustomGasModalPriceEdited,
   swapCustomGasModalLimitEdited,
   swapCustomGasModalClosed,
+  setTransactionSettingsOpened,
 };
 
 export const navigateBackToBuildQuote = (history) => {
@@ -554,7 +566,7 @@ const disableStxIfRegularTxInProgress = (dispatch, transactions) => {
   for (const transaction of transactions) {
     if (IN_PROGRESS_TRANSACTION_STATUSES.includes(transaction.status)) {
       dispatch(
-        setCurrentSmartTransactionsError(StxErrorTypes.REGULAR_TX_IN_PROGRESS),
+        setCurrentSmartTransactionsError(StxErrorTypes.regularTxPending),
       );
       break;
     }
@@ -653,12 +665,7 @@ export const fetchQuotesAndSetQuoteState = (
       iconUrl: fromTokenIconUrl,
       balance: fromTokenBalance,
     } = selectedFromToken;
-    const {
-      address: toTokenAddress,
-      symbol: toTokenSymbol,
-      decimals: toTokenDecimals,
-      iconUrl: toTokenIconUrl,
-    } = selectedToToken;
+    const { address: toTokenAddress, symbol: toTokenSymbol } = selectedToToken;
     // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
@@ -669,24 +676,6 @@ export const fetchQuotesAndSetQuoteState = (
 
     const contractExchangeRates = getTokenExchangeRates(state);
 
-    let destinationTokenAddedForSwap = false;
-    if (
-      toTokenAddress &&
-      toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined &&
-      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
-    ) {
-      destinationTokenAddedForSwap = true;
-      await dispatch(
-        addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
-          true,
-        ),
-      );
-    }
     if (
       fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
@@ -755,7 +744,6 @@ export const fetchQuotesAndSetQuoteState = (
             destinationToken: toTokenAddress,
             value: inputValue,
             fromAddress: selectedAccount.address,
-            destinationTokenAddedForSwap,
             balanceError,
             sourceDecimals: fromTokenDecimals,
           },
@@ -841,6 +829,36 @@ export const fetchQuotesAndSetQuoteState = (
 
     dispatch(setFetchingQuotes(false));
   };
+};
+
+const addTokenTo = (dispatch, state) => {
+  const fetchParams = getFetchParams(state);
+  const swapsDefaultToken = getSwapsDefaultToken(state);
+  const contractExchangeRates = getTokenExchangeRates(state);
+  const selectedToToken =
+    getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
+  const {
+    address: toTokenAddress,
+    symbol: toTokenSymbol,
+    decimals: toTokenDecimals,
+    iconUrl: toTokenIconUrl,
+  } = selectedToToken;
+  if (
+    toTokenAddress &&
+    toTokenSymbol !== swapsDefaultToken.symbol &&
+    contractExchangeRates[toTokenAddress] === undefined &&
+    !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
+  ) {
+    dispatch(
+      addToken(
+        toTokenAddress,
+        toTokenSymbol,
+        toTokenDecimals,
+        toTokenIconUrl,
+        true,
+      ),
+    );
+  }
 };
 
 export const signAndSendSwapsSmartTransaction = ({
@@ -939,9 +957,10 @@ export const signAndSendSwapsSmartTransaction = ({
       if (!fees) {
         log.error('"fetchSwapsSmartTransactionFees" failed');
         dispatch(setSwapsSTXSubmitLoading(false));
-        dispatch(setCurrentSmartTransactionsError(StxErrorTypes.UNAVAILABLE));
+        dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
+      addTokenTo(dispatch, state);
       if (approveTxParams) {
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
@@ -1185,26 +1204,29 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
 
+    addTokenTo(dispatch, state);
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
         approveTxParams.maxFeePerGas = maxFeePerGas;
         approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
         delete approveTxParams.gasPrice;
       }
-      const approveTxMeta = await addUnapprovedTransaction(
-        undefined,
-        { ...approveTxParams, amount: '0x0' },
-        TransactionType.swapApproval,
-      );
-      await dispatch(setApproveTxId(approveTxMeta.id));
-      finalApproveTxMeta = await dispatch(
-        updateSwapApprovalTransaction(approveTxMeta.id, {
-          type: TransactionType.swapApproval,
-          sourceTokenSymbol: sourceTokenInfo.symbol,
-        }),
-      );
+
       try {
-        await dispatch(updateAndApproveTx(finalApproveTxMeta, true));
+        finalApproveTxMeta = await addTransactionAndWaitForPublish(
+          { ...approveTxParams, amount: '0x0' },
+          {
+            requireApproval: false,
+            type: TransactionType.swapApproval,
+            swaps: {
+              hasApproveTx: true,
+              meta: {
+                type: TransactionType.swapApproval,
+                sourceTokenSymbol: sourceTokenInfo.symbol,
+              },
+            },
+          },
+        );
       } catch (e) {
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
         history.push(SWAPS_ERROR_ROUTE);
@@ -1212,47 +1234,30 @@ export const signAndSendTransactions = (
       }
     }
 
-    const tradeTxMeta = await addUnapprovedTransaction(
-      undefined,
-      usedTradeTxParams,
-      TransactionType.swap,
-    );
-    dispatch(setTradeTxId(tradeTxMeta.id));
-
-    // The simulationFails property is added during the transaction controllers
-    // addUnapprovedTransaction call if the estimateGas call fails. In cases
-    // when no approval is required, this indicates that the swap will likely
-    // fail. There was an earlier estimateGas call made by the swaps controller,
-    // but it is possible that external conditions have change since then, and
-    // a previously succeeding estimate gas call could now fail. By checking for
-    // the `simulationFails` property here, we can reduce the number of swap
-    // transactions that get published to the blockchain only to fail and thereby
-    // waste the user's funds on gas.
-    if (!approveTxParams && tradeTxMeta.simulationFails) {
-      await dispatch(cancelTx(tradeTxMeta, false));
-      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
-      return;
-    }
-    const finalTradeTxMeta = await dispatch(
-      updateSwapTransaction(tradeTxMeta.id, {
-        estimatedBaseFee: decEstimatedBaseFee,
-        sourceTokenSymbol: sourceTokenInfo.symbol,
-        destinationTokenSymbol: destinationTokenInfo.symbol,
-        type: TransactionType.swap,
-        destinationTokenDecimals: destinationTokenInfo.decimals,
-        destinationTokenAddress: destinationTokenInfo.address,
-        swapMetaData,
-        swapTokenValue,
-        approvalTxId: finalApproveTxMeta?.id,
-      }),
-    );
     try {
-      await dispatch(updateAndApproveTx(finalTradeTxMeta, true));
+      await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        requireApproval: false,
+        type: TransactionType.swap,
+        swaps: {
+          hasApproveTx: Boolean(approveTxParams),
+          meta: {
+            estimatedBaseFee: decEstimatedBaseFee,
+            sourceTokenSymbol: sourceTokenInfo.symbol,
+            destinationTokenSymbol: destinationTokenInfo.symbol,
+            type: TransactionType.swap,
+            destinationTokenDecimals: destinationTokenInfo.decimals,
+            destinationTokenAddress: destinationTokenInfo.address,
+            swapMetaData,
+            swapTokenValue,
+            approvalTxId: finalApproveTxMeta?.id,
+          },
+        },
+      });
     } catch (e) {
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR
         : SWAP_FAILED_ERROR;
+      console.error(e);
       await dispatch(setSwapsErrorKey(errorKey));
       history.push(SWAPS_ERROR_ROUTE);
       return;
@@ -1329,7 +1334,7 @@ export function fetchSwapsSmartTransactionFees({
         const errorObj = parseSmartTransactionsError(e.message);
         if (
           fallbackOnNotEnoughFunds ||
-          errorObj?.error !== StxErrorTypes.NOT_ENOUGH_FUNDS
+          errorObj?.error !== StxErrorTypes.notEnoughFunds
         ) {
           dispatch(setCurrentSmartTransactionsError(errorObj?.error));
         }

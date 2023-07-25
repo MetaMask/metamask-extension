@@ -87,9 +87,6 @@
   "create": {
     "message": "สร้าง"
   },
-  "createAccount": {
-    "message": "สร้างบัญชี"
-  },
   "currencyConversion": {
     "message": "การแปลงสกุลเงิน"
   },
@@ -236,9 +233,6 @@
   },
   "mustSelectOne": {
     "message": "ต้องเลือกอย่างน้อย 1 โทเค็น"
-  },
-  "myAccounts": {
-    "message": "บัญชีของฉัน"
   },
   "needImportFile": {
     "message": "คุณต้องเลือกไฟล์ที่จะนำเข้า",
@@ -397,13 +391,6 @@
   },
   "transactionDropped": {
     "message": "ธุรกรรมถูกยกเลิกเมื่อ $2"
-  },
-  "transferBetweenAccounts": {
-    "message": "โอนระหว่างบัญชีของฉัน"
-  },
-  "troubleTokenBalances": {
-    "message": "เรามีปัญหาในการโหลดยอดโทเค็นคงเหลือของคุณ คุณสามารถดูได้ที่นี่",
-    "description": "Followed by a link (here) to view token balances"
   },
   "typePassword": {
     "message": "พิมพ์รหัสผ่านของคุณ"

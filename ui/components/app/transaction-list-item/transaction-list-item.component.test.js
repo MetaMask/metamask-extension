@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
+import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
   getConversionRate,
@@ -8,6 +10,7 @@ import {
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
+  getCurrentNetwork,
 } from '../../../selectors';
 import {
   renderWithProvider,
@@ -17,6 +20,12 @@ import {
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -51,7 +60,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: () => jest.fn(),
+    useDispatch: jest.fn(),
   };
 });
 
@@ -72,6 +81,20 @@ jest.mock('react', () => {
   };
 });
 
+jest.mock('../../../store/actions.ts', () => ({
+  tryReverseResolveAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/institutional/institution-background', () => ({
+  mmiActionsFactory: () => ({
+    getCustodianTransactionDeepLink: jest
+      .fn()
+      .mockReturnValue({ type: 'TYPE' }),
+  }),
+}));
+
+const mockStore = configureStore();
+
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
@@ -81,6 +104,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     };
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
+  } else if (selector === getCurrentNetwork) {
+    return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
     return (
       opts.preferences ?? {
@@ -96,6 +121,53 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  describe('ActivityListItem interactions', () => {
+    beforeAll(() => {
+      useGasFeeEstimates.mockImplementation(
+        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+      );
+    });
+
+    afterAll(() => {
+      useGasFeeEstimates.mockRestore();
+    });
+
+    it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '0x3',
+        }),
+      );
+
+      const store = mockStore(mockState);
+      const mockTrackEvent = jest.fn();
+      const { queryByTestId } = renderWithProvider(
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <TransactionListItem transactionGroup={transactionGroup} />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+      const activityListItem = queryByTestId('activity-list-item');
+      fireEvent.click(activityListItem);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.ActivityDetailsOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: 'send',
+        },
+      });
+      const popoverClose = queryByTestId('popover-close');
+      fireEvent.click(popoverClose);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.ActivityDetailsClosed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: 'send',
+        },
+      });
+    });
+  });
+
   describe('when account has insufficient balance to cover gas', () => {
     beforeAll(() => {
       useGasFeeEstimates.mockImplementation(
@@ -145,6 +217,50 @@ describe('TransactionListItem', () => {
       const cancelButton = getByText('Cancel');
       fireEvent.click(cancelButton);
       expect(getByText('Cancel transaction')).toBeInTheDocument();
+    });
+
+    it('should have a custodian Tx and show the custody icon', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+      expect(queryByTestId('custody-icon')).toBeInTheDocument();
+    });
+
+    it('should click the custody list item and view the send screen', () => {
+      const store = mockStore(mockState);
+
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+        store,
+      );
+
+      const custodyListItem = queryByTestId('custody-icon');
+      fireEvent.click(custodyListItem);
+
+      const sendTextExists = screen.queryAllByText('Send');
+      expect(sendTextExists).toBeTruthy();
     });
   });
 });

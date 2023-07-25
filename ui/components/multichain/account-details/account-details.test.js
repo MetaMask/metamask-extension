@@ -45,7 +45,7 @@ describe('AccountDetails', () => {
     const editButton = screen.getByTestId('editable-label-button');
     fireEvent.click(editButton);
 
-    const editableInput = screen.getByTestId('editable-input');
+    const editableInput = screen.getByPlaceholderText('Account name');
     const newAccountLabel = 'New Label';
 
     fireEvent.change(editableInput, { target: { value: newAccountLabel } });

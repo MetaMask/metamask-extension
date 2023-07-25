@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
-
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
@@ -13,16 +16,16 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
-import Button from '../../ui/button';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import SiteOrigin from '../../ui/site-origin';
-import NetworkAccountBalanceHeader from '../network-account-balance-header';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
 import {
   TypographyVariant,
-  FONT_WEIGHT,
-  TEXT_ALIGN,
+  FontWeight,
+  TextAlign,
   TextColor,
+  Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
@@ -31,18 +34,23 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
-import { Numeric } from '../../../../shared/modules/Numeric';
-import { EtherDenomination } from '../../../../shared/constants/common';
+import {
+  ButtonLink,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Icon,
+  IconName,
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import Box from '../../ui/box/box';
+///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
-import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
-import Box from '../../ui/box/box';
+import SignatureRequestHeader from '../signature-request-header';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
 ///: END:ONLY_INCLUDE_IN
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
@@ -54,54 +62,32 @@ export default class SignatureRequestOriginal extends Component {
   static propTypes = {
     fromAccount: PropTypes.shape({
       address: PropTypes.string.isRequired,
-      balance: PropTypes.string,
       name: PropTypes.string,
     }).isRequired,
-    cancel: PropTypes.func.isRequired,
-    clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    mostRecentOverviewPage: PropTypes.string.isRequired,
-    sign: PropTypes.func.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
     isLedgerWallet: PropTypes.bool,
-    nativeCurrency: PropTypes.string.isRequired,
-    currentCurrency: PropTypes.string.isRequired,
-    conversionRate: PropTypes.number,
     messagesCount: PropTypes.number,
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
-    cancelAll: PropTypes.func.isRequired,
-    providerConfig: PropTypes.object,
+    cancelAllApprovals: PropTypes.func.isRequired,
+    rejectPendingApproval: PropTypes.func.isRequired,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
+    resolvePendingApproval: PropTypes.func.isRequired,
+    completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
+    mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
     showSignatureRequestWarning: false,
   };
-
-  getNetworkName() {
-    const { providerConfig } = this.props;
-    const providerName = providerConfig.type;
-    const { t } = this.context;
-
-    switch (providerName) {
-      case NETWORK_TYPES.MAINNET:
-        return t('mainnet');
-      case NETWORK_TYPES.GOERLI:
-        return t('goerli');
-      case NETWORK_TYPES.SEPOLIA:
-        return t('sepolia');
-      case NETWORK_TYPES.LINEA_TESTNET:
-        return t('lineatestnet');
-      case NETWORK_TYPES.LOCALHOST:
-        return t('localhost');
-      default:
-        return providerConfig.nickname || t('unknownNetwork');
-    }
-  }
 
   msgHexToText = (hex) => {
     try {
@@ -111,16 +97,6 @@ export default class SignatureRequestOriginal extends Component {
     } catch (e) {
       return hex;
     }
-  };
-
-  renderAccountInfo = () => {
-    return (
-      <div className="request-signature__account-info">
-        {this.renderAccount()}
-        {this.renderRequestIcon()}
-        {this.renderBalance()}
-      </div>
-    );
   };
 
   renderTypedData = (data) => {
@@ -174,15 +150,11 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
 
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -201,11 +173,7 @@ export default class SignatureRequestOriginal extends Component {
                 color={IconColor.infoDefault}
                 marginRight={2}
               />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h7"
-              >
+              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
                 {this.context.t('mismatchAccount', [
                   shortenAddress(this.props.selectedAccount.address),
                   shortenAddress(this.props.fromAccount.address),
@@ -217,22 +185,37 @@ export default class SignatureRequestOriginal extends Component {
         }
 
         <div className="request-signature__origin">
-          <SiteOrigin
-            title={txData.msgParams.origin}
-            siteOrigin={txData.msgParams.origin}
-            iconSrc={targetSubjectMetadata?.iconUrl}
-            iconName={
-              getURLHostName(targetSubjectMetadata?.origin) ||
-              targetSubjectMetadata?.origin
-            }
-            chip
-          />
+          {
+            // Use legacy authorship header for snaps
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
+              <SnapLegacyAuthorshipHeader
+                snapId={targetSubjectMetadata.origin}
+                marginLeft={4}
+                marginRight={4}
+              />
+            ) : (
+              ///: END:ONLY_INCLUDE_IN
+              <SiteOrigin
+                title={txData.msgParams.origin}
+                siteOrigin={txData.msgParams.origin}
+                iconSrc={targetSubjectMetadata?.iconUrl}
+                iconName={
+                  getURLHostName(targetSubjectMetadata?.origin) ||
+                  targetSubjectMetadata?.origin
+                }
+                chip
+              />
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
         </div>
 
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {this.context.t('sigRequest')}
         </Typography>
@@ -240,7 +223,7 @@ export default class SignatureRequestOriginal extends Component {
           className="request-signature__content__subtitle"
           variant={TypographyVariant.H7}
           color={TextColor.textAlternative}
-          align={TEXT_ALIGN.CENTER}
+          align={TextAlign.Center}
           margin={12}
           marginTop={3}
         >
@@ -273,33 +256,54 @@ export default class SignatureRequestOriginal extends Component {
     );
   };
 
-  onSubmit = async (event) => {
-    const { clearConfirmTransaction, history, mostRecentOverviewPage, sign } =
-      this.props;
+  onSubmit = async () => {
+    const {
+      resolvePendingApproval,
+      completedTx,
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      txData,
+    } = this.props;
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (this.props.mmiOnSignCallback) {
+      await this.props.mmiOnSignCallback(txData);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
-    await sign(event);
+    await resolvePendingApproval(txData.id);
+    completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
 
-  onCancel = async (event) => {
-    const { clearConfirmTransaction, history, mostRecentOverviewPage, cancel } =
-      this.props;
+  onCancel = async () => {
+    const {
+      clearConfirmTransaction,
+      history,
+      mostRecentOverviewPage,
+      rejectPendingApproval,
+      txData: { id },
+    } = this.props;
 
-    await cancel(event);
+    await rejectPendingApproval(
+      id,
+      serializeError(ethErrors.provider.userRejectedRequest()),
+    );
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
   };
 
   renderFooter = () => {
     const {
-      cancel,
-      sign,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      txData: { type },
+      txData,
       hardwareWalletRequiresConnection,
+      rejectPendingApproval,
+      resolvePendingApproval,
     } = this.props;
     const { t } = this.context;
 
@@ -307,40 +311,55 @@ export default class SignatureRequestOriginal extends Component {
       <PageContainerFooter
         cancelText={t('reject')}
         submitText={t('sign')}
-        onCancel={async (event) => {
-          await cancel(event);
+        onCancel={async () => {
+          await rejectPendingApproval(
+            txData.id,
+            serializeError(ethErrors.provider.userRejectedRequest()),
+          );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
         }}
-        onSubmit={async (event) => {
-          if (type === MESSAGE_TYPE.ETH_SIGN) {
+        onSubmit={async () => {
+          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            await sign(event);
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            if (this.props.mmiOnSignCallback) {
+              await this.props.mmiOnSignCallback(txData);
+              return;
+            }
+            ///: END:ONLY_INCLUDE_IN
+
+            await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
           }
         }}
-        disabled={hardwareWalletRequiresConnection}
+        disabled={
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          Boolean(txData?.custodyId) ||
+          ///: END:ONLY_INCLUDE_IN
+          hardwareWalletRequiresConnection
+        }
       />
     );
   };
 
   handleCancelAll = () => {
     const {
-      cancelAll,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
       showRejectTransactionsConfirmationModal,
       messagesCount,
+      cancelAllApprovals,
     } = this.props;
     const unapprovedTxCount = messagesCount;
 
     showRejectTransactionsConfirmationModal({
       unapprovedTxCount,
       onSubmit: async () => {
-        await cancelAll();
+        await cancelAllApprovals();
         clearConfirmTransaction();
         history.push(mostRecentOverviewPage);
       },
@@ -350,34 +369,13 @@ export default class SignatureRequestOriginal extends Component {
   render = () => {
     const {
       messagesCount,
-      nativeCurrency,
-      currentCurrency,
-      fromAccount: { address, balance, name },
-      conversionRate,
+      fromAccount: { address, name },
+      txData,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
 
     const rejectNText = t('rejectRequestsN', [messagesCount]);
-    const currentNetwork = this.getNetworkName();
-
-    const balanceInBaseAsset = conversionRate
-      ? formatCurrency(
-          getValueFromWeiHex({
-            value: balance,
-            fromCurrency: nativeCurrency,
-            toCurrency: currentCurrency,
-            conversionRate,
-            numberOfDecimals: 6,
-            toDenomination: EtherDenomination.ETH,
-          }),
-          currentCurrency,
-        )
-      : new Numeric(balance, 16, EtherDenomination.WEI)
-          .toDenomination(EtherDenomination.ETH)
-          .round(6)
-          .toBase(10)
-          .toString();
 
     return (
       <div className="request-signature__container">
@@ -385,15 +383,7 @@ export default class SignatureRequestOriginal extends Component {
           <ConfirmPageContainerNavigation />
         </div>
         <div className="request-signature__account">
-          <NetworkAccountBalanceHeader
-            networkName={currentNetwork}
-            accountName={name}
-            accountBalance={balanceInBaseAsset}
-            tokenName={
-              conversionRate ? currentCurrency?.toUpperCase() : nativeCurrency
-            }
-            accountAddress={address}
-          />
+          <SignatureRequestHeader txData={txData} />
         </div>
         {this.renderBody()}
         {this.props.isLedgerWallet ? (
@@ -411,13 +401,13 @@ export default class SignatureRequestOriginal extends Component {
         )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
-          <Button
-            type="link"
+          <ButtonLink
+            size={Size.inherit}
             className="request-signature__container__reject"
             onClick={() => this.handleCancelAll()}
           >
             {rejectNText}
-          </Button>
+          </ButtonLink>
         ) : null}
       </div>
     );

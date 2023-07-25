@@ -14,7 +14,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import SnapAuthorship from '../../../../components/app/snaps/snap-authorship';
+import SnapAuthorshipExpanded from '../../../../components/app/snaps/snap-authorship-expanded';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
@@ -33,7 +33,7 @@ import {
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
-import { Text, BUTTON_VARIANT } from '../../../../components/component-library';
+import { Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -124,7 +124,7 @@ function ViewSnap() {
       paddingLeft={4}
       paddingRight={4}
     >
-      <SnapAuthorship snapId={snap.id} snap={snap} expanded />
+      <SnapAuthorshipExpanded snapId={snap.id} snap={snap} />
       <Box className="view-snap__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
           <Box
@@ -137,7 +137,7 @@ function ViewSnap() {
             {shouldDisplayMoreButton && (
               <Button
                 className="view-snap__description__more-button"
-                type={BUTTON_VARIANT.LINK}
+                type="link"
                 onClick={handleMoreClick}
               >
                 <Text color={Color.infoDefault}>{t('more')}</Text>
@@ -149,8 +149,10 @@ function ViewSnap() {
       <Box className="view-snap__permissions" marginTop={12}>
         <Text variant={TextVariant.bodyLgMedium}>{t('permissions')}</Text>
         <SnapPermissionsList
+          snapId={decodedSnapId}
           permissions={permissions ?? {}}
           targetSubjectMetadata={targetSubjectMetadata}
+          showOptions
         />
       </Box>
       <Box className="view-snap__connected-sites" marginTop={12}>

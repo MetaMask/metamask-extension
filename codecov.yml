@@ -4,13 +4,14 @@ codecov:
 coverage:
   round: nearest
   status:
-    project:
-      global:
-        target: auto
-        threshold: 0%
-        base: auto
-      transforms:
-        target: 100%
-        threshold: 0%
-        paths:
-          - development/build/transforms/**/*.js
+    project: off
+    patch: off
+      # global:
+      #   target: auto
+      #   threshold: 0%
+      #   base: auto
+      # transforms:
+      #   target: 100%
+      #   threshold: 0%
+      #   paths:
+      #     - development/build/transforms/**/*.js

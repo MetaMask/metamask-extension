@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
@@ -10,14 +12,17 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/erro
 import Typography from '../../../ui/typography';
 import { TypographyVariant } from '../../../../helpers/constants/design-system';
 
+import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
-import { getPortfolioUrl } from '../../../../helpers/utils/portfolio';
+
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -54,8 +59,13 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    openBuyCryptoInPdapp: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
     txData: PropTypes.object,
-    metaMetricsId: PropTypes.string,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent: PropTypes.node,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   renderContent() {
@@ -65,6 +75,14 @@ export default class ConfirmPageContainerContent extends Component {
     const { insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataComponent)) {
+      return this.renderTabs();
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const { noteComponent } = this.props;
+
+    if (noteComponent) {
       return this.renderTabs();
     }
     ///: END:ONLY_INCLUDE_IN
@@ -91,6 +109,9 @@ export default class ConfirmPageContainerContent extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
       ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      noteComponent,
+      ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
     return (
@@ -102,6 +123,26 @@ export default class ConfirmPageContainerContent extends Component {
         >
           {detailsComponent}
         </Tab>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          noteComponent && (
+            <Tab
+              data-testid="note-tab"
+              className="confirm-page-container-content__tab"
+              name={t('note')}
+              tabKey="note"
+              onClick={() => {
+                this.context.trackEvent({
+                  category: 'Note to trader',
+                  event: 'Clicked on Notes tab on a transaction window',
+                });
+              }}
+            >
+              {noteComponent}
+            </Tab>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
         {dataComponent && (
           <Tab
             className="confirm-page-container-content__tab"
@@ -160,8 +201,10 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      openBuyCryptoInPdapp,
+      ///: END:ONLY_INCLUDE_IN
       txData,
-      metaMetricsId,
     } = this.props;
 
     const { t } = this.context;
@@ -179,15 +222,11 @@ export default class ConfirmPageContainerContent extends Component {
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
         )}
-        {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-          txData?.securityProviderResponse?.flagAsDangerous !==
-            SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-        (txData?.securityProviderResponse &&
-          Object.keys(txData.securityProviderResponse).length === 0) ? (
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
-        ) : null}
+        )}
         <ConfirmPageContainerSummary
           className={classnames({
             'confirm-page-container-summary--border':
@@ -221,22 +260,16 @@ export default class ConfirmPageContainerContent extends Component {
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
-                        onClick={() => {
-                          global.platform.openTab({
-                            url: getPortfolioUrl(
-                              'buy',
-                              'ext_buy_button',
-                              metaMetricsId,
-                            ),
-                          });
-                        }}
+                        onClick={openBuyCryptoInPdapp}
                         key={`${nativeCurrency}-buy-button`}
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Typography>
                 ) : (

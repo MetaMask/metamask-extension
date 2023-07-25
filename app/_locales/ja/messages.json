@@ -195,10 +195,6 @@
   "addCustomToken": {
     "message": "カスタムトークンを追加"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります。",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
   },
@@ -262,6 +258,10 @@
   },
   "addToken": {
     "message": "トークンを追加"
+  },
+  "addTokenByContractAddress": {
+    "message": "トークンが見つからない場合、アドレスをペーストして手動でトークンを追加できます。トークンコントラクトアドレスは$1にあります",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "アドレス"
@@ -359,12 +359,6 @@
     "message": "すべての $1 へのアクセスとその送金を許可しますか？",
     "description": "$1 is the symbol of the token for which the user is granting approval"
   },
-  "approveAndInstall": {
-    "message": "承認してインストール"
-  },
-  "approveAndUpdate": {
-    "message": "承認して更新"
-  },
   "approveButtonText": {
     "message": "承認"
   },
@@ -398,9 +392,6 @@
   "assetOptions": {
     "message": "アセットのオプション"
   },
-  "assets": {
-    "message": "アセット"
-  },
   "attemptSendingAssets": {
     "message": "1 つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
@@ -431,9 +422,6 @@
   },
   "back": {
     "message": "戻る"
-  },
-  "backToAll": {
-    "message": "一覧に戻る"
   },
   "backup": {
     "message": "バックアップ"
@@ -560,13 +548,6 @@
     "message": "トランザクションを$1するには、ネットワークに認識されるようにガス代を 10% 以上増額する必要があります。",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "$1 以下でスワップをキャンセル",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "無料でスワップをキャンセル"
-  },
   "cancelled": {
     "message": "キャンセル済み"
   },
@@ -645,9 +626,6 @@
   "connectAccountOrCreate": {
     "message": "アカウントを接続するか、または新規に作成します"
   },
-  "connectHardwareWallet": {
-    "message": "ハードウェアウォレットの接続"
-  },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
@@ -704,7 +682,7 @@
   "connectingToGoerli": {
     "message": "Goerliテストネットワークに接続中"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Linea Goerli テストネットワークに接続中"
   },
   "connectingToMainnet": {
@@ -763,7 +741,7 @@
     "message": "トークンコントラクト"
   },
   "convertTokenToNFTDescription": {
-    "message": "このアセットは NFT であることが検出されました。Metamask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
+    "message": "このアセットは NFT であることが検出されました。MetaMask では現在、NFT が完全にネイティブでサポートされています。トークンリストから削除して、NFT として追加しますか？"
   },
   "convertTokenToNFTExistDescription": {
     "message": "このアセットは NFT として追加されていることが検出されました。トークンリストから削除しますか？"
@@ -791,9 +769,6 @@
   },
   "create": {
     "message": "作成"
-  },
-  "createAccount": {
-    "message": "アカウントを作成"
   },
   "createNewWallet": {
     "message": "新規ウォレットを作成"
@@ -935,9 +910,6 @@
   },
   "delete": {
     "message": "削除"
-  },
-  "deleteAccount": {
-    "message": "アカウントを削除"
   },
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
@@ -1217,9 +1189,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
-  },
-  "enableSmartTransactions": {
-    "message": "スマートトランザクションを有効にする"
   },
   "enableToken": {
     "message": "$1を有効にする",
@@ -1590,6 +1559,12 @@
     "message": "もし尋ねられた場合はフィッシング詐欺の可能性があります。",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "長押ししてSRPを表示"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "SRPは安全に保管してください"
+  },
   "ignoreAll": {
     "message": "すべて無視"
   },
@@ -1624,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT の ID は一意の識別子で、同じ NFT は 2 つとして存在しません。前述の通り、OpenSea ではこの番号は「詳細」に表示されます。この ID を書き留めるか、クリップボードにコピーしてください。"
   },
-  "importNFTs": {
-    "message": "NFTをインポート"
-  },
   "importSelectedTokens": {
     "message": "選択したトークンをインポートしますか？"
   },
@@ -1638,9 +1610,6 @@
   },
   "importTokenWarning": {
     "message": "誰でも既存のトークンの偽バージョンを含めて、任意の名前でトークンを作成することができます。追加および取引は自己責任となります!"
-  },
-  "importTokens": {
-    "message": "トークンをインポート"
   },
   "importTokensCamelCase": {
     "message": "トークンをインポート"
@@ -1861,7 +1830,7 @@
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli テストネットワーク"
   },
   "link": {
@@ -1887,9 +1856,6 @@
   },
   "lock": {
     "message": "ロック"
-  },
-  "lockTimeTooGreat": {
-    "message": "ロック時間が長すぎます"
   },
   "logo": {
     "message": "$1 ロゴ",
@@ -1984,26 +1950,17 @@
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信された RPC URL の値がこのチェーン ID の既知のプロバイダーと一致しません。"
   },
-  "missingNFT": {
-    "message": "NFTが見当たりませんか？"
-  },
   "missingSetting": {
     "message": "設定が見つかりませんか？"
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
   },
-  "missingToken": {
-    "message": "トークンが見当たりませんか？"
-  },
   "moreComingSoon": {
     "message": "さらに近日追加予定..."
   },
   "mustSelectOne": {
     "message": "トークンを1つ以上選択する必要があります。"
-  },
-  "myAccounts": {
-    "message": "マイアカウント"
   },
   "name": {
     "message": "名前"
@@ -2199,9 +2156,6 @@
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
   },
-  "noNFTs": {
-    "message": "NFTはまだありません"
-  },
   "noSnaps": {
     "message": "スナップがインストールされていません"
   },
@@ -2237,9 +2191,6 @@
   },
   "notEnoughGas": {
     "message": "ガスが不足しています"
-  },
-  "notifications": {
-    "message": "通知"
   },
   "notifications10ActionText": {
     "message": "設定に移動",
@@ -2802,9 +2753,6 @@
   "publicAddress": {
     "message": "パブリックアドレス"
   },
-  "queue": {
-    "message": "キュー"
-  },
   "queued": {
     "message": "キュー待ち"
   },
@@ -2819,9 +2767,6 @@
   },
   "receive": {
     "message": "受領"
-  },
-  "recents": {
-    "message": "最近"
   },
   "recipientAddressPlaceholder": {
     "message": "検索、パブリックアドレス (0x)、またはENS"
@@ -3008,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
-  "reviewSpendingCap": {
-    "message": "使用上限を確認してください"
-  },
   "revokeAllTokensTitle": {
     "message": "すべての $1 へのアクセスおよび転送許可を取り消しますか？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3052,9 +2994,6 @@
   },
   "searchResults": {
     "message": "検索結果"
-  },
-  "searchSettings": {
-    "message": "設定で検索"
   },
   "searchTokens": {
     "message": "トークンを検索"
@@ -3195,10 +3134,6 @@
     "message": "使用限度額なしで $1 を承認",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "$1 の使用上限を設定",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "設定"
   },
@@ -3219,9 +3154,6 @@
   },
   "showHexDataDescription": {
     "message": "これを選択すると、送金画面に16進データフィールドが表示されます"
-  },
-  "showHide": {
-    "message": "表示・非表示"
   },
   "showIncomingTransactions": {
     "message": "受信トランザクションを表示"
@@ -3275,9 +3207,6 @@
   "skipAccountSecurityDetails": {
     "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
   },
-  "smartTransaction": {
-    "message": "スマートトランザクション"
-  },
   "snapContent": {
     "message": "このコンテンツは $1 からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
@@ -3290,10 +3219,12 @@
     "message": "スナップをインストール"
   },
   "snapInstallWarningCheck": {
-    "message": "理解したことを確認するために、次の項目にチェックを入れてください."
+    "message": "理解したことを確認するために、次の項目にチェックを入れてください.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningCheckPlural": {
-    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。"
+    "message": "理解したことを確認するために、すべての項目にチェックを入れてください。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningKeyAccess": {
     "message": "スナップ「$1」に $2 へのキーアクセスを許可しようとしています。この操作は取り消し不能であり、$2 アカウントとアセットのコントロールを「$1」に許可することになります。続行する前に、必ず「$1」が信頼できることを確認してください。",
@@ -3383,11 +3314,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "24 を超える単語が含まれていたため、貼り付けに失敗しました。秘密のリカバリーフレーズは 24 語までです。",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "秘密のリカバリーフレーズ全体をいずれかのフィールドに張り付けできます。",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "開始"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "秘密のリカバリーフレーズを表示するには、2 つの質問に正しく答える必要があります。"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "秘密のリカバリーフレーズをなくした場合、MetaMask は..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "どうすることもできません"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "書き留めたり金属に掘ったり、いくつかの秘密の場所に保管したりして、絶対になくさないようにしてください。なくした場合、一生戻ってきません。"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "正解です！秘密のリカバリーフレーズは誰にも取り戻すことができません"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "それを取り戻すことができます"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "秘密のリカバリーフレーズをなくした場合、一生戻ってきません。誰が何と言おうと、誰にも取り戻すことはできません。"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "不正解！秘密のリカバリーフレーズは誰にも取り戻せません"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "誰かに秘密のリカバリーフレーズを尋ねられたら、それがサポート担当者であっても..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "あなたは騙されようとしています"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "秘密のリカバリーフレーズが必要だと言われたら、それは嘘です。教えてしまったら資産を盗まれます。"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "正解です！秘密のリカバリーフレーズは決して誰にも教えてはいけません"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "教えるべきです"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "秘密のリカバリーフレーズが必要だと言われたら、それは嘘です。教えてしまったら資産を盗まれます。"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "不正解！秘密のリカバリーフレーズは決して誰にも教えないでください"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "セキュリティの質問"
   },
   "srpToggleShow": {
     "message": "秘密のリカバリーフレーズのこの単語を表示・非表示",
@@ -3421,9 +3403,6 @@
   },
   "status": {
     "message": "ステータス"
-  },
-  "statusConnected": {
-    "message": "接続済み"
   },
   "statusNotConnected": {
     "message": "未接続"
@@ -3462,9 +3441,6 @@
   "strong": {
     "message": "強"
   },
-  "stxAreHere": {
-    "message": "スマートトランザクションが利用可能になりました！"
-  },
   "stxBenefit1": {
     "message": "トランザクションコストを最小化"
   },
@@ -3486,15 +3462,6 @@
   "stxCancelledSubDescription": {
     "message": "もう一度スワップをお試しください。次回は同様のリスクを避けられるようサポートします。"
   },
-  "stxDescription": {
-    "message": "MetaMask Swaps がはるかに賢くなりました！スマートトランザクションを有効にすると、MetaMask がプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
-  },
-  "stxErrorNotEnoughFunds": {
-    "message": "スマートトランザクションに十分な資金がありません。"
-  },
-  "stxErrorUnavailable": {
-    "message": "スマートトランザクションは一時的に利用できません。"
-  },
   "stxFailure": {
     "message": "スワップに失敗しました"
   },
@@ -3507,9 +3474,6 @@
   },
   "stxPendingPubliclySubmittingSwap": {
     "message": "スワップを公開で送信中..."
-  },
-  "stxSubDescription": {
-    "message": "* スマートトランザクションは、非公開でトランザクションのの送信を数回試みます。すべての試みが失敗した場合、スワップが成功するようトランザクションが公開されます。"
   },
   "stxSuccess": {
     "message": "スワップ完了！"
@@ -3578,10 +3542,6 @@
   "swapApproveNeedMoreTokens": {
     "message": "このスワップを完了させるには、さらに$1の$2が必要です。",
     "description": "Tells the user how many more of a given token they need for a specific swap. $1 is an amount of tokens and $2 is the token symbol."
-  },
-  "swapBestOfNQuotes": {
-    "message": "最善の$1の見積もり。",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
   },
   "swapBuildQuotePlaceHolderText": {
     "message": "$1と一致するトークンがありません",
@@ -3933,10 +3893,6 @@
   "toggleEthSignField": {
     "message": "eth_sign 要求の設定"
   },
-  "toggleTestNetworks": {
-    "message": "$1テストネットワーク",
-    "description": "$1 is a clickable link with text defined by the 'showHide' key. The link will open Settings > Advanced where users can enable the display of test networks in the network dropdown."
-  },
   "token": {
     "message": "トークン"
   },
@@ -4103,9 +4059,6 @@
   "transfer": {
     "message": "送金"
   },
-  "transferBetweenAccounts": {
-    "message": "自分のアカウント間での振替"
-  },
   "transferFrom": {
     "message": "送金元"
   },
@@ -4115,10 +4068,6 @@
   },
   "troubleStarting": {
     "message": "MetaMask がうまく起動しませんでした。このエラーは断続的に発生する可能性があるため、拡張機能を再起動してみてください。"
-  },
-  "troubleTokenBalances": {
-    "message": "トークンバランスのロードに問題があります。トークンバランスを表示できます",
-    "description": "Followed by a link (here) to view token balances"
   },
   "trustSiteApprovePermission": {
     "message": "パーミッションを付与することで、次の$1による資金へのアクセスが許可されます"
@@ -4207,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
-  },
-  "useDefault": {
-    "message": "既定値を使用"
   },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"

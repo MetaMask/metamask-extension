@@ -1,7 +1,15 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { ApprovalType } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+} from '@metamask-institutional/portfolio-dashboard';
+import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import { getWaitForConfirmDeepLinkDialog } from '../../selectors/institutional/selectors';
+import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
+///: END:ONLY_INCLUDE_IN
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
@@ -13,7 +21,6 @@ import {
   getTotalUnapprovedCount,
   getUnapprovedTemplatedConfirmations,
   getWeb3ShimUsageStateForOrigin,
-  unconfirmedTransactionsCountSelector,
   getInfuraBlocked,
   getShowWhatsNewPopup,
   getSortedAnnouncementsToShow,
@@ -27,7 +34,9 @@ import {
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
   getRemoveNftMessage,
-  hasPendingApprovalsSelector,
+  getSuggestedTokens,
+  getSuggestedNfts,
+  getApprovalFlows,
 } from '../../selectors';
 
 import {
@@ -62,6 +71,7 @@ import {
   AlertTypes,
   Web3ShimUsageAlertStates,
 } from '../../../shared/constants/alerts';
+import { hasTransactionPendingApprovals } from '../../selectors/transactions';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -79,6 +89,9 @@ const mapStateToProps = (state) => {
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const institutionalConnectRequests = getInstitutionalConnectRequests(state);
+  ///: END:ONLY_INCLUDE_IN
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -109,22 +122,24 @@ const mapStateToProps = (state) => {
     hasUnsignedQRHardwareTransaction(state) ||
     hasUnsignedQRHardwareMessage(state);
 
-  const hasWatchAssetPendingApprovals = hasPendingApprovalsSelector(
-    state,
-    ApprovalType.WatchAsset,
-  );
+  const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
+
+  const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
   return {
     forgottenPassword,
-    hasWatchAssetPendingApprovals,
+    hasWatchTokenPendingApprovals,
+    hasWatchNftPendingApprovals,
     swapsEnabled,
-    unconfirmedTransactionsCount: unconfirmedTransactionsCountSelector(state),
+    hasTransactionPendingApprovals: hasTransactionPendingApprovals(state),
     shouldShowSeedPhraseReminder: getShouldShowSeedPhraseReminder(state),
     isPopup,
     isNotification,
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+    hasApprovalFlows:
+      Array.isArray(getApprovalFlows) && getApprovalFlows(state).length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
@@ -155,50 +170,68 @@ const mapStateToProps = (state) => {
     newTokensImported: getNewTokensImported(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
+    institutionalConnectRequests,
+    modalOpen: state.appState.modal.open,
+    mmiPortfolioUrl: getMmiPortfolioUrl(state),
+    mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
+    notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  closeNotificationPopup: () => closeNotificationPopup(),
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapError: async (id) => await removeSnapError(id),
+const mapDispatchToProps = (dispatch) => {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
-  setConnectedStatusPopoverHasBeenShown: () =>
-    dispatch(setConnectedStatusPopoverHasBeenShown()),
-  onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
-  setWeb3ShimUsageAlertDismissed: (origin) =>
-    setWeb3ShimUsageAlertDismissed(origin),
-  disableWeb3ShimUsageAlert: () =>
-    setAlertEnabledness(AlertTypes.web3ShimUsage, false),
-  hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
-  setRecoveryPhraseReminderHasBeenShown: () =>
-    dispatch(setRecoveryPhraseReminderHasBeenShown()),
-  setRecoveryPhraseReminderLastShown: (lastShown) =>
-    dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
-  setTermsOfUseLastAgreed: (lastAgreed) => {
-    dispatch(setTermsOfUseLastAgreed(lastAgreed));
-  },
-  setOutdatedBrowserWarningLastShown: (lastShown) => {
-    dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-  },
-  setNewNftAddedMessage: (message) => {
-    dispatch(setRemoveNftMessage(''));
-    dispatch(setNewNftAddedMessage(message));
-  },
-  setRemoveNftMessage: (message) => {
-    dispatch(setNewNftAddedMessage(''));
-    dispatch(setRemoveNftMessage(message));
-  },
-  setNewTokensImported: (newTokens) => {
-    dispatch(setNewTokensImported(newTokens));
-  },
-  clearNewNetworkAdded: () => {
-    dispatch(setNewNetworkAdded({}));
-  },
-  setActiveNetwork: (networkConfigurationId) => {
-    dispatch(setActiveNetwork(networkConfigurationId));
-  },
-});
+
+  return {
+    closeNotificationPopup: () => closeNotificationPopup(),
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    removeSnapError: async (id) => await removeSnapError(id),
+    ///: END:ONLY_INCLUDE_IN
+    setConnectedStatusPopoverHasBeenShown: () =>
+      dispatch(setConnectedStatusPopoverHasBeenShown()),
+    onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
+    setWeb3ShimUsageAlertDismissed: (origin) =>
+      setWeb3ShimUsageAlertDismissed(origin),
+    disableWeb3ShimUsageAlert: () =>
+      setAlertEnabledness(AlertTypes.web3ShimUsage, false),
+    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+    setRecoveryPhraseReminderHasBeenShown: () =>
+      dispatch(setRecoveryPhraseReminderHasBeenShown()),
+    setRecoveryPhraseReminderLastShown: (lastShown) =>
+      dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+    setTermsOfUseLastAgreed: (lastAgreed) => {
+      dispatch(setTermsOfUseLastAgreed(lastAgreed));
+    },
+    setOutdatedBrowserWarningLastShown: (lastShown) => {
+      dispatch(setOutdatedBrowserWarningLastShown(lastShown));
+    },
+    setNewNftAddedMessage: (message) => {
+      dispatch(setRemoveNftMessage(''));
+      dispatch(setNewNftAddedMessage(message));
+    },
+    setRemoveNftMessage: (message) => {
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage(message));
+    },
+    setNewTokensImported: (newTokens) => {
+      dispatch(setNewTokensImported(newTokens));
+    },
+    clearNewNetworkAdded: () => {
+      dispatch(setNewNetworkAdded({}));
+    },
+    setActiveNetwork: (networkConfigurationId) => {
+      dispatch(setActiveNetwork(networkConfigurationId));
+    },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    ///: END:ONLY_INCLUDE_IN
+  };
+};
 
 export default compose(
   withRouter,

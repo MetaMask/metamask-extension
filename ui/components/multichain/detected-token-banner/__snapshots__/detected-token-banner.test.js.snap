@@ -7,17 +7,17 @@ exports[`DetectedTokensBanner should render correctly 1`] = `
     data-testid="detected-token-banner"
   >
     <span
-      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-primary-default"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-primary-default"
       style="mask-image: url('./images/icons/info.svg');"
     />
     <div>
       <p
-        class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
         3 new tokens found in this account
       </p>
       <button
-        class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       >
         Import tokens
       </button>

@@ -1,3 +1,4 @@
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { ethErrors } from 'eth-rpc-errors';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 
@@ -36,15 +37,29 @@ async function watchAssetHandler(
   { handleWatchAssetRequest },
 ) {
   try {
-    const { options: asset, type } = req.params;
-    const handleWatchAssetResult = await handleWatchAssetRequest(asset, type);
-    await handleWatchAssetResult.result;
+    const {
+      params: { options: asset, type },
+      origin,
+    } = req;
+
+    const { tokenId } = asset;
+
+    if (
+      [ERC721, ERC1155].includes(type) &&
+      tokenId !== undefined &&
+      typeof tokenId !== 'string'
+    ) {
+      return end(
+        ethErrors.rpc.invalidParams({
+          message: `Expected parameter 'tokenId' to be type 'string'. Received type '${typeof tokenId}'`,
+        }),
+      );
+    }
+
+    await handleWatchAssetRequest(asset, type, origin);
     res.result = true;
     return end();
   } catch (error) {
-    if (error.message === 'User rejected to watch the asset.') {
-      return end(ethErrors.provider.userRejectedRequest());
-    }
     return end(error);
   }
 }
