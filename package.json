@@ -310,7 +310,6 @@
     "ethereum-ens-network-map": "^1.0.2",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-util": "^7.0.10",
-    "ethereumjs-wallet": "^0.6.4",
     "ethjs": "^0.4.0",
     "ethjs-contract": "^0.2.3",
     "ethjs-query": "^0.3.4",
