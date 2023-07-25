@@ -1628,9 +1628,7 @@ describe('Actions', () => {
     });
     it('sets participateInMetaMetrics to true', async () => {
       const store = mockStore();
-      const setParticipateInMetaMetricsStub = sinon
-        .stub()
-        .callsFake((_, cb) => cb());
+      const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
 
       background.getApi.returns({
         setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
@@ -1639,7 +1637,10 @@ describe('Actions', () => {
       _setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
-      expect(setParticipateInMetaMetricsStub.calledOnceWith(true)).toBeTruthy();
+      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(
+        true,
+        expect.anything(),
+      );
       expect(window.sentry.toggleSession).toHaveBeenCalled();
     });
   });
