@@ -84,7 +84,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
           style="visibility: initial;"
         >
           <span
-            class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
           <span
@@ -317,7 +317,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
             class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
           >
             <span
-              class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-warning-default"
+              class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
               style="mask-image: url('./images/icons/warning.svg');"
             />
             <div>
@@ -352,7 +352,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                   Site suggested
                 </span>
                 <span
-                  class="box mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-primary-default"
+                  class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-primary-default"
                   style="mask-image: url('./images/icons/arrow-right.svg');"
                 />
               </button>

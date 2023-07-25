@@ -132,7 +132,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
       data-testid="account-list-item-menu-button"
     >
       <span
-        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/more-vertical.svg');"
       />
     </button>
