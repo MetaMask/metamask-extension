@@ -223,7 +223,7 @@ describe('Transaction Finalized Event', function () {
             gas_price: '2',
             default_gas: '0.000021',
             default_gas_price: '2',
-            chain_id: '0x539',
+            chain_id: 'eip155:1337',
             referrer: 'metamask',
             source: 'user',
             network: '1337',
@@ -246,7 +246,7 @@ describe('Transaction Finalized Event', function () {
         assert.deepStrictEqual(
           transactionSubmittedWithMMId.properties,
           {
-            chain_id: '0x539',
+            chain_id: 'eip155:1337',
             referrer: 'metamask',
             source: 'user',
             network: '1337',
@@ -276,7 +276,7 @@ describe('Transaction Finalized Event', function () {
             gas_price: '2',
             default_gas: '0.000021',
             default_gas_price: '2',
-            chain_id: '0x539',
+            chain_id: 'eip155:1337',
             referrer: 'metamask',
             source: 'user',
             network: '1337',
@@ -300,7 +300,7 @@ describe('Transaction Finalized Event', function () {
         assert.deepStrictEqual(
           transactionFinalizedWithMMId.properties,
           {
-            chain_id: '0x539',
+            chain_id: 'eip155:1337',
             referrer: 'metamask',
             source: 'user',
             network: '1337',

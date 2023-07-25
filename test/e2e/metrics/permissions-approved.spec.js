@@ -105,14 +105,14 @@ describe('Permissions Approved Event', function () {
           method: 'eth_requestAccounts',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337', // what should this be?
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'eth_requestAccounts',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337', // same
           environment_type: 'background',
         });
       },

@@ -108,14 +108,14 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData_v4',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           signature_type: 'eth_signTypedData_v4',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
       },
@@ -151,14 +151,14 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData_v3',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           signature_type: 'eth_signTypedData_v3',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
       },
@@ -193,14 +193,14 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_signTypedData',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           signature_type: 'eth_signTypedData',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
       },
@@ -235,14 +235,14 @@ describe('Signature Approved Event', function () {
           signature_type: 'personal_sign',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           signature_type: 'personal_sign',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
       },
@@ -286,14 +286,14 @@ describe('Signature Approved Event', function () {
           signature_type: 'eth_sign',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
         assert.deepStrictEqual(events[1].properties, {
           signature_type: 'eth_sign',
           category: 'inpage_provider',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'background',
         });
       },

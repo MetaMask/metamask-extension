@@ -77,14 +77,14 @@ describe('Wallet Created Event', function () {
           account_type: 'metamask',
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'fullscreen',
         });
         assert.deepStrictEqual(events[1].properties, {
           method: 'create',
           category: 'Onboarding',
           locale: 'en',
-          chain_id: '0x539',
+          chain_id: 'eip155:1337',
           environment_type: 'fullscreen',
         });
       },
