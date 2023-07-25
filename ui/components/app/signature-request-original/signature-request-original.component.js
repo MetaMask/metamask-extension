@@ -64,9 +64,6 @@ export default class SignatureRequestOriginal extends Component {
       address: PropTypes.string.isRequired,
       name: PropTypes.string,
     }).isRequired,
-    clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    mostRecentOverviewPage: PropTypes.string.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -75,6 +72,9 @@ export default class SignatureRequestOriginal extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -258,11 +258,11 @@ export default class SignatureRequestOriginal extends Component {
 
   onSubmit = async () => {
     const {
+      resolvePendingApproval,
+      completedTx,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      resolvePendingApproval,
-      completedTx,
       txData,
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -272,12 +272,10 @@ export default class SignatureRequestOriginal extends Component {
     }
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await resolvePendingApproval(txData.id);
     completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
-    ///: END:ONLY_INCLUDE_IN
   };
 
   onCancel = async () => {
@@ -332,11 +330,9 @@ export default class SignatureRequestOriginal extends Component {
             }
             ///: END:ONLY_INCLUDE_IN
 
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
-            ///: END:ONLY_INCLUDE_IN
           }
         }}
         disabled={

@@ -3507,15 +3507,15 @@ export function resolvePendingApproval(
   id: string,
   value: unknown,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('resolvePendingApproval', [id, value]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-    const { pendingApprovals } = await forceUpdateMetamaskState(dispatch);
+    const { pendingApprovals } = await forceUpdateMetamaskState(_dispatch);
     if (Object.values(pendingApprovals).length === 0) {
-      dispatch(closeCurrentNotificationWindow());
+      _dispatch(closeCurrentNotificationWindow());
     }
     ///: END:ONLY_INCLUDE_IN
   };
