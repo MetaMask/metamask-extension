@@ -169,8 +169,8 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, name } = nft;
-              const nftImage = getAssetImageURL(image, ipfsGateway);
+              const { image, address, tokenId, name, imageOriginal } = nft;
+              const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
               const nftImageAlt = getNftImageAlt(nft);
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
@@ -182,7 +182,7 @@ export default function NftsItems({
                   className="nfts-items__item-wrapper"
                 >
                   <NftItem
-                    src={nftImage}
+                    src={image ? nftImage : ''}
                     alt={nftImageAlt}
                     name={name}
                     tokenId={tokenId}
