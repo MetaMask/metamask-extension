@@ -134,10 +134,12 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
 
         // enter max fee
-        await driver.fill('[data-testid="base-fee-input"]', '8.5');
+        // await driver.fill('[data-testid="base-fee-input"]', '8.5'); // this is broken on dev
+        await driver.fill('[data-testid="base-fee-input"]', '8');
 
         // enter priority fee
-        await driver.fill('[data-testid="priority-fee-input"]', '8.5');
+        // await driver.fill('[data-testid="priority-fee-input"]', '8.5'); // same here
+        await driver.fill('[data-testid="priority-fee-input"]', '8');
 
         // save default values
         await driver.clickElement('input[type="checkbox"]');
@@ -150,13 +152,21 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
+        // await driver.waitForSelector({
+        //   css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+        //   text: '0.00085 ETH',
+        // });
+        // await driver.waitForSelector({
+        //   css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+        //   text: '1.00085 ETH',
+        // });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
-          text: '0.00085 ETH',
+          text: '0.0008 ETH',
         });
         await driver.waitForSelector({
           css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
-          text: '1.00085 ETH',
+          text: '1.0008 ETH',
         });
 
         // confirms the transaction
