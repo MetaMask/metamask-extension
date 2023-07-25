@@ -2433,8 +2433,9 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addUnapprovedTransaction:
-        txController.addUnapprovedTransaction.bind(txController),
+      addTransaction: this.addTransaction.bind(this),
+      addTransactionAndWaitForPublish:
+        this.addTransactionAndWaitForPublish.bind(this),
       createTransactionEventFragment:
         txController.createTransactionEventFragment.bind(txController),
       getTransactions: txController.getTransactions.bind(txController),
@@ -3562,7 +3563,41 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnapprovedTransaction(txParams, req) {
-    return await this.txController.newUnapprovedTransaction(txParams, req);
+    // Options are passed explicitly as an additional security measure
+    // to ensure approval is not disabled
+    const { result } = await this.txController.addTransaction(txParams, {
+      actionId: req.id,
+      method: req.method,
+      origin: req.origin,
+      // This is the default behaviour but specified here for clarity
+      requireApproval: true,
+    });
+
+    return await result;
+  }
+
+  async addTransactionAndWaitForPublish(txParams, options) {
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    await result;
+
+    return transactionMeta;
+  }
+
+  async addTransaction(txParams, options) {
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    result.catch(() => {
+      // Not concerned with result
+    });
+
+    return transactionMeta;
   }
 
   /**

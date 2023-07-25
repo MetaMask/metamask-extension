@@ -956,17 +956,18 @@ export function updateTransaction(
  * confirmation page. Returns the newly created txMeta in case additional logic
  * should be applied to the transaction after creation.
  *
- * @param method
  * @param txParams - The transaction parameters
- * @param type - The type of the transaction being added.
- * @param sendFlowHistory - The history of the send flow at time of creation.
+ * @param options
+ * @param options.sendFlowHistory - The history of the send flow at time of creation.
+ * @param options.type - The type of the transaction being added.
  * @returns
  */
-export function addUnapprovedTransactionAndRouteToConfirmationPage(
-  method: string,
+export function addTransactionAndRouteToConfirmationPage(
   txParams: TxParams,
-  type: TransactionType,
-  sendFlowHistory: DraftTransaction['history'],
+  options?: {
+    sendFlowHistory?: DraftTransaction['history'];
+    type?: TransactionType;
+  },
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -975,15 +976,18 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     const actionId = generateActionId();
+
     try {
-      log.debug('background.addUnapprovedTransaction');
-      const txMeta = await submitRequestToBackground<TransactionMeta>(
-        'addUnapprovedTransaction',
-        [method, txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
+      log.debug('background.addTransaction');
+
+      const transactionMeta = await submitRequestToBackground<TransactionMeta>(
+        'addTransaction',
+        [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
         actionId,
       );
+
       dispatch(showConfTxPage());
-      return txMeta;
+      return transactionMeta;
     } catch (error) {
       dispatch(hideLoadingIndication());
       dispatch(displayWarning(error));
@@ -998,33 +1002,41 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
  * This method does not show errors or route to a confirmation page and is
  * used primarily for swaps functionality.
  *
- * @param method
  * @param txParams - the transaction parameters
- * @param type - The type of the transaction being added.
  * @param options - Additional options for the transaction.
+ * @param options.method
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
+ * @param options.type
  * @returns
  */
-export async function addUnapprovedTransaction(
-  method: string,
+export async function addTransactionAndWaitForPublish(
   txParams: TxParams,
-  type: TransactionType,
-  options?: {
+  options: {
+    method?: string;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
+    type?: TransactionType;
   },
 ): Promise<TransactionMeta> {
-  log.debug('background.addUnapprovedTransaction');
+  log.debug('background.addTransactionAndWaitForPublish');
+
   const actionId = generateActionId();
-  const txMeta = await submitRequestToBackground<TransactionMeta>(
-    'addUnapprovedTransaction',
-    [method, txParams, ORIGIN_METAMASK, type, undefined, actionId, options],
+
+  return await submitRequestToBackground<TransactionMeta>(
+    'addTransactionAndWaitForPublish',
+    [
+      txParams,
+      {
+        ...options,
+        origin: ORIGIN_METAMASK,
+        actionId,
+      },
+    ],
     actionId,
   );
-  return txMeta;
 }
 
 export function updateAndApproveTx(
