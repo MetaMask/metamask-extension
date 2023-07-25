@@ -92,7 +92,7 @@ export const AccountListItem = ({
   const itemRef = useRef(null);
   useEffect(() => {
     if (selected) {
-      itemRef.current?.scrollIntoView();
+      itemRef.current?.scrollIntoView?.();
     }
   }, [itemRef, selected]);
 
