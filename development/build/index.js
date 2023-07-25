@@ -99,6 +99,8 @@ async function defineAndRunBuildTasks() {
       'navigator',
       'harden',
       'console',
+      'WeakSet',
+      'Event',
       'Image', // Used by browser to generate notifications
       // globals chromedriver needs to function
       /cdc_[a-zA-Z0-9]+_[a-zA-Z]+/iu,

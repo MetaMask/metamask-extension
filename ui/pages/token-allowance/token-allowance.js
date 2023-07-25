@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -33,6 +33,8 @@ import {
   getUnapprovedTransactions,
   getUseCurrencyRateCheck,
   getTargetAccountWithSendEtherInfo,
+  getCustomNonceValue,
+  getNextSuggestedNonce,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -40,6 +42,7 @@ import {
   cancelTxs,
   showModal,
   updateAndApproveTx,
+  getNextNonce,
   updateCustomNonce,
 } from '../../store/actions';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
@@ -62,7 +65,9 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { Text, Icon, IconName } from '../../components/component-library';
+import { Icon, IconName, Text } from '../../components/component-library';
+import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
+import CustomNonce from '../../components/app/custom-nonce';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -91,6 +96,7 @@ export default function TokenAllowance({
   toAddress,
   tokenSymbol,
   fromAddressIsLedger,
+  warning,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -124,6 +130,8 @@ export default function TokenAllowance({
   const unapprovedTxCount = useSelector(getUnapprovedTxCount);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const nextNonce = useSelector(getNextSuggestedNonce);
+  const customNonceValue = useSelector(getCustomNonceValue);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -175,7 +183,6 @@ export default function TokenAllowance({
   const networkName =
     NETWORK_TO_NAME_MAP[fullTxData.chainId] || networkIdentifier;
 
-  const customNonceValue = '';
   const customNonceMerge = (transactionData) =>
     customNonceValue
       ? {
@@ -253,6 +260,39 @@ export default function TokenAllowance({
     );
   };
 
+  const handleNextNonce = () => {
+    dispatch(getNextNonce());
+  };
+
+  useEffect(() => {
+    handleNextNonce();
+  }, [dispatch]);
+
+  const handleUpdateCustomNonce = (value) => {
+    dispatch(updateCustomNonce(value));
+  };
+
+  const handleCustomizeNonceModal = (
+    /* eslint-disable no-shadow */
+    useNonceField,
+    nextNonce,
+    customNonceValue,
+    updateCustomNonce,
+    getNextNonce,
+    /* eslint-disable no-shadow */
+  ) => {
+    dispatch(
+      showModal({
+        name: 'CUSTOMIZE_NONCE',
+        useNonceField,
+        nextNonce,
+        customNonceValue,
+        updateCustomNonce,
+        getNextNonce,
+      }),
+    );
+  };
+
   const isEmpty = customSpendingCap === '';
 
   const renderContractTokenValues = (
@@ -317,6 +357,11 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
+      {warning && (
+        <Box className="token-allowance-container__custom-nonce-warning">
+          <ConfirmPageContainerWarning warning={warning} />
+        </Box>
+      )}
       <Box
         display={DISPLAY.FLEX}
         flexDirection={FLEX_DIRECTION.ROW}
@@ -456,6 +501,23 @@ export default function TokenAllowance({
             fiatTransactionTotal={fiatTransactionTotal}
             currentCurrency={currentCurrency}
             useCurrencyRateCheck={useCurrencyRateCheck}
+          />
+        </Box>
+      )}
+      {useNonceField && (
+        <Box marginTop={4} marginRight={4} marginLeft={4}>
+          <CustomNonce
+            nextNonce={nextNonce}
+            customNonceValue={customNonceValue}
+            showCustomizeNonceModal={() =>
+              handleCustomizeNonceModal(
+                useNonceField,
+                nextNonce,
+                customNonceValue,
+                handleUpdateCustomNonce,
+                handleNextNonce,
+              )
+            }
           />
         </Box>
       )}
@@ -647,4 +709,8 @@ TokenAllowance.propTypes = {
    * Whether the address sending the transaction is a ledger address
    */
   fromAddressIsLedger: PropTypes.bool,
+  /**
+   * Customize nonce warning message
+   */
+  warning: PropTypes.string,
 };

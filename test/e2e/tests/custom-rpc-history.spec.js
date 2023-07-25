@@ -185,7 +185,7 @@ describe('Stores custom RPC history', function () {
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
       },
     );
   });
@@ -196,19 +196,21 @@ describe('Stores custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
-              networkConfigurationId: {
+              networkConfigurationIdOne: {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
+                type: 'rpc',
               },
-              networkConfigurationId2: {
+              networkConfigurationIdTwo: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/2',
                 rpcPrefs: {},
+                type: 'rpc',
               },
             },
           })
@@ -235,7 +237,7 @@ describe('Stores custom RPC history', function () {
         });
 
         // click Mainnet to dismiss network dropdown
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'span' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
 
         assert.equal(customRpcs.length, 2);
       },
@@ -248,14 +250,14 @@ describe('Stores custom RPC history', function () {
         fixtures: new FixtureBuilder()
           .withNetworkController({
             networkConfigurations: {
-              networkConfigurationId: {
+              networkConfigurationIdOne: {
                 rpcUrl: 'http://127.0.0.1:8545/1',
                 chainId: '0x539',
                 ticker: 'ETH',
                 nickname: 'http://127.0.0.1:8545/1',
                 rpcPrefs: {},
               },
-              networkConfigurationId2: {
+              networkConfigurationIdTwo: {
                 rpcUrl: 'http://127.0.0.1:8545/2',
                 chainId: '0x539',
                 ticker: 'ETH',

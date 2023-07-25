@@ -26,7 +26,6 @@ import {
   ModalContent,
   ModalHeader,
 } from '../../component-library';
-
 const CancelSpeedupPopover = () => {
   const {
     cancelTransaction,

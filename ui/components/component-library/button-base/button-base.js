@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import Box from '../../ui/box';
 import { IconName, Icon, IconSize } from '../icon';
-import { Text } from '../text';
+import { Text } from '..';
 
 import {
   AlignItems,
@@ -48,6 +48,7 @@ export const ButtonBase = ({
       as={Tag}
       backgroundColor={BackgroundColor.backgroundAlternative}
       color={loading ? TextColor.transparent : color}
+      variant={TextVariant.bodyMdMedium}
       href={href}
       paddingLeft={4}
       paddingRight={4}
@@ -132,7 +133,7 @@ ButtonBase.propTypes = {
   /**
    * Additional props to pass to the Text component that wraps the button children
    */
-  buttonTextProps: PropTypes.shape(Text.PropTypes),
+  buttonTextProps: PropTypes.object,
   /**
    * The children to be rendered inside the ButtonBase
    */
@@ -194,7 +195,7 @@ ButtonBase.propTypes = {
   /**
    * textProps accepts all the props from Icon
    */
-  textProps: PropTypes.shape(Text.PropTypes),
+  textProps: PropTypes.object,
   /**
    * ButtonBase accepts all the props from Box
    */

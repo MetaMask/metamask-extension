@@ -8,6 +8,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { getShouldHideZeroBalanceTokens } from '../../../selectors';
 import { getTokens } from '../../../ducks/metamask/metamask';
+import { Box } from '../../component-library';
+import {
+  AlignItems,
+  Display,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
 
 export default function TokenList({ onTokenClick }) {
   const t = useI18nContext();
@@ -25,17 +31,14 @@ export default function TokenList({ onTokenClick }) {
   );
   if (loading) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          height: '250px',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '30px',
-        }}
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.center}
+        padding={7}
       >
         {t('loadingTokens')}
-      </div>
+      </Box>
     );
   }
 

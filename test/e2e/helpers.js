@@ -313,10 +313,10 @@ const onboardingBeginCreateNewWallet = async (driver) => {
  * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
  *
  * @param {WebDriver} driver
- * @param {boolean} optin - true to opt into metrics, default is false
+ * @param {boolean} option - true to opt into metrics, default is false
  */
-const onboardingChooseMetametricsOption = async (driver, optin = false) => {
-  const optionIdentifier = optin ? 'i-agree' : 'no-thanks';
+const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
   await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
 };
@@ -692,12 +692,6 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function switchToWindow(driver, windowTitle) {
-  const windowHandles = await driver.getAllWindowHandles();
-
-  return await driver.switchToWindowWithTitle(windowTitle, windowHandles);
-}
-
 async function sleepSeconds(sec) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
@@ -714,7 +708,8 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  const serviceWorkerElements = await driver.findElements({
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
     text: 'terminate',
     tag: 'span',
   });
@@ -722,8 +717,7 @@ async function terminateServiceWorker(driver) {
   // 1st one is app-init.js; while 2nd one is service-worker.js
   await serviceWorkerElements[serviceWorkerElements.length - 1].click();
 
-  const serviceWorkerTab = await switchToWindow(
-    driver,
+  const serviceWorkerTab = await driver.switchToWindowWithTitle(
     WINDOW_TITLES.ServiceWorkerSettings,
   );
 
@@ -750,15 +744,17 @@ async function switchToNotificationWindow(driver) {
  *
  * @param {WebDriver} driver
  * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {boolean} hasRequest
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
-async function getEventPayloads(driver, mockedEndpoints) {
+async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
   await driver.wait(async () => {
     let isPending = true;
     for (const mockedEndpoint of mockedEndpoints) {
       isPending = await mockedEndpoint.isPending();
     }
-    return isPending === false;
+
+    return isPending === !hasRequest;
   }, 10000);
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
@@ -810,7 +806,6 @@ module.exports = {
   generateETHBalance,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   switchToNotificationWindow,
