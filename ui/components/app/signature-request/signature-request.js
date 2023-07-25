@@ -13,9 +13,11 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   resolvePendingApproval,
-  rejectPendingApproval,
   completedTx,
+  ///: END:ONLY_INCLUDE_IN
+  rejectPendingApproval,
 } from '../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,

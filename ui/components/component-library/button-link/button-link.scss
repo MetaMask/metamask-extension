@@ -1,11 +1,12 @@
 .mm-button-link {
   &:hover:not(&--disabled) {
+    color: var(--color-primary-default);
     text-decoration: underline;
     text-decoration-thickness: 2px;
     text-underline-offset: 4px;
   }
 
-  &:active {
+  &:active:not(&--disabled) {
     color: var(--color-primary-alternative);
   }
 

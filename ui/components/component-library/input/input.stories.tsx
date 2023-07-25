@@ -1,16 +1,16 @@
 import React, { useRef } from 'react';
+import { Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 
-import { Button } from '..';
+import { Button, Box, BUTTON_VARIANT } from '..';
 
-import { INPUT_TYPES } from './input.constants';
+import { InputType } from './input.types';
 import { Input } from './input';
 
 import README from './README.mdx';
@@ -92,7 +92,7 @@ export default {
     },
     type: {
       control: 'select',
-      options: Object.values(INPUT_TYPES),
+      options: Object.values(InputType),
     },
     value: {
       control: 'text',
@@ -126,7 +126,7 @@ export default {
     placeholder: 'Placeholder...',
     value: '',
   },
-};
+} as Meta<typeof Input>;
 
 const Template = (args) => {
   const [{ value }, updateArgs] = useArgs();
@@ -141,14 +141,14 @@ DefaultStory.storyName = 'Default';
 
 export const Type = (args) => (
   <Box
-    display={DISPLAY.INLINE_FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.InlineFlex}
+    flexDirection={FlexDirection.Column}
     gap={4}
   >
     <Input {...args} placeholder="Default" />
-    <Input {...args} type={INPUT_TYPES.PASSWORD} placeholder="Password" />
-    <Input {...args} type={INPUT_TYPES.NUMBER} placeholder="Number" />
-    <Input {...args} type={INPUT_TYPES.SEARCH} placeholder="Search" />
+    <Input {...args} type={InputType.Password} placeholder="Password" />
+    <Input {...args} type={InputType.Number} placeholder="Number" />
+    <Input {...args} type={InputType.Search} placeholder="Search" />
   </Box>
 );
 
@@ -158,17 +158,21 @@ Type.args = {
 
 export const Ref = (args) => {
   const [{ value }, updateArgs] = useArgs();
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const handleOnClick = () => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
   return (
-    <Box display={DISPLAY.FLEX}>
+    <Box display={Display.Flex}>
       <Input {...args} ref={inputRef} value={value} onChange={handleOnChange} />
-      <Button marginLeft={1} onClick={handleOnClick}>
+      <Button
+        variant={BUTTON_VARIANT.PRIMARY}
+        marginLeft={1}
+        onClick={handleOnClick}
+      >
         Edit
       </Button>
     </Box>
@@ -178,7 +182,7 @@ export const Ref = (args) => {
 export const AutoComplete = Template.bind({});
 AutoComplete.args = {
   autoComplete: true,
-  type: INPUT_TYPES.PASSWORD,
+  type: InputType.Password,
   placeholder: 'Enter password',
 };
 
@@ -201,8 +205,9 @@ MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
-export const Required = Template.bind({});
-Required.args = { required: true, placeholder: 'Required' };
+export const RequiredStory = Template.bind({});
+RequiredStory.args = { required: true, placeholder: 'Required' };
+RequiredStory.storyName = 'Required';
 
 export const DisableStateStyles = Template.bind({});
 DisableStateStyles.args = {
@@ -216,8 +221,8 @@ export const TextVariantStory = (args) => {
   };
   return (
     <Box
-      display={DISPLAY.INLINE_FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Column}
       gap={4}
     >
       <Input

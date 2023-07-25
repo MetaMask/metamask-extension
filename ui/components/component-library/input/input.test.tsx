@@ -5,7 +5,7 @@ import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { Input } from './input';
-import { INPUT_TYPES } from './input.constants';
+import { InputType } from './input.types';
 
 describe('Input', () => {
   it('should render correctly', () => {
@@ -72,9 +72,9 @@ describe('Input', () => {
     const { getByTestId } = render(
       <>
         <Input data-testid="input-text-default" />
-        <Input type={INPUT_TYPES.TEXT} data-testid="input-text" />
-        <Input type={INPUT_TYPES.NUMBER} data-testid="input-number" />
-        <Input type={INPUT_TYPES.PASSWORD} data-testid="input-password" />
+        <Input type={InputType.Text} data-testid="input-text" />
+        <Input type={InputType.Number} data-testid="input-number" />
+        <Input type={InputType.Password} data-testid="input-password" />
       </>,
     );
     expect(getByTestId('input-text-default')).toHaveAttribute('type', 'text');
