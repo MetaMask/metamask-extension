@@ -4,43 +4,55 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  Display,
+  Color,
   FlexDirection,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, Tag, Box } from '../../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  Box,
+} from '../../../component-library';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const SnapVersion = ({ version, url }) => {
-  const t = useI18nContext();
   return (
-    <Tag
-      as="a"
+    <Button
+      variant={BUTTON_VARIANT.LINK}
       href={url}
       target="_blank"
       className="snap-version"
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.pill}
-      paddingLeft={2}
-      paddingRight={2}
-      label={
-        <>
-          {version ? (
-            t('shortVersion', [version])
-          ) : (
-            <Box display={Display.Flex} as="span" padding={1}>
-              <Preloader size={12} />
-            </Box>
-          )}
-          <Icon name={IconName.Export} size={IconSize.Xs} marginLeft={1} />
-        </>
-      }
-      labelProps={{
-        display: Display.Flex,
-        flexDirection: FlexDirection.Row,
-        alignItems: AlignItems.center,
-      }}
-    />
+    >
+      <Box
+        className="snap-version__wrapper"
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderRadius={BorderRadius.pill}
+        paddingTop={1}
+        paddingBottom={1}
+        paddingLeft={2}
+        paddingRight={2}
+      >
+        {version ? (
+          <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
+            {version}
+          </Text>
+        ) : (
+          <Preloader size={18} />
+        )}
+        <Icon
+          name={IconName.Export}
+          color={Color.textAlternative}
+          size={IconSize.Sm}
+          marginLeft={1}
+        />
+      </Box>
+    </Button>
   );
 };
 
