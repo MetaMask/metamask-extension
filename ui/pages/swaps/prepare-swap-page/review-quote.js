@@ -137,8 +137,8 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
-import ViewQuotePriceDifference from './view-quote-price-difference';
 import useRamps from '../../../hooks/experiences/useRamps';
+import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
 
