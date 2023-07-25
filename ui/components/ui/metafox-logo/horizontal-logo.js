@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const LOGO_WIDTH = 162;
@@ -9,7 +9,22 @@ const FLASK_PILL_TEXT = 'var(--color-overlay-inverse)';
 const BETA_PILL_BACKGROUND = 'var(--color-primary-default)';
 const BETA_PIL_TEXT = 'var(--color-primary-inverse)';
 
-export default function MetaFoxHorizontalLogo({ theme = 'light', className }) {
+export default function MetaFoxHorizontalLogo({
+  theme: themeProps,
+  className,
+}) {
+  const [theme, setTheme] = useState(themeProps);
+
+  useEffect(() => {
+    setTheme(document.documentElement.getAttribute('data-theme'));
+  }, []);
+
+  useEffect(() => {
+    if (themeProps !== undefined) {
+      setTheme(themeProps);
+    }
+  }, [themeProps]);
+
   const fill = theme === 'dark' ? 'rgb(255,255,255)' : 'rgb(22,22,22)';
 
   switch (process.env.METAMASK_BUILD_TYPE) {

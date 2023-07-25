@@ -155,10 +155,10 @@ export default class UnlockPage extends Component {
     const { t } = this.context;
     const { onRestore } = this.props;
 
-    let needHelpText = t('needHelpLinkText');
+    let needHelpText = t('appNameMmi');
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    needHelpText = t('appNameMmi');
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    needHelpText = t('needHelpLinkText');
     ///: END:ONLY_INCLUDE_IN
 
     return (
