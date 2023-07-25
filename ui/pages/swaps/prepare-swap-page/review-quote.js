@@ -138,6 +138,7 @@ import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+import useRamps from '../../../hooks/experiences/useRamps';
 
 let intervalId;
 
@@ -160,6 +161,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     useState(null);
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
@@ -782,6 +784,11 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       }),
     );
   };
+
+  const needsMoreGas =
+    (isSmartTransaction && ethBalanceNeededStx) ||
+    (!isSmartTransaction && ethBalanceNeeded);
+
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -1077,6 +1084,15 @@ export default function ReviewQuote({ setReceiveToAmount }) {
                     data-testid="mm-banner-alert-notification-text"
                   >
                     {actionableBalanceErrorMessage}
+
+                    {needsMoreGas && (
+                      <ButtonLink
+                        onClick={() => openBuyCryptoInPdapp()}
+                        size={Size.inherit}
+                      >
+                        Buy more ETH
+                      </ButtonLink>
+                    )}
                   </Text>
                 </BannerAlert>
               </Box>
