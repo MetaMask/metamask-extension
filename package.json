@@ -139,7 +139,7 @@
     "@truffle/codec": "^0.11.18",
     "@truffle/decoder": "^5.1.0",
     "@unstoppabledomains/resolution": "^8.3.3",
-    "@unstoppabledomains/tldsresolverkeys": "^1.0.0",
+    "@unstoppabledomains/tldsresolverkeys": "^2.3.7",
     "@zxing/browser": "^0.0.10",
     "@zxing/library": "0.8.0",
     "await-semaphore": "^0.1.1",
