@@ -88,6 +88,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
+  NetworkType,
 } from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -215,6 +216,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import createNetworkClientIdMiddleware from './lib/createNetworkClientIdMiddleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3569,6 +3571,7 @@ export default class MetamaskController extends EventEmitter {
       actionId: req.id,
       method: req.method,
       origin: req.origin,
+      networkClientId: req.networkClientId,
       // This is the default behaviour but specified here for clarity
       requireApproval: true,
     });
@@ -3588,9 +3591,12 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async addTransaction(txParams, options) {
+    // get networkClientId for origin metamask:
+    // const networkClientId = await this.getNetworkClientIdForOrigin(options.origin) // will always be metamask?
+    const networkClientId = NetworkType.mainnet;
     const { transactionMeta, result } = await this.txController.addTransaction(
       txParams,
-      options,
+      {...options, networkClientId },
     );
 
     result.catch(() => {
@@ -4015,6 +4021,18 @@ export default class MetamaskController extends EventEmitter {
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
+    // append the networkClientId to each request
+    engine.push(
+      createNetworkClientIdMiddleware({
+        getNetworkClientIdByOrigin: () => NetworkType.mainnet, // placeholder
+        // this.networkController.state.selectedNetworkClientId, // todo add when new network controller is in
+        // and then
+        // this.selectedNetworkController.getNetworkClientIdByOrigin.bind(
+        //   this.selectedNetworkController,
+        // ),
+      }),
+    );
 
     // append tabId to each request if it exists
     if (tabId) {

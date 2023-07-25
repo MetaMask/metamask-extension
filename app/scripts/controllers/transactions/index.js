@@ -350,6 +350,7 @@ export default class TransactionController extends EventEmitter {
       sendFlowHistory,
       swaps: { hasApproveTx, meta } = {},
       type,
+      networkClientId,
     } = {},
   ) {
     log.debug(`MetaMaskController addTransaction ${JSON.stringify(txParams)}`);
@@ -361,6 +362,7 @@ export default class TransactionController extends EventEmitter {
       sendFlowHistory,
       swaps: { hasApproveTx, meta },
       type,
+      networkClientId,
     });
 
     return {
@@ -1514,7 +1516,7 @@ export default class TransactionController extends EventEmitter {
 
   async _createTransaction(
     txParams,
-    { actionId, method, origin, sendFlowHistory = [], swaps, type },
+    { actionId, method, origin, sendFlowHistory = [], swaps, type, networkClientId },
   ) {
     if (
       type !== undefined &&
@@ -1535,7 +1537,7 @@ export default class TransactionController extends EventEmitter {
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
-    const eip1559Compatibility = await this.getEIP1559Compatibility();
+    const eip1559Compatibility = await this.getEIP1559Compatibility(networkClientId);
 
     txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
 
