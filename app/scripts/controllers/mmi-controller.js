@@ -32,7 +32,7 @@ export default class MMIController extends EventEmitter {
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
     this.txController = opts.txController;
-    this.securityProviderRequest = opts.securityProviderRequest;
+    this.securityProviderRequest = opts?.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;

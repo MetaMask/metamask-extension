@@ -1,26 +1,29 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  getNumberOfSettingsInSection,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-
-import { Text, Box } from '../../../components/component-library';
-import {
-  TextColor,
-  TextVariant,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   FontWeight,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
+  TextVariant,
+  ///: END:ONLY_INCLUDE_IN
+  TextColor,
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   Display,
   FlexDirection,
   JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { Text, Box } from '../../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
+import ToggleButton from '../../../components/ui/toggle-button';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -29,8 +32,11 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
+
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertsEnabled: PropTypes.bool,
     setSecurityAlertsEnabled: PropTypes.func,
@@ -139,6 +145,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   renderTransactionSecurityCheckToggle() {
     const { t } = this.context;
 
@@ -239,6 +246,7 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
+  ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   renderDesktopEnableButton() {
@@ -273,7 +281,11 @@ export default class ExperimentalTab extends PureComponent {
           this.renderSecurityAlertsToggle()
           ///: END:ONLY_INCLUDE_IN
         }
-        {this.renderTransactionSecurityCheckToggle()}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          this.renderTransactionSecurityCheckToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {
           ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()

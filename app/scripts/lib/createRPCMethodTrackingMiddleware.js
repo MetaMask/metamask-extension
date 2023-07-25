@@ -1,9 +1,15 @@
 import { errorCodes } from 'eth-rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { isValidAddress } from 'ethereumjs-util';
 
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+import { isValidAddress } from 'ethereumjs-util';
+///: END:ONLY_INCLUDE_IN
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
+
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
 import { TransactionStatus } from '../../../shared/constants/transaction';
+///: END:ONLY_INCLUDE_IN
+
 import { SECOND } from '../../../shared/constants/time';
 
 import {
@@ -98,6 +104,7 @@ const EVENT_NAME_MAP = {
 
 const rateLimitTimeouts = {};
 
+/* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
 /**
  * Returns a middleware that tracks inpage_provider usage using sampling for
  * each type of event except those that require user interaction, such as
@@ -113,11 +120,14 @@ const rateLimitTimeouts = {};
  * @param opts.securityProviderRequest
  * @returns {Function}
  */
+/* eslint-enable jsdoc/require-param, jsdoc/check-param-names */
 export default function createRPCMethodTrackingMiddleware({
   trackEvent,
   getMetricsState,
   rateLimitSeconds = 60 * 5,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   securityProviderRequest,
+  ///: END:ONLY_INCLUDE_IN
 }) {
   return async function rpcMethodTrackingMiddleware(
     /** @type {any} */ req,
@@ -173,6 +183,7 @@ export default function createRPCMethodTrackingMiddleware({
         // In personal messages the first param is data while in typed messages second param is data
         // if condition below is added to ensure that the right params are captured as data and address.
         let data;
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
         let from;
         if (isValidAddress(req?.params?.[1])) {
           data = req?.params?.[0];
@@ -193,12 +204,18 @@ export default function createRPCMethodTrackingMiddleware({
           status: TransactionStatus.unapproved,
           type: req.method,
         };
+        ///: END:ONLY_INCLUDE_IN
 
         try {
-          const securityProviderResponse = await securityProviderRequest(
-            msgData,
-            req.method,
-          );
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          let securityProviderResponse;
+
+          if (securityProviderRequest) {
+            securityProviderResponse = await securityProviderRequest(
+              msgData,
+              req.method,
+            );
+          }
 
           if (securityProviderResponse?.flagAsDangerous === 1) {
             eventProperties.ui_customizations = [
@@ -209,6 +226,7 @@ export default function createRPCMethodTrackingMiddleware({
               MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
             ];
           }
+          ///: END:ONLY_INCLUDE_IN
 
           if (method === MESSAGE_TYPE.PERSONAL_SIGN) {
             const { isSIWEMessage } = detectSIWE({ data });

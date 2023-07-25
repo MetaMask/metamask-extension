@@ -1451,6 +1451,7 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
   return isDynamicTokenListAvailable && !useTokenDetection && !isMainnet;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
 /**
  * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
  *
@@ -1460,6 +1461,7 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 /**

@@ -4385,6 +4385,7 @@ export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
@@ -4399,6 +4400,7 @@ export function setTransactionSecurityCheckEnabled(
     }
   };
 }
+///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 export function setSecurityAlertsEnabled(val: boolean): void {
