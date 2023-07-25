@@ -176,7 +176,6 @@ export default function TransactionList({
             {pendingTransactions.map((dateGroup) => {
               return dateGroup.transactionGroups.map(
                 (transactionGroup, index) => {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                   if (
                     transactionGroup.initialTransaction.transactionType ===
                     TransactionType.smart
@@ -193,7 +192,6 @@ export default function TransactionList({
                       </>
                     );
                   }
-                  ///: END:ONLY_INCLUDE_IN
                   return (
                     <>
                       {renderDateStamp(index, dateGroup)}
@@ -218,7 +216,7 @@ export default function TransactionList({
                     <>
                       {renderDateStamp(index, dateGroup)}
                       {transactionGroup.initialTransaction?.transactionType ===
-                      'smart' ? (
+                      TransactionType.smart ? (
                         <SmartTransactionListItem
                           transactionGroup={transactionGroup}
                           smartTransaction={transactionGroup.initialTransaction}

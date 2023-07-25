@@ -33,7 +33,9 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -129,7 +131,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 category: MetaMetricsEventCategory.Navigation,
                 event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
-              window.open(mmiPortfolioUrl, '_blank');
+              window.open(
+                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
+                '_blank',
+              );
               closeMenu();
             }}
             data-testid="global-menu-mmi-portfolio"
