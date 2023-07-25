@@ -66,7 +66,11 @@ export const ActivityListItem = ({
         gap={4}
       >
         {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
-        <Box display={Display.InlineFlex} width={BlockSize.Full}>
+        <Box
+          display={Display.InlineFlex}
+          width={BlockSize.Full}
+          style={{ overflow: 'hidden' }}
+        >
           <Box
             display={Display.InlineFlex}
             width={[BlockSize.OneThird, BlockSize.SevenTwelfths]}
