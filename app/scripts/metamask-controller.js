@@ -194,7 +194,6 @@ import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
-import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
@@ -3022,6 +3021,23 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Get a Buffer mnemonic from Uint8Array.
+   *
+   * @param {Uint8Array} mnemonic - The mnemonic phrase as a Uint8Array
+   * @returns {Buffer} The mnemonic phrase as a Buffer
+   */
+  _uint8ArrayToBuffer(mnemonic) {
+    const recoveredIndices = Array.from(
+      new Uint16Array(new Uint8Array(mnemonic).buffer),
+    );
+    return Buffer.from(
+      new TextEncoder().encode(
+        recoveredIndices.map((i) => wordlist[i]).join(' '),
+      ),
+    );
+  }
+
+  /**
    * Get an account balance from the AccountTracker or request it directly from the network.
    *
    * @param {string} address - The account address
@@ -3461,28 +3477,10 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
+    const seedPhraseAsBuffer = this._uint8ArrayToBuffer(
+      await this.coreKeyringController.verifySeedPhrase(),
     );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-
-    const serialized = await primaryKeyring.serialize();
-    const seedPhraseAsBuffer = Buffer.from(serialized.mnemonic);
-
-    const accounts = await primaryKeyring.getAccounts();
-    if (accounts.length < 1) {
-      throw new Error('MetamaskController - No accounts found');
-    }
-
-    try {
-      await seedPhraseVerifier.verifyAccounts(accounts, seedPhraseAsBuffer);
-      return Array.from(seedPhraseAsBuffer.values());
-    } catch (err) {
-      log.error(err.message);
-      throw err;
-    }
+    return Array.from(seedPhraseAsBuffer.values());
   }
 
   /**
