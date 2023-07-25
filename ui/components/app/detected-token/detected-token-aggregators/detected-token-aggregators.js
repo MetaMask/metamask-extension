@@ -3,14 +3,12 @@ import PropTypes from 'prop-types';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-import Box from '../../../ui/box';
-import Button from '../../../ui/button';
 import {
-  DISPLAY,
+  Display,
   FontWeight,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+import { Box, ButtonLink, Text } from '../../../component-library';
 
 const NUMBER_OF_AGGREGATORS_TO_DISPLAY = 2;
 
@@ -21,7 +19,7 @@ const DetectedTokenAggregators = ({ aggregators }) => {
   const [displayMore, setDisplayMore] = useState(false);
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="detected-token-aggregators">
+    <Box display={Display.InlineFlex} className="detected-token-aggregators">
       <Text variant={TextVariant.bodySm} as="h6" fontWeight={FontWeight.Normal}>
         {t('fromTokenLists', [
           numOfHiddenAggregators > 0 && !displayMore ? (
@@ -34,14 +32,13 @@ const DetectedTokenAggregators = ({ aggregators }) => {
               {`${aggregators
                 .slice(0, NUMBER_OF_AGGREGATORS_TO_DISPLAY)
                 .join(', ')}`}
-              <Button
-                type="link"
+              <ButtonLink
                 className="detected-token-aggregators__link"
                 onClick={() => setDisplayMore(true)}
                 key="detected-token-aggrgators-link"
               >
                 {t('plusXMore', [numOfHiddenAggregators])}
-              </Button>
+              </ButtonLink>
             </Text>
           ) : (
             <Text

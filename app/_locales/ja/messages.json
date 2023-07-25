@@ -911,9 +911,6 @@
   "delete": {
     "message": "削除"
   },
-  "deleteAccount": {
-    "message": "アカウントを削除"
-  },
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT の ID は一意の識別子で、同じ NFT は 2 つとして存在しません。前述の通り、OpenSea ではこの番号は「詳細」に表示されます。この ID を書き留めるか、クリップボードにコピーしてください。"
   },
-  "importNFTs": {
-    "message": "NFTをインポート"
-  },
   "importSelectedTokens": {
     "message": "選択したトークンをインポートしますか？"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信された RPC URL の値がこのチェーン ID の既知のプロバイダーと一致しません。"
   },
-  "missingNFT": {
-    "message": "NFTが見当たりませんか？"
-  },
   "missingSetting": {
     "message": "設定が見つかりませんか？"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "利用可能な換算レートがありません"
-  },
-  "noNFTs": {
-    "message": "NFTはまだありません"
   },
   "noSnaps": {
     "message": "スナップがインストールされていません"
@@ -2765,9 +2753,6 @@
   "publicAddress": {
     "message": "パブリックアドレス"
   },
-  "queue": {
-    "message": "キュー"
-  },
   "queued": {
     "message": "キュー待ち"
   },
@@ -2968,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
-  "reviewSpendingCap": {
-    "message": "使用上限を確認してください"
-  },
   "revokeAllTokensTitle": {
     "message": "すべての $1 へのアクセスおよび転送許可を取り消しますか？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3151,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "使用限度額なしで $1 を承認",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "$1 の使用上限を設定",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "設定"
@@ -4178,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
-  },
-  "useDefault": {
-    "message": "既定値を使用"
   },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"

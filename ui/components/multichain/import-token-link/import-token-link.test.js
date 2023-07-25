@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { detectNewTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ImportTokenLink } from './import-token-link';
+import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();
 
@@ -19,7 +19,7 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../../store/actions.ts', () => ({
-  detectNewTokens: jest.fn(),
+  detectNewTokens: jest.fn().mockReturnValue({ type: '' }),
 }));
 
 describe('Import Token Link', () => {

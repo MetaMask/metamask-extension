@@ -485,9 +485,11 @@ const onMessageSetUpExtensionStreams = (msg) => {
 /**
  * This listener destroys the extension streams when the extension port is disconnected,
  * so that streams may be re-established later when the extension port is reconnected.
+ *
+ * @param {Error} [err] - Stream connection error
  */
-const onDisconnectDestroyStreams = () => {
-  const err = checkForLastError();
+const onDisconnectDestroyStreams = (err) => {
+  const lastErr = err || checkForLastError();
 
   extensionPort.onDisconnect.removeListener(onDisconnectDestroyStreams);
 
@@ -501,8 +503,8 @@ const onDisconnectDestroyStreams = () => {
    * may cause issues. We suspect that this is a chromium bug as this event should only be called
    * once the port and connections are ready. Delay time is arbitrary.
    */
-  if (err) {
-    console.warn(`${err} Resetting the streams.`);
+  if (lastErr) {
+    console.warn(`${lastErr} Resetting the streams.`);
     setTimeout(setupExtensionStreams, 1000);
   }
 };
@@ -630,6 +632,18 @@ const start = () => {
       injectScript(inpageBundle);
     }
     initStreams();
+
+    // https://bugs.chromium.org/p/chromium/issues/detail?id=1457040
+    // Temporary workaround for chromium bug that breaks the content script <=> background connection
+    // for prerendered pages. This resets potentially broken extension streams if a page transitions
+    // from the prerendered state to the active state.
+    if (document.prerendering) {
+      document.addEventListener('prerenderingchange', () => {
+        onDisconnectDestroyStreams(
+          new Error('Prerendered page has become active.'),
+        );
+      });
+    }
   }
 };
 

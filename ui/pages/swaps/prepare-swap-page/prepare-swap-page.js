@@ -115,13 +115,13 @@ import {
   IconSize,
   TextField,
   ButtonLink,
-  Text,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  BannerAlert,
+  Text,
 } from '../../../components/component-library';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -586,7 +586,10 @@ export default function PrepareSwapPage({
     );
   };
 
-  const swapYourTokenBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenFromBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenToBalance = `${t('balance')}: ${
+    selectedToToken?.string || '0'
+  }`;
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(
     chainId,
@@ -883,7 +886,7 @@ export default function PrepareSwapPage({
             alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap-page__balance-message">
-              {fromTokenSymbol && swapYourTokenBalance}
+              {fromTokenSymbol && yourTokenFromBalance}
               {showMaxBalanceLink && (
                 <div
                   className="prepare-swap-page__max-balance"
@@ -996,6 +999,15 @@ export default function PrepareSwapPage({
                 {receiveToAmountFormatted}
               </Text>
             </Box>
+          </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken?.string && yourTokenToBalance}
+            </div>
           </Box>
         </div>
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (

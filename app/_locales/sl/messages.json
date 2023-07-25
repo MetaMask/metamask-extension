@@ -211,9 +211,6 @@
   "delete": {
     "message": "Izbriši"
   },
-  "deleteAccount": {
-    "message": "Izbriši račun"
-  },
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
   },
@@ -550,9 +547,6 @@
   },
   "privateNetwork": {
     "message": "Zasebno omrežje"
-  },
-  "queue": {
-    "message": "Čakalna vrsta"
   },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
