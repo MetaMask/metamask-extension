@@ -6161,6 +6161,12 @@
         "process": true
       }
     },
+    "jsdom>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
+      }
+    },
     "koa>content-disposition>safe-buffer": {
       "builtin": {
         "buffer": true
