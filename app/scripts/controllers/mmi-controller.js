@@ -615,7 +615,7 @@ export default class MMIController extends EventEmitter {
       const foundNetworkConfiguration = Object.values(
         this.networkController.state.networkConfigurations,
       ).find((networkConfiguration) => {
-        return networkConfiguration.caipChainId === caipChainId; // is this right?
+        return networkConfiguration.caipChainId === caipChainId;
       });
 
       if (foundNetworkConfiguration !== undefined) {

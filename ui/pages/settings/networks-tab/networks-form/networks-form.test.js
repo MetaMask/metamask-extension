@@ -276,20 +276,12 @@ describe('NetworkForm Component', () => {
       'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network';
     expect(await screen.findByText(expectedWarning)).toBeInTheDocument();
 
-    // Getting this from Nock
-    // FetchError {
-    //   message: 'request to https://chainid.network/chains.json failed, reason: Nock: Disallowed net connect for "chainid.network:443/chains.json"',
-    //   type: 'system',
-    //   errno: 'ENETUNREACH',
-    //   code: 'ENETUNREACH'
-    // }
-    // Slack suggests this is a local issue only?...
-    // fireEvent.change(chainIdField, {
-    //   target: { value: '137' },
-    // });
-    // const secondExpectedWarning =
-    //   'The network with chain ID 137 may use a different currency symbol (MATIC) than the one you have entered. Please verify before continuing.';
-    // expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
+    fireEvent.change(chainIdField, {
+      target: { value: '137' },
+    });
+    const secondExpectedWarning =
+      'The network with chain ID 137 may use a different currency symbol (MATIC) than the one you have entered. Please verify before continuing.';
+    expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
   });
 
   it('should validate block explorer URL field correctly', async () => {

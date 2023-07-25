@@ -197,13 +197,10 @@ const ConfirmAddCustodianToken = () => {
                 setIsLoading(true);
 
                 try {
-                  if (connectRequest.chainId) {
-                    const caipChainId = getCaipChainIdFromEthChainId(
-                      connectRequest.chainId,
-                    );
+                  if (connectRequest.caipChainId) {
                     const networkType = Object.keys(BUILT_IN_NETWORKS).find(
                       (key) =>
-                        BUILT_IN_NETWORKS[key].caipChainId === caipChainId,
+                        BUILT_IN_NETWORKS[key].caipChainId === connectRequest.caipChainId,
                     );
                     await dispatch(setProviderType(networkType));
                   }

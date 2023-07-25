@@ -23,7 +23,7 @@ describe('Wrong Network Notification', function () {
       },
       custodianSupportedChains: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          supportedChains: ['1', '2'],
+          supportedChains: ['eip155:1', 'eip155:2'],
           custodianName: 'saturn',
         },
       },

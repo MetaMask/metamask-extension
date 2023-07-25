@@ -45,6 +45,7 @@ import { getMMIConfiguration } from '../../../selectors/institutional/selectors'
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -53,7 +54,7 @@ const CustodyPage = () => {
   const dispatch = useDispatch();
 
   const mmiActions = mmiActionsFactory();
-  const currentChainId = useSelector(getCurrentCaipChainId);
+  const currentCaipChainId = useSelector(getCurrentCaipChainId);
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [loading, setLoading] = useState(true);
@@ -69,7 +70,7 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [chainId, setChainId] = useState(0); // TODO: need to figure this file out
+  const [chainId, setChainId] = useState(0);
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
 
@@ -253,7 +254,7 @@ const CustodyPage = () => {
         mmiActions.getCustodianConnectRequest(),
       );
 
-      setChainId(parseInt(currentChainId, 16));
+      setChainId(getEthChainIdIntFromCaipChainId(currentCaipChainId));
 
       // check if it's empty object
       if (Object.keys(connectRequestValue).length) {
@@ -294,7 +295,7 @@ const CustodyPage = () => {
     };
 
     if (parseInt(chainId, 16) !== chainId) {
-      setChainId(parseInt(currentChainId, 16));
+      setChainId(getEthChainIdIntFromCaipChainId(currentCaipChainId));
       handleNetworkChange();
     }
   }, [
@@ -303,7 +304,7 @@ const CustodyPage = () => {
     currentJwt,
     jwtList,
     selectedCustodianType,
-    currentChainId,
+    currentCaipChainId,
     chainId,
   ]);
 
@@ -329,7 +330,7 @@ const CustodyPage = () => {
           labels: account.labels,
           token: currentJwt,
           apiUrl,
-          chainId: account.chainId,
+          caipChainId: account.caipChainId,
           custodyType: selectedCustodianType,
           custodyName: selectedCustodianName,
         };
@@ -530,7 +531,7 @@ const CustodyPage = () => {
                   labels: account.labels,
                   token: currentJwt,
                   apiUrl,
-                  chainId: account.chainId,
+                  caipChainId: account.caipChainId,
                   custodyType: selectedCustodianType,
                   custodyName: selectedCustodianName,
                 };

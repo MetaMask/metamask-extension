@@ -17,7 +17,7 @@ function buildState(overrides = {}) {
     metamask: {
       providerConfig: {
         type: 'test',
-        chainId: toHex(1),
+        caipChainId: 'eip155:1',
       },
       identities: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
@@ -41,7 +41,7 @@ function buildState(overrides = {}) {
       },
       custodianSupportedChains: {
         '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          supportedChains: ['1', '2'],
+          supportedChains: ['eip155:1', 'eip155:2'],
           custodianName: 'saturn',
         },
       },
@@ -169,7 +169,7 @@ describe('Institutional selectors', () => {
           ],
           custodianSupportedChains: {
             [accountAddress]: {
-              supportedChains: ['1', '2', '3'],
+              supportedChains: ['eip155:1', 'eip155:2', 'eip155:3'],
             },
           },
           selectedAddress: accountAddress,
@@ -201,7 +201,7 @@ describe('Institutional selectors', () => {
           ],
           custodianSupportedChains: {
             [accountAddress]: {
-              supportedChains: ['4'],
+              supportedChains: ['eip155:4'],
             },
           },
           selectedAddress: accountAddress,
@@ -233,7 +233,7 @@ describe('Institutional selectors', () => {
           ],
           custodianSupportedChains: {
             [accountAddress]: {
-              supportedChains: ['4'],
+              supportedChains: ['eip155:4'],
             },
           },
           selectedAddress: accountAddress,

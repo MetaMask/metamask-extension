@@ -222,7 +222,7 @@ describe('Swaps Util', () => {
       ).toBe(true);
     });
 
-    it('returns false if "to" has mismatch with current chainId', () => {
+    it('returns false if "to" has mismatch with current caipChainId', () => {
       usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
       expect(
         isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),

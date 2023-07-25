@@ -23,7 +23,7 @@ const customData = {
           feature: 'custodian',
           service: 'Saturn',
           apiUrl: 'https://www.apiurl.net/v1',
-          chainId: 1,
+          caipChainId: 'eip155:1',
         },
       ],
     },

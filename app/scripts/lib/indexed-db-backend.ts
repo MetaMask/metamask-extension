@@ -2,7 +2,7 @@ import { StorageBackend } from '@metamask/ppom-validator';
 
 type StorageKey = {
   name: string;
-  chainId: string; // update this after PPOMController
+  chainId: string;
 };
 
 const validateChecksum = async (

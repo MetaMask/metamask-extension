@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 ///: END:ONLY_INCLUDE_IN
 import { MetaMetricsContext } from '../../../contexts/metametrics';

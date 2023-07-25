@@ -343,7 +343,7 @@ describe('txUtils', function () {
 
       let normalizedTxParams = txUtils.normalizeTxParams(txParams);
 
-      assert.ok(!normalizedTxParams.chainId, 'there should be no chainId');
+      assert.ok(!normalizedTxParams.caipChainId, 'there should be no caipChainId');
       assert.ok(
         !normalizedTxParams.to,
         'there should be no to address if null',
