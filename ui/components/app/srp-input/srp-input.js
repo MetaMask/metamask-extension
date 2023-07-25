@@ -5,12 +5,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
 import { clearClipboard } from '../../../helpers/utils/util';
 import { BannerAlert, Text } from '../../component-library';
-import { Severity } from '../../../helpers/constants/design-system';
 import Dropdown from '../../ui/dropdown';
 import ShowHideToggle from '../../ui/show-hide-toggle';
 import {
   TextAlign,
   TextVariant,
+  Severity,
 } from '../../../helpers/constants/design-system';
 import { parseSecretRecoveryPhrase } from './parse-secret-recovery-phrase';
 
