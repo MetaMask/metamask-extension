@@ -24,14 +24,14 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
     <ul>
       <li>
         <span
-          class="box mm-icon mm-icon--size-md box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-success-default"
+          class="mm-box mm-icon mm-icon--size-md mm-box--margin-inline-end-3 mm-box--display-inline-block mm-box--color-success-default"
           style="mask-image: url('./images/icons/check.svg');"
         />
         Always allow you to opt-out via Settings
       </li>
       <li>
         <span
-          class="box mm-icon mm-icon--size-md box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-success-default"
+          class="mm-box mm-icon mm-icon--size-md mm-box--margin-inline-end-3 mm-box--display-inline-block mm-box--color-success-default"
           style="mask-image: url('./images/icons/check.svg');"
         />
         Send anonymized click and pageview events
@@ -41,7 +41,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           class="box box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
             style="mask-image: url('./images/icons/close.svg');"
           />
           <span>
@@ -62,7 +62,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           class="box box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
             style="mask-image: url('./images/icons/close.svg');"
           />
           <span>
@@ -83,7 +83,7 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
           class="box box--flex-direction-row"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--margin-inline-end-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-2 mm-box--display-inline-block mm-box--color-error-default"
             style="mask-image: url('./images/icons/close.svg');"
           />
           <span>

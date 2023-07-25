@@ -8,7 +8,7 @@ exports[`ButtonIcon should render button element correctly 1`] = `
     data-testid="button-icon"
   >
     <span
-      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
       style="mask-image: url('./images/icons/add-square.svg');"
     />
   </button>

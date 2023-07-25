@@ -16,8 +16,6 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
-
 import {
   ButtonIcon,
   ButtonLink,
@@ -28,6 +26,7 @@ import {
   TEXT_FIELD_SIZES,
   ButtonIconSize,
   BUTTON_LINK_SIZES,
+  Box,
 } from '..';
 
 import { Icon } from './icon';

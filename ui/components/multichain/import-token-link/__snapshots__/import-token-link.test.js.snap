@@ -13,7 +13,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
         data-testid="import-token-button"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/add.svg');"
         />
         Import tokens
@@ -27,7 +27,7 @@ exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
         data-testid="refresh-list-button"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/refresh.svg');"
         />
         Refresh list
@@ -50,7 +50,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
         data-testid="import-token-button"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/add.svg');"
         />
         Import tokens
@@ -64,7 +64,7 @@ exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
         data-testid="refresh-list-button"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/refresh.svg');"
         />
         Refresh list
