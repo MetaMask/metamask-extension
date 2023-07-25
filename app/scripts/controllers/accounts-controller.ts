@@ -13,7 +13,7 @@ const controllerName = 'AccountsController';
 
 export type AccountsControllerState = {
   internalAccounts: Record<string, InternalAccount>;
-  selectedAccount: InternalAccount;
+  selectedAccount: string; // id of the selected account
 };
 
 export type AccountsControllerGetStateAction = {
@@ -142,16 +142,16 @@ export default class AccountsController extends BaseControllerV2<
     const legacyAccounts = await this.#listLegacyAccounts();
     const snapAccounts = await this.#listSnapAccounts();
 
-    const internalAccounts: Record<string, InternalAccount> = [
-      ...legacyAccounts,
-      ...snapAccounts,
-    ].reduce((internalAccountMap, internalAccount) => {
-      internalAccountMap[internalAccount.id] = internalAccount;
-      return internalAccountMap;
-    }, {} as Record<string, InternalAccount>);
+    const internalAccounts = [...legacyAccounts, ...snapAccounts].reduce(
+      (internalAccountMap, internalAccount) => {
+        internalAccountMap[internalAccount.id] = internalAccount;
+        return internalAccountMap;
+      },
+      {} as Record<string, InternalAccount>,
+    );
 
-    this.update((accountsControllerState: AccountsControllerState) => {
-      accountsControllerState.internalAccounts = internalAccounts;
+    this.update((currentState: AccountsControllerState) => {
+      currentState.internalAccounts = internalAccounts;
     });
   }
 
@@ -190,10 +190,21 @@ export default class AccountsController extends BaseControllerV2<
   setSelectedAccount(accountId: string): InternalAccount {
     const account = this.getAccountByIdExpect(accountId);
 
-    this.update((state) => {
-      state.selectedAccount = account;
+    this.update((currentState: AccountsControllerState) => {
+      currentState.selectedAccount = account.id;
     });
 
     return account;
+  }
+
+  setLabel(accountId: string, label: string): void {
+    const account = this.getAccountByIdExpect(accountId);
+
+    this.update((currentState: AccountsControllerState) => {
+      currentState.internalAccounts[accountId] = {
+        ...account,
+        name: label,
+      };
+    });
   }
 }
