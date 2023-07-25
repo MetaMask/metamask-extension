@@ -7,12 +7,12 @@ import {
   Color,
   Display,
   FontWeight,
-  Size,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -44,7 +44,7 @@ DefaultStory.args = {
         <AvatarNetwork
           className="activity-tx__network-badge"
           data-testid="activity-tx-network-badge"
-          size={Size.XS}
+          size={AvatarNetworkSize.Xs}
           name="Network Name"
           src="./images/eth_logo.png"
           borderWidth={1}

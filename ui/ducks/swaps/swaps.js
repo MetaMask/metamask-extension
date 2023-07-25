@@ -6,7 +6,7 @@ import { captureMessage } from '@sentry/browser';
 
 import {
   addToken,
-  addUnapprovedTransaction,
+  addTransactionAndWaitForPublish,
   fetchAndSetQuotes,
   forceUpdateMetamaskState,
   resetSwapsPostFetchState,
@@ -1213,12 +1213,11 @@ export const signAndSendTransactions = (
       }
 
       try {
-        finalApproveTxMeta = await addUnapprovedTransaction(
-          undefined,
+        finalApproveTxMeta = await addTransactionAndWaitForPublish(
           { ...approveTxParams, amount: '0x0' },
-          TransactionType.swapApproval,
           {
             requireApproval: false,
+            type: TransactionType.swapApproval,
             swaps: {
               hasApproveTx: true,
               meta: {
@@ -1236,28 +1235,24 @@ export const signAndSendTransactions = (
     }
 
     try {
-      await addUnapprovedTransaction(
-        undefined,
-        usedTradeTxParams,
-        TransactionType.swap,
-        {
-          requireApproval: false,
-          swaps: {
-            hasApproveTx: Boolean(approveTxParams),
-            meta: {
-              estimatedBaseFee: decEstimatedBaseFee,
-              sourceTokenSymbol: sourceTokenInfo.symbol,
-              destinationTokenSymbol: destinationTokenInfo.symbol,
-              type: TransactionType.swap,
-              destinationTokenDecimals: destinationTokenInfo.decimals,
-              destinationTokenAddress: destinationTokenInfo.address,
-              swapMetaData,
-              swapTokenValue,
-              approvalTxId: finalApproveTxMeta?.id,
-            },
+      await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        requireApproval: false,
+        type: TransactionType.swap,
+        swaps: {
+          hasApproveTx: Boolean(approveTxParams),
+          meta: {
+            estimatedBaseFee: decEstimatedBaseFee,
+            sourceTokenSymbol: sourceTokenInfo.symbol,
+            destinationTokenSymbol: destinationTokenInfo.symbol,
+            type: TransactionType.swap,
+            destinationTokenDecimals: destinationTokenInfo.decimals,
+            destinationTokenAddress: destinationTokenInfo.address,
+            swapMetaData,
+            swapTokenValue,
+            approvalTxId: finalApproveTxMeta?.id,
           },
         },
-      );
+      });
     } catch (e) {
       const errorKey = e.message.includes('EthAppPleaseEnableContractData')
         ? CONTRACT_DATA_DISABLED_ERROR

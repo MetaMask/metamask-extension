@@ -1,14 +1,14 @@
 import React from 'react';
 import {
   Size,
-  DISPLAY,
   AlignItems,
   BackgroundColor,
   IconColor,
   Color,
+  Display,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+import { Box } from '../box';
 
 import { IconName } from '..';
 
@@ -95,7 +95,7 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const SizeStory = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarIcon {...args} size={Size.XS} />
     <AvatarIcon {...args} size={Size.SM} />
     <AvatarIcon {...args} size={Size.MD} />
@@ -110,7 +110,7 @@ SizeStory.args = {
 };
 
 export const IconNameStory = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={Display.Flex} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
@@ -147,7 +147,7 @@ export const IconNameStory = (args) => (
 IconNameStory.storyName = 'Icon Name';
 
 export const ColorAndBackgroundColor = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+  <Box display={Display.Flex} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
       backgroundColor={BackgroundColor.primaryMuted}
