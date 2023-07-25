@@ -168,7 +168,6 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
-            borderRadius={BorderRadius.pill}
             marginTop={4}
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
