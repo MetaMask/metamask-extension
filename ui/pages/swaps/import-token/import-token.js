@@ -4,8 +4,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import UrlIcon from '../../../components/ui/url-icon';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
-import Box from '../../../components/ui/box';
-import { Text, BannerAlert } from '../../../components/component-library';
+import { Text, BannerAlert, Box } from '../../../components/component-library';
 import {
   TextVariant,
   FONT_WEIGHT,
