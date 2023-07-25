@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Button from '../../button';
+import ToggleButton from '../../toggle-button';
 
 export default class PageContainerFooter extends Component {
   static propTypes = {
@@ -32,6 +33,14 @@ export default class PageContainerFooter extends Component {
     };
   }
 
+  componentDidMount() {
+    if (this.state.autoSubmitEnabled) {
+      setTimeout(() => {
+        this.props.onSubmit();
+      }, 3000);
+    }
+  }
+
   render() {
     const {
       children,
@@ -47,12 +56,6 @@ export default class PageContainerFooter extends Component {
       footerClassName,
       footerButtonClassName,
     } = this.props;
-
-    setTimeout(() => {
-      if (this.state.autoSubmitEnabled) {
-        onSubmit();
-      }
-    }, 3000);
 
     return (
       <div className={classnames('page-container__footer', footerClassName)}>

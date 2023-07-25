@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
   MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
@@ -43,17 +43,29 @@ import {
   JustifyContent,
   TextAlign,
   TextColor,
-  TextVariant
+  TextVariant,
 } from '../../helpers/constants/design-system';
 import { valuesFor } from '../../helpers/utils/util';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import {
-  getCustomNonceValue, getKnownMethodData, getNetworkIdentifier, getNextSuggestedNonce, getRpcPrefsForCurrentProvider, getTargetAccountWithSendEtherInfo, getUnapprovedTransactions, getUnapprovedTxCount, getUseCurrencyRateCheck, transactionFeeSelector
+  getCustomNonceValue,
+  getKnownMethodData,
+  getNetworkIdentifier,
+  getNextSuggestedNonce,
+  getRpcPrefsForCurrentProvider,
+  getTargetAccountWithSendEtherInfo,
+  getUnapprovedTransactions,
+  getUnapprovedTxCount,
+  getUseCurrencyRateCheck,
+  transactionFeeSelector,
 } from '../../selectors';
 import {
   cancelTx,
-  cancelTxs, getNextNonce, showModal,
-  updateAndApproveTx, updateCustomNonce
+  cancelTxs,
+  getNextNonce,
+  showModal,
+  updateAndApproveTx,
+  updateCustomNonce,
 } from '../../store/actions';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 

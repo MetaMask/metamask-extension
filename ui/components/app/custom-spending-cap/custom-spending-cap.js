@@ -11,8 +11,9 @@ import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
 
 import {
-  DECIMAL_REGEX, MAX_TOKEN_ALLOWANCE_AMOUNT,
-  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX
+  DECIMAL_REGEX,
+  MAX_TOKEN_ALLOWANCE_AMOUNT,
+  NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../../shared/constants/tokens';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
@@ -20,9 +21,16 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import {
-  AlignItems, BackgroundColor, BLOCK_SIZES, Display,
-  FlexDirection, JustifyContent,
-  Size, TextAlign, TextColor, TextVariant
+  AlignItems,
+  BackgroundColor,
+  BLOCK_SIZES,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { getCustomTxParamsData } from '../../../pages/confirm-approve/confirm-approve.util';
@@ -198,9 +206,15 @@ export default function CustomSpendingCap({
       ])
     : t('inputLogicEmptyState');
 
-  setTimeout(() => {
-    handleChange(currentTokenBalance);
-  }, 3000);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      handleChange(currentTokenBalance);
+    }, 3000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
   return (
     <>
@@ -367,4 +381,6 @@ CustomSpendingCap.propTypes = {
    * State method to update the custom token value
    */
   setCustomSpendingCap: PropTypes.func.isRequired,
+
+  setChangedToMaxAmount: PropTypes.func,
 };
