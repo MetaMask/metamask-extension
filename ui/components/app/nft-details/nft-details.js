@@ -297,9 +297,8 @@ export default function NftDetails({ nft }) {
                     overflowWrap={OverflowWrap.BreakWord}
                     marginBottom={4}
                   >
-                    {`${Number(decWEIToDecETH(lastSale.total_price))}
-                      ${lastSale.payment_token.symbol
-                    }`}
+                    {`${Number(decWEIToDecETH(lastSale.total_price))} ${lastSale.payment_token.symbol
+                      }`}
                   </Text>
                 </Box>
               </Box>
@@ -423,6 +422,7 @@ export default function NftDetails({ nft }) {
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}
             as="h6"
+            marginTop={4}
           >
             {t('nftDisclaimer')}
           </Text>
