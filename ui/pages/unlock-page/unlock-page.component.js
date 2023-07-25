@@ -155,6 +155,12 @@ export default class UnlockPage extends Component {
     const { t } = this.context;
     const { onRestore } = this.props;
 
+    let needHelpText = t('needHelpLinkText');
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    needHelpText = t('appNameMmi');
+    ///: END:ONLY_INCLUDE_IN
+
     return (
       <div className="unlock-page__container">
         <div className="unlock-page" data-testid="unlock-page">
@@ -222,7 +228,7 @@ export default class UnlockPage extends Component {
                   );
                 }}
               >
-                {t('needHelpLinkText')}
+                {needHelpText}
               </a>,
             ])}
           </div>
