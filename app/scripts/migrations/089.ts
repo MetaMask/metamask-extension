@@ -31,8 +31,6 @@ function transformState(state: Record<string, unknown>) {
   ) {
     const { networkConfigurations, providerConfig } = state.NetworkController;
 
-    let newProviderConfigId;
-
     if (!isObject(networkConfigurations)) {
       return state;
     }
@@ -40,6 +38,8 @@ function transformState(state: Record<string, unknown>) {
     if (providerConfig.id) {
       return state;
     }
+
+    let newProviderConfigId;
 
     for (const networkConfigurationId of Object.keys(networkConfigurations)) {
       const networkConfiguration =
@@ -49,6 +49,7 @@ function transformState(state: Record<string, unknown>) {
       }
       if (networkConfiguration.rpcUrl === providerConfig.rpcUrl) {
         newProviderConfigId = networkConfiguration.id;
+        break;
       }
     }
 
