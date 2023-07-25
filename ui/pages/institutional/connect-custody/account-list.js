@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from '../../../components/ui/button';
 import CustodyLabels from '../../../components/institutional/custody-labels';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,19 +8,24 @@ import Tooltip from '../../../components/ui/tooltip';
 import {
   TextVariant,
   JustifyContent,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   IconColor,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Box from '../../../components/ui/box';
 import {
-  Text,
+  Box,
+  Button,
   Label,
   Icon,
   IconName,
   IconSize,
   ButtonLink,
+  BUTTON_VARIANT,
+  BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
@@ -34,7 +38,7 @@ export default function CustodyAccountList({
   rawList,
   accounts,
   onAccountChange,
-  selectedAccounts = {},
+  selectedAccounts,
   onCancel,
   onAddAccounts,
   custody,
@@ -42,27 +46,28 @@ export default function CustodyAccountList({
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
   const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
-  const disabled = Object.keys(selectedAccounts).length === 0;
+  const disabled =
+    !selectedAccounts || Object.keys(selectedAccounts).length === 0;
 
   return (
-    <>
-      <Box paddingTop={4} paddingRight={7} paddingBottom={7} paddingLeft={7}>
+    <Box className="page-container">
+      <Box padding={4} className="page-container__content">
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={['column']}
-          width={BLOCK_SIZES.FULL}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
           className="custody-account-list"
           data-testid="custody-account-list"
         >
           {accounts.map((account, idx) => (
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               className="custody-account-list__item"
               key={account.address}
             >
               <Box
-                display={DISPLAY.FLEX}
-                alignItems={['flex-start']}
+                display={Display.Flex}
+                alignItems={AlignItems.flexStart}
                 data-testid="custody-account-list-item-radio-button"
               >
                 {!rawList && (
@@ -70,30 +75,27 @@ export default function CustodyAccountList({
                     type="checkbox"
                     name="selectedAccount"
                     id={`address-${idx}`}
-                    value={account.address}
-                    onChange={(e) =>
+                    onChange={() =>
                       onAccountChange({
                         name: account.name,
-                        address: e.target.value,
+                        address: account.address,
                         custodianDetails: account.custodianDetails,
                         labels: account.labels,
                         chainId: account.chainId,
                       })
                     }
-                    checked={
-                      selectedAccounts && selectedAccounts[account.address]
-                    }
+                    checked={selectedAccounts[account.address] || false}
                   />
                 )}
               </Box>
               <Box
-                display={DISPLAY.FLEX}
-                flexDirection={['column']}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
                 marginLeft={2}
-                width={BLOCK_SIZES.FULL}
+                width={BlockSize.Full}
               >
                 <Label
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   marginTop={2}
                   marginLeft={2}
                   htmlFor={`address-${idx}`}
@@ -110,7 +112,7 @@ export default function CustodyAccountList({
                   </Text>
                 </Label>
                 <Label
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   size={TextVariant.bodySm}
                   marginTop={2}
                   marginLeft={2}
@@ -120,7 +122,7 @@ export default function CustodyAccountList({
                   <Text
                     as="span"
                     variant={TextVariant.bodyMd}
-                    display={DISPLAY.FLEX}
+                    display={Display.Flex}
                     className="custody-account-list__item"
                   >
                     <ButtonLink
@@ -155,7 +157,7 @@ export default function CustodyAccountList({
                   </Text>
                 </Label>
                 <Box
-                  display={DISPLAY.FLEX}
+                  display={Display.Flex}
                   justifyContent={JustifyContent.spaceBetween}
                 >
                   {account.labels && (
@@ -172,38 +174,33 @@ export default function CustodyAccountList({
         </Box>
       </Box>
       {!rawList && (
-        <Box
-          display={DISPLAY.FLEX}
-          width={BLOCK_SIZES.FULL}
-          justifyContent={JustifyContent.spaceBetween}
-          paddingTop={5}
-          paddingRight={7}
-          paddingBottom={7}
-          paddingLeft={7}
-          className="custody-account-list__buttons"
-        >
-          <Button
-            data-testid="custody-account-cancel-button"
-            type="default"
-            large
-            className="custody-account-list__button"
-            onClick={onCancel}
-          >
-            {t('cancel')}
-          </Button>
-          <Button
-            data-testid="custody-account-connect-button"
-            type="primary"
-            large
-            className="custody-account-list__button"
-            disabled={disabled}
-            onClick={() => onAddAccounts(custody)}
-          >
-            {t('connect')}
-          </Button>
+        <Box as="footer" className="page-container__footer" padding={4}>
+          <Box display={Display.Flex} gap={4}>
+            <Button
+              data-testid="custody-account-cancel-button"
+              block
+              variant={BUTTON_VARIANT.SECONDARY}
+              size={BUTTON_SIZES.LG}
+              className="custody-account-list__button"
+              onClick={onCancel}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              data-testid="custody-account-connect-button"
+              block
+              variant={BUTTON_VARIANT.PRIMARY}
+              size={BUTTON_SIZES.LG}
+              className="custody-account-list__button"
+              disabled={disabled}
+              onClick={() => onAddAccounts(custody)}
+            >
+              {t('connect')}
+            </Button>
+          </Box>
         </Box>
       )}
-    </>
+    </Box>
   );
 }
 

@@ -554,9 +554,6 @@
   "privateNetwork": {
     "message": "Sieć prywatna"
   },
-  "queue": {
-    "message": "Kolejka"
-  },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
   },

@@ -13,6 +13,7 @@ import {
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
+
 import {
   ButtonIcon,
   ButtonIconSize,

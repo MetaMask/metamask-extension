@@ -6,7 +6,7 @@ exports[`Beta Header should match snapshot 1`] = `
     class="mm-box beta-header mm-box--padding-2 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-warning-default"
   >
     <h6
-      class="box mm-text beta-header__message mm-text--body-sm box--flex-direction-row box--color-warning-inverse"
+      class="mm-box mm-text beta-header__message mm-text--body-sm mm-box--color-warning-inverse"
     >
       <span>
          

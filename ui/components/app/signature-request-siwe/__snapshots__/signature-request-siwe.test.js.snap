@@ -142,12 +142,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Unknown private network
           </h6>
           <h6
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             Test Account
           </h6>
@@ -157,13 +157,13 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
         class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           Balance
         </h6>
         <h6
           align="end"
-          class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
         >
           966.987986
            
@@ -288,12 +288,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Message:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Click to sign in and accept the Terms of Service: https://community.metamask.io/tos
           </p>
@@ -302,12 +302,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             URI:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             http://localhost:8080
           </p>
@@ -316,12 +316,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Version:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             1
           </p>
@@ -330,12 +330,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Chain ID:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             1
           </p>
@@ -344,12 +344,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Nonce:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             STMt6KQMwwdOXE306
           </p>
@@ -358,12 +358,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Issued At:
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             2023-03-18T21:40:40.823Z
           </p>
@@ -372,12 +372,12 @@ exports[`SignatureRequestSIWE (Sign in with Ethereum) should match snapshot 1`] 
           class="box box--margin-top-2 box--margin-bottom-2 box--flex-direction-row"
         >
           <h4
-            class="box mm-text mm-text--body-lg-medium box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-lg-medium mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             Resources: 2
           </h4>
           <p
-            class="box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-top-2 box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text signature-request-siwe-message__sub-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             ipfs://Qme7ss3ARVgxv6rXqVPiikMJ8u2NLgmgszg13pYrDKEoiu
 https://example.com/my-web2-claim.json

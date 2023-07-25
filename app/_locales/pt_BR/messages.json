@@ -1767,9 +1767,6 @@
   "publicAddress": {
     "message": "Endereço público"
   },
-  "queue": {
-    "message": "Fila"
-  },
   "queued": {
     "message": "Na fila"
   },
