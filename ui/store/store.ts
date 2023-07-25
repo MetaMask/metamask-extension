@@ -1,6 +1,6 @@
 import { StoreEnhancer } from 'redux';
 import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
-import devtoolsEnhancer from 'remote-redux-devtools';
+import { devToolsEnhancer as devtoolsEnhancer } from '@redux-devtools/remote';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
 import rootReducer from '../ducks';

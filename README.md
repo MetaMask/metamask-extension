@@ -51,7 +51,7 @@ To start the [React DevTools](https://github.com/facebook/react-devtools), run `
 
 To start the [Redux DevTools Extension](https://github.com/reduxjs/redux-devtools/tree/main/extension):
 
-- Install the package `remotedev-server` globally (e.g. `yarn global add remotedev-server`)
+- Install the package [@redux-devtools/cli](https://github.com/reduxjs/redux-devtools/tree/main/packages/redux-devtools-cli) globally (e.g. `yarn global add @redux-devtools/cli`)
 - Install the Redux Devtools extension.
 - Open the Redux DevTools extension and check the "Use custom (local) server" checkbox in the Remote DevTools Settings, using the default server configuration (host `localhost`, port `8000`, secure connection checkbox unchecked).
 
