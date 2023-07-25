@@ -30,7 +30,7 @@ async function main(): Promise<void> {
   // Retrieve pull request labels
   const prLabels = await retrievePullRequestLabels(octokit, prRepoOwner, prRepoName, prNumber);
 
-  const preventMergeLabels = ["needs-qa", "QA'd but questions", "issues-found"];
+  const preventMergeLabels = ["needs-qa", "QA'd but questions", "issues-found", "need-ux-ds-review", "blocked", "stale", "DO-NOT-MERGE"];
 
   let hasTeamLabel = false;
 
