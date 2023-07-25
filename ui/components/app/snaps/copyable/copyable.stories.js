@@ -10,7 +10,7 @@ export default {
     },
   },
   args: {
-    text: '',
+    text: 'Copy this by clicking the icon --->',
   },
 };
 

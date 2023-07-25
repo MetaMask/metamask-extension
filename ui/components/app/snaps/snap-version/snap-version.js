@@ -5,6 +5,7 @@ import {
   BackgroundColor,
   BorderRadius,
   Color,
+  Display,
   FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -29,6 +30,7 @@ const SnapVersion = ({ version, url }) => {
     >
       <Box
         className="snap-version__wrapper"
+        display={Display.Flex}
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundAlternative}

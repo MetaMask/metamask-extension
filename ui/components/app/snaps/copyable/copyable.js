@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {
   AlignItems,
   BorderRadius,
+  Display,
   JustifyContent,
   OverflowWrap,
   FlexDirection,
@@ -26,6 +27,7 @@ export const Copyable = ({ text }) => {
   return (
     <Box
       className="copyable"
+      display={Display.Flex}
       backgroundColor={BackgroundColor.backgroundAlternative}
       alignItems={AlignItems.stretch}
       justifyContent={JustifyContent.spaceBetween}
