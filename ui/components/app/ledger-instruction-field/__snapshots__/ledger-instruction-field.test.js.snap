@@ -33,7 +33,7 @@ exports[`LedgerInstructionField Component rendering should render properly with 
               • Enable "smart contract data" or "blind signing" on your Ledger device.
             </h6>
             <h6
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              class="mm-box mm-text mm-text--body-md mm-box--color-warning-default"
             >
               <span>
                 <button

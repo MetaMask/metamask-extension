@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -13,7 +14,6 @@ import {
   BackgroundColor,
   Display,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
 import { getTestNetworkBackgroundColor } from '../../../selectors';
 
@@ -47,7 +47,7 @@ export const NftItem = ({
             className="nft-item__network-badge"
             backgroundColor={testNetworkBackgroundColor}
             data-testid="nft-network-badge"
-            size={Size.SM}
+            size={AvatarNetworkSize.Sm}
             name={networkName}
             src={networkSrc}
             borderWidth={2}
