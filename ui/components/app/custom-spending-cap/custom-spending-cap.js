@@ -19,8 +19,6 @@ import {
   BlockSize,
   BackgroundColor,
   TextColor,
-  Display,
-  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';

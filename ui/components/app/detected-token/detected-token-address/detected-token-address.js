@@ -9,17 +9,10 @@ import Tooltip from '../../../ui/tooltip';
 import {
   Display,
   TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 import { shortenAddress } from '../../../../helpers/utils/util';
-import {
-  Text,
-  Box,
-  ButtonLink,
-  Icon,
-  IconName,
-} from '../../../component-library';
+import { Text, Box, ButtonLink, IconName } from '../../../component-library';
 
 const DetectedTokenAddress = ({ tokenAddress }) => {
   const t = useI18nContext();
