@@ -1289,7 +1289,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              0x5: {
+              'eip155:5': {
                 '0xAddress': '0x0',
               },
             },

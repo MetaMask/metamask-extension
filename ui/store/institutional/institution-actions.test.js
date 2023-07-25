@@ -25,7 +25,7 @@ const defaultState = {
       '0xFirstAddress': {},
     },
     cachedBalances: {
-      '0x1': {
+      'eip155:1': {
         '0xFirstAddress': '0x0',
       },
     },
