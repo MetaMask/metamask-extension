@@ -211,9 +211,6 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteAccount": {
-    "message": "Видалити обліковий запис"
-  },
   "deleteNetwork": {
     "message": "Видалити мережу?"
   },
@@ -562,9 +559,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "queue": {
-    "message": "Черга"
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "

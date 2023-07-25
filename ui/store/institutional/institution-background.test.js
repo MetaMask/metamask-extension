@@ -12,12 +12,6 @@ describe('Institution Actions', () => {
         getCustodianSignMessageDeepLink: jest.fn(),
         getCustodianToken: jest.fn(),
         getCustodianJWTList: jest.fn(),
-        setComplianceAuthData: jest.fn(),
-        deleteComplianceAuthData: jest.fn(),
-        generateComplianceReport: jest.fn(),
-        getComplianceHistoricalReportsByAddress: jest.fn(),
-        syncReportsInProgress: jest.fn(),
-        removeConnectInstitutionalFeature: jest.fn(),
         removeAddTokenConnectRequest: jest.fn(),
         setCustodianConnectRequest: jest.fn(),
         getCustodianConnectRequest: jest.fn(),
@@ -78,24 +72,6 @@ describe('Institution Actions', () => {
         custodianType: 'custodianType',
         token: 'token',
       });
-      mmiActions.setComplianceAuthData({
-        clientId: 'id',
-        projectId: 'projectId',
-      });
-      mmiActions.deleteComplianceAuthData();
-      mmiActions.generateComplianceReport('0xAddress');
-      mmiActions.getComplianceHistoricalReportsByAddress(
-        '0xAddress',
-        'projectId',
-      );
-      mmiActions.syncReportsInProgress({
-        address: '0xAddress',
-        historicalReports: [],
-      });
-      mmiActions.removeConnectInstitutionalFeature({
-        origin: 'origin',
-        projectId: 'projectId',
-      });
       mmiActions.removeAddTokenConnectRequest({
         origin: 'origin',
         apiUrl: 'https://jupiter-custody.codefi.network',
@@ -117,7 +93,6 @@ describe('Institution Actions', () => {
         'newApiUrl',
       );
       connectCustodyAddresses(jest.fn());
-      setWaitForConfirmDeepLinkDialog(jest.fn());
       expect(connectCustodyAddresses).toBeDefined();
       expect(setWaitForConfirmDeepLinkDialog).toBeDefined();
     });

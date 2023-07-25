@@ -17,7 +17,6 @@ import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
 import Popover from '../../components/ui/popover';
 import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
 import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
@@ -31,12 +30,22 @@ import {
   DISPLAY,
   TextColor,
   TextVariant,
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  Size,
+  JustifyContent,
+  Display,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Box,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ButtonLink,
+  ///: END:ONLY_INCLUDE_IN
   Text,
 } from '../../components/component-library';
 
@@ -53,10 +62,8 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
@@ -75,6 +82,7 @@ import FlaskHomeFooter from './flask/flask-home-footer.component';
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
+  hasApprovalFlows,
   isSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   waitForConfirmDeepLinkDialog,
@@ -84,13 +92,14 @@ function shouldCloseNotificationPopup({
   let shouldCLose =
     isNotification &&
     totalUnapprovedCount === 0 &&
+    !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   shouldCLose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
-    // MMI User is connecting to custodian or compliance
+    // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IN
 
@@ -130,6 +139,7 @@ export default class Home extends PureComponent {
     originOfCurrentTab: PropTypes.string,
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
+    hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
@@ -236,12 +246,6 @@ export default class Home extends PureComponent {
       ) {
         history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
       }
-    } else if (
-      institutionalConnectRequests &&
-      institutionalConnectRequests.length > 0 &&
-      institutionalConnectRequests[0].feature !== 'custodian'
-    ) {
-      history.push(CONFIRM_INSTITUTIONAL_FEATURE_CONNECT);
     }
   }
 
@@ -278,6 +282,7 @@ export default class Home extends PureComponent {
       showAwaitingSwapScreen,
       swapsFetchParams,
       pendingConfirmations,
+      hasApprovalFlows,
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -298,7 +303,7 @@ export default class Home extends PureComponent {
       history.push(CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE);
     } else if (hasWatchNftPendingApprovals) {
       history.push(CONFIRM_ADD_SUGGESTED_NFT_ROUTE);
-    } else if (pendingConfirmations.length > 0) {
+    } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -461,7 +466,6 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
-
         {removeNftMessage === 'success' ? (
           <ActionableMessage
             type="danger"
@@ -565,22 +569,26 @@ export default class Home extends PureComponent {
             key="home-web3ShimUsageNotification"
           />
         ) : null}
-        {shouldShowSeedPhraseReminder ? (
-          <HomeNotification
-            descriptionText={t('backupApprovalNotice')}
-            acceptText={t('backupNow')}
-            onAccept={() => {
-              const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
-              if (isPopup) {
-                global.platform.openExtensionInBrowser(backUpSRPRoute);
-              } else {
-                history.push(backUpSRPRoute);
-              }
-            }}
-            infoText={t('backupApprovalInfo')}
-            key="home-backupApprovalNotice"
-          />
-        ) : null}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          shouldShowSeedPhraseReminder ? (
+            <HomeNotification
+              descriptionText={t('backupApprovalNotice')}
+              acceptText={t('backupNow')}
+              onAccept={() => {
+                const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+                if (isPopup) {
+                  global.platform.openExtensionInBrowser(backUpSRPRoute);
+                } else {
+                  history.push(backUpSRPRoute);
+                }
+              }}
+              infoText={t('backupApprovalInfo')}
+              key="home-backupApprovalNotice"
+            />
+          ) : null
+          ///: END:ONLY_INCLUDE_IN
+        }
         {infuraBlocked && this.state.canShowBlockageNotification ? (
           <HomeNotification
             descriptionText={t('infuraBlockedNotification', [
@@ -746,6 +754,23 @@ export default class Home extends PureComponent {
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+    // The style in activity screen for support is different
+    const activitySupportDisplayStyle =
+      defaultHomeActiveTabName === 'activity'
+        ? {
+            justifyContent: JustifyContent.center,
+            paddingLeft: 0,
+            marginTop: 4,
+            marginBottom: 4,
+          }
+        : {
+            justifyContent: JustifyContent.flexStart,
+            paddingLeft: 4,
+            marginTop: 0,
+            marginBottom: 4,
+          };
+    ///: END:ONLY_INCLUDE_IN
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -755,10 +780,17 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
+          {showWhatsNew ? (
+            <WhatsNewPopup
+              onClose={hideWhatsNewPopup}
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              mmiPortfolioUrl={mmiPortfolioUrl}
+              ///: END:ONLY_INCLUDE_IN
+            />
+          ) : null}
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
           }
-          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
@@ -778,114 +810,117 @@ export default class Home extends PureComponent {
             <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview />
+                <EthOverview showAddress />
                 ///: END:ONLY_INCLUDE_IN
               }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <EthOverview
+                  showAddress
                   mmiPortfolioEnabled={mmiPortfolioEnabled}
                   mmiPortfolioUrl={mmiPortfolioUrl}
                 />
                 ///: END:ONLY_INCLUDE_IN
               }
             </div>
-            <Tabs
-              t={this.context.t}
-              defaultActiveTabKey={defaultHomeActiveTabName}
-              onTabClick={(tabName) => {
-                onTabClick(tabName);
-                let event;
-                switch (tabName) {
-                  case 'nfts':
-                    event = MetaMetricsEventName.NftScreenOpened;
-                    break;
-                  case 'activity':
-                    event = MetaMetricsEventName.ActivityScreenOpened;
-                    break;
-                  default:
-                    event = MetaMetricsEventName.TokenScreenOpened;
-                }
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Home,
-                  event,
-                });
-              }}
-              tabsClassName="home__tabs"
-            >
-              <Tab
-                activeClassName="home__tab--active"
-                className="home__tab"
-                data-testid="home__asset-tab"
-                name={this.context.t('tokens')}
-                tabKey="tokens"
+            <Box style={{ flexGrow: '1' }}>
+              <Tabs
+                t={this.context.t}
+                defaultActiveTabKey={defaultHomeActiveTabName}
+                onTabClick={(tabName) => {
+                  onTabClick(tabName);
+                  let event;
+                  switch (tabName) {
+                    case 'nfts':
+                      event = MetaMetricsEventName.NftScreenOpened;
+                      break;
+                    case 'activity':
+                      event = MetaMetricsEventName.ActivityScreenOpened;
+                      break;
+                    default:
+                      event = MetaMetricsEventName.TokenScreenOpened;
+                  }
+                  this.context.trackEvent({
+                    category: MetaMetricsEventCategory.Home,
+                    event,
+                  });
+                }}
+                tabsClassName="home__tabs"
               >
-                <Box marginTop={2}>
-                  <AssetList
-                    onClickAsset={(asset) =>
-                      history.push(`${ASSET_ROUTE}/${asset}`)
-                    }
-                  />
-                </Box>
-              </Tab>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
-                  data-testid="home__nfts-tab"
-                  name={this.context.t('nfts')}
-                  tabKey="nfts"
+                  data-testid="home__asset-tab"
+                  name={this.context.t('tokens')}
+                  tabKey="tokens"
                 >
-                  <NftsTab
-                    onAddNFT={() => {
-                      history.push(ADD_NFT_ROUTE);
-                    }}
-                  />
+                  <Box marginTop={2}>
+                    <AssetList
+                      onClickAsset={(asset) =>
+                        history.push(`${ASSET_ROUTE}/${asset}`)
+                      }
+                    />
+                  </Box>
                 </Tab>
-                ///: END:ONLY_INCLUDE_IN
-              }
-              <Tab
-                activeClassName="home__tab--active"
-                className="home__tab"
-                data-testid="home__activity-tab"
-                name={t('activity')}
-                tabKey="activity"
-              >
-                <TransactionList />
-              </Tab>
-            </Tabs>
-            <div className="home__support">
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  <Tab
+                    activeClassName="home__tab--active"
+                    className="home__tab"
+                    data-testid="home__nfts-tab"
+                    name={this.context.t('nfts')}
+                    tabKey="nfts"
+                  >
+                    <NftsTab />
+                  </Tab>
+                  ///: END:ONLY_INCLUDE_IN
+                }
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__activity-tab"
+                  name={t('activity')}
+                  tabKey="activity"
+                >
+                  <TransactionList />
+                </Tab>
+              </Tabs>
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
-                t('needHelp', [
-                  <a
-                    href={SUPPORT_LINK}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    key="need-help-link"
-                    onClick={() => {
-                      this.context.trackEvent(
-                        {
-                          category: MetaMetricsEventCategory.Home,
-                          event: MetaMetricsEventName.SupportLinkClicked,
-                          properties: {
-                            url: SUPPORT_LINK,
-                          },
+                <ButtonLink
+                  size={Size.MD}
+                  startIconName={IconName.MessageQuestion}
+                  data-testid="need-help-link"
+                  href={SUPPORT_LINK}
+                  display={Display.Flex}
+                  justifyContent={activitySupportDisplayStyle.justifyContent}
+                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
+                  marginBottom={activitySupportDisplayStyle.marginBottom}
+                  marginTop={activitySupportDisplayStyle.marginTop}
+                  onClick={() => {
+                    this.context.trackEvent(
+                      {
+                        category: MetaMetricsEventCategory.Home,
+                        event: MetaMetricsEventName.SupportLinkClicked,
+                        properties: {
+                          url: SUPPORT_LINK,
                         },
-                        {
-                          contextPropsIntoEventProperties: [
-                            MetaMetricsContextProp.PageTitle,
-                          ],
-                        },
-                      );
-                    }}
-                  >
-                    {t('needHelpLinkText')}
-                  </a>,
-                ])
+                      },
+                      {
+                        contextPropsIntoEventProperties: [
+                          MetaMetricsContextProp.PageTitle,
+                        ],
+                      },
+                    );
+                  }}
+                  externalLink
+                >
+                  {t('needHelpLinkText')}
+                </ButtonLink>
                 ///: END:ONLY_INCLUDE_IN
               }
+            </Box>
+            <div className="home__support">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
                 <BetaHomeFooter />

@@ -2,19 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 
-import Identicon from '../../../../components/ui/identicon';
 import Button from '../../../../components/ui/button/button.component';
 
 import {
+  AvatarAccount,
+  AvatarAccountSize,
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Text,
 } from '../../../../components/component-library';
 
 import Tooltip from '../../../../components/ui/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { IconColor } from '../../../../helpers/constants/design-system';
+import {
+  IconColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 function quadSplit(address) {
   return `0x${address
@@ -42,10 +48,19 @@ function ViewContact({
   return (
     <div className="settings-page__content-row">
       <div className="settings-page__content-item">
-        <div className="settings-page__header address-book__header">
-          <Identicon address={address} diameter={60} />
-          <div className="address-book__header__name">{name || address}</div>
-        </div>
+        <Box
+          className="settings-page__header address-book__header"
+          paddingLeft={6}
+        >
+          <AvatarAccount size={AvatarAccountSize.Lg} address={address} />
+          <Text
+            className="address-book__header__name"
+            variant={TextVariant.bodyLgMedium}
+            marginInlineStart={4}
+          >
+            {name || address}
+          </Text>
+        </Box>
         <div className="address-book__view-contact__group">
           <Button
             type="secondary"
@@ -81,14 +96,16 @@ function ViewContact({
             </Tooltip>
           </div>
         </div>
-        <div className="address-book__view-contact__group">
-          <div className="address-book__view-contact__group__label--capitalized">
-            {t('memo')}
+        {memo.length > 0 ? (
+          <div className="address-book__view-contact__group">
+            <div className="address-book__view-contact__group__label--capitalized">
+              {t('memo')}
+            </div>
+            <div className="address-book__view-contact__group__static-address">
+              {memo}
+            </div>
           </div>
-          <div className="address-book__view-contact__group__static-address">
-            {memo}
-          </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

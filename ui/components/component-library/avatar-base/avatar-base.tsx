@@ -1,4 +1,4 @@
-import React, { forwardRef, Ref } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 import {
@@ -13,12 +13,17 @@ import {
   TextTransform,
 } from '../../../helpers/constants/design-system';
 
-import { Text, ValidTag } from '../text';
+import type { PolymorphicRef } from '../box';
+import { Text } from '../text';
+import type { TextProps } from '../text';
+import {
+  AvatarBaseComponent,
+  AvatarBaseProps,
+  AvatarBaseSize,
+} from './avatar-base.types';
 
-import { AvatarBaseProps, AvatarBaseSize } from './avatar-base.types';
-
-export const AvatarBase = forwardRef(
-  (
+export const AvatarBase: AvatarBaseComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       size = AvatarBaseSize.Md,
       children,
@@ -27,8 +32,8 @@ export const AvatarBase = forwardRef(
       color = TextColor.textDefault,
       className = '',
       ...props
-    }: AvatarBaseProps,
-    ref: Ref<HTMLElement>,
+    }: AvatarBaseProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     let fallbackTextVariant;
 
@@ -47,14 +52,15 @@ export const AvatarBase = forwardRef(
           className,
         )}
         ref={ref}
-        as={ValidTag.Div}
+        as="div"
         display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         borderRadius={BorderRadius.full}
         variant={fallbackTextVariant}
         textTransform={TextTransform.Uppercase}
-        {...{ backgroundColor, borderColor, color, ...props }}
+        {...{ backgroundColor, borderColor, color }}
+        {...(props as TextProps<C>)}
       >
         {children}
       </Text>

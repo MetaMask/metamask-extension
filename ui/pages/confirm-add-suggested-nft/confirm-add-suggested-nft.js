@@ -24,8 +24,8 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../components/component-library';
 import {
   getCurrentChainId,
@@ -69,12 +69,12 @@ const ConfirmAddSuggestedNFT = () => {
           event: MetaMetricsEventName.NftAdded,
           category: MetaMetricsEventCategory.Wallet,
           sensitiveProperties: {
+            token_contract_address: asset.address,
             token_symbol: asset.symbol,
             token_id: asset.tokenId,
-            token_contract_address: asset.address,
-            source_connection_method: MetaMetricsTokenEventSource.Dapp,
             token_standard: asset.standard,
             asset_type: AssetType.NFT,
+            source: MetaMetricsTokenEventSource.Dapp,
           },
         });
       }),

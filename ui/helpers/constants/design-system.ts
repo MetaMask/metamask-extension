@@ -187,10 +187,13 @@ export enum TextVariant {
   headingSm = 'heading-sm',
   bodyLgMedium = 'body-lg-medium',
   bodyMd = 'body-md',
+  bodyMdMedium = 'body-md-medium',
   bodyMdBold = 'body-md-bold',
   bodySm = 'body-sm',
+  bodySmMedium = 'body-sm-medium',
   bodySmBold = 'body-sm-bold',
   bodyXs = 'body-xs',
+  bodyXsMedium = 'body-xs-medium',
   inherit = 'inherit',
 }
 
@@ -203,7 +206,6 @@ export enum Size {
   XL = 'xl',
   inherit = 'inherit', // Used for Text, Icon, and Button components to inherit the parent elements font-size
   auto = 'auto',
-  none = 'none',
 }
 
 export enum BorderStyle {
@@ -215,13 +217,37 @@ export enum BorderStyle {
 }
 
 export enum BorderRadius {
+  /**
+   * 2px
+   */
   XS = 'xs',
+  /**
+   * 4px
+   */
   SM = 'sm',
+  /**
+   * 6px
+   */
   MD = 'md',
+  /**
+   * 8px
+   */
   LG = 'lg',
+  /**
+   * 12px
+   */
   XL = 'xl',
+  /**
+   * 0
+   */
   none = 'none',
+  /**
+   * 9999px
+   */
   pill = 'pill',
+  /**
+   * 50%
+   */
   full = 'full',
 }
 

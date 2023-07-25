@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
+import { SubjectType } from '@metamask/permission-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -16,13 +17,14 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAccount,
   ///: END:ONLY_INCLUDE_IN
+  getTargetSubjectMetadata,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
-const signatureSelect = (txData) => {
+const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
     type,
     msgParams: { version, siwe },
@@ -36,7 +38,7 @@ const signatureSelect = (txData) => {
     return SignatureRequest;
   }
 
-  if (siwe?.isSIWEMessage) {
+  if (siwe?.isSIWEMessage && targetSubjectMetadata !== SubjectType.Snap) {
     return SignatureRequestSIWE;
   }
 
@@ -69,6 +71,7 @@ const ConfirmTxScreen = ({ match }) => {
   ///: END:ONLY_INCLUDE_IN
 
   const [prevValue, setPrevValues] = useState();
+  const history = useHistory();
 
   useEffect(() => {
     const unconfTxList = txHelper(
@@ -166,14 +169,20 @@ const ConfirmTxScreen = ({ match }) => {
   const txData = getTxData() || {};
 
   const { msgParams } = txData;
+
+  const targetSubjectMetadata = useSelector((state) =>
+    getTargetSubjectMetadata(state, msgParams?.origin),
+  );
+
   if (!msgParams) {
     return <Loading />;
   }
 
-  const SigComponent = signatureSelect(txData);
+  const SigComponent = signatureSelect(txData, targetSubjectMetadata);
 
   return (
     <SigComponent
+      history={history}
       txData={txData}
       key={txData.id}
       identities={identities}

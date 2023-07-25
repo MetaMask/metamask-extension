@@ -911,9 +911,6 @@
   "delete": {
     "message": "Eliminar"
   },
-  "deleteAccount": {
-    "message": "Eliminar cuenta"
-  },
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
@@ -1602,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "La ID de un NFT es un identificador único, ya que no hay dos NFT iguales. Nuevamente, en OpenSea, este número se encuentra en 'Detalles'. Tome nota de ello o cópielo en su portapapeles."
   },
-  "importNFTs": {
-    "message": "AGREGAR NFT"
-  },
   "importSelectedTokens": {
     "message": "¿Agregar los tokens seleccionados?"
   },
@@ -1956,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Según nuestros registros, el valor de la URL de RPC enviado no coincide con un proveedor conocido para este ID de cadena."
   },
-  "missingNFT": {
-    "message": "¿No ve su NFT?"
-  },
   "missingSetting": {
     "message": "¿No puede encontrar un ajuste?"
   },
@@ -2164,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "No hay tasa de conversión disponible"
-  },
-  "noNFTs": {
-    "message": "No hay ningún NFT aún"
   },
   "noSnaps": {
     "message": "No hay complementos instalados"
@@ -2765,9 +2753,6 @@
   "publicAddress": {
     "message": "Dirección pública"
   },
-  "queue": {
-    "message": "Cola"
-  },
   "queued": {
     "message": "En cola"
   },
@@ -2968,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Revelar frase semilla"
   },
-  "reviewSpendingCap": {
-    "message": "Revise su límite de gasto"
-  },
   "revokeAllTokensTitle": {
     "message": "¿Revocar el permiso para acceder y transferir todos sus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3151,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprobar $1 sin límite preestablecido",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Establecer un límite de gasto para su $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Configuración"
@@ -4178,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
-  },
-  "useDefault": {
-    "message": "Uso por defecto"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"

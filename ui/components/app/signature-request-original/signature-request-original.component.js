@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
@@ -14,7 +17,6 @@ import {
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
-import Button from '../../ui/button';
 import SiteOrigin from '../../ui/site-origin';
 import Typography from '../../ui/typography/typography';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -23,6 +25,7 @@ import {
   FontWeight,
   TextAlign,
   TextColor,
+  Size,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconColor,
   DISPLAY,
@@ -31,13 +34,24 @@ import {
   BackgroundColor,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
-import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+import {
+  ButtonLink,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Icon,
+  IconName,
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Icon, IconName, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+
 import SignatureRequestHeader from '../signature-request-header';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
+///: END:ONLY_INCLUDE_IN
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -64,7 +78,10 @@ export default class SignatureRequestOriginal extends Component {
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    // Used to show a warning if the signing account is not the selected account
+    // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
+    mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -156,11 +173,7 @@ export default class SignatureRequestOriginal extends Component {
                 color={IconColor.infoDefault}
                 marginRight={2}
               />
-              <Text
-                variant={TextVariant.bodyXs}
-                color={TextColor.textDefault}
-                as="h7"
-              >
+              <Text variant={TextVariant.bodyXs} color={TextColor.textDefault}>
                 {this.context.t('mismatchAccount', [
                   shortenAddress(this.props.selectedAccount.address),
                   shortenAddress(this.props.fromAccount.address),
@@ -172,16 +185,31 @@ export default class SignatureRequestOriginal extends Component {
         }
 
         <div className="request-signature__origin">
-          <SiteOrigin
-            title={txData.msgParams.origin}
-            siteOrigin={txData.msgParams.origin}
-            iconSrc={targetSubjectMetadata?.iconUrl}
-            iconName={
-              getURLHostName(targetSubjectMetadata?.origin) ||
-              targetSubjectMetadata?.origin
-            }
-            chip
-          />
+          {
+            // Use legacy authorship header for snaps
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
+              <SnapLegacyAuthorshipHeader
+                snapId={targetSubjectMetadata.origin}
+                marginLeft={4}
+                marginRight={4}
+              />
+            ) : (
+              ///: END:ONLY_INCLUDE_IN
+              <SiteOrigin
+                title={txData.msgParams.origin}
+                siteOrigin={txData.msgParams.origin}
+                iconSrc={targetSubjectMetadata?.iconUrl}
+                iconName={
+                  getURLHostName(targetSubjectMetadata?.origin) ||
+                  targetSubjectMetadata?.origin
+                }
+                chip
+              />
+              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
         </div>
 
         <Typography
@@ -235,13 +263,21 @@ export default class SignatureRequestOriginal extends Component {
       mostRecentOverviewPage,
       resolvePendingApproval,
       completedTx,
-      txData: { id },
+      txData,
     } = this.props;
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (this.props.mmiOnSignCallback) {
+      await this.props.mmiOnSignCallback(txData);
+      return;
+    }
+    ///: END:ONLY_INCLUDE_IN
 
-    await resolvePendingApproval(id);
-    completedTx(id);
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    await resolvePendingApproval(txData.id);
+    completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
+    ///: END:ONLY_INCLUDE_IN
   };
 
   onCancel = async () => {
@@ -266,7 +302,7 @@ export default class SignatureRequestOriginal extends Component {
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      txData: { type, id },
+      txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
       resolvePendingApproval,
@@ -279,22 +315,36 @@ export default class SignatureRequestOriginal extends Component {
         submitText={t('sign')}
         onCancel={async () => {
           await rejectPendingApproval(
-            id,
+            txData.id,
             serializeError(ethErrors.provider.userRejectedRequest()),
           );
           clearConfirmTransaction();
           history.push(mostRecentOverviewPage);
         }}
         onSubmit={async () => {
-          if (type === MESSAGE_TYPE.ETH_SIGN) {
+          if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            await resolvePendingApproval(id);
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            if (this.props.mmiOnSignCallback) {
+              await this.props.mmiOnSignCallback(txData);
+              return;
+            }
+            ///: END:ONLY_INCLUDE_IN
+
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
+            ///: END:ONLY_INCLUDE_IN
           }
         }}
-        disabled={hardwareWalletRequiresConnection}
+        disabled={
+          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          Boolean(txData?.custodyId) ||
+          ///: END:ONLY_INCLUDE_IN
+          hardwareWalletRequiresConnection
+        }
       />
     );
   };
@@ -355,13 +405,13 @@ export default class SignatureRequestOriginal extends Component {
         )}
         {this.renderFooter()}
         {messagesCount > 1 ? (
-          <Button
-            type="link"
+          <ButtonLink
+            size={Size.inherit}
             className="request-signature__container__reject"
             onClick={() => this.handleCancelAll()}
           >
             {rejectNText}
-          </Button>
+          </ButtonLink>
         ) : null}
       </div>
     );

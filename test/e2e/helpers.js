@@ -105,7 +105,9 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
+      chainId: ganacheOptions?.chainId || 1337,
+    });
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
@@ -294,22 +296,52 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+/**
+ * Begin the create new wallet flow on onboarding screen.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingBeginCreateNewWallet = async (driver) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+};
 
+/**
+ * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
+ *
+ * @param {WebDriver} driver
+ * @param {boolean} option - true to opt into metrics, default is false
+ */
+const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
+};
 
+/**
+ * Set a password for MetaMask during onboarding
+ *
+ * @param {WebDriver} driver
+ * @param {string} password - Password to set
+ */
+const onboardingCreatePassword = async (driver, password) => {
   // create password
   await driver.fill('[data-testid="create-password-new"]', password);
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
+};
 
+/**
+ * Choose to secure wallet, and then get recovery phrase and confirm the SRP
+ * during onboarding flow.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingRevealAndConfirmSRP = async (driver) => {
   // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
@@ -336,14 +368,38 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+};
 
+/**
+ * Complete the onboarding flow by confirming completion. Final step before the
+ * reminder to pin the extension.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingCompleteWalletCreation = async (driver) => {
   // complete
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+};
 
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreation(driver);
+  await onboardingPinExtension(driver);
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
@@ -636,12 +692,6 @@ function generateRandNumBetween(x, y) {
   return randomNumber;
 }
 
-async function switchToWindow(driver, windowTitle) {
-  const windowHandles = await driver.getAllWindowHandles();
-
-  return await driver.switchToWindowWithTitle(windowTitle, windowHandles);
-}
-
 async function sleepSeconds(sec) {
   return new Promise((resolve) => setTimeout(resolve, sec * 1000));
 }
@@ -658,7 +708,8 @@ async function terminateServiceWorker(driver) {
     tag: 'button',
   });
 
-  const serviceWorkerElements = await driver.findElements({
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
     text: 'terminate',
     tag: 'span',
   });
@@ -666,8 +717,7 @@ async function terminateServiceWorker(driver) {
   // 1st one is app-init.js; while 2nd one is service-worker.js
   await serviceWorkerElements[serviceWorkerElements.length - 1].click();
 
-  const serviceWorkerTab = await switchToWindow(
-    driver,
+  const serviceWorkerTab = await driver.switchToWindowWithTitle(
     WINDOW_TITLES.ServiceWorkerSettings,
   );
 
@@ -685,6 +735,32 @@ async function switchToNotificationWindow(driver) {
   await driver.waitUntilXWindowHandles(3);
   const windowHandles = await driver.getAllWindowHandles();
   await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+}
+
+/**
+ * When mocking the segment server and returning an array of mocks from the
+ * mockServer method, this method will allow getting all of the seen requests
+ * for each mock in the array.
+ *
+ * @param {WebDriver} driver
+ * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {boolean} hasRequest
+ * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ */
+async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
+  await driver.wait(async () => {
+    let isPending = true;
+    for (const mockedEndpoint of mockedEndpoints) {
+      isPending = await mockedEndpoint.isPending();
+    }
+
+    return isPending === !hasRequest;
+  }, 10000);
+  const mockedRequests = [];
+  for (const mockedEndpoint of mockedEndpoints) {
+    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+  }
+  return mockedRequests.map((req) => req.body.json.batch).flat();
 }
 
 module.exports = {
@@ -730,8 +806,14 @@ module.exports = {
   generateETHBalance,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   switchToNotificationWindow,
+  getEventPayloads,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
 };

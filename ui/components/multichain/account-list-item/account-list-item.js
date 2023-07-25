@@ -4,21 +4,19 @@ import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getRpcPrefsForCurrentProvider } from '../../../selectors';
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '..';
 import {
   AvatarAccount,
   Box,
-  Text,
   AvatarFavicon,
   Tag,
-  ButtonLink,
   ButtonIcon,
   IconName,
   IconSize,
   AvatarAccountVariant,
+  Text,
 } from '../../component-library';
 import {
   Color,
@@ -31,6 +29,8 @@ import {
   Size,
   BorderColor,
   Display,
+  BackgroundColor,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
@@ -60,6 +60,10 @@ function getLabel(keyring = {}, t) {
       return HardwareKeyringNames.ledger;
     case KeyringType.lattice:
       return HardwareKeyringNames.lattice;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case KeyringType.snap:
+      return t('snaps');
+    ///: END:ONLY_INCLUDE_IN
     default:
       return null;
   }
@@ -87,10 +91,6 @@ export const AccountListItem = ({
     findKeyringForAddress(state, identity.address),
   );
   const label = getLabel(keyring, t);
-
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const { blockExplorerUrl } = rpcPrefs;
-  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -139,19 +139,22 @@ export const AccountListItem = ({
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
           >
-            <Text
-              ellipsis
-              as="div"
+            <Box
               className="multichain-account-list-item__account-name"
               marginInlineEnd={2}
             >
-              <ButtonLink
+              <Text
+                as="button"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClick();
                 }}
+                variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
-                color={Color.textDefault}
+                padding={0}
+                backgroundColor={BackgroundColor.transparent}
+                width={BlockSize.Full}
+                textAlign={TextAlign.Left}
                 ellipsis
               >
                 {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
@@ -165,14 +168,15 @@ export const AccountListItem = ({
                 ) : (
                   identity.name
                 )}
-              </ButtonLink>
-            </Text>
+              </Text>
+            </Box>
             <Text
               as="div"
               className="multichain-account-list-item__asset"
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
+              justifyContent={JustifyContent.flexEnd}
               ellipsis
               textAlign={TextAlign.End}
             >
@@ -246,7 +250,6 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
         identity={identity}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}

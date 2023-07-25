@@ -9,9 +9,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -21,14 +18,10 @@ import {
   Text,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../component-library';
+
 import { Menu, MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_FULLSCREEN,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  ENVIRONMENT_TYPE_POPUP,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../../../shared/constants/app';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
@@ -49,6 +42,7 @@ import {
 ///: END:ONLY_INCLUDE_IN
 import {
   getMetaMetricsId,
+  getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
@@ -64,6 +58,9 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
+import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
+
+const METRICS_LOCATION = 'Global Menu';
 
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
@@ -71,6 +68,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const address = useSelector(getSelectedAddress);
 
   const hasUnapprovedTransactions = useSelector(
     (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
@@ -93,6 +91,15 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   return (
     <Menu anchorElement={anchorElement} onHide={closeMenu}>
+      <AccountDetailsMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+        address={address}
+      />
+      <ViewExplorerMenuItem
+        metricsLocation={METRICS_LOCATION}
+        closeMenu={closeMenu}
+      />
       <MenuItem
         iconName={IconName.Connect}
         disabled={hasUnapprovedTransactions}
@@ -102,7 +109,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             event: MetaMetricsEventName.NavConnectedSitesOpened,
             category: MetaMetricsEventCategory.Navigation,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();
@@ -114,44 +121,22 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        <>
-          {mmiPortfolioEnabled && (
-            <MenuItem
-              iconName={IconName.Diagram}
-              onClick={() => {
-                trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: MetaMetricsEventName.UserClickedPortfolioButton,
-                });
-                window.open(mmiPortfolioUrl, '_blank');
-                closeMenu();
-              }}
-              data-testid="global-menu-mmi-portfolio"
-            >
-              {t('portfolioDashboard')}
-            </MenuItem>
-          )}
-
+        mmiPortfolioEnabled && (
           <MenuItem
-            iconName={IconName.Compliance}
+            iconName={IconName.Diagram}
             onClick={() => {
               trackEvent({
                 category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.UserClickedCompliance,
+                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
               });
-              if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                global.platform.openExtensionInBrowser(
-                  COMPLIANCE_FEATURE_ROUTE,
-                );
-              } else {
-                history.push(COMPLIANCE_FEATURE_ROUTE);
-              }
+              window.open(mmiPortfolioUrl, '_blank');
+              closeMenu();
             }}
-            data-testid="global-menu-mmi-compliance"
+            data-testid="global-menu-mmi-portfolio"
           >
-            {t('compliance')}
+            {t('portfolioDashboard')}
           </MenuItem>
-        </>
+        )
         ///: END:ONLY_INCLUDE_IN
       }
 
@@ -170,7 +155,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
                 event: MetaMetricsEventName.PortfolioLinkClicked,
                 properties: {
                   url: portfolioUrl,
-                  location: 'Global Menu',
+                  location: METRICS_LOCATION,
                 },
               },
               {
@@ -197,7 +182,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.AppWindowExpanded,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
-                location: 'Global Menu',
+                location: METRICS_LOCATION,
               },
             });
             closeMenu();
@@ -255,7 +240,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               event: MetaMetricsEventName.SupportLinkClicked,
               properties: {
                 url: supportLink,
-                location: 'Global Menu',
+                location: METRICS_LOCATION,
               },
             },
             {
@@ -279,7 +264,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.NavSettingsOpened,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();
@@ -297,7 +282,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppLocked,
             properties: {
-              location: 'Global Menu',
+              location: METRICS_LOCATION,
             },
           });
           closeMenu();

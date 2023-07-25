@@ -46,7 +46,7 @@ describe('ViewSnap', () => {
       getByText('An example Snap that signs messages using BLS.'),
     ).toBeDefined();
     // Snap version info
-    expect(getByText('v5.1.2')).toBeDefined();
+    expect(getByText('5.1.2')).toBeDefined();
     // Enable Snap
     expect(getByText('Enabled')).toBeDefined();
     expect(container.getElementsByClassName('toggle-button')?.length).toBe(1);

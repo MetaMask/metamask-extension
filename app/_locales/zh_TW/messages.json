@@ -408,9 +408,6 @@
   "delete": {
     "message": "刪除"
   },
-  "deleteAccount": {
-    "message": "刪除帳戶"
-  },
   "deleteNetwork": {
     "message": "刪除網路？"
   },
@@ -1053,9 +1050,6 @@
   },
   "publicAddress": {
     "message": "公開位址"
-  },
-  "queue": {
-    "message": "佇列"
   },
   "queued": {
     "message": "已排入佇列"
