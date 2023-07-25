@@ -43,7 +43,7 @@ export const CreateAccount = ({ onActionComplete }) => {
   const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
     accounts,
     { t },
-    newAccountName,
+    newAccountName === '' ? defaultAccountName : newAccountName,
     defaultAccountName,
   );
 
