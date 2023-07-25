@@ -8,7 +8,7 @@ export { AvatarFavicon, AVATAR_FAVICON_SIZES } from './avatar-favicon';
 export { AvatarIcon, AVATAR_ICON_SIZES } from './avatar-icon';
 export { AvatarNetwork, AvatarNetworkSize } from './avatar-network';
 export { AvatarToken, AvatarTokenSize } from './avatar-token';
-export { AvatarBase } from './avatar-base';
+export { AvatarBase, AvatarBaseSize } from './avatar-base';
 export {
   BadgeWrapper,
   BadgeWrapperPosition,

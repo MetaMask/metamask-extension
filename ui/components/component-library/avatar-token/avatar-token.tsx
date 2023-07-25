@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Ref } from 'react';
+import React, { useState, useEffect } from 'react';
 import classnames from 'classnames';
-import { AvatarBase } from '../avatar-base';
+import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
   Display,
   AlignItems,
@@ -9,10 +9,12 @@ import {
   BorderColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import type { PolymorphicRef } from '../box';
+import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
 
-export const AvatarToken = React.forwardRef(
-  (
+export const AvatarToken: AvatarTokenComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       size = AvatarTokenSize.Md,
       name,
@@ -23,8 +25,8 @@ export const AvatarToken = React.forwardRef(
       borderColor = BorderColor.transparent,
       className = '',
       ...props
-    }: AvatarTokenProps,
-    ref: Ref<HTMLElement>,
+    }: AvatarTokenProps<C>,
+    ref: PolymorphicRef<C>,
   ) => {
     const [showFallback, setShowFallback] = useState(false);
 
@@ -50,7 +52,12 @@ export const AvatarToken = React.forwardRef(
           showHalo ? 'mm-avatar-token--with-halo' : '',
           className,
         )}
-        {...{ backgroundColor, borderColor, color, ...props }}
+        {...{
+          backgroundColor,
+          borderColor,
+          color,
+          ...(props as AvatarBaseProps<C>),
+        }}
       >
         {showFallback ? (
           fallbackString

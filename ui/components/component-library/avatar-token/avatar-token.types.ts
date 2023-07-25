@@ -1,4 +1,5 @@
-import { AvatarBaseProps } from '../avatar-base';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarTokenSize {
   Xs = 'xs',
@@ -11,7 +12,8 @@ export enum AvatarTokenSize {
 /**
  * Props for the AvatarToken component
  */
-export interface AvatarTokenProps extends Omit<AvatarBaseProps, 'children'> {
+export interface AvatarTokenStyleUtilityProps
+  extends Omit<AvatarBaseStyleUtilityProps, 'size'> {
   /**
    * The name accepts the string to render the first letter of the AvatarToken. This will be used as the fallback display if no image url is passed to the src
    */
@@ -31,3 +33,10 @@ export interface AvatarTokenProps extends Omit<AvatarBaseProps, 'children'> {
    */
   size?: AvatarTokenSize;
 }
+
+export type AvatarTokenProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, AvatarTokenStyleUtilityProps>;
+
+export type AvatarTokenComponent = <C extends React.ElementType = 'span'>(
+  props: AvatarTokenProps<C>,
+) => React.ReactElement | null;
