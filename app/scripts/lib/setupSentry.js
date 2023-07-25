@@ -162,29 +162,22 @@ export default function setupSentry({ release, getState }) {
     autoSessionTracking: false,
     environment,
     integrations: [
+      /**
+       * Filtering of events must happen in this FilterEvents custom
+       * integration instead of in the beforeSend handler because the Dedupe
+       * integration is unaware of the beforeSend functionality. If an event is
+       * queued in the sentry context, additional events of the same name will
+       * be filtered out by Dedupe even if the original event was not sent due
+       * to the beforeSend method returning null.
+       *
+       * @see https://github.com/MetaMask/metamask-extension/pull/15677
+       */
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
     ],
     release,
-    /**
-     * As additional insurance over the FilterEvents integration, we check the
-     * participateInMetaMetrics flag here and return null if the user has
-     * opted out of metrics. This prevents the payload from being sent. This
-     * change may result in the FilterEvents integration no longer being
-     * necessary, but that should be tested and executed in a future PR.
-     *
-     * TODO: Potentially remove the FilterEvents integration.
-     *
-     * @param {import('@sentry/types').Event} report - A sentry error event
-     * @returns {import('@sentry/types').Event} the modified report
-     */
-    beforeSend: (report) => {
-      if (getMetaMetricsEnabled() === false) {
-        return null;
-      }
-      return rewriteReport(report, getState);
-    },
+    beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
 
