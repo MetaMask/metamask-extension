@@ -37,6 +37,10 @@ function transformState(state: Record<string, unknown>) {
       return state;
     }
 
+    if (providerConfig.id) {
+      return state;
+    }
+
     for (const networkConfigurationId of Object.keys(networkConfigurations)) {
       const networkConfiguration =
         networkConfigurations[networkConfigurationId];
@@ -48,7 +52,7 @@ function transformState(state: Record<string, unknown>) {
       }
     }
 
-    if (providerConfig.id || !newProviderConfigId) {
+    if (!newProviderConfigId) {
       return state;
     }
 
