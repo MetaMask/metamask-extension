@@ -58,20 +58,16 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
         >
           <div
-            class="mm-box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis mm-box--margin-inline-end-2 mm-box--color-text-default"
+            class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
           >
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--ellipsis mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent"
+              class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
             >
-              <span
-                class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
-              >
-                Test Account
-              </span>
+              Test Account
             </button>
           </div>
           <div
-            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--color-text-default"
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
           >
             <div
               class="currency-display-component"

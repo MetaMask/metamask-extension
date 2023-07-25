@@ -8,11 +8,22 @@ import {
 } from '../../../../../../selectors';
 import { I18nContext } from '../../../../../../contexts/i18n';
 
-import { TypographyVariant } from '../../../../../../helpers/constants/design-system';
-
-import Button from '../../../../../ui/button';
-import Typography from '../../../../../ui/typography';
-import { Icon, IconName } from '../../../../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  Text,
+  Box,
+  BUTTON_SIZES,
+} from '../../../../../component-library';
+import {
+  AlignItems,
+  Display,
+  TextVariant,
+  FlexDirection,
+  FlexWrap,
+} from '../../../../../../helpers/constants/design-system';
 
 const Accreditation = ({ fetchVia, address }) => {
   const t = useContext(I18nContext);
@@ -20,48 +31,37 @@ const Accreditation = ({ fetchVia, address }) => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(address, chainId, rpcPrefs);
 
-  const AccreditationLink = () => {
-    return (
-      <>
-        <Typography
-          variant={TypographyVariant.H7}
-          className="accreditation__prefix"
-          boxProps={{ margin: 0 }}
-        >
+  return (
+    <Box
+      className="accreditation"
+      marginTop={2}
+      alignItems={AlignItems.center}
+      display={Display.Flex}
+    >
+      <Icon name={IconName.Info} marginRight={2} />
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        flexWrap={FlexWrap.Wrap}
+      >
+        <Text variant={TextVariant.bodySm}>
           {t('transactionDecodingAccreditationVerified', [
             <Button
-              type="link"
-              className="accreditation__link"
-              onClick={() => {
-                global.platform.openTab({
-                  url: addressLink,
-                });
-              }}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={t('etherscanView')}
+              variant={BUTTON_VARIANT.LINK}
+              href={addressLink}
+              externalLink
               key="accreditation-link-button"
+              size={BUTTON_SIZES.INHERIT}
             >
               {fetchVia}
             </Button>,
           ])}
-        </Typography>
-        <Typography variant={TypographyVariant.H7} boxProps={{ margin: 0 }}>
+        </Text>
+        <Text variant={TextVariant.bodySm}>
           {t('transactionDecodingAccreditationDecoded')}
-        </Typography>
-      </>
-    );
-  };
-
-  return (
-    <div className="accreditation">
-      <div className="accreditation__icon">
-        <Icon name={IconName.Info} />
-      </div>
-      <div className="accreditation__info">
-        <AccreditationLink />
-      </div>
-    </div>
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

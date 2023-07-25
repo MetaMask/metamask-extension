@@ -6,10 +6,8 @@ import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce } from 'lodash';
-import {
-  KeyringController,
-  keyringBuilderFactory,
-} from '@metamask/eth-keyring-controller';
+import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
+import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
@@ -824,12 +822,42 @@ export default class MetamaskController extends EventEmitter {
     );
     ///: END:ONLY_INCLUDE_IN
 
-    this.keyringController = new KeyringController({
+    const keyringControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'KeyringController',
+      allowedEvents: [
+        'KeyringController:accountRemoved',
+        'KeyringController:lock',
+        'KeyringController:stateChange',
+        'KeyringController:unlock',
+      ],
+      allowedActions: ['KeyringController:getState'],
+    });
+
+    this.coreKeyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
-      initState: initState.KeyringController,
+      state: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
       cacheEncryptionKey: isManifestV3,
+      messenger: keyringControllerMessenger,
+      removeIdentity: this.preferencesController.removeAddress.bind(
+        this.preferencesController,
+      ),
+      setAccountLabel: this.preferencesController.setAccountLabel.bind(
+        this.preferencesController,
+      ),
+      setSelectedAddress: this.preferencesController.setSelectedAddress.bind(
+        this.preferencesController,
+      ),
+      syncIdentities: this.preferencesController.syncAddresses.bind(
+        this.preferencesController,
+      ),
+      updateIdentities: this.preferencesController.setAddresses.bind(
+        this.preferencesController,
+      ),
     });
+
+    this.keyringController =
+      this.coreKeyringController.getEthKeyringController();
 
     this.keyringController.memStore.subscribe((state) =>
       this._onKeyringControllerUpdate(state),
