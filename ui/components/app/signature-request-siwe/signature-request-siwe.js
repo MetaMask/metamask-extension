@@ -5,8 +5,7 @@ import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { BannerAlert } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
 import Button from '../../ui/button';
@@ -51,7 +50,6 @@ export default function SignatureRequestSIWE({ txData }) {
   const t = useContext(I18nContext);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);

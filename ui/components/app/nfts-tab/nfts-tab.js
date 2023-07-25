@@ -21,8 +21,7 @@ import {
   showImportNftsModal,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { Box, ButtonLink, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NftsDetectionNotice from '../nfts-detection-notice';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 

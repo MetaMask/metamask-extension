@@ -81,7 +81,7 @@ exports[`Interactive Replacement Token Page should reject if there are errors 2`
         overflowwrap="break-word"
       >
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           data-testid="connect-error-message"
         >
           Please go to displayName and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again.

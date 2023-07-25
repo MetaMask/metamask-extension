@@ -9,13 +9,13 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
   Box,
@@ -86,7 +86,7 @@ export const TokenListItem = ({
         <BadgeWrapper
           badge={
             <AvatarNetwork
-              size={Size.XS}
+              size={AvatarNetworkSize.Xs}
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
               backgroundColor={testNetworkBackgroundColor}

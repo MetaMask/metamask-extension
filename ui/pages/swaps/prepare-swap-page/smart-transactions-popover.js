@@ -14,7 +14,7 @@ import {
   FONT_WEIGHT,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import PopoverCustomBackground from '../popover-custom-background/popover-custom-background';
 
 export default function SmartTransactionsPopover({

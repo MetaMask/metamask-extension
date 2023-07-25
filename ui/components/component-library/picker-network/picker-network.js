@@ -4,14 +4,20 @@ import classnames from 'classnames';
 import {
   AlignItems,
   DISPLAY,
-  Size,
   BorderRadius,
   TextVariant,
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box';
-import { AvatarNetwork, IconName, Icon, IconSize, Text } from '..';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  IconName,
+  Icon,
+  IconSize,
+  Text,
+} from '..';
 
 export const PickerNetwork = ({
   className,
@@ -38,7 +44,7 @@ export const PickerNetwork = ({
         className="mm-picker-network__avatar-network"
         src={src}
         name={label}
-        size={Size.XS}
+        size={AvatarNetworkSize.Xs}
         {...avatarNetworkProps}
       />
       <Text ellipsis variant={TextVariant.bodySm}>
