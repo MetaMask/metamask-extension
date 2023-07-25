@@ -923,10 +923,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
-    this.snapExecutionService =
-      this.opts.overrides?.createSnapExecutionService?.(
-        snapExecutionServiceArgs,
-      ) || new IframeExecutionService(snapExecutionServiceArgs);
+
+    this.snapExecutionService = new IframeExecutionService(
+      snapExecutionServiceArgs,
+    );
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
