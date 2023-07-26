@@ -16,17 +16,6 @@ export const { CHECKED, INDETERMINATE, UNCHECKED } = CHECKBOX_STATE;
  * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-checkbox--docs}
  * If you would like to help with the replacement of the old Checkbox component, please submit a pull request against this GitHub issue:
  * {@link https://github.com/MetaMask/metamask-extension/issues/20163}
- *
- * @param {Object} options0 - The options object.
- * @param {string} options0.className - The CSS class name for styling.
- * @param {boolean} options0.disabled - Whether the element should be disabled or not.
- * @param {string} options0.id - The unique ID for the element.
- * @param {function} options0.onClick - The click event handler function.
- * @param {boolean} options0.checked - The checked state of the element.
- * @param {string} options0.title - The title or tooltip for the element.
- * @param {string} options0.dataTestId - The data test ID for testing purposes.
- * @returns {void} - No return value (or update the return type if applicable).
-
  */
 const CheckBox = ({
   className,
