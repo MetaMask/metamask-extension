@@ -232,6 +232,7 @@ workflows:
             - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
+            - validate-source-maps-mmi
             - test-mozilla-lint
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
@@ -1239,6 +1240,22 @@ jobs:
       - run:
           name: Move desktop zips to builds
           command: mv ./builds-desktop ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-mmi:
+    executor: node-browsers
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move mmi build to dist
+          command: mv ./dist-mmi ./dist
+      - run:
+          name: Move mmi zips to builds
+          command: mv ./builds-mmi ./builds
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
