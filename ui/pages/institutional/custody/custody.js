@@ -73,7 +73,7 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [chainId, setChainId] = useState(0);
+  const [chainId, setChainId] = useState(parseInt(currentChainId, 16));
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
@@ -133,7 +133,7 @@ const CustodyPage = () => {
           <Button
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
-            onClick={async (_) => {
+            onClick={async () => {
               const jwtListValue = await dispatch(
                 mmiActions.getCustodianJWTList(custodian.name),
               );
@@ -206,75 +206,54 @@ const CustodyPage = () => {
     [selectedCustodianName, trackEvent],
   );
 
-  const getCustodianAccounts = useCallback(
-    async (token, getNonImportedAccounts) => {
-      return await dispatch(
-        mmiActions.getCustodianAccounts(
-          token,
-          apiUrl,
-          selectedCustodianType,
-          getNonImportedAccounts,
-        ),
-      );
-    },
-    [dispatch, mmiActions, apiUrl, selectedCustodianType],
-  );
-
-  const connect = useCallback(async () => {
-    try {
-      // If you have one JWT already, but no dropdown yet, currentJwt is null!
-      const jwt = currentJwt || jwtList[0];
-      setConnectError('');
-      const accountsValue = await getCustodianAccounts(jwt, true);
-
-      setAccounts(accountsValue);
-      trackEvent({
-        category: MetaMetricsEventCategory.MMI,
-        event: MetaMetricsEventName.CustodianConnected,
-        properties: {
-          custodian: selectedCustodianName,
-          apiUrl,
-          rpc: Boolean(connectRequest),
-        },
-      });
-    } catch (e) {
-      handleConnectError(e);
-    }
-  }, [
-    apiUrl,
-    connectRequest,
-    currentJwt,
-    getCustodianAccounts,
-    handleConnectError,
-    jwtList,
-    selectedCustodianName,
-    trackEvent,
-  ]);
-
   useEffect(() => {
-    setLoading(true);
     const fetchConnectRequest = async () => {
       const connectRequestValue = await dispatch(
         mmiActions.getCustodianConnectRequest(),
       );
 
-      setChainId(parseInt(currentChainId, 16));
-
-      // check if it's empty object
       if (Object.keys(connectRequestValue).length) {
-        setConnectRequest(connectRequestValue);
-        setCurrentJwt(
-          connectRequestValue.token ||
-            (await dispatch(mmiActions.getCustodianToken(address))),
+        const {
+          token,
+          custodianName,
+          custodianType,
+          apiUrl: custodianApiUrl,
+        } = connectRequestValue;
+
+        const jwt =
+          token || (await dispatch(mmiActions.getCustodianToken(address)));
+        const accountsValue = await dispatch(
+          mmiActions.getCustodianAccounts(
+            jwt,
+            custodianApiUrl,
+            custodianType,
+            true,
+          ),
         );
-        setSelectedCustodianType(connectRequestValue.custodianType);
-        setSelectedCustodianName(connectRequestValue.custodianName);
-        setApiUrl(connectRequestValue.apiUrl);
+
+        setConnectRequest(connectRequestValue);
+        setCurrentJwt(jwt);
+        setSelectedCustodianType(custodianType);
+        setSelectedCustodianName(custodianName);
+        setApiUrl(custodianApiUrl);
+        setConnectError('');
+        setAccounts(accountsValue);
+
+        trackEvent({
+          category: MetaMetricsEventCategory.MMI,
+          event: MetaMetricsEventName.CustodianConnected,
+          properties: {
+            custodian: custodianName,
+            apiUrl,
+            rpc: Boolean(connectRequest),
+          },
+        });
       }
     };
 
     const handleFetchConnectRequest = async () => {
       try {
+        setLoading(true);
         await fetchConnectRequest();
         setLoading(false);
       } catch (error) {
@@ -288,29 +267,32 @@ const CustodyPage = () => {
   }, []);
 
   useEffect(() => {
-    const handleNetworkChange = async () => {
+    async function handleNetworkChange() {
       if (!isNaN(chainId)) {
         const jwt = currentJwt || jwtList[0];
 
         if (jwt && jwt.length) {
-          setAccounts(await getCustodianAccounts(jwt, true));
+          setAccounts(
+            await dispatch(
+              mmiActions.getCustodianAccounts(
+                jwt,
+                apiUrl,
+                selectedCustodianType,
+                true,
+              ),
+            ),
+          );
         }
       }
-    };
+    }
 
     if (parseInt(chainId, 16) !== chainId) {
       setChainId(parseInt(currentChainId, 16));
       handleNetworkChange();
     }
-  }, [
-    getCustodianAccounts,
-    apiUrl,
-    currentJwt,
-    jwtList,
-    selectedCustodianType,
-    currentChainId,
-    chainId,
-  ]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentChainId]);
 
   const cancelConnectCustodianToken = () => {
     setSelectedCustodianName('');
@@ -422,7 +404,7 @@ const CustodyPage = () => {
                 iconName={IconName.ArrowLeft}
                 size={IconSize.Sm}
                 color={Color.iconDefault}
-                onClick={() => cancelConnectCustodianToken()}
+                onClick={cancelConnectCustodianToken}
                 display={[Display.Flex]}
               />
               <Text>{t('back')}</Text>
@@ -466,9 +448,7 @@ const CustodyPage = () => {
                   block
                   variant={BUTTON_VARIANT.SECONDARY}
                   size={BUTTON_SIZES.LG}
-                  onClick={() => {
-                    cancelConnectCustodianToken();
-                  }}
+                  onClick={cancelConnectCustodianToken}
                 >
                   {t('cancel')}
                 </Button>
@@ -476,7 +456,33 @@ const CustodyPage = () => {
                   block
                   data-testid="jwt-form-connect-button"
                   size={BUTTON_SIZES.LG}
-                  onClick={connect}
+                  onClick={async () => {
+                    try {
+                      setConnectError('');
+
+                      const accountsValue = await dispatch(
+                        mmiActions.getCustodianAccounts(
+                          currentJwt || jwtList[0],
+                          apiUrl,
+                          selectedCustodianType,
+                          true,
+                        ),
+                      );
+
+                      setAccounts(accountsValue);
+                      trackEvent({
+                        category: MetaMetricsEventCategory.MMI,
+                        event: MetaMetricsEventName.CustodianConnected,
+                        properties: {
+                          custodian: selectedCustodianName,
+                          apiUrl,
+                          rpc: Boolean(connectRequest),
+                        },
+                      });
+                    } catch (e) {
+                      handleConnectError(e);
+                    }
+                  }}
                   disabled={
                     !selectedCustodianName ||
                     (addNewTokenClicked && !currentJwt)

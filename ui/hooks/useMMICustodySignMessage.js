@@ -1,21 +1,18 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-import {
-  showCustodyConfirmLink,
-  checkForUnapprovedMessages,
-} from '../store/institutional/institution-actions';
-import {
-  mmiActionsFactory,
-  setTypedMessageInProgress,
-} from '../store/institutional/institution-background';
+import { showCustodyConfirmLink } from '../store/institutional/institution-actions';
+import { mmiActionsFactory } from '../store/institutional/institution-background';
 import {
   accountsWithSendEtherInfoSelector,
   getAccountType,
-  unapprovedTypedMessagesSelector,
 } from '../selectors';
+import {
+  resolvePendingApproval,
+  completedTx,
+  showModal,
+} from '../store/actions';
 import { getAccountByAddress } from '../helpers/utils/util';
 import { getEnvironmentType } from '../../app/scripts/lib/util';
-import { goHome, showModal } from '../store/actions';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../shared/constants/app';
 
 export function useMMICustodySignMessage() {
@@ -28,37 +25,32 @@ export function useMMICustodySignMessage() {
     accountsWithSendEtherInfoSelector,
     shallowEqual,
   );
-  const unapprovedTypedMessages = useSelector(unapprovedTypedMessagesSelector);
 
   const custodySignFn = async (_msgData) => {
+    const {
+      msgParams: { from },
+    } = _msgData;
+
+    const fromAccount = getAccountByAddress(allAccounts, from);
+
     if (accountType === 'custody') {
-      const { address: fromAddress } =
-        getAccountByAddress(allAccounts, _msgData.msgParams.from) || {};
       try {
-        let msgData = _msgData;
-        let id = _msgData.custodyId;
-        if (!_msgData.custodyId) {
-          msgData = checkForUnapprovedMessages(
-            _msgData,
-            unapprovedTypedMessages,
-          );
-          id = msgData.custodyId;
-        }
+        await dispatch(resolvePendingApproval(_msgData.id));
+        completedTx(_msgData.id);
+
         showCustodianDeepLink({
           dispatch,
           mmiActions,
           txId: undefined,
-          custodyId: id,
-          fromAddress,
+          custodyId: null,
+          fromAddress: fromAccount.address,
           isSignature: true,
           closeNotification: isNotification,
           onDeepLinkFetched: () => undefined,
           onDeepLinkShown: () => undefined,
           showCustodyConfirmLink,
         });
-        await dispatch(setTypedMessageInProgress(msgData.metamaskId));
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
-        await dispatch(goHome());
       } catch (err) {
         await dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
         await dispatch(
@@ -70,6 +62,10 @@ export function useMMICustodySignMessage() {
           }),
         );
       }
+    } else {
+      // Non Custody accounts follow normal flow
+      await dispatch(resolvePendingApproval(_msgData.id));
+      completedTx(_msgData.id);
     }
   };
 

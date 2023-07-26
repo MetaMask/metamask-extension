@@ -195,9 +195,11 @@ function setupDebuggingHelpers(store) {
   /**
    * The following stateHook is a method intended to throw an error, used in
    * our E2E test to ensure that errors are attempted to be sent to sentry.
+   *
+   * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
    */
-  window.stateHooks.throwTestError = async function () {
-    const error = new Error('Test Error');
+  window.stateHooks.throwTestError = async function (msg = 'Test Error') {
+    const error = new Error(msg);
     error.name = 'TestError';
     throw error;
   };

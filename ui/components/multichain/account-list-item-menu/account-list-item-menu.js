@@ -138,6 +138,7 @@ export const AccountListItemMenu = ({
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
+            address={identity.address}
           />
           {isRemovable ? (
             <MenuItem

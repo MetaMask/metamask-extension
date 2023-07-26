@@ -36,7 +36,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
           class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/arrow-left.svg');"
           />
         </button>
