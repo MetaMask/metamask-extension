@@ -14,7 +14,7 @@ describe('exportAsFile', () => {
   describe('when showSaveFilePicker is supported', () => {
     it('uses .json file extension when content type is JSON', async () => {
       const showSaveFilePicker = mockShowSaveFilePicker();
-      const filename = 'test';
+      const filename = 'test.json';
       const data = '{file: "content"}';
 
       windowSpy.mockImplementation(() => ({
