@@ -136,14 +136,37 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
-        accounts: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            balance: '0x346ba7725f412cbfdb',
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
           },
         },
       },
     });
+
     const props = { onClose: () => jest.fn() };
     const { container } = renderWithProvider(
       <AccountListMenu {...props} />,

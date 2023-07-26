@@ -23,12 +23,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
-  getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  getInternalAccounts,
+  getSelectedInternalAccount,
 } from '../../../selectors';
-import { toggleAccountMenu, setSelectedAccount } from '../../../store/actions';
+import {
+  toggleAccountMenu,
+  setSelectedInternalAccount,
+} from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -49,8 +52,10 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const selectedAccount = useSelector(getSelectedAccount);
+
+  const accounts = useSelector(getInternalAccounts);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -67,7 +72,7 @@ export const AccountListMenu = ({ onClose }) => {
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: ['name', 'address', 'id'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
@@ -184,11 +189,11 @@ export const AccountListMenu = ({ onClose }) => {
                           location: 'Main Menu',
                         },
                       });
-                      dispatch(setSelectedAccount(account.address));
+                      dispatch(setSelectedInternalAccount(account.id));
                     }}
-                    identity={account}
+                    account={account}
                     key={account.address}
-                    selected={selectedAccount.address === account.address}
+                    selected={selectedAccount.id === account.id}
                     closeMenu={onClose}
                     connectedAvatar={connectedSite?.iconUrl}
                     connectedAvatarName={connectedSite?.name}
