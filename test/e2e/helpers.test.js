@@ -1,7 +1,7 @@
 import { assertInAnyOrder } from './helpers';
 
 describe('assertInAnyOrder()', () => {
-  test('returns true when all requests pass unique assertions', () => {
+  it('returns true when all requests pass unique assertions', () => {
     const requests = ['req1', 'req2', 'req3'];
     const assertions = [
       [(req) => req === 'req1'],
@@ -11,7 +11,7 @@ describe('assertInAnyOrder()', () => {
     expect(assertInAnyOrder(requests, assertions)).toBe(true);
   });
 
-  test('returns true when all requests pass unique assertions independently of the order', () => {
+  it('returns true when all requests pass unique assertions independently of the order', () => {
     const requests = ['req1', 'req2', 'req3'];
     const assertions = [
       [(req) => req === 'req3'],
@@ -21,7 +21,7 @@ describe('assertInAnyOrder()', () => {
     expect(assertInAnyOrder(requests, assertions)).toBe(true);
   });
 
-  test('returns false when a request cannot pass any assertions', () => {
+  it('returns false when a request cannot pass any assertions', () => {
     const requests = ['req1', 'req2', 'unknown'];
     const assertions = [
       [(req) => req === 'req1'],
@@ -31,7 +31,7 @@ describe('assertInAnyOrder()', () => {
     expect(assertInAnyOrder(requests, assertions)).toBe(false);
   });
 
-  test('returns false when there are unused assertions', () => {
+  it('returns false when there are unused assertions', () => {
     const requests = ['req1', 'req2'];
     const assertions = [
       [(req) => req === 'req1'],
@@ -41,7 +41,7 @@ describe('assertInAnyOrder()', () => {
     expect(assertInAnyOrder(requests, assertions)).toBe(false);
   });
 
-  test('returns false when there are unused requests', () => {
+  it('returns false when there are unused requests', () => {
     const requests = ['req1', 'req2', 'req3', 'req4'];
     const assertions = [
       [(req) => req === 'req1'],
