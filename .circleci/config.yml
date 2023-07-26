@@ -206,10 +206,6 @@ workflows:
           requires:
             - prep-deps
             - prep-build-desktop
-      - test-mozilla-lint-mmi:
-          requires:
-            - prep-deps
-            - prep-build-mmi
       - test-mozilla-lint-flask:
           requires:
             - prep-deps
@@ -236,7 +232,6 @@ workflows:
             - test-mozilla-lint
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
-            - test-mozilla-lint-mmi
             - test-e2e-chrome
             - test-e2e-firefox
             - test-e2e-chrome-snaps
@@ -1283,22 +1278,6 @@ jobs:
       - run: *shallow-git-clone
       - attach_workspace:
           at: .
-      - run:
-          name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
-
-  test-mozilla-lint-mmi:
-    executor: node-browsers
-    steps:
-      - run: *shallow-git-clone
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move mmi build to dist
-          command: mv ./dist-mmi ./dist
-      - run:
-          name: Move mmi zips to builds
-          command: mv ./builds-mmi ./builds
       - run:
           name: test:mozilla-lint
           command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
