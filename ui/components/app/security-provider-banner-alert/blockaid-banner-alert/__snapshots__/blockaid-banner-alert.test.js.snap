@@ -5,7 +5,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resul
   class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
 >
   <span
-    class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
     style="mask-image: url('./images/icons/danger.svg');"
   />
   <div>
@@ -24,7 +24,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resul
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
     >
       <span
-        class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+        class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
         style="mask-image: url('./images/icons/security-tick.svg');"
       />
       <span>
@@ -51,7 +51,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resu
   class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
 >
   <span
-    class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-warning-default"
+    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
     style="mask-image: url('./images/icons/warning.svg');"
   />
   <div>
@@ -70,7 +70,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resu
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
     >
       <span
-        class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+        class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
         style="mask-image: url('./images/icons/security-tick.svg');"
       />
       <span>
@@ -98,7 +98,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
     class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
   >
     <span
-      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-warning-default"
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
       style="mask-image: url('./images/icons/warning.svg');"
     />
     <div>
@@ -126,7 +126,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
               See details
             </p>
             <span
-              class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-start-2 box--display-inline-block box--flex-direction-row box--color-primary-default"
+              class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
               style="mask-image: url('./images/icons/arrow-up.svg');"
             />
           </summary>
@@ -155,7 +155,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
         class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
       >
         <span
-          class="box disclosure__summary--icon mm-icon mm-icon--size-sm box--margin-inline-end-1 box--display-inline-block box--flex-direction-row box--color-primary-default"
+          class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
           style="mask-image: url('./images/icons/security-tick.svg');"
         />
         <span>
