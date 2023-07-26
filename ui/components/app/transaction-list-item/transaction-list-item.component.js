@@ -18,12 +18,12 @@ import {
   Color,
   Display,
   FontWeight,
-  Size,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -34,7 +34,10 @@ import {
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
   TransactionStatus,
@@ -172,8 +175,19 @@ function TransactionListItemInner({
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
       return;
     }
-    setShowDetails((prev) => !prev);
-  }, [isUnapproved, history, id]);
+    setShowDetails((prev) => {
+      trackEvent({
+        event: prev
+          ? MetaMetricsEventName.ActivityDetailsClosed
+          : MetaMetricsEventName.ActivityDetailsOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: category,
+        },
+      });
+      return !prev;
+    });
+  }, [isUnapproved, history, id, trackEvent, category]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const debugTransactionMeta = {
@@ -273,7 +287,7 @@ function TransactionListItemInner({
                 <AvatarNetwork
                   className="activity-tx__network-badge"
                   data-testid="activity-tx-network-badge"
-                  size={Size.XS}
+                  size={AvatarNetworkSize.Xs}
                   name={currentChain?.nickname}
                   src={currentChain?.rpcPrefs?.imageUrl}
                   borderWidth={1}

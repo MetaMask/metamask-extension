@@ -7,7 +7,7 @@ exports[`AvatarFavicon should render correctly 1`] = `
     data-testid="avatar-favicon"
   >
     <span
-      class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-default"
+      class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
       style="mask-image: url('./images/icons/global.svg');"
     />
   </div>

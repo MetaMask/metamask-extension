@@ -18,6 +18,7 @@ import TransactionListItemDetails from '../transaction-list-item-details';
 import { ActivityListItem } from '../../multichain';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -25,7 +26,6 @@ import {
 import {
   BackgroundColor,
   Display,
-  Size,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
 
@@ -77,7 +77,7 @@ export default function SmartTransactionListItem({
               <AvatarNetwork
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
-                size={Size.XS}
+                size={AvatarNetworkSize.Xs}
                 name={currentChain?.nickname}
                 src={currentChain?.rpcPrefs?.imageUrl}
                 borderWidth={1}
