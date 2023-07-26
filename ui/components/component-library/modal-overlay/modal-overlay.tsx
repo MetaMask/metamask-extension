@@ -3,10 +3,11 @@ import classnames from 'classnames';
 
 import {
   BackgroundColor,
-  BLOCK_SIZES,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+// import Box from '../../ui/box/box';
+import { Box } from '../../component-library/box';
 
 import { ModalOverlayProps } from './modal-overlay.types';
 
@@ -18,8 +19,8 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
   <Box
     className={classnames('mm-modal-overlay', className)}
     backgroundColor={BackgroundColor.overlayDefault}
-    width={BLOCK_SIZES.FULL}
-    height={BLOCK_SIZES.FULL}
+    width={BlockSize.Full}
+    height={BlockSize.Full}
     onClick={onClick}
     aria-hidden="true"
     {...props}
