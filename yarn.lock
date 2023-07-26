@@ -9063,34 +9063,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zxing/browser@npm:^0.0.10":
-  version: 0.0.10
-  resolution: "@zxing/browser@npm:0.0.10"
+"@zxing/browser@npm:^0.1.3":
+  version: 0.1.4
+  resolution: "@zxing/browser@npm:0.1.4"
   dependencies:
     "@zxing/text-encoding": ^0.9.0
   peerDependencies:
-    "@zxing/library": ^0.18.5
+    "@zxing/library": ^0.20.0
   dependenciesMeta:
     "@zxing/text-encoding":
       optional: true
-  checksum: bf8d2839030aded1f8cca08ecce6ba1e64e086737d16c773464b26b851403614f38c73be92ae70673d3471cf4c96e3dd3998d05ddf4dabc7851cdc8ebc7e63b2
+  checksum: 417eb969d4c6e5f9e45c28d6eabe2bc5c5b4ee274eaf58a7386a82bf09fba2dee8c0403b645eb33540ce2e396d40bd7328e6716ce23ae1a23e6bc01bcd06db89
   languageName: node
   linkType: hard
 
-"@zxing/library@npm:0.8.0":
-  version: 0.8.0
-  resolution: "@zxing/library@npm:0.8.0"
+"@zxing/library@npm:0.20.0":
+  version: 0.20.0
+  resolution: "@zxing/library@npm:0.20.0"
   dependencies:
-    text-encoding: ^0.6.4
-    ts-custom-error: ^2.2.1
+    "@zxing/text-encoding": ~0.9.0
+    ts-custom-error: ^3.2.1
   dependenciesMeta:
-    text-encoding:
+    "@zxing/text-encoding":
       optional: true
-  checksum: 9d144f708e255c539a7d8ad2eb459bf13bc7ac8f04b00425960cf1deec40d885953643652f17d65a7ba4786210d5ed431b1666dfcf93665a2edeaa7fb35ced7c
+  checksum: ba2d0e4d6213e74426fdaf096cd8af14f1c28c6d5d872e42d363ee67507d2b1d1c3a777395522df116670e5fdf59d799b48533465c7311ee09bb8ba3fbbd0e69
   languageName: node
   linkType: hard
 
-"@zxing/text-encoding@npm:0.9.0, @zxing/text-encoding@npm:^0.9.0":
+"@zxing/text-encoding@npm:0.9.0, @zxing/text-encoding@npm:^0.9.0, @zxing/text-encoding@npm:~0.9.0":
   version: 0.9.0
   resolution: "@zxing/text-encoding@npm:0.9.0"
   checksum: c23b12aee7639382e4949961304a1294776afaffa40f579e09ffecd0e5e68cf26ef3edd75009de46da8a536e571448755ca68b3e2ea707d53793c0edb2e2c34a
@@ -13016,7 +13016,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"copy-to-clipboard@npm:^3.0.8, copy-to-clipboard@npm:^3.3.3":
+"copy-to-clipboard@npm:^3.3.3":
   version: 3.3.3
   resolution: "copy-to-clipboard@npm:3.3.3"
   dependencies:
@@ -24366,8 +24366,8 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.30.7
     "@typescript-eslint/parser": ^5.30.7
     "@whitespace/storybook-addon-html": ^5.1.6
-    "@zxing/browser": ^0.0.10
-    "@zxing/library": 0.8.0
+    "@zxing/browser": ^0.1.3
+    "@zxing/library": 0.20.0
     addons-linter: ^5.2.0
     await-semaphore: ^0.1.1
     babel-plugin-module-resolver: ^5.0.0
@@ -24386,7 +24386,7 @@ __metadata:
     chromedriver: ^114.0.0
     classnames: ^2.2.6
     concurrently: ^7.6.0
-    copy-to-clipboard: ^3.0.8
+    copy-to-clipboard: ^3.3.3
     copy-webpack-plugin: ^6.0.3
     cross-spawn: ^7.0.3
     css-loader: ^2.1.1
@@ -32839,13 +32839,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"text-encoding@npm:^0.6.4":
-  version: 0.6.4
-  resolution: "text-encoding@npm:0.6.4"
-  checksum: 12616521dc62442657be3130a705506ebc6f081a68f70b335b514de3b57619754a7acb4a95a19243acfd84e226768e80be5380b43f4890e91f74c950a4e01d8d
-  languageName: node
-  linkType: hard
-
 "text-table@npm:^0.2.0":
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
@@ -33216,10 +33209,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-custom-error@npm:^2.2.1":
-  version: 2.2.2
-  resolution: "ts-custom-error@npm:2.2.2"
-  checksum: ee125df6d1f5829e9e6d78d7e8af1d45a6a1b49ea0c780db669ca17d3f7f249b766317acc7d9e98e78775d1283eb733eee77682d948d4f9f2c002490c9a32281
+"ts-custom-error@npm:^3.2.1":
+  version: 3.3.1
+  resolution: "ts-custom-error@npm:3.3.1"
+  checksum: 50a1e825fced68d70049bd8d282379a635e43aa023a370fa8e736b12a6edba7f18a2d731fa194ac35303a8b625be56e121bdb31d8a0318250d1a8b277059fce3
   languageName: node
   linkType: hard
 
