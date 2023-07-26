@@ -11,14 +11,14 @@ import {
   FontWeight,
   TextColor,
   TextVariant,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { BannerAlert, Text } from '../../component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
 import ErrorMessage from '../../ui/error-message';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
-import ActionableMessage from '../../ui/actionable-message/actionable-message';
 
 import { I18nContext } from '../../../contexts/i18n';
 
@@ -77,21 +77,19 @@ export default function EditGasDisplay({
         )}
         {warningMessage && (
           <div className="edit-gas-display__warning">
-            <ActionableMessage
+            <BannerAlert
+              severity={Severity.Warning}
               className="actionable-message--warning"
-              message={warningMessage}
-              iconFillColor="var(--color-warning-default)"
-              useIcon
+              description={warningMessage}
             />
           </div>
         )}
         {requireDappAcknowledgement && (
           <div className="edit-gas-display__dapp-acknowledgement-warning">
-            <ActionableMessage
+            <BannerAlert
+              severity={Severity.Warning}
               className="actionable-message--warning"
-              message={t('gasDisplayDappWarning', [transaction.origin])}
-              iconFillColor="var(--color-warning-default)"
-              useIcon
+              description={t('gasDisplayDappWarning', [transaction.origin])}
             />
           </div>
         )}
