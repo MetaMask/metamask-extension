@@ -81,10 +81,10 @@ const AdvancedGasFeeDefaults = () => {
     >
       <label className="advanced-gas-fee-defaults__label">
         <CheckBox
-          isChecked = {isDefaultSettingsSelected}
-          className = "advanced-gas-fee-defaults__checkbox"
-          onChange = {handleUpdateDefaultSettings}
-          isDisabled = {gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
+          isChecked={isDefaultSettingsSelected}
+          className="advanced-gas-fee-defaults__checkbox"
+          onChange={handleUpdateDefaultSettings}
+          isDisabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Text
           variant={TextVariant.bodySm}
