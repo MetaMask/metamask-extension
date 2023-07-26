@@ -760,6 +760,14 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    let needHelpText = `${t('appNameMmi')} ${t('support').toLowerCase()}`;
+    ///: END:ONLY_INCLUDE_IN
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+    needHelpText = t('needHelpLinkText');
+    ///: END:ONLY_INCLUDE_IN
+
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
@@ -926,7 +934,7 @@ export default class Home extends PureComponent {
                   }}
                   externalLink
                 >
-                  {t('needHelpLinkText')}
+                  {needHelpText}
                 </ButtonLink>
                 ///: END:ONLY_INCLUDE_IN
               }
