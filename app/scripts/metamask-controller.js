@@ -358,29 +358,6 @@ export default class MetamaskController extends EventEmitter {
       };
     }
 
-    // need to figure out how to fix this in migrations
-    if (initialNetworkControllerState.networkConfigurations) {
-      Object.keys(initialNetworkControllerState.networkConfigurations).forEach(
-        (key) => {
-          const { chainId, ...networkConfiguration } =
-            initialNetworkControllerState.networkConfigurations[key];
-
-          if (chainId) {
-            networkConfiguration.caipChainId = chainId;
-          }
-          initialNetworkControllerState.networkConfigurations[key] =
-            networkConfiguration;
-        },
-      );
-    }
-    const { chainId, ...providerConfig } =
-      initialNetworkControllerState.providerConfig;
-    if (chainId) {
-      providerConfig.caipChainId = chainId;
-    }
-    initialNetworkControllerState.providerConfig = providerConfig;
-    console.log(initialNetworkControllerState);
-
     this.networkController = new NetworkController({
       messenger: networkControllerMessenger,
       state: initialNetworkControllerState,
