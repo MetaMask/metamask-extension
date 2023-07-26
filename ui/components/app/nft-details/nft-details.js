@@ -111,12 +111,13 @@ export default function NftDetails({ nft }) {
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
       case CHAIN_IDS.MAINNET:
-        return `https://opensea.io/assets/${address}/${tokenId}`;
+        return `https://opensea.io/assets/ethereum/${address}/${tokenId}`;
       case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
       case CHAIN_IDS.GOERLI:
+        return `https://testnets.opensea.io/assets/goerli/${address}/${tokenId}`;
       case CHAIN_IDS.SEPOLIA:
-        return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
+        return `https://testnets.opensea.io/assets/sepolia/${address}/${tokenId}`;
       default:
         return null;
     }
