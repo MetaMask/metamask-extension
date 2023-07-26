@@ -558,33 +558,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
-   *
-   * @param {string} txId - transaction id
-   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
-   * @param {string} txEstimateBaseFees.estimatedBaseFee
-   * @param {string} txEstimateBaseFees.decEstimatedBaseFee
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionEstimatedBaseFee(
-    txId,
-    { estimatedBaseFee, decEstimatedBaseFee },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(
-      txId,
-      'updateTransactionEstimatedBaseFee',
-    );
-
-    let txEstimateBaseFees = { estimatedBaseFee, decEstimatedBaseFee };
-    // only update what is defined
-    txEstimateBaseFees = pickBy(txEstimateBaseFees);
-
-    const note = `Update Transaction Estimated Base Fees for ${txId}`;
-    this._updateTransaction(txId, txEstimateBaseFees, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
    * updates a transaction's user settings only if the transaction state is unapproved
    *
    * @param {string} txId
