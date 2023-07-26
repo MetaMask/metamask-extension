@@ -379,7 +379,11 @@ export default class SecurityTab extends PureComponent {
             />
           </div>
         </div>
-        <div className="settings-page__content-item">
+        <div
+          className="settings-page__content-item"
+          ref={this.settingsRefs[9]}
+          id="ens-domains"
+        >
           {t('ensDomainsSettingTitle')}
           <div className="settings-page__content-description">
             <Text color={TextColor.inherit} variant={TextVariant.inherit}>
