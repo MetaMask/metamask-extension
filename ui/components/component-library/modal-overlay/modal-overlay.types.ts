@@ -1,6 +1,6 @@
-import { BoxProps } from '../../ui/box/box.d';
+import { BoxComponent } from '../box/box.types';
 
-export interface ModalOverlayProps extends BoxProps {
+export interface ModalOverlayProps extends BoxComponent {
   /**
    * onClick handler for the overlay
    * Not necessary when used with Modal and closeOnClickOutside is true
