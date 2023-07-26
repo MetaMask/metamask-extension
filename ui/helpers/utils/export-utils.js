@@ -54,8 +54,7 @@ function supportsShowSaveFilePicker() {
  * @returns {Promise<void>}
  */
 async function saveFileUsingFilePicker(filename, data, contentType) {
-  // eslint-disable-next-line no-undef
-  const blob = new Blob([data], { contentType });
+  const blob = new window.Blob([data], { contentType });
   const fileExtension = ExtensionForContentType[contentType];
 
   const handle = await window.showSaveFilePicker({
