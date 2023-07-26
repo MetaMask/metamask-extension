@@ -16,9 +16,9 @@ describe('exportAsFile', () => {
       const showSaveFilePicker = mockShowSaveFilePicker();
       const filename = 'test.json';
       const data = '{file: "content"}';
-
       windowSpy.mockImplementation(() => ({
         showSaveFilePicker,
+        Blob: global.Blob,
       }));
 
       await exportAsFile(filename, data, ExportableContentType.JSON);
@@ -41,6 +41,7 @@ describe('exportAsFile', () => {
 
       windowSpy.mockImplementation(() => ({
         showSaveFilePicker,
+        Blob: global.Blob,
       }));
 
       await exportAsFile(filename, data, ExportableContentType.TXT);

@@ -41,7 +41,8 @@ export async function exportAsFile(filename, data, contentType) {
 function supportsShowSaveFilePicker() {
   return (
     typeof window !== 'undefined' &&
-    typeof window.showSaveFilePicker !== 'undefined'
+    typeof window.showSaveFilePicker !== 'undefined' &&
+    typeof window.Blob !== 'undefined'
   );
 }
 
