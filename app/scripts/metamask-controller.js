@@ -19,6 +19,7 @@ import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from 'eth-query';
 import nanoid from 'nanoid';
+import { v4 as uuid } from 'uuid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
@@ -221,6 +222,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import { sha256FromString } from 'ethereumjs-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1013,15 +1015,30 @@ export default class MetamaskController extends EventEmitter {
 
     const accountsControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'AccountsController',
-      allowedEvents: ['SnapController:stateChange'],
+      allowedEvents: [
+        'SnapController:stateChange',
+        'KeyringController:accountRemoved',
+        'KeyringController:stateChange',
+      ],
     });
 
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.accountsController,
-      onPreferencesStateChange: (listener) => {
-        this.preferencesController.store.subscribe(listener);
-      },
+      keyringController: this.keyringController,
+      snapController: this.snapController,
+      onKeyringAccountRemoved: keyringControllerMessenger.subscribe.bind(
+        keyringControllerMessenger,
+        'KeyringController:accountRemoved',
+      ),
+      onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
+        keyringControllerMessenger,
+        'KeyringController:stateChange',
+      ),
+      onSnapStateChange: this.controllerMessenger.subscribe.bind(
+        this.controllerMessenger,
+        'SnapController:stateChange',
+      ),
     });
 
     this.notificationController = new NotificationController({
@@ -2984,6 +3001,15 @@ export default class MetamaskController extends EventEmitter {
 
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       await this.accountsController.updateAccounts();
+      console.log(this.accountsController.state);
+      const selectedAccount = uuid({
+        random: sha256FromString(
+          this.preferencesController.getSelectedAddress(),
+        ).slice(0, 16),
+      });
+
+      console.log('setting account');
+      this.accountsController.setSelectedAccount(selectedAccount);
       ///: END:ONLY_INCLUDE_IN
 
       // set new identities
@@ -3053,6 +3079,13 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     await this.accountsController.updateAccounts();
+    const selectedAccount = uuid({
+      random: sha256FromString(
+        this.preferencesController.getSelectedAddress(),
+      ).slice(0, 16),
+    });
+
+    this.accountsController.setSelectedAccount(selectedAccount);
     ///: END:ONLY_INCLUDE_IN
 
     return this.keyringController.fullUpdate();

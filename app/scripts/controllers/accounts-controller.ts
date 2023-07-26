@@ -4,10 +4,18 @@ import {
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
+import { sha256FromString } from 'ethereumjs-util';
 import { InternalAccount, SnapKeyring } from '@metamask/eth-snap-keyring';
-import { KeyringController } from '@metamask/eth-keyring-controller';
-import { SnapControllerEvents } from '@metamask/snaps-controllers';
-import PreferencesController from './preferences';
+import {
+  SnapController,
+  SnapControllerEvents,
+} from '@metamask/snaps-controllers';
+import {
+  KeyringControllerState,
+  KeyringController,
+} from '@metamask/keyring-controller';
+import { SnapControllerState } from '@metamask/snaps-controllers-flask';
+import { add0x } from '@metamask/utils';
 
 const controllerName = 'AccountsController';
 
@@ -51,51 +59,75 @@ const accountsControllerMetadata = {
   },
 };
 
+const defaultState: AccountsControllerState = {
+  internalAccounts: {},
+  selectedAccount: '',
+};
+
 export default class AccountsController extends BaseControllerV2<
   typeof controllerName,
   AccountsControllerState,
   AccountsControllerMessenger
 > {
-  #preferenceController: PreferencesController;
+  #keyringController: KeyringController;
 
-  #keyringController: any;
+  #snapController: SnapController;
 
   constructor({
     messenger,
     state,
-    preferenceController,
     keyringController,
-    onPreferencesStateChange,
+    snapController,
+    onKeyringStateChange,
+    onKeyringAccountRemoved,
+    onSnapStateChange,
   }: {
     messenger: AccountsControllerMessenger;
     state: AccountsControllerState;
-    preferenceController: PreferencesController;
     keyringController: KeyringController;
-    onPreferencesStateChange: (
-      listener: (preferencesState: any) => void,
+    snapController: SnapController;
+    onKeyringStateChange: (
+      listener: (keyringState: KeyringControllerState) => void,
+    ) => void;
+    onKeyringAccountRemoved: (listener: (address: string) => void) => void;
+    onSnapStateChange: (
+      listener: (snapState: SnapControllerState) => void,
     ) => void;
   }) {
     super({
       messenger,
       name: controllerName,
       metadata: accountsControllerMetadata,
-      state,
+      state: {
+        ...defaultState,
+        ...state,
+      },
     });
 
-    this.#preferenceController = preferenceController;
     this.#keyringController = keyringController;
+    this.#snapController = snapController;
 
-    this.messagingSystem.subscribe(
-      'SnapController:stateChange',
-      async (snapState) => {
-        console.log('snap state changed', snapState);
-      },
-    );
+    onSnapStateChange(async (snapState: SnapControllerState) => {
+      console.log('snap state changed', snapState);
+      const { snaps } = snapState;
 
-    onPreferencesStateChange((preferenceState) => {
-      console.log('preference state changed', preferenceState);
-      const { selectedAddress } = preferenceState;
-      console.log('selected address', selectedAddress);
+      Object.values(snaps)
+        .filter((snap) => !snap.enabled || snap.blocked)
+        .forEach((disabledSnap) => {
+          this.#disableSnap(disabledSnap.id);
+        });
+
+      await this.updateAccounts();
+    });
+
+    onKeyringStateChange(async (keyringState: KeyringControllerState) => {
+      console.log('keyring state changed', keyringState);
+      await this.updateAccounts();
+    });
+
+    onKeyringAccountRemoved(async (address: string) => {
+      console.log('keyring account removed', address);
+      await this.updateAccounts();
     });
   }
 
@@ -119,7 +151,7 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getAccountByIdExpect(accountId: string): InternalAccount {
-    const account = this.getAccount(accountId);
+    const account = this.getAccountId(accountId);
     if (account === undefined) {
       throw new Error(`Account Id ${accountId} not found`);
     }
@@ -142,9 +174,14 @@ export default class AccountsController extends BaseControllerV2<
     const legacyAccounts = await this.#listLegacyAccounts();
     const snapAccounts = await this.#listSnapAccounts();
 
+    console.log('legacy accounts', legacyAccounts);
+    console.log('snap accounts', snapAccounts);
+
     const internalAccounts = [...legacyAccounts, ...snapAccounts].reduce(
       (internalAccountMap, internalAccount) => {
-        internalAccountMap[internalAccount.id] = internalAccount;
+        internalAccountMap[internalAccount.id] = {
+          ...internalAccount,
+        };
         return internalAccountMap;
       },
       {} as Record<string, InternalAccount>,
@@ -153,22 +190,64 @@ export default class AccountsController extends BaseControllerV2<
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts = internalAccounts;
     });
+
+    console.log('updated state', this.state);
+  }
+
+  removeAccountByAddress(address: string): void {
+    const account = this.getAccount(address);
+    if (account) {
+      this.update((currentState: AccountsControllerState) => {
+        delete currentState.internalAccounts[account.id];
+      });
+    }
+
+    // this.update((currentState: AccountsControllerState) => {
+    //   currentState.internalAccounts
+    // }
   }
 
   async #listSnapAccounts(): Promise<InternalAccount[]> {
-    const [snapKeyring]: [SnapKeyring] =
-      this.#keyringController.getKeyringsByType(SnapKeyring.type);
+    const [snapKeyring] = this.#keyringController.getKeyringsByType(
+      SnapKeyring.type,
+    );
 
-    return snapKeyring?.listAccounts(true) ?? [];
+    const snapAccounts =
+      (await (snapKeyring as SnapKeyring)?.listAccounts(true)) ?? [];
+
+    for (const account of snapAccounts) {
+      account.metadata = {
+        snap: {
+          id: account?.metadata?.snap?.id,
+          enabled: await this.#getSnapStatus(
+            account?.metadata?.snap?.id as string,
+          ),
+          name: account.name,
+        },
+        keyring: {
+          type: (snapKeyring as SnapKeyring).type,
+        },
+      };
+    }
+
+    return snapAccounts;
   }
 
   async #listLegacyAccounts(): Promise<InternalAccount[]> {
     const addresses = await this.#keyringController.getAccounts();
-    return addresses.map((address: string) => {
-      return {
-        id: uuid(),
+    const internalAccounts = [];
+    for (const address of addresses) {
+      const keyring = await this.#keyringController.getKeyringForAccount(
         address,
-        name: '',
+      );
+      // TODO: this is done until the keyrings all implement the InternalAccount interface
+      const v4options = {
+        random: sha256FromString(address).slice(0, 16),
+      };
+
+      internalAccounts.push({
+        id: uuid(v4options),
+        address,
         options: {},
         supportedMethods: [
           'personal_sign',
@@ -182,29 +261,56 @@ export default class AccountsController extends BaseControllerV2<
           'eth_signTypedData_v4',
         ],
         type: 'eip155:eoa',
-        metadata: {},
-      };
-    });
+        metadata: {
+          keyring: keyring.type as string,
+        },
+      });
+    }
+
+    return internalAccounts.filter(
+      (account) => account.metadata.keyring !== 'Snap Keyring',
+    );
   }
 
-  setSelectedAccount(accountId: string): InternalAccount {
+  setSelectedAccount(accountId: string): void {
     const account = this.getAccountByIdExpect(accountId);
 
     this.update((currentState: AccountsControllerState) => {
       currentState.selectedAccount = account.id;
     });
-
-    return account;
   }
 
-  setLabel(accountId: string, label: string): void {
+  setAccountName(accountId: string, accountName: string): void {
     const account = this.getAccountByIdExpect(accountId);
 
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts[accountId] = {
         ...account,
-        name: label,
+        name: accountName,
       };
     });
+  }
+
+  #disableSnap(snapId: string) {
+    const accounts = this.getAccountsBySnapId(snapId);
+
+    this.update((currentState: AccountsControllerState) => {
+      accounts.forEach((account) => {
+        account.metadata.snap = {
+          ...account.metadata.snap,
+          enabled: false,
+        };
+        currentState.internalAccounts[account.id] = account;
+      });
+    });
+  }
+
+  async #getSnapStatus(snapId: string): Promise<boolean> {
+    const snap = await this.#snapController.getSnapState(snapId);
+    if (!snap) {
+      return false;
+    }
+
+    return snap?.enabled && !snap?.blocked;
   }
 }
