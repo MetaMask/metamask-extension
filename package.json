@@ -203,6 +203,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
+    "@blockaid/ppom": "^0.1.2",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",
@@ -256,7 +257,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^3.0.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/ppom-validator": "^0.0.1",
+    "@metamask/ppom-validator": "^0.1.2",
     "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^1.0.0-prerelease.1",

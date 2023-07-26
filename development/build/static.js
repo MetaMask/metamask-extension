@@ -205,7 +205,7 @@ function getCopyTargets(
 
   if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
-      src: getPathInsideNodeModules('@metamask/ppom-validator', 'dist/'),
+      src: getPathInsideNodeModules('@blockaid/ppom', '/'),
       pattern: '*.wasm',
       dest: '',
     });
