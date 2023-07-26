@@ -15,13 +15,13 @@ export enum AvatarAccountSize {
   Xl = Size.XL,
 }
 
-export const AvatarAccountDiameter = {
+export const AvatarAccountDiameter: Record<AvatarAccountSize, number> = {
   [AvatarAccountSize.Xs]: 16,
   [AvatarAccountSize.Sm]: 24,
   [AvatarAccountSize.Md]: 32,
   [AvatarAccountSize.Lg]: 40,
   [AvatarAccountSize.Xl]: 48,
-} as const;
+};
 
 export interface AvatarAccountStyleUtilityProps
   extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'variant'> {
