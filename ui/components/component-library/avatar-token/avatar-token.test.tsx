@@ -1,14 +1,12 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-
 import {
   BackgroundColor,
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
-
-import { AvatarToken } from './avatar-token';
+import { AvatarToken, AvatarTokenSize } from '.';
 
 describe('AvatarToken', () => {
   const args = {
@@ -57,6 +55,53 @@ describe('AvatarToken', () => {
       <AvatarToken data-testid="avatar-token" className="test-class" />,
     );
     expect(getByTestId('avatar-token')).toHaveClass('test-class');
+  });
+  // size
+  it('should render with different AvatarTokenSize', () => {
+    const { getByTestId } = render(
+      <>
+        <AvatarToken
+          {...args}
+          size={AvatarTokenSize.Xs}
+          data-testid={AvatarTokenSize.Xs}
+        />
+        <AvatarToken
+          {...args}
+          size={AvatarTokenSize.Sm}
+          data-testid={AvatarTokenSize.Sm}
+        />
+        <AvatarToken
+          {...args}
+          size={AvatarTokenSize.Md}
+          data-testid={AvatarTokenSize.Md}
+        />
+        <AvatarToken
+          {...args}
+          size={AvatarTokenSize.Lg}
+          data-testid={AvatarTokenSize.Lg}
+        />
+        <AvatarToken
+          {...args}
+          size={AvatarTokenSize.Xl}
+          data-testid={AvatarTokenSize.Xl}
+        />
+      </>,
+    );
+    expect(getByTestId(AvatarTokenSize.Xs)).toHaveClass(
+      `mm-avatar-base--size-${AvatarTokenSize.Xs}`,
+    );
+    expect(getByTestId(AvatarTokenSize.Sm)).toHaveClass(
+      `mm-avatar-base--size-${AvatarTokenSize.Sm}`,
+    );
+    expect(getByTestId(AvatarTokenSize.Md)).toHaveClass(
+      `mm-avatar-base--size-${AvatarTokenSize.Md}`,
+    );
+    expect(getByTestId(AvatarTokenSize.Lg)).toHaveClass(
+      `mm-avatar-base--size-${AvatarTokenSize.Lg}`,
+    );
+    expect(getByTestId(AvatarTokenSize.Xl)).toHaveClass(
+      `mm-avatar-base--size-${AvatarTokenSize.Xl}`,
+    );
   });
   // color
   it('should render with different colors', () => {
@@ -122,9 +167,11 @@ describe('AvatarToken', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLDivElement>();
     render(<AvatarToken ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    if (ref.current) {
+      expect(ref.current.nodeName).toBe('DIV');
+    }
   });
 });
