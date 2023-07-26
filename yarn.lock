@@ -2654,33 +2654,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/intl-relativetimeformat@npm:^5.2.6":
-  version: 5.2.6
-  resolution: "@formatjs/intl-relativetimeformat@npm:5.2.6"
-  dependencies:
-    "@formatjs/intl-utils": ^3.3.1
-  checksum: 496b198513e535593538bddc5d0d8f1d011c6b095c4f6632461e2cc1960a52eb06365c454feeddb9eac0a2ebfc659d49fa47c71f2c94e1eb321e299f54360c84
-  languageName: node
-  linkType: hard
-
-"@formatjs/intl-utils@npm:3.3.1":
-  version: 3.3.1
-  resolution: "@formatjs/intl-utils@npm:3.3.1"
-  dependencies:
-    emojis-list: ^3.0.0
-  checksum: 78ca866d4d94a0557156cdeb025548fe373326b7839aed394ba69a935b7f4685d0a5de67f766e73c99b7700abd675d22bb2b50d08141fdffaa177d43d9671e92
-  languageName: node
-  linkType: hard
-
-"@formatjs/intl-utils@patch:@formatjs/intl-utils@npm%3A3.3.1#./.yarn/patches/@formatjs-intl-utils-npm-3.3.1-08510c16ad.patch::locator=metamask-crx%40workspace%3A.":
-  version: 3.3.1
-  resolution: "@formatjs/intl-utils@patch:@formatjs/intl-utils@npm%3A3.3.1#./.yarn/patches/@formatjs-intl-utils-npm-3.3.1-08510c16ad.patch::version=3.3.1&hash=0b1781&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    emojis-list: ^3.0.0
-  checksum: a24f9405ab93031791298a1ea574ff1a10506e98d85706fc0d0f8b7c6019202c61b0490e9cfc3c6fadb6bc71b9545544124ad639e197c1983fb474152f326de7
-  languageName: node
-  linkType: hard
-
 "@fortawesome/fontawesome-free@npm:5.13.0":
   version: 5.13.0
   resolution: "@fortawesome/fontawesome-free@npm:5.13.0"
@@ -24225,7 +24198,6 @@ __metadata:
     "@ethersproject/contracts": ^5.7.0
     "@ethersproject/hdnode": ^5.6.2
     "@ethersproject/providers": ^5.7.2
-    "@formatjs/intl-relativetimeformat": ^5.2.6
     "@fortawesome/fontawesome-free": ^5.13.0
     "@keystonehq/bc-ur-registry-eth": ^0.19.1
     "@keystonehq/metamask-airgapped-keyring": ^0.13.1

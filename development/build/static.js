@@ -3,7 +3,6 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const locales = require('../../app/_locales/index.json');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
@@ -208,23 +207,6 @@ function getCopyTargets(
       src: getPathInsideNodeModules('@blockaid/ppom', '/'),
       pattern: '*.wasm',
       dest: '',
-    });
-  }
-
-  const languageTags = new Set();
-  for (const locale of locales) {
-    const { code } = locale;
-    const tag = code.split('_')[0];
-    languageTags.add(tag);
-  }
-
-  for (const tag of languageTags) {
-    allCopyTargets.push({
-      src: getPathInsideNodeModules(
-        '@formatjs/intl-relativetimeformat',
-        `dist/locale-data/${tag}.json`,
-      ),
-      dest: `intl/${tag}/relative-time-format-data.json`,
     });
   }
 
