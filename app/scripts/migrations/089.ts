@@ -10,7 +10,33 @@ type VersionedData = {
 export const version = 89;
 
 /**
- * TODO UPDATE THIS DESC
+ * - Rebuilds `allNftContracts` and `allNfts` in NftController state to be keyed
+ * by a caip chain ID rather than a hex chain ID.
+ * - Rebuilds `tokensChainsCache` in TokenListController to be keyed by a caip
+ * chain ID rather than a hex chain ID.
+ * - Rebuilds `allTokens`, `allIgnoredTokens`, and `allDetectedTokens` in TokensController
+ * to be keyed by a caip chain ID rather than a hex chain ID.
+ * - Rebuilds `providerConfig` and `networkConfigurations` in NetworkController to have
+ * `caipChainId` field rather than a hex `chainId` field.
+ * - Rebuilds `cachedBalances` in CachedBalancesController to be keyed by a caip
+ * chain ID rather than a hex chain ID.
+ * - Rebuilds `addressBook` in AddressBookController to be keyed by a caip chain ID
+ * rather than a hex chain ID and to have `caipChainId` field rather than a
+ * hex * `chainId` field.
+ * - Rebuilds `usedNetworks` in AppStateController to be keyed by a caip * chain ID
+ * rather than a hex chain ID.
+ * - Rebuilds `incomingTransactions` in IncomingTransactionsController to have
+ * `caipChainId` field rather than a hex `chainId` field.
+ * - Rebuilds `incomingTxLastFetchedBlockByChainId` in IncomingTransactionsController
+ * to be keyed by a caip chain ID rather than a hex chain ID.
+ * - Rebuilds `transactions` and `transactions.history` in TransactionController to have
+ * `caipChainId` field rather than a hex `chainId` field.
+ * - Rebuilds `currentNetworkTxList` and `currentNetworkTxList.history` in TxController
+ * to have `caipChainId` field rather than a hex `chainId` field.
+ * - Rebuilds `unapprovedTxs` and `unapprovedTxs.history` in TxController to have
+ * `caipChainId` field rather than a hex `chainId` field.
+ * - Rebuilds `incomingTxLastFetchedBlockByChainId.smartTransactionsState.smartTransactions`
+ * in SmartTransactionsController to be keyed by a caip chain ID rather than a hex chain ID.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -202,7 +228,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       cachedBalancesControllerState.cachedBalances = mapKeys(
         cachedBalances,
-        (_, chainId: string) => getCaipChainIdFromEthChainId(chainId), // this is not safe? may be networkid. update this
+        (_, chainId: string) => getCaipChainIdFromEthChainId(chainId),
       );
     }
 
@@ -222,9 +248,8 @@ function migrateData(state: Record<string, unknown>): void {
     ) {
       let { addressBook } = addressBookControllerState;
 
-      addressBook = mapKeys(
-        addressBook,
-        (_, chainId: string) => getCaipChainIdFromEthChainId(chainId), // is this safe?
+      addressBook = mapKeys(addressBook, (_, chainId: string) =>
+        getCaipChainIdFromEthChainId(chainId),
       );
 
       addressBookControllerState.addressBook = mapValues(
@@ -237,9 +262,9 @@ function migrateData(state: Record<string, unknown>): void {
           return mapValues(addressBookEntries, (addressBookEntry) => {
             addressBookEntry.caipChainId = getCaipChainIdFromEthChainId(
               addressBookEntry.chainId,
-            ); // is this safe?
+            );
             delete addressBookEntry.chainId;
-            return addressBookEntry
+            return addressBookEntry;
           });
         },
       );
@@ -263,7 +288,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       appStateControllerState.usedNetworks = mapKeys(
         usedNetworks,
-        (_, chainId: string) => getCaipChainIdFromEthChainId(chainId), // is this safe?
+        (_, chainId: string) => getCaipChainIdFromEthChainId(chainId),
       );
     }
 
@@ -445,7 +470,37 @@ function migrateData(state: Record<string, unknown>): void {
     state.TxController = txControllerState;
   }
 
-  // TODO: SmartTransactionsController
+  if (
+    hasProperty(state, 'SmartTransactionsController') &&
+    isObject(state.SmartTransactionsController)
+  ) {
+    const smartTransactionsControllerState = state.SmartTransactionsController;
+
+    // Migrate SmartTransactionsController.smartTransactionsState.smartTransactions
+    if (
+      hasProperty(smartTransactionsControllerState, 'smartTransactionsState') &&
+      isObject(smartTransactionsControllerState.smartTransactionsState) &&
+      hasProperty(
+        smartTransactionsControllerState.smartTransactionsState,
+        'smartTransactions',
+      ) &&
+      isObject(
+        smartTransactionsControllerState.smartTransactionsState
+          .smartTransactions,
+      )
+    ) {
+      const {
+        smartTransactionsState: { smartTransactions },
+      } = smartTransactionsControllerState;
+
+      smartTransactionsControllerState.smartTransactionsState.smartTransactions =
+        mapKeys(smartTransactions, (_, chainId: string) =>
+          getCaipChainIdFromEthChainId(chainId),
+        );
+    }
+
+    state.SmartTransactionsController = smartTransactionsControllerState;
+  }
 
   // What to do about MMI?
   // ui/selectors/institutional/selectors.test.js

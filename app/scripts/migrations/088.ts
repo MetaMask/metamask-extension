@@ -16,8 +16,8 @@ export const version = 88;
  * by a hex chain ID rather than a decimal chain ID.
  * - Rebuilds `tokensChainsCache` in TokenListController to be keyed by a hex
  * chain ID rather than a decimal chain ID.
- * - Rebuilds `allTokens` and `allIgnoredTokens` in TokensController to be keyed
- * by a hex chain ID rather than a decimal chain ID.
+ * - Rebuilds `allTokens`, `allIgnoredTokens`, and `allDetectedTokens` in TokensController
+ * to be keyed by a hex chain ID rather than a decimal chain ID.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.

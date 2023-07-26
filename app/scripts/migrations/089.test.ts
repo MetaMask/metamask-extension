@@ -2023,4 +2023,115 @@ describe('migration #89', () => {
       },
     });
   });
+
+  it('returns the state unaltered if it has no SmartTransactionsController property', async () => {
+    const oldData = {
+      some: 'data',
+    };
+    const oldStorage = {
+      meta: { version: 88 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('returns the state unaltered if the SmartTransactionsController object has no smartTransactionsState property', async () => {
+    const oldData = {
+      SmartTransactionsController: {
+        some: 'data',
+      },
+    };
+    const oldStorage = {
+      meta: { version: 88 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('returns the state unaltered if SmartTransactionsController.smartTransactionsState is not an object', async () => {
+    const oldData = {
+      SmartTransactionsController: {
+        smartTransactionsState: 'foo',
+      },
+    };
+    const oldStorage = {
+      meta: { version: 88 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('returns the state unaltered if the SmartTransactionsController object has no smartTransactionsState.smartTransactions property', async () => {
+    const oldData = {
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          some: 'data',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: { version: 88 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('returns the state unaltered if SmartTransactionsController.smartTransactionsState.smartTransactions is not an object', async () => {
+    const oldData = {
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          smartTransactions: 'foo',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: { version: 88 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('rewrites SmartTransactionsController.smartTransactionsState.smartTransactions so that hex chain IDs are converted to caip chain IDs', async () => {
+    const oldStorage = {
+      meta: { version: 88 },
+      data: {
+        SmartTransactionsController: {
+          smartTransactionsState: {
+            smartTransactions: {
+              '0x10': [{ tx: 'foo' }],
+              '0x20': [{ tx: 'bar' }],
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      SmartTransactionsController: {
+        smartTransactionsState: {
+          smartTransactions: {
+            'eip155:16': [{ tx: 'foo' }],
+            'eip155:32': [{ tx: 'bar' }],
+          },
+        },
+      },
+    });
+  });
 });
