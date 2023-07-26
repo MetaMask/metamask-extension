@@ -1,7 +1,5 @@
-import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
-} from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 import { Size } from '../../../helpers/constants/design-system';
 
 export enum AvatarAccountVariant {
@@ -25,7 +23,8 @@ export const AvatarAccountDiameter = {
   [AvatarAccountSize.Xl]: 48,
 } as const;
 
-export interface AvatarAccountStyleUtilityProps extends StyleUtilityProps {
+export interface AvatarAccountStyleUtilityProps
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'variant'> {
   /**
    * The size of the AvatarAccount.
    * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'

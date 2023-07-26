@@ -3,9 +3,9 @@ import classnames from 'classnames';
 import Jazzicon from '../../ui/jazzicon/jazzicon.component';
 import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdenticon.component';
 
-import type { PolymorphicRef, BoxProps } from '../box';
+import type { PolymorphicRef } from '../box';
 
-import { AvatarBase } from '../avatar-base';
+import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
@@ -29,7 +29,7 @@ export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
       ref={ref}
       size={size}
       className={classnames('mm-avatar-account', className)}
-      {...(props as BoxProps<C>)}
+      {...(props as AvatarBaseProps<C>)}
     >
       {variant === AvatarAccountVariant.Jazzicon ? (
         <Jazzicon
