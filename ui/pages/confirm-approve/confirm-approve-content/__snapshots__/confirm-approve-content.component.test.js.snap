@@ -21,7 +21,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -73,7 +73,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -195,7 +195,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -258,7 +258,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -380,7 +380,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -443,7 +443,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -565,7 +565,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -628,7 +628,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>

@@ -14,7 +14,7 @@ import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctio
 import Box from '../../ui/box/box';
 import Disclosure from '../../ui/disclosure';
 import TransactionDecoding from '../transaction-decoding';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 
 const ConfirmData = ({ txData, dataComponent }) => {
   const t = useI18nContext();

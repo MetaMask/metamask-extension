@@ -17,7 +17,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { getTargetSubjectMetadata } from '../../../../selectors';
-import { Text } from '../../../component-library/text/deprecated';
+import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 
@@ -46,6 +46,9 @@ export const UI_MAPPING = {
   text: (props) => ({
     element: 'SnapUIMarkdown',
     children: props.value,
+    props: {
+      markdown: props.markdown,
+    },
   }),
   spinner: () => ({
     element: 'Spinner',

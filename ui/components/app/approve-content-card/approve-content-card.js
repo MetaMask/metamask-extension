@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -184,7 +184,7 @@ export default function ApproveContentCard({
                         <Text
                           variant={TextVariant.headingSm}
                           fontWeight={FontWeight.Bold}
-                          color={TextColor.TEXT_DEFAULT}
+                          color={TextColor.textDefault}
                           as="h4"
                         >
                           {formatCurrency(

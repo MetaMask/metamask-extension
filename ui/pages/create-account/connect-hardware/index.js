@@ -24,8 +24,8 @@ import {
   BUTTON_VARIANT,
   BUTTON_SIZES,
   Button,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { TextColor } from '../../../helpers/constants/design-system';
 import SelectHardware from './select-hardware';
@@ -371,6 +371,7 @@ class ConnectHardwareForm extends Component {
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
           ledgerTransportType={this.props.ledgerTransportType}
+          onCancel={this.onCancel}
         />
       );
     }

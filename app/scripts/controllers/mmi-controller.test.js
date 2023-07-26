@@ -2,6 +2,7 @@
 import { KeyringController } from '@metamask/eth-keyring-controller';
 import { MmiConfigurationController } from '@metamask-institutional/custody-keyring';
 import { TransactionUpdateController } from '@metamask-institutional/transaction-update';
+import { SignatureController } from '@metamask/signature-controller';
 
 import MMIController from './mmi-controller';
 import TransactionController from './transactions';
@@ -32,6 +33,20 @@ describe('MMIController', function () {
         getCurrentChainId: jest.fn(),
         getNetworkId: jest.fn(),
         onNetworkStateChange: jest.fn(),
+      }),
+      signatureController: new SignatureController({
+        messenger: {
+          registerActionHandler: jest.fn(),
+          publish: jest.fn(),
+          call: jest.fn(),
+        },
+        keyringController: new KeyringController({
+          initState: {},
+        }),
+        isEthSignEnabled: jest.fn(),
+        getAllState: jest.fn(),
+        securityProviderRequest: jest.fn(),
+        getCurrentChainId: jest.fn(),
       }),
       preferencesController: new PreferencesController({
         initState: {},

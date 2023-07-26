@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useContext,
+  ///: END:ONLY_INCLUDE_IN
+  useEffect,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -22,7 +29,7 @@ import EditGasFeePopover from '../edit-gas-fee-popover/edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import ErrorMessage from '../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import { Text } from '../../component-library/text/deprecated';
+import { Text } from '../../component-library';
 import {
   TextVariant,
   TextAlign,
@@ -45,11 +52,13 @@ import {
   getSwapsDefaultToken,
 } from '../../../selectors';
 import useRamps from '../../../hooks/experiences/useRamps';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -105,8 +114,9 @@ const ConfirmPageContainer = (props) => {
   } = props;
 
   const t = useI18nContext();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const trackEvent = useContext(MetaMetricsContext);
-
+  ///: END:ONLY_INCLUDE_IN
   const [collectionBalance, setCollectionBalance] = useState('0');
 
   const isBuyableChain = useSelector(getIsBuyableChain);
