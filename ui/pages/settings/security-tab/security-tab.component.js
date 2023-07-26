@@ -383,19 +383,21 @@ export default class SecurityTab extends PureComponent {
           offLabel={t('off')}
           onLabel={t('on')}
         />
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <TextField
-              type="text"
-              disabled={!this.state.ipfsGateway}
-              value={this.state.ipfsGateway}
-              onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-              error={!this.state.ipfsToggle && ipfsGatewayError}
-              fullWidth
-              margin="dense"
-            />
+        {!this.state.ipfsToggle && (
+          <div className="settings-page__content-item">
+            <div className="settings-page__content-item-col">
+              <TextField
+                type="text"
+                disabled={!this.state.ipfsGateway}
+                value={this.state.ipfsGateway}
+                onChange={(e) => handleIpfsGatewayChange(e.target.value)}
+                error={ipfsGatewayError}
+                fullWidth
+                margin="dense"
+              />
+            </div>
           </div>
-        </div>
+        )}
         <div
           className="settings-page__content-item"
           ref={this.settingsRefs[9]}
