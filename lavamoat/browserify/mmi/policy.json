@@ -4597,29 +4597,12 @@
     },
     "react-inspector": {
       "globals": {
-        "Node.CDATA_SECTION_NODE": true,
-        "Node.COMMENT_NODE": true,
-        "Node.DOCUMENT_FRAGMENT_NODE": true,
-        "Node.DOCUMENT_NODE": true,
-        "Node.DOCUMENT_TYPE_NODE": true,
-        "Node.ELEMENT_NODE": true,
-        "Node.PROCESSING_INSTRUCTION_NODE": true,
-        "Node.TEXT_NODE": true
+        "Node": true,
+        "chromeDark": true,
+        "chromeLight": true
       },
       "packages": {
-        "ethjs-query>babel-runtime": true,
-        "prop-types": true,
-        "react": true,
-        "react-inspector>is-dom": true
-      }
-    },
-    "react-inspector>is-dom": {
-      "globals": {
-        "Node": true
-      },
-      "packages": {
-        "@lavamoat/snow>is-cross-origin>is-window": true,
-        "proxyquire>fill-keys>is-object": true
+        "react": true
       }
     },
     "react-popper": {
