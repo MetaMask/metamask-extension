@@ -4,9 +4,10 @@
 
 "preserve_hierarchy": true
 
+# This group identifies the files that should be the source for translations. If a translations key:value is used this
+# indicates that translations from the idneified files will be pushed up to Crowdin.
 files:
   - "source" : "app/_locales/en/messages.json"
-    "translation" : "/app/_locales/%two_letters_code%/%original_file_name%"
     "languages_mapping":
       "two_letters_code":
         "zh-CN": "zh_CN"
