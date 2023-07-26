@@ -46,11 +46,12 @@ export default {
   },
   args: {
     size: AvatarIconSize.Md,
+    iconName: IconName.SwapHorizontal,
   },
 } as Meta<typeof AvatarIcon>;
 
 const Template: StoryFn<typeof AvatarIcon> = (args) => {
-  return <AvatarIcon {...args} iconName={IconName.SwapHorizontal} />;
+  return <AvatarIcon {...args} />;
 };
 
 export const DefaultStory = Template.bind({});
@@ -66,10 +67,6 @@ export const SizeStory: StoryFn<typeof AvatarIcon> = (args) => (
   </Box>
 );
 SizeStory.storyName = 'Size';
-
-SizeStory.args = {
-  iconName: IconName.Confirmation,
-};
 
 export const IconNameStory: StoryFn<typeof AvatarIcon> = (args) => (
   <Box display={Display.Flex} gap={1}>
