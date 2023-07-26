@@ -1,6 +1,7 @@
 import { IconColor, TextColor } from '../../../helpers/constants/design-system';
-import { IconName, IconProps, IconSize } from '../icon';
-import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
+import { IconName, IconSize, IconStyleUtilityProps } from '../icon';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarIconSize {
   Xs = 'xs',
@@ -18,8 +19,8 @@ export const avatarIconSizeToIconSize: Record<AvatarIconSize, IconSize> = {
   [AvatarIconSize.Xl]: IconSize.Xl,
 };
 
-export interface AvatarIconProps
-  extends Omit<AvatarBaseProps, 'color' | 'children'> {
+export interface AvatarIconStyleUtilityProps
+  extends Omit<AvatarBaseStyleUtilityProps, 'size' | 'children' | 'color'> {
   /**
    * The name of the icon to display. Should be one of IconName
    */
@@ -27,9 +28,7 @@ export interface AvatarIconProps
   /**
    * Props for the icon inside AvatarIcon. All Icon props can be used
    */
-  iconProps?: Omit<IconProps, 'name'> & {
-    'data-testid'?: string;
-  };
+  iconProps?: IconStyleUtilityProps;
   /**
    * The size of the AvatarIcon
    * Possible values could be 'AvatarIconSize.Xs' 16px, 'AvatarIconSize.Sm' 24px, 'AvatarIconSize.Md' 32px, 'AvatarIconSize.Lg' 40px, 'AvatarIconSize.Xl' 48px
@@ -42,3 +41,10 @@ export interface AvatarIconProps
    */
   color?: TextColor | IconColor;
 }
+
+export type AvatarIconProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, AvatarIconStyleUtilityProps>;
+
+export type AvatarIconComponent = <C extends React.ElementType = 'span'>(
+  props: AvatarIconProps<C>,
+) => React.ReactElement | null;

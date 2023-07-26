@@ -1,4 +1,4 @@
-import React, { Ref } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import {
   BorderColor,
@@ -11,16 +11,17 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { Icon } from '../icon';
-import { AvatarBase } from '../avatar-base';
-
+import type { PolymorphicRef } from '../box';
+import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import type { AvatarIconComponent } from './avatar-icon.types';
 import {
   AvatarIconProps,
   AvatarIconSize,
   avatarIconSizeToIconSize,
 } from './avatar-icon.types';
 
-export const AvatarIcon = React.forwardRef(
-  (
+export const AvatarIcon: AvatarIconComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       size = AvatarIconSize.Md,
       color = TextColor.primaryDefault,
@@ -29,8 +30,8 @@ export const AvatarIcon = React.forwardRef(
       iconProps,
       iconName,
       ...props
-    }: AvatarIconProps,
-    ref: Ref<HTMLElement>,
+    }: AvatarIconProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     const iconSize = avatarIconSizeToIconSize[size];
     return (
@@ -44,7 +45,7 @@ export const AvatarIcon = React.forwardRef(
         backgroundColor={backgroundColor}
         borderColor={BorderColor.transparent}
         className={classnames('mm-avatar-icon', className)}
-        {...props}
+        {...(props as AvatarBaseProps<C>)}
       >
         <Icon
           color={IconColor.inherit}
@@ -56,5 +57,3 @@ export const AvatarIcon = React.forwardRef(
     );
   },
 );
-
-AvatarIcon.displayName = 'AvatarIcon';

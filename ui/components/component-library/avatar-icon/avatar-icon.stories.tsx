@@ -1,7 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import {
-  Size,
   AlignItems,
   BackgroundColor,
   IconColor,
@@ -15,24 +14,6 @@ import { IconName } from '..';
 
 import README from './README.mdx';
 import { AvatarIcon, AvatarIconSize } from '.';
-
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
 
 export default {
   title: 'Components/ComponentLibrary/AvatarIcon',
@@ -62,26 +43,6 @@ export default {
     className: {
       control: 'text',
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
   args: {
     size: AvatarIconSize.Md,
@@ -95,13 +56,13 @@ const Template: StoryFn<typeof AvatarIcon> = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
+export const SizeStory: StoryFn<typeof AvatarIcon> = (args) => (
   <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
-    <AvatarIcon {...args} size={Size.XS} />
-    <AvatarIcon {...args} size={Size.SM} />
-    <AvatarIcon {...args} size={Size.MD} />
-    <AvatarIcon {...args} size={Size.LG} />
-    <AvatarIcon {...args} size={Size.XL} />
+    <AvatarIcon {...args} size={AvatarIconSize.Xs} />
+    <AvatarIcon {...args} size={AvatarIconSize.Sm} />
+    <AvatarIcon {...args} size={AvatarIconSize.Md} />
+    <AvatarIcon {...args} size={AvatarIconSize.Lg} />
+    <AvatarIcon {...args} size={AvatarIconSize.Xl} />
   </Box>
 );
 SizeStory.storyName = 'Size';
@@ -110,7 +71,7 @@ SizeStory.args = {
   iconName: IconName.Confirmation,
 };
 
-export const IconNameStory = (args) => (
+export const IconNameStory: StoryFn<typeof AvatarIcon> = (args) => (
   <Box display={Display.Flex} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
@@ -147,7 +108,7 @@ export const IconNameStory = (args) => (
 
 IconNameStory.storyName = 'Icon Name';
 
-export const ColorAndBackgroundColor = (args) => (
+export const ColorAndBackgroundColor: StoryFn<typeof AvatarIcon> = (args) => (
   <Box display={Display.Flex} gap={1}>
     <AvatarIcon
       color={IconColor.primaryDefault}
