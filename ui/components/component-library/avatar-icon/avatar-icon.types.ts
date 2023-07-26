@@ -1,13 +1,6 @@
-import {
-  BackgroundColor,
-  BorderColor,
-  IconColor,
-  TextColor,
-} from '../../../helpers/constants/design-system';
-import { IconName, IconProps } from '../icon';
-import { AvatarBaseSize } from '../avatar-base/avatar-base.types';
-import { ValidTag } from '../text/text.types';
-import type { BoxProps } from '../../ui/box/box.d';
+import { IconColor, TextColor } from '../../../helpers/constants/design-system';
+import { IconName, IconProps, IconSize } from '../icon';
+import { AvatarBaseProps } from '../avatar-base/avatar-base.types';
 
 export enum AvatarIconSize {
   Xs = 'xs',
@@ -17,7 +10,16 @@ export enum AvatarIconSize {
   Xl = 'xl',
 }
 
-export interface AvatarIconProps extends BoxProps {
+export const avatarIconSizeToIconSize: Record<AvatarIconSize, IconSize> = {
+  [AvatarIconSize.Xs]: IconSize.Xs,
+  [AvatarIconSize.Sm]: IconSize.Sm,
+  [AvatarIconSize.Md]: IconSize.Md,
+  [AvatarIconSize.Lg]: IconSize.Lg,
+  [AvatarIconSize.Xl]: IconSize.Xl,
+};
+
+export interface AvatarIconProps
+  extends Omit<AvatarBaseProps, 'color' | 'children'> {
   /**
    * The name of the icon to display. Should be one of IconName
    */
@@ -33,28 +35,10 @@ export interface AvatarIconProps extends BoxProps {
    * Possible values could be 'AvatarIconSize.Xs' 16px, 'AvatarIconSize.Sm' 24px, 'AvatarIconSize.Md' 32px, 'AvatarIconSize.Lg' 40px, 'AvatarIconSize.Xl' 48px
    * Defaults to AvatarIconSize.Md
    */
-  size?: AvatarIconSize | AvatarBaseSize;
-  /**
-   * The background color of the AvatarIcon
-   * Defaults to BackgroundColor.primaryMuted
-   */
-  backgroundColor?: BackgroundColor;
+  size?: AvatarIconSize;
   /**
    * The color of the text inside the AvatarIcon
    * Defaults to TextColor.primaryDefault
    */
   color?: TextColor | IconColor;
-  /**
-   * Additional classNames to be added to the AvatarIcon
-   */
-  className?: string;
-  /**
-   * The background color of the AvatarBase
-   * Defaults to Color.borderDefault
-   */
-  borderColor?: BorderColor;
-  /**
-   * Changes the root html element tag of the Text component.
-   */
-  as?: ValidTag;
 }

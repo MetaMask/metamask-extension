@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   Size,
   AlignItems,
@@ -86,9 +86,9 @@ export default {
   args: {
     size: AvatarIconSize.Md,
   },
-} as ComponentMeta<typeof AvatarIcon>;
+} as Meta<typeof AvatarIcon>;
 
-const Template: ComponentStory<typeof AvatarIcon> = (args) => {
+const Template: StoryFn<typeof AvatarIcon> = (args) => {
   return <AvatarIcon {...args} iconName={IconName.SwapHorizontal} />;
 };
 

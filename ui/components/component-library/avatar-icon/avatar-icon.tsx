@@ -2,7 +2,7 @@ import React, { Ref } from 'react';
 import classnames from 'classnames';
 import {
   BorderColor,
-  DISPLAY,
+  Display,
   AlignItems,
   JustifyContent,
   BackgroundColor,
@@ -10,15 +10,19 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 
-import { Icon, IconSize } from '../icon';
-import { AvatarBase, AvatarBaseSize } from '../avatar-base';
+import { Icon } from '../icon';
+import { AvatarBase } from '../avatar-base';
 
-import { AvatarIconProps } from './avatar-icon.types';
+import {
+  AvatarIconProps,
+  AvatarIconSize,
+  avatarIconSizeToIconSize,
+} from './avatar-icon.types';
 
 export const AvatarIcon = React.forwardRef(
   (
     {
-      size = AvatarBaseSize.Md,
+      size = AvatarIconSize.Md,
       color = TextColor.primaryDefault,
       backgroundColor = BackgroundColor.primaryMuted,
       className = '',
@@ -28,11 +32,12 @@ export const AvatarIcon = React.forwardRef(
     }: AvatarIconProps,
     ref: Ref<HTMLElement>,
   ) => {
+    const iconSize = avatarIconSizeToIconSize[size];
     return (
       <AvatarBase
         ref={ref}
         size={size}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         color={color as TextColor}
@@ -44,7 +49,7 @@ export const AvatarIcon = React.forwardRef(
         <Icon
           color={IconColor.inherit}
           name={iconName}
-          size={IconSize[size as unknown as keyof typeof IconSize]}
+          size={iconSize}
           {...iconProps}
         />
       </AvatarBase>
