@@ -5,7 +5,7 @@ import BlockieIdenticon from '../../ui/identicon/blockieIdenticon/blockieIdentic
 
 import type { PolymorphicRef, BoxProps } from '../box';
 
-import { AvatarBase, AvatarBaseSize } from '../avatar-base';
+import { AvatarBase } from '../avatar-base';
 import {
   AvatarAccountDiameter,
   AvatarAccountVariant,
@@ -27,7 +27,7 @@ export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
   ) => (
     <AvatarBase
       ref={ref}
-      size={AvatarBaseSize.Md}
+      size={size}
       className={classnames('mm-avatar-account', className)}
       {...(props as BoxProps<C>)}
     >

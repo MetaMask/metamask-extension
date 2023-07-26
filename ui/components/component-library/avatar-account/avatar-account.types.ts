@@ -3,7 +3,6 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 import { Size } from '../../../helpers/constants/design-system';
-import { AvatarBaseSize } from '../avatar-base';
 
 export enum AvatarAccountVariant {
   Jazzicon = 'jazzicon',
@@ -32,7 +31,7 @@ export interface AvatarAccountStyleUtilityProps extends StyleUtilityProps {
    * Possible values could be 'AvatarAccountSize.Xs', 'AvatarAccountSize.Sm', 'AvatarAccountSize.Md', 'AvatarAccountSize.Lg', 'AvatarAccountSize.Xl'
    * Defaults to AvatarAccountSize.Md
    */
-  size?: AvatarAccountSize | AvatarBaseSize;
+  size?: AvatarAccountSize;
   /**
    * The variant of the avatar to be rendered, it can render either a AvatarAccountVariant.Jazzicon or a AvatarAccountVariant.Blockie
    */
