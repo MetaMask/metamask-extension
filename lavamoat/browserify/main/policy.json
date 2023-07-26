@@ -484,19 +484,6 @@
         "@ethersproject/providers>@ethersproject/base64": true
       }
     },
-    "@formatjs/intl-relativetimeformat": {
-      "globals": {
-        "Intl": true
-      },
-      "packages": {
-        "@formatjs/intl-relativetimeformat>@formatjs/intl-utils": true
-      }
-    },
-    "@formatjs/intl-relativetimeformat>@formatjs/intl-utils": {
-      "globals": {
-        "Intl.getCanonicalLocales": true
-      }
-    },
     "@keystonehq/bc-ur-registry-eth": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
