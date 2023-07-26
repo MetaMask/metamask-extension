@@ -292,7 +292,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="box mm-button-icon mm-button-icon--size-lg box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
                   >
                     <span
-                      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/copy.svg');"
                     />
                   </button>
@@ -312,7 +312,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="box mm-button-icon mm-button-icon--size-lg box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
                   >
                     <span
-                      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/export.svg');"
                     />
                   </button>
@@ -383,7 +383,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                           tabindex="0"
                         >
                           <span
-                            class="box mm-icon mm-icon--size-inherit box--display-inline-block box--flex-direction-row box--color-inherit"
+                            class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-inherit"
                             style="mask-image: url('./images/icons/question.svg');"
                           />
                         </div>

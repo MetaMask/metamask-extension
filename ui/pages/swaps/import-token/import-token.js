@@ -4,14 +4,13 @@ import { I18nContext } from '../../../contexts/i18n';
 import UrlIcon from '../../../components/ui/url-icon';
 import Popover from '../../../components/ui/popover';
 import Button from '../../../components/ui/button';
-import Box from '../../../components/ui/box';
-import { Text } from '../../../components/component-library';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
+import { Text, BannerAlert, Box } from '../../../components/component-library';
 import {
   TextVariant,
   FONT_WEIGHT,
   AlignItems,
   DISPLAY,
+  Severity,
 } from '../../../helpers/constants/design-system';
 
 export default function ImportToken({
@@ -55,7 +54,10 @@ export default function ImportToken({
         display={DISPLAY.FLEX}
         className="import-token"
       >
-        <ActionableMessage type="danger" message={t('importTokenWarning')} />
+        <BannerAlert
+          severity={Severity.Danger}
+          description={t('importTokenWarning')}
+        />
         <UrlIcon
           url={tokenForImport.iconUrl}
           className="import-token__token-icon"
