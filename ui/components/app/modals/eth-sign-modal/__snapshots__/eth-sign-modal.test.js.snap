@@ -9,7 +9,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
       class="box box--margin-bottom-4 box--display-flex box--flex-direction-row box--justify-content-center"
     >
       <span
-        class="box eth-sign-modal__warning-icon mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+        class="mm-box eth-sign-modal__warning-icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
         style="mask-image: url('./images/icons/danger.svg');"
       />
       <button
@@ -17,7 +17,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
         class="box mm-button-icon mm-button-icon--size-sm eth-sign-modal__close box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/close.svg');"
         />
       </button>
@@ -44,7 +44,7 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
       class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-6 box--margin-bottom-6 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
     >
       <span
-        class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
         style="mask-image: url('./images/icons/danger.svg');"
       />
       <div>

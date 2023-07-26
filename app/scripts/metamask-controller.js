@@ -75,7 +75,7 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 ///: END:ONLY_INCLUDE_IN
 import { SignatureController } from '@metamask/signature-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { PPOMController, createPPOMMiddleware } from '@metamask/ppom-validator';
+import { PPOMController } from '@metamask/ppom-validator';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -151,6 +151,10 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
+import * as PPOMModule from './lib/ppom/ppom';
+///: END:ONLY_INCLUDE_IN
 import {
   onMessageReceived,
   checkForMultipleVersionsRunning,
@@ -212,7 +216,7 @@ import {
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { IndexedDBPPOMStorage } from './lib/indexed-db-backend';
+import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
 
@@ -639,6 +643,7 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
+      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
       onNetworkChange: networkControllerMessenger.subscribe.bind(
@@ -650,6 +655,7 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
+      cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -945,10 +951,10 @@ export default class MetamaskController extends EventEmitter {
       }),
       setupSnapProvider: this.setupSnapProvider.bind(this),
     };
-    this.snapExecutionService =
-      this.opts.overrides?.createSnapExecutionService?.(
-        snapExecutionServiceArgs,
-      ) || new IframeExecutionService(snapExecutionServiceArgs);
+
+    this.snapExecutionService = new IframeExecutionService(
+      snapExecutionServiceArgs,
+    );
 
     const snapControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapController',
@@ -1712,9 +1718,6 @@ export default class MetamaskController extends EventEmitter {
       this.swapsController.resetState,
       this.ensController.resetState,
       this.approvalController.clear.bind(this.approvalController),
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      this.ppomController.clear.bind(this.ppomController),
-      ///: END:ONLY_INCLUDE_IN
       // WE SHOULD ADD TokenListController.resetState here too. But it's not implemented yet.
     ];
 
@@ -2433,8 +2436,9 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addUnapprovedTransaction:
-        txController.addUnapprovedTransaction.bind(txController),
+      addTransaction: this.addTransaction.bind(this),
+      addTransactionAndWaitForPublish:
+        this.addTransactionAndWaitForPublish.bind(this),
       createTransactionEventFragment:
         txController.createTransactionEventFragment.bind(txController),
       getTransactions: txController.getTransactions.bind(txController),
@@ -3562,7 +3566,41 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnapprovedTransaction(txParams, req) {
-    return await this.txController.newUnapprovedTransaction(txParams, req);
+    // Options are passed explicitly as an additional security measure
+    // to ensure approval is not disabled
+    const { result } = await this.txController.addTransaction(txParams, {
+      actionId: req.id,
+      method: req.method,
+      origin: req.origin,
+      // This is the default behaviour but specified here for clarity
+      requireApproval: true,
+    });
+
+    return await result;
+  }
+
+  async addTransactionAndWaitForPublish(txParams, options) {
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    await result;
+
+    return transactionMeta;
+  }
+
+  async addTransaction(txParams, options) {
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    result.catch(() => {
+      // Not concerned with result
+    });
+
+    return transactionMeta;
   }
 
   /**
