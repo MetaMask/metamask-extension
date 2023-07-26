@@ -33,9 +33,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -145,40 +142,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         )
         ///: END:ONLY_INCLUDE_IN
       }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        <MenuItem
-          iconName={IconName.Diagram}
-          onClick={() => {
-            const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
-            global.platform.openTab({
-              url: portfolioUrl,
-            });
-            trackEvent(
-              {
-                category: MetaMetricsEventCategory.Home,
-                event: MetaMetricsEventName.PortfolioLinkClicked,
-                properties: {
-                  url: portfolioUrl,
-                  location: METRICS_LOCATION,
-                },
-              },
-              {
-                contextPropsIntoEventProperties: [
-                  MetaMetricsContextProp.PageTitle,
-                ],
-              },
-            );
-            closeMenu();
-          }}
-          data-testid="global-menu-portfolio"
-        >
-          {t('portfolioView')}
-        </MenuItem>
-        ///: END:ONLY_INCLUDE_IN
-      }
-
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}
