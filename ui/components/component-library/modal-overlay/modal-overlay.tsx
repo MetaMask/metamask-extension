@@ -6,8 +6,7 @@ import {
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
-// import Box from '../../ui/box/box';
-import { Box } from '../../component-library/box';
+import { Box } from '../box';
 
 import { ModalOverlayProps } from './modal-overlay.types';
 
