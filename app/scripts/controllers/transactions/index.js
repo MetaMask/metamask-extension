@@ -135,10 +135,7 @@ export default class TransactionController extends EventEmitter {
     this.getNetworkStatus = opts.getNetworkStatus;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
-    this._getCurrentNetworkEIP1559Compatibility =
-      opts.getCurrentNetworkEIP1559Compatibility;
-    this._getCurrentAccountEIP1559Compatibility =
-      opts.getCurrentAccountEIP1559Compatibility;
+    this._getEIP1559Compatibility = opts.getEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
@@ -171,12 +168,15 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
+      // replace the methods below with getNetworkClientsById
+      getNetworkClientsById: opts.getNetworkClientsById,
       getNetworkId: this.getNetworkId,
       getNetworkStatus: this.getNetworkStatus,
       getCurrentChainId: opts.getCurrentChainId,
     });
 
     this.store = this.txStateManager.store;
+    // TODO create a collection of nonceTrackers, keyed by chainId
     this.nonceTracker = new NonceTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
@@ -192,7 +192,7 @@ export default class TransactionController extends EventEmitter {
       getConfirmedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
-
+    // TODO create a collection of pendingTxTrackers, keyed by chainId
     this.pendingTxTracker = new PendingTransactionTracker({
       provider: this.provider,
       nonceTracker: this.nonceTracker,
@@ -247,14 +247,6 @@ export default class TransactionController extends EventEmitter {
     return integerChainId;
   }
 
-  async getEIP1559Compatibility(fromAddress) {
-    const currentNetworkIsCompatible =
-      await this._getCurrentNetworkEIP1559Compatibility();
-    const fromAccountIsCompatible =
-      await this._getCurrentAccountEIP1559Compatibility(fromAddress);
-    return currentNetworkIsCompatible && fromAccountIsCompatible;
-  }
-
   /**
    * `@ethereumjs/tx` uses `@ethereumjs/common` as a configuration tool for
    * specifying which chain, network, hardfork and EIPs to support for
@@ -262,12 +254,11 @@ export default class TransactionController extends EventEmitter {
    * specified in txParams, `@ethereumjs/tx` is able to determine which EIP-2718
    * transaction type to use.
    *
-   * @param fromAddress
    * @returns {Common} common configuration object
    */
-  async getCommonConfiguration(fromAddress) {
+  async getCommonConfiguration() {
     const { type, nickname: name } = this.getProviderConfig();
-    const supportsEIP1559 = await this.getEIP1559Compatibility(fromAddress);
+    const supportsEIP1559 = await this._getEIP1559Compatibility();
 
     // This logic below will have to be updated each time a hardfork happens
     // that carries with it a new Transaction type. It is inconsequential for
@@ -689,7 +680,7 @@ export default class TransactionController extends EventEmitter {
   async addTxGasDefaults(txMeta, getCodeResponse) {
     const eip1559Compatibility =
       txMeta.txParams.type !== TransactionEnvelopeType.legacy &&
-      (await this.getEIP1559Compatibility());
+      (await this._getEIP1559Compatibility());
     const {
       gasPrice: defaultGasPrice,
       maxFeePerGas: defaultMaxFeePerGas,
@@ -1127,7 +1118,8 @@ export default class TransactionController extends EventEmitter {
     }
 
     const initialTx = listOfTxParams[0];
-    const common = await this.getCommonConfiguration(initialTx.from);
+    // TODO get networkClientId off initialTx and pass to getCommonConfiguration
+    const common = await this.getCommonConfiguration();
     const initialTxAsEthTx = TransactionFactory.fromTxData(initialTx, {
       common,
     });
@@ -1179,7 +1171,7 @@ export default class TransactionController extends EventEmitter {
     };
     // sign tx
     const fromAddress = txParams.from;
-    const common = await this.getCommonConfiguration(fromAddress);
+    const common = await this.getCommonConfiguration();
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
     const signedEthTx = await this.signEthTx(unsignedEthTx, fromAddress);
 
@@ -1208,7 +1200,7 @@ export default class TransactionController extends EventEmitter {
     };
     // sign tx
     const fromAddress = txParams.from;
-    const common = await this.getCommonConfiguration(txParams.from);
+    const common = await this.getCommonConfiguration();
     const unsignedEthTx = TransactionFactory.fromTxData(txParams, { common });
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
@@ -1516,7 +1508,15 @@ export default class TransactionController extends EventEmitter {
 
   async _createTransaction(
     txParams,
-    { actionId, method, origin, sendFlowHistory = [], swaps, type, networkClientId },
+    {
+      actionId,
+      method,
+      origin,
+      sendFlowHistory = [],
+      swaps,
+      type,
+      networkClientId,
+    },
   ) {
     if (
       type !== undefined &&
@@ -1537,7 +1537,9 @@ export default class TransactionController extends EventEmitter {
 
     // validate
     const normalizedTxParams = txUtils.normalizeTxParams(txParams);
-    const eip1559Compatibility = await this.getEIP1559Compatibility(networkClientId);
+    const eip1559Compatibility = await this._getEIP1559Compatibility(
+      networkClientId,
+    );
 
     txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
 

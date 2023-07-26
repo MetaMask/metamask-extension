@@ -581,8 +581,7 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
+      getCurrentAccountEIP1559Compatibility: () => true,
       legacyAPIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/gasPrices`,
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
@@ -1154,14 +1153,19 @@ export default class MetamaskController extends EventEmitter {
         initState.TransactionController || initState.TransactionManager,
       getPermittedAccounts: this.getPermittedAccounts.bind(this),
       getProviderConfig: () => this.networkController.state.providerConfig,
-      getCurrentNetworkEIP1559Compatibility:
+      getEIP1559Compatibility:
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
+      getNetworkClientsById: this.networkController.getNetworkClientsById.bind(
+        this.networkController,
+      ),
       getNetworkId: () => this.networkController.state.networkId,
-      getNetworkStatus: () => this.networkController.state.networkStatus,
+      getNetworkStatus: (networkClientId) =>
+        this.networkController.state.networkMeta?.[
+          networkClientId ||
+            this.networkController.state.selectedNetworkClientId
+        ]?.status,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -3593,10 +3597,10 @@ export default class MetamaskController extends EventEmitter {
   async addTransaction(txParams, options) {
     // get networkClientId for origin metamask:
     // const networkClientId = await this.getNetworkClientIdForOrigin(options.origin) // will always be metamask?
-    const networkClientId = NetworkType.mainnet;
+    const networkClientId = NetworkType.sepolia;
     const { transactionMeta, result } = await this.txController.addTransaction(
       txParams,
-      {...options, networkClientId },
+      { ...options, networkClientId },
     );
 
     result.catch(() => {
@@ -3604,13 +3608,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     return transactionMeta;
-  }
-
-  /**
-   * @returns {boolean} true if the keyring type supports EIP-1559
-   */
-  async getCurrentAccountEIP1559Compatibility() {
-    return true;
   }
 
   //=============================================================================
@@ -4025,7 +4022,7 @@ export default class MetamaskController extends EventEmitter {
     // append the networkClientId to each request
     engine.push(
       createNetworkClientIdMiddleware({
-        getNetworkClientIdByOrigin: () => NetworkType.mainnet, // placeholder
+        getNetworkClientIdByOrigin: () => NetworkType.sepolia, // placeholder
         // this.networkController.state.selectedNetworkClientId, // todo add when new network controller is in
         // and then
         // this.selectedNetworkController.getNetworkClientIdByOrigin.bind(

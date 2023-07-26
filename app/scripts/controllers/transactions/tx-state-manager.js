@@ -65,6 +65,7 @@ export default class TransactionStateManager extends EventEmitter {
     getNetworkId,
     getNetworkStatus,
     getCurrentChainId,
+    getNetworkClientsById,
   }) {
     super();
 
@@ -73,6 +74,7 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
+    this.getNetworkClientsById = getNetworkClientsById;
     this.getNetworkId = getNetworkId;
     this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;

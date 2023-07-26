@@ -3886,6 +3886,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:3.2.0-preview.d6c1305":
+  version: 3.2.0-preview.d6c1305
+  resolution: "@metamask/base-controller@npm:3.2.0-preview.d6c1305::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fbase-controller%2F3.2.0-preview.d6c1305%2Fbe2edf96abd8b231992b207d4c387872bdabd5d4"
+  dependencies:
+    "@metamask/utils": ^6.2.0
+    immer: ^9.0.6
+  checksum: 588140248a4ff5b275aa39850059f121fba0d38cece5b1b7cbeec766a8bacc036cdc3fffa6df58f451b21dd425851ef2cd832f62679f362ce4024db59dc76235
+  languageName: node
+  linkType: hard
+
 "@metamask/base-controller@npm:^2.0.0":
   version: 2.0.0
   resolution: "@metamask/base-controller@npm:2.0.0"
@@ -3917,6 +3927,22 @@ __metadata:
   version: 2.3.1
   resolution: "@metamask/contract-metadata@npm:2.3.1"
   checksum: 95dcc27f661a3e380c0cca8c6d90fb1777e31ab3fe16909fd5c67844125510e3f8e9eca05c9069fde34c77df3b66e56111c7a908a07623e88052ef147eff4315
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:4.3.0-preview.d6c1305":
+  version: 4.3.0-preview.d6c1305
+  resolution: "@metamask/controller-utils@npm:4.3.0-preview.d6c1305::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fcontroller-utils%2F4.3.0-preview.d6c1305%2F6a812b3ef91cd0249311bb69fdd83cfb6166d1de"
+  dependencies:
+    "@metamask/eth-query": ^3.0.1
+    "@metamask/utils": ^6.2.0
+    "@spruceid/siwe-parser": 1.1.3
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: cc4ad66443ba4ac40f1e8c2e5d292d981d13eae0a974524f04e595b8e860d8966e11bfc670d319a77e694edc5ca43ba41e645b9bc73929d2ac2665ee2dd902b0
   languageName: node
   linkType: hard
 
@@ -4048,7 +4074,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-infura@npm:^8.1.0":
+"@metamask/eth-json-rpc-infura@npm:^8.1.0, @metamask/eth-json-rpc-infura@npm:^8.1.1":
   version: 8.1.1
   resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
   dependencies:
@@ -4125,6 +4151,16 @@ __metadata:
     ethereumjs-util: ^7.0.9
     hdkey: 0.8.0
   checksum: a4c7ec98904c95cbbbf8f6e3e07ba26ff0328e8d20a94bb8bc2c1da2a944306bcf741a77d85586f25ed8f8f90bb1308d87751e6046d9fb1e531221e2804110e2
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-query@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/eth-query@npm:3.0.1"
+  dependencies:
+    json-rpc-random-id: ^1.0.0
+    xtend: ^4.0.1
+  checksum: b9a323dff67328eace7d54fc8b0bc4dd763bf15760870656cbd5aad5380d1ee4489fb5c59506290d5f77cf55e74e530ee97b52702a329f1090ec03a6158434b7
   languageName: node
   linkType: hard
 
@@ -4388,7 +4424,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0, @metamask/network-controller@npm:^10.3.1":
+"@metamask/network-controller@npm:11.0.0-preview.d6c1305":
+  version: 11.0.0-preview.d6c1305
+  resolution: "@metamask/network-controller@npm:11.0.0-preview.d6c1305::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fnetwork-controller%2F11.0.0-preview.d6c1305%2F5e4d6590ba3b22533029791256dead1d05d15c4d"
+  dependencies:
+    "@metamask/base-controller": 3.2.0-preview.d6c1305
+    "@metamask/controller-utils": 4.3.0-preview.d6c1305
+    "@metamask/eth-json-rpc-infura": ^8.1.1
+    "@metamask/eth-json-rpc-middleware": ^11.0.0
+    "@metamask/eth-json-rpc-provider": ^1.0.0
+    "@metamask/eth-query": ^3.0.1
+    "@metamask/swappable-obj-proxy": ^2.1.0
+    "@metamask/utils": ^6.2.0
+    async-mutex: ^0.2.6
+    eth-block-tracker: ^7.0.1
+    eth-rpc-errors: ^4.0.2
+    immer: ^9.0.6
+    json-rpc-engine: ^6.1.0
+    uuid: ^8.3.2
+  checksum: 65618c33325cbd2cc5c1460a142b8da348279c9dc8b298b49d4978d3aa3cd81141130d81e6f24882cd01ccaf82dcfbeb26a366d213d209c9156a824fcf2633b2
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@npm:^10.2.0, @metamask/network-controller@npm:^10.3.0":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
   dependencies:
@@ -24270,6 +24328,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-keyring-controller": ^10.0.1
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
+    "@metamask/eth-query": ^3.0.1
     "@metamask/eth-snap-keyring": ^0.1.3
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/eth-trezor-keyring": ^1.0.0
@@ -24282,7 +24341,7 @@ __metadata:
     "@metamask/logo": ^3.1.1
     "@metamask/message-manager": ^7.0.2
     "@metamask/metamask-eth-abis": ^3.0.0
-    "@metamask/network-controller": ^10.3.1
+    "@metamask/network-controller": 11.0.0-preview.d6c1305
     "@metamask/notification-controller": ^3.0.0
     "@metamask/obs-store": ^8.1.0
     "@metamask/permission-controller": ^4.0.0
