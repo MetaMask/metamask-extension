@@ -558,27 +558,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * updates a transaction's user settings only if the transaction state is unapproved
-   *
-   * @param {string} txId
-   * @param {object} userSettings - holds the metadata
-   * @param {string} userSettings.userEditedGasLimit
-   * @param {string} userSettings.userFeeLevel
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionUserSettings');
-
-    let userSettings = { userEditedGasLimit, userFeeLevel };
-    // only update what is defined
-    userSettings = pickBy(userSettings);
-
-    const note = `Update User Settings for ${txId}`;
-    this._updateTransaction(txId, userSettings, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
    * append new sendFlowHistory to the transaction with id if the transaction
    * state is unapproved. Returns the updated transaction.
    *
