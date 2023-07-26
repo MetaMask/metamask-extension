@@ -37,7 +37,6 @@ import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wall
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -71,7 +70,7 @@ function getLabel(keyring = {}, t) {
 }
 
 export const AccountListItem = ({
-  identity,
+  account,
   selected = false,
   onClick,
   closeMenu,
@@ -97,9 +96,7 @@ export const AccountListItem = ({
     }
   }, [itemRef, selected]);
 
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
-  );
+  const { keyring } = account.metadata;
   const label = getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -132,7 +129,7 @@ export const AccountListItem = ({
       <AvatarAccount
         borderColor={BorderColor.transparent}
         size={Size.SM}
-        address={identity.address}
+        address={account.address}
         variant={
           useBlockie
             ? AvatarAccountVariant.Blockies
@@ -168,16 +165,16 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {account.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={identity.name}
+                    title={account.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {identity.name}
+                    {account.name}
                   </Tooltip>
                 ) : (
-                  identity.name
+                  account.name
                 )}
               </Text>
             </Box>
@@ -193,7 +190,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={identity.balance}
+                value={account.balance}
                 type={SECONDARY}
               />
             </Text>
@@ -213,7 +210,7 @@ export const AccountListItem = ({
               />
             ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(toChecksumHexAddress(identity.address))}
+              {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
           <Text
@@ -224,7 +221,7 @@ export const AccountListItem = ({
           >
             <UserPreferencedCurrencyDisplay
               ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={identity.balance}
+              value={account.balance}
               type={PRIMARY}
             />
           </Text>
@@ -240,7 +237,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
       <ButtonIcon
-        ariaLabel={`${identity.name} ${t('options')}`}
+        ariaLabel={`${account.name} ${t('options')}`}
         iconName={IconName.MoreVertical}
         size={IconSize.Sm}
         ref={setAccountListItemMenuRef}
@@ -261,10 +258,10 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        identity={identity}
+        identity={account}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}
-        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+        isRemovable={keyring !== KeyringType.hdKeyTree}
         closeMenu={closeMenu}
       />
     </Box>
@@ -275,10 +272,20 @@ AccountListItem.propTypes = {
   /**
    * Identity of the account
    */
-  identity: PropTypes.shape({
+  account: PropTypes.shape({
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
   /**
    * Represents if this account is currently selected
