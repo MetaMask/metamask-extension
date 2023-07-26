@@ -13,7 +13,7 @@ export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
-  getUseIpfsGateway,
+  getUseAddressBarEnsResolution,
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -36,6 +36,8 @@ export default function setupEnsIpfsResolver({
     // only attempt ENS resolution on mainnet
     if (
       (tabId === -1 || getCurrentChainId() !== '0x1') &&
+      // E2E tests use a chain other than 0x1, so for testing,
+      // allow the reuqest to pass through
       !process.env.IN_TEST
     ) {
       return;
@@ -54,9 +56,9 @@ export default function setupEnsIpfsResolver({
 
   async function attemptResolve({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
-    const useIpfsGateway = getUseIpfsGateway();
+    const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
-    if (!useIpfsGateway || ipfsGateway === '') {
+    if (!useAddressBarEnsResolution || ipfsGateway === '') {
       return;
     }
 
@@ -65,7 +67,7 @@ export default function setupEnsIpfsResolver({
     let url = `https://app.ens.domains/name/${name}`;
 
     // If we're testing ENS domain resolution support,
-    // we can redirect to ENS Domains site
+    // we assume the ENS domains URL
     if (process.env.IN_TEST) {
       browser.tabs.update(tabId, { url });
       return;

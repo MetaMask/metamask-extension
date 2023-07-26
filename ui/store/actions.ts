@@ -3095,12 +3095,12 @@ export function setIpfsGateway(
   };
 }
 
-export function setUseIpfsGateway(
+export function setUseAddressBarEnsResolution(
   val: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setUseIpfsGateway`);
-    callBackgroundMethod('setUseIpfsGateway', [val], (err) => {
+    log.debug(`background.setUseAddressBarEnsResolution`);
+    callBackgroundMethod('setUseAddressBarEnsResolution', [val], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }

@@ -67,7 +67,7 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
-      useIpfsGateway: true,
+      useAddressBarEnsResolution: true,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
@@ -482,12 +482,12 @@ export default class PreferencesController {
   }
 
   /**
-   * A setter for the `useIpfsGateway` property
+   * A setter for the `useAddressBarEnsResolution` property
    *
-   * @param {boolean} useIpfsGateway - Whether or not user prefers IPFS resolution for domains
+   * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
    */
-  async setUseIpfsGateway(useIpfsGateway) {
-    this.store.updateState({ useIpfsGateway });
+  async setUseAddressBarEnsResolution(useAddressBarEnsResolution) {
+    this.store.updateState({ useAddressBarEnsResolution });
   }
 
   /**

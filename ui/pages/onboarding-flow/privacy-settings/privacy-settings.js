@@ -35,7 +35,7 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
-  setUseIpfsGateway,
+  setUseAddressBarEnsResolution,
   showModal,
   toggleNetworkMenu,
 } from '../../../store/actions';
@@ -55,7 +55,7 @@ export default function PrivacySettings() {
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
-  const [useIpfs, setUseIpfs] = useState(true);
+  const [addressBarResolution, setAddressBarResolution] = useState(true);
   const [ipfsError, setIPFSError] = useState(null);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -72,7 +72,7 @@ export default function PrivacySettings() {
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
-    dispatch(setUseIpfsGateway(useIpfs));
+    dispatch(setUseAddressBarEnsResolution(addressBarResolution));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -256,8 +256,8 @@ export default function PrivacySettings() {
             }
           />
           <Setting
-            value={useIpfs}
-            setValue={setUseIpfs}
+            value={addressBarResolution}
+            setValue={setAddressBarResolution}
             title="New IPFS Setting Title"
             description="New IPFS Setting Description"
           />

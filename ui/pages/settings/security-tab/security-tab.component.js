@@ -55,8 +55,8 @@ export default class SecurityTab extends PureComponent {
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
-    useIpfsGateway: PropTypes.bool.isRequired,
-    setUseIpfsGateway: PropTypes.func.isRequired,
+    useAddressBarEnsResolution: PropTypes.bool.isRequired,
+    setUseAddressBarEnsResolution: PropTypes.func.isRequired,
   };
 
   state = {
@@ -311,7 +311,8 @@ export default class SecurityTab extends PureComponent {
   renderIpfsGatewayControl() {
     const { t } = this.context;
     const { ipfsGatewayError } = this.state;
-    const { useIpfsGateway, setUseIpfsGateway } = this.props;
+    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
+      this.props;
 
     const handleIpfsGatewaySave = (gateway) => {
       const url = new URL(addUrlProtocolPrefix(gateway));
@@ -385,8 +386,8 @@ export default class SecurityTab extends PureComponent {
             data-testid="ipfs-gateway-resolution-container"
           >
             <ToggleButton
-              value={useIpfsGateway}
-              onToggle={(value) => setUseIpfsGateway(!value)}
+              value={useAddressBarEnsResolution}
+              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
               offLabel={t('off')}
               onLabel={t('on')}
             />
