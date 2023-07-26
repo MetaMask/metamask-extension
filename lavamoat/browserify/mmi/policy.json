@@ -308,15 +308,7 @@
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/bignumber>bn.js": true
-      }
-    },
-    "@ethersproject/bignumber>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "bn.js": true
       }
     },
     "@ethersproject/contracts": {
@@ -1428,11 +1420,11 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-abi": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-contract": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-query": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-util": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -1443,7 +1435,7 @@
     },
     "@metamask/eth-token-tracker>ethjs>ethjs-abi": {
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1461,7 +1453,7 @@
     },
     "@metamask/eth-token-tracker>ethjs>ethjs-contract>ethjs-abi": {
       "packages": {
-        "@metamask/eth-token-tracker>ethjs>bn.js": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
@@ -1823,21 +1815,13 @@
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util": {
       "packages": {
-        "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>bn.js": true,
+        "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
-      }
-    },
-    "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@metamask/logo": {
@@ -2499,11 +2483,11 @@
         "@truffle/codec>@truffle/abi-utils": true,
         "@truffle/codec>@truffle/compile-common": true,
         "@truffle/codec>big.js": true,
-        "@truffle/codec>bn.js": true,
         "@truffle/codec>cbor": true,
         "@truffle/codec>semver": true,
         "@truffle/codec>utf8": true,
         "@truffle/codec>web3-utils": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "browserify>os-browserify": true,
         "browserify>util": true,
@@ -2660,14 +2644,6 @@
         "define": true
       }
     },
-    "@truffle/codec>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@truffle/codec>cbor": {
       "globals": {
         "TextDecoder": true
@@ -2710,21 +2686,13 @@
       },
       "packages": {
         "@truffle/codec>utf8": true,
-        "@truffle/codec>web3-utils>bn.js": true,
         "@truffle/codec>web3-utils>ethereum-bloom-filters": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "ethereumjs-util": true,
         "ethereumjs-wallet>randombytes": true,
         "ethjs>ethjs-unit": true,
         "ethjs>number-to-bn": true
-      }
-    },
-    "@truffle/codec>web3-utils>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@truffle/codec>web3-utils>ethereum-bloom-filters": {
@@ -2748,7 +2716,7 @@
         "@truffle/codec>web3-utils": true,
         "@truffle/decoder>@truffle/encoder": true,
         "@truffle/decoder>@truffle/source-map-utils": true,
-        "@truffle/decoder>bn.js": true,
+        "bn.js": true,
         "nock>debug": true
       }
     },
@@ -2968,14 +2936,6 @@
     "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
       "packages": {
         "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
-      }
-    },
-    "@truffle/decoder>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@zxing/browser": {
@@ -3517,11 +3477,11 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
+        "bn.js": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "browserify>events": true,
         "eth-lattice-keyring>@ethereumjs/tx": true,
-        "eth-lattice-keyring>bn.js": true,
         "eth-lattice-keyring>gridplus-sdk": true,
         "eth-lattice-keyring>rlp": true
       }
@@ -3567,14 +3527,6 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
-      }
-    },
-    "eth-lattice-keyring>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {
@@ -3697,17 +3649,9 @@
         "intToBuffer": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": true,
+        "bn.js": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>js-sha3": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser>buffer": {
@@ -3841,21 +3785,13 @@
     },
     "ethereumjs-util": {
       "packages": {
+        "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>bn.js": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true
-      }
-    },
-    "ethereumjs-util>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "ethereumjs-util>create-hash": {
@@ -3974,16 +3910,8 @@
     },
     "ethereumjs-util>rlp": {
       "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>rlp>bn.js": true
-      }
-    },
-    "ethereumjs-util>rlp>bn.js": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
+        "bn.js": true,
+        "browserify>buffer": true
       }
     },
     "ethereumjs-wallet": {
@@ -4071,10 +3999,10 @@
         "setInterval": true
       },
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
         "ethjs-contract": true,
         "ethjs-query": true,
-        "ethjs>bn.js": true,
         "ethjs>ethjs-abi": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
@@ -4096,8 +4024,8 @@
     },
     "ethjs-contract>ethjs-abi": {
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
-        "ethjs-contract>ethjs-abi>bn.js": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
@@ -4158,8 +4086,8 @@
     },
     "ethjs>ethjs-abi": {
       "packages": {
+        "bn.js": true,
         "browserify>buffer": true,
-        "ethjs>bn.js": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
@@ -4182,7 +4110,7 @@
     },
     "ethjs>ethjs-unit": {
       "packages": {
-        "ethjs>ethjs-unit>bn.js": true,
+        "bn.js": true,
         "ethjs>number-to-bn": true
       }
     },
@@ -4205,8 +4133,8 @@
     },
     "ethjs>number-to-bn": {
       "packages": {
-        "ethjs>ethjs-util>strip-hex-prefix": true,
-        "ethjs>number-to-bn>bn.js": true
+        "bn.js": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "extension-port-stream": {
