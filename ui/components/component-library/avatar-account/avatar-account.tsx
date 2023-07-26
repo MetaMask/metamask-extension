@@ -35,12 +35,12 @@ export const AvatarAccount: AvatarAccountComponent = React.forwardRef(
         <Jazzicon
           className={classnames('mm-avatar-account__jazzicon')}
           address={address}
-          diameter={AvatarAccountDiameter[size as number]}
+          diameter={AvatarAccountDiameter[size]}
         />
       ) : (
         <BlockieIdenticon
           address={address}
-          diameter={AvatarAccountDiameter[size as number]}
+          diameter={AvatarAccountDiameter[size]}
           borderRadius="50%"
         />
       )}
