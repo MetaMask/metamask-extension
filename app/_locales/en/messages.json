@@ -1427,7 +1427,7 @@
     "message": "Enhanced token detection is currently available on $1. $2"
   },
   "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask lets you see ENS domains like \"https://vitalik.eth\" right in your browser's address bar. Here's how it works:"
+    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
   },
   "ensDomainsSettingDescriptionOutro": {
     "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
