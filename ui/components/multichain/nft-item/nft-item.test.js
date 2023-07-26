@@ -21,7 +21,10 @@ describe('NftItem component', () => {
     };
 
     it('renders correctly with an image source', () => {
-      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
+      const { getByTestId } = renderWithProvider(
+        <NftItem {...props} showNftDefaultImage />,
+        store,
+      );
 
       expect(getByTestId('nft-item')).toBeInTheDocument();
       expect(getByTestId('nft-network-badge')).toBeInTheDocument();
@@ -31,7 +34,7 @@ describe('NftItem component', () => {
 
     it('renders correctly with default image when no image source is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem {...props} src="" />,
+        <NftItem {...props} />,
         store,
       );
 
@@ -40,7 +43,10 @@ describe('NftItem component', () => {
     });
 
     it('calls onClick when the NFT image is clicked', () => {
-      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
+      const { getByTestId } = renderWithProvider(
+        <NftItem {...props} showNftDefaultImage />,
+        store,
+      );
 
       fireEvent.click(getByTestId('nft-image'));
       expect(props.onClick).toHaveBeenCalled();
