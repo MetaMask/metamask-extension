@@ -1144,7 +1144,7 @@ const state = {
       '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {},
       '0x9d0ba4ddac06032527b140912ec808ab9451b788': {},
     },
-    accountHiddenTokens: {
+    accountHiddenTokens: { // this state is stale
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         'eip155:5': [],
       },

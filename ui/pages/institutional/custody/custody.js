@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -45,7 +46,6 @@ import { getMMIConfiguration } from '../../../selectors/institutional/selectors'
 import CustodyAccountList from '../connect-custody/account-list';
 import JwtUrlForm from '../../../components/institutional/jwt-url-form';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
-import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
 
 const CustodyPage = () => {
   const t = useI18nContext();

@@ -34,7 +34,7 @@ jest.mock('../../../store/institutional/institution-background', () => ({
 describe('CustodyPage', function () {
   const mockStore = {
     metamask: {
-      providerConfig: { caipChainId: "eip155:1", type: 'test' },
+      providerConfig: { caipChainId: 'eip155:1', type: 'test' },
       mmiConfiguration: {
         portfolio: {
           enabled: true,

@@ -1016,12 +1016,12 @@ describe('migration #88', () => {
       data: {
         TokensController: {
           allDetectedTokens: {
-            '0x10': {
+            '16': {
               '0x1': {
                 '0x111': ['0xaaa'],
               },
             },
-            '0x20': {
+            '32': {
               '0x2': {
                 '0x222': ['0xbbb'],
               },

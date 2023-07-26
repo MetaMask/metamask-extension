@@ -1,5 +1,4 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { toHex } from '@metamask/controller-utils';
 import {
   getConfiguredCustodians,
   getCustodianIconForAddress,

@@ -1,7 +1,6 @@
 import { toChecksumAddress } from 'ethereumjs-util';
 import { getSelectedIdentity, getAccountType } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
-import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 
 export function getWaitForConfirmDeepLinkDialog(state) {
   return state.metamask.waitForConfirmDeepLinkDialog;
