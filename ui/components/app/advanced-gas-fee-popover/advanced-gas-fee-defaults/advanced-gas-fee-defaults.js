@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
-import CheckBox from '../../../ui/check-box';
+import { Checkbox as CheckBox } from '../../../component-library';
 import {
   Display,
   FlexDirection,
@@ -81,10 +81,10 @@ const AdvancedGasFeeDefaults = () => {
     >
       <label className="advanced-gas-fee-defaults__label">
         <CheckBox
-          checked={isDefaultSettingsSelected}
-          className="advanced-gas-fee-defaults__checkbox"
-          onClick={handleUpdateDefaultSettings}
-          disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
+          isChecked = {isDefaultSettingsSelected}
+          className = "advanced-gas-fee-defaults__checkbox"
+          onChange = {handleUpdateDefaultSettings}
+          isDisabled = {gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Text
           variant={TextVariant.bodySm}
