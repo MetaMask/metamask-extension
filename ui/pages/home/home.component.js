@@ -81,6 +81,9 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import InstitutionalHomeFooter from './institutional/institutional-home-footer';
+///: END:ONLY_INCLUDE_IN
 
 function shouldCloseNotificationPopup({
   isNotification,
@@ -897,7 +900,7 @@ export default class Home extends PureComponent {
                 </Tab>
               </Tabs>
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
                 <ButtonLink
                   size={Size.MD}
                   startIconName={IconName.MessageQuestion}
@@ -928,6 +931,13 @@ export default class Home extends PureComponent {
                 >
                   {t('needHelpLinkText')}
                 </ButtonLink>
+                ///: END:ONLY_INCLUDE_IN
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                <InstitutionalHomeFooter
+                  activitySupportDisplayStyle={activitySupportDisplayStyle}
+                />
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
