@@ -82,7 +82,7 @@ import BetaHomeFooter from './beta/beta-home-footer.component';
 import FlaskHomeFooter from './flask/flask-home-footer.component';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import InstitutionalHomeFooter from './institutional/institutional-home-footer.component';
+import InstitutionalHomeFooter from './institutional/institutional-home-footer';
 ///: END:ONLY_INCLUDE_IN
 
 function shouldCloseNotificationPopup({

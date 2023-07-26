@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -12,7 +11,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ButtonLink, IconName } from '../../../components/component-library';
 import { Display, Size } from '../../../helpers/constants/design-system';
 
-const BetaHomeFooter = ({ activitySupportDisplayStyle }) => {
+const InstitutionalHomeFooter = ({ activitySupportDisplayStyle }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -48,7 +47,7 @@ const BetaHomeFooter = ({ activitySupportDisplayStyle }) => {
   );
 };
 
-BetaHomeFooter.propTypes = {
+InstitutionalHomeFooter.propTypes = {
   activitySupportDisplayStyle: PropTypes.shape({
     justifyContent: PropTypes.string.isRequired,
     paddingLeft: PropTypes.string,
@@ -57,4 +56,4 @@ BetaHomeFooter.propTypes = {
   }).isRequired,
 };
 
-export default BetaHomeFooter;
+export default InstitutionalHomeFooter;
