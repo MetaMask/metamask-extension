@@ -30,9 +30,11 @@ export function createPPOMMiddleware(ppomController: PPOMController) {
     try {
       if (ConfirmationMethods.includes(req.method)) {
         // eslint-disable-next-line require-atomic-updates
-        req.ppomResponse = await ppomController.usePPOM(async (ppom: PPOM) => {
-          return ppom.validateJsonRpc(req);
-        });
+        req.securityAlertResponse = await ppomController.usePPOM(
+          async (ppom: PPOM) => {
+            return ppom.validateJsonRpc(req);
+          },
+        );
       }
     } catch (error: unknown) {
       console.error('Error validating JSON RPC using PPOM: ', error);
