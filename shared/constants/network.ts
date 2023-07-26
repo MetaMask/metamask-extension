@@ -157,6 +157,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  PULSECHAIN: '0x171',
 } as const;
 
 /**
@@ -183,6 +184,7 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
+export const PULSECHAIN_DISPLAY_NAME = 'Pulsechain';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -225,6 +227,7 @@ export const CURRENCY_SYMBOLS = {
   FANTOM: 'FTM',
   HARMONY: 'ONE',
   PALM: 'PALM',
+  PLS: 'PLS',
   MATIC: 'MATIC',
   TEST_ETH: 'TESTETH',
   USDC: 'USDC',
@@ -252,6 +255,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
+export const PULSECHAIN_TOKEN_IMAGE_URL = './images/pulsechain.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -384,6 +388,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.PULSECHAIN]: PULSECHAIN_TOKEN_IMAGE_URL,
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
@@ -416,6 +421,7 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.PLS]: PULSECHAIN_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -525,6 +531,11 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
     networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
   },
+  [CHAIN_IDS.PULSECHAIN]: {
+    domain: 'pulsechain.com',
+    subdomain: `scan`,
+    networkId: parseInt(CHAIN_IDS.PULSECHAIN, 16).toString(),
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -561,6 +572,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.LINEA_GOERLI
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.PULSECHAIN
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -738,6 +750,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.PULSECHAIN,
+    nickname: PULSECHAIN_DISPLAY_NAME,
+    rpcUrl: `https://rpc.pulsechain.com`,
+    ticker: CURRENCY_SYMBOLS.PLS,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://scan.pulsechain.com',
+      imageUrl: PULSECHAIN_TOKEN_IMAGE_URL,
     },
   },
 ];
