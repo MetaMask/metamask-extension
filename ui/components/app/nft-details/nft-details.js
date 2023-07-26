@@ -88,6 +88,7 @@ export default function NftDetails({ nft }) {
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isDataURI = nftImageURL.startsWith('data:');
+  const showNftDefaultImage = image === nftImageURL;
 
   const formattedTimestamp = formatDate(
     new Date(lastSale?.event_timestamp).getTime(),
@@ -194,6 +195,7 @@ export default function NftDetails({ nft }) {
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
+              showNftDefaultImage={showNftDefaultImage}
             />
           </Box>
           <Box

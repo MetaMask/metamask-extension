@@ -25,6 +25,7 @@ export const NftItem = ({
   networkSrc,
   tokenId,
   onClick,
+  showNftDefaultImage,
   clickable = false,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
@@ -58,7 +59,7 @@ export const NftItem = ({
           />
         }
       >
-        {src ? (
+        {showNftDefaultImage ? (
           <Box
             className="nft-item__item nft-item__item-image"
             data-testid="nft-image"
@@ -91,4 +92,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
+  showNftDefaultImage: PropTypes.bool,
 };

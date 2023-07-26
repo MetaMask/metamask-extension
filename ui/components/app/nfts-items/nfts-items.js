@@ -172,6 +172,7 @@ export default function NftsItems({
               const { image, address, tokenId, name, imageOriginal } = nft;
               const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
               const nftImageAlt = getNftImageAlt(nft);
+              const showNftDefaultImage = image === nftImage;
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
               return (
@@ -190,6 +191,7 @@ export default function NftsItems({
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
                     clickable
+                    showNftDefaultImage={showNftDefaultImage}
                   />
                 </Box>
               );
