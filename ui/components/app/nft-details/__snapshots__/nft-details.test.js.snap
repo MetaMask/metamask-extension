@@ -52,12 +52,21 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <div
             class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
           >
-            <img
-              alt="MUNK #1 1"
-              class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
-              data-testid="nft-image"
-              src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-            />
+            <div
+              class="box nft-item__default-image nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+              data-testid="nft-default-image"
+              tabindex="0"
+            >
+              <h6
+                class="mm-box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
+              >
+                MUNK #1
+                 
+                <br />
+                 #
+                1
+              </h6>
+            </div>
             <div
               class="mm-box mm-badge-wrapper__badge-container"
               style="top: -4px; right: -4px;"
