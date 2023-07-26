@@ -28,7 +28,7 @@ describe('Reveal private key from account details', function () {
         await driver.fill('#account-details-authenticate', wrongTestPassword);
         await driver.press('#account-details-authenticate', driver.Key.ENTER);
 
-        //display error when password is incorrect
+        // display error when password is incorrect
         const passwordErrorIsDisplayed = await driver.isElementPresent({
           css: '.mm-help-text',
           text: 'Incorrect Password.',
@@ -52,19 +52,19 @@ describe('Reveal private key from account details', function () {
         await driver.press('#account-details-authenticate', driver.Key.ENTER);
         await tapAndHoldToRevealPrivateKey(driver);
 
-        //confirm private key is displayed and matches expected
+        // confirm private key is displayed and matches expected
         const displayedPrivateKey = await driver.findVisibleElement(
           '[data-testid="private-key"]',
         );
         assert.equal(await displayedPrivateKey.getText(), pkString);
 
-        //click done
+        // click done
         await driver.clickElement({
           text: tEn('done'),
           tag: 'button',
         });
 
-        //confirm that user is returned to wallet view
+        // confirm that user is returned to wallet view
         await driver.findVisibleElement({
           text: tEn('tokens'),
           tag: 'button',

@@ -493,8 +493,8 @@ const closeSRPReveal = async (driver) => {
 
 const revealPrivateKey = async (driver) => {
   await driver.clickElement('[data-testid="account-menu-icon"]');
-  await driver.clickElement('[data-testid="account-list-item-menu-button"]'),
-    await driver.clickElement('[data-testid="account-list-menu-details"');
+  await driver.clickElement('[data-testid="account-list-item-menu-button"]');
+  await driver.clickElement('[data-testid="account-list-menu-details"');
   await driver.clickElement({
     text: tEn('showPrivateKey'),
     tag: 'button',
