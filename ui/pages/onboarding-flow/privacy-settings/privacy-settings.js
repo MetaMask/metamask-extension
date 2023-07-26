@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import {
   PickerNetwork,
+  Text,
   TextField,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box/box';
@@ -22,6 +23,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   FONT_WEIGHT,
   TextColor,
+  TextVariant,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
@@ -258,8 +260,34 @@ export default function PrivacySettings() {
           <Setting
             value={addressBarResolution}
             setValue={setAddressBarResolution}
-            title="New IPFS Setting Title"
-            description="New IPFS Setting Description"
+            title={t('ensDomainsSettingTitle')}
+            description={
+              <>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionIntro')}
+                </Text>
+                <Box
+                  as="ul"
+                  marginTop={4}
+                  marginBottom={4}
+                  paddingInlineStart={4}
+                  style={{ listStyleType: 'circle' }}
+                >
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint1')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint2')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint3')}
+                  </Text>
+                </Box>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionOutro')}
+                </Text>
+              </>
+            }
           />
           <Setting
             value={turnOnCurrencyRateCheck}

@@ -31,6 +31,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { Box, Text } from '../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -375,9 +380,43 @@ export default class SecurityTab extends PureComponent {
           </div>
         </div>
         <div className="settings-page__content-item">
-          <span>New IPFS Setting Title</span>
+          {t('ensDomainsSettingTitle')}
           <div className="settings-page__content-description">
-            New IPFS Setting Description
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionIntro')}
+            </Text>
+            <Box
+              as="ul"
+              marginTop={4}
+              marginBottom={4}
+              paddingInlineStart={4}
+              style={{ listStyleType: 'circle' }}
+            >
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint1')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint2')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint3')}
+              </Text>
+            </Box>
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionOutro')}
+            </Text>
           </div>
         </div>
         <div className="settings-page__content-item">
