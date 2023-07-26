@@ -776,7 +776,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
