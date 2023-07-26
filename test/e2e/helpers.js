@@ -491,6 +491,26 @@ const closeSRPReveal = async (driver) => {
   });
 };
 
+const revealPrivateKey = async (driver) => {
+  await driver.clickElement('[data-testid="account-menu-icon"]');
+  await driver.clickElement('[data-testid="account-list-item-menu-button"]'),
+    await driver.clickElement('[data-testid="account-list-menu-details"');
+  await driver.clickElement({
+    text: tEn('showPrivateKey'),
+    tag: 'button',
+  });
+};
+
+const tapAndHoldToRevealPrivateKey = async (driver) => {
+  await driver.holdMouseDownOnElement(
+    {
+      text: tEn('holdToRevealPrivateKey'),
+      tag: 'span',
+    },
+    2000,
+  );
+};
+
 const DAPP_URL = 'http://127.0.0.1:8080';
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
@@ -784,6 +804,8 @@ module.exports = {
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   closeSRPReveal,
+  revealPrivateKey,
+  tapAndHoldToRevealPrivateKey,
   tapAndHoldToRevealSRP,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
