@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import Box from '../../../ui/box';
+import { Box } from '../../../component-library';
 import Identicon from '../../../ui/identicon';
 import DetectedTokenValues from '../detected-token-values/detected-token-values';
 import DetectedTokenAddress from '../detected-token-address/detected-token-address';
 import DetectedTokenAggregators from '../detected-token-aggregators/detected-token-aggregators';
-import { DISPLAY } from '../../../../helpers/constants/design-system';
+import { Display } from '../../../../helpers/constants/design-system';
 import { getTokenList } from '../../../../selectors';
 
 const DetectedTokenDetails = ({
@@ -20,7 +20,7 @@ const DetectedTokenDetails = ({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       className="detected-token-details"
       marginBottom={4}
     >
@@ -30,7 +30,7 @@ const DetectedTokenDetails = ({
         diameter={40}
       />
       <Box
-        display={DISPLAY.GRID}
+        display={Display.Grid}
         marginLeft={2}
         className="detected-token-details__data"
       >

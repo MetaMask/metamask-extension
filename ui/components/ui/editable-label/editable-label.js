@@ -13,8 +13,8 @@ import {
   FormTextField,
   IconName,
   Text,
+  Box,
 } from '../../component-library';
-import Box from '../box/box';
 
 export default class EditableLabel extends Component {
   static propTypes = {

@@ -1119,6 +1119,11 @@
         "koa>is-generator-function>has-tostringtag": true
       }
     },
+    "@metamask/jazzicon>color>clone": {
+      "globals": {
+        "Buffer": true
+      }
+    },
     "@metamask/jazzicon>color>color-convert": {
       "packages": {
         "@metamask/jazzicon>color>color-convert>color-name": true
@@ -3105,12 +3110,12 @@
       "packages": {
         "eslint>eslint-visitor-keys": true,
         "eslint>espree>acorn-jsx": true,
-        "terser>acorn": true
+        "jsdom>acorn": true
       }
     },
     "eslint>espree>acorn-jsx": {
       "packages": {
-        "terser>acorn": true
+        "jsdom>acorn": true
       }
     },
     "eslint>esquery": {
@@ -5130,14 +5135,9 @@
         "process.cwd": true
       },
       "packages": {
-        "gulp-watch>vinyl-file>vinyl>clone": true,
+        "@metamask/jazzicon>color>clone": true,
         "gulp-watch>vinyl-file>vinyl>clone-stats": true,
         "gulp-watch>vinyl-file>vinyl>replace-ext": true
-      }
-    },
-    "gulp-watch>vinyl-file>vinyl>clone": {
-      "globals": {
-        "Buffer": true
       }
     },
     "gulp-watch>vinyl-file>vinyl>clone-stats": {
@@ -5831,7 +5831,7 @@
         "gulp>vinyl-fs>glob-stream>pumpify": true,
         "gulp>vinyl-fs>glob-stream>to-absolute-glob": true,
         "gulp>vinyl-fs>glob-stream>unique-stream": true,
-        "jsdom>request>extend": true,
+        "react-markdown>unified>extend": true,
         "readable-stream": true,
         "vinyl>remove-trailing-separator": true
       }
@@ -6104,6 +6104,12 @@
         "process": true
       }
     },
+    "jsdom>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
+      }
+    },
     "koa>is-generator-function>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
@@ -6276,7 +6282,6 @@
         "events": true,
         "fs.existsSync": true,
         "fs.readFileSync": true,
-        "fs.writeFileSync": true,
         "path.extname": true,
         "path.join": true
       },
@@ -7482,9 +7487,9 @@
     },
     "react-markdown>unified": {
       "packages": {
-        "jsdom>request>extend": true,
         "mocha>yargs-unparser>is-plain-obj": true,
         "react-markdown>unified>bail": true,
+        "react-markdown>unified>extend": true,
         "react-markdown>unified>is-buffer": true,
         "react-markdown>unified>trough": true,
         "react-markdown>vfile": true
@@ -8572,8 +8577,8 @@
       },
       "packages": {
         "eslint>imurmurhash": true,
-        "jsdom>request>is-typedarray": true,
         "nyc>signal-exit": true,
+        "stylelint>write-file-atomic>is-typedarray": true,
         "stylelint>write-file-atomic>typedarray-to-buffer": true
       }
     },
@@ -8582,7 +8587,7 @@
         "Buffer.from": true
       },
       "packages": {
-        "jsdom>request>is-typedarray": true
+        "stylelint>write-file-atomic>is-typedarray": true
       }
     },
     "superstruct": {
@@ -8602,8 +8607,8 @@
         "process": true
       },
       "packages": {
-        "terser>@jridgewell/source-map": true,
-        "terser>acorn": true
+        "jsdom>acorn": true,
+        "terser>@jridgewell/source-map": true
       }
     },
     "terser>@jridgewell/source-map": {
@@ -8646,12 +8651,6 @@
     },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
-        "define": true
-      }
-    },
-    "terser>acorn": {
-      "globals": {
-        "console": true,
         "define": true
       }
     },

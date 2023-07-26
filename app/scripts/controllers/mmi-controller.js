@@ -2,10 +2,6 @@ import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
 import { isEqual } from 'lodash';
-import {
-  PersonalMessageManager,
-  TypedMessageManager,
-} from '@metamask/message-manager';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -48,19 +44,9 @@ export default class MMIController extends EventEmitter {
     this.metaMetricsController = opts.metaMetricsController;
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
+    this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
-
-    this.personalMessageManager = new PersonalMessageManager(
-      undefined,
-      undefined,
-      this.securityProviderRequest,
-    );
-    this.typedMessageManager = new TypedMessageManager(
-      undefined,
-      undefined,
-      this.securityProviderRequest,
-    );
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -87,6 +73,20 @@ export default class MMIController extends EventEmitter {
         await this.prepareMmiPortfolio();
       }, this.preferencesController.store.getState()),
     );
+
+    this.signatureController.hub.on(
+      'personal_sign:signed',
+      async ({ signature, messageId }) => {
+        await this.handleSigningEvents(signature, messageId, 'personal');
+      },
+    );
+
+    this.signatureController.hub.on(
+      'eth_signTypedData:signed',
+      async ({ signature, messageId }) => {
+        await this.handleSigningEvents(signature, messageId, 'v4');
+      },
+    );
   } // End of constructor
 
   async persistKeyringsAfterRefreshTokenChange() {
@@ -111,8 +111,7 @@ export default class MMIController extends EventEmitter {
       getState: () => this.getState(),
       getPendingNonce: (address) => this.getPendingNonce(address),
       setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
-      typedMessageManager: this.typedMessageManager,
-      personalMessageManager: this.personalMessageManager,
+      signatureController: this.signatureController,
       txStateManager: this.txController.txStateManager,
       custodyController: this.custodyController,
       trackTransactionEvent:
@@ -185,9 +184,10 @@ export default class MMIController extends EventEmitter {
             keyring,
             type,
             txList,
-            getPendingNonce: this.getPendingNonce.bind(this),
+            getPendingNonce: (address) => this.getPendingNonce(address),
+            setTxHash: (txId, txHash) =>
+              this.txController.setTxHash(txId, txHash),
             txStateManager: this.txController.txStateManager,
-            setTxHash: this.txController.setTxHash.bind(this.txController),
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
           });
@@ -224,15 +224,6 @@ export default class MMIController extends EventEmitter {
       mmiConfigData.mmiConfiguration.features?.websocketApi
     ) {
       this.transactionUpdateController.getCustomerProofForAddresses(addresses);
-    }
-
-    try {
-      if (this.institutionalFeaturesController.getComplianceProjectId()) {
-        this.institutionalFeaturesController.startPolling();
-      }
-    } catch (e) {
-      log.error('Failed to start Compliance polling');
-      log.error(e);
     }
   }
 
@@ -442,25 +433,8 @@ export default class MMIController extends EventEmitter {
     return keyring.getTransactionDeepLink(from, custodyTxId);
   }
 
-  async getCustodianToken(custodianType) {
-    let currentCustodyType;
-
-    const address = this.preferencesController.getSelectedAddress();
-
-    if (!custodianType) {
-      const resultCustody = this.custodyController.getCustodyTypeByAddress(
-        toChecksumHexAddress(address),
-      );
-      currentCustodyType = resultCustody;
-    }
-    let keyring = await this.keyringController.getKeyringsByType(
-      currentCustodyType || `Custody - ${custodianType}`,
-    )[0];
-    if (!keyring) {
-      keyring = await this.keyringController.addNewKeyring(
-        currentCustodyType || `Custody - ${custodianType}`,
-      );
-    }
+  async getCustodianToken(address) {
+    const keyring = await this.keyringController.getKeyringForAccount(address);
     const { authDetails } = keyring.getAccountDetails(address);
     return keyring ? authDetails.jwt || authDetails.refreshToken : '';
   }
@@ -568,8 +542,13 @@ export default class MMIController extends EventEmitter {
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
     const extensionId = this.extension.runtime.id;
+
+    const { networkConfigurations: networkConfigurationsById } =
+      this.networkController.state;
+    const networkConfigurations = Object.values(networkConfigurationsById);
+
     const networks = [
-      ...this.preferencesController.getRpcMethodPreferences(),
+      ...networkConfigurations,
       { chainId: CHAIN_IDS.MAINNET },
       { chainId: CHAIN_IDS.GOERLI },
     ];
@@ -596,6 +575,42 @@ export default class MMIController extends EventEmitter {
         console.error(error);
       }
     }
+  }
+
+  async newUnsignedMessage(msgParams, req, version) {
+    const updatedMsgParams = { ...msgParams, deferSetAsSigned: true };
+
+    if (req.method.includes('eth_signTypedData')) {
+      return await this.signatureController.newUnsignedTypedMessage(
+        updatedMsgParams,
+        req,
+        version,
+      );
+    } else if (req.method.includes('personal_sign')) {
+      return await this.signatureController.newUnsignedPersonalMessage(
+        updatedMsgParams,
+        req,
+      );
+    }
+    return await this.signatureController.newUnsignedMessage(
+      updatedMsgParams,
+      req,
+    );
+  }
+
+  async handleSigningEvents(signature, messageId, signOperation) {
+    if (signature.custodian_transactionId) {
+      this.transactionUpdateController.addTransactionToWatchList(
+        signature.custodian_transactionId,
+        signature.from,
+        signOperation,
+        true,
+      );
+    }
+
+    this.signatureController.setMessageMetadata(messageId, signature);
+
+    return this.getState();
   }
 
   async setAccountAndNetwork(origin, address, chainId) {

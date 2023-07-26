@@ -6,12 +6,12 @@ import log from 'loglevel';
 
 import Box from '../../../components/ui/box';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
   AlignItems,
   TextVariant,
-  BLOCK_SIZES,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { TextFieldSearch, Text } from '../../../components/component-library';
 import ItemList from '../searchable-item-list/item-list';
@@ -112,11 +112,11 @@ export default function ListWithSearch({
   };
 
   return (
-    <Box className="list-with-search" width={BLOCK_SIZES.FULL} tabIndex="0">
+    <Box className="list-with-search" width={BlockSize.Full} tabIndex="0">
       <Box
         style={{ gridColumnStart: 1, gridColumnEnd: 3 }}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
       >
         <TextFieldSearch
           id="list-with-search__text-search"
@@ -150,7 +150,7 @@ export default function ListWithSearch({
         <Box
           marginTop={1}
           marginBottom={5}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >

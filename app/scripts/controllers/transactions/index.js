@@ -316,22 +316,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Adds a tx to the txlist
-   *
-   * @param txMeta
-   * @fires ${txMeta.id}:unapproved
-   */
-  addTransaction(txMeta) {
-    this.txStateManager.addTransaction(txMeta);
-    this.emit(`${txMeta.id}:unapproved`, txMeta);
-    this._trackTransactionMetricsEvent(
-      txMeta,
-      TransactionMetaMetricsEvent.added,
-      txMeta.actionId,
-    );
-  }
-
-  /**
    * Wipes the transactions for a given account
    *
    * @param {string} address - hex string of the from address for txs being removed
@@ -341,64 +325,52 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
-   * Add a new unapproved transaction to the pipeline
+   * Add a new unapproved transaction
    *
-   * @returns {Promise<string>} the hash of the transaction after being submitted to the network
-   * @param {object} txParams - txParams for the transaction
-   * @param {object} opts - with the key origin to put the origin on the txMeta
+   * @param {object} txParams - Standard parameters for an Ethereum transaction
+   * @param {object} opts - Options
+   * @param {string} opts.actionId - Unique ID to prevent duplicate requests
+   * @param {string} opts.method - RPC method that requested the transaction
+   * @param {string} opts.origin - Origin of the transaction request, such as the hostname of a dApp
+   * @param {boolean} opts.requireApproval - Whether the transaction requires approval by the user
+   * @param {object[]} opts.sendFlowHistory - Associated history to store with the transaction
+   * @param {object} opts.swaps - Options specific to swap transactions
+   * @param {boolean} opts.swaps.hasApproveTx - Whether this transaction required an approval transaction
+   * @param {boolean} opts.swaps.meta - Additional metadata to store for the transaction
+   * @param {TransactionType} opts.type - Type of transaction to add, such as 'cancel' or 'swap'
+   * @returns {Promise<{transactionMeta: TransactionMeta, result: Promise<string>}>} An object containing the transaction metadata, and a promise that resolves to the transaction hash after being submitted to the network
    */
-  async newUnapprovedTransaction(txParams, opts = {}) {
-    log.debug(
-      `MetaMaskController newUnapprovedTransaction ${JSON.stringify(txParams)}`,
-    );
+  async addTransaction(
+    txParams,
+    {
+      actionId,
+      method,
+      origin,
+      requireApproval,
+      sendFlowHistory,
+      swaps: { hasApproveTx, meta } = {},
+      type,
+    } = {},
+  ) {
+    log.debug(`MetaMaskController addTransaction ${JSON.stringify(txParams)}`);
 
-    const { txMeta: initialTxMeta, isExisting } = await this._createTransaction(
-      opts.method,
-      txParams,
-      opts.origin,
-      undefined,
-      undefined,
-      opts.id,
-    );
+    const { txMeta, isExisting } = await this._createTransaction(txParams, {
+      actionId,
+      method,
+      origin,
+      sendFlowHistory,
+      swaps: { hasApproveTx, meta },
+      type,
+    });
 
-    const txId = initialTxMeta.id;
-    const isCompleted = this._isTransactionCompleted(initialTxMeta);
-
-    const finishedPromise = isCompleted
-      ? Promise.resolve(initialTxMeta)
-      : this._waitForTransactionFinished(txId);
-
-    if (!isExisting && !isCompleted) {
-      try {
-        await this._requestTransactionApproval(initialTxMeta);
-      } catch (error) {
-        // Errors generated from final status using finished event
-      }
-    }
-
-    const finalTxMeta = await finishedPromise;
-    const finalStatus = finalTxMeta?.status;
-
-    switch (finalStatus) {
-      case TransactionStatus.submitted:
-        return finalTxMeta.hash;
-      case TransactionStatus.rejected:
-        throw cleanErrorStack(
-          ethErrors.provider.userRejectedRequest(
-            'MetaMask Tx Signature: User denied transaction signature.',
-          ),
-        );
-      case TransactionStatus.failed:
-        throw cleanErrorStack(ethErrors.rpc.internal(finalTxMeta.err.message));
-      default:
-        throw cleanErrorStack(
-          ethErrors.rpc.internal(
-            `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
-              finalTxMeta?.txParams,
-            )}`,
-          ),
-        );
-    }
+    return {
+      transactionMeta: txMeta,
+      result: this._processApproval(txMeta, {
+        isExisting,
+        requireApproval,
+        actionId,
+      }),
+    };
   }
 
   /**
@@ -694,7 +666,7 @@ export default class TransactionController extends EventEmitter {
     updateTxMeta.loadingDefaults = false;
 
     // The history note used here 'Added new unapproved transaction.' is confusing update call only updated the gas defaults.
-    // We need to improve `this.addTransaction` to accept history note and change note here.
+    // We need to improve `this._addTransaction` to accept history note and change note here.
     this.txStateManager.updateTransaction(
       updateTxMeta,
       'Added new unapproved transaction.',
@@ -704,58 +676,6 @@ export default class TransactionController extends EventEmitter {
   }
 
   // ====================================================================================================================================================
-
-  /**
-   * Validates and generates a txMeta with defaults and puts it in txStateManager
-   * store.
-   *
-   * actionId is used to uniquely identify a request to create a transaction.
-   * Only 1 transaction will be created for multiple requests with same actionId.
-   * actionId is fix used for making this action idempotent to deal with scenario when
-   * action is invoked multiple times with same parameters in MV3 due to service worker re-activation.
-   *
-   * @param txMethodType
-   * @param txParams
-   * @param origin
-   * @param transactionType
-   * @param sendFlowHistory
-   * @param actionId
-   * @param options
-   */
-  async addUnapprovedTransaction(
-    txMethodType,
-    txParams,
-    origin,
-    transactionType,
-    sendFlowHistory = [],
-    actionId,
-    options,
-  ) {
-    const { txMeta, isExisting } = await this._createTransaction(
-      txMethodType,
-      txParams,
-      origin,
-      transactionType,
-      sendFlowHistory,
-      actionId,
-      options,
-    );
-    if (isExisting) {
-      const isCompleted = this._isTransactionCompleted(txMeta);
-
-      return isCompleted
-        ? txMeta
-        : await this._waitForTransactionFinished(txMeta.id);
-    }
-
-    if (options?.requireApproval === false) {
-      await this._updateAndApproveTransaction(txMeta, actionId);
-    } else {
-      await this._requestTransactionApproval(txMeta, { actionId });
-    }
-
-    return txMeta;
-  }
 
   /**
    * Adds the tx gas defaults: gas && gasPrice
@@ -1122,7 +1042,7 @@ export default class TransactionController extends EventEmitter {
       newTxMeta.estimatedBaseFee = estimatedBaseFee;
     }
 
-    this.addTransaction(newTxMeta);
+    this._addTransaction(newTxMeta);
     await this._approveTransaction(newTxMeta.id, actionId, {
       hasApprovalRequest: false,
     });
@@ -1182,7 +1102,7 @@ export default class TransactionController extends EventEmitter {
       newTxMeta.estimatedBaseFee = estimatedBaseFee;
     }
 
-    this.addTransaction(newTxMeta);
+    this._addTransaction(newTxMeta);
     await this._approveTransaction(newTxMeta.id, actionId);
     return newTxMeta;
   }
@@ -1305,6 +1225,8 @@ export default class TransactionController extends EventEmitter {
         txMeta.custodyId,
         fromAddress,
       );
+
+      return null;
     }
     ///: END:ONLY_INCLUDE_IN
 
@@ -1591,21 +1513,14 @@ export default class TransactionController extends EventEmitter {
   }
 
   async _createTransaction(
-    txMethodType,
     txParams,
-    origin,
-    transactionType,
-    sendFlowHistory = [],
-    actionId,
-    options,
+    { actionId, method, origin, sendFlowHistory = [], swaps, type },
   ) {
     if (
-      transactionType !== undefined &&
-      !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(transactionType)
+      type !== undefined &&
+      !VALID_UNAPPROVED_TRANSACTION_TYPES.includes(type)
     ) {
-      throw new Error(
-        `TransactionController - invalid transactionType value: ${transactionType}`,
-      );
+      throw new Error(`TransactionController - invalid type value: ${type}`);
     }
 
     // If a transaction is found with the same actionId, do not create a new speed-up transaction.
@@ -1663,40 +1578,32 @@ export default class TransactionController extends EventEmitter {
       }
     }
 
-    const { type } = await determineTransactionType(
+    const { type: determinedType } = await determineTransactionType(
       normalizedTxParams,
       this.query,
     );
-    txMeta.type = transactionType || type;
+    txMeta.type = type || determinedType;
 
     // ensure value
     txMeta.txParams.value = txMeta.txParams.value
       ? addHexPrefix(txMeta.txParams.value)
       : '0x0';
 
-    if (txMethodType && this.securityProviderRequest) {
+    if (method && this.securityProviderRequest) {
       const securityProviderResponse = await this.securityProviderRequest(
         txMeta,
-        txMethodType,
+        method,
       );
 
       txMeta.securityProviderResponse = securityProviderResponse;
     }
 
-    this.addTransaction(txMeta);
+    this._addTransaction(txMeta);
 
     txMeta = await this.addTransactionGasDefaults(txMeta);
 
-    if (
-      [TransactionType.swap, TransactionType.swapApproval].includes(
-        transactionType,
-      )
-    ) {
-      txMeta = await this._createSwapsTransaction(
-        options?.swaps,
-        transactionType,
-        txMeta,
-      );
+    if ([TransactionType.swap, TransactionType.swapApproval].includes(type)) {
+      txMeta = await this._createSwapsTransaction(swaps, type, txMeta);
     }
 
     return { txMeta, isExisting: false };
@@ -1826,6 +1733,51 @@ export default class TransactionController extends EventEmitter {
       'confTx: user approved transaction',
     );
     await this._approveTransaction(txMeta.id, actionId);
+  }
+
+  async _processApproval(txMeta, { actionId, isExisting, requireApproval }) {
+    const txId = txMeta.id;
+    const isCompleted = this._isTransactionCompleted(txMeta);
+
+    const finishedPromise = isCompleted
+      ? Promise.resolve(txMeta)
+      : this._waitForTransactionFinished(txId);
+
+    if (!isExisting && !isCompleted) {
+      try {
+        if (requireApproval === false) {
+          await this._updateAndApproveTransaction(txMeta, actionId);
+        } else {
+          await this._requestTransactionApproval(txMeta, { actionId });
+        }
+      } catch (error) {
+        // Errors generated from final status using finished event
+      }
+    }
+
+    const finalTxMeta = await finishedPromise;
+    const finalStatus = finalTxMeta?.status;
+
+    switch (finalStatus) {
+      case TransactionStatus.submitted:
+        return finalTxMeta.hash;
+      case TransactionStatus.rejected:
+        throw cleanErrorStack(
+          ethErrors.provider.userRejectedRequest(
+            'MetaMask Tx Signature: User denied transaction signature.',
+          ),
+        );
+      case TransactionStatus.failed:
+        throw cleanErrorStack(ethErrors.rpc.internal(finalTxMeta.err.message));
+      default:
+        throw cleanErrorStack(
+          ethErrors.rpc.internal(
+            `MetaMask Tx Signature: Unknown problem: ${JSON.stringify(
+              finalTxMeta?.txParams,
+            )}`,
+          ),
+        );
+    }
   }
 
   /**
@@ -2757,6 +2709,22 @@ export default class TransactionController extends EventEmitter {
       {
         dropped: true,
       },
+    );
+  }
+
+  /**
+   * Adds a tx to the txlist
+   *
+   * @param txMeta
+   * @fires ${txMeta.id}:unapproved
+   */
+  _addTransaction(txMeta) {
+    this.txStateManager.addTransaction(txMeta);
+    this.emit(`${txMeta.id}:unapproved`, txMeta);
+    this._trackTransactionMetricsEvent(
+      txMeta,
+      TransactionMetaMetricsEvent.added,
+      txMeta.actionId,
     );
   }
 

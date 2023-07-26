@@ -59,7 +59,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="account-modal__close"
       />
       <span
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-top-2 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-top-2 mm-box--color-text-default"
       >
         Test Account
       </span>
@@ -72,7 +72,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box export-private-key-modal__divider box--margin-5 box--md:margin-3 box--flex-direction-row box--width-full"
       />
       <p
-        class="box mm-text mm-text--body-lg-medium mm-text--font-weight-normal box--margin-4 box--md:margin-4 box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-normal mm-box--margin-4 mm-box--sm:margin-0 mm-box--md:margin-4 mm-box--lg:margin-0 mm-box--color-text-default"
       >
         Show Private Keys
       </p>
@@ -80,7 +80,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box box--padding-right-5 box--padding-left-5 box--display-flex box--flex-direction-column box--align-items-flex-start box--width-full"
       >
         <label
-          class="box mm-text mm-label mm-text--body-sm mm-text--font-weight-medium box--margin-bottom-2 box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+          class="mm-box mm-text mm-label mm-text--body-sm mm-text--font-weight-medium mm-box--margin-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         >
           Type your MetaMask password
         </label>
@@ -90,7 +90,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         >
           <input
             autocomplete="off"
-            class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+            class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
             focused="false"
             placeholder="Enter password"
             type="password"
@@ -99,18 +99,18 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         </div>
       </div>
       <p
-        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-error-default"
+        class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
       />
       <div
         class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
       >
         <span
-          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
           style="mask-image: url('./images/icons/danger.svg');"
         />
         <div>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             Warning: Never disclose this key. Anyone with your private keys can steal any assets held in your account.
           </p>
@@ -120,13 +120,13 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box box--margin-top-3 box--padding-5 box--md:padding-5 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
       >
         <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md box--margin-right-4 box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-1/2 box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-right-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           type="secondary"
         >
           Cancel
         </button>
         <button
-          class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-1/2 box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           disabled=""
           type="primary"
         >

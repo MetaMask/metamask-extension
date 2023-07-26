@@ -22,18 +22,19 @@ module.exports = function createStaticAssetTasks({
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
+  const buildConfig = loadBuildTypesConfig();
+
+  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
   });
-
-  const buildConfig = loadBuildTypesConfig();
-
-  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
 
   const additionalAssets = activeFeatures.flatMap(
     (feature) =>
@@ -108,7 +109,11 @@ module.exports = function createStaticAssetTasks({
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  activeFeatures,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -197,6 +202,14 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       pattern: '',
     },
   ];
+
+  if (activeFeatures.includes('blockaid')) {
+    allCopyTargets.push({
+      src: getPathInsideNodeModules('@blockaid/ppom', '/'),
+      pattern: '*.wasm',
+      dest: '',
+    });
+  }
 
   const languageTags = new Set();
   for (const locale of locales) {

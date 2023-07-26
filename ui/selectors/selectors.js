@@ -34,8 +34,8 @@ import {
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
-  LINEA_MAINNET_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -92,6 +92,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
+import { BackgroundColor } from '../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -601,6 +602,18 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+export function getTestNetworkBackgroundColor(state) {
+  const currentNetwork = state.metamask.providerConfig.ticker;
+  switch (true) {
+    case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
+      return BackgroundColor.goerli;
+    case currentNetwork?.includes(SEPOLIA_DISPLAY_NAME):
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
 }
 
 export function getDisabledRpcMethodPreferences(state) {
@@ -1180,48 +1193,17 @@ export function getCurrentNetwork(state) {
 }
 
 export function getAllEnabledNetworks(state) {
+  const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
   const showTestnetNetworks = getShowTestNetworks(state);
 
-  return showTestnetNetworks
-    ? allNetworks
-    : allNetworks.filter(
-        (network) => TEST_CHAINS.includes(network.chainId) === false,
-      );
+  return showTestnetNetworks ? allNetworks : nonTestNetworks;
 }
 
-export function getAllNetworks(state) {
+export function getTestNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
 
-  const networks = [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-      id: NETWORK_TYPES.MAINNET,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-      nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-      rpcPrefs: {
-        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_MAINNET,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
-      id: NETWORK_TYPES.LINEA_MAINNET,
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
-    // Test networks
+  return [
     {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
@@ -1253,6 +1235,49 @@ export function getAllNetworks(state) {
     ...Object.values(networkConfigurations).filter(
       ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
     ),
+  ];
+}
+
+export function getNonTestNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+
+  return [
+    // Mainnet always first
+    {
+      chainId: CHAIN_IDS.MAINNET,
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcPrefs: {
+        imageUrl: ETH_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.MAINNET,
+      ticker: CURRENCY_SYMBOLS.ETH,
+      id: NETWORK_TYPES.MAINNET,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+      id: NETWORK_TYPES.LINEA_MAINNET,
+    },
+    // Custom networks added by the user
+    ...Object.values(networkConfigurations).filter(
+      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
+    ),
+  ];
+}
+
+export function getAllNetworks(state) {
+  const networks = [
+    // Mainnet and custom networks
+    ...getNonTestNetworks(state),
+    // Test networks
+    ...getTestNetworks(state),
   ];
 
   return networks;
@@ -1407,6 +1432,18 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
+
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+/**
+ * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsEnabled(state) {
+  return state.metamask.securityAlertsEnabled;
+}
+///: END:ONLY_INCLUDE_IN
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
