@@ -101,6 +101,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <ViewExplorerMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
+        address={address}
       />
       <MenuItem
         iconName={IconName.Connect}
