@@ -15,13 +15,14 @@ import {
   KeyringController,
 } from '@metamask/keyring-controller';
 import { SnapControllerState } from '@metamask/snaps-controllers-flask';
-import { add0x } from '@metamask/utils';
 
 const controllerName = 'AccountsController';
 
 export type AccountsControllerState = {
-  internalAccounts: Record<string, InternalAccount>;
-  selectedAccount: string; // id of the selected account
+  internalAccounts: {
+    accounts: Record<string, InternalAccount>;
+    selectedAccount: string; // id of the selected account
+  };
 };
 
 export type AccountsControllerGetStateAction = {
@@ -60,8 +61,10 @@ const accountsControllerMetadata = {
 };
 
 const defaultState: AccountsControllerState = {
-  internalAccounts: {},
-  selectedAccount: '',
+  internalAccounts: {
+    accounts: {},
+    selectedAccount: '',
+  },
 };
 
 export default class AccountsController extends BaseControllerV2<
@@ -109,20 +112,14 @@ export default class AccountsController extends BaseControllerV2<
 
     onSnapStateChange(async (snapState: SnapControllerState) => {
       console.log('snap state changed', snapState);
-      const { snaps } = snapState;
-
-      Object.values(snaps)
-        .filter((snap) => !snap.enabled || snap.blocked)
-        .forEach((disabledSnap) => {
-          this.#disableSnap(disabledSnap.id);
-        });
-
       await this.updateAccounts();
     });
 
     onKeyringStateChange(async (keyringState: KeyringControllerState) => {
       console.log('keyring state changed', keyringState);
-      await this.updateAccounts();
+      if (keyringState.isUnlocked) {
+        await this.updateAccounts();
+      }
     });
 
     onKeyringAccountRemoved(async (address: string) => {
@@ -132,9 +129,8 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getAccount(address: string): InternalAccount | undefined {
-    return Object.values(this.state.internalAccounts).find(
-      (internalAccount) =>
-        internalAccount.address.toLowerCase() === address.toLowerCase(),
+    return Object.values(this.state.internalAccounts.accounts).find(
+      (account) => account.address.toLowerCase() === address.toLowerCase(),
     );
   }
 
@@ -147,7 +143,7 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getAccountId(accountId: string): InternalAccount | undefined {
-    return this.state.internalAccounts[accountId];
+    return this.state.internalAccounts.accounts[accountId];
   }
 
   getAccountByIdExpect(accountId: string): InternalAccount {
@@ -159,13 +155,13 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getAccountsByKeyring(keyring: string): InternalAccount[] {
-    return Object.values(this.state.internalAccounts).filter(
+    return Object.values(this.state.internalAccounts.accounts).filter(
       (internalAccount) => internalAccount.type === keyring,
     );
   }
 
   getAccountsBySnapId(snapId: string): InternalAccount[] {
-    return Object.values(this.state.internalAccounts).filter(
+    return Object.values(this.state.internalAccounts.accounts).filter(
       (internalAccount) => internalAccount.metadata.snap?.id === snapId,
     );
   }
@@ -173,22 +169,45 @@ export default class AccountsController extends BaseControllerV2<
   async updateAccounts(): Promise<void> {
     const legacyAccounts = await this.#listLegacyAccounts();
     const snapAccounts = await this.#listSnapAccounts();
+    const accountNames = identitesToAccountNames(this.identities);
 
     console.log('legacy accounts', legacyAccounts);
     console.log('snap accounts', snapAccounts);
 
-    const internalAccounts = [...legacyAccounts, ...snapAccounts].reduce(
-      (internalAccountMap, internalAccount) => {
-        internalAccountMap[internalAccount.id] = {
-          ...internalAccount,
-        };
-        return internalAccountMap;
-      },
-      {} as Record<string, InternalAccount>,
-    );
+    // keyring type map.
+    const keyringTypes = new Map<string, number>();
+
+    const accounts: Record<string, InternalAccount> = [
+      ...legacyAccounts,
+      ...snapAccounts,
+    ].reduce((internalAccountMap, internalAccount) => {
+      const keyringAccountIndex =
+        keyringTypes.get(internalAccount.metadata.keyring.type) ?? 0;
+      if (keyringAccountIndex) {
+        keyringTypes.set(
+          internalAccount.metadata.keyring.type,
+          keyringAccountIndex + 1,
+        );
+      } else {
+        keyringTypes.set(internalAccount.metadata.keyring.type, 1);
+      }
+
+      internalAccountMap[internalAccount.id] = {
+        ...internalAccount,
+      };
+
+      // use the account name from the identities if it exists
+      internalAccountMap[internalAccount.id].name = accountNames[
+        internalAccount.id
+      ]
+        ? accountNames[internalAccount.id]
+        : `${internalAccount.metadata.keyring.type} ${keyringAccountIndex + 1}`;
+
+      return internalAccountMap;
+    }, {} as Record<string, InternalAccount>);
 
     this.update((currentState: AccountsControllerState) => {
-      currentState.internalAccounts = internalAccounts;
+      currentState.internalAccounts.accounts = accounts;
     });
 
     console.log('updated state', this.state);
@@ -198,7 +217,7 @@ export default class AccountsController extends BaseControllerV2<
     const account = this.getAccount(address);
     if (account) {
       this.update((currentState: AccountsControllerState) => {
-        delete currentState.internalAccounts[account.id];
+        delete currentState.internalAccounts.accounts[account.id];
       });
     }
 
@@ -213,7 +232,9 @@ export default class AccountsController extends BaseControllerV2<
     );
 
     const snapAccounts =
-      (await (snapKeyring as SnapKeyring)?.listAccounts(true)) ?? [];
+      (await (snapKeyring as SnapKeyring)?.listAccounts(false)) ?? [];
+
+    console.log('snap accounts', snapAccounts);
 
     for (const account of snapAccounts) {
       account.metadata = {
@@ -262,21 +283,25 @@ export default class AccountsController extends BaseControllerV2<
         ],
         type: 'eip155:eoa',
         metadata: {
-          keyring: keyring.type as string,
+          keyring: {
+            type: (keyring as any).type as string,
+          },
         },
       });
     }
 
     return internalAccounts.filter(
-      (account) => account.metadata.keyring !== 'Snap Keyring',
+      (account) => account.metadata.keyring.type !== 'Snap Keyring',
     );
   }
 
   setSelectedAccount(accountId: string): void {
     const account = this.getAccountByIdExpect(accountId);
 
+    console.log('set selected account', account);
+
     this.update((currentState: AccountsControllerState) => {
-      currentState.selectedAccount = account.id;
+      currentState.internalAccounts.selectedAccount = account.id;
     });
   }
 
@@ -284,14 +309,14 @@ export default class AccountsController extends BaseControllerV2<
     const account = this.getAccountByIdExpect(accountId);
 
     this.update((currentState: AccountsControllerState) => {
-      currentState.internalAccounts[accountId] = {
+      currentState.internalAccounts.accounts[accountId] = {
         ...account,
         name: accountName,
       };
     });
   }
 
-  #disableSnap(snapId: string) {
+  #disableSnap(snapId: string): void {
     const accounts = this.getAccountsBySnapId(snapId);
 
     this.update((currentState: AccountsControllerState) => {
@@ -300,7 +325,7 @@ export default class AccountsController extends BaseControllerV2<
           ...account.metadata.snap,
           enabled: false,
         };
-        currentState.internalAccounts[account.id] = account;
+        currentState.internalAccounts.accounts[account.id] = account;
       });
     });
   }
@@ -313,4 +338,19 @@ export default class AccountsController extends BaseControllerV2<
 
     return snap?.enabled && !snap?.blocked;
   }
+}
+
+export function identitesToAccountNames(
+  identities: Record<string, { address: string; name: string }>,
+): Record<string, string> {
+  if (!identities) {
+    return {};
+  }
+  return Object.values(identities).reduce((accounts, identity) => {
+    const accountId = uuid({
+      random: sha256FromString(identity.address).slice(0, 16),
+    });
+    accounts[accountId] = identity.name;
+    return accounts;
+  }, {} as Record<string, string>);
 }

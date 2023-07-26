@@ -39,9 +39,9 @@ import {
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
   getTheme,
@@ -84,7 +84,7 @@ export const AppHeader = ({ location }) => {
   ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
-  const identity = useSelector(getSelectedIdentity);
+  const internalAccount = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -269,10 +269,10 @@ export const AppHeader = ({ location }) => {
                 />
               ) : null}
 
-              {identity ? (
+              {internalAccount ? (
                 <AccountPicker
-                  address={identity.address}
-                  name={identity.name}
+                  address={internalAccount.address}
+                  name={internalAccount.name}
                   onClick={() => {
                     dispatch(toggleAccountMenu());
 

@@ -316,6 +316,21 @@ export function getSelectedIdentity(state) {
   return identities[selectedAddress];
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getSelectedInternalAccount(state) {
+  const accountId = state.metamask.internalAccounts.selectedAccount;
+  return state.metamask.internalAccounts.accounts[accountId];
+}
+
+export function getInternalAccounts(state) {
+  return Object.values(state.metamask.internalAccounts.accounts);
+}
+
+export function getInternalAccount(state, accountId) {
+  return state.metamask.internalAccounts.accounts[accountId];
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;

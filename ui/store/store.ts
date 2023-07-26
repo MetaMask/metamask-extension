@@ -3,6 +3,7 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
 import { TransactionMeta } from '../../shared/constants/transaction';
@@ -80,6 +81,12 @@ interface TemporaryBackgroundState {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IN
+  internalAccounts?: {
+    accounts: {
+      [key: string]: InternalAccount;
+    };
+    selectedAccounts: string;
+  };
 }
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;

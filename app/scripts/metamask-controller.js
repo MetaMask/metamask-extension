@@ -2209,6 +2209,7 @@ export default class MetamaskController extends EventEmitter {
    */
   getApi() {
     const {
+      accountsController,
       addressBookController,
       alertController,
       appStateController,
@@ -2394,6 +2395,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
+
+      // AccountsController
+      setSelectedInternalAccount:
+        accountsController.setSelectedAccount.bind(accountsController),
 
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
@@ -2999,9 +3004,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
 
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       await this.accountsController.updateAccounts();
-      console.log(this.accountsController.state);
       const selectedAccount = uuid({
         random: sha256FromString(
           this.preferencesController.getSelectedAddress(),
@@ -3010,7 +3013,6 @@ export default class MetamaskController extends EventEmitter {
 
       console.log('setting account');
       this.accountsController.setSelectedAccount(selectedAccount);
-      ///: END:ONLY_INCLUDE_IN
 
       // set new identities
       this.preferencesController.setAddresses(accounts);
@@ -3077,7 +3079,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.setLedgerTransportPreference(transportPreference);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     await this.accountsController.updateAccounts();
     const selectedAccount = uuid({
       random: sha256FromString(
@@ -3086,7 +3087,6 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.accountsController.setSelectedAccount(selectedAccount);
-    ///: END:ONLY_INCLUDE_IN
 
     return this.keyringController.fullUpdate();
   }

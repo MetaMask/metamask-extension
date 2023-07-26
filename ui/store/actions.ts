@@ -41,6 +41,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
+  getSelectedAccount,
+  getInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -1668,6 +1670,12 @@ async function _setSelectedAddress(address: string): Promise<void> {
   await submitRequestToBackground('setSelectedAddress', [address]);
 }
 
+async function _setSelectedInternalAccount(accountId: string): Promise<void> {
+  log.debug(`background.setSelectedInternalAccount`);
+  console.log('sending to background', accountId);
+  await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+}
+
 export function setSelectedAddress(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1681,6 +1689,54 @@ export function setSelectedAddress(
       return;
     } finally {
       dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+export function setSelectedInternalAccount(
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch, getState) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedAddress`);
+
+    const state = getState();
+    const unconnectedAccountAccountAlertIsEnabled =
+      getUnconnectedAccountAlertEnabledness(state);
+    const activeTabOrigin = state.activeTab.origin;
+    const selectedAccount = getSelectedAccount(state);
+    const accountToBeSet = getInternalAccount(state, accountId);
+    const permittedAccountsForCurrentTab =
+      getPermittedAccountsForCurrentTab(state);
+
+    // TODO: ACCOUNTS_CONTROLLER change to account id
+    const currentTabIsConnectedToPreviousAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(selectedAccount.address);
+    // TODO: ACCOUNTS_CONTROLLER change to account id
+    const currentTabIsConnectedToNextAddress =
+      Boolean(activeTabOrigin) &&
+      permittedAccountsForCurrentTab.includes(accountToBeSet.address);
+    const switchingToUnconnectedAddress =
+      currentTabIsConnectedToPreviousAddress &&
+      !currentTabIsConnectedToNextAddress;
+
+    try {
+      await _setSelectedInternalAccount(accountId);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+
+    if (
+      unconnectedAccountAccountAlertIsEnabled &&
+      switchingToUnconnectedAddress
+    ) {
+      dispatch(switchedToUnconnectedAccount());
+      await setUnconnectedAccountAlertShown(activeTabOrigin);
     }
   };
 }
