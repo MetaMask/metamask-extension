@@ -31,7 +31,13 @@ describe('Send NFT', function () {
 
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('.nft-item__item-image');
+        const nftImage = await driver.findElement('.nft-item__item-image');
+        const defaultNftImage = await driver.findElement('nft-default-image');
+        if (nftImage) {
+          await driver.clickElement(nftImage);
+        } else {
+          await driver.clickElement(defaultNftImage);
+        }
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
