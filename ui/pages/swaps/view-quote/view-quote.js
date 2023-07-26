@@ -84,7 +84,6 @@ import {
 } from '../../../helpers/constants/routes';
 import MainQuoteSummary from '../main-quote-summary';
 import { getCustomTxParamsData } from '../../confirm-approve/confirm-approve.util';
-import ActionableMessage from '../../../components/ui/actionable-message/actionable-message';
 import {
   quotesToRenderableData,
   getRenderableNetworkFeesForQuote,
@@ -117,6 +116,8 @@ import {
   hexWEIToDecGWEI,
   sumHexes,
 } from '../../../../shared/modules/conversion.utils';
+import { BannerAlert } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -962,8 +963,9 @@ export default function ViewQuote() {
         >
           {viewQuotePriceDifferenceComponent}
           {(showInsufficientWarning || tokenBalanceUnavailable) && (
-            <ActionableMessage
-              message={actionableBalanceErrorMessage}
+            <BannerAlert
+              severity={Severity.Warning}
+              description={actionableBalanceErrorMessage}
               onClose={
                 /* istanbul ignore next */
                 () => setWarningHidden(true)
