@@ -376,7 +376,7 @@
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.5.5",
     "@ethersproject/bignumber": "^5.7.0",
-    "@lavamoat/allow-scripts": "^2.0.3",
+    "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^5.2.0",
     "@metamask/auto-changelog": "^2.1.0",
     "@metamask/eslint-config": "^9.0.0",

@@ -322,9 +322,17 @@
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/bignumber": true,
+        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/abstract-provider": true
+        "@ethersproject/hdnode>@ethersproject/transactions": true
+      }
+    },
+    "@ethersproject/contracts>@ethersproject/abstract-provider": {
+      "packages": {
+        "@ethersproject/abi>@ethersproject/bytes": true,
+        "@ethersproject/abi>@ethersproject/logger": true,
+        "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/bignumber": true
       }
     },
     "@ethersproject/hdnode": {
@@ -416,24 +424,16 @@
         "@ethersproject/abi>@ethersproject/properties": true,
         "@ethersproject/abi>@ethersproject/strings": true,
         "@ethersproject/bignumber": true,
+        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/basex": true,
         "@ethersproject/hdnode>@ethersproject/sha2": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/abstract-provider": true,
         "@ethersproject/providers>@ethersproject/base64": true,
         "@ethersproject/providers>@ethersproject/networks": true,
         "@ethersproject/providers>@ethersproject/random": true,
         "@ethersproject/providers>@ethersproject/web": true,
         "@ethersproject/providers>bech32": true
-      }
-    },
-    "@ethersproject/providers>@ethersproject/abstract-provider": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/bignumber": true
       }
     },
     "@ethersproject/providers>@ethersproject/base64": {
@@ -493,7 +493,7 @@
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
         "ethereumjs-wallet>bs58check": true,
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -986,11 +986,11 @@
     "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
       "packages": {
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/secp256k1": true,
-        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/hashes": true,
         "@metamask/key-tree>@scure/base": true
       }
     },
-    "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip39>@noble/hashes": {
+    "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -1300,7 +1300,7 @@
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
         "browserify>events": true,
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
@@ -1315,7 +1315,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -2661,11 +2661,11 @@
         "@ethersproject/abi>@ethersproject/keccak256": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
+        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
         "@ethersproject/hdnode": true,
         "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
         "@ethersproject/hdnode>@ethersproject/signing-key": true,
         "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/abstract-provider": true,
         "@ethersproject/providers>@ethersproject/random": true,
         "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": true
       }
@@ -3230,7 +3230,7 @@
         "setTimeout": true
       },
       "packages": {
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4043,6 +4043,11 @@
         "Intl": true
       }
     },
+    "mockttp>graphql-tag>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4247,7 +4252,7 @@
         "setTimeout": true
       },
       "packages": {
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4266,9 +4271,9 @@
         "console.error": true
       },
       "packages": {
+        "mockttp>graphql-tag>tslib": true,
         "react": true,
-        "react-focus-lock>use-sidecar>detect-node-es": true,
-        "wait-on>rxjs>tslib": true
+        "react-focus-lock>use-sidecar>detect-node-es": true
       }
     },
     "react-idle-timer": {
@@ -4614,11 +4619,6 @@
       "globals": {
         "crypto": true,
         "msCrypto": true
-      }
-    },
-    "wait-on>rxjs>tslib": {
-      "globals": {
-        "define": true
       }
     },
     "web3": {
