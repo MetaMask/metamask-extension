@@ -23,6 +23,9 @@ export default {
     decimals: {
       control: 'text',
     },
+    customSpendingCap: {
+      control: { type: 'text' },
+    },
   },
   args: {
     tokenName: 'DAI',
@@ -30,6 +33,7 @@ export default {
     dappProposedValue: '7',
     siteOrigin: 'Uniswap.org',
     decimals: '4',
+    customSpendingCap: '7',
   },
 };
 
@@ -38,3 +42,13 @@ export const DefaultStory = (args) => {
 };
 
 DefaultStory.storyName = 'Default';
+
+export const CustomSpendingCapStory = (args) => {
+  return <CustomSpendingCap {...args} />;
+};
+CustomSpendingCapStory.storyName = 'CustomSpendingCapStory';
+
+CustomSpendingCapStory.args = {
+  ...DefaultStory.args,
+  customSpendingCap: '8',
+};

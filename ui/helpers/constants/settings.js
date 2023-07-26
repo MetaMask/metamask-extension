@@ -1,4 +1,4 @@
-import { ICON_NAMES } from '../../components/component-library/icon/deprecated';
+import { IconName } from '../../components/component-library';
 import {
   ALERTS_ROUTE,
   ADVANCED_ROUTE,
@@ -19,21 +19,21 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyConversion'),
     descriptionMessage: (t) => t('currencyConversion'),
     route: `${GENERAL_ROUTE}#currency-conversion`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('primaryCurrencySetting'),
     descriptionMessage: (t) => t('primaryCurrencySettingDescription'),
     route: `${GENERAL_ROUTE}#primary-currency`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('currentLanguage'),
     descriptionMessage: (t) => t('currentLanguage'),
     route: `${GENERAL_ROUTE}#current-language`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
@@ -47,14 +47,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('accountIdenticon'),
     descriptionMessage: (t) => t('accountIdenticon'),
     route: `${GENERAL_ROUTE}#account-identicon`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('general'),
     sectionMessage: (t) => t('hideZeroBalanceTokens'),
     descriptionMessage: (t) => t('hideZeroBalanceTokens'),
     route: `${GENERAL_ROUTE}#zero-balancetokens`,
-    iconName: ICON_NAMES.SETTING,
+    iconName: IconName.Setting,
   },
   {
     tabMessage: (t) => t('advanced'),
@@ -116,7 +116,7 @@ export const SETTINGS_CONSTANTS = [
     tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
     descriptionMessage: (t) => t('dismissReminderDescriptionField'),
-    route: `${ADVANCED_ROUTE}#dimiss-secretrecovery`,
+    route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,
     icon: 'fas fa-sliders-h',
   },
   {
@@ -131,7 +131,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contacts'),
     descriptionMessage: (t) => t('contacts'),
     route: CONTACT_LIST_ROUTE,
-    iconName: ICON_NAMES.BOOK,
+    iconName: IconName.Book,
   },
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   {
@@ -139,7 +139,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('snaps'),
     descriptionMessage: (t) => t('snaps'),
     route: SNAPS_LIST_ROUTE,
-    iconName: ICON_NAMES.SNAPS,
+    iconName: IconName.Snaps,
   },
   ///: END:ONLY_INCLUDE_IN
   {
@@ -167,35 +167,35 @@ export const SETTINGS_CONSTANTS = [
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
     descriptionMessage: (t) => t('participateInMetaMetricsDescription'),
-    route: `${SECURITY_ROUTE}#metrametrics`,
+    route: `${SECURITY_ROUTE}#metametrics`,
     icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('chooseYourNetwork'),
     descriptionMessage: (t) => t('chooseYourNetworkDescription'),
-    route: `${SECURITY_ROUTE}#-chose-your-network`,
+    route: `${SECURITY_ROUTE}#choose-your-network`,
     icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('addCustomIPFSGateway'),
     descriptionMessage: (t) => t('addCustomIPFSGatewayDescription'),
-    route: `${SECURITY_ROUTE}#-add-custom-ipfs-gateway`,
+    route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('autoDetectTokens'),
     descriptionMessage: (t) => t('autoDetectTokensDescription'),
-    route: `${SECURITY_ROUTE}#-auto-detect-tokens`,
+    route: `${SECURITY_ROUTE}#auto-detect-tokens`,
     icon: 'fa fa-lock',
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
     descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
-    route: `${SECURITY_ROUTE}#-use-milti-account-balance-checker`,
+    route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
     icon: 'fa fa-lock',
   },
   {
@@ -210,7 +210,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     route: `${ALERTS_ROUTE}#unconnected-account`,
-    iconName: ICON_NAMES.NOTIFICATION,
+    iconName: IconName.Notification,
   },
   {
     tabMessage: (t) => t('alerts'),
@@ -224,6 +224,13 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('mainnet'),
     descriptionMessage: (t) => t('mainnet'),
     route: `${NETWORKS_ROUTE}#networks-mainnet`,
+    icon: 'fa fa-plug',
+  },
+  {
+    tabMessage: (t) => t('networks'),
+    sectionMessage: (t) => t('lineaMainnet'),
+    descriptionMessage: (t) => t('lineaMainnet'),
+    route: `${NETWORKS_ROUTE}#networks-linea-mainnet`,
     icon: 'fa fa-plug',
   },
   {
@@ -242,9 +249,9 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('networks'),
-    sectionMessage: (t) => t('lineatestnet'),
-    descriptionMessage: (t) => t('lineatestnet'),
-    route: `${NETWORKS_ROUTE}#networks-lineatestnet`,
+    sectionMessage: (t) => t('lineaGoerli'),
+    descriptionMessage: (t) => t('lineaGoerli'),
+    route: `${NETWORKS_ROUTE}#networks-linea-goerli`,
     icon: 'fa fa-plug',
   },
   {
@@ -259,28 +266,28 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('metamaskVersion'),
     descriptionMessage: (t) => t('builtAroundTheWorld'),
     route: `${ABOUT_US_ROUTE}#version`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('links'),
     descriptionMessage: (t) => t('links'),
     route: `${ABOUT_US_ROUTE}#links`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('privacyMsg'),
     descriptionMessage: (t) => t('privacyMsg'),
     route: `${ABOUT_US_ROUTE}#privacy-policy`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('terms'),
     descriptionMessage: (t) => t('terms'),
     route: `${ABOUT_US_ROUTE}#terms`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -288,7 +295,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('attributions'),
     descriptionMessage: (t) => t('attributions'),
     route: `${ABOUT_US_ROUTE}#attributions`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -296,7 +303,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('supportCenter'),
     descriptionMessage: (t) => t('supportCenter'),
     route: `${ABOUT_US_ROUTE}#supportcenter`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -304,7 +311,7 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('visitWebSite'),
     descriptionMessage: (t) => t('visitWebSite'),
     route: `${ABOUT_US_ROUTE}#visitwebsite`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
 
   {
@@ -312,14 +319,14 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('contactUs'),
     descriptionMessage: (t) => t('contactUs'),
     route: `${ABOUT_US_ROUTE}#contactus`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('about'),
     sectionMessage: (t) => t('betaTerms'),
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
-    icon: 'fa fa-info-circle',
+    iconName: IconName.Info,
   },
   {
     tabMessage: (t) => t('experimental'),

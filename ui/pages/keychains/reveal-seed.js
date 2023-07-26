@@ -22,16 +22,17 @@ import {
 
 import Box from '../../components/ui/box';
 import {
-  Text,
   Label,
   BannerAlert,
   Button,
   TextField,
   HelpText,
+  HelpTextSeverity,
   BUTTON_VARIANT,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
+  Text,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -91,6 +92,7 @@ const RevealSeedPage = () => {
               setCompletedLongPress(true);
               setScreen(REVEAL_SEED_SCREEN);
             },
+            holdToRevealType: 'SRP',
           }),
         );
       })
@@ -142,7 +144,9 @@ const RevealSeedPage = () => {
           error={error}
           width={BLOCK_SIZES.FULL}
         />
-        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </form>
     );
   };
@@ -170,7 +174,7 @@ const RevealSeedPage = () => {
                   key_type: MetaMetricsEventKeyType.Srp,
                 },
               });
-            } else if (tabName === 'qr-seed') {
+            } else if (tabName === 'qr-srp') {
               trackEvent({
                 category: MetaMetricsEventCategory.Keys,
                 event: MetaMetricsEventName.SrpViewsSrpQR,
@@ -214,13 +218,14 @@ const RevealSeedPage = () => {
             name={t('revealSeedWordsQR')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
-            tabKey="qr-seed"
+            tabKey="qr-srp"
           >
             <Box
               display={DISPLAY.FLEX}
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
               paddingTop={4}
+              data-testid="qr-srp"
             >
               <div
                 dangerouslySetInnerHTML={{

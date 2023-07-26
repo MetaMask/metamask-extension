@@ -1,14 +1,14 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import {
   setFeatureFlag,
+  setIpfsGateway,
   setParticipateInMetaMetrics,
+  setUseCurrencyRateCheck,
+  setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
-  setIpfsGateway,
-  setUseMultiAccountBalanceChecker,
-  setUseCurrencyRateCheck,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 

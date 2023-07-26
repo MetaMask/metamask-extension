@@ -115,12 +115,22 @@
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",
-      "id": "testNetworkConfigurationId"
+      "id": "chain5"
     },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
-        "chainId": "0x1"
+        "chainId": "0x1",
+        "nickname": "Custom Mainnet RPC",
+        "type": "rpc",
+        "id": "testNetworkConfigurationId"
+      },
+      "chain5": {
+        "type": "rpc",
+        "chainId": "0x5",
+        "ticker": "ETH",
+        "nickname": "Chain 5",
+        "id": "chain5"
       }
     },
     "keyrings": [
@@ -138,6 +148,10 @@
       {
         "type": "Simple Key Pair",
         "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+      },
+      {
+        "type": "Snap Keyring",
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       }
     ],
     "identities": {
@@ -164,7 +178,29 @@
       }
     },
     "frequentRpcListDetail": [],
-    "subjectMetadata": {},
+    "subjectMetadata": {
+      "npm:@metamask/test-snap-bip44": {
+        "name": "@metamask/test-snap-bip44",
+        "version": "1.2.3",
+        "subjectType": "snap"
+      }
+    },
+    "snapRegistryList": {
+      "a51ea3a8-f1b0-4613-9440-b80e2236713b": {
+        "id": "a51ea3a8-f1b0-4613-9440-b80e2236713b",
+        "snapId": "npm:@metamask/snap-simple-keyring",
+        "iconUrl": "",
+        "snapTitle": "Metamask Simple Keyring",
+        "snapSlug": "Secure your account with MetaMask Mobile",
+        "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
+        "tags": ["EOA"],
+        "developer": "Metamask",
+        "website": "https://www.consensys.net/",
+        "auditUrls": ["auditUrl1", "auditUrl2"],
+        "version": "1.0.0",
+        "lastUpdated": "April 20, 2023"
+      }
+    },
     "notifications": {
       "test": {
         "id": "test",
@@ -315,7 +351,7 @@
     },
     "allNftContracts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
+        "0x1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -328,7 +364,7 @@
             "externalLink": null
           }
         ],
-        "137": [
+        "0x89": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -341,7 +377,7 @@
             "externalLink": null
           }
         ],
-        "11155111": [
+        "0xaa36a7": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -354,7 +390,7 @@
             "externalLink": null
           }
         ],
-        "5": [
+        "0x5": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -378,7 +414,7 @@
             "externalLink": null
           }
         ],
-        "153": [
+        "0x99": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "description": null,
@@ -395,7 +431,7 @@
     },
     "allNfts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "1": [
+        "0x1": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -405,7 +441,7 @@
             "standard": "ERC721"
           }
         ],
-        "137": [
+        "0x89": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -415,7 +451,7 @@
             "standard": "ERC721"
           }
         ],
-        "11155111": [
+        "0xaa36a7": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",
@@ -425,7 +461,7 @@
             "standard": "ERC721"
           }
         ],
-        "5": [
+        "0x5": [
           {
             "address": "0x495f947276749Ce646f68AC8c248420045cb7b5e",
             "tokenId": "58076532811975507823669075598676816378162417803895263482849101575514658701313",
@@ -536,7 +572,7 @@
             "standard": "ERC721"
           }
         ],
-        "153": [
+        "0x99": [
           {
             "address": "0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414",
             "tokenId": "1",

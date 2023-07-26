@@ -12,7 +12,7 @@ describe('SnapVersion', () => {
     const { getByText, container } = renderWithLocalization(
       <SnapVersion {...args} />,
     );
-    expect(getByText(`v${args.version}`)).toBeDefined();
+    expect(getByText(args.version)).toBeDefined();
     expect(container.firstChild).toHaveAttribute('href', args.url);
   });
 

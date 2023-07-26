@@ -8,8 +8,8 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
     <div
       class="onboarding-app-header__contents"
     >
-      <div
-        class="onboarding-app-header__logo-container"
+      <button
+        class="mm-box onboarding-app-header__logo-container mm-box--background-color-transparent"
         data-testid="app-header-logo"
       >
         <svg
@@ -199,7 +199,7 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
           class="onboarding-app-header__metafox-logo--icon"
           src="./images/logo/metamask-fox.svg"
         />
-      </div>
+      </button>
       <div
         class="dropdown"
       >
@@ -213,7 +213,7 @@ exports[`OnboardingAppHeader should match snapshot 1`] = `
           </option>
         </select>
         <span
-          class="box dropdown__icon-caret-down mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box dropdown__icon-caret-down mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-down.svg');"
         />
       </div>

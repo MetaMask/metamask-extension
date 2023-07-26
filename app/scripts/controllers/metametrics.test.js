@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
+import { toHex } from '@metamask/controller-utils';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -8,11 +9,7 @@ import {
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import {
-  CHAIN_IDS,
-  CURRENCY_SYMBOLS,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 
@@ -23,6 +20,14 @@ const FAKE_CHAIN_ID = '0x1338';
 const LOCALE = 'en_US';
 const TEST_META_METRICS_ID = '0xabc';
 const DUMMY_ACTION_ID = 'DUMMY_ACTION_ID';
+const MOCK_EXTENSION_ID = 'testid';
+
+const MOCK_EXTENSION = {
+  runtime: {
+    id: MOCK_EXTENSION_ID,
+    setUninstallURL: () => undefined,
+  },
+};
 
 const MOCK_TRAITS = {
   test_boolean: true,
@@ -39,7 +44,11 @@ const MOCK_INVALID_TRAITS = {
 };
 
 const DEFAULT_TEST_CONTEXT = {
-  app: { name: 'MetaMask Extension', version: VERSION },
+  app: {
+    name: 'MetaMask Extension',
+    version: VERSION,
+    extensionId: MOCK_EXTENSION_ID,
+  },
   page: METAMETRICS_BACKGROUND_PAGE_OBJECT,
   referrer: undefined,
   userAgent: window.navigator.userAgent,
@@ -56,34 +65,13 @@ const DEFAULT_EVENT_PROPERTIES = {
   revenue: undefined,
   value: undefined,
   currency: undefined,
+  extensionId: MOCK_EXTENSION_ID,
   ...DEFAULT_SHARED_PROPERTIES,
 };
 
 const DEFAULT_PAGE_PROPERTIES = {
   ...DEFAULT_SHARED_PROPERTIES,
 };
-
-function getMockNetworkController() {
-  let state = {
-    providerConfig: {
-      type: NETWORK_TYPES.GOERLI,
-      chainId: FAKE_CHAIN_ID,
-    },
-    network: 'loading',
-  };
-  const onNetworkDidChange = sinon.stub();
-  const updateState = (newState) => {
-    state = { ...state, ...newState };
-    onNetworkDidChange.getCall(0).args[0]();
-  };
-  return {
-    store: {
-      getState: () => state,
-      updateState,
-    },
-    onNetworkDidChange,
-  };
-}
 
 function getMockPreferencesStore({ currentLocale = LOCALE } = {}) {
   let preferencesStore = {
@@ -128,15 +116,16 @@ function getMetaMetricsController({
   participateInMetaMetrics = true,
   metaMetricsId = TEST_META_METRICS_ID,
   preferencesStore = getMockPreferencesStore(),
-  networkController = getMockNetworkController(),
+  getCurrentChainId = () => FAKE_CHAIN_ID,
+  onNetworkDidChange = () => {
+    // do nothing
+  },
   segmentInstance,
 } = {}) {
   return new MetaMetricsController({
     segment: segmentInstance || segment,
-    getCurrentChainId: () =>
-      networkController.store.getState().providerConfig.chainId,
-    onNetworkDidChange:
-      networkController.onNetworkDidChange.bind(networkController),
+    getCurrentChainId,
+    onNetworkDidChange,
     preferencesStore,
     version: '0.0.1',
     environment: 'test',
@@ -149,12 +138,22 @@ function getMetaMetricsController({
       },
       events: {},
     },
+    extension: MOCK_EXTENSION,
   });
 }
+
 describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
   beforeEach(function () {
+    globalThis.sentry = {
+      startSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+      endSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+    };
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
@@ -198,17 +197,20 @@ describe('MetaMetricsController', function () {
     });
 
     it('should update when network changes', function () {
-      const networkController = getMockNetworkController();
+      let chainId = '0x111';
+      let networkDidChangeListener;
+      const onNetworkDidChange = (listener) => {
+        networkDidChangeListener = listener;
+      };
       const metaMetricsController = getMetaMetricsController({
-        networkController,
+        getCurrentChainId: () => chainId,
+        onNetworkDidChange,
       });
-      networkController.store.updateState({
-        providerConfig: {
-          type: 'NEW_NETWORK',
-          chainId: '0xaab',
-        },
-      });
-      assert.strictEqual(metaMetricsController.chainId, '0xaab');
+
+      chainId = '0x222';
+      networkDidChangeListener();
+
+      assert.strictEqual(metaMetricsController.chainId, '0x222');
     });
 
     it('should update when preferences changes', function () {
@@ -318,6 +320,7 @@ describe('MetaMetricsController', function () {
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
       metaMetricsController.setParticipateInMetaMetrics(true);
+      assert.ok(globalThis.sentry.startSession.calledOnce);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
@@ -334,6 +337,7 @@ describe('MetaMetricsController', function () {
     it('should nullify the metaMetricsId when set to false', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController.setParticipateInMetaMetrics(false);
+      assert.ok(globalThis.sentry.endSession.calledOnce);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
   });
@@ -871,7 +875,7 @@ describe('MetaMetricsController', function () {
   describe('_buildUserTraitsObject', function () {
     it('should return full user traits object on first call', function () {
       const MOCK_ALL_TOKENS = {
-        '0x1': {
+        [toHex(1)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -886,7 +890,7 @@ describe('MetaMetricsController', function () {
             },
           ],
         },
-        '0x4': {
+        [toHex(4)]: {
           '0x1235ce91d74254f29d4609f25932fe6d97bf4842': [
             {
               address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
@@ -906,7 +910,7 @@ describe('MetaMetricsController', function () {
         },
         allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
-            56: [
+            [toHex(56)]: [
               {
                 address: '0xd2cea331e5f5d8ee9fb1055c297795937645de91',
                 tokenId: '100',
@@ -922,7 +926,7 @@ describe('MetaMetricsController', function () {
             ],
           },
           '0xe04AB39684A24D8D4124b114F3bd6FBEB779cacA': {
-            69: [
+            [toHex(59)]: [
               {
                 address: '0x63d646bc7380562376d5de205123a57b1718184d',
                 tokenId: '14',
@@ -973,6 +977,11 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: [],
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
+        [MetaMetricsUserTrait.MmiAccountAddress]: null,
+        [MetaMetricsUserTrait.MmiIsCustodian]: false,
+        ///: END:ONLY_INCLUDE_IN
       });
     });
 
@@ -1003,7 +1012,9 @@ describe('MetaMetricsController', function () {
           [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
-          '0x1': { '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }] },
+          [toHex(1)]: {
+            '0xabcde': [{ '0x12345': { address: '0xtestAddress' } }],
+          },
         },
         networkConfigurations: {
           'network-configuration-id-1': { chainId: CHAIN_IDS.MAINNET },

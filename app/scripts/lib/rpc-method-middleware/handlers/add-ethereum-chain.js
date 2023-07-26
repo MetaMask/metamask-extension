@@ -1,6 +1,7 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
@@ -21,6 +22,8 @@ const addEthereumChain = {
     findNetworkConfigurationBy: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    startApprovalFlow: true,
+    endApprovalFlow: true,
   },
 };
 export default addEthereumChain;
@@ -37,6 +40,8 @@ async function addEthereumChainHandler(
     findNetworkConfigurationBy,
     setActiveNetwork,
     requestUserApproval,
+    startApprovalFlow,
+    endApprovalFlow,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -158,7 +163,7 @@ async function addEthereumChainHandler(
     try {
       await requestUserApproval({
         origin,
-        type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+        type: ApprovalType.SwitchEthereumChain,
         requestData: {
           rpcUrl: existingNetwork.rpcUrl,
           chainId: existingNetwork.chainId,
@@ -241,10 +246,13 @@ async function addEthereumChainHandler(
     );
   }
   let networkConfigurationId;
+
+  const { id: approvalFlowId } = await startApprovalFlow();
+
   try {
     await requestUserApproval({
       origin,
-      type: MESSAGE_TYPE.ADD_ETHEREUM_CHAIN,
+      type: ApprovalType.AddEthereumChain,
       requestData: {
         chainId: _chainId,
         rpcPrefs: { blockExplorerUrl: firstValidBlockExplorerUrl },
@@ -268,6 +276,7 @@ async function addEthereumChainHandler(
     // Once the network has been added, the requested is considered successful
     res.result = null;
   } catch (error) {
+    endApprovalFlow({ id: approvalFlowId });
     return end(error);
   }
 
@@ -275,7 +284,7 @@ async function addEthereumChainHandler(
   try {
     await requestUserApproval({
       origin,
-      type: MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN,
+      type: ApprovalType.SwitchEthereumChain,
       requestData: {
         rpcUrl: firstValidRPCUrl,
         chainId: _chainId,
@@ -284,14 +293,24 @@ async function addEthereumChainHandler(
         networkConfigurationId,
       },
     });
-    await setActiveNetwork(networkConfigurationId);
   } catch (error) {
     // For the purposes of this method, it does not matter if the user
     // declines to switch the selected network. However, other errors indicate
     // that something is wrong.
-    if (error.code !== errorCodes.provider.userRejectedRequest) {
-      return end(error);
-    }
+    return end(
+      error.code === errorCodes.provider.userRejectedRequest
+        ? undefined
+        : error,
+    );
+  } finally {
+    endApprovalFlow({ id: approvalFlowId });
   }
+
+  try {
+    await setActiveNetwork(networkConfigurationId);
+  } catch (error) {
+    return end(error);
+  }
+
   return end();
 }

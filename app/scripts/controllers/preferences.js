@@ -3,6 +3,10 @@ import { normalize as normalizeAddress } from 'eth-sig-util';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 
 export default class PreferencesController {
   /**
@@ -37,6 +41,9 @@ export default class PreferencesController {
       useNftDetection: false,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -64,11 +71,17 @@ export default class PreferencesController {
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
+      snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      snapsAddSnapAccountModalDismissed: false,
+      ///: END:ONLY_INCLUDE_IN
+      isLineaMainnetReleased: false,
       ...opts.initState,
     };
 
+    this.network = opts.network;
     this._onInfuraIsBlocked = opts.onInfuraIsBlocked;
     this._onInfuraIsUnblocked = opts.onInfuraIsUnblocked;
     this.store = new ObservableStore(initState);
@@ -80,6 +93,8 @@ export default class PreferencesController {
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
+
+    this._showShouldLineaMainnetNetwork();
   }
   // PUBLIC METHODS
 
@@ -172,6 +187,19 @@ export default class PreferencesController {
       openSeaEnabled,
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * Setter for the `securityAlertsEnabled` property
+   *
+   * @param {boolean} securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
+   */
+  setSecurityAlertsEnabled(securityAlertsEnabled) {
+    this.store.updateState({
+      securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Setter for the `advancedGasFee` property
@@ -269,6 +297,7 @@ export default class PreferencesController {
       const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
+
     return address;
   }
 
@@ -505,6 +534,24 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  setSnapsAddSnapAccountModalDismissed(value) {
+    this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
+  }
+
+  async updateSnapRegistry() {
+    let snapRegistry;
+    try {
+      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      snapRegistry = await response.json();
+    } catch (error) {
+      console.error(`Failed to fetch registry: `, error);
+      snapRegistry = {};
+    }
+    this.store.updateState({ snapRegistryList: snapRegistry });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   //
   // PRIVATE METHODS
   //
@@ -533,5 +580,13 @@ export default class PreferencesController {
     }
 
     this.store.updateState({ infuraBlocked: isBlocked });
+  }
+
+  /**
+   * A method to check is the linea mainnet network should be displayed
+   */
+  _showShouldLineaMainnetNetwork() {
+    const showLineaMainnet = shouldShowLineaMainnet();
+    this.store.updateState({ isLineaMainnetReleased: showLineaMainnet });
   }
 }

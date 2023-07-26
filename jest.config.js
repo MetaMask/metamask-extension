@@ -1,9 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/constants/error-utils.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.ts',
-    '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.ts',
@@ -11,6 +8,8 @@ module.exports = {
     '<rootDir>/app/scripts/lib/**/*.js',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.js',
     '<rootDir>/app/scripts/migrations/*.js',
+    '<rootDir>/app/scripts/migrations/*.ts',
+    '!<rootDir>/app/scripts/migrations/*.test.(js|ts)',
     '<rootDir>/app/scripts/platforms/*.js',
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
@@ -32,17 +31,12 @@ module.exports = {
   // TODO: enable resetMocks
   // resetMocks: true,
   restoreMocks: true,
-  setupFiles: [
-    '<rootDir>/test/setup.js',
-    '<rootDir>/test/env.js',
-    '<rootDir>/test/jest/env.js', // jest specific env vars that break mocha tests
-  ],
+  setupFiles: ['<rootDir>/test/setup.js', '<rootDir>/test/env.js'],
   setupFilesAfterEnv: ['<rootDir>/test/jest/setup.js'],
   testMatch: [
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
+    '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
@@ -50,8 +44,9 @@ module.exports = {
     '<rootDir>/app/scripts/lib/**/*.test.js',
     '<rootDir>/app/scripts/lib/**/*.test.ts',
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
-    '<rootDir>/app/scripts/migrations/*.test.js',
+    '<rootDir>/app/scripts/migrations/*.test.(js|ts)',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/app/scripts/translate.test.ts',
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',

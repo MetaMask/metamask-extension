@@ -2,7 +2,7 @@ import React from 'react';
 import {
   FONT_WEIGHT,
   FONT_STYLE,
-  TEXT_ALIGN,
+  TextAlign,
   TypographyVariant,
   OVERFLOW_WRAP,
   DISPLAY,
@@ -51,7 +51,7 @@ export default {
     },
     align: {
       control: { type: 'select' },
-      options: Object.values(TEXT_ALIGN),
+      options: Object.values(TextAlign),
     },
     overflowWrap: {
       control: { type: 'select' },
@@ -111,7 +111,7 @@ export const DefaultStory = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -137,7 +137,7 @@ export const Variant = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -164,7 +164,7 @@ export const Color = (args) => {
       <BannerAlert
         severity={SEVERITIES.WARNING}
         title="Deprecated"
-        description="<Typography/> has been deprecated in favour of the <Text /> component"
+        description="<Typography/> has been deprecated in favor of the <Text /> component"
         actionButtonLabel="See details"
         actionButtonProps={{
           href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -176,7 +176,7 @@ export const Color = (args) => {
             <React.Fragment key={color}>
               <Typography
                 color={TextColor.textDefault}
-                align={TEXT_ALIGN.CENTER}
+                align={TextAlign.Center}
                 boxProps={{
                   backgroundColor: BackgroundColor.warningMuted,
                   padding: 4,
@@ -226,7 +226,7 @@ export const FontWeight = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -250,7 +250,7 @@ export const FontStyle = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -274,13 +274,13 @@ export const Align = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
       }}
     />
-    {Object.values(TEXT_ALIGN).map((align) => (
+    {Object.values(TextAlign).map((align) => (
       <Typography
         boxProps={{ backgroundColor: renderBackgroundColor(args.color) }}
         {...args}
@@ -298,7 +298,7 @@ export const OverflowWrap = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -326,7 +326,7 @@ export const As = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -359,7 +359,7 @@ export const Margin = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',
@@ -380,7 +380,7 @@ export const BoxPropsStory = (args) => (
     <BannerAlert
       severity={SEVERITIES.WARNING}
       title="Deprecated"
-      description="<Typography/> has been deprecated in favour of the <Text /> component"
+      description="<Typography/> has been deprecated in favor of the <Text /> component"
       actionButtonLabel="See details"
       actionButtonProps={{
         href: 'https://github.com/MetaMask/metamask-extension/issues/17670',

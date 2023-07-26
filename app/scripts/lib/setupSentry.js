@@ -133,8 +133,45 @@ export default function setupSentry({ release, getState }) {
   Sentry.init({
     dsn: sentryTarget,
     debug: METAMASK_DEBUG,
+    /**
+     * autoSessionTracking defaults to true and operates by sending a session
+     * packet to sentry. This session packet does not appear to be filtered out
+     * via our beforeSend or FilterEvents integration. To avoid sending a
+     * request before we have the state tree and can validate the users
+     * preferences, we initiate this to false. Later, in startSession and
+     * endSession we modify this option and start the session or end the
+     * session manually.
+     *
+     * In sentry-install we call toggleSession after the page loads and state
+     * is available, this handles initiating the session for a user who has
+     * opted into MetaMetrics. This script is ran in both the background and UI
+     * so it should be effective at starting the session in both places.
+     *
+     * In the MetaMetricsController the session is manually started or stopped
+     * when the user opts in or out of MetaMetrics. This occurs in the
+     * setParticipateInMetaMetrics function which is exposed to the UI via the
+     * MetaMaskController.
+     *
+     * In actions.ts, after sending the updated participateInMetaMetrics flag
+     * to the background, we call toggleSession to ensure sentry is kept in
+     * sync with the user's preference.
+     *
+     * Types for the global Sentry object, and the new methods added as part of
+     * this effort were added to global.d.ts in the types folder.
+     */
+    autoSessionTracking: false,
     environment,
     integrations: [
+      /**
+       * Filtering of events must happen in this FilterEvents custom
+       * integration instead of in the beforeSend handler because the Dedupe
+       * integration is unaware of the beforeSend functionality. If an event is
+       * queued in the sentry context, additional events of the same name will
+       * be filtered out by Dedupe even if the original event was not sent due
+       * to the beforeSend method returning null.
+       *
+       * @see https://github.com/MetaMask/metamask-extension/pull/15677
+       */
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
@@ -144,7 +181,64 @@ export default function setupSentry({ release, getState }) {
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
 
-  return Sentry;
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted into MetaMetrics, change the autoSessionTracking option and start
+   * a new sentry session.
+   */
+  const startSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && getMetaMetricsEnabled() === true) {
+      options.autoSessionTracking = true;
+      hub.startSession();
+    }
+  };
+
+  /**
+   * As long as a reference to the Sentry Hub can be found, and the user has
+   * opted out of MetaMetrics, change the autoSessionTracking option and end
+   * the current sentry session.
+   */
+  const endSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {};
+    if (hub && getMetaMetricsEnabled() === false) {
+      options.autoSessionTracking = false;
+      hub.endSession();
+    }
+  };
+
+  /**
+   * Call the appropriate method (either startSession or endSession) depending
+   * on the state of metaMetrics optin and the state of autoSessionTracking on
+   * the Sentry client.
+   */
+  const toggleSession = () => {
+    const hub = Sentry.getCurrentHub?.();
+    const options = hub.getClient?.().getOptions?.() ?? {
+      autoSessionTracking: false,
+    };
+    const isMetaMetricsEnabled = getMetaMetricsEnabled();
+    if (
+      isMetaMetricsEnabled === true &&
+      options.autoSessionTracking === false
+    ) {
+      startSession();
+    } else if (
+      isMetaMetricsEnabled === false &&
+      options.autoSessionTracking === true
+    ) {
+      endSession();
+    }
+  };
+
+  return {
+    ...Sentry,
+    startSession,
+    endSession,
+    toggleSession,
+  };
 }
 
 /**
@@ -352,6 +446,6 @@ function toMetamaskUrl(origUrl) {
   if (!filePath) {
     return origUrl;
   }
-  const metamaskUrl = `metamask${filePath}`;
+  const metamaskUrl = `/metamask${filePath}`;
   return metamaskUrl;
 }

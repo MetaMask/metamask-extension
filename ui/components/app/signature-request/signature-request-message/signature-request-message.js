@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import { I18nContext } from '../../../../contexts/i18n';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
+import { Text } from '../../../component-library';
 import {
-  DISPLAY,
-  FONT_WEIGHT,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   AlignItems,
   JustifyContent,
   Color,
@@ -15,6 +14,7 @@ import {
   BorderColor,
   BorderRadius,
   TextColor,
+  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import SignatureRequestData from '../signature-request-data';
 
@@ -44,14 +44,14 @@ export default function SignatureRequestMessage({
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       onScroll={debounce(setMessageIsScrolledAtBottom, 25)}
       className="signature-request-message"
     >
       {messageIsScrollable ? (
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           borderColor={BorderColor.borderDefault}
@@ -79,14 +79,13 @@ export default function SignatureRequestMessage({
         className="signature-request-message__root"
         ref={setMessageRootRef}
       >
-        <Typography
-          fontWeight={FONT_WEIGHT.BOLD}
+        <Text
+          fontWeight={FontWeight.Bold}
           color={TextColor.textDefault}
           marginLeft={4}
-          className="signature-request-message__title"
         >
           {primaryType}
-        </Typography>
+        </Text>
         <SignatureRequestData data={data.value} />
       </Box>
     </Box>

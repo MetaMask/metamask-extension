@@ -12,7 +12,7 @@ The `AvatarNetwork` is a component responsible for display of the image of a giv
 
 ## Props
 
-The `AvatarNetwork` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+The `AvatarNetwork` accepts all props below as well as all [Box](/docs/components-componentlibrary-box--docs#props) component props
 
 <ArgsTable of={AvatarNetwork} />
 
@@ -37,13 +37,13 @@ The fallback display of the `AvatarNetwork` is a circle with the initial letter 
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { AvatarNetwork } from '../../component-library';
-<AvatarNetwork size={Size.XS} />
-<AvatarNetwork size={Size.SM} />
-<AvatarNetwork size={Size.MD} />
-<AvatarNetwork size={Size.LG} />
-<AvatarNetwork size={Size.XL} />
+import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
+
+<AvatarNetwork size={AvatarNetworkSize.Xs} />
+<AvatarNetwork size={AvatarNetworkSize.Sm} />
+<AvatarNetwork size={AvatarNetworkSize.Md} />
+<AvatarNetwork size={AvatarNetworkSize.Lg} />
+<AvatarNetwork size={AvatarNetworkSize.Xl} />
 ```
 
 ### Name

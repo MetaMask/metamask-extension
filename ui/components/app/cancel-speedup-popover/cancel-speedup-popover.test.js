@@ -125,7 +125,7 @@ describe('CancelSpeedupPopover', () => {
   it('information tooltip should contain the correct text if editGasMode is cancel', async () => {
     await act(async () => render());
     expect(
-      InfoTooltip.mock.calls[0][0].contentText.props.children[0],
+      InfoTooltip.mock.calls[0][0].contentText.props.children[0].props.children,
     ).toStrictEqual(
       'To Cancel a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
     );
@@ -134,7 +134,7 @@ describe('CancelSpeedupPopover', () => {
   it('information tooltip should contain the correct text if editGasMode is speedup', async () => {
     await act(async () => render({ editGasMode: EditGasModes.speedUp }));
     expect(
-      InfoTooltip.mock.calls[0][0].contentText.props.children[0],
+      InfoTooltip.mock.calls[0][0].contentText.props.children[0].props.children,
     ).toStrictEqual(
       'To Speed up a transaction the gas fee must be increased by at least 10% for it to be recognized by the network.',
     );

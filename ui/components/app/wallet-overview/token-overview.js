@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import Identicon from '../../ui/identicon';
 import CurrencyDisplay from '../../ui/currency-display';
 import { I18nContext } from '../../../contexts/i18n';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
@@ -29,7 +28,6 @@ import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
@@ -37,10 +35,9 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import useRamps from '../../../hooks/experiences/useRamps';
 
-import { ButtonIcon, Icon, IconName } from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
-import { BUTTON_ICON_SIZES } from '../../component-library/button-icon/deprecated';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import WalletOverview from './wallet-overview';
 
@@ -80,6 +77,7 @@ const TokenOverview = ({ className, token }) => {
 
   return (
     <WalletOverview
+      showAddress={false}
       balance={
         <div className="token-overview__balance">
           <div className="token-overview__primary-container">
@@ -88,34 +86,6 @@ const TokenOverview = ({ className, token }) => {
               className="token-overview__primary-balance"
               displayValue={balanceToRender}
               suffix={token.symbol}
-            />
-            <ButtonIcon
-              className="token-overview__portfolio-button"
-              data-testid="home__portfolio-site"
-              color={IconColor.primaryDefault}
-              iconName={IconName.Diagram}
-              ariaLabel={t('portfolio')}
-              size={BUTTON_ICON_SIZES.LG}
-              onClick={() => {
-                const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
-                global.platform.openTab({
-                  url: portfolioUrl,
-                });
-                trackEvent(
-                  {
-                    category: MetaMetricsEventCategory.Home,
-                    event: MetaMetricsEventName.PortfolioLinkClicked,
-                    properties: {
-                      url: portfolioUrl,
-                    },
-                  },
-                  {
-                    contextPropsIntoEventProperties: [
-                      MetaMetricsContextProp.PageTitle,
-                    ],
-                  },
-                );
-              }}
             />
           </div>
           {formattedFiatBalance ? (
@@ -260,9 +230,6 @@ const TokenOverview = ({ className, token }) => {
         </>
       }
       className={className}
-      icon={
-        <Identicon diameter={32} address={token.address} image={token.image} />
-      }
     />
   );
 };

@@ -15,6 +15,7 @@ import {
 } from '../../selectors';
 import {
   lockMetamask,
+  hideImportNftsModal,
   setCurrentCurrency,
   setLastActiveTime,
   setMouseUserState,
@@ -25,12 +26,14 @@ import { pageChanged } from '../../ducks/history/history';
 import { prepareToLeaveSwaps } from '../../ducks/swaps/swaps';
 import { getSendStage } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import Routes from './routes.component';
 
 function mapStateToProps(state) {
   const { appState } = state;
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
-  const { autoLockTimeLimit = 0 } = getPreferences(state);
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
+    getPreferences(state);
   const { completedOnboarding } = state.metamask;
 
   return {
@@ -61,6 +64,7 @@ function mapStateToProps(state) {
     isAccountMenuOpen: state.metamask.isAccountMenuOpen,
     isNetworkMenuOpen: state.metamask.isNetworkMenuOpen,
     accountDetailsAddress: state.appState.accountDetailsAddress,
+    isImportNftsModalOpen: state.appState.importNftsModalOpen,
   };
 }
 
@@ -75,6 +79,7 @@ function mapDispatchToProps(dispatch) {
     prepareToLeaveSwaps: () => dispatch(prepareToLeaveSwaps()),
     toggleAccountMenu: () => dispatch(toggleAccountMenu()),
     toggleNetworkMenu: () => dispatch(toggleNetworkMenu()),
+    hideImportNftsModal: () => dispatch(hideImportNftsModal()),
   };
 }
 

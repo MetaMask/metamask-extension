@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   BorderColor,
   Size,
@@ -51,7 +51,7 @@ export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
 export const SizeStory = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarFavicon {...args} size={Size.XS} />
     <AvatarFavicon {...args} size={Size.SM} />
     <AvatarFavicon {...args} size={Size.MD} />
@@ -62,7 +62,7 @@ export const SizeStory = (args) => (
 SizeStory.storyName = 'Size';
 
 export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.flexStart} gap={1}>
+  <Box display={Display.Flex} alignItems={AlignItems.flexStart} gap={1}>
     <AvatarFavicon {...args} src="https://uniswap.org/favicon.ico" />
     <AvatarFavicon
       {...args}

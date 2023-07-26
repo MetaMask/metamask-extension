@@ -24,12 +24,14 @@ export interface TemporaryMessageDataType {
     data: string;
   };
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  custodyId?: string;
+  metadata?: {
+    custodyId?: string;
+  };
   status?: string;
   ///: END:ONLY_INCLUDE_IN
 }
 
-interface MessagesIndexedById {
+export interface MessagesIndexedById {
   [id: string]: TemporaryMessageDataType;
 }
 
@@ -69,6 +71,7 @@ interface TemporaryBackgroundState {
   networkId: string | null;
   networkStatus: NetworkStatus;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
+  approvalFlows: ApprovalControllerState['approvalFlows'];
   knownMethodData?: {
     [fourBytePrefix: string]: Record<string, unknown>;
   };

@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  TEST_SEED_PHRASE_TWO,
+  convertToHexValue,
+  withFixtures,
+  assertAccountBalanceForDOM,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask Responsive UI', function () {
@@ -67,7 +72,7 @@ describe('MetaMask Responsive UI', function () {
 
         // assert balance
         const balance = await driver.findElement(
-          '[data-testid="wallet-balance"]',
+          '[data-testid="eth-overview__primary-currency"]',
         );
         assert.ok(/^0\sETH$/u.test(await balance.getText()));
       },
@@ -76,8 +81,6 @@ describe('MetaMask Responsive UI', function () {
 
   it('Importing existing wallet from lock page', async function () {
     const driverOptions = { openDevToolsForTabs: true };
-    const testSeedPhrase =
-      'phrase upgrade clock rough situate wedding elder clever doctor stamp excess tent';
 
     await withFixtures(
       {
@@ -98,7 +101,7 @@ describe('MetaMask Responsive UI', function () {
 
         await driver.pasteIntoField(
           '[data-testid="import-srp__srp-word-0"]',
-          testSeedPhrase,
+          TEST_SEED_PHRASE_TWO,
         );
 
         await driver.fill('#password', 'correct horse battery staple');
@@ -106,11 +109,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.press('#confirm-password', driver.Key.ENTER);
 
         // balance renders
-        const balance = await ganacheServer.getBalance();
-        await driver.waitForSelector({
-          css: '[data-testid="eth-overview__primary-currency"]',
-          text: `${balance} ETH`,
-        });
+        await assertAccountBalanceForDOM(driver, ganacheServer);
       },
     );
   });
@@ -143,7 +142,7 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         await driver.fill(
-          'input[placeholder="Search, public address (0x), or ENS"]',
+          'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
@@ -160,13 +159,13 @@ describe('MetaMask Responsive UI', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         await driver.waitForSelector({
-          css: '.transaction-list-item__primary-currency',
+          css: '[data-testid="transaction-list-item-primary-currency"]',
           text: '-1 ETH',
         });
       },

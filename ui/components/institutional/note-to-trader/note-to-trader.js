@@ -1,44 +1,49 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Label, Text } from '../../component-library';
-import Box from '../../ui/box';
+import { Label, Box, Text } from '../../component-library';
 
 const NoteToTrader = (props) => {
   const { placeholder, maxLength, onChange, noteText, labelText } = props;
 
   return (
-    <>
+    <Box className="confirm-page-container-content__data">
       <Box
-        className="note-header"
-        display={DISPLAY.FLEX}
-        justifyContent={JustifyContent.spaceBetween}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        padding={4}
       >
-        <Label htmlFor="transaction-note">{labelText}</Label>
-        <Text className="note-header__counter">
-          {noteText.length}/{maxLength}
-        </Text>
+        <Box
+          className="note-header"
+          display={Display.Flex}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Label htmlFor="transaction-note">{labelText}</Label>
+          <Text className="note-header__counter">
+            {noteText.length}/{maxLength}
+          </Text>
+        </Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          className="note-field"
+        >
+          <textarea
+            id="transaction-note"
+            data-testid="transaction-note"
+            onChange={({ target: { value } }) => onChange(value)}
+            autoFocus
+            maxLength={maxLength}
+            placeholder={placeholder}
+            value={noteText}
+          />
+        </Box>
       </Box>
-      <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        className="note-field"
-      >
-        <textarea
-          id="transaction-note"
-          data-testid="transaction-note"
-          onChange={({ target: { value } }) => onChange(value)}
-          autoFocus
-          maxLength={maxLength}
-          placeholder={placeholder}
-          value={noteText}
-        />
-      </Box>
-    </>
+    </Box>
   );
 };
 

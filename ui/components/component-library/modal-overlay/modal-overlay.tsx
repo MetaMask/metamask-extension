@@ -21,6 +21,7 @@ export const ModalOverlay: React.FC<ModalOverlayProps> = ({
     width={BLOCK_SIZES.FULL}
     height={BLOCK_SIZES.FULL}
     onClick={onClick}
+    aria-hidden="true"
     {...props}
   />
 );

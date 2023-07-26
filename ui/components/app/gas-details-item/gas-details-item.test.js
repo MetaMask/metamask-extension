@@ -33,6 +33,7 @@ const render = ({ contextProps } = {}) => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       gasFeeEstimates: mockEstimates[GasEstimateTypes.feeMarket],
+      ...contextProps,
     },
   });
 
@@ -74,6 +75,32 @@ describe('GasDetailsItem', () => {
     });
   });
 
+  it('should show warning icon if dapp estimates are high', async () => {
+    render({
+      contextProps: {
+        gasFeeEstimates: {
+          high: {
+            suggestedMaxPriorityFeePerGas: '1',
+          },
+        },
+        transaction: {
+          txParams: {
+            gas: '0x52081',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
+          userFeeLevel: 'medium',
+          dappSuggestedGasFees: {
+            maxPriorityFeePerGas: '0x38D7EA4C68000',
+            maxFeePerGas: '0x38D7EA4C68000',
+          },
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryByText('⚠ Max fee:')).toBeInTheDocument();
+    });
+  });
+
   it('should not show warning icon if estimates are not high', async () => {
     render({
       contextProps: { transaction: { txParams: {}, userFeeLevel: 'low' } },
@@ -105,6 +132,45 @@ describe('GasDetailsItem', () => {
 
   it('should render gas fee details', async () => {
     render();
+    await waitFor(() => {
+      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+    });
+  });
+
+  it('should render gas fee details if maxPriorityFeePerGas is 0', async () => {
+    render({
+      contextProps: {
+        transaction: {
+          txParams: {
+            gas: '0x5208',
+            maxFeePerGas: '0x59682f10',
+            maxPriorityFeePerGas: '0',
+          },
+          simulationFails: false,
+          userFeeLevel: 'low',
+        },
+      },
+    });
+    await waitFor(() => {
+      expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
+      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+    });
+  });
+
+  it('should render gas fee details if maxPriorityFeePerGas is undefined', async () => {
+    render({
+      contextProps: {
+        transaction: {
+          txParams: {
+            gas: '0x5208',
+            maxFeePerGas: '0x59682f10',
+          },
+          simulationFails: false,
+          userFeeLevel: 'low',
+        },
+      },
+    });
     await waitFor(() => {
       expect(screen.queryAllByTitle('0.0000315 ETH').length).toBeGreaterThan(0);
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
-import Box from '../../ui/box/box';
 import {
   AlignItems,
   IconColor,
@@ -10,18 +9,39 @@ import {
   Size,
   JustifyContent,
   TextColor,
-  BLOCK_SIZES,
+  BackgroundColor,
+  BlockSize,
+  Display,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   ButtonIcon,
-  ButtonLink,
+  Text,
   IconName,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip/tooltip';
+import {
+  GOERLI_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../../shared/constants/network';
 
-const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
+const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
+
+function getAvatarNetworkColor(name) {
+  switch (name) {
+    case GOERLI_DISPLAY_NAME:
+      return BackgroundColor.goerli;
+    case LINEA_GOERLI_DISPLAY_NAME:
+      return BackgroundColor.lineaGoerli;
+    case SEPOLIA_DISPLAY_NAME:
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
+}
 
 export const NetworkListItem = ({
   name,
@@ -35,7 +55,7 @@ export const NetworkListItem = ({
 
   useEffect(() => {
     if (networkRef.current && selected) {
-      networkRef.current.querySelector('.mm-button-link').focus();
+      networkRef.current.focus();
     }
   }, [networkRef, selected]);
 
@@ -48,10 +68,10 @@ export const NetworkListItem = ({
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
       })}
+      display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
-      width={BLOCK_SIZES.FULL}
-      ref={networkRef}
+      width={BlockSize.Full}
     >
       {selected && (
         <Box
@@ -60,14 +80,21 @@ export const NetworkListItem = ({
           backgroundColor={Color.primaryDefault}
         />
       )}
-      <AvatarNetwork name={name} src={iconSrc} />
+      <AvatarNetwork
+        backgroundColor={getAvatarNetworkColor(name)}
+        name={name}
+        src={iconSrc}
+      />
       <Box className="multichain-network-list-item__network-name">
-        <ButtonLink
+        <Text
+          ref={networkRef}
+          as="button"
           onClick={(e) => {
             e.stopPropagation();
             onClick();
           }}
           color={TextColor.textDefault}
+          backgroundColor={BackgroundColor.transparent}
           ellipsis
         >
           {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
@@ -81,7 +108,7 @@ export const NetworkListItem = ({
           ) : (
             name
           )}
-        </ButtonLink>
+        </Text>
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
