@@ -129,343 +129,26 @@ describe('Swap Eth for another Token', function () {
 
         await getQuoteAndSwapTokens(driver);
 
-        const events = await getEventPayloads(driver, mockedEndpoints);
-
-        const numberOfMetaswapRequests = 9;
-        assert.equal(
-          events.length,
-          numberOfSegmentRequests + numberOfMetaswapRequests,
+        const metricsReqs = await assertReqsNumAndFilterMetrics(
+          driver,
+          mockedEndpoints,
         );
 
-        const reqs = events.slice(0, numberOfSegmentRequests);
+        await assertNavSwapButtonClickedEvent(metricsReqs);
 
-        assert.equal(reqs[0].event, MetaMetricsEventName.NavSwapButtonClicked);
-        assert.deepStrictEqual(reqs[0].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-          location: 'Main View',
-          text: 'Swap',
-          token_symbol: 'ETH',
-        });
+        await assertPrepareSwapPageLoadedEvents(metricsReqs);
 
-        // reqs[1], reqs[2] sometimes switch order
-        const assertionsReq1 = [
-          (req) => req.event === MetaMetricsEventName.PrepareSwapPageLoaded,
-          (req) => Object.keys(req.properties).length === 7,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties?.chain_id === toHex(1337),
-          (req) => req.properties?.current_stx_enabled === false,
-          (req) => req.properties?.environment_type === 'fullscreen',
-          (req) => req.properties?.is_hardware_wallet === false,
-          (req) => req.properties?.locale === 'en',
-          (req) => req.properties?.stx_enabled === false,
-        ];
+        await assertQuotesRequestedEvents(metricsReqs);
 
-        const assertionsReq2 = [
-          (req) => req.event === MetaMetricsEventName.PrepareSwapPageLoaded,
-          (req) => Object.keys(req.properties).length === 4,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties?.chain_id === toHex(1337),
-          (req) => req.properties?.environment_type === 'fullscreen',
-          (req) => req.properties?.locale === 'en',
-        ];
+        await assertQuotesReceivedAndBestQuoteReviewedEvents(metricsReqs);
 
-        assert.ok(
-          assertInAnyOrder(
-            [reqs[1], reqs[2]],
-            [assertionsReq1, assertionsReq2],
-          ),
-          'requests [1] and [2] did not match what was expected',
-        );
+        await assertAllAvailableQuotesOpenedEvents(metricsReqs);
 
-        assert.equal(reqs[3].event, MetaMetricsEventName.QuotesRequested);
-        assert.deepStrictEqual(reqs[3].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-          anonymizedData: true,
-          current_stx_enabled: false,
-          custom_slippage: false,
-          is_hardware_wallet: false,
-          request_type: 'Order',
-          slippage: 2,
-          stx_enabled: false,
-          token_from: 'TESTETH',
-          token_from_amount: '2',
-          token_to: 'DAI',
-        });
+        await assertSwapStartedEvents(metricsReqs);
 
-        assert.equal(reqs[4].event, MetaMetricsEventName.QuotesRequested);
-        assert.deepStrictEqual(reqs[4].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-        });
+        await assertSwapCompletedEvents(metricsReqs);
 
-        // reqs[5], reqs[6], reqs[7] and reqs[8] sometimes switch order
-        const assertionsReq5 = [
-          (req) => req.event === MetaMetricsEventName.QuotesReceived,
-          (req) => Object.keys(req.properties).length === 18,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties.chain_id === toHex(1337),
-          (req) => req.properties.environment_type === 'fullscreen',
-          (req) => req.properties.locale === 'en',
-          (req) => req.properties.anonymizedData === true,
-          (req) => typeof req.properties.available_quotes === 'number',
-          (req) => typeof req.properties.best_quote_source === 'string',
-          (req) => req.properties.current_stx_enabled === false,
-          (req) => req.properties.custom_slippage === false,
-          (req) => req.properties.is_hardware_wallet === false,
-          (req) => req.properties.request_type === 'Order',
-          (req) => typeof req.properties.response_time === 'number',
-          (req) => req.properties.slippage === 2,
-          (req) => req.properties.stx_enabled === false,
-          (req) => req.properties.token_from === 'TESTETH',
-          (req) => req.properties.token_from_amount === '2',
-          (req) => req.properties.token_to === 'DAI',
-          (req) => typeof req.properties.token_to_amount === 'string',
-        ];
-
-        const assertionsReq6 = [
-          (req) => req.event === MetaMetricsEventName.QuotesReceived,
-          (req) => Object.keys(req.properties).length === 4,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties?.chain_id === toHex(1337),
-          (req) => req.properties?.environment_type === 'fullscreen',
-          (req) => req.properties?.locale === 'en',
-        ];
-
-        const assertionsReq7 = [
-          (req) => req.event === MetaMetricsEventName.BestQuoteReviewed,
-          (req) => Object.keys(req.properties).length === 17,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties?.chain_id === toHex(1337),
-          (req) => req.properties?.environment_type === 'fullscreen',
-          (req) => req.properties?.locale === 'en',
-          (req) => typeof req.properties?.available_quotes === 'number',
-          (req) => typeof req.properties?.best_quote_source === 'string',
-          (req) => req.properties?.current_stx_enabled === false,
-          (req) => req.properties?.custom_slippage === false,
-          (req) => req.properties?.is_hardware_wallet === false,
-          (req) => req.properties?.request_type === false,
-          (req) => req.properties?.slippage === 2,
-          (req) => req.properties?.stx_enabled === false,
-          (req) => req.properties?.token_from === 'TESTETH',
-          (req) => req.properties?.token_from_amount === '2',
-          (req) => req.properties?.token_to === 'DAI',
-          (req) => typeof req.properties?.token_to_amount === 'string',
-        ];
-
-        const assertionsReq8 = [
-          (req) => req.event === MetaMetricsEventName.BestQuoteReviewed,
-          (req) => Object.keys(req.properties).length === 4,
-          (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
-          (req) => req.properties?.chain_id === toHex(1337),
-          (req) => req.properties?.environment_type === 'fullscreen',
-          (req) => req.properties?.locale === 'en',
-        ];
-
-        assert.ok(
-          assertInAnyOrder(
-            [reqs[5], reqs[6], reqs[7], reqs[8]],
-            [assertionsReq5, assertionsReq6, assertionsReq7, assertionsReq8],
-          ),
-          'requests [5 to 8] did not match what was expected',
-        );
-
-        assert.equal(
-          reqs[9].event,
-          MetaMetricsEventName.AllAvailableQuotesOpened,
-        );
-        assert.equal(Object.keys(reqs[9].properties).length, 18);
-        assert.equal(
-          reqs[9].properties.category,
-          MetaMetricsEventCategory.Swaps,
-        );
-        assert.equal(reqs[9].properties.chain_id, toHex(1337));
-        assert.equal(reqs[9].properties.environment_type, 'fullscreen');
-        assert.equal(reqs[9].properties.locale, 'en');
-        assert.equal(typeof reqs[9].properties.available_quotes, 'number');
-        assert.equal(typeof reqs[9].properties.best_quote_source, 'string');
-        assert.equal(reqs[9].properties.current_stx_enabled, false);
-        assert.equal(reqs[9].properties.custom_slippage, false);
-        assert.equal(reqs[9].properties.is_hardware_wallet, false);
-        assert.equal(reqs[9].properties.request_type, false);
-        assert.equal(reqs[9].properties.slippage, 2);
-        assert.equal(reqs[9].properties.stx_enabled, false);
-        assert.equal(reqs[9].properties.token_from, 'TESTETH');
-        assert.equal(reqs[9].properties.token_from_amount, '2');
-        assert.equal(reqs[9].properties.token_to, 'DAI');
-        assert.equal(reqs[9].properties.token_to, 'DAI');
-        assert.equal(reqs[9].properties.other_quote_selected, false);
-        assert.equal(reqs[9].properties.other_quote_selected_source, null);
-        assert.equal(typeof reqs[9].properties.token_to_amount, 'string');
-
-        assert.equal(
-          reqs[10].event,
-          MetaMetricsEventName.AllAvailableQuotesOpened,
-        );
-        assert.deepStrictEqual(reqs[10].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-        });
-
-        assert.equal(reqs[11].event, MetaMetricsEventName.SwapStarted);
-        assert.equal(Object.keys(reqs[11].properties).length, 24);
-        assert.equal(reqs[11].properties.token_from, 'TESTETH');
-        assert.equal(reqs[11].properties.token_from_amount, '2');
-        assert.equal(reqs[11].properties.token_to, 'DAI');
-        assert.equal(typeof reqs[11].properties.token_to_amount, 'string');
-        assert.equal(reqs[11].properties.slippage, 2);
-        assert.equal(reqs[11].properties.custom_slippage, false);
-        assert.equal(typeof reqs[11].properties.best_quote_source, 'string');
-        assert.equal(
-          typeof reqs[11].properties.other_quote_selected,
-          'boolean',
-        );
-        assert.equal(
-          typeof reqs[11].properties.other_quote_selected_source,
-          'string',
-        );
-        assert.equal(typeof reqs[11].properties.gas_fees, 'string');
-        assert.equal(typeof reqs[11].properties.estimated_gas, 'string');
-        assert.equal(typeof reqs[11].properties.suggested_gas_price, 'string');
-        assert.equal(reqs[11].properties.is_hardware_wallet, false);
-        assert.equal(reqs[11].properties.stx_enabled, false);
-        assert.equal(reqs[11].properties.current_stx_enabled, false);
-        assert.equal(typeof reqs[11].properties.reg_tx_fee_in_usd, 'number');
-        assert.equal(typeof reqs[11].properties.reg_tx_fee_in_eth, 'number');
-        assert.equal(
-          typeof reqs[11].properties.reg_tx_max_fee_in_usd,
-          'number',
-        );
-        assert.equal(
-          typeof reqs[11].properties.reg_tx_max_fee_in_eth,
-          'number',
-        );
-        assert.equal(
-          reqs[11].properties.category,
-          MetaMetricsEventCategory.Swaps,
-        );
-        assert.equal(reqs[11].properties.locale, 'en');
-        assert.equal(reqs[11].properties.chain_id, toHex(1337));
-        assert.equal(reqs[11].properties.environment_type, 'fullscreen');
-
-        assert.equal(reqs[12].event, MetaMetricsEventName.SwapStarted);
-        assert.deepStrictEqual(reqs[12].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-        });
-
-        assert.equal(reqs[13].event, MetaMetricsEventName.SwapCompleted);
-        assert.equal(Object.keys(reqs[13].properties).length, 30);
-        assert.equal(reqs[13].properties.token_from, 'TESTETH');
-        assert.equal(reqs[13].properties.token_from_amount, '2');
-        assert.equal(reqs[13].properties.token_to, 'DAI');
-        assert.equal(typeof reqs[13].properties.token_to_amount, 'string');
-        assert.equal(reqs[13].properties.slippage, 2);
-        assert.equal(reqs[13].properties.custom_slippage, false);
-        assert.equal(reqs[13].properties.best_quote_source, 'airswapV4');
-        assert.equal(
-          typeof reqs[13].properties.other_quote_selected,
-          'boolean',
-        );
-        assert.equal(
-          typeof reqs[13].properties.other_quote_selected_source,
-          'string',
-        );
-        assert.equal(typeof reqs[13].properties.gas_fees, 'string');
-        assert.equal(typeof reqs[13].properties.estimated_gas, 'string');
-        assert.equal(reqs[13].properties.suggested_gas_price, '30');
-        assert.equal(reqs[13].properties.used_gas_price, '30');
-        assert.equal(reqs[13].properties.is_hardware_wallet, false);
-        assert.equal(reqs[13].properties.stx_enabled, false);
-        assert.equal(reqs[13].properties.current_stx_enabled, false);
-        assert.equal(typeof reqs[13].properties.reg_tx_fee_in_usd, 'number');
-        assert.equal(typeof reqs[13].properties.reg_tx_fee_in_eth, 'number');
-        assert.equal(
-          typeof reqs[13].properties.reg_tx_max_fee_in_usd,
-          'number',
-        );
-        assert.equal(
-          typeof reqs[13].properties.reg_tx_max_fee_in_eth,
-          'number',
-        );
-        assert.equal(reqs[13].properties.token_to_amount_received, '');
-        assert.equal(reqs[13].properties.quote_vs_executionRatio, null);
-        assert.equal(reqs[13].properties.estimated_vs_used_gasRatio, '100%');
-        assert.equal(reqs[13].properties.approval_gas_cost_in_eth, 0);
-        assert.equal(
-          typeof reqs[13].properties.trade_gas_cost_in_eth,
-          'number',
-        );
-        assert.equal(
-          typeof reqs[13].properties.trade_and_approval_gas_cost_in_eth,
-          'number',
-        );
-        assert.equal(reqs[13].properties.category, 'Swaps');
-        assert.equal(reqs[13].properties.locale, 'en');
-        assert.equal(reqs[13].properties.chain_id, '0x539');
-        assert.equal(reqs[13].properties.environment_type, 'background');
-
-        assert.equal(reqs[14].event, MetaMetricsEventName.SwapCompleted);
-        assert.deepStrictEqual(reqs[14].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'background',
-          locale: 'en',
-        });
-
-        assert.equal(reqs[15].event, MetaMetricsEventName.ExitedSwaps);
-        assert.equal(Object.keys(reqs[15].properties).length, 12);
-        assert.equal(reqs[15].properties.token_from_amount, '2');
-        assert.equal(reqs[15].properties.request_type, false);
-        assert.equal(reqs[15].properties.slippage, 2);
-        assert.equal(reqs[15].properties.custom_slippage, false);
-        assert.equal(reqs[15].properties.current_screen, 'awaiting-swap');
-        assert.equal(reqs[15].properties.is_hardware_wallet, false);
-        assert.equal(reqs[15].properties.stx_enabled, false);
-        assert.equal(reqs[15].properties.current_stx_enabled, false);
-        assert.equal(reqs[15].properties.category, 'Swaps');
-        assert.equal(reqs[15].properties.locale, 'en');
-        assert.equal(reqs[15].properties.chain_id, '0x539');
-        assert.equal(reqs[15].properties.environment_type, 'fullscreen');
-
-        assert.equal(reqs[16].event, MetaMetricsEventName.ExitedSwaps);
-        assert.deepStrictEqual(reqs[16].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-        });
-
-        assert.equal(reqs[17].event, MetaMetricsEventName.ExitedSwaps);
-        assert.equal(Object.keys(reqs[15].properties).length, 12);
-        assert.equal(reqs[17].properties.custom_slippage, true);
-        assert.equal(reqs[17].properties.current_screen, 'awaiting-swap');
-        assert.equal(reqs[17].properties.is_hardware_wallet, false);
-        assert.equal(reqs[17].properties.stx_enabled, false);
-        assert.equal(reqs[17].properties.current_stx_enabled, false);
-        assert.equal(reqs[17].properties.category, 'Swaps');
-        assert.equal(reqs[17].properties.locale, 'en');
-        assert.equal(reqs[17].properties.chain_id, '0x539');
-        assert.equal(reqs[17].properties.environment_type, 'fullscreen');
-
-        assert.equal(reqs[18].event, MetaMetricsEventName.ExitedSwaps);
-        assert.deepStrictEqual(reqs[18].properties, {
-          category: MetaMetricsEventCategory.Swaps,
-          chain_id: toHex(1337),
-          environment_type: 'fullscreen',
-          locale: 'en',
-        });
+        await assertExitedSwapsEvents(metricsReqs);
       },
     );
   });
@@ -496,4 +179,394 @@ async function getQuoteAndSwapTokens(driver) {
     swapFrom: 'TESTETH',
     swapTo: 'DAI',
   });
+}
+
+async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
+  const events = await getEventPayloads(driver, mockedEndpoints);
+
+  const numberOfMetaswapRequests = 9;
+  assert.equal(
+    events.length,
+    numberOfSegmentRequests + numberOfMetaswapRequests,
+  );
+
+  const reqs = events.slice(0, numberOfSegmentRequests);
+
+  return reqs;
+}
+
+async function assertNavSwapButtonClickedEvent(reqs) {
+  assert.equal(reqs[0].event, MetaMetricsEventName.NavSwapButtonClicked);
+  assert.deepStrictEqual(reqs[0].properties, {
+    category: MetaMetricsEventCategory.Swaps,
+    chain_id: toHex(1337),
+    environment_type: 'fullscreen',
+    locale: 'en',
+    location: 'Main View',
+    text: 'Swap',
+    token_symbol: 'ETH',
+  });
+}
+
+async function assertPrepareSwapPageLoadedEvents(reqs) {
+  const assertionsReq1 = [
+    (req) => req.event === MetaMetricsEventName.PrepareSwapPageLoaded,
+    (req) => Object.keys(req.properties).length === 7,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.stx_enabled === false,
+  ];
+
+  const assertionsReq2 = [
+    (req) => req.event === MetaMetricsEventName.PrepareSwapPageLoaded,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[1], reqs[2]], [assertionsReq1, assertionsReq2]),
+    'assertPrepareSwapPageLoadedEvents(): reqs[1] and reqs[2] did not match what was expected',
+  );
+}
+
+async function assertQuotesRequestedEvents(reqs) {
+  const assertionsReq3 = [
+    (req) => req.event === MetaMetricsEventName.QuotesRequested,
+    (req) => Object.keys(req.properties).length === 14,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.anonymizedData === true,
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.request_type === 'Order',
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+  ];
+
+  const assertionsReq4 = [
+    (req) => req.event === MetaMetricsEventName.QuotesRequested,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[3], reqs[4]], [assertionsReq3, assertionsReq4]),
+    'assertQuotesRequestedEvents(): reqs[3] and reqs[4] did not match what was expected',
+  );
+}
+
+async function assertQuotesReceivedAndBestQuoteReviewedEvents(reqs) {
+  const assertionsReq5 = [
+    (req) => req.event === MetaMetricsEventName.QuotesReceived,
+    (req) => Object.keys(req.properties).length === 18,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.anonymizedData === true,
+    (req) => typeof req.properties?.available_quotes === 'number',
+    (req) => typeof req.properties?.best_quote_source === 'string',
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.request_type === 'Order',
+    (req) => typeof req.properties?.response_time === 'number',
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => typeof req.properties?.token_to_amount === 'string',
+  ];
+
+  const assertionsReq6 = [
+    (req) => req.event === MetaMetricsEventName.QuotesReceived,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  const assertionsReq7 = [
+    (req) => req.event === MetaMetricsEventName.BestQuoteReviewed,
+    (req) => Object.keys(req.properties).length === 17,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => typeof req.properties?.available_quotes === 'number',
+    (req) => typeof req.properties?.best_quote_source === 'string',
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.request_type === false,
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => typeof req.properties?.token_to_amount === 'string',
+  ];
+
+  const assertionsReq8 = [
+    (req) => req.event === MetaMetricsEventName.BestQuoteReviewed,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  // When running this test on Chrome in particular,  reqs[5], reqs[6], reqs[7]
+  // and reqs[8] sometimes switch order so we bundled them together for the
+  // assertion
+
+  assert.ok(
+    assertInAnyOrder(
+      [reqs[5], reqs[6], reqs[7], reqs[8]],
+      [assertionsReq5, assertionsReq6, assertionsReq7, assertionsReq8],
+    ),
+    'assertQuotesReceivedAndBestQuoteReviewedEvents(): reqs[5], reqs[6], reqs[7] and reqs[8] did not match what was expected',
+  );
+}
+
+async function assertAllAvailableQuotesOpenedEvents(reqs) {
+  const assertionsReq9 = [
+    (req) => req.event === MetaMetricsEventName.AllAvailableQuotesOpened,
+    (req) => Object.keys(req.properties).length === 18,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => typeof req.properties?.available_quotes === 'number',
+    (req) => typeof req.properties?.best_quote_source === 'string',
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.request_type === false,
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => req.properties?.other_quote_selected === false,
+    (req) => req.properties?.other_quote_selected_source === null,
+    (req) => typeof req.properties?.token_to_amount === 'string',
+  ];
+
+  const assertionsReq10 = [
+    (req) => req.event === MetaMetricsEventName.AllAvailableQuotesOpened,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[9], reqs[10]], [assertionsReq9, assertionsReq10]),
+    'assertAllAvailableQuotesOpenedEvents(): reqs[9] and reqs[10] did not match what was expected',
+  );
+}
+
+async function assertSwapStartedEvents(reqs) {
+  const assertionsReq11 = [
+    (req) => req.event === MetaMetricsEventName.SwapStarted,
+    (req) => Object.keys(req.properties).length === 24,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => typeof req.properties?.token_to_amount === 'string',
+    (req) => typeof req.properties?.best_quote_source === 'string',
+    (req) => typeof req.properties?.other_quote_selected === 'boolean',
+    (req) => typeof req.properties?.gas_fees === 'string',
+    (req) => typeof req.properties?.estimated_gas === 'string',
+    (req) => typeof req.properties?.suggested_gas_price === 'string',
+    (req) => typeof req.properties?.reg_tx_fee_in_usd === 'number',
+    (req) => typeof req.properties?.reg_tx_fee_in_eth === 'number',
+    (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
+    (req) => typeof req.properties?.reg_tx_max_fee_in_eth === 'number',
+    (req) => typeof req.properties?.other_quote_selected_source === 'string',
+  ];
+
+  const assertionsReq12 = [
+    (req) => req.event === MetaMetricsEventName.SwapStarted,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[11], reqs[12]], [assertionsReq11, assertionsReq12]),
+    'assertSwapStartedEvents(): reqs[11] and reqs[12] did not match what was expected',
+  );
+}
+
+async function assertSwapCompletedEvents(reqs) {
+  const assertionsReq13 = [
+    (req) => req.event === MetaMetricsEventName.SwapCompleted,
+    (req) => Object.keys(req.properties).length === 30,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'background',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.token_from === 'TESTETH',
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.token_to === 'DAI',
+    (req) => typeof req.properties?.token_to_amount === 'string',
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.best_quote_source === 'airswapV4',
+    (req) => typeof req.properties?.other_quote_selected === 'boolean',
+    (req) => typeof req.properties?.other_quote_selected_source === 'string',
+    (req) => typeof req.properties?.gas_fees === 'string',
+    (req) => typeof req.properties?.estimated_gas === 'string',
+    (req) => req.properties?.suggested_gas_price === '30',
+    (req) => req.properties?.used_gas_price === '30',
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.current_stx_enabled === false,
+    (req) => typeof req.properties?.reg_tx_fee_in_usd === 'number',
+    (req) => typeof req.properties?.reg_tx_fee_in_eth === 'number',
+    (req) => typeof req.properties?.reg_tx_max_fee_in_usd === 'number',
+    (req) => typeof req.properties?.reg_tx_max_fee_in_eth === 'number',
+    (req) => req.properties?.token_to_amount_received === '',
+    (req) => req.properties?.quote_vs_executionRatio === null,
+    (req) => req.properties?.estimated_vs_used_gasRatio === '100%',
+    (req) => req.properties?.approval_gas_cost_in_eth === 0,
+    (req) => typeof req.properties?.trade_gas_cost_in_eth === 'number',
+    (req) =>
+      typeof req.properties?.trade_and_approval_gas_cost_in_eth === 'number',
+  ];
+
+  const assertionsReq14 = [
+    (req) => req.event === MetaMetricsEventName.SwapCompleted,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'background',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[13], reqs[14]], [assertionsReq13, assertionsReq14]),
+    'assertSwapCompletedEvents(): reqs[13] and reqs[14] did not match what was expected',
+  );
+}
+
+async function assertExitedSwapsEvents(reqs) {
+  const assertionsReq15 = [
+    (req) => req.event === MetaMetricsEventName.ExitedSwaps,
+    (req) => Object.keys(req.properties).length === 12,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.token_from_amount === '2',
+    (req) => req.properties?.request_type === false,
+    (req) => req.properties?.slippage === 2,
+    (req) => req.properties?.custom_slippage === false,
+    (req) => req.properties?.current_screen === 'awaiting-swap',
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.current_stx_enabled === false,
+  ];
+
+  const assertionsReq16 = [
+    (req) => req.event === MetaMetricsEventName.ExitedSwaps,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[15], reqs[16]], [assertionsReq15, assertionsReq16]),
+    'assertExitedSwapsEvents(): reqs[15] and reqs[16] did not match what was expected',
+  );
+
+  const assertionsReq17 = [
+    (req) => req.event === MetaMetricsEventName.ExitedSwaps,
+    (req) => Object.keys(req.properties).length === 9,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+
+    (req) => req.properties?.custom_slippage === true,
+    (req) => req.properties?.current_screen === 'awaiting-swap',
+    (req) => req.properties?.is_hardware_wallet === false,
+    (req) => req.properties?.stx_enabled === false,
+    (req) => req.properties?.current_stx_enabled === false,
+  ];
+
+  const assertionsReq18 = [
+    (req) => req.event === MetaMetricsEventName.ExitedSwaps,
+    (req) => Object.keys(req.properties).length === 4,
+
+    (req) => req.properties?.category === MetaMetricsEventCategory.Swaps,
+    (req) => req.properties?.chain_id === toHex(1337),
+    (req) => req.properties?.environment_type === 'fullscreen',
+    (req) => req.properties?.locale === 'en',
+  ];
+
+  assert.ok(
+    assertInAnyOrder([reqs[17], reqs[18]], [assertionsReq17, assertionsReq18]),
+    'assertExitedSwapsEvents(): reqs[17] and reqs[18] did not match what was expected',
+  );
 }

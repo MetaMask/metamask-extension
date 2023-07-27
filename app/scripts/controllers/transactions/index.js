@@ -40,7 +40,10 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
@@ -2128,7 +2131,7 @@ export default class TransactionController extends EventEmitter {
         );
 
         this._trackMetaMetricsEvent({
-          event: 'Swap Completed',
+          event: MetaMetricsEventName.SwapCompleted,
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             ...txMeta.swapMetaData,
@@ -2139,6 +2142,12 @@ export default class TransactionController extends EventEmitter {
             trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
             trade_and_approval_gas_cost_in_eth:
               transactionsCost.tradeAndApprovalGasCostInEth,
+            // Firefox and Chrome have different implementations of the APIs
+            // that we rely on for communication accross the app. On Chrome big
+            // numbers are converted into number strings, on firefox they remain
+            // Big Number objects. As such, we convert them here for both
+            // browsers.
+            token_to_amount: txMeta.swapMetaData.token_to_amount.toString(10),
           },
         });
       }

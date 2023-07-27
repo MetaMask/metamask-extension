@@ -785,6 +785,7 @@ function assertInAnyOrder(requests, assertions) {
     requests.every((request) => {
       for (let a = 0; a < assertionsClone.length; a++) {
         const assertionArray = assertionsClone[a];
+
         const passed = assertionArray.reduce(
           (acc, currAssertionFn) => currAssertionFn(request) && acc,
           true,
