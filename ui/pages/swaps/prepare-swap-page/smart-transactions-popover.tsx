@@ -57,7 +57,6 @@ export default function SmartTransactionsPopover({
           <Text>{t('smartSwapsDescription')}</Text>
           <Text
             as="ul"
-            fontWeight={FontWeight.Bold}
             marginTop={3}
             marginBottom={3}
             style={{ listStyle: 'inside' }}
