@@ -407,14 +407,42 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item"
+          id="ens-domains"
         >
-          <span>
-            New IPFS Setting Title
-          </span>
+          Show ENS domains in address bar
           <div
             class="settings-page__content-description"
           >
-            New IPFS Setting Description
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+            >
+              MetaMask lets you see ENS domains like "https://metamask.eth" right in your browser's address bar. Here's how it works:
+            </span>
+            <ul
+              class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-inline-start-4"
+              style="list-style-type: circle;"
+            >
+              <li
+                class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+              >
+                MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
+              </li>
+              <li
+                class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+              >
+                If the code is linked to IPFS, it gets the content from the IPFS network.
+              </li>
+              <li
+                class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+              >
+                Then, you can see the content, usually a website or something similar.
+              </li>
+            </ul>
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+            >
+              Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services.
+            </span>
           </div>
         </div>
         <div
