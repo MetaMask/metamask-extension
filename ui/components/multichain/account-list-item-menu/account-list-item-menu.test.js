@@ -5,15 +5,15 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
 
-const identity = {
-  ...mockState.metamask.identities[
-    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
+const account = {
+  ...mockState.metamask.internalAccounts.accounts[
+    Object.keys(mockState.metamask.internalAccounts.accounts)[0]
   ],
   balance: '0x152387ad22c3f0',
 };
 
 const DEFAULT_PROPS = {
-  identity,
+  account,
   onClose: jest.fn(),
   onHide: jest.fn(),
   isRemovable: false,

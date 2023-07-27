@@ -16,8 +16,6 @@ import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
-import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
-import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
@@ -376,20 +374,13 @@ export function getSeedPhraseBackedUp(state) {
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
  * @param {object} state - the redux state object
- * @param {string} address - the address to search for among the keyring addresses
+ * @param {string} accountId - the account id to search for among the internal accounts
  * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
-export function findKeyringForAddress(state, address) {
-  const keyring = state.metamask.keyrings.find((kr) => {
-    return kr.accounts.some((account) => {
-      return (
-        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
-        isEqualCaseInsensitive(account, stripHexPrefix(address))
-      );
-    });
-  });
+export function findKeyringForAddress(state, accountId) {
+  const account = state.metamask.internalAccounts.accounts[accountId];
 
-  return keyring;
+  return account.metadata.keyring;
 }
 
 /**
@@ -406,11 +397,11 @@ export function getLedgerTransportType(state) {
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
  * @param {object} state - the redux state object
- * @param {string} address - the address to search for among all keyring addresses
+ * @param {string} accountId - the account id to search for among all internal accounts
  * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
  */
-export function isAddressLedger(state, address) {
-  const keyring = findKeyringForAddress(state, address);
+export function isAddressLedger(state, accountId) {
+  const keyring = findKeyringForAddress(state, accountId);
 
   return keyring?.type === KeyringType.ledger;
 }

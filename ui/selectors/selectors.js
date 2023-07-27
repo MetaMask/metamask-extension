@@ -181,13 +181,13 @@ export function hasUnsignedQRHardwareMessage(state) {
 }
 
 export function getCurrentKeyring(state) {
-  const identity = getSelectedIdentity(state);
+  const account = getSelectedInternalAccount(state);
 
-  if (!identity) {
+  if (!account) {
     return null;
   }
 
-  const keyring = findKeyringForAddress(state, identity.address);
+  const keyring = findKeyringForAddress(state, account.id);
 
   return keyring;
 }
@@ -316,7 +316,6 @@ export function getSelectedIdentity(state) {
   return identities[selectedAddress];
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
@@ -329,7 +328,6 @@ export function getInternalAccounts(state) {
 export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
-///: END:ONLY_INCLUDE_IN
 
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;

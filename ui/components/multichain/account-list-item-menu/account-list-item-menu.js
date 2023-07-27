@@ -43,7 +43,7 @@ export const AccountListItemMenu = ({
   onClose,
   closeMenu,
   isRemovable,
-  identity,
+  account,
   isOpen,
 }) => {
   const t = useI18nContext();
@@ -55,7 +55,7 @@ export const AccountListItemMenu = ({
   const deviceName = useSelector(getHardwareWalletType);
 
   const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
+    findKeyringForAddress(state, account.id),
   );
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
@@ -131,14 +131,14 @@ export const AccountListItemMenu = ({
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={identity.address}
+            address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
             textProps={{ variant: TextVariant.bodySm }}
-            address={identity.address}
+            address={account.address}
           />
           {isRemovable ? (
             <MenuItem
@@ -148,7 +148,7 @@ export const AccountListItemMenu = ({
                 dispatch(
                   showModal({
                     name: 'CONFIRM_REMOVE_ACCOUNT',
-                    identity,
+                    account,
                   }),
                 );
                 trackEvent({
@@ -176,7 +176,7 @@ export const AccountListItemMenu = ({
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
                   const token = await dispatch(
-                    mmiActions.getCustodianToken(identity.address),
+                    mmiActions.getCustodianToken(account.address),
                   );
                   const custodyAccountDetails = await dispatch(
                     mmiActions.getAllCustodianAccountsWithToken(
@@ -190,7 +190,7 @@ export const AccountListItemMenu = ({
                       token,
                       custodyAccountDetails,
                       accounts,
-                      selectedAddress: toChecksumHexAddress(identity.address),
+                      selectedAddress: toChecksumHexAddress(account.address),
                     }),
                   );
                   onClose();
@@ -233,14 +233,22 @@ AccountListItemMenu.propTypes = {
    */
   isRemovable: PropTypes.bool.isRequired,
   /**
-   * Identity of the account
+   * Account object
    */
-  /**
-   * Identity of the account
-   */
-  identity: PropTypes.shape({
+  account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    metadata: PropTypes.shape({
+      snap: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
+      }),
+      keyring: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+      }).isRequired,
+    }).isRequired,
   }).isRequired,
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import testData from '../../../../.storybook/test-data';
 import { AccountListItemMenu } from '.';
 
 export default {
@@ -17,7 +18,7 @@ export default {
     isRemovable: {
       control: 'boolean',
     },
-    identity: {
+    account: {
       control: 'object',
     },
     isOpen: {
@@ -26,9 +27,10 @@ export default {
   },
   args: {
     anchorElement: null,
-    identity: {
-      address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      name: 'Account 1',
+    account: {
+      ...testData.metamask.internalAccounts.accounts[
+        Object.keys(testData.metamask.internalAccounts.accounts)[0]
+      ],
       balance: '0x152387ad22c3f0',
       tokenBalance: '32.09 ETH',
     },

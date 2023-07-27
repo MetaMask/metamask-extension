@@ -258,7 +258,7 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        identity={account}
+        account={account}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}
         isRemovable={keyring !== KeyringType.hdKeyTree}
@@ -270,9 +270,10 @@ export const AccountListItem = ({
 
 AccountListItem.propTypes = {
   /**
-   * Identity of the account
+   * Account object
    */
   account: PropTypes.shape({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,

@@ -279,6 +279,103 @@ const state = {
     isUnlocked: true,
     isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'This is a Really Long Account Name',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+        '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+          id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 2',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+        '15e69915-2a1a-4019-93b3-916e11fd432f': {
+          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+          id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 3',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+        '784225f4-d30b-4e77-a900-c8bbce735b88': {
+          address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 4',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     identities: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         name: 'This is a Really Long Account Name',
@@ -1599,7 +1696,7 @@ const state = {
   },
 };
 
-export const networkList =  [
+export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
@@ -1673,6 +1770,6 @@ export const networkList =  [
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',
   },
-]
+];
 
 export default state;
