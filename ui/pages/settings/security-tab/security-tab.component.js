@@ -260,7 +260,7 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     const { use4ByteResolution, setUse4ByteResolution } = this.props;
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('use4ByteResolution')}</span>
           <div className="settings-page__content-description">
