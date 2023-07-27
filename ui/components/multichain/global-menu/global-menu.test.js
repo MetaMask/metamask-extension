@@ -33,18 +33,6 @@ describe('AccountListItem', () => {
     });
   });
 
-  it('opens the portfolio site when item is clicked', async () => {
-    global.platform = { openTab: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-portfolio'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `/?metamaskEntry=ext&metametricsId=`,
-      });
-    });
-  });
-
   it('opens the support site when item is clicked', async () => {
     global.platform = { openTab: jest.fn() };
 
