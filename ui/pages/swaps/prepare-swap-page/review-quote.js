@@ -785,9 +785,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   };
 
-  const needsMoreGas =
-    (isSmartTransaction && ethBalanceNeededStx) ||
-    (!isSmartTransaction && ethBalanceNeeded);
+  const needsMoreGas = Boolean(ethBalanceNeededStx || ethBalanceNeeded);
 
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
