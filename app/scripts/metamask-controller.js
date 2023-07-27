@@ -1027,6 +1027,7 @@ export default class MetamaskController extends EventEmitter {
       state: initState.accountsController,
       keyringController: this.keyringController,
       snapController: this.snapController,
+      identities: initState.PreferencesController.identities,
       onKeyringAccountRemoved: keyringControllerMessenger.subscribe.bind(
         keyringControllerMessenger,
         'KeyringController:accountRemoved',
@@ -3623,16 +3624,9 @@ export default class MetamaskController extends EventEmitter {
    */
   async importAccountWithStrategy(strategy, args) {
     const privateKey = await accountImporter.importAccount(strategy, args);
-    const keyring = await this.keyringController.addNewKeyring(
-      KeyringType.imported,
-      [privateKey],
-    );
-    const [firstAccount] = await keyring.getAccounts();
-    // update accounts in preferences controller
-    const allAccounts = await this.keyringController.getAccounts();
-    this.preferencesController.setAddresses(allAccounts);
-    // set new account as selected
-    this.preferencesController.setSelectedAddress(firstAccount);
+    await this.keyringController.addNewKeyring(KeyringType.imported, [
+      privateKey,
+    ]);
   }
 
   // ---------------------------------------------------------------------------

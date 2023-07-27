@@ -76,9 +76,12 @@ export default class AccountsController extends BaseControllerV2<
 
   #snapController: SnapController;
 
+  identities: any;
+
   constructor({
     messenger,
     state,
+    identities,
     keyringController,
     snapController,
     onKeyringStateChange,
@@ -89,6 +92,7 @@ export default class AccountsController extends BaseControllerV2<
     state: AccountsControllerState;
     keyringController: KeyringController;
     snapController: SnapController;
+    identities: any;
     onKeyringStateChange: (
       listener: (keyringState: KeyringControllerState) => void,
     ) => void;
@@ -109,6 +113,7 @@ export default class AccountsController extends BaseControllerV2<
 
     this.#keyringController = keyringController;
     this.#snapController = snapController;
+    this.identities = identities;
 
     onSnapStateChange(async (snapState: SnapControllerState) => {
       console.log('snap state changed', snapState);
@@ -117,8 +122,29 @@ export default class AccountsController extends BaseControllerV2<
 
     onKeyringStateChange(async (keyringState: KeyringControllerState) => {
       console.log('keyring state changed', keyringState);
+
+      // check if there are any new accounts added
       if (keyringState.isUnlocked) {
+        // TODO: ACCOUNTS_CONTROLLER keyring will return accounts instead of addresses, remove this flatMap after and just get the latest id
+        const newAccounts = keyringState.keyrings.flatMap(
+          (keyring) => keyring.accounts,
+        );
+
+        const accounts = this.getAllAccounts();
+        const [newAddress] = newAccounts.filter((address) => {
+          return (
+            accounts.findIndex(
+              (account) => account.address.toLowerCase() === address,
+            ) === -1
+          );
+        });
+
         await this.updateAccounts();
+
+        if (newAddress) {
+          console.log('setting new account', newAddress);
+          this.setSelectedAccount(this.getAccountExpect(newAddress).id);
+        }
       }
     });
 
@@ -142,12 +168,16 @@ export default class AccountsController extends BaseControllerV2<
     return account;
   }
 
-  getAccountId(accountId: string): InternalAccount | undefined {
+  getAccountById(accountId: string): InternalAccount | undefined {
     return this.state.internalAccounts.accounts[accountId];
   }
 
+  getAllAccounts(): InternalAccount[] {
+    return Object.values(this.state.internalAccounts.accounts);
+  }
+
   getAccountByIdExpect(accountId: string): InternalAccount {
-    const account = this.getAccountId(accountId);
+    const account = this.getAccountById(accountId);
     if (account === undefined) {
       throw new Error(`Account Id ${accountId} not found`);
     }
@@ -171,8 +201,8 @@ export default class AccountsController extends BaseControllerV2<
     const snapAccounts = await this.#listSnapAccounts();
     const accountNames = identitesToAccountNames(this.identities);
 
-    console.log('legacy accounts', legacyAccounts);
-    console.log('snap accounts', snapAccounts);
+    // console.log('legacy accounts', legacyAccounts);
+    // console.log('snap accounts', snapAccounts);
 
     // keyring type map.
     const keyringTypes = new Map<string, number>();

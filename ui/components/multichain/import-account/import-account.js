@@ -38,9 +38,12 @@ export const ImportAccount = ({ onActionComplete }) => {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
-      const { selectedAddress } = await dispatch(
+      const updatedState = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
+      const { internalAccounts } = updatedState;
+      const { address: selectedAddress } =
+        internalAccounts.accounts[internalAccounts.selectedAccount];
       if (selectedAddress) {
         trackImportEvent(strategy, true);
         dispatch(actions.hideWarning());
