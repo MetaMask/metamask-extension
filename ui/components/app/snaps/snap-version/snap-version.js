@@ -26,7 +26,7 @@ const SnapVersion = ({ version, url }) => {
       variant={TextVariant.bodyMd}
       textProps={{ display: Display.Flex }}
     >
-      {version ? version : <Preloader size={16} />}
+      {version || <Preloader size={16} />}
     </ButtonBase>
   );
 };
