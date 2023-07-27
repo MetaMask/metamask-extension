@@ -3124,6 +3124,14 @@
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_lifecycleHooks": {
+    "message": "Use lifecycle hooks.",
+    "description": "The description for the `endowment:lifecycle-hooks` permission"
+  },
+  "permission_lifecycleHooksDescription": {
+    "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
@@ -3179,14 +3187,6 @@
   "permission_rpcDescription": {
     "message": "Allow $1 to send messages to the snap and receive a response from the snap.",
     "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_lifecycleHooks": {
-    "message": "Use lifecycle hooks.",
-    "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
