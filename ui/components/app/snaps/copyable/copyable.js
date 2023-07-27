@@ -13,10 +13,12 @@ import {
   IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { IconName, Text, Box, ButtonIcon } from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
+  const t = useI18nContext();
   return (
     <Box
       className="copyable"
@@ -42,6 +44,7 @@ export const Copyable = ({ text }) => {
         iconName={copied ? IconName.CopySuccess : IconName.Copy}
         color={IconColor.iconAlternative}
         onClick={() => handleCopy(text)}
+        ariaLabel={copied ? t('copiedExclamation') : t('copyToClipboard')}
       />
     </Box>
   );
