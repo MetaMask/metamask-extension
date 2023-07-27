@@ -310,9 +310,9 @@ describe('MetaMaskController', function () {
         ]);
       });
 
-      it('adds private key to keyrings in KeyringController', async function () {
+      it('adds private key to keyrings in core KeyringController', async function () {
         const simpleKeyrings =
-          metamaskController.keyringController.getKeyringsByType(
+          metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.imported,
           );
         const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
@@ -595,7 +595,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.trezor, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.deepEqual(
@@ -611,7 +611,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.ledger, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.ledger,
           );
         assert.deepEqual(
@@ -638,7 +638,7 @@ describe('MetaMaskController', function () {
           mnemonic: uint8ArrayMnemonic,
         };
         sinon
-          .stub(metamaskController.keyringController, 'getKeyringsByType')
+          .stub(metamaskController.coreKeyringController, 'getKeyringsByType')
           .returns([mockHDKeyring]);
 
         const recoveredMnemonic =
@@ -692,7 +692,7 @@ describe('MetaMaskController', function () {
           .catch(() => null);
         await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
 
@@ -755,7 +755,7 @@ describe('MetaMaskController', function () {
 
       it('should set unlockedAccount in the keyring', async function () {
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
