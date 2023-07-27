@@ -2453,13 +2453,21 @@ export default class TransactionController extends EventEmitter {
 
     let uiCustomizations;
 
-    if (securityProviderResponse?.flagAsDangerous === 1) {
-      uiCustomizations = ['flagged_as_malicious'];
-    } else if (securityProviderResponse?.flagAsDangerous === 2) {
-      uiCustomizations = ['flagged_as_safety_unknown'];
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
+      uiCustomizations = ['security_alert_failed'];
     } else {
-      uiCustomizations = null;
+      ///: END:ONLY_INCLUDE_IN
+      if (securityProviderResponse?.flagAsDangerous === 1) {
+        uiCustomizations = ['flagged_as_malicious'];
+      } else if (securityProviderResponse?.flagAsDangerous === 2) {
+        uiCustomizations = ['flagged_as_safety_unknown'];
+      } else {
+        uiCustomizations = null;
+      }
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     }
+    ///: END:ONLY_INCLUDE_IN
 
     let properties = {
       chain_id: chainId,
