@@ -34,7 +34,7 @@ export default class EditableLabel extends Component {
       return;
     }
 
-    await this.props.onSubmit(this.state.value);
+    await this.props.onSubmit(this.state.value.trim());
     this.setState({ isEditing: false });
   }
 
