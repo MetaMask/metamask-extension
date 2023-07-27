@@ -3,7 +3,6 @@ import { useState } from '@storybook/addons';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  SEVERITIES,
   Size,
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
@@ -109,16 +108,32 @@ DefaultStory.storyName = 'Default';
 export const Severity = (args) => {
   return (
     <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={3}>
-      <BannerAlert {...args} severity={SEVERITIES.INFO} title="Info">
+      <BannerAlert
+        {...args}
+        severity={BANNER_ALERT_SEVERITIES.INFO}
+        title="Info"
+      >
         This is a demo of severity Info.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.WARNING} title="Warning">
+      <BannerAlert
+        {...args}
+        severity={BANNER_ALERT_SEVERITIES.WARNING}
+        title="Warning"
+      >
         This is a demo of severity Warning.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.DANGER} title="Danger">
+      <BannerAlert
+        {...args}
+        severity={BANNER_ALERT_SEVERITIES.DANGER}
+        title="Danger"
+      >
         This is a demo of severity Danger.
       </BannerAlert>
-      <BannerAlert {...args} severity={SEVERITIES.SUCCESS} title="Success">
+      <BannerAlert
+        {...args}
+        severity={BANNER_ALERT_SEVERITIES.SUCCESS}
+        title="Success"
+      >
         This is a demo of severity Success.
       </BannerAlert>
     </Box>
