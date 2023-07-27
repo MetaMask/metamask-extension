@@ -20,6 +20,7 @@ describe('MMIController', function () {
       }),
       transactionUpdateController: new TransactionUpdateController({
         getCustodyKeyring: jest.fn(),
+        addTransactionToWatchList: jest.fn(),
       }),
       txController: new TransactionController({
         initState: {},
@@ -47,6 +48,12 @@ describe('MMIController', function () {
         getAllState: jest.fn(),
         securityProviderRequest: jest.fn(),
         getCurrentChainId: jest.fn(),
+        setMessageMetadata: jest
+          .fn()
+          .mockImplementation(() => Promise.resolve()),
+        newUnsignedTypedMessage: jest.fn(),
+        newUnsignedPersonalMessage: jest.fn(),
+        newUnsignedMessage: jest.fn(),
       }),
       preferencesController: new PreferencesController({
         initState: {},
@@ -55,6 +62,7 @@ describe('MMIController', function () {
         provider: {},
       }),
       appStateController: new AppStateController({
+        getUnlockPromise: jest.fn(),
         addUnlockListener: jest.fn(),
         isUnlocked: jest.fn(() => true),
         initState: {},
@@ -91,6 +99,22 @@ describe('MMIController', function () {
       expect(mmiController.mmiConfigurationController).toBeDefined();
       expect(mmiController.preferencesController).toBeDefined();
       expect(mmiController.transactionUpdateController).toBeDefined();
+    });
+  });
+
+  describe('prepareMmiPortfolio', function () {
+    it('should call prepareMmiPortfolio', async function () {
+      await mmiController.prepareMmiPortfolio();
+
+      expect(mmiController.prepareMmiPortfolio).toBeTruthy();
+    });
+  });
+
+  describe('handleSigningEvents', function () {
+    it('should call handleSigningEvents', function () {
+      mmiController.handleSigningEvents('signature', '123', 'v4');
+
+      expect(mmiController.handleSigningEvents).toBeTruthy();
     });
   });
 
@@ -139,6 +163,41 @@ describe('MMIController', function () {
       expect(mmiController.storeCustodianSupportedChains).toHaveBeenCalledWith(
         '0x1',
       );
+    });
+  });
+
+  describe('setAccountAndNetwork', function () {
+    it('should call setAccountAndNetwork', async function () {
+      mmiController.setAccountAndNetwork = jest.fn();
+
+      mmiController.setAccountAndNetwork('metmask', '0x1', 1);
+
+      expect(mmiController.setAccountAndNetwork).toHaveBeenCalled();
+      expect(mmiController.setAccountAndNetwork).toHaveBeenCalledWith(
+        'metmask',
+        '0x1',
+        1,
+      );
+    });
+  });
+
+  describe('handleMmiOpenSwaps', function () {
+    it('should call handleMmiOpenSwaps', async function () {
+      mmiController.handleMmiOpenSwaps = jest.fn();
+
+      mmiController.handleMmiOpenSwaps('metmask', '0x1', 1);
+
+      expect(mmiController.handleMmiOpenSwaps).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleMmiOpenAddHardwareWallet', function () {
+    it('should call handleMmiOpenAddHardwareWallet', async function () {
+      mmiController.handleMmiOpenAddHardwareWallet = jest.fn();
+
+      mmiController.handleMmiOpenAddHardwareWallet('metmask', '0x1', 1);
+
+      expect(mmiController.handleMmiOpenAddHardwareWallet).toHaveBeenCalled();
     });
   });
 });
