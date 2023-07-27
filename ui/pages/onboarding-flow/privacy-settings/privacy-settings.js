@@ -12,17 +12,18 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
+  BUTTON_VARIANT,
+  Box,
+  Button,
   PickerNetwork,
+  Text,
   TextField,
 } from '../../../components/component-library';
-import Box from '../../../components/ui/box/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -106,15 +107,16 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography
-            variant={TypographyVariant.H2}
-            fontWeight={FONT_WEIGHT.BOLD}
+          <Text
+            variant={TextVariant.headingLg}
+            as="h2"
+            fontWeight={FontWeight.Bold}
           >
             {t('advancedConfiguration')}
-          </Typography>
-          <Typography variant={TypographyVariant.H4}>
+          </Text>
+          <Text variant={TextVariant.headingSm} as="h4">
             {t('setAdvancedPrivacySettingsDetails')}
-          </Typography>
+          </Text>
         </div>
         <div
           className="privacy-settings__settings"
@@ -207,7 +209,7 @@ export default function PrivacySettings() {
                     </div>
                   ) : (
                     <Button
-                      type="secondary"
+                      variant={BUTTON_VARIANT.SECONDARY}
                       rounded
                       large
                       onClick={(e) => {
@@ -237,8 +239,9 @@ export default function PrivacySettings() {
                     }}
                   />
                   {ipfsURL ? (
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
+                      as="h6"
                       color={
                         ipfsError
                           ? TextColor.errorDefault
@@ -246,7 +249,7 @@ export default function PrivacySettings() {
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}
-                    </Typography>
+                    </Text>
                   ) : null}
                 </Box>
               </>
@@ -284,7 +287,12 @@ export default function PrivacySettings() {
             ])}
           />
         </div>
-        <Button type="primary" rounded onClick={handleSubmit}>
+        <Button
+          variant={BUTTON_VARIANT.PRIMARY}
+          style={{ width: '100%' }}
+          rounded
+          onClick={handleSubmit}
+        >
           {t('done')}
         </Button>
       </div>
