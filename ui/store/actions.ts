@@ -2043,22 +2043,15 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
-export function addTokens(
-  tokens: Token[] | { [address: string]: Token },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    if (Array.isArray(tokens)) {
-      return Promise.all(
-        tokens.map(({ address, symbol, decimals }) =>
-          dispatch(addToken(address, symbol, decimals)),
-        ),
-      );
+export function addTokens(tokens: {
+  [address: string]: Token;
+}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    const values = Object.values(tokens);
+    while (values.length) {
+      const { address, symbol, decimals } = values.shift() || {};
+      await dispatch(addToken(address, symbol, decimals));
     }
-    return Promise.all(
-      Object.entries(tokens).map(([_, { address, symbol, decimals }]) =>
-        dispatch(addToken(address, symbol, decimals)),
-      ),
-    );
   };
 }
 
