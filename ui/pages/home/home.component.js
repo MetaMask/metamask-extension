@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   MetaMetricsContextProp,
   ///: END:ONLY_INCLUDE_IN
   MetaMetricsEventCategory,
@@ -31,10 +31,11 @@ import {
   DISPLAY,
   TextColor,
   TextVariant,
-
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
-  Size,
   JustifyContent,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  Size,
   Display,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
@@ -44,7 +45,7 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
   Text,
@@ -72,7 +73,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
