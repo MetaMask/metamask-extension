@@ -54,7 +54,6 @@ describe('4byte setting', function () {
 
   it('does not try to get contract method name from 4byte when the setting is off', async function () {
     const smartContract = SMART_CONTRACTS.PIGGYBANK;
-    const fourBytePrefix = '0xd0e30db0';
     await withFixtures(
       {
         dapp: true,
@@ -63,30 +62,6 @@ describe('4byte setting', function () {
           .build(),
         smartContract,
         title: this.test.title,
-        testSpecificMock: async (mockServer) => {
-          await mockServer
-            .forGet(`https://www.4byte.directory/api/v1/signatures/`)
-            .withQuery({ hex_signature: fourBytePrefix })
-            .thenCallback(() => {
-              return {
-                statusCode: 200,
-                json: {
-                  count: 1,
-                  next: null,
-                  previous: null,
-                  results: [
-                    {
-                      id: 1,
-                      created_at: null,
-                      text_signature: 'deposit()',
-                      hex_signature: null,
-                      bytes_signature: null,
-                    },
-                  ],
-                },
-              };
-            });
-        },
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -125,6 +100,7 @@ describe('4byte setting', function () {
           css: '.confirm-page-container-summary__action__name',
           text: 'Contract interaction',
         });
+        // We add a delay here to wait for any potential UI changes
         await driver.delay(veryLargeDelayMs);
 
         assert.equal(await actionElement.getText(), 'CONTRACT INTERACTION');

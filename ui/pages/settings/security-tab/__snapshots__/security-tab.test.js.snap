@@ -130,12 +130,12 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-item"
         >
           <span>
-            Use 4byte.directory
+            Decode smart contracts
           </span>
           <div
             class="settings-page__content-description"
           >
-            To improve the user experience, we customize the activity tab with different messages depending on the smart contract the user interacts with and the action performed. We rely on 4byte.directory for resolving contract method names we leak our users' IP addresses to.
+            To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contact that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared.
           </div>
         </div>
         <div
