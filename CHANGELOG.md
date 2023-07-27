@@ -5,11 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [10.34.1]
 ### Added
 - Add Pulsechain to Networks ([#20216](https://github.com/MetaMask/metamask-extension/pull/20216))
 
+## [10.34.1]
 ### Fixed
 - Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 - Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
