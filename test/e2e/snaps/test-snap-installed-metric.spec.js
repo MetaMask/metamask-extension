@@ -61,7 +61,11 @@ describe('Snap Installed Event', function () {
         });
 
         // Two clicks for two screen confirmations
+        await driver.waitForSelector({ text: 'Install' });
+
         await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
