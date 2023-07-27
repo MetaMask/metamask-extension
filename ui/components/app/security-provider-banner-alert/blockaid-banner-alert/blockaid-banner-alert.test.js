@@ -8,7 +8,7 @@ import {
 import BlockaidBannerAlert from '.';
 
 const mockSecurityAlertResponse = {
-  resultType: BlockaidResultType.Warning,
+  result_type: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
   description:
     'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
@@ -27,12 +27,12 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should not render when securityAlertResponse.resultType is '${BlockaidResultType.Benign}'`, () => {
+  it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Benign}'`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
           ...mockSecurityAlertResponse,
-          resultType: BlockaidResultType.Benign,
+          result_type: BlockaidResultType.Benign,
         }}
       />,
     );
@@ -40,12 +40,12 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should not render when securityAlertResponse.resultType is '${BlockaidResultType.Failed}'`, () => {
+  it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Failed}'`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
           ...mockSecurityAlertResponse,
-          resultType: BlockaidResultType.Failed,
+          result_type: BlockaidResultType.Failed,
         }}
       />,
     );
@@ -53,12 +53,12 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should render '${Severity.Danger}' UI when securityAlertResponse.resultType is '${BlockaidResultType.Malicious}`, () => {
+  it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
           ...mockSecurityAlertResponse,
-          resultType: BlockaidResultType.Malicious,
+          result_type: BlockaidResultType.Malicious,
         }}
       />,
     );
@@ -70,7 +70,7 @@ describe('Blockaid Banner Alert', () => {
     expect(dangerBannerAlert).toMatchSnapshot();
   });
 
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.resultType is '${BlockaidResultType.Warning}`, () => {
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
     );

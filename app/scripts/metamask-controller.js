@@ -4031,7 +4031,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    engine.push(createPPOMMiddleware(this.ppomController));
+    engine.push(
+      createPPOMMiddleware(this.ppomController, this.preferencesController),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     engine.push(

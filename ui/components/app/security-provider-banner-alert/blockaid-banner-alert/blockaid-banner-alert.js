@@ -46,7 +46,7 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
     return null;
   }
 
-  const { reason, resultType, features } = securityAlertResponse;
+  const { reason, result_type: resultType, features } = securityAlertResponse;
 
   if (
     resultType === BlockaidResultType.Benign ||
