@@ -18,11 +18,10 @@ import {
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import Checkbox from '../../../ui/check-box';
 import Tooltip from '../../../ui/tooltip';
 import ConnectedAccountsList from '../../connected-accounts-list';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../../component-library';
+import { Icon, IconName, Checkbox } from '../../../component-library';
 
 const { ERROR, LOADING } = ALERT_STATE;
 
@@ -55,9 +54,9 @@ const UnconnectedAccountAlert = () => {
         <div className="unconnected-account-alert__checkbox-wrapper">
           <Checkbox
             id="unconnectedAccount_dontShowThisAgain"
-            checked={dontShowThisAgain}
+            isChecked={dontShowThisAgain}
             className="unconnected-account-alert__checkbox"
-            onClick={() => setDontShowThisAgain((checked) => !checked)}
+            onChange={() => setDontShowThisAgain((checked) => !checked)}
           />
           <label
             className="unconnected-account-alert__checkbox-label"
