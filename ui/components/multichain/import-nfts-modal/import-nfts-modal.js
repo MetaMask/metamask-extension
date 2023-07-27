@@ -25,7 +25,7 @@ import {
 import {
   getCurrentChainId,
   getIsMainnet,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUseNftDetection,
 } from '../../../selectors';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
@@ -60,7 +60,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
   const addressEnteredOnImportTokensPage =
     history?.location?.state?.addressEnteredOnImportTokensPage;
@@ -82,10 +82,10 @@ export const ImportNftsModal = ({ onClose }) => {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
         ...nftsDropdownState,
-        [selectedAddress]: {
-          ...nftsDropdownState?.[selectedAddress],
+        [selectedAccount.address]: {
+          ...nftsDropdownState?.[selectedAccount.address],
           [chainId]: {
-            ...nftsDropdownState?.[selectedAddress]?.[chainId],
+            ...nftsDropdownState?.[selectedAccount.address]?.[chainId],
             [nftAddress]: true,
           },
         },
@@ -205,7 +205,7 @@ export const ImportNftsModal = ({ onClose }) => {
               </Box>
               <FormTextField
                 autoFocus
-                dataTestId="address"
+                data-testid="address"
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
@@ -237,7 +237,8 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
-                dataTestId="token-id"
+                autoFocus
+                data-testid="token-id"
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}
