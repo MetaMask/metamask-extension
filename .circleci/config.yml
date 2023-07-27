@@ -101,6 +101,9 @@ workflows:
               build-type: [main, beta, flask, mmi, desktop]
           requires:
             - prep-deps
+      - prep-build-mmi:
+          requires:
+            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -186,6 +189,9 @@ workflows:
               ignore: master
           requires:
             - prep-build-desktop
+      - validate-source-maps-mmi:
+          requires:
+            - prep-build-mmi
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -222,6 +228,7 @@ workflows:
             - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
+            - validate-source-maps-mmi
             - test-mozilla-lint
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
@@ -245,6 +252,7 @@ workflows:
             - prep-build
             - trigger-beta-build
             - prep-build-desktop
+            - prep-build-mmi
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
@@ -261,6 +269,7 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-desktop
+            - prep-build-mmi
             - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
@@ -471,6 +480,49 @@ jobs:
           paths:
             - dist-desktop
             - builds-desktop
+
+  prep-build-mmi:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type mmi dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type mmi prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move mmi build to 'dist-mmi' to avoid conflict with production build
+          command: mv ./dist ./dist-mmi
+      - run:
+          name: Move mmi zips to 'builds-mmi' to avoid conflict with production build
+          command: mv ./builds ./builds-mmi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-mmi
+            - builds-mmi
+      - store_artifacts:
+          path: builds-mmi
+          destination: builds-mmi
 
   prep-build-flask:
     executor: node-browsers-medium-plus
@@ -1184,6 +1236,22 @@ jobs:
       - run:
           name: Move desktop zips to builds
           command: mv ./builds-desktop ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-mmi:
+    executor: node-browsers
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move mmi build to dist
+          command: mv ./dist-mmi ./dist
+      - run:
+          name: Move mmi zips to builds
+          command: mv ./builds-mmi ./builds
       - run:
           name: Validate source maps
           command: yarn validate-source-maps
