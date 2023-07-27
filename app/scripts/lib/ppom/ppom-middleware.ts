@@ -3,7 +3,6 @@ import { PPOMController } from '@metamask/ppom-validator';
 
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 
-const { sentry } = global as any;
 const ConfirmationMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
