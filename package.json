@@ -528,7 +528,7 @@
     "sass": "^1.32.4",
     "sass-loader": "^10.1.1",
     "selenium-webdriver": "^4.9.0",
-    "semver": "^7.3.5",
+    "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
