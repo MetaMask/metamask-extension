@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { flatten } from 'lodash';
-import CheckBox from '../../ui/check-box';
+import { Checkbox as CheckBox } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPermissionDescription } from '../../../helpers/utils/permission';
 
@@ -60,8 +60,8 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
               className="connected-accounts-permissions__list-item"
             >
               <CheckBox
-                checked
-                disabled
+                isChecked
+                isDisabled
                 id={`connected-permission-${idx}`}
                 className="connected-accounts-permissions__checkbox"
               />

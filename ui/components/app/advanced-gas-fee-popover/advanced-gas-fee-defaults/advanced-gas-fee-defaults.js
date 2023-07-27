@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
 import Box from '../../../ui/box';
-import CheckBox from '../../../ui/check-box';
 import {
   Display,
   FlexDirection,
@@ -16,7 +15,7 @@ import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text } from '../../../component-library';
+import { Text, Checkbox as CheckBox } from '../../../component-library';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
@@ -81,10 +80,10 @@ const AdvancedGasFeeDefaults = () => {
     >
       <label className="advanced-gas-fee-defaults__label">
         <CheckBox
-          checked={isDefaultSettingsSelected}
+          isChecked={isDefaultSettingsSelected}
           className="advanced-gas-fee-defaults__checkbox"
-          onClick={handleUpdateDefaultSettings}
-          disabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
+          onChange={handleUpdateDefaultSettings}
+          isDisabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
         />
         <Text
           variant={TextVariant.bodySm}
