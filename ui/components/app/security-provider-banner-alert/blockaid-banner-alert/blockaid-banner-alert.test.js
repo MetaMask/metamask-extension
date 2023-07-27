@@ -40,6 +40,19 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
+  it(`should not render when securityAlertResponse.resultType is '${BlockaidResultType.Failed}'`, () => {
+    const { container } = renderWithLocalization(
+      <BlockaidBannerAlert
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
+          resultType: BlockaidResultType.Failed,
+        }}
+      />,
+    );
+
+    expect(container.querySelector('.mm-banner-alert')).toBeNull();
+  });
+
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.resultType is '${BlockaidResultType.Malicious}`, () => {
     const { container } = renderWithLocalization(
       <BlockaidBannerAlert
