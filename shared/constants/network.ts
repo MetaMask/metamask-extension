@@ -184,7 +184,7 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
-export const PULSECHAIN_DISPLAY_NAME = 'Pulsechain';
+export const PULSECHAIN_DISPLAY_NAME = 'PulseChain';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -758,7 +758,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcUrl: `https://rpc.pulsechain.com`,
     ticker: CURRENCY_SYMBOLS.PLS,
     rpcPrefs: {
-      blockExplorerUrl: 'https://scan.pulsechain.com',
+      blockExplorerUrl: 'https://otter.pulsechain.com',
       imageUrl: PULSECHAIN_TOKEN_IMAGE_URL,
     },
   },
