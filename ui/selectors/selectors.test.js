@@ -410,36 +410,48 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.imported;
       expect(selectors.isHardwareWallet(mockState)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.ledger;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.trezor;
       expect(selectors.isHardwareWallet(mockState)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.imported;
       expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.ledger;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].metadata.keyring.type = KeyringType.trezor;
       expect(selectors.getHardwareWalletType(mockState)).toBe(
         KeyringType.trezor,
       );
