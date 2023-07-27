@@ -23,7 +23,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { exportAsFile } from '../../../helpers/utils/export-utils';
+import {
+  exportAsFile,
+  ExportableContentType,
+} from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { BannerAlert } from '../../../components/component-library';
@@ -150,7 +153,7 @@ export default class AdvancedTab extends PureComponent {
 
   backupUserData = async () => {
     const { fileName, data } = await this.props.backupUserData();
-    exportAsFile(fileName, data);
+    exportAsFile(fileName, data, ExportableContentType.JSON);
 
     this.context.trackEvent({
       event: 'User Data Exported',
@@ -185,7 +188,11 @@ export default class AdvancedTab extends PureComponent {
                   if (err) {
                     displayWarning(t('stateLogError'));
                   } else {
-                    exportAsFile(`${t('stateLogFileName')}.json`, result);
+                    exportAsFile(
+                      `${t('stateLogFileName')}.json`,
+                      result,
+                      ExportableContentType.JSON,
+                    );
                   }
                 });
               }}
