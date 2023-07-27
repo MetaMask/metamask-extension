@@ -1,6 +1,10 @@
-import { BoxComponent } from '../box/box.types';
+import React from 'react';
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+} from '../box';
 
-export interface ModalOverlayProps extends BoxComponent {
+export interface ModalOverlayStyleUtilityProps extends StyleUtilityProps {
   /**
    * onClick handler for the overlay
    * Not necessary when used with Modal and closeOnClickOutside is true
@@ -11,3 +15,10 @@ export interface ModalOverlayProps extends BoxComponent {
    */
   className?: string;
 }
+
+export type ModalOverlayProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ModalOverlayStyleUtilityProps>;
+
+export type ModalOverlayComponent = <C extends React.ElementType = 'div'>(
+  props: ModalOverlayProps<C>,
+) => React.ReactElement | null;
