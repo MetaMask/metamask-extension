@@ -30,8 +30,8 @@ import {
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
 import SkipSRPBackup from './skip-srp-backup-popover';
 
 export default function SecureYourWallet() {

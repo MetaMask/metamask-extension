@@ -6,6 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.34.1]
+### Fixed
+- Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
+- Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
+
+## [10.34.0]
+### Added
+- Add a security quiz to the SRP reveal ([#19283](https://github.com/MetaMask/metamask-extension/pull/19283))
+- [FLASK] Add Snaps keyring and new snap accounts related pages ([#19710](https://github.com/MetaMask/metamask-extension/pull/19710))
+
+
+### Changed
+- Decrease boldness of text in some labels ([#19731](https://github.com/MetaMask/metamask-extension/pull/19731))
+
+### Fixed
+- Fix design inconsistencies in the connect flow ([#19800](https://github.com/MetaMask/metamask-extension/pull/19800))
+- Fix connection issues on some dapps, and ensure that `eth_requestAccount` returns accounts when opening multiple tabs for the same dapp ([#19727](https://github.com/MetaMask/metamask-extension/pull/19727))
+- Fix UI bugs in contacts page ([#19646](https://github.com/MetaMask/metamask-extension/pull/19646))
+- Ensure correct logo shown on Linea ([#19717](https://github.com/MetaMask/metamask-extension/pull/19717))
+- Fix the autolock field in settings on firefox ([#19653](https://github.com/MetaMask/metamask-extension/pull/19653))
+- Prevent duplicate account names that only differ by letter casing ([#19616](https://github.com/MetaMask/metamask-extension/pull/19616))
+- Ensure token details stay within asset dropdown border ([#19626](https://github.com/MetaMask/metamask-extension/pull/19626))
+- Prevent rounded corners in account menu ([#19615](https://github.com/MetaMask/metamask-extension/pull/19615))
+- Ensure network changes before the user accepts a wallet_watchAsset request add the NFT to pre-change chain ID and address ([#19629](https://github.com/MetaMask/metamask-extension/pull/19629))
+- Fix performance degradations noticable on Firefox builds ([#19993](https://github.com/MetaMask/metamask-extension/pull/19993))
+- Fix copy to clipboard of public address, so that it is only cleared from the clipboard after 60 seconds ([#19948](https://github.com/MetaMask/metamask-extension/pull/19948))
+- Fix overlapping text, in some language, in home screen buttons ([#19920](https://github.com/MetaMask/metamask-extension/pull/19920))
+
+
 ## [10.33.1]
 ### Fixed
 - Fix to bug causing users to see an infinite spinner when signing typed messages. ([#19894](https://github.com/MetaMask/metamask-extension/pull/19894))
@@ -3829,7 +3858,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.33.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.1...HEAD
+[10.34.1]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...v10.34.1
+[10.34.0]: https://github.com/MetaMask/metamask-extension/compare/v10.33.1...v10.34.0
 [10.33.1]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...v10.33.1
 [10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...v10.33.0
 [10.32.0]: https://github.com/MetaMask/metamask-extension/compare/v10.31.1...v10.32.0

@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import Typography from '../../ui/typography/typography';
 import {
   Color,
   FontWeight,
-  TypographyVariant,
-  DISPLAY,
-  FLEX_WRAP,
   AlignItems,
   TextAlign,
+  TextVariant,
+  Display,
+  FlexWrap,
 } from '../../../helpers/constants/design-system';
+import { Text } from '../../component-library';
 
 export default function TransactionDetailItem({
   'data-testid': dataTestId,
@@ -27,18 +27,16 @@ export default function TransactionDetailItem({
   return (
     <div className="transaction-detail-item" data-testid={dataTestId}>
       <div className="transaction-detail-item__row">
-        <Typography
+        <Text
+          as="h6"
           color={detailTitleColor}
           fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
-          variant={TypographyVariant.H6}
-          boxProps={{
-            display: DISPLAY.FLEX,
-            flexWrap: FLEX_WRAP.NO_WRAP,
-            alignItems: AlignItems.center,
-          }}
+          display={Display.Flex}
+          flexWrap={FlexWrap.NoWrap}
+          alignItems={AlignItems.center}
         >
           {detailTitle}
-        </Typography>
+        </Text>
         <div
           className={classnames('transaction-detail-item__detail-values', {
             'transaction-detail-item__detail-values--flex-width':
@@ -46,46 +44,43 @@ export default function TransactionDetailItem({
           })}
         >
           {detailText && (
-            <Typography
-              variant={TypographyVariant.H6}
-              color={Color.textAlternative}
-            >
+            <Text as="h6" color={Color.textAlternative}>
               {detailText}
-            </Typography>
+            </Text>
           )}
-          <Typography
+          <Text
+            as="h6"
             color={Color.textDefault}
             fontWeight={boldHeadings ? FontWeight.Bold : FontWeight.Normal}
-            variant={TypographyVariant.H6}
-            marginTop={1}
-            marginBottom={1}
             marginLeft={1}
-            boxProps={{ textAlign: TextAlign.Right }}
+            textAlign={TextAlign.Right}
           >
             {detailTotal}
-          </Typography>
+          </Text>
         </div>
       </div>
       <div className="transaction-detail-item__row">
         {React.isValidElement(subTitle) ? (
           <div>{subTitle}</div>
         ) : (
-          <Typography
-            variant={TypographyVariant.H7}
+          <Text
+            as="h6"
+            variant={TextVariant.bodySm}
             color={Color.textAlternative}
           >
             {subTitle}
-          </Typography>
+          </Text>
         )}
 
-        <Typography
-          variant={TypographyVariant.H7}
+        <Text
+          as="h6"
+          variant={TextVariant.bodySm}
           color={Color.textAlternative}
-          align="end"
+          textAlign={TextAlign.End}
           className="transaction-detail-item__row-subText"
         >
           {subText}
-        </Typography>
+        </Text>
       </div>
     </div>
   );

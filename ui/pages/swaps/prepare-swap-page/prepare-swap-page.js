@@ -119,9 +119,9 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  BannerAlert,
+  Text,
 } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -776,7 +776,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -945,11 +945,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
