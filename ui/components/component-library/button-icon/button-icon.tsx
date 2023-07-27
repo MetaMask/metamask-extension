@@ -10,22 +10,17 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
-import { Icon, IconSize } from '../icon';
-
+import {Box} from '..';
+import {  Icon, IconSize } from '..';
 import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
+import { BoxProps, PolymorphicRef } from '../box';
 
-const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
-  [ButtonIconSize.Sm]: IconSize.Sm,
-  [ButtonIconSize.Md]: IconSize.Md,
-  [ButtonIconSize.Lg]: IconSize.Lg,
-};
 
 export const ButtonIcon = React.forwardRef(
-  (
+  <C extends React.ElementType = 'button' | 'a'>(
     {
       ariaLabel,
-      as = 'button',
+      as,
       className = '',
       color = IconColor.iconDefault,
       href,
@@ -34,40 +29,41 @@ export const ButtonIcon = React.forwardRef(
       disabled,
       iconProps,
       ...props
-    }: ButtonIconProps,
-    ref: React.Ref<HTMLElement>,
+    }: ButtonIconProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
-    const Tag = href ? 'a' : as;
-    const isDisabled = disabled && Tag === 'button';
+    const tag = href ? 'a' : as || 'button';
+    const isDisabled = disabled && tag === 'button';
     return (
       <Box
-        aria-label={ariaLabel}
-        as={Tag}
-        className={classnames(
-          'mm-button-icon',
-          `mm-button-icon--size-${String(size)}`,
-          {
-            'mm-button-icon--disabled': Boolean(disabled),
-          },
-          className,
-        )}
+      aria-label={ariaLabel}
+      as={tag}
+      className={classnames(
+        'mm-button-icon',
+        `mm-button-icon--size-${String(size)}`,
+        {
+          'mm-button-icon--disabled': Boolean(disabled),
+        },
+        className,
+      )}
+      color={color}
+      {...(isDisabled ? { disabled: true } : {})} // only allow disabled attribute to be passed down to the Box when the as prop is equal to a button element
+      display={Display.InlineFlex}
+      justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
+      borderRadius={BorderRadius.LG}
+      backgroundColor={BackgroundColor.transparent}
+      {...(href ? { href } : {})}
+      ref={ref}
+      {...(props as BoxProps<C>)}
+    >
+      <Icon
+        name={iconName}
+        size={IconSize.Sm}
         color={color}
-        {...(isDisabled ? { disabled: true } : {})} // only allow disabled attribute to be passed down to the Box when the as prop is equal to a button element
-        display={Display.InlineFlex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        borderRadius={BorderRadius.LG}
-        backgroundColor={BackgroundColor.transparent}
-        {...(href ? { href } : {})}
-        ref={ref}
-        {...props}
-      >
-        <Icon
-          name={iconName}
-          size={buttonIconSizeToIconSize[size]}
-          {...iconProps}
-        />
-      </Box>
+        {...iconProps}
+      />
+    </Box>
     );
   },
 );
