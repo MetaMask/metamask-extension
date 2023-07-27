@@ -65,8 +65,7 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { Icon, IconName } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
+import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
 

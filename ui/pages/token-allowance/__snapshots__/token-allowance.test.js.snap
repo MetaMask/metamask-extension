@@ -85,7 +85,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         class="box box--flex-direction-row box--text-align-end"
       >
         <h6
-          class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-muted"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-muted"
         >
           1
            
@@ -161,12 +161,12 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
           class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             mainnet
           </h6>
           <h6
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             Account 1
           </h6>
@@ -176,13 +176,13 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
           Balance
         </h6>
         <h6
           align="end"
-          class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
         >
           10
            
@@ -207,7 +207,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io
         </h6>
@@ -218,7 +218,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
     >
       <h3
         align="center"
-        class="box mm-text mm-text--heading-md box--flex-direction-row box--color-text-default"
+        class="mm-box mm-text mm-text--heading-md mm-box--color-text-default"
       >
         <span>
            
@@ -292,7 +292,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="box mm-button-icon mm-button-icon--size-lg box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
                   >
                     <span
-                      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/copy.svg');"
                     />
                   </button>
@@ -312,7 +312,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="box mm-button-icon mm-button-icon--size-lg box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
                   >
                     <span
-                      class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                       style="mask-image: url('./images/icons/export.svg');"
                     />
                   </button>
@@ -334,7 +334,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         tabindex="0"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
         >
           Verify third-party details
         </h6>
@@ -365,9 +365,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                     class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
                   >
                     <h6
-                      class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
-                      for="custom-spending-cap"
-                      tag="label"
+                      class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                     >
                       Custom spending cap
                     </h6>
@@ -385,7 +383,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                           tabindex="0"
                         >
                           <span
-                            class="box mm-icon mm-icon--size-inherit box--display-inline-block box--flex-direction-row box--color-inherit"
+                            class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-inherit"
                             style="mask-image: url('./images/icons/question.svg');"
                           />
                         </div>
@@ -417,18 +415,18 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
               class="box custom-spending-cap__description box--flex-direction-row"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--padding-top-2 box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--padding-top-2 mm-box--color-text-default"
               >
                 <span>
                    
                   This allows the third party to spend 
-                  <h6
-                    class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+                  <span
+                    class="mm-box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold mm-box--color-text-default"
                   >
                     7
                      
                     TST
-                  </h6>
+                  </span>
                    from your current balance.
                    
                 </span>
@@ -454,7 +452,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
         tabindex="0"
       >
         <h6
-          class="box mm-text mm-text--body-sm box--margin-right-1 box--flex-direction-row box--color-primary-default"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-right-1 mm-box--color-primary-default"
         >
           View details
         </h6>

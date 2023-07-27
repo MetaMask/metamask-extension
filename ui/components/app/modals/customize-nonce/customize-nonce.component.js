@@ -17,8 +17,8 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
+  Text,
 } from '../../../component-library';
-import { Text } from '../../../component-library/text/deprecated';
 
 const CustomizeNonce = ({
   hideModal,

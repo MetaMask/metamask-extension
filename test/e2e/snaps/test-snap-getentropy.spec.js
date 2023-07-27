@@ -53,6 +53,8 @@ describe('Test Snap getEntropy', function () {
 
         await driver.waitForSelector({ text: 'Install' });
 
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
@@ -71,7 +73,7 @@ describe('Test Snap getEntropy', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#connectGetEntropySnap',
-          text: 'Reconnect to getEntropy Snap',
+          text: 'Reconnect to Get Entropy Snap',
         });
 
         // find and click on send test
@@ -100,7 +102,7 @@ describe('Test Snap getEntropy', function () {
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
           css: '#entropySignResult',
-          text: '"0xb9c20d675976e12c8bb53c3fd8fdff2dee11ad2b132eb453b5a8f35b0553c52d3bcac0fd3324d22ff0c53b3445ef48c119ba6435bc9bfb03234806719599aa6f6245593238c734bcf9d94d2873cacdd65a3176be3ae7e5b84f95fdd4487a395f"',
+          text: '"0x9341785782b512c86235612365f1076b16731ed9473beb4d0804c30b7fcc3a055aa7103b02dc64014d923220712dfbef023ddcf6327b313ea2dfd4d83dc5a53e1c5e7f4e10bce49830eded302294054df8a7a46e5b6cb3e50eec564ecba17941"',
         });
       },
     );

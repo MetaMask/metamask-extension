@@ -115,17 +115,19 @@ export function updateCustodyState(
 }
 
 export function checkForUnapprovedMessages(
-  msgData: TemporaryMessageDataType['msgParams'],
+  msgData: TemporaryMessageDataType,
   unapprovedMessages: MessagesIndexedById,
 ) {
   const custodianUnapprovedMessages = Object.keys(unapprovedMessages)
     .map((key) => unapprovedMessages[key])
-    .filter((message) => message.custodyId && message.status === 'unapproved');
+    .filter((message) => {
+      return message.metadata?.custodyId && message.status === 'unapproved';
+    });
 
   if (custodianUnapprovedMessages && custodianUnapprovedMessages.length > 0) {
     return {
       ...msgData,
-      custodyId: unapprovedMessages[msgData.metamaskId]?.custodyId,
+      custodyId: unapprovedMessages[msgData.id]?.metadata?.custodyId,
     };
   }
 

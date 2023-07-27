@@ -3,21 +3,35 @@
 exports[`ConnectHardwareForm should match snapshot 1`] = `
 <div>
   <div
-    class="new-external-account-form"
+    class="mm-box new-external-account-form mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
   >
     <div
-      class="hw-connect__header"
+      class="mm-box hw-connect__header mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
     >
-      <h3
-        class="hw-connect__header__title"
+      <div
+        class="mm-box hw-connect__header__title-wrapper mm-box--margin-top-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center"
       >
-        Connect a hardware wallet
-      </h3>
-      <p
-        class="hw-connect__header__msg"
+        <h3
+          class="mm-box mm-text mm-text--heading-md mm-text--font-weight-bold mm-box--margin-left-auto mm-box--color-text-default"
+        >
+          Connect a hardware wallet
+        </h3>
+        <button
+          aria-label="Close"
+          class="box mm-button-icon mm-button-icon--size-sm box--margin-left-auto box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          data-testid="hardware-connect-close-btn"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+      <h5
+        class="mm-box mm-text hw-connect__header__msg mm-text--body-md mm-box--margin-top-5 mm-box--margin-bottom-3 mm-box--color-text-default"
       >
-        Select a hardware wallet you'd like to use with MetaMask.
-      </p>
+        Select a hardware wallet you would like to use with MetaMask.
+      </h5>
     </div>
     <div
       class="hw-connect__btn-wrapper"
@@ -98,13 +112,16 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
       </button>
     </div>
     <button
-      class="button btn--rounded btn-primary btn--large hw-connect__connect-btn"
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled hw-connect__connect-btn mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       disabled=""
-      role="button"
-      tabindex="0"
     >
       Continue
     </button>
+    <h6
+      class="mm-box mm-text new-external-account-form footer mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--color-text-alternative"
+    >
+      Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with.
+    </h6>
   </div>
 </div>
 `;

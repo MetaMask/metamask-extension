@@ -115,8 +115,11 @@ import {
   TEXT_ALIGN,
   Size,
 } from '../../../helpers/constants/design-system';
-import { BannerAlert, ButtonLink } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
+import {
+  BannerAlert,
+  ButtonLink,
+  Text,
+} from '../../../components/component-library';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';

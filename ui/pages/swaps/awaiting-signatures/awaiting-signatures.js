@@ -32,7 +32,7 @@ import {
 import SwapsFooter from '../swaps-footer';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Text } from '../../../components/component-library/text/deprecated';
+import { Text } from '../../../components/component-library';
 import SwapStepIcon from './swap-step-icon';
 
 export default function AwaitingSignatures() {
