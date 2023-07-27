@@ -17,7 +17,6 @@ import { BannerAlert, Text } from '../../component-library';
 import { areDappSuggestedAndTxParamGasFeesTheSame } from '../../../helpers/utils/confirm-tx.util';
 
 import InfoTooltip from '../../ui/info-tooltip';
-import ErrorMessage from '../../ui/error-message';
 import AdvancedGasControls from '../advanced-gas-controls/advanced-gas-controls.component';
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -72,14 +71,14 @@ export default function EditGasDisplay({
       <div className="edit-gas-display__content">
         {showTopError && (
           <div className="edit-gas-display__warning">
-            <ErrorMessage errorKey={errorKey} />
+            <BannerAlert severity={Severity.Danger} description={errorKey} />
           </div>
         )}
         {warningMessage && (
           <div className="edit-gas-display__warning">
             <BannerAlert
               severity={Severity.Warning}
-              className="actionable-message--warning"
+              className="banner-alert--warning"
               description={warningMessage}
             />
           </div>
@@ -88,7 +87,7 @@ export default function EditGasDisplay({
           <div className="edit-gas-display__dapp-acknowledgement-warning">
             <BannerAlert
               severity={Severity.Warning}
-              className="actionable-message--warning"
+              className="banner-alert--warning"
               description={t('gasDisplayDappWarning', [transaction.origin])}
             />
           </div>
