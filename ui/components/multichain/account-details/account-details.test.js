@@ -7,7 +7,7 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
 import {
-  setAccountDetailsAddress,
+  setAccountDetailsAccountId,
   exportAccount,
   hideWarning,
 } from '../../../store/actions';
@@ -17,13 +17,16 @@ import { AccountDetails } from '.';
 jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
-  const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-  const mockSetAccountDetailsAddress = jest.fn();
+  const account = Object.values(
+    mockState.metamask.internalAccounts.accounts,
+  )[0];
+  const { id: accountId, address } = account;
+  const mockSetAccountDetailsAccountId = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
 
   beforeEach(() => {
-    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
+    setAccountDetailsAccountId.mockReturnValue(mockSetAccountDetailsAccountId);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
   });
@@ -37,7 +40,7 @@ describe('AccountDetails', () => {
       },
       ...storeModifications,
     });
-    const allProps = { address, ...props };
+    const allProps = { accountId, ...props };
     return renderWithProvider(<AccountDetails {...allProps} />, store);
   }
 
