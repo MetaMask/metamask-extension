@@ -1,6 +1,3 @@
-// polyfills
-import '@formatjs/intl-relativetimeformat/polyfill';
-
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
 
