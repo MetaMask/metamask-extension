@@ -262,6 +262,10 @@ export function getAccountTypeForKeyring(keyring) {
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case KeyringType.snap:
+      return 'snap';
+    ///: END:ONLY_INCLUDE_IN
     default:
       return 'default';
   }
