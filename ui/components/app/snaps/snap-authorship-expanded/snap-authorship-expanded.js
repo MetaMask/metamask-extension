@@ -88,13 +88,13 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         paddingTop={3}
         paddingBottom={3}
       >
-        <Box>
+        <div>
           <SnapAvatar snapId={snapId} />
-        </Box>
+        </div>
         <Box
-          marginLeft={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
+          marginLeft={4}
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>
@@ -109,7 +109,11 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           </Text>
         </Box>
       </Box>
-      <Box flexDirection={FlexDirection.Column} width={BlockSize.Full}>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        width={BlockSize.Full}
+      >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
@@ -124,19 +128,19 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             borderRight: BorderStyle.none,
           }}
         >
-          <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-            {t('enabled')}
-          </Text>
-          <Box style={{ maxWidth: '52px' }}>
+          <Text variant={TextVariant.bodyMdMedium}>{t('enabled')}</Text>
+          <Box marginLeft="auto">
             <Tooltip interactive position="left" html={t('snapsToggle')}>
               <ToggleButton value={snap?.enabled} onToggle={onToggle} />
             </Tooltip>
           </Box>
         </Box>
         <Box
+          display={Display.Flex}
           flexDirection={FlexDirection.Column}
           padding={4}
           width={BlockSize.Full}
+          gap={4}
         >
           {installOrigin && installInfo && (
             <Box
@@ -145,10 +149,11 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               justifyContent={JustifyContent.spaceBetween}
               width={BlockSize.Full}
             >
-              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+              <Text variant={TextVariant.bodyMdMedium}>
                 {t('installOrigin')}
               </Text>
               <Box
+                display={Display.Flex}
                 flexDirection={FlexDirection.Column}
                 alignItems={AlignItems.flexEnd}
               >
@@ -168,11 +173,8 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.spaceBetween}
             alignItems={AlignItems.center}
-            marginTop={4}
           >
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
-              {t('version')}
-            </Text>
+            <Text variant={TextVariant.bodyMdMedium}>{t('version')}</Text>
             <SnapVersion version={snap?.version} url={url} />
           </Box>
         </Box>

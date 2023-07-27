@@ -1,60 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Color,
   Display,
-  FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
-  BUTTON_VARIANT,
-  Button,
-  Icon,
+  ButtonBase,
+  ButtonBaseSize,
   IconName,
-  IconSize,
-  Text,
-  Box,
 } from '../../../component-library';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 
 const SnapVersion = ({ version, url }) => {
   return (
-    <Button
-      variant={BUTTON_VARIANT.LINK}
+    <ButtonBase
+      className="snap-version"
+      as="a"
       href={url}
       target="_blank"
-      className="snap-version"
+      rel="noopener noreferrer"
+      endIconName={IconName.Export}
+      size={ButtonBaseSize.Sm}
+      paddingLeft={2}
+      paddingRight={2}
+      variant={TextVariant.bodyMd}
+      textProps={{ display: Display.Flex }}
     >
-      <Box
-        className="snap-version__wrapper"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundAlternative}
-        borderRadius={BorderRadius.pill}
-        paddingTop={1}
-        paddingBottom={1}
-        paddingLeft={2}
-        paddingRight={2}
-      >
-        {version ? (
-          <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
-            {version}
-          </Text>
-        ) : (
-          <Preloader size={18} />
-        )}
-        <Icon
-          name={IconName.Export}
-          color={Color.textAlternative}
-          size={IconSize.Sm}
-          marginLeft={1}
-        />
-      </Box>
-    </Button>
+      {version ? version : <Preloader size={16} />}
+    </ButtonBase>
   );
 };
 
