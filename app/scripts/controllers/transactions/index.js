@@ -132,7 +132,8 @@ export default class TransactionController extends EventEmitter {
   constructor(opts) {
     super();
     this.getNetworkId = opts.getNetworkId;
-    this.getNetworkStatus = opts.getNetworkStatus;
+    this._getNetworkStatus = opts.getNetworkStatus;
+    this._getNetworkClientById = opts.getNetworkClientById;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getEIP1559Compatibility = opts.getEIP1559Compatibility;
@@ -168,11 +169,9 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager = new TransactionStateManager({
       initState: opts.initState,
       txHistoryLimit: opts.txHistoryLimit,
-      // replace the methods below with getNetworkClientsById
-      getNetworkClientsById: opts.getNetworkClientsById,
+      // replace the methods below with getNetworkClientById
+      getNetworkClientById: opts.getNetworkClientById,
       getNetworkId: this.getNetworkId,
-      getNetworkStatus: this.getNetworkStatus,
-      getCurrentChainId: opts.getCurrentChainId,
     });
 
     this.store = this.txStateManager.store;
@@ -235,7 +234,7 @@ export default class TransactionController extends EventEmitter {
    * @returns {number} The numerical chainId.
    */
   getChainId() {
-    const networkStatus = this.getNetworkStatus();
+    const networkStatus = this._getNetworkStatus();
     const chainId = this._getCurrentChainId();
     const integerChainId = parseInt(chainId, 16);
     if (
@@ -285,7 +284,7 @@ export default class TransactionController extends EventEmitter {
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
     const chainId = parseInt(this._getCurrentChainId(), 16);
-    const networkStatus = this.getNetworkStatus();
+    const networkStatus = this._getNetworkStatus();
     const networkId = this.getNetworkId();
 
     return Common.custom({
@@ -636,10 +635,10 @@ export default class TransactionController extends EventEmitter {
     return this._getTransaction(txId);
   }
 
-  async addTransactionGasDefaults(txMeta) {
+  async addTransactionGasDefaults(txMeta, ethQuery) {
     const contractCode = await determineTransactionContractCode(
       txMeta.txParams,
-      this.query,
+      ethQuery || this.query,
     );
 
     let updateTxMeta = txMeta;
@@ -1543,6 +1542,13 @@ export default class TransactionController extends EventEmitter {
 
     txUtils.validateTxParams(normalizedTxParams, eip1559Compatibility);
 
+    const networkClient = this._getNetworkClientById(networkClientId);
+    const networkStatus = this._getNetworkStatus(networkClientId);
+    const ethQuery = new EthQuery(networkClient.provider);
+
+    if (networkStatus !== NetworkStatus.Available) {
+      throw new Error('MetaMask is having trouble connecting to the network');
+    }
     /**
      * `generateTxMeta` adds the default txMeta properties to the passed object.
      * These include the tx's `id`. As we use the id for determining order of
@@ -1553,7 +1559,15 @@ export default class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       origin,
       sendFlowHistory,
+      networkStatus,
+      chainId: networkClient.configuration.chainId,
     });
+
+    txMeta = {
+      ...txMeta,
+      networkClientId,
+      chainId: networkClient.configuration.chainId,
+    };
 
     // Add actionId to txMeta to check if same actionId is seen again
     // IF request to create transaction with same actionId is submitted again, new transaction will not be added for it.
@@ -1584,7 +1598,7 @@ export default class TransactionController extends EventEmitter {
 
     const { type: determinedType } = await determineTransactionType(
       normalizedTxParams,
-      this.query,
+      ethQuery || this.query,
     );
     txMeta.type = type || determinedType;
 
@@ -1604,7 +1618,7 @@ export default class TransactionController extends EventEmitter {
 
     this._addTransaction(txMeta);
 
-    txMeta = await this.addTransactionGasDefaults(txMeta);
+    txMeta = await this.addTransactionGasDefaults(txMeta, ethQuery);
 
     if ([TransactionType.swap, TransactionType.swapApproval].includes(type)) {
       txMeta = await this._createSwapsTransaction(swaps, type, txMeta);

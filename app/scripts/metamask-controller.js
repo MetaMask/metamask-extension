@@ -1157,12 +1157,12 @@ export default class MetamaskController extends EventEmitter {
         this.networkController.getEIP1559Compatibility.bind(
           this.networkController,
         ),
-      getNetworkClientsById: this.networkController.getNetworkClientsById.bind(
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
       ),
       getNetworkId: () => this.networkController.state.networkId,
       getNetworkStatus: (networkClientId) =>
-        this.networkController.state.networkMeta?.[
+        this.networkController.state.networksMetadata?.[
           networkClientId ||
             this.networkController.state.selectedNetworkClientId
         ]?.status,

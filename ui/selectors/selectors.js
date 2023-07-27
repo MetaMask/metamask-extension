@@ -107,7 +107,7 @@ import { getPermissionSubjects } from './permissions';
 export function isNetworkLoading(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
-    state.metamask.networkMeta[selectedNetworkClientId].status !==
+    state.metamask.networksMetadata[selectedNetworkClientId].status !==
     NetworkStatus.Available
   );
 }

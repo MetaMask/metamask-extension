@@ -311,7 +311,7 @@ export function getUnapprovedTxs(state) {
 export function isNotEIP1559Network(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
-    state.metamask.networkMeta[selectedNetworkClientId].details.EIPS[1559] ===
+    state.metamask.networksMetadata[selectedNetworkClientId].details.EIPS[1559] ===
     false
   );
 }
@@ -324,7 +324,7 @@ export function isNotEIP1559Network(state) {
 export function isEIP1559Network(state) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
-    state.metamask.networkMeta[selectedNetworkClientId].details.EIPS[1559] ===
+    state.metamask.networksMetadata[selectedNetworkClientId].details.EIPS[1559] ===
     true
   );
 }

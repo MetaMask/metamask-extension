@@ -65,7 +65,7 @@ export default class TransactionStateManager extends EventEmitter {
     getNetworkId,
     getNetworkStatus,
     getCurrentChainId,
-    getNetworkClientsById,
+    getNetworkClientById,
   }) {
     super();
 
@@ -74,7 +74,7 @@ export default class TransactionStateManager extends EventEmitter {
       ...initState,
     });
     this.txHistoryLimit = txHistoryLimit;
-    this.getNetworkClientsById = getNetworkClientsById;
+    this.getNetworkClientById = getNetworkClientById;
     this.getNetworkId = getNetworkId;
     this.getNetworkStatus = getNetworkStatus;
     this.getCurrentChainId = getCurrentChainId;
@@ -93,11 +93,6 @@ export default class TransactionStateManager extends EventEmitter {
    */
   generateTxMeta(opts = {}) {
     const networkId = this.getNetworkId();
-    const networkStatus = this.getNetworkStatus();
-    const chainId = this.getCurrentChainId();
-    if (networkStatus !== NetworkStatus.Available) {
-      throw new Error('MetaMask is having trouble connecting to the network');
-    }
 
     let dappSuggestedGasFees = null;
 
@@ -135,10 +130,9 @@ export default class TransactionStateManager extends EventEmitter {
       id: createId(),
       time: new Date().getTime(),
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: networkId,
+      metamaskNetworkId: networkId, // TODO - Please lets remove this!?
       originalGasEstimate: opts.txParams?.gas,
       userEditedGasLimit: false,
-      chainId,
       loadingDefaults: true,
       dappSuggestedGasFees,
       sendFlowHistory: [],
