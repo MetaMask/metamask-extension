@@ -65,7 +65,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
                 id={`connected-permission-${idx}`}
                 className="connected-accounts-permissions__checkbox"
               />
-              <label htmlFor={`connected-permission-${idx}`}>{label}</label> */}
+              <label htmlFor={`connected-permission-${idx}`}>{label}</label>
             </li>
           ))}
         </ul>
