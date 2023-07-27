@@ -12,7 +12,6 @@ import {
   setLedgerTransportPreference,
   setDismissSeedBackUpReminder,
   setDisabledRpcMethodPreference,
-  setUse4ByteResolution,
   backupUserData,
   restoreUserData,
 } from '../../../store/actions';
@@ -32,7 +31,6 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ledgerTransportType,
     dismissSeedBackUpReminder,
-    use4ByteResolution,
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
@@ -56,7 +54,6 @@ export const mapStateToProps = (state) => {
     dismissSeedBackUpReminder,
     userHasALedgerAccount,
     disabledRpcMethodPreferences,
-    use4ByteResolution,
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     desktopEnabled,
     ///: END:ONLY_INCLUDE_IN
@@ -91,9 +88,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setDisabledRpcMethodPreference: (methodName, isEnabled) => {
       return dispatch(setDisabledRpcMethodPreference(methodName, isEnabled));
-    },
-    setUse4ByteResolution: (value) => {
-      return dispatch(setUse4ByteResolution(value));
     },
   };
 };
