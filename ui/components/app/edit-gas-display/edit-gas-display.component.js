@@ -61,9 +61,9 @@ export default function EditGasDisplay({
 
   const showTopError = balanceError && txParamsHaveBeenCustomized;
 
-  let errorKey;
+  let errorMessage;
   if (balanceError) {
-    errorKey = 'insufficientFunds';
+    errorMessage = 'Insufficient funds.';
   }
 
   return (
@@ -71,7 +71,10 @@ export default function EditGasDisplay({
       <div className="edit-gas-display__content">
         {showTopError && (
           <div className="edit-gas-display__warning">
-            <BannerAlert severity={Severity.Danger} description={errorKey} />
+            <BannerAlert
+              severity={Severity.Danger}
+              description={errorMessage}
+            />
           </div>
         )}
         {warningMessage && (
