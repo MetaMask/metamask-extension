@@ -34,7 +34,7 @@ export const NftItem = ({
       className="nft-item__container"
       data-testid="nft-item"
       as="button"
-      onClick={onClick}
+      // onClick={onClick}
     >
       <BadgeWrapper
         className={classnames('nft-item__badge-wrapper', {
@@ -75,7 +75,7 @@ export const NftItem = ({
             data-testid="nft-default-image"
             name={name}
             tokenId={tokenId}
-            clickable={clickable}
+            // clickable={clickable}
           />
         )}
       </BadgeWrapper>

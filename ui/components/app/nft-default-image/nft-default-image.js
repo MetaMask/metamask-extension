@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Display,
   AlignItems,
@@ -12,8 +13,10 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Text } from '../../component-library';
+import { Button, Text } from '../../component-library';
 import Box from '../../ui/box/box';
+import { showIpfsModal } from '../../../store/actions';
+import { getIpfsGateway } from '../../../selectors';
 
 export default function NftDefaultImage({
   name,
@@ -22,6 +25,9 @@ export default function NftDefaultImage({
   clickable = false,
 }) {
   const t = useI18nContext();
+  const ipfsGateway = useSelector(getIpfsGateway);
+  const dispatch = useDispatch();
+
   return (
     <Box
       tabIndex={0}
@@ -45,6 +51,15 @@ export default function NftDefaultImage({
       >
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Text>
+      {!ipfsGateway?.length > 0 && (
+        <Button
+          onClick={() => {
+            dispatch(showIpfsModal());
+          }}
+        >
+          {t('show')}
+        </Button>
+      )}
     </Box>
   );
 }
