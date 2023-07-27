@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  setAccountDetailsAddress,
+  setAccountDetailsAccountId,
   clearAccountDetails,
   hideWarning,
 } from '../../../store/actions';
@@ -17,7 +17,7 @@ import {
   Box,
   Text,
 } from '../../component-library';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import { getInternalAccount } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -30,12 +30,12 @@ import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsKey } from './account-details-key';
 
-export const AccountDetails = ({ address }) => {
+export const AccountDetails = ({ accountId }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const useBlockie = useSelector((state) => state.metamask.useBlockie);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const { name } = accounts.find((account) => account.address === address);
+  const account = useSelector((state) => getInternalAccount(state, accountId));
+  const { name, address } = account;
 
   const [attemptingExport, setAttemptingExport] = useState(false);
 
@@ -45,7 +45,7 @@ export const AccountDetails = ({ address }) => {
   );
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAddress(''));
+    dispatch(setAccountDetailsAccountId(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
@@ -113,9 +113,8 @@ export const AccountDetails = ({ address }) => {
           </>
         ) : (
           <AccountDetailsDisplay
-            accounts={accounts}
             accountName={name}
-            address={address}
+            accountId={accountId}
             onExportClick={() => setAttemptingExport(true)}
           />
         )}
@@ -125,5 +124,5 @@ export const AccountDetails = ({ address }) => {
 };
 
 AccountDetails.propTypes = {
-  address: PropTypes.string,
+  accountId: PropTypes.string,
 };

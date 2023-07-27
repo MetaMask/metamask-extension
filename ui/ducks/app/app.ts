@@ -68,7 +68,7 @@ interface AppState {
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: number | null;
-  accountDetailsAddress: string;
+  accountDetailsAccountId: string;
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   snapsInstallPrivacyWarningShown: boolean;
   ///: END:ONLY_INCLUDE_IN
@@ -138,7 +138,7 @@ const initialState: AppState = {
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
-  accountDetailsAddress: '',
+  accountDetailsAccountId: '',
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   snapsInstallPrivacyWarningShown: false,
   ///: END:ONLY_INCLUDE_IN
@@ -206,10 +206,10 @@ export default function reduceApp(
         alertMessage: null,
       };
 
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
+    case actionConstants.SET_ACCOUNT_DETAILS_ACCOUNT_ID: {
       return {
         ...appState,
-        accountDetailsAddress: action.payload,
+        accountDetailsAccountId: action.payload,
       };
     }
 

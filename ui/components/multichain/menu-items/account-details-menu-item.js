@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
-import { setAccountDetailsAddress } from '../../../store/actions';
+import { setAccountDetailsAccountId } from '../../../store/actions';
 
 import { MenuItem } from '../../ui/menu';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -16,7 +16,7 @@ import { IconName, Text } from '../../component-library';
 export const AccountDetailsMenuItem = ({
   metricsLocation,
   closeMenu,
-  address,
+  accountId,
   textProps,
 }) => {
   const t = useI18nContext();
@@ -28,7 +28,7 @@ export const AccountDetailsMenuItem = ({
   return (
     <MenuItem
       onClick={() => {
-        dispatch(setAccountDetailsAddress(address));
+        dispatch(setAccountDetailsAccountId(accountId));
         trackEvent({
           event: MetaMetricsEventName.NavAccountDetailsOpened,
           category: MetaMetricsEventCategory.Navigation,
@@ -49,6 +49,6 @@ export const AccountDetailsMenuItem = ({
 AccountDetailsMenuItem.propTypes = {
   metricsLocation: PropTypes.string.isRequired,
   closeMenu: PropTypes.func,
-  address: PropTypes.string.isRequired,
+  accountId: PropTypes.string.isRequired,
   textProps: PropTypes.object,
 };

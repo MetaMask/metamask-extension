@@ -131,7 +131,7 @@ export const AccountListItemMenu = ({
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            address={account.address}
+            accountId={account.id}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem

@@ -9,7 +9,8 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getCurrentChainId,
   getHardwareWalletType,
-  getMetaMaskKeyrings,
+  getInternalAccount,
+  getInternalAccounts,
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
@@ -32,17 +33,20 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const AccountDetailsDisplay = ({
-  accounts,
   accountName,
-  address,
+  accountId,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
-  const keyrings = useSelector(getMetaMaskKeyrings);
-  const keyring = keyrings.find((kr) => kr.accounts.includes(address));
+  const displayedAccount = useSelector((state) =>
+    getInternalAccount(state, accountId),
+  );
+  const { keyring } = displayedAccount.metadata;
+  const { address } = displayedAccount;
+  const accounts = useSelector(getInternalAccounts);
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
   const chainId = useSelector(getCurrentChainId);
@@ -96,8 +100,7 @@ export const AccountDetailsDisplay = ({
 };
 
 AccountDetailsDisplay.propTypes = {
-  accounts: PropTypes.array.isRequired,
   accountName: PropTypes.string.isRequired,
-  address: PropTypes.string.isRequired,
+  accountId: PropTypes.string.isRequired,
   onExportClick: PropTypes.func.isRequired,
 };
