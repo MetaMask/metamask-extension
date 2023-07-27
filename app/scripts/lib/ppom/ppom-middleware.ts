@@ -4,6 +4,8 @@ import { PPOMController } from '@metamask/ppom-validator';
 import { BlockaidResultType } from '../../../../shared/constants/security-provider';
 import PreferencesController from 'app/scripts/controllers/preferences';
 
+const { sentry } = global as any;
+
 const ConfirmationMethods = Object.freeze([
   'eth_sendRawTransaction',
   'eth_sendTransaction',
@@ -43,16 +45,15 @@ export function createPPOMMiddleware(
             return ppom.validateJsonRpc(req);
           },
         );
-        console.log('----1', req.securityAlertResponse)
       }
     } catch (error: any) {
+      sentry?.captureException(error);
       console.error('Error validating JSON RPC using PPOM: ', error);
       req.securityAlertResponse = {
         resultType: BlockaidResultType.Failed,
         reason: error.message,
         description: 'Validating the confirmation failed by  throwing error.',
       };
-      console.log('----2', req.securityAlertResponse)
     } finally {
       next();
     }
