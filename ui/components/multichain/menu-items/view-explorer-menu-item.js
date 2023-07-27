@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import { MenuItem } from '../../ui/menu';
@@ -34,7 +35,11 @@ export const ViewExplorerMenuItem = ({
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const addressLink = getAccountLink(address, chainId, rpcPrefs);
+  const addressLink = getAccountLink(
+    toChecksumHexAddress(address),
+    chainId,
+    rpcPrefs,
+  );
 
   const { blockExplorerUrl } = rpcPrefs;
   const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
