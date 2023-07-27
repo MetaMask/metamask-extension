@@ -10,7 +10,7 @@ const render = () => {
   return renderWithProvider(
     <AccountDetailsMenuItem
       metricsLocation="Global Menu"
-      address={mockState.metamask.selectedAddress}
+      accountId={mockState.metamask.internalAccounts.selectedAccount}
       closeMenu={jest.fn()}
     />,
     store,
@@ -19,7 +19,7 @@ const render = () => {
 
 jest.mock('../../../store/actions', () => ({
   ...jest.requireActual('../../../store/actions.ts'),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  setAccountDetailsAccountId: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 describe('AccountDetailsMenuItem', () => {
@@ -31,8 +31,8 @@ describe('AccountDetailsMenuItem', () => {
 
     fireEvent.click(getByTestId('account-list-menu-details'));
 
-    expect(actions.setAccountDetailsAddress).toHaveBeenCalledWith(
-      mockState.metamask.selectedAddress,
+    expect(actions.setAccountDetailsAccountId).toHaveBeenCalledWith(
+      mockState.metamask.internalAccounts.selectedAccount,
     );
   });
 });
