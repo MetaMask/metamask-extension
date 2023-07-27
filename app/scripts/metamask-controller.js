@@ -656,6 +656,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store,
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
+      blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
     });
     ///: END:ONLY_INCLUDE_IN
 
