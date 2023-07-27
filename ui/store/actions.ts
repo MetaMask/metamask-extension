@@ -2043,18 +2043,6 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
-export function addTokens(tokens: {
-  [address: string]: Token;
-}): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    const values = Object.values(tokens);
-    while (values.length) {
-      const { address, symbol, decimals } = values.shift() || {};
-      await dispatch(addToken(address, symbol, decimals));
-    }
-  };
-}
-
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
