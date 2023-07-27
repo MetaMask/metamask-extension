@@ -7,7 +7,7 @@ import {
   BackgroundColor,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { AvatarIcon, AVATAR_ICON_SIZES } from '.';
+import { AvatarIcon, AvatarIconSize } from '.';
 
 describe('AvatarIcon', () => {
   it('should render correctly', () => {
@@ -26,45 +26,45 @@ describe('AvatarIcon', () => {
       <>
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
-          size={AVATAR_ICON_SIZES.XS}
-          data-testid={AVATAR_ICON_SIZES.XS}
+          size={AvatarIconSize.Xs}
+          data-testid={AvatarIconSize.Xs}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
-          size={AVATAR_ICON_SIZES.SM}
-          data-testid={AVATAR_ICON_SIZES.SM}
+          size={AvatarIconSize.Sm}
+          data-testid={AvatarIconSize.Sm}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
-          size={AVATAR_ICON_SIZES.MD}
-          data-testid={AVATAR_ICON_SIZES.MD}
+          size={AvatarIconSize.Md}
+          data-testid={AvatarIconSize.Md}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
-          size={AVATAR_ICON_SIZES.LG}
-          data-testid={AVATAR_ICON_SIZES.LG}
+          size={AvatarIconSize.Lg}
+          data-testid={AvatarIconSize.Lg}
         />
         <AvatarIcon
           iconName={IconName.SwapHorizontal}
-          size={AVATAR_ICON_SIZES.XL}
-          data-testid={AVATAR_ICON_SIZES.XL}
+          size={AvatarIconSize.Xl}
+          data-testid={AvatarIconSize.Xl}
         />
       </>,
     );
-    expect(getByTestId(AVATAR_ICON_SIZES.XS)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_ICON_SIZES.XS}`,
+    expect(getByTestId(AvatarIconSize.Xs)).toHaveClass(
+      `mm-avatar-base--size-${AvatarIconSize.Xs}`,
     );
-    expect(getByTestId(AVATAR_ICON_SIZES.SM)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_ICON_SIZES.SM}`,
+    expect(getByTestId(AvatarIconSize.Sm)).toHaveClass(
+      `mm-avatar-base--size-${AvatarIconSize.Sm}`,
     );
-    expect(getByTestId(AVATAR_ICON_SIZES.MD)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_ICON_SIZES.MD}`,
+    expect(getByTestId(AvatarIconSize.Md)).toHaveClass(
+      `mm-avatar-base--size-${AvatarIconSize.Md}`,
     );
-    expect(getByTestId(AVATAR_ICON_SIZES.LG)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_ICON_SIZES.LG}`,
+    expect(getByTestId(AvatarIconSize.Lg)).toHaveClass(
+      `mm-avatar-base--size-${AvatarIconSize.Lg}`,
     );
-    expect(getByTestId(AVATAR_ICON_SIZES.XL)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_ICON_SIZES.XL}`,
+    expect(getByTestId(AvatarIconSize.Xl)).toHaveClass(
+      `mm-avatar-base--size-${AvatarIconSize.Xl}`,
     );
   });
 
@@ -106,9 +106,11 @@ describe('AvatarIcon', () => {
     );
   });
   it('should forward a ref to the root html element', () => {
-    const ref = React.createRef();
+    const ref = React.createRef<HTMLDivElement>();
     render(<AvatarIcon iconName={IconName.SwapHorizontal} ref={ref} />);
     expect(ref.current).not.toBeNull();
-    expect(ref.current.nodeName).toBe('DIV');
+    if (ref.current) {
+      expect(ref.current.nodeName).toBe('DIV');
+    }
   });
 });
