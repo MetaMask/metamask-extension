@@ -7,20 +7,13 @@ import {
   Display,
   JustifyContent,
   OverflowWrap,
-  FlexDirection,
   TextVariant,
   BackgroundColor,
   TextColor,
-  Color,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-  Box,
-} from '../../../component-library';
+import { IconName, Text, Box, ButtonIcon } from '../../../component-library';
 
 export const Copyable = ({ text }) => {
   const [copied, handleCopy] = useCopyToClipboard();
@@ -45,28 +38,11 @@ export const Copyable = ({ text }) => {
       >
         {text}
       </Text>
-      <Box
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
-        marginTop={2}
-        marginBottom={1}
-      >
-        {copied ? (
-          <Icon
-            name={IconName.CopySuccess}
-            size={IconSize.Lg}
-            color={Color.iconAlternative}
-          />
-        ) : (
-          <Icon
-            name={IconName.Copy}
-            size={IconSize.Lg}
-            color={Color.iconAlternative}
-            onClick={() => handleCopy(text)}
-          />
-        )}
-      </Box>
+      <ButtonIcon
+        iconName={copied ? IconName.CopySuccess : IconName.Copy}
+        color={IconColor.iconAlternative}
+        onClick={() => handleCopy(text)}
+      />
     </Box>
   );
 };
