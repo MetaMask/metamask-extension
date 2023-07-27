@@ -42,8 +42,7 @@ import {
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN(build-mmi)
-  getSelectedAddress,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
@@ -68,7 +67,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const address = useSelector(getSelectedAddress);
+  const { address } = useSelector(getSelectedInternalAccount);
 
   const hasUnapprovedTransactions = useSelector(
     (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
