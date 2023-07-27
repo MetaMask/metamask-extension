@@ -192,7 +192,7 @@ describe('EthOverview', () => {
       );
     });
 
-    it.only('should open the MMI Swaps URI when clicking on Swap button with a Custody account', async () => {
+    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
       const mockedStoreWithCustodyKeyring = {
         metamask: {
           ...mockStore.metamask,
@@ -209,7 +209,10 @@ describe('EthOverview', () => {
         mockedStoreWithCustodyKeyring,
       );
 
-      const { queryByTestId } = renderWithProvider(<EthOverview />, mockedStore);
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
 
       const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
 
