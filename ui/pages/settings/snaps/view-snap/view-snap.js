@@ -189,15 +189,14 @@ function ViewSnap() {
               {`${t('remove')} ${snapName}`}
             </Text>
           </Button>
-          {isShowingRemoveWarning && (
-            <SnapRemoveWarning
-              onCancel={() => setIsShowingRemoveWarning(false)}
-              onSubmit={async () => {
-                await dispatch(removeSnap(snap.id));
-              }}
-              snapName={snapName}
-            />
-          )}
+          <SnapRemoveWarning
+            isOpen={isShowingRemoveWarning}
+            onCancel={() => setIsShowingRemoveWarning(false)}
+            onSubmit={async () => {
+              await dispatch(removeSnap(snap.id));
+            }}
+            snapName={snapName}
+          />
         </Box>
       </Box>
     </Box>

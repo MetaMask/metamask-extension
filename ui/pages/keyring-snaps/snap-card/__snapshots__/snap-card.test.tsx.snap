@@ -44,7 +44,7 @@ exports[`SnapCard should render 1`] = `
       class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
     >
       <span
-        class="box mm-icon mm-icon--size-md box--margin-left-auto box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+        class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-alternative"
         data-testid="to-snap-detail"
         style="mask-image: url('./images/icons/arrow-2-right.svg');"
       />

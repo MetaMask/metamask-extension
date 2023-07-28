@@ -17,7 +17,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           Create a Snap Account
         </button>
         <span
-          class="box mm-icon mm-icon--size-md box--margin-right-4 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-4 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-right.svg');"
         />
         <p
@@ -70,7 +70,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
               <span
-                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/star.svg');"
               />
                
@@ -92,7 +92,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
               <span
-                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/star.svg');"
               />
                

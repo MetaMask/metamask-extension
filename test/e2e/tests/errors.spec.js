@@ -23,6 +23,36 @@ describe('Sentry errors', function () {
       },
     ],
   };
+  it('should NOT send error events when participateInMetaMetrics is false', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: null,
+            participateInMetaMetrics: false,
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.title,
+        failOnConsoleError: false,
+        testSpecificMock: mockSentry,
+      },
+      async ({ driver, mockedEndpoint }) => {
+        await driver.navigate();
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+        // Trigger error
+        driver.executeScript('window.stateHooks.throwTestError()');
+        driver.delay(3000);
+        // Wait for Sentry request
+        const isPending = await mockedEndpoint.isPending();
+        assert.ok(
+          isPending,
+          'A request to sentry was sent when it should not have been',
+        );
+      },
+    );
+  });
   it('should send error events', async function () {
     await withFixtures(
       {
