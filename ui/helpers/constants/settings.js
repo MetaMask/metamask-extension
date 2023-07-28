@@ -194,7 +194,8 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
-    descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
+    descriptionMessage: (t) =>
+      t('useMultiAccountBalanceCheckerSettingDescription'),
     route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
     icon: 'fa fa-lock',
   },

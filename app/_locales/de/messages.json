@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Kontoguthaben-Anfragen sammeln"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
-  },
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"
   },
