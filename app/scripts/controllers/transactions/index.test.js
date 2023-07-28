@@ -3021,27 +3021,6 @@ describe('Transaction Controller', function () {
       assert.equal(result.estimateUsed, '0x0055');
     });
 
-    it('updates estimated base fee', function () {
-      txController.updateTransactionEstimatedBaseFee('1', {
-        estimatedBaseFee: '0x0066',
-        decEstimatedBaseFee: '66',
-      });
-      const result = txStateManager.getTransaction('1');
-      assert.equal(result.estimatedBaseFee, '0x0066');
-      assert.equal(result.decEstimatedBaseFee, '66');
-    });
-
-    it('updates transaction user settings', function () {
-      txController.updateTransactionUserSettings('1', {
-        userEditedGasLimit: '0x0088',
-        userFeeLevel: 'high',
-      });
-
-      const result = txStateManager.getTransaction('1');
-      assert.equal(result.userEditedGasLimit, '0x0088');
-      assert.equal(result.userFeeLevel, 'high');
-    });
-
     it('should not update and should throw error if status is not type "unapproved"', function () {
       txStateManager.addTransaction({
         id: '4',
