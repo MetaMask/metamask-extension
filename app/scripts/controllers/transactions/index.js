@@ -2411,6 +2411,7 @@ export default class TransactionController extends EventEmitter {
       uiCustomizations = ['security_alert_failed'];
     } else {
       ///: END:ONLY_INCLUDE_IN
+      // eslint-disable-next-line no-lonely-if
       if (securityProviderResponse?.flagAsDangerous === 1) {
         uiCustomizations = ['flagged_as_malicious'];
       } else if (securityProviderResponse?.flagAsDangerous === 2) {
