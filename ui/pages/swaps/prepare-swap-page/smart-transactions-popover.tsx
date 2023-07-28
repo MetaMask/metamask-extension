@@ -35,10 +35,7 @@ export default function SmartTransactionsPopover({
     <Modal isOpen={isOpen} onClose={onCloseSmartTransactionsOptInPopover}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-          onClose={onCloseSmartTransactionsOptInPopover}
-          margin={[4, 4, 4, 4]}
-        >
+        <ModalHeader onClose={onCloseSmartTransactionsOptInPopover}>
           {t('smartSwapsAreHere')}
         </ModalHeader>
 
@@ -46,7 +43,7 @@ export default function SmartTransactionsPopover({
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           gap={4}
-          padding={[4, 4, 4, 4]}
+          marginTop={4}
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <img
