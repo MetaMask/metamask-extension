@@ -452,7 +452,6 @@ export default class AppStateController extends EventEmitter {
 
   _acceptApproval() {
     if (!this._approvalRequestId) {
-      log.error('Attempted to accept missing unlock approval request');
       return;
     }
     try {
@@ -461,7 +460,7 @@ export default class AppStateController extends EventEmitter {
         this._approvalRequestId,
       );
     } catch (error) {
-      log.error('Failed to accept transaction approval request', error);
+      log.error('Failed to accept approval request', error);
     }
 
     this._approvalRequestId = null;
