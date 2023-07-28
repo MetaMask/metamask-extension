@@ -962,6 +962,8 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unhandledError',
         'ExecutionService:outboundRequest',
         'ExecutionService:outboundResponse',
+        'SnapController:snapInstalled',
+        'SnapController:snapUpdated',
       ],
       allowedActions: [
         `${this.permissionController.name}:getEndowments`,
@@ -2231,6 +2233,10 @@ export default class MetamaskController extends EventEmitter {
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
+      setUseAddressBarEnsResolution:
+        preferencesController.setUseAddressBarEnsResolution.bind(
+          preferencesController,
+        ),
       setParticipateInMetaMetrics:
         metaMetricsController.setParticipateInMetaMetrics.bind(
           metaMetricsController,

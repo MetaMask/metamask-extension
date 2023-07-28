@@ -31,6 +31,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { Box, Text } from '../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -55,6 +60,8 @@ export default class SecurityTab extends PureComponent {
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
+    useAddressBarEnsResolution: PropTypes.bool.isRequired,
+    setUseAddressBarEnsResolution: PropTypes.func.isRequired,
   };
 
   state = {
@@ -309,6 +316,8 @@ export default class SecurityTab extends PureComponent {
   renderIpfsGatewayControl() {
     const { t } = this.context;
     const { ipfsGatewayError } = this.state;
+    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
+      this.props;
 
     const handleIpfsGatewaySave = (gateway) => {
       const url = new URL(addUrlProtocolPrefix(gateway));
@@ -367,6 +376,63 @@ export default class SecurityTab extends PureComponent {
               error={ipfsGatewayError}
               fullWidth
               margin="dense"
+            />
+          </div>
+        </div>
+        <div
+          className="settings-page__content-item"
+          ref={this.settingsRefs[9]}
+          id="ens-domains"
+        >
+          {t('ensDomainsSettingTitle')}
+          <div className="settings-page__content-description">
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionIntro')}
+            </Text>
+            <Box
+              as="ul"
+              marginTop={4}
+              marginBottom={4}
+              paddingInlineStart={4}
+              style={{ listStyleType: 'circle' }}
+            >
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint1')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint2')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint3')}
+              </Text>
+            </Box>
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionOutro')}
+            </Text>
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfs-gateway-resolution-container"
+          >
+            <ToggleButton
+              value={useAddressBarEnsResolution}
+              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
