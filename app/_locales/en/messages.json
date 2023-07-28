@@ -2538,6 +2538,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
