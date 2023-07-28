@@ -10,11 +10,22 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 
-import { Box, Icon, IconSize } from '..';
+import { Box, Icon } from '..';
+import { IconSize } from '../icon';
 import { BoxProps, PolymorphicRef } from '../box';
-import { ButtonIconSize, ButtonIconProps } from './button-icon.types';
+import {
+  ButtonIconSize,
+  ButtonIconProps,
+  ButtonIconComponent,
+} from './button-icon.types';
 
-export const ButtonIcon = React.forwardRef(
+const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
+  [ButtonIconSize.Sm]: IconSize.Sm,
+  [ButtonIconSize.Md]: IconSize.Md,
+  [ButtonIconSize.Lg]: IconSize.Lg,
+};
+
+export const ButtonIcon: ButtonIconComponent = React.forwardRef(
   <C extends React.ElementType = 'button' | 'a'>(
     {
       ariaLabel,
@@ -55,7 +66,11 @@ export const ButtonIcon = React.forwardRef(
         ref={ref}
         {...(props as BoxProps<C>)}
       >
-        <Icon name={iconName} size={IconSize.Sm} color={color} {...iconProps} />
+        <Icon
+          name={iconName}
+          size={buttonIconSizeToIconSize[size]}
+          {...iconProps}
+        />
       </Box>
     );
   },

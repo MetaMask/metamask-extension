@@ -52,3 +52,6 @@ export interface ButtonIconStyleUtilityProps extends StyleUtilityProps {
 export type ButtonIconProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonIconStyleUtilityProps>;
 
+export type ButtonIconComponent = <C extends React.ElementType = 'button'>(
+  props: ButtonIconProps<C>,
+) => React.ReactElement | null;
