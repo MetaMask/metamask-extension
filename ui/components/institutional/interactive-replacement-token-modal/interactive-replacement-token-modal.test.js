@@ -1,7 +1,5 @@
 import React from 'react';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import InteractiveReplacementTokenModal from '.';
@@ -70,22 +68,5 @@ describe('Interactive Replacement Token Modal', function () {
 
     expect(getByTestId('interactive-replacement-token-modal')).toBeVisible();
     expect(getByText('Your custodian session has expired')).toBeInTheDocument();
-  });
-
-  it('opens new tab on Open Codefi Compliance click', async () => {
-    global.platform = { openTab: sinon.spy() };
-
-    const { container } = renderWithProvider(
-      <InteractiveReplacementTokenModal />,
-      store,
-    );
-
-    const button = container.getElementsByClassName('btn-primary')[0];
-
-    fireEvent.click(button);
-
-    await waitFor(() => {
-      expect(global.platform.openTab.calledOnce).toStrictEqual(true);
-    });
   });
 });

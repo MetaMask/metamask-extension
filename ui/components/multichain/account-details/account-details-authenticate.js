@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
-  DISPLAY,
+  Display,
   FontWeight,
-  SEVERITIES,
+  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
@@ -12,9 +12,9 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
-  Text,
+  Box,
 } from '../../component-library';
-import Box from '../../ui/box/box';
+
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
 
@@ -60,10 +60,12 @@ export const AccountDetailsAuthenticate = ({ address, onCancel }) => {
         labelProps={{ fontWeight: FontWeight.Medium }}
         autoFocus
       />
-      <BannerAlert marginTop={6} severity={SEVERITIES.DANGER}>
-        <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
-      </BannerAlert>
-      <Box display={DISPLAY.FLEX} marginTop={6} gap={2}>
+      <BannerAlert
+        marginTop={6}
+        severity={Severity.Danger}
+        description={t('privateKeyWarning')}
+      />
+      <Box display={Display.Flex} marginTop={6} gap={2}>
         <ButtonSecondary onClick={onCancel} block>
           {t('cancel')}
         </ButtonSecondary>

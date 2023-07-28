@@ -254,22 +254,23 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           class="confirm-page-container-summary__title"
         >
           <h3
-            class="box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--heading-md mm-text--font-weight-normal mm-text--ellipsis mm-box--color-text-default"
           >
             <div
-              class="currency-display-component"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.0001"
             >
-              <span
-                class="currency-display-component__prefix"
+              <div
+                class="mm-box currency-display-component__prefix mm-box--margin-inline-end-1"
+                variant="inherit"
               >
                 <i
                   class="fab fa-ethereum"
                   style="font-size: 24px;"
                 />
-              </span>
+              </div>
               <span
-                class="currency-display-component__text"
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
                 0.0001
               </span>
@@ -341,7 +342,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                     >
                       Estimated gas fee
                       <div
@@ -374,18 +375,15 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       class="transaction-detail-item__detail-values"
                     >
                       <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                       >
                         <div>
                           <div
-                            class="currency-display-component"
+                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             title="0.000021"
                           >
                             <span
-                              class="currency-display-component__prefix"
-                            />
-                            <span
-                              class="currency-display-component__text"
+                              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                             >
                               0.000021
                             </span>
@@ -399,21 +397,18 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                   >
                     <div />
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                     >
                       <strong>
                         Max fee:
                       </strong>
                       <div>
                         <div
-                          class="currency-display-component"
+                          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                           title="0.000021"
                         >
                           <span
-                            class="currency-display-component__prefix"
-                          />
-                          <span
-                            class="currency-display-component__text"
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                           >
                             0.000021
                           </span>
@@ -429,7 +424,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                     >
                       Total
                     </h6>
@@ -437,20 +432,17 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                       class="transaction-detail-item__detail-values"
                     >
                       <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                        class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                       >
                         <div
                           class="confirm-page-container-content__total-value"
                         >
                           <div
-                            class="currency-display-component"
+                            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                             title="0.000121"
                           >
                             <span
-                              class="currency-display-component__prefix"
-                            />
-                            <span
-                              class="currency-display-component__text"
+                              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                             >
                               0.000121
                             </span>
@@ -463,12 +455,12 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                     class="transaction-detail-item__row"
                   >
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                      class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
                     >
                       Amount + gas fee
                     </h6>
                     <h6
-                      class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                      class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                     >
                       <div
                         class="confirm-page-container-content__total-amount"
@@ -478,14 +470,11 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
                         </strong>
                          
                         <div
-                          class="currency-display-component"
+                          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                           title="0.000121"
                         >
                           <span
-                            class="currency-display-component__prefix"
-                          />
-                          <span
-                            class="currency-display-component__text"
+                            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                           >
                             0.000121
                           </span>

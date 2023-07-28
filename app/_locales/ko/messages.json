@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT의 ID는 고유한 식별자이므로 동일한 NFT는 존재하지 않습니다. 다시 말하지만, OpenSea에서 이 번호는 '세부 정보(Details)'에서 찾아볼 수 있습니다. 이를 기록하거나 클립보드에 복사해 두세요."
   },
-  "importNFTs": {
-    "message": "NFT 가져오기"
-  },
   "importSelectedTokens": {
     "message": "선택한 토큰을 불러올까요?"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "기록에 따르면 제출한 RPC URL 값이 이 체인 ID의 알려진 공급업체와 일치하지 않습니다."
   },
-  "missingNFT": {
-    "message": "NFT가 보이지 않나요?"
-  },
   "missingSetting": {
     "message": "설정을 찾으세요?"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "사용 가능한 환율 없음"
-  },
-  "noNFTs": {
-    "message": "아직 NFT가 없음"
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "공개 주소"
   },
-  "queue": {
-    "message": "대기열"
-  },
   "queued": {
     "message": "대기열에 지정됨"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "시드 구문 보기"
   },
-  "reviewSpendingCap": {
-    "message": "지출 한도 검토"
-  },
   "revokeAllTokensTitle": {
     "message": "모든 $1에 액세스할 수 있는 권한을 철회할까요?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3148,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "$1 무제한 지출 승인",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "$1에 대한 지출 한도 설정",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "설정"
@@ -4175,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "이 URL은 현재 $1 네트워크에서 사용됩니다."
-  },
-  "useDefault": {
-    "message": "기본값 사용"
   },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"

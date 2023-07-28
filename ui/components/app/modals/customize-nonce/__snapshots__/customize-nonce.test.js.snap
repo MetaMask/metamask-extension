@@ -15,7 +15,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           class="customize-nonce-modal__main-header"
         >
           <h4
-            class="box mm-text customize-nonce-modal__main-title mm-text--heading-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text customize-nonce-modal__main-title mm-text--heading-sm mm-box--color-text-default"
           >
             Edit nonce
           </h4>
@@ -24,20 +24,20 @@ exports[`Customize Nonce should match snapshot 1`] = `
             class="box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
           >
             <span
-              class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/close.svg');"
             />
           </button>
         </div>
         <div
-          class="box box--margin-top-2 box--display-inline-flex box--flex-direction-row box--align-items-center"
+          class="mm-box mm-box--margin-top-2 mm-box--display-inline-flex mm-box--align-items-center"
         >
           <h6
-            class="box mm-text mm-text--body-sm mm-text--font-weight-normal box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             This is an advanced feature, use cautiously.
             <a
-              class="button btn-link customize-nonce-modal__link"
+              class="mm-box mm-text mm-button-base customize-nonce-modal__link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="https://metamask.zendesk.com/hc/en-us/articles/7417499333531-How-to-customize-a-transaction-nonce"
               rel="noopener noreferrer"
               target="_blank"
@@ -47,28 +47,25 @@ exports[`Customize Nonce should match snapshot 1`] = `
           </h6>
         </div>
         <div
-          class="box box--margin-top-3 box--flex-direction-row"
+          class="mm-box mm-box--margin-top-4"
         >
           <div
-            class="box box--display-flex box--flex-direction-row box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
           >
             <h6
-              boxprops="[object Object]"
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-bold mm-box--width-5/6 mm-box--color-text-default"
             >
               Edit nonce
             </h6>
             <div
-              class="box box--flex-direction-row box--width-1/6"
+              class="mm-box mm-box--width-1/6"
             >
-              <a
-                class="button btn-link customize-nonce-modal__reset"
+              <button
+                class="mm-box mm-text mm-button-base customize-nonce-modal__reset mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 data-testid="customize-nonce-reset"
-                role="button"
-                tabindex="0"
               >
                 Reset
-              </a>
+              </button>
             </div>
           </div>
           <div

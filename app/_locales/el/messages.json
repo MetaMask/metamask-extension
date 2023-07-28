@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Ένα αναγνωριστικό του συλλεκτικού είναι ένα μοναδικό αναγνωριστικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
   },
-  "importNFTs": {
-    "message": "Εισαγωγή NFT"
-  },
   "importSelectedTokens": {
     "message": "Εισαγωγή επιλεγμένων token;"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Σύμφωνα με τις καταχωρήσεις μας, η τιμή RPC URL που υποβλήθηκε δεν ταιριάζει με κάποιον γνωστό πάροχο για αυτό το αναγνωριστικό αλυσίδας."
   },
-  "missingNFT": {
-    "message": "Δεν βλέπετε το NFT σας;"
-  },
   "missingSetting": {
     "message": "Δεν μπορείτε να βρείτε μια ρύθμιση;"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Δεν Υπάρχει Διαθέσιμη Ισοτιμία Μετατροπής"
-  },
-  "noNFTs": {
-    "message": "Δεν υπάρχουν NFT ακόμα"
   },
   "noSnaps": {
     "message": "Δεν εγκαταστάθηκαν Snaps"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "Δημόσια Διεύθυνση"
   },
-  "queue": {
-    "message": "Ουρά"
-  },
   "queued": {
     "message": "Σε Αναμονή"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"
   },
-  "reviewSpendingCap": {
-    "message": "Επανεξετάστε το όριο δαπανών σας"
-  },
   "revokeAllTokensTitle": {
     "message": "Ανάκληση άδειας πρόσβασης σε όλα σας τα $1;",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3145,10 +3130,6 @@
   "setApprovalForAllTitle": {
     "message": "Έγκριση $1 χωρίς όριο δαπανών",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Ορίστε ένα ανώτατο όριο δαπανών για το $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Ρυθμίσεις"
@@ -4172,9 +4153,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
-  },
-  "useDefault": {
-    "message": "Χρήση προκαθορισμένου"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Μαζικά αιτήματα υπολοίπου λογαριασμού"

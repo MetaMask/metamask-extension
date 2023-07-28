@@ -14,8 +14,8 @@ import {
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   BannerAlert,
-  Text,
   ButtonLink,
+  Text,
 } from '../../../components/component-library';
 
 export default function ViewQuotePriceDifference(props) {

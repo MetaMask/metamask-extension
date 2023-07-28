@@ -10,6 +10,7 @@ import {
   Text,
   Box,
 } from '../../component-library';
+
 import {
   AlignItems,
   Display,
@@ -63,7 +64,7 @@ export default function ReviewSpendingCap({
             as="h6"
             display={Display.InlineBlock}
           >
-            {t('customSpendingCap')}
+            {t('dappRequestedSpendingCap')}
           </Text>
           <Box marginLeft={2} display={Display.InlineBlock}>
             <Tooltip

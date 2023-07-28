@@ -199,8 +199,7 @@ exports[`Add Network Modal should render 1`] = `
                 Block explorer URL
               </label>
               <h6
-                class="box mm-text mm-text--body-sm box--display-inline-block box--flex-direction-row box--color-text-alternative"
-                tag="body-sm"
+                class="mm-box mm-text mm-text--body-sm mm-box--display-inline-block mm-box--color-text-alternative"
               >
                 (Optional)
               </h6>

@@ -17,8 +17,8 @@ import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  Text,
   Icon,
+  Text,
   ///: END:ONLY_INCLUDE_IN
   IconName,
   IconSize,
@@ -255,6 +255,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.SecurityKey,
     weight: 3,
   }),
+
   [RestrictedMethods.snap_manageState]: ({ t }) => ({
     label: t('permission_manageState'),
     description: t('permission_manageStateDescription'),
@@ -388,6 +389,20 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return results;
   },
+  [EndowmentPermissions['endowment:lifecycle-hooks']]: ({ t }) => ({
+    label: t('permission_lifecycleHooks'),
+    description: t('permission_lifecycleHooksDescription'),
+    leftIcon: IconName.Hierarchy,
+    weight: 3,
+  }),
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
+    label: t('permission_manageAccounts'),
+    leftIcon: getLeftIcon(IconName.UserCircleAdd),
+    rightIcon: null,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),

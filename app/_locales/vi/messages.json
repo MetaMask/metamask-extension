@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục 'Chi tiết'. Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importNFTs": {
-    "message": "Nhập NFT"
-  },
   "importSelectedTokens": {
     "message": "Nhập các token đã chọn?"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Theo hồ sơ của chúng tôi, giá trị RPC URL đã gửi không khớp với một nhà cung cấp đã biết cho ID chuỗi này."
   },
-  "missingNFT": {
-    "message": "Không thấy NFT của mình?"
-  },
   "missingSetting": {
     "message": "Không tìm thấy thiết lập?"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Không có sẵn tỷ lệ quy đổi nào"
-  },
-  "noNFTs": {
-    "message": "Chưa có NFT"
   },
   "noSnaps": {
     "message": "Chưa cài đặt Snap nào"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "Địa chỉ công khai"
   },
-  "queue": {
-    "message": "Hàng đợi"
-  },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Hiện cụm từ khôi phục bí mật"
   },
-  "reviewSpendingCap": {
-    "message": "Xem lại hạn mức chi tiêu của bạn"
-  },
   "revokeAllTokensTitle": {
     "message": "Thu hồi quyền truy cập và chuyển tất cả $1 của bạn?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3148,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "Phê duyệt $1 không có giới hạn chi tiêu",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Đặt hạn mức chi tiêu cho $1 của bạn",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Cài đặt"
@@ -4175,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Mạng $1 hiện đang sử dụng URL này."
-  },
-  "useDefault": {
-    "message": "Sử dụng mặc định"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"

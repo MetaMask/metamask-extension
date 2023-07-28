@@ -79,9 +79,8 @@ export default function FormField({
             {TitleUnitCustomComponent ||
               (titleUnit && (
                 <Text
-                  tag={TextVariant.bodySm}
-                  variant={TextVariant.bodySm}
                   as="h6"
+                  variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
                   display={Display.InlineBlock}
                 >

@@ -6,6 +6,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   FormTextField,
+  Box,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
@@ -15,7 +16,6 @@ import {
 } from '../../../selectors';
 import { addNewAccount, setAccountLabel } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import Box from '../../ui/box/box';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -39,11 +39,12 @@ export const CreateAccount = ({ onActionComplete }) => {
   const defaultAccountName = t('newAccountNumberName', [newAccountNumber]);
 
   const [newAccountName, setNewAccountName] = useState('');
+  const trimmedAccountName = newAccountName.trim();
 
   const { isValidAccountName, errorMessage } = getAccountNameErrorMessage(
     accounts,
     { t },
-    newAccountName,
+    trimmedAccountName ?? defaultAccountName,
     defaultAccountName,
   );
 
@@ -58,7 +59,7 @@ export const CreateAccount = ({ onActionComplete }) => {
     event.preventDefault();
 
     try {
-      await onCreateAccount(newAccountName || defaultAccountName);
+      await onCreateAccount(trimmedAccountName || defaultAccountName);
       onActionComplete(true);
       trackEvent({
         category: MetaMetricsEventCategory.Accounts,

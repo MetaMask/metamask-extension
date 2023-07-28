@@ -4,21 +4,25 @@ This folder contains design system components that are built 1:1 with the Figma 
 
 ## Architecture
 
-All components are built on top of the `Box` component and accept all `Box` [component props](https://metamask.github.io/metamask-storybook/?path=/docs/components-ui-box--default-story#props)
+All components are built on top of the `Box` component and accept all `Box` [component props](/docs/components-componentlibrary-box--docs#props).
 
-#### Layout
+### Layout
 
-`component-library` components accept all utility props for layout
+`component-library` components accept all `Box` component style utility props for layout. They can be used in conjunction with the enums from `ui/helpers/constants/design-system.ts`
 
 ```jsx
+import { Display } from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 
-<Text marginBottom={4}>This text has a margin-bottom of 16px</Text>;
+<Text marginBottom={4} display={Display.Flex} gap={4}>
+  <span>This text has a margin-bottom of 16px</span>
+  <span>It also has a display of flex and gap of 16px</span>
+</Text>;
 ```
 
-#### Polymorphic `as` prop
+### Polymorphic `as` prop and semantic HTML
 
-`component-library` components accept a polymorphic as prop to change the root html element of a component
+`component-library` components accept a polymorphic `as` prop to change the root html element of a component
 
 ```jsx
 import { Text } from '../../component-library';
@@ -28,9 +32,61 @@ import { Text } from '../../component-library';
 </ul>;
 ```
 
+### Style customization and access child components
+
+We understand some customization to styles or access to children components is necessary when building UI. To ensure our components are flexible we intend to allow for customization and access though a pattern called inversion of control.
+
+#### Styles
+
+> Note: If you are seeing a disparity between styles in Figma and code that's a red flag and could mean there is bug between design system Figma and code component. We recommend posting it on our slack channel [#metamask-design-system](https://consensys.slack.com/archives/C0354T27M5M) so we can support you on it
+
+We try to utilize the `Box` component style utility props as much as possible in our components. Style utility prop overrides should be your first option. This allows you to change styles right inside of the component and reduces the amount of CSS in the codebase. If there are no style utility props for the customization required you can attach a class name to the component using the `className` prop and add styling using CSS.
+
+```jsx
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { Button } from '../../component-library';
+
+// Overriding the browser default styling using style utility props
+<Text
+  as="button"
+  backgroundColor={BackgroundColor.transparent}
+  onClick={handleOnClick}
+>
+  Renders as a button but has a transparent background
+</Text>;
+
+<Text
+  as="button"
+  backgroundColor={BackgroundColor.transparent}
+  onClick={handleOnClick}
+  className="nft-feature__title"
+>
+  Adding a custom className to add additional styles using CSS
+</Text>;
+```
+
+### Access to child components
+
+All of our components should allow access to children components through an object prop. The example below adds a data test id to the child `Text` component inside `BannerAlert`.
+
+```jsx
+import { Severity } from '../../../helpers/constants/design-system';
+import { BannerAlert } from '../../component-library';
+
+<BannerAlert
+  severity={Severity.Danger}
+  title="This allows a third party to access and transfer all of your NFTs"
+  titleProps={{ 'data-testid': 'approve-token-banner-title' }}
+/>;
+```
+
+### Accessibility
+
+Allowing everyone to access web3 regardless of disability is an important part of what we do at MetaMask. Ensuring accessibility in our components is a priority. We strive to achieve this by maintaining proper color contrast in our components and implementing necessary aria label props. If you have any questions regarding accessibility reach out and we will support you as much as possible. Additionally, your suggestions for improvement are welcome, as we continue our journey towards greater accessibility. Together, let's create an inclusive web3 experience for all 🦾
+
 ## TypeScript
 
-We are currently in the process of migrating all component-library components to TypeScript. Feel free to contribute by creating a PR against one of [these issues](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aissue+is%3Aopen+DS%2FExtension%2F2023%2FQ2%2FO1%2FKR3)
+We are currently in the process of migrating all component-library components to TypeScript. Feel free to contribute by creating a PR against one of [these issues](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aissue+is%3Aopen+Migrate+components+to+TS)
 
 ## Support
 

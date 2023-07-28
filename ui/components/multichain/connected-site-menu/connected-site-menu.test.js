@@ -10,7 +10,7 @@ import {
   BackgroundColor,
   Color,
 } from '../../../helpers/constants/design-system';
-import { ConnectedSiteMenu } from './connected-site-menu';
+import { ConnectedSiteMenu } from '.';
 
 describe('Connected Site Menu', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';

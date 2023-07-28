@@ -23,7 +23,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { exportAsFile } from '../../../helpers/utils/export-utils';
+import {
+  exportAsFile,
+  ExportableContentType,
+} from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { BannerAlert } from '../../../components/component-library';
@@ -150,7 +153,7 @@ export default class AdvancedTab extends PureComponent {
 
   backupUserData = async () => {
     const { fileName, data } = await this.props.backupUserData();
-    exportAsFile(fileName, data);
+    exportAsFile(fileName, data, ExportableContentType.JSON);
 
     this.context.trackEvent({
       event: 'User Data Exported',
@@ -185,7 +188,11 @@ export default class AdvancedTab extends PureComponent {
                   if (err) {
                     displayWarning(t('stateLogError'));
                   } else {
-                    exportAsFile(`${t('stateLogFileName')}.json`, result);
+                    exportAsFile(
+                      `${t('stateLogFileName')}.json`,
+                      result,
+                      ExportableContentType.JSON,
+                    );
                   }
                 });
               }}
@@ -204,7 +211,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[1]}
         className="settings-page__content-row"
         data-testid="advanced-setting-reset-account"
       >
@@ -244,7 +251,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[2]}
         className="settings-page__content-row"
         data-testid="advanced-setting-hex-data"
       >
@@ -275,7 +282,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -307,7 +314,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -337,7 +344,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
       >
@@ -368,7 +375,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
       >
@@ -455,7 +462,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testId="ledger-live-control"
       >
@@ -521,7 +528,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >
@@ -565,7 +572,7 @@ export default class AdvancedTab extends PureComponent {
     };
     return (
       <div
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-toggle-ethsign"
       >
@@ -644,7 +651,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <div
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
       >
@@ -684,7 +691,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[12]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
       >
