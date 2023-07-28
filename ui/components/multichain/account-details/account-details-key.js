@@ -45,7 +45,11 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
         padding={4}
         gap={4}
       >
-        <Text variant={TextVariant.bodySm} style={{ wordBreak: 'break-word' }}>
+        <Text
+          data-testid="account-details-key"
+          variant={TextVariant.bodySm}
+          style={{ wordBreak: 'break-word' }}
+        >
           {privateKey}
         </Text>
         <ButtonIcon
