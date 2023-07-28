@@ -7,13 +7,13 @@ import {
   hideModal,
 } from '../../../../store/actions';
 import {
-  getSelectedIdentity,
   getRpcPrefsForCurrentProvider,
   getCurrentChainId,
   getMetaMaskAccountsOrdered,
   getBlockExplorerLinkText,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
+  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -24,8 +24,7 @@ import AccountDetailsModal from './account-details-modal.component';
 const mapStateToProps = (state) => {
   return {
     chainId: getCurrentChainId(state),
-    selectedIdentity: getSelectedIdentity(state),
-    keyrings: state.metamask.keyrings,
+    selectedAccount: getSelectedInternalAccount(state),
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     accounts: getMetaMaskAccountsOrdered(state),
     blockExplorerLinkText: getBlockExplorerLinkText(state, true),

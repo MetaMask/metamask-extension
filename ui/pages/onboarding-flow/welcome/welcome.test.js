@@ -42,8 +42,10 @@ jest.mock('react-router-dom', () => ({
 describe('Onboarding Welcome Component', () => {
   const mockState = {
     metamask: {
-      identities: {},
-      selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 

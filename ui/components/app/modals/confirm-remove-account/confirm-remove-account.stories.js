@@ -6,12 +6,12 @@ export default {
 
   component: ConfirmRemoveAccount,
   argTypes: {
-    identity: {
+    account: {
       control: 'object',
     },
   },
   args: {
-    identity: {
+    account: {
       control: 'object',
     },
   },

@@ -16,7 +16,7 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
@@ -129,7 +129,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress = getSelectedAddress(draftInitialState);
+    const { address: selectedAddress } =
+      getSelectedInternalAccount(draftInitialState);
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =

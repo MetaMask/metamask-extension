@@ -22,7 +22,7 @@ import {
   IconSize,
   Box,
 } from '../../component-library';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -34,7 +34,7 @@ export const ConnectedSiteMenu = ({
   onClick,
 }) => {
   const t = useI18nContext();
-  const selectedAccount = useSelector(getSelectedIdentity);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}

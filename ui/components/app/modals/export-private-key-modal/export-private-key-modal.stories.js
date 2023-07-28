@@ -22,8 +22,10 @@ export const DefaultStory = () => {
       exportAccount={() => {
         return 'mockPrivateKey';
       }}
-      selectedIdentity={
-        testData.metamask.identities[testData.metamask.selectedAddress]
+      selectedAccount={
+        testData.metamask.internalAccounts.accounts[
+          testData.metamask.internalAccounts.selectedAccount
+        ]
       }
     />
   );

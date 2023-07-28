@@ -188,11 +188,6 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
-            },
-          },
           keyrings: [
             {
               type: 'Custody',
@@ -204,7 +199,6 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -220,11 +214,6 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
-            },
-          },
           keyrings: [
             {
               type: 'SomethingElse',
@@ -236,7 +225,34 @@ describe('Institutional selectors', () => {
               supportedChains: ['4'],
             },
           },
-          selectedAddress: accountAddress,
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: accountAddress,
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           providerConfig: {
             chainId: toHex(1),
           },

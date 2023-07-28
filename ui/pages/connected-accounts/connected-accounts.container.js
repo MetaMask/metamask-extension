@@ -3,7 +3,7 @@ import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
   getPermissionsForActiveTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const permissions = getPermissionsForActiveTab(state);
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   const isActiveTabExtension = isExtensionUrl(activeTab);
   return {

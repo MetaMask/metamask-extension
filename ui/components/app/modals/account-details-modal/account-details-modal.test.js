@@ -150,23 +150,33 @@ describe('Account Details Modal', () => {
             accounts: ['0xeb9e64b93097bc15f01f13eae97015c57ab64823'],
           },
         ],
-        identities: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            name: 'Test Account',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+              name: 'Account 1',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
           },
-          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-            name: 'Test Account 2',
-          },
-          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            name: 'Test Ledger 1',
-          },
-          '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
-            name: 'Test Account 3',
-            address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
-          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         networkDetails: {
           EIPS: {
@@ -199,7 +209,6 @@ describe('Account Details Modal', () => {
         },
         cachedBalances: {},
         incomingTransactions: {},
-        selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         accounts: {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
             balance: '0x346ba7725f412cbfdb',

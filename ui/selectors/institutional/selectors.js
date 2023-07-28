@@ -1,5 +1,5 @@
 import { toChecksumAddress } from 'ethereumjs-util';
-import { getSelectedIdentity, getAccountType } from '../selectors';
+import { getAccountType, getSelectedInternalAccount } from '../selectors';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
 
@@ -52,13 +52,13 @@ export function getCustodianIconForAddress(state, address) {
 }
 
 export function getIsCustodianSupportedChain(state) {
-  const selectedIdentity = getSelectedIdentity(state);
+  const selectedAccount = getSelectedInternalAccount(state);
   const accountType = getAccountType(state);
   const providerConfig = getProviderConfig(state);
 
   const supportedChains =
     accountType === 'custody'
-      ? getCustodyAccountSupportedChains(state, selectedIdentity.address)
+      ? getCustodyAccountSupportedChains(state, selectedAccount.address)
       : null;
 
   return supportedChains?.supportedChains

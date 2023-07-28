@@ -114,6 +114,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 
 export function goHome() {
   return {
@@ -361,14 +362,14 @@ export function resetAccount(): ThunkAction<
 }
 
 export function removeAccount(
-  address: string,
+  accountId: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
     try {
       await new Promise((resolve, reject) => {
-        callBackgroundMethod('removeAccount', [address], (error, account) => {
+        callBackgroundMethod('removeAccount', [accountId], (error, account) => {
           if (error) {
             reject(error);
             return;
@@ -384,7 +385,7 @@ export function removeAccount(
       dispatch(hideLoadingIndication());
     }
 
-    log.info(`Account removed: ${address}`);
+    log.info(`Account removed: ${accountId}`);
     dispatch(showAccountsPage());
   };
 }
@@ -423,35 +424,24 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function addNewAccount(
+  accountName: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
-  return async (dispatch, getState) => {
-    const oldIdentities = getState().metamask.identities;
+  return async (dispatch) => {
     dispatch(showLoadingIndication());
-
-    let newIdentities;
     try {
-      const { identities } = await submitRequestToBackground('addNewAccount', [
-        Object.keys(oldIdentities).length,
+      const { account } = await submitRequestToBackground('addNewAccount', [
+        accountName,
       ]);
-      newIdentities = identities;
+      return account;
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
     } finally {
       dispatch(hideLoadingIndication());
+      await forceUpdateMetamaskState(dispatch);
     }
-
-    const newAccountAddress = Object.keys(newIdentities).find(
-      (address) => !oldIdentities[address],
-    );
-    await forceUpdateMetamaskState(dispatch);
-    return newAccountAddress;
   };
 }
 
@@ -2716,7 +2706,7 @@ export function showPrivateKey(key: string): PayloadAction<string> {
 }
 
 export function setAccountLabel(
-  account: string,
+  account: InternalAccount,
   label: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2724,7 +2714,7 @@ export function setAccountLabel(
     log.debug(`background.setAccountLabel`);
 
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('setAccountLabel', [account, label], (err) => {
+      callBackgroundMethod('setAccountLabel', [account.id, label], (err) => {
         dispatch(hideLoadingIndication());
 
         if (err) {

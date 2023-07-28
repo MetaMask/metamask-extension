@@ -13,6 +13,34 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
         chainId: '0x5',
       },
       tokenList: {},
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            name: 'Test Account',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       ...stateVariables,
     },
   };
@@ -54,15 +82,37 @@ describe('useAddressDetails', () => {
     expect(isTrusted).toBe(true);
   });
 
-  it('should return name from identities if address is present in identities', () => {
+  it('should return name from internal account if address is present in internalAccounts', () => {
     const { result } = renderUseAddressDetails(
       '0x06195827297c7A80a443b6894d3BDB8824b43896',
       {
-        identities: {
-          '0x06195827297c7A80a443b6894d3BDB8824b43896': {
-            address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
-            name: 'Account 1',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 1',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
       },
     );

@@ -77,7 +77,6 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
-    selectedAddress: mockTxParamsFromAddress,
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -112,11 +111,33 @@ const baseStore = {
         address: mockTxParamsFromAddress,
       },
     },
-    identities: {
-      [mockTxParamsFromAddress]: { address: mockTxParamsFromAddress },
-      [mockTxParamsToAddress]: {
-        name: 'Test Address 1',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: mockTxParamsFromAddress,
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 1',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
       },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},

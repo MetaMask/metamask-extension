@@ -16,17 +16,56 @@ import { KeyringType } from '../../../../../shared/constants/keyring';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
-  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
-
-  const identities = {
-    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      name: 'Account 1',
+  const internalAccounts = {
+    accounts: {
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        name: 'Account 1',
+        options: {},
+        supportedMethods: [
+          'personal_sign',
+          'eth_sendTransaction',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v2',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+      },
+      '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+        metadata: {
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        name: 'Account 2',
+        options: {},
+        supportedMethods: [
+          'personal_sign',
+          'eth_sendTransaction',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v2',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+      },
     },
-    '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-      address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-      name: 'Account 2',
-    },
+    selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
   };
 
   const accounts = {
@@ -59,8 +98,7 @@ describe('Unconnected Account Alert', () => {
 
   const mockState = {
     metamask: {
-      selectedAddress,
-      identities,
+      internalAccounts,
       accounts,
       cachedBalances,
       keyrings,

@@ -25,7 +25,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
-  getInternalAccounts,
+  getMetaMaskAccountsOrdered,
   getSelectedInternalAccount,
 } from '../../../selectors';
 import {
@@ -53,7 +53,7 @@ export const AccountListMenu = ({ onClose }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 
-  const accounts = useSelector(getInternalAccounts);
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedInternalAccount);
 
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);

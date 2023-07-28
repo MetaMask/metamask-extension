@@ -1657,6 +1657,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
+      AccountsController: this.accountsController,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
@@ -2357,9 +2358,8 @@ export default class MetamaskController extends EventEmitter {
       ),
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
-      setAccountLabel: preferencesController.setAccountLabel.bind(
-        preferencesController,
-      ),
+      setAccountLabel:
+        accountsController.setAccountName.bind(accountsController),
       setFeatureFlag: preferencesController.setFeatureFlag.bind(
         preferencesController,
       ),
@@ -3006,14 +3006,16 @@ export default class MetamaskController extends EventEmitter {
       this.setLedgerTransportPreference(transportPreference);
 
       await this.accountsController.updateAccounts();
-      const selectedAccount = uuid({
-        random: sha256FromString(
-          this.preferencesController.getSelectedAddress(),
-        ).slice(0, 16),
-      });
+      // const selectedAccount = uuid({
+      //   random: sha256FromString(
+      //     this.preferencesController.getSelectedAddress(),
+      //   ).slice(0, 16),
+      // });
 
-      console.log('setting account');
-      this.accountsController.setSelectedAccount(selectedAccount);
+      // console.log('setting account');
+      this.accountsController.setSelectedAccount(
+        'd92ecbfc-a77e-4d60-ac22-dd0ac927f398',
+      );
 
       // set new identities
       this.preferencesController.setAddresses(accounts);
@@ -3081,13 +3083,16 @@ export default class MetamaskController extends EventEmitter {
     this.setLedgerTransportPreference(transportPreference);
 
     await this.accountsController.updateAccounts();
-    const selectedAccount = uuid({
-      random: sha256FromString(
-        this.preferencesController.getSelectedAddress(),
-      ).slice(0, 16),
-    });
+    // const selectedAccount = uuid({
+    //   random: sha256FromString(
+    //     this.preferencesController.getSelectedAddress(),
+    //   ).slice(0, 16),
+    // });
 
-    this.accountsController.setSelectedAccount(selectedAccount);
+    // console.log('setting account');
+    this.accountsController.setSelectedAccount(
+      'd92ecbfc-a77e-4d60-ac22-dd0ac927f398',
+    );
 
     return this.keyringController.fullUpdate();
   }
@@ -3440,10 +3445,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param accountCount
+   * @param accountName
    * @returns {} keyState
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountName) {
     const isActionMetricsQueueE2ETest =
       this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
 
@@ -3458,30 +3463,18 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
     const { keyringController } = this;
-    const { identities: oldIdentities } =
-      this.preferencesController.store.getState();
+    await keyringController.addNewAccount(primaryKeyring);
+    await this.accountsController.updateAccounts();
+    let newAccount = this.accountsController.getSelectedAccount();
 
-    if (Object.keys(oldIdentities).length === accountCount) {
-      const oldAccounts = await keyringController.getAccounts();
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
-      const newAccounts = await keyringController.getAccounts();
-
-      await this.verifySeedPhrase();
-
-      this.preferencesController.setAddresses(newAccounts);
-      newAccounts.forEach((address) => {
-        if (!oldAccounts.includes(address)) {
-          this.preferencesController.setSelectedAddress(address);
-        }
-      });
-
-      const { identities } = this.preferencesController.store.getState();
-      return { ...keyState, identities };
+    if (accountName) {
+      this.accountsController.setAccountName(newAccount.id, accountName);
+      newAccount = this.accountsController.getSelectedAccount();
     }
 
     return {
       ...keyringController.memStore.getState(),
-      identities: oldIdentities,
+      account: newAccount,
     };
   }
 
@@ -3587,13 +3580,14 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Removes an account from state / storage.
    *
-   * @param {string[]} address - A hex address
+   * @param {string[]} accountId - A uuid of the account to remove.
    */
-  async removeAccount(address) {
+  async removeAccount(accountId) {
+    const { address } = this.accountsController.getAccountByIdExpect(accountId);
+
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
-    // Remove account from the preferences controller
-    this.preferencesController.removeAddress(address);
+
     // Remove account from the account tracker controller
     this.accountTracker.removeAccount([address]);
 

@@ -16,7 +16,7 @@ import { getProviderConfig } from '../ducks/metamask/metamask';
 import {
   getCurrentChainId,
   deprecatedGetCurrentNetworkId,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 
@@ -33,7 +33,7 @@ export const incomingTxListSelector = (state) => {
 
   const { networkId } = state.metamask;
   const { chainId } = getProviderConfig(state);
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   return Object.values(state.metamask.incomingTransactions).filter(
     (tx) =>
       tx.txParams.to === selectedAddress &&
@@ -66,12 +66,14 @@ export const smartTransactionsListSelector = (state) =>
     }));
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedAddress,
+  getSelectedInternalAccount,
   currentNetworkTxListSelector,
   smartTransactionsListSelector,
-  (selectedAddress, transactions = [], smTransactions = []) => {
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(
+        ({ txParams }) => txParams.from === selectedInternalAccount.address,
+      )
       .concat(smTransactions);
   },
 );

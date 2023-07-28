@@ -223,6 +223,103 @@ export const createSwapsMockStore = () => {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
       },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            name: 'Test Account',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            name: 'Test Account 2',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '15e69915-2a1a-4019-93b3-916e11fd432f': {
+            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+            metadata: {
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+            },
+            name: 'Ledger Hardware 2',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+          '784225f4-d30b-4e77-a900-c8bbce735b88': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            name: 'Test Account 3',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       identities: {
         '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
           address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
@@ -251,7 +348,6 @@ export const createSwapsMockStore = () => {
           balance: '0x0',
         },
       },
-      selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       currentLocale: 'en',
       keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [

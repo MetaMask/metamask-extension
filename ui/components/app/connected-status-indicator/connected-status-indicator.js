@@ -15,14 +15,14 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
 
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const addressConnectedSubjectMap = useSelector(getAddressConnectedSubjectMap);
   const originOfCurrentTab = useSelector(getOriginOfCurrentTab);
 

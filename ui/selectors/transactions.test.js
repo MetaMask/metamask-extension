@@ -34,6 +34,34 @@ describe('Transaction Selectors', () => {
           providerConfig: {
             chainId: '0x5',
           },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
         },
       };
 
@@ -116,7 +144,34 @@ describe('Transaction Selectors', () => {
           featureFlags: {
             showIncomingTransactions: false,
           },
-          selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           currentNetworkTxList: [
             {
               id: 0,
@@ -177,11 +232,38 @@ describe('Transaction Selectors', () => {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
-          selectedAddress: '0xAddress',
           featureFlags: {
             showIncomingTransactions: false,
           },
           currentNetworkTxList: [tx1, tx2],
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
         },
       };
 
@@ -261,7 +343,6 @@ describe('Transaction Selectors', () => {
           nickname: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },
-        selectedAddress: '0xAddress',
         featureFlags: {
           showIncomingTransactions: false,
         },
@@ -271,6 +352,34 @@ describe('Transaction Selectors', () => {
           approvedTx,
           confirmedTx,
         ],
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xAddress',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
       },
     };
 

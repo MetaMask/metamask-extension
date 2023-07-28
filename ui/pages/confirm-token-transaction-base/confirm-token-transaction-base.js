@@ -18,7 +18,7 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import {
   getConversionRate,
@@ -54,7 +54,7 @@ export default function ConfirmTokenTransactionBase({
   const conversionRate = useSelector(getConversionRate);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
-  const userAddress = useSelector(getSelectedAddress);
+  const { address: userAddress } = useSelector(getSelectedInternalAccount);
   const nftCollections = useSelector(getNftContracts);
 
   const ethTransactionTotalMaxAmount = Number(

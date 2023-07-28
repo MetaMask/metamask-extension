@@ -6,21 +6,21 @@ import {
   hideModal,
   clearAccountDetails,
 } from '../../../../store/actions';
-import { getSelectedIdentity } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../selectors';
 import ExportPrivateKeyModal from './export-private-key-modal.component';
 
 function mapStateToPropsFactory() {
-  let selectedIdentity = null;
+  let selectedAccount = null;
   return function mapStateToProps(state) {
     // We should **not** change the identity displayed here even if it changes from underneath us.
     // If we do, we will be showing the user one private key and a **different** address and name.
     // Note that the selected identity **will** change from underneath us when we unlock the keyring
     // which is the expected behavior that we are side-stepping.
-    selectedIdentity = selectedIdentity || getSelectedIdentity(state);
+    selectedAccount = selectedAccount || getSelectedInternalAccount(state);
     return {
       warning: state.appState.warning,
       privateKey: state.appState.accountDetail.privateKey,
-      selectedIdentity,
+      selectedAccount,
       previousModalState: state.appState.modal.previousModalState.name,
     };
   };

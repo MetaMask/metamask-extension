@@ -43,7 +43,6 @@ import {
   getTestNetworkBackgroundColor,
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  getSelectedAddress,
   getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -75,20 +74,20 @@ export const AppHeader = ({ location }) => {
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IN
-
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showProductTourPopup = useSelector(getShowProductTour);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const { address: selectedAddress } = internalAccount;
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, selectedAddress),
+  );
+  const theme = useSelector((state) => getTheme(state));
+  ///: END:ONLY_INCLUDE_IN
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);

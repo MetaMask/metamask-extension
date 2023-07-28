@@ -12,8 +12,7 @@ import {
 import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
-  getSelectedAddress,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
@@ -34,8 +33,8 @@ const UnconnectedAccountAlert = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const origin = useSelector(getOriginOfCurrentTab);
-  const selectedIdentity = useSelector(getSelectedIdentity);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
+  const { address: selectedAddress } = account;
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
   const onClose = async () => {
@@ -98,7 +97,7 @@ const UnconnectedAccountAlert = () => {
       footer={footer}
     >
       <ConnectedAccountsList
-        accountToConnect={selectedIdentity}
+        accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
         connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}

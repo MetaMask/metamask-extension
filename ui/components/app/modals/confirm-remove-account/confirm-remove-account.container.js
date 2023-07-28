@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeAccount: (address) => dispatch(removeAccount(address)),
+    removeAccount: (accountId) => dispatch(removeAccount(accountId)),
   };
 };
 

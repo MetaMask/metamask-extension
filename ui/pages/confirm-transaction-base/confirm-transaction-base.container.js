@@ -41,6 +41,7 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
+  getFirstInternalAccountByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -121,14 +122,8 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const {
-    conversionRate,
-    identities,
-    addressBook,
-    networkId,
-    unapprovedTxs,
-    nextNonce,
-  } = metamask;
+  const { conversionRate, addressBook, networkId, unapprovedTxs, nextNonce } =
+    metamask;
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
@@ -148,7 +143,8 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const { name: fromName } = identities[fromAddress];
+  const fromAccount = getFirstInternalAccountByAddress(state, fromAddress);
+  const { name: fromName } = fromAccount;
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);
@@ -162,7 +158,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    identities[toAddress]?.name ||
+    getFirstInternalAccountByAddress(state, toAddress)?.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 

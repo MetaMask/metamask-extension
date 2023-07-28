@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
 import Box from '../../ui/box/box';
 
@@ -13,8 +13,8 @@ const WalletOverview = ({
   className,
   showAddress = false,
 }) => {
-  const selectedIdentity = useSelector(getSelectedIdentity);
-  const checksummedAddress = toChecksumHexAddress(selectedIdentity?.address);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">

@@ -196,6 +196,12 @@ export default class AccountsController extends BaseControllerV2<
     );
   }
 
+  getSelectedAccount(): InternalAccount {
+    return this.getAccountByIdExpect(
+      this.state.internalAccounts.selectedAccount,
+    );
+  }
+
   async updateAccounts(): Promise<void> {
     const legacyAccounts = await this.#listLegacyAccounts();
     const snapAccounts = await this.#listSnapAccounts();

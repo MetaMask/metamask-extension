@@ -12,6 +12,7 @@ export default class ConfirmRemoveAccount extends Component {
     hideModal: PropTypes.func.isRequired,
     removeAccount: PropTypes.func.isRequired,
     account: PropTypes.shape({
+      id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       balance: PropTypes.string.isRequired,
@@ -37,7 +38,7 @@ export default class ConfirmRemoveAccount extends Component {
 
   handleRemove = () => {
     this.props
-      .removeAccount(this.props.account.address)
+      .removeAccount(this.props.account.id)
       .then(() => this.props.hideModal());
   };
 

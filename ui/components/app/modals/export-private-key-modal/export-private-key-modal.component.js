@@ -39,7 +39,7 @@ const ExportPrivateKeyModal = ({
   clearAccountDetails,
   hideWarning,
   exportAccount,
-  selectedIdentity,
+  selectedAccount,
   showAccountDetailModal,
   hideModal,
   warning = null,
@@ -93,13 +93,13 @@ const ExportPrivateKeyModal = ({
     }
   };
 
-  const { name, address } = selectedIdentity;
+  const { name, address } = selectedAccount;
 
   if (showHoldToReveal) {
     return (
       <AccountModalContainer
         className="export-private-key-modal"
-        selectedIdentity={selectedIdentity}
+        selectedAccount={selectedAccount}
         showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
         backButtonAction={() => showAccountDetailModal()}
       >
@@ -115,7 +115,7 @@ const ExportPrivateKeyModal = ({
   return (
     <AccountModalContainer
       className="export-private-key-modal"
-      selectedIdentity={selectedIdentity}
+      selectedAccount={selectedAccount}
       showBackButton={previousModalState === 'ACCOUNT_DETAILS'}
       backButtonAction={() => showAccountDetailModal()}
     >
@@ -235,7 +235,7 @@ const ExportPrivateKeyModal = ({
 
 ExportPrivateKeyModal.propTypes = {
   exportAccount: PropTypes.func.isRequired,
-  selectedIdentity: PropTypes.object.isRequired,
+  selectedAccount: PropTypes.object.isRequired,
   warning: PropTypes.node,
   showAccountDetailModal: PropTypes.func.isRequired,
   hideModal: PropTypes.func.isRequired,

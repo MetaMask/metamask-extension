@@ -5,13 +5,6 @@ import ConfTx from '.';
 
 const mockState = {
   metamask: {
-    identities: {
-      '0x8eeee1781fd885ff5ddef7789486676961873d12': {
-        address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
-        lastSelected: 1673587189888,
-        name: 'Account 1',
-      },
-    },
     unapprovedMsgs: {},
     unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
@@ -38,13 +31,40 @@ const mockState = {
     cachedBalances: {
       '0x5': {},
     },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 1',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     accounts: {
       '0x8eeee1781fd885ff5ddef7789486676961873d12': {
         address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
         balance: '0x7e64033f2fdb0436',
       },
     },
-    selectedAddress: '0x8eeee1781fd885ff5ddef7789486676961873d12',
     addressBook: {},
     tokenList: {},
     preferences: {},

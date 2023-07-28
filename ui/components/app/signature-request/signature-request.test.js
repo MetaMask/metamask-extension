@@ -17,6 +17,7 @@ import {
   getMemoizedMetaMaskIdentities,
   getPreferences,
   getSelectedAccount,
+  getInternalAccounts,
   getTotalUnapprovedMessagesCount,
   unconfirmedTransactionsHashSelector,
 } from '../../../selectors';
@@ -49,7 +50,34 @@ const mockStore = {
         name: 'John Doe',
       },
     },
-    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Account 1',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     nativeCurrency: 'ETH',
     currentCurrency: 'usd',
     conversionRate: null,
@@ -81,7 +109,13 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case conversionRateSelector:
       return opts.metamask.conversionRate;
     case getSelectedAccount:
-      return opts.metamask.accounts[opts.metamask.selectedAddress];
+      return opts.metamask.accounts[
+        opts.metamask.internalAccounts.accounts[
+          opts.metamask.internalAccounts.selectedAccount
+        ].address
+      ];
+    case getInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
@@ -417,7 +451,6 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
-            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             accounts: {
               ...mockStore.metamask.accounts,
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -425,6 +458,34 @@ describe('Signature Request Component', () => {
                 balance: '0x0',
                 name: 'Account 1',
               },
+            },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  name: 'Account 1',
+                  options: {},
+                  supportedMethods: [
+                    'personal_sign',
+                    'eth_sendTransaction',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             },
           },
         }),

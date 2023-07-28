@@ -81,11 +81,11 @@ interface TemporaryBackgroundState {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyAccountDetails?: { [key: string]: any };
   ///: END:ONLY_INCLUDE_IN
-  internalAccounts?: {
+  internalAccounts: {
     accounts: {
       [key: string]: InternalAccount;
     };
-    selectedAccounts: string;
+    selectedAccount: string;
   };
 }
 

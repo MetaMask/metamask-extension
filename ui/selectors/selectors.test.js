@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { deepClone } from '@metamask/snaps-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -15,6 +16,15 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
+
+const modifyStateWithHWKeyring = (keyring) => {
+  const modifiedState = deepClone(mockState);
+  modifiedState.metamask.internalAccounts.accounts[
+    modifiedState.metamask.internalAccounts.selectedAccount
+  ].metadata.keyring.type = keyring;
+
+  return modifiedState;
+};
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -410,58 +420,71 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.imported;
-      expect(selectors.isHardwareWallet(mockState)).toBe(false);
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithImported)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.ledger;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.trezor;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.imported;
-      expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(
+        selectors.getHardwareWalletType(mockStateWithImported),
+      ).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.ledger;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.getHardwareWalletType(mockStateWithLedger)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata.keyring.type = KeyringType.trezor;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
     });
   });
 
-  it('returns selected identity', () => {
-    expect(selectors.getSelectedIdentity(mockState)).toStrictEqual({
+  it('returns selected internal account', () => {
+    expect(selectors.getSelectedInternalAccount(mockState)).toStrictEqual({
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
       name: 'Test Account',
+      options: {},
+      supportedMethods: [
+        'personal_sign',
+        'eth_sendTransaction',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v2',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
     });
   });
 

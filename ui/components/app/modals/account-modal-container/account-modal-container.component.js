@@ -6,7 +6,7 @@ import Identicon from '../../../ui/identicon';
 export default function AccountModalContainer(props, context) {
   const {
     className,
-    selectedIdentity,
+    selectedAccount,
     showBackButton,
     backButtonAction,
     hideModal,
@@ -20,7 +20,7 @@ export default function AccountModalContainer(props, context) {
     >
       <div className="account-modal__container">
         <div>
-          <Identicon address={selectedIdentity.address} diameter={64} />
+          <Identicon address={selectedAccount.address} diameter={64} />
         </div>
         {showBackButton && (
           <div className="account-modal__back" onClick={backButtonAction}>
@@ -49,7 +49,7 @@ AccountModalContainer.defaultProps = {
 
 AccountModalContainer.propTypes = {
   className: PropTypes.string,
-  selectedIdentity: PropTypes.object.isRequired,
+  selectedAccount: PropTypes.object.isRequired,
   showBackButton: PropTypes.bool,
   backButtonAction: PropTypes.func,
   hideModal: PropTypes.func.isRequired,

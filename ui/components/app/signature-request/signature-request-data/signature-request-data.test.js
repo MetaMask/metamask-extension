@@ -38,15 +38,56 @@ describe('Signature Request Data', () => {
           type: 'test',
           chainId: '0x5',
         },
-        identities: {
-          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826': {
-            name: 'Account 1',
-            address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 1',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 2',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
           },
-          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF': {
-            name: 'Account 2',
-            address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
-          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         addressBook: {
           '0x5': {

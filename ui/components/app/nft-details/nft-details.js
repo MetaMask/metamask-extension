@@ -26,7 +26,7 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getIpfsGateway,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getNftContracts } from '../../../ducks/metamask/metamask';
@@ -82,9 +82,7 @@ export default function NftDetails({ nft }) {
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
   )?.name;
-  const selectedAccountName = useSelector(
-    (state) => getSelectedIdentity(state).name,
-  );
+  const { name: selectedAccountName } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
   const isDataURI = nftImageURL.startsWith('data:');

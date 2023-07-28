@@ -8,7 +8,10 @@ import {
   setAlertEnabledness,
   setSelectedAddress,
 } from '../../store/actions';
-import { getOriginOfCurrentTab, getSelectedAddress } from '../../selectors';
+import {
+  getOriginOfCurrentTab,
+  getSelectedInternalAccount,
+} from '../../selectors';
 import { ALERT_STATE } from './enums';
 
 // Constants
@@ -128,7 +131,7 @@ export const switchToAccount = (address) => {
 export const connectAccount = () => {
   return async (dispatch, getState) => {
     const state = getState();
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
     const origin = getOriginOfCurrentTab(state);
     try {
       await dispatch(connectAccountRequested());

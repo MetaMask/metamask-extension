@@ -22,6 +22,10 @@ const mockStoreInitialState = {
   },
 };
 
+mockStoreInitialState.metamask.internalAccounts.accounts[
+  mockStoreInitialState.metamask.internalAccounts.selectedAccount
+].address = MOCK_ADDRESS;
+
 const mockShowModal = jest.fn();
 
 jest.mock('../../../store/actions.ts', () => {

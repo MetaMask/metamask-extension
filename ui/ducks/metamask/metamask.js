@@ -9,6 +9,9 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
+  getFirstInternalAccountByAddress,
+  getInternalAccount,
+  getSelectedInternalAccount,
   getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -79,12 +82,15 @@ export default function reduceMetamask(state = initialState, action) {
       };
 
     case actionConstants.SET_ACCOUNT_LABEL: {
-      const { account } = action.value;
-      const name = action.value.label;
-      const id = {};
-      id[account] = { ...metamaskState.identities[account], name };
-      const identities = { ...metamaskState.identities, ...id };
-      return Object.assign(metamaskState, { identities });
+      const { account: newAccount } = action.value;
+      const internalAccounts = {
+        ...metamaskState.internalAccounts,
+        accounts: {
+          ...metamaskState.internalAccounts.accounts,
+          ...{ [newAccount.id]: newAccount },
+        },
+      };
+      return Object.assign(metamaskState, { internalAccounts });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
@@ -255,8 +261,9 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: { allNfts, selectedAddress },
+    metamask: { allNfts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
@@ -264,8 +271,9 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: { allNftContracts, selectedAddress },
+    metamask: { allNftContracts },
   } = state;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
 
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
@@ -374,13 +382,13 @@ export function getSeedPhraseBackedUp(state) {
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
  * @param {object} state - the redux state object
- * @param {string} accountId - the account id to search for among the internal accounts
+ * @param {string} address - the address to search for among the internal accounts
  * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
-export function findKeyringForAddress(state, accountId) {
-  const account = state.metamask.internalAccounts.accounts[accountId];
+export function findKeyringForAddress(state, address) {
+  const account = getFirstInternalAccountByAddress(state, address);
 
-  return account.metadata.keyring;
+  return account?.metadata?.keyring;
 }
 
 /**

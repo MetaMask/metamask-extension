@@ -187,9 +187,7 @@ export function getCurrentKeyring(state) {
     return null;
   }
 
-  const keyring = findKeyringForAddress(state, account.id);
-
-  return keyring;
+  return account.metadata.keyring;
 }
 
 /**
@@ -333,6 +331,32 @@ export function getInternalAccount(state, accountId) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+export function getInternalAccountsSortedByKeyring(state) {
+  const accounts = getInternalAccounts(state);
+
+  return accounts.sort((previousAccount, currentAccount) => {
+    // sort accounts by keyring type in alphabetical order
+    const previousKeyringType = previousAccount.metadata.keyring.type;
+    const currentKeyringType = currentAccount.metadata.keyring.type;
+    if (previousKeyringType < currentKeyringType) {
+      return -1;
+    }
+    if (previousKeyringType > currentKeyringType) {
+      return 1;
+    }
+    // if keyring types are the same, sort accounts by address in alphabetical order
+    const previousAddress = previousAccount.address.toLowerCase();
+    const currentAddress = currentAccount.address.toLowerCase();
+    if (previousAddress < currentAddress) {
+      return -1;
+    }
+    if (previousAddress > currentAddress) {
+      return 1;
+    }
+    return 0;
+  });
+}
+
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;
@@ -364,17 +388,17 @@ export function getMetaMaskCachedBalances(state) {
 }
 
 /**
- * Get ordered (by keyrings) accounts with identity and balance
+ * Get ordered (by keyrings) accounts with internal account and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
-  getMetaMaskKeyrings,
-  getMetaMaskIdentities,
+  getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
-    keyrings
-      .reduce((list, keyring) => list.concat(keyring.accounts), [])
-      .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...accounts[internalAccount.address],
+    }));
+  },
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -385,7 +409,7 @@ export const getMetaMaskAccountsConnected = createSelector(
 
 export function isBalanceCached(state) {
   const selectedAccountBalance =
-    state.metamask.accounts[getSelectedAddress(state)].balance;
+    state.metamask.accounts[getSelectedInternalAccount(state).address].balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -393,16 +417,19 @@ export function isBalanceCached(state) {
 
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return cachedBalances && cachedBalances[selectedAddress];
 }
 
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
-  const selectedAddress = getSelectedAddress(state);
+  const selectedAccount = getSelectedInternalAccount(state);
 
-  return accounts[selectedAddress];
+  return {
+    ...selectedAccount,
+    ...accounts[selectedAccount.address],
+  };
 }
 
 export function getTargetAccount(state, targetAddress) {
@@ -428,9 +455,7 @@ export function getEnsResolutionByAddress(state, address) {
 
   const entry =
     getAddressBookEntry(state, address) ||
-    Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, address),
-    );
+    getFirstInternalAccountByAddress(state, address);
 
   return entry?.name || '';
 }
@@ -446,17 +471,24 @@ export function getAddressBookEntry(state, address) {
 export function getAddressBookEntryOrAccountName(state, address) {
   const entry =
     getAddressBookEntry(state, address) ||
-    Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, address),
+    Object.values(getInternalAccounts(state)).find((internalAccount) =>
+      isEqualCaseInsensitive(internalAccount.address, address),
     );
   return entry && entry.name !== '' ? entry.name : address;
 }
 
-export function getAccountName(identities, address) {
-  const entry = Object.values(identities).find((identity) =>
-    isEqualCaseInsensitive(identity.address, address),
+export function getAccountName(accounts, accountAddress) {
+  const account = accounts.find((internalAccount) =>
+    isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return entry && entry.name !== '' ? entry.name : '';
+  return account && account.name !== '' ? account.name : '';
+}
+
+export function getFirstInternalAccountByAddress(state, address) {
+  const account = getInternalAccounts(state).find((internalAccount) =>
+    isEqualCaseInsensitive(internalAccount.address, address),
+  );
+  return account;
 }
 
 export function getMetadataContractName(state, address) {
@@ -469,11 +501,14 @@ export function getMetadataContractName(state, address) {
 
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
-  const identities = getMetaMaskIdentities(state);
+  const internalAccounts = getInternalAccounts(state);
 
-  const accountsWithSendEtherInfo = Object.entries(identities).map(
-    ([key, identity]) => {
-      return { ...identity, ...accounts[key] };
+  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
+    (internalAccount) => {
+      return {
+        ...internalAccount,
+        ...accounts[internalAccount.address],
+      };
     },
   );
 
@@ -496,7 +531,7 @@ export function getAccountsWithLabels(state) {
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
-  const currentAddress = getSelectedAddress(state);
+  const { address: currentAddress } = getSelectedInternalAccount(state);
   const accounts = accountsWithSendEtherInfoSelector(state);
 
   return getAccountByAddress(accounts, currentAddress);

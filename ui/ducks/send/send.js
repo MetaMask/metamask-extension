@@ -38,7 +38,7 @@ import {
   getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -1908,7 +1908,7 @@ export function updateRecipientUserInput(userInput) {
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2030,7 +2030,7 @@ export function updateSendAsset(
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTxs(state);

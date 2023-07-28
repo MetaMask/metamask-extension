@@ -2,10 +2,7 @@ import React, { memo } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
-import {
-  getMemoizedMetaMaskIdentities,
-  getAccountName,
-} from '../../../../selectors';
+import { getAccountName, getInternalAccounts } from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -21,7 +18,7 @@ import { sanitizeString } from '../../../../helpers/utils/util';
 import { Box, Text } from '../../../component-library';
 
 function SignatureRequestData({ data }) {
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const accounts = useSelector(getInternalAccounts);
 
   return (
     <Box as="ul" className="signature-request-data__node">
@@ -68,7 +65,7 @@ function SignatureRequestData({ data }) {
                   <Address
                     addressOnly
                     checksummedRecipientAddress={toChecksumHexAddress(value)}
-                    recipientName={getAccountName(identities, value)}
+                    recipientName={getAccountName(accounts, value)}
                   />
                 </Text>
               ) : (

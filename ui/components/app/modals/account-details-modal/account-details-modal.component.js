@@ -24,11 +24,10 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 
 export default class AccountDetailsModal extends Component {
   static propTypes = {
-    selectedIdentity: PropTypes.object,
+    selectedAccount: PropTypes.object,
     chainId: PropTypes.string,
     showExportPrivateKeyModal: PropTypes.func,
     setAccountLabel: PropTypes.func,
-    keyrings: PropTypes.array,
     rpcPrefs: PropTypes.object,
     accounts: PropTypes.array,
     history: PropTypes.object,
@@ -47,11 +46,10 @@ export default class AccountDetailsModal extends Component {
 
   render() {
     const {
-      selectedIdentity,
+      selectedAccount,
       chainId,
       showExportPrivateKeyModal,
       setAccountLabel,
-      keyrings,
       rpcPrefs,
       history,
       hideModal,
@@ -61,11 +59,11 @@ export default class AccountDetailsModal extends Component {
       custodyAccountDetails,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
-    const { name, address } = selectedIdentity;
-
-    const keyring = keyrings.find((kr) => {
-      return kr.accounts.includes(address);
-    });
+    const {
+      name,
+      address,
+      metadata: { keyring },
+    } = selectedAccount;
 
     let exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
@@ -75,7 +73,7 @@ export default class AccountDetailsModal extends Component {
     }
     const showCustodyLabels = accountType === 'custody';
     const custodyLabels = custodyAccountDetails
-      ? custodyAccountDetails[toChecksumHexAddress(selectedIdentity.address)]
+      ? custodyAccountDetails[toChecksumHexAddress(selectedAccount.address)]
           ?.labels
       : {};
     ///: END:ONLY_INCLUDE_IN

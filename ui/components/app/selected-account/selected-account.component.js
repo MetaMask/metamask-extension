@@ -24,7 +24,7 @@ class SelectedAccount extends Component {
   };
 
   static propTypes = {
-    selectedIdentity: PropTypes.object.isRequired,
+    selectedAccount: PropTypes.object.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType: PropTypes.string,
     accountDetails: PropTypes.object,
@@ -47,7 +47,7 @@ class SelectedAccount extends Component {
   render() {
     const { t } = this.context;
     const {
-      selectedIdentity,
+      selectedAccount,
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       accountType,
       accountDetails,
@@ -56,7 +56,7 @@ class SelectedAccount extends Component {
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    const checksummedAddress = toChecksumHexAddress(selectedIdentity.address);
+    const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
 
     let title = this.state.copied
       ? t('copiedExclamation')
@@ -66,7 +66,7 @@ class SelectedAccount extends Component {
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const custodyLabels = accountDetails
-      ? accountDetails[toChecksumHexAddress(selectedIdentity.address)]?.labels
+      ? accountDetails[toChecksumHexAddress(selectedAccount.address)]?.labels
       : {};
     const showCustodyLabels =
       getEnvironmentType() !== ENVIRONMENT_TYPE_POPUP &&
@@ -106,9 +106,7 @@ class SelectedAccount extends Component {
               copyToClipboard(checksummedAddress);
             }}
           >
-            <div className="selected-account__name">
-              {selectedIdentity.name}
-            </div>
+            <div className="selected-account__name">{selectedAccount.name}</div>
             <div className="selected-account__address">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

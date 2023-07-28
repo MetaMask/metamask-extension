@@ -15,15 +15,39 @@ const middleware = [thunk];
 const defaultState = {
   metamask: {
     currentLocale: 'test',
-    selectedAddress: '0xFirstAddress',
     providerConfig: { chainId: '0x1' },
     accounts: {
       '0xFirstAddress': {
         balance: '0x0',
       },
     },
-    identities: {
-      '0xFirstAddress': {},
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xFirstAddress',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          name: 'Test Account',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
     cachedBalances: {
       '0x1': {
@@ -230,7 +254,6 @@ describe('Actions', () => {
       background.getState.callsFake((cb) =>
         cb(null, {
           currentLocale: 'test',
-          selectedAddress: '0xAnotherAddress',
           providerConfig: {
             chainId: '0x1',
           },
@@ -238,6 +261,34 @@ describe('Actions', () => {
             '0xAnotherAddress': {
               balance: '0x0',
             },
+          },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAnotherAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
           cachedBalances: {
             '0x1': {
@@ -262,7 +313,7 @@ describe('Actions', () => {
       ];
 
       await store.dispatch(
-        actions.removeAccount('0xe18035bf8712672935fdb4e5e431b1a0183d2dfc'),
+        actions.removeAccount('cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'),
       );
       expect(removeAccount.callCount).toStrictEqual(1);
       const actionTypes = store.getActions().map((action) => action.type);
