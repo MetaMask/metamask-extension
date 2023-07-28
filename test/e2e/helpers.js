@@ -190,7 +190,14 @@ async function withFixtures(options, testSuite) {
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
       }
-      await mockServer.stop();
+
+      // Since mockServer could be stop'd at another location,
+      // use a try/catch to avoid an error
+      try {
+        await mockServer.stop();
+      } catch (e) {
+        console.log('mockServer already stopped');
+      }
     }
   }
 }
