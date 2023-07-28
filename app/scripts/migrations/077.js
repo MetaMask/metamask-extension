@@ -27,7 +27,7 @@ function transformState(state) {
   let dataObject;
   // eslint-disable-next-line
   for (const chainId in tokensChainsCache) {
-    dataCache = tokensChainsCache[chainId].data;
+    dataCache = tokensChainsCache[chainId].data || {};
     dataObject = {};
     // if the data is array conver that to object
     if (Array.isArray(dataCache)) {
@@ -35,8 +35,8 @@ function transformState(state) {
         dataObject[token.address] = token;
       }
     } else if (
-      Object.keys(dataCache)[0].toLowerCase() !==
-      dataCache[Object.keys(dataCache)[0]].address.toLowerCase()
+      Object.keys(dataCache)[0]?.toLowerCase() !==
+      dataCache[Object.keys(dataCache)[0]]?.address.toLowerCase()
     ) {
       // for the users who already updated to the recent version
       // and the dataCache is already an object keyed with 0,1,2,3 etc

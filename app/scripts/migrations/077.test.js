@@ -82,6 +82,53 @@ describe('migration #77', () => {
       },
     });
   });
+  it('should set data to an empty object if it is undefined', async () => {
+    const oldStorage = {
+      meta: {
+        version: 76,
+      },
+      data: {
+        TokenListController: {
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+            },
+          },
+          tokensChainsCache: {
+            1: {
+              timestamp: 1234,
+              data: undefined,
+            },
+          },
+        },
+      },
+    };
+    const newStorage = await migration77.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 77,
+      },
+      data: {
+        TokenListController: {
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+            },
+          },
+          tokensChainsCache: {
+            1: {
+              timestamp: 1234,
+              data: {},
+            },
+          },
+        },
+      },
+    });
+  });
   it('should change the data from array to object for a multiple networks', async () => {
     const oldStorage = {
       meta: {
