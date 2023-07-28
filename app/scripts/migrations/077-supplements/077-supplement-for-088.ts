@@ -2,22 +2,13 @@ import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
 import { BN } from 'ethereumjs-util';
 
 /**
- * This migration does a few things:
- *
- * - Rebuilds `allNftContracts` and `allNfts` in NftController state to be keyed
- * by a hex chain ID rather than a decimal chain ID.
- * - Rebuilds `tokensChainsCache` in TokenListController to be keyed by a hex
- * chain ID rather than a decimal chain ID.
- * - Rebuilds `allTokens` and `allIgnoredTokens` in TokensController to be keyed
- * by a hex chain ID rather than a decimal chain ID.
- *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * Deletes properties of `NftController.allNftContracts`, `NftController.allNfts`,
+ * `TokenListController.tokensChainsCache`, `TokensController.allTokens`,
+ * `TokensController.allIgnoredTokens` and `TokensController.allDetectedTokens` if
+ * their keyed by decimal number chainId and another hexadecimal chainId property
+ * exists within the same object.
+ * Further explanation in ./077-supplements.md
  */
-
 export default function transformState077For086(
   state: Record<string, unknown>,
 ): void {

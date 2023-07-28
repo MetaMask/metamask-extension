@@ -1,8 +1,8 @@
 import { hasProperty, isObject } from '@metamask/utils';
 
 /**
- * Prior to token detection v2 the data property in tokensChainsCache was an array,
- * in v2 we changes that to an object. In this migration we are converting the data as array to object.
+ * Deletes network if networkId exists, on the NetworkController state.
+ * Further explanation in ./077-supplements.md
  */
 
 export default function transformState077For084(state) {

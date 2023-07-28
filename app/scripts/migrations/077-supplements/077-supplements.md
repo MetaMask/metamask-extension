@@ -70,8 +70,7 @@ The fix in the migration 86 supplement is to delete the `NetworkController.provi
 
 **Migration 88**
 
-Attempted to change the keys of multiple parts of state related to tokens. In particular, `NftController.allNftContracts`, `NftController.allNfts`, `TokenListController.tokensChainsCache`,
-`TokensController.allTokens`, `TokensController.allIgnoredTokens` and `TokensController.allDetectedTokens`. All of these objects were keyed by chainId in decimal number form. The migration's
+Attempted to change the keys of multiple parts of state related to tokens. In particular, `NftController.allNftContracts`, `NftController.allNfts`, `TokenListController.tokensChainsCache`, `TokensController.allTokens`, `TokensController.allIgnoredTokens` and `TokensController.allDetectedTokens`. All of these objects were keyed by chainId in decimal number form. The migration's
 purpose was to change those decimal chain ID keys to hexadecimal. If migration 77 failed, and then the user added or modified tokens, they could have duplicates within these parts of state:
 some with decimal keys and others with an equivalent hexadecimal key. If the data pointed to by those keys was modified at all, and the migration 88 was later run, the most recent data (under
 the hexadecimal key) could be overwritten by the old data under the decimal key.
