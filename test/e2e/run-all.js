@@ -50,6 +50,10 @@ async function main() {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
+          .option('rpc', {
+            description: `run json-rpc specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -59,12 +63,15 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3, rpc } = argv;
 
   let testPaths;
 
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (rpc) {
+    const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

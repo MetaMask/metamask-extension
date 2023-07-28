@@ -1,6 +1,5 @@
 import type { BoxProps } from '../../ui/box/box.d';
-import { IconName } from '../icon';
-import type { IconProps } from '../icon';
+import { IconName, IconProps } from '../icon';
 import { IconColor } from '../../../helpers/constants/design-system';
 
 export enum ButtonIconSize {
@@ -42,7 +41,7 @@ export interface ButtonIconProps extends BoxProps {
   /**
    * iconProps accepts all the props from Icon
    */
-  iconProps?: IconProps;
+  iconProps?: IconProps<'span'>;
   /**
    * The size of the ButtonIcon.
    * Possible values could be 'ButtonIconSize.Sm' 24px, 'ButtonIconSize.Lg' 32px,

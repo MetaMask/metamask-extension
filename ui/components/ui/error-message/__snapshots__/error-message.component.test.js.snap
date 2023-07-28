@@ -6,7 +6,7 @@ exports[`ErrorMessage Component should render a message from props.errorMessage 
     class="error-message"
   >
     <span
-      class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+      class="mm-box error-message__icon mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--display-inline-block mm-box--color-error-default"
       style="mask-image: url('./images/icons/warning.svg');"
     />
     <div
@@ -24,7 +24,7 @@ exports[`ErrorMessage Component should render a message translated from props.er
     class="error-message"
   >
     <span
-      class="box error-message__icon mm-icon mm-icon--size-sm box--margin-right-2 box--display-inline-block box--flex-direction-row box--color-error-default"
+      class="mm-box error-message__icon mm-icon mm-icon--size-sm mm-box--margin-right-2 mm-box--display-inline-block mm-box--color-error-default"
       style="mask-image: url('./images/icons/warning.svg');"
     />
     <div

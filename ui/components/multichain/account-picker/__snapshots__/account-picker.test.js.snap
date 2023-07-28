@@ -31,7 +31,7 @@ exports[`AccountPicker renders properly 1`] = `
         Account 1
       </span>
       <span
-        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/arrow-down.svg');"
       />
     </span>
