@@ -73,7 +73,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         </button>
       </div>
       <div
-        class="box nft-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"
+        class="box nft-details__info box--margin-top-4 box--flex-direction-column box--justify-content-space-between box--display-flex"
       >
         <div>
           <h4

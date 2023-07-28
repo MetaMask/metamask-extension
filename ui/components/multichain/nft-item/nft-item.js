@@ -93,5 +93,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
-  isIpfsEnabled: PropTypes.string,
+  isIpfsEnabled: PropTypes.bool,
 };

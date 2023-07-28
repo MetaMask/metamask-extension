@@ -22,7 +22,7 @@ describe('NftItem component', () => {
       networkSrc: 'test-network-src',
       tokenId: '1',
       onClick: jest.fn(),
-      isIpfsEnabled: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsEnabled: true,
     };
 
     it('renders correctly with an image source', () => {
@@ -36,7 +36,7 @@ describe('NftItem component', () => {
 
     it('renders correctly with default image when no image source is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem {...props} isIpfsEnabled="" />,
+        <NftItem {...props} isIpfsEnabled={false} />,
         store,
       );
 

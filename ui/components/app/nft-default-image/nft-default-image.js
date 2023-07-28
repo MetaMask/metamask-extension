@@ -5,21 +5,14 @@ import { useDispatch } from 'react-redux';
 import {
   Display,
   AlignItems,
-  BlockSize,
   JustifyContent,
-  TextVariant,
   BorderRadius,
-  TextAlign,
-  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ButtonLink, Text } from '../../component-library';
-import Box from '../../ui/box/box';
+import { ButtonLink, Box } from '../../component-library';
 import { showIpfsModal } from '../../../store/actions';
 
 export default function NftDefaultImage({
-  name,
-  tokenId,
   className,
   isIpfsEnabled,
   clickable,
@@ -37,24 +30,12 @@ export default function NftDefaultImage({
       display={Display.Flex}
       alignItems={AlignItems.Center}
       justifyContent={JustifyContent.Center}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      width={BlockSize.Full}
       borderRadius={BorderRadius.LG}
     >
-      <Text
-        variant={TextVariant.bodySm}
-        textAlign={TextAlign.Center}
-        ellipsis
-        as="h6"
-        className="nft-default__text"
-      >
-        {name ?? t('unknownCollection')} <br /> #{tokenId}
-      </Text>
       {!isIpfsEnabled && (
         <ButtonLink
-          paddingTop={4}
-          paddingBottom={4}
           block
+          className="nft-default__button"
           onClick={(e) => {
             e.stopPropagation();
             dispatch(showIpfsModal());
@@ -69,21 +50,13 @@ export default function NftDefaultImage({
 
 NftDefaultImage.propTypes = {
   /**
-   * The name of the NFT collection if not supplied will default to "Unnamed collection"
-   */
-  name: PropTypes.string,
-  /**
-   * The token id of the nft
-   */
-  tokenId: PropTypes.string,
-  /**
    * Controls the css class for the cursor hover
    */
   clickable: PropTypes.bool,
   /**
    * Check if ipfs is Enabled or not based on Ipfs Value
    */
-  isIpfsEnabled: PropTypes.string,
+  isIpfsEnabled: PropTypes.bool,
   /**
    * An additional className to apply to the NFT default image
    */

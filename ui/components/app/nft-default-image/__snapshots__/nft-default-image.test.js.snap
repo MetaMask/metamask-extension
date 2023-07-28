@@ -3,21 +3,12 @@
 exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 <div>
   <div
-    class="box nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   >
-    <h6
-      class="mm-box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
-    >
-      NFT Name
-       
-      <br />
-       #
-      123
-    </h6>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--block mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-top-4 mm-box--padding-right-0 mm-box--padding-bottom-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
     >
       Show
     </button>
@@ -28,21 +19,12 @@ exports[`NFT Default Image should match snapshot with all provided props 1`] = `
 exports[`NFT Default Image should match snapshot with missing clickable prop 1`] = `
 <div>
   <div
-    class="box nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   >
-    <h6
-      class="mm-box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
-    >
-      NFT Name
-       
-      <br />
-       #
-      123
-    </h6>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--block mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-top-4 mm-box--padding-right-0 mm-box--padding-bottom-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
     >
       Show
     </button>
@@ -53,20 +35,12 @@ exports[`NFT Default Image should match snapshot with missing clickable prop 1`]
 exports[`NFT Default Image should render with no props 1`] = `
 <div>
   <div
-    class="box nft-default box--display-flex box--flex-direction-row box--width-full box--background-color-background-alternative box--rounded-lg"
+    class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
   >
-    <h6
-      class="mm-box mm-text nft-default__text mm-text--body-sm mm-text--ellipsis mm-text--text-align-center mm-box--color-text-default"
-    >
-      Unnamed collection
-       
-      <br />
-       #
-    </h6>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--block mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-top-4 mm-box--padding-right-0 mm-box--padding-bottom-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
     >
       Show
     </button>

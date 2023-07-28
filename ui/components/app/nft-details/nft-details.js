@@ -194,12 +194,13 @@ export default function NftDetails({ nft }) {
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
-              isIpfsEnabled={ipfsGateway}
+              isIpfsEnabled={Boolean(ipfsGateway)}
             />
           </Box>
           <Box
             flexDirection={FlexDirection.Column}
             className="nft-details__info"
+            marginTop={4}
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>
