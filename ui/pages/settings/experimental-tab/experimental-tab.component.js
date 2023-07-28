@@ -27,10 +27,6 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useNftDetection: PropTypes.bool,
-    setUseNftDetection: PropTypes.func,
-    setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -65,7 +61,6 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
-
     return (
       <>
         <Text
@@ -140,94 +135,6 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
   ///: END:ONLY_INCLUDE_IN
-
-  renderOpenSeaEnabledToggle() {
-    const { t } = this.context;
-    const {
-      openSeaEnabled,
-      setOpenSeaEnabled,
-      useNftDetection,
-      setUseNftDetection,
-    } = this.props;
-
-    return (
-      <>
-        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
-          <div className="settings-page__content-item">
-            <span>{t('enableOpenSeaAPI')}</span>
-            <div className="settings-page__content-description">
-              {t('enableOpenSeaAPIDescription')}
-            </div>
-          </div>
-          <div className="settings-page__content-item">
-            <div className="settings-page__content-item-col">
-              <ToggleButton
-                value={openSeaEnabled}
-                onToggle={(value) => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Settings,
-                    event: 'Enabled/Disable OpenSea',
-                    properties: {
-                      action: 'Enabled/Disable OpenSea',
-                      legacy_event: true,
-                    },
-                  });
-                  // value is positive when being toggled off
-                  if (value && useNftDetection) {
-                    setUseNftDetection(false);
-                  }
-                  setOpenSeaEnabled(!value);
-                }}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </div>
-          </div>
-        </div>
-        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
-          <div className="settings-page__content-item">
-            <span>{t('useNftDetection')}</span>
-            <div className="settings-page__content-description">
-              <Text color={TextColor.textAlternative}>
-                {t('useNftDetectionDescription')}
-              </Text>
-              <ul className="settings-page__content-unordered-list">
-                <li>{t('useNftDetectionDescriptionLine2')}</li>
-                <li>{t('useNftDetectionDescriptionLine3')}</li>
-                <li>{t('useNftDetectionDescriptionLine4')}</li>
-              </ul>
-              <Text color={TextColor.textAlternative} paddingTop={4}>
-                {t('useNftDetectionDescriptionLine5')}
-              </Text>
-            </div>
-          </div>
-          <div className="settings-page__content-item">
-            <div className="settings-page__content-item-col">
-              <ToggleButton
-                value={useNftDetection}
-                onToggle={(value) => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Settings,
-                    event: 'NFT Detected',
-                    properties: {
-                      action: 'NFT Detected',
-                      legacy_event: true,
-                    },
-                  });
-                  if (!value && !openSeaEnabled) {
-                    setOpenSeaEnabled(!value);
-                  }
-                  setUseNftDetection(!value);
-                }}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
 
   renderTransactionSecurityCheckToggle() {
     const { t } = this.context;
@@ -355,7 +262,6 @@ export default class ExperimentalTab extends PureComponent {
           ///: END:ONLY_INCLUDE_IN
         }
         {this.renderTransactionSecurityCheckToggle()}
-        {this.renderOpenSeaEnabledToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()

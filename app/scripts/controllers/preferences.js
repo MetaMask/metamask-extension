@@ -161,6 +161,17 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `openSeaEnabled` property
+   *
+   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
+   */
+  setOpenSeaEnabled(openSeaEnabled) {
+    this.store.updateState({
+      openSeaEnabled,
+    });
+  }
+
+  /**
    * Setter for the `useNftDetection` property
    *
    * @param {boolean} useNftDetection - Whether or not the user prefers to autodetect NFTs.
@@ -176,17 +187,6 @@ export default class PreferencesController {
    */
   setUseCurrencyRateCheck(val) {
     this.store.updateState({ useCurrencyRateCheck: val });
-  }
-
-  /**
-   * Setter for the `openSeaEnabled` property
-   *
-   * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
-   */
-  setOpenSeaEnabled(openSeaEnabled) {
-    this.store.updateState({
-      openSeaEnabled,
-    });
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
