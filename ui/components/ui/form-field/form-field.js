@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+
 import {
   TextAlign,
   Display,
@@ -68,8 +69,7 @@ export default function FormField({
             {TitleTextCustomComponent ||
               (titleText && (
                 <Text
-                  as="label"
-                  htmlFor={id}
+                  as="h6"
                   variant={TextVariant.bodySmBold}
                   display={Display.InlineBlock}
                 >

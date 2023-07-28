@@ -5,7 +5,7 @@ import { Severity } from '../../../helpers/constants/design-system';
 
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { Button, BannerAlert, BUTTON_VARIANT } from '../../component-library';
+import { BannerAlert, BUTTON_VARIANT } from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
@@ -33,16 +33,14 @@ export default function DeprecatedTestNetworks() {
         description={t('deprecatedTestNetworksMsg')}
         onClose={() => setIsShowingWarning(false)}
         margin={2}
-      >
-        <Button
-          className="deprecated-test-networks__content__inline-link"
-          variant={BUTTON_VARIANT.LINK}
-          target="_blank"
-          href="https://blog.ethereum.org/2022/06/21/testnet-deprecation/"
-        >
-          {t('deprecatedTestNetworksLink')}
-        </Button>
-      </BannerAlert>
+        actionButtonLabel={t('deprecatedTestNetworksLink')}
+        actionButtonProps={{
+          className: 'deprecated-test-networks__content__inline-link',
+          href: 'https://blog.ethereum.org/2022/06/21/testnet-deprecation/',
+          variant: BUTTON_VARIANT.LINK,
+          externalLink: true,
+        }}
+      />
     )
   );
 }
