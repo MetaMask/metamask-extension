@@ -46,10 +46,10 @@ describe('Snap Installed Event', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const confirmButton = await driver.findElement('#connectDialogSnap');
+        const confirmButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(confirmButton);
         await driver.delay(500);
-        await driver.clickElement('#connectDialogSnap');
+        await driver.clickElement('#connectdialogs');
         await driver.delay(500);
 
         // switch to metamask extension and click connect
@@ -73,8 +73,8 @@ describe('Snap Installed Event', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectDialogSnap',
-          text: 'Reconnect to Dialog Snap',
+          css: '#connectdialogs',
+          text: 'Reconnect to Dialogs Snap',
         });
 
         const events = await getEventPayloads(driver, mockedEndpoints);
