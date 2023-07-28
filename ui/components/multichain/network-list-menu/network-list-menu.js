@@ -1,7 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
@@ -21,8 +22,11 @@ import {
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
+  BlockSize,
   Display,
   JustifyContent,
+  Size,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   BUTTON_SECONDARY_SIZES,
@@ -33,6 +37,7 @@ import {
   ModalOverlay,
   Box,
   Text,
+  TextFieldSearch,
 } from '../../component-library';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -75,11 +80,35 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
+  const showSearch = nonTestNetworks.length > 3;
+
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
   }, [dispatch, currentlyOnTestNetwork]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  let searchResults = [...nonTestNetworks];
+  const isSearching = searchQuery !== '';
+
+  if (isSearching) {
+    const fuse = new Fuse(searchResults, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      maxPatternLength: 32,
+      minMatchCharLength: 1,
+      shouldSort: true,
+      keys: ['nickname', 'chainId', 'ticker'],
+    });
+    fuse.setCollection(searchResults);
+    const fuseResults = fuse.search(searchQuery);
+    // Ensure order integrity with original list
+    searchResults = searchResults.filter((network) =>
+      fuseResults.includes(network),
+    );
+  }
 
   const generateMenuItems = (desiredNetworks) => {
     return desiredNetworks.map((network, index) => {
@@ -98,6 +127,7 @@ export const NetworkListMenu = ({ onClose }) => {
           iconSrc={network?.rpcPrefs?.imageUrl}
           key={`${network.id || network.chainId}-${index}`}
           selected={isCurrentNetwork}
+          focus={isCurrentNetwork && !showSearch}
           onClick={() => {
             dispatch(toggleNetworkMenu());
             if (network.providerType) {
@@ -162,8 +192,40 @@ export const NetworkListMenu = ({ onClose }) => {
           {t('networkMenuHeading')}
         </ModalHeader>
         <>
+          {showSearch ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <TextFieldSearch
+                size={Size.SM}
+                width={BlockSize.Full}
+                placeholder={t('search')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                clearButtonOnClick={() => setSearchQuery('')}
+                clearButtonProps={{
+                  size: Size.SM,
+                }}
+                inputProps={{ autoFocus: true }}
+              />
+            </Box>
+          ) : null}
           <Box className="multichain-network-list-menu">
-            {generateMenuItems(nonTestNetworks)}
+            {searchResults.length === 0 && isSearching ? (
+              <Text
+                paddingLeft={4}
+                paddingRight={4}
+                color={TextColor.textMuted}
+                data-testid="multichain-network-menu-popover-no-results"
+              >
+                {t('noNetworksFound')}
+              </Text>
+            ) : (
+              generateMenuItems(searchResults)
+            )}
           </Box>
           <Box
             padding={4}
