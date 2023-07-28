@@ -50,7 +50,7 @@ export function createPPOMMiddleware(
       sentry?.captureException(error);
       console.error('Error validating JSON RPC using PPOM: ', error);
       req.securityAlertResponse = {
-        resultType: BlockaidResultType.Failed,
+        result_type: BlockaidResultType.Failed,
         reason: error.message,
         description: 'Validating the confirmation failed by  throwing error.',
       };

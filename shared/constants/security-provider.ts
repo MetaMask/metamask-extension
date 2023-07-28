@@ -57,6 +57,7 @@ export enum BlockaidResultType {
   Warning = 'Warning',
   Benign = 'Benign',
   // Locally defined
+  Failed = 'Failed',
   NotApplicable = 'not_applicable',
 }
 
