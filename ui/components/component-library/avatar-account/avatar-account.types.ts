@@ -1,6 +1,5 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
-import { Size } from '../../../helpers/constants/design-system';
 
 export enum AvatarAccountVariant {
   Jazzicon = 'jazzicon',
@@ -8,11 +7,11 @@ export enum AvatarAccountVariant {
 }
 
 export enum AvatarAccountSize {
-  Xs = Size.XS,
-  Sm = Size.SM,
-  Md = Size.MD,
-  Lg = Size.LG,
-  Xl = Size.XL,
+  Xs = 'xs',
+  Sm = 'sm',
+  Md = 'md',
+  Lg = 'lg',
+  Xl = 'xl',
 }
 
 export const AvatarAccountDiameter: Record<AvatarAccountSize, number> = {
@@ -52,6 +51,6 @@ export interface AvatarAccountStyleUtilityProps
 export type AvatarAccountProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, AvatarAccountStyleUtilityProps>;
 
-export type AvatarAccountComponent = <C extends React.ElementType = 'span'>(
+export type AvatarAccountComponent = <C extends React.ElementType = 'div'>(
   props: AvatarAccountProps<C>,
 ) => React.ReactElement | null;

@@ -21,9 +21,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(AvatarAccountSize).map(
-        (value) => value.toLowerCase(), // Removes reverse mapping from enum this is a temporary fix until we are using typescript for everything
-      ),
+      options: Object.values(AvatarAccountSize),
     },
     address: { control: 'text' },
     variant: {
