@@ -43,6 +43,7 @@ export default function NotEnoughBalance({
             className=""
             danger={false}
             disabled={false}
+            style={{ verticalAlign: 'baseline' }}
           >
             {needsMoreGasText}
           </ButtonLink>
