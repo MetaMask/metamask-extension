@@ -61,39 +61,30 @@ export default function EditGasDisplay({
 
   const showTopError = balanceError && txParamsHaveBeenCustomized;
 
-  let errorMessage;
-  if (balanceError) {
-    errorMessage = 'Insufficient funds.';
-  }
-
   return (
     <div className="edit-gas-display">
       <div className="edit-gas-display__content">
         {showTopError && (
-          <div className="edit-gas-display__warning">
-            <BannerAlert
-              severity={Severity.Danger}
-              description={errorMessage}
-            />
-          </div>
+          <BannerAlert
+            severity={Severity.Danger}
+            description={t('insufficientFunds')}
+            marginBottom={6}
+          />
         )}
         {warningMessage && (
-          <div className="edit-gas-display__warning">
-            <BannerAlert
-              severity={Severity.Warning}
-              className="banner-alert--warning"
-              description={warningMessage}
-            />
-          </div>
+          <BannerAlert
+            severity={Severity.Warning}
+            description={warningMessage}
+            marginBottom={6}
+          />
         )}
         {requireDappAcknowledgement && (
-          <div className="edit-gas-display__dapp-acknowledgement-warning">
-            <BannerAlert
-              severity={Severity.Warning}
-              className="banner-alert--warning"
-              description={t('gasDisplayDappWarning', [transaction.origin])}
-            />
-          </div>
+          <BannerAlert
+            severity={Severity.Warning}
+            className="banner-alert--warning"
+            description={t('gasDisplayDappWarning', [transaction.origin])}
+            marginBottom={6}
+          />
         )}
         {mode === EditGasModes.speedUp && (
           <div className="edit-gas-display__top-tooltip">
@@ -113,7 +104,7 @@ export default function EditGasDisplay({
         )}
         <Text
           color={TextColor.textDefault}
-          variant={TextVariant.displayMd}
+          variant={TextVariant.headingLg}
           as="h1"
           textAlign={TextAlign.Center}
         >
