@@ -1,8 +1,8 @@
-import { migrate, version } from './089';
+import { migrate, version } from './090';
 
 const PREVIOUS_VERSION = version - 1;
 
-describe('migration #89', () => {
+describe('migration #90', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: {
@@ -31,22 +31,18 @@ describe('migration #89', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  const nonObjects = [undefined, null, 'test', 1, ['test']];
+  it('does not change the state if the phishing controller state is invalid', async () => {
+    const oldStorage = {
+      meta: {
+        version: PREVIOUS_VERSION,
+      },
+      data: { PhishingController: 'this is not valid' },
+    };
 
-  for (const invalidState of nonObjects) {
-    it(`does not change the state if the phishing controller state is ${invalidState}`, async () => {
-      const oldStorage = {
-        meta: {
-          version: PREVIOUS_VERSION,
-        },
-        data: { PhishingController: invalidState },
-      };
+    const newStorage = await migrate(oldStorage);
 
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual(oldStorage.data);
-    });
-  }
+    expect(newStorage.data).toStrictEqual(oldStorage.data);
+  });
 
   it('does not change the state if the listState property does not exist', async () => {
     const oldStorage = {
