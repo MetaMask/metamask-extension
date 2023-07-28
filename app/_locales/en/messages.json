@@ -3248,9 +3248,6 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "portfolioView": {
-    "message": "Portfolio view"
-  },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
     "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
