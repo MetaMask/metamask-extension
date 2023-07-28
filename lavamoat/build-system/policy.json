@@ -7695,9 +7695,6 @@
       }
     },
     "semver": {
-      "builtin": {
-        "util.inspect": true
-      },
       "globals": {
         "console.error": true,
         "process": true
