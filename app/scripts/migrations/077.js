@@ -1,4 +1,8 @@
 import { cloneDeep } from 'lodash';
+import transformState077For082 from './077-supplements/077-supplement-for-082';
+import transformState077For084 from './077-supplements/077-supplement-for-084';
+import transformState077For086 from './077-supplements/077-supplement-for-086';
+import transformState077For088 from './077-supplements/077-supplement-for-088';
 
 const version = 77;
 
@@ -12,7 +16,13 @@ export default {
     const versionedData = cloneDeep(originalVersionedData);
     versionedData.meta.version = version;
     const state = versionedData.data;
-    const newState = transformState(state);
+    let newState = transformState(state);
+
+    newState = transformState077For082(newState);
+    newState = transformState077For084(newState);
+    newState = transformState077For086(newState);
+    newState = transformState077For088(newState);
+
     versionedData.data = newState;
     return versionedData;
   },
