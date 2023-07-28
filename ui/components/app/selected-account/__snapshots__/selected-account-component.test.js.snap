@@ -33,7 +33,7 @@ exports[`SelectedAccount Component should match snapshot 1`] = `
               class="selected-account__copy"
             >
               <span
-                class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/copy.svg');"
               />
             </div>

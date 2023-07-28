@@ -425,8 +425,12 @@ export default class MetaMetricsController {
   setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
+      // We also need to start sentry automatic session tracking at this point
+      globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
+      // We also need to stop sentry automatic session tracking at this point
+      globalThis.sentry?.endSession();
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
@@ -435,7 +439,10 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: END:ONLY_INCLUDE_IN
+
     return metaMetricsId;
   }
 

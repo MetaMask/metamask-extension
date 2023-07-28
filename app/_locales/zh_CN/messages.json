@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importNFTs": {
-    "message": "添加收藏品"
-  },
   "importSelectedTokens": {
     "message": "要导入所选代币吗？"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "根据我们的记录，所提交的RPC URL值与此链ID的已知提供者不匹配。"
   },
-  "missingNFT": {
-    "message": "找不到您的 NFT？"
-  },
   "missingSetting": {
     "message": "找不到设置吗？"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "无可用汇率"
-  },
-  "noNFTs": {
-    "message": "尚无 NFT"
   },
   "noSnaps": {
     "message": "没有安装Snap"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "公共地址"
   },
-  "queue": {
-    "message": "队列"
-  },
   "queued": {
     "message": "队列中"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "显示助记词"
   },
-  "reviewSpendingCap": {
-    "message": "检查您的支出上限"
-  },
   "revokeAllTokensTitle": {
     "message": "撤销访问和转移您的所有 $1 的权限？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3148,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "批准$1，且无消费限制",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "为 $1 设置支出上限",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "设置"
@@ -4175,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
-  },
-  "useDefault": {
-    "message": "使用默认值"
   },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"

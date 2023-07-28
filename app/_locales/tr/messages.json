@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
   },
-  "importNFTs": {
-    "message": "NFS'leri İçe Aktar"
-  },
   "importSelectedTokens": {
     "message": "Seçilen tokenleri içe aktar?"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Kayıtlarımıza göre, sunulan RPC URL adresi değeri bu zincir kimliğinin bilinen bir sağlayıcısı ile uyumlu değil."
   },
-  "missingNFT": {
-    "message": "NFT'nizi görmüyor musunuz?"
-  },
   "missingSetting": {
     "message": "Bir ayarı bulamıyor musun?"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Dönüşüm oranı mevcut değil"
-  },
-  "noNFTs": {
-    "message": "Henüz NFT yok"
   },
   "noSnaps": {
     "message": "Hiç Snap yüklü değil"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "Genel adres"
   },
-  "queue": {
-    "message": "Kuyruğa al"
-  },
   "queued": {
     "message": "Kuyruğa alındı"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
   },
-  "reviewSpendingCap": {
-    "message": "Harcama üst limitinize göz atın"
-  },
   "revokeAllTokensTitle": {
     "message": "Tüm $1 için izin erişim ve transfer izni geri çekilsin mi?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3148,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "$1 için harcama limiti olmadan onay ver",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "$1 için harcama üst limiti belirle",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Ayarlar"
@@ -4175,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "Bu URL şu anda $1 ağı tarafından kullanılıyor."
-  },
-  "useDefault": {
-    "message": "Varsayılanı kullan"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Toplu hesap bakiyesi talepleri"

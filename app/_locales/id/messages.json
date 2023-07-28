@@ -1599,9 +1599,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importNFTs": {
-    "message": "Impor NFT"
-  },
   "importSelectedTokens": {
     "message": "Impor token yang dipilih?"
   },
@@ -1953,9 +1950,6 @@
   "mismatchedRpcUrl": {
     "message": "Menurut catatan kami, nilai URL RPC yang dikirimkan tidak sesuai dengan penyedia yang dikenal untuk ID rantai ini."
   },
-  "missingNFT": {
-    "message": "Tidak melihat NFT Anda?"
-  },
   "missingSetting": {
     "message": "Tidak dapat menemukan pengaturan?"
   },
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Nilai konversi tidak tersedia"
-  },
-  "noNFTs": {
-    "message": "Belum ada NFT"
   },
   "noSnaps": {
     "message": "Belum ada Snap yang diinstal"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "Alamat publik"
   },
-  "queue": {
-    "message": "Antrean"
-  },
   "queued": {
     "message": "Antrean"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"
   },
-  "reviewSpendingCap": {
-    "message": "Tinjau batas pengeluaran Anda"
-  },
   "revokeAllTokensTitle": {
     "message": "Cabut izin untuk mengakses dan mentransfer seluruh $1 Anda?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3148,10 +3133,6 @@
   "setApprovalForAllTitle": {
     "message": "Setujui $1 tanpa batas penggunaan",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Tetapkan batas pengeluaran untuk $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Pengaturan"
@@ -4175,9 +4156,6 @@
   },
   "urlExistsErrorMsg": {
     "message": "URL ini saat ini digunakan oleh jaringan $1."
-  },
-  "useDefault": {
-    "message": "Gunakan default"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Kelompokkan permintaan saldo akun"

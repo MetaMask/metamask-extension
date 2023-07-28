@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImportTokenLink } from './import-token-link';
+import { ImportTokenLink } from '.';
 
 export default {
   title: 'Components/Multichain/ImportTokenLink',

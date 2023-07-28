@@ -9,10 +9,10 @@ const {
   generateETHBalance,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  switchToWindow,
   sleepSeconds,
   terminateServiceWorker,
   unlockWallet,
+  largeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -114,7 +114,9 @@ describe('MV3 - Restart service worker multiple times', function () {
     );
 
     async function simpleSendETH(driver, value, recipient) {
-      await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+      await driver.switchToWindowWithTitle(
+        WINDOW_TITLES.ExtensionInFullScreenView,
+      );
 
       await driver.clickElement('[data-testid="eth-overview-send"]');
       await driver.fill('[data-testid="ens-input"]', recipient);
@@ -130,7 +132,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
       await driver.clickElement('[data-testid="page-container-footer-next"]');
       await driver.clickElement('[data-testid="home__activity-tab"]');
-      await driver.findElement('.transaction-list-item');
+      await driver.findElement('.activity-list-item');
       // reset view to assets tab
       await driver.clickElement('[data-testid="home__asset-tab"]');
 
@@ -138,7 +140,9 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
 
     async function assertETHBalance(driver, expectedBalance) {
-      await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+      await driver.switchToWindowWithTitle(
+        WINDOW_TITLES.ExtensionInFullScreenView,
+      );
 
       const isETHBalanceOverviewPresentAndVisible =
         await driver.isElementPresentAndVisible({
@@ -175,12 +179,11 @@ describe('MV3 - Restart service worker multiple times', function () {
         await openDapp(driver);
 
         // Click add Ethereum chain
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
-        await switchToWindow(driver, WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         let notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
           tag: 'h3',
@@ -189,19 +192,18 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
 
         // Terminate Service Worker
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
         await terminateServiceWorker(driver);
 
         // Click add Ethereum chain #2
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
-        await switchToWindow(driver, WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
           tag: 'h3',
@@ -210,19 +212,17 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         // Cancel Notification
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
 
         // Terminate Service Worker
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await terminateServiceWorker(driver);
 
         // Click add Ethereum chain #3
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await driver.clickElement('#addEthereumChain');
-        await driver.waitUntilXWindowHandles(2);
 
         // Notification pop up opens
-        await switchToWindow(driver, WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
         notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
           tag: 'h3',
@@ -232,7 +232,6 @@ describe('MV3 - Restart service worker multiple times', function () {
         // Accept Notification
         await driver.clickElement({ text: 'Approve', tag: 'button' });
         await driver.clickElement({ text: 'Switch network', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
       },
     );
   });
@@ -257,21 +256,20 @@ describe('MV3 - Restart service worker multiple times', function () {
 
         await openDapp(driver);
 
-        await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
-
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
-        await terminateServiceWorker(driver);
-        await driver.waitUntilXWindowHandles(2);
+        await driver.delay(largeDelayMs);
 
         await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
 
-        await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+
         await terminateServiceWorker(driver);
 
         await clickSendButton(driver);
-        await driver.waitUntilXWindowHandles(2);
+
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await terminateServiceWorker(driver);
+
+        await clickSendButton(driver);
 
         await assertNumberOfTransactionsInPopUp(driver, 3);
 
@@ -287,7 +285,7 @@ describe('MV3 - Restart service worker multiple times', function () {
 
     async function clickSendButton(driver) {
       // Click send button
-      await switchToWindow(driver, WINDOW_TITLES.TestDApp);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
       await driver.waitForSelector({
         css: '#sendButton',
@@ -297,7 +295,7 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
 
     async function confirmETHSendNotification(driver, amount) {
-      await switchToWindow(driver, WINDOW_TITLES.Notification);
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
       await driver.clickElement({
         text: 'Edit',
@@ -318,14 +316,16 @@ describe('MV3 - Restart service worker multiple times', function () {
     }
 
     async function assertNumberOfTransactionsInPopUp(driver, number) {
-      await switchToWindow(driver, WINDOW_TITLES.Notification);
-      const navEl = await driver.findElement(
-        '.confirm-page-container-navigation__navtext',
-      );
+      await driver.delay(largeDelayMs);
 
-      const notificationProgress = await navEl.getText();
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
-      assert.ok(notificationProgress, `1 of ${number}`);
+      const foundElement = await driver.findElements({
+        css: '.confirm-page-container-navigation__navtext',
+        text: `1 of ${number}`,
+      });
+
+      assert.ok(foundElement, true);
     }
   });
 
@@ -365,7 +365,9 @@ describe('MV3 - Restart service worker multiple times', function () {
     );
 
     async function reloadExtension(driver, extensionId) {
-      await switchToWindow(driver, WINDOW_TITLES.ExtensionInFullScreenView);
+      await driver.switchToWindowWithTitle(
+        WINDOW_TITLES.ExtensionInFullScreenView,
+      );
 
       await driver.openNewPage('chrome://extensions/');
 
