@@ -852,7 +852,7 @@ export default class ConfirmTransactionBase extends Component {
       tryReverseResolveAddress,
     } = this.props;
     // To ensure that the extension goes to the address the User wants to send a transfer from after the approval
-    if (fromAddress !== selectedAccount) {
+    if (fromAddress !== selectedAccount.address) {
       this.props.setSelectedAddress(fromAddress);
     }
     const { trackEvent } = this.context;

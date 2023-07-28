@@ -35,6 +35,7 @@ import {
   getTargetAccountWithSendEtherInfo,
   getCustomNonceValue,
   getNextSuggestedNonce,
+  getSelectedAccount,
 } from '../../selectors';
 import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
 import {
@@ -44,6 +45,7 @@ import {
   updateAndApproveTx,
   getNextNonce,
   updateCustomNonce,
+  setSelectedAccount,
 } from '../../store/actions';
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -132,6 +134,13 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+  const selectedAccount = useSelector(getSelectedAccount);
+
+  useEffect(() => {
+    if (fromAccount.address !== selectedAccount.address) {
+      dispatch(setSelectedAccount(fromAccount.address));
+    }
+  }, [fromAccount.address, selectedAccount.address]);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
