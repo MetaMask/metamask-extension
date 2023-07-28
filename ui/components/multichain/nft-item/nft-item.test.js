@@ -7,7 +7,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NftItem } from '.';
 
 describe('NftItem component', () => {
-  const store = configureStore()(mockState);
+  const store = configureStore({
+    metamask: {
+      ...mockState.metamask,
+      ipfsGateway: '',
+    },
+  });
   describe('render', () => {
     const props = {
       alt: 'Test Alt',

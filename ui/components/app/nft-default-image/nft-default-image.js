@@ -13,7 +13,7 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Button, Text } from '../../component-library';
+import { ButtonLink, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 import { showIpfsModal } from '../../../store/actions';
 import { getIpfsGateway } from '../../../selectors';
@@ -52,13 +52,17 @@ export default function NftDefaultImage({
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Text>
       {!ipfsGateway?.length > 0 && (
-        <Button
-          onClick={() => {
+        <ButtonLink
+          paddingTop={4}
+          paddingBottom={4}
+          block
+          onClick={(e) => {
+            e.stopPropagation();
             dispatch(showIpfsModal());
           }}
         >
           {t('show')}
-        </Button>
+        </ButtonLink>
       )}
     </Box>
   );

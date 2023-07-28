@@ -52,6 +52,7 @@ export default function NftsItems({
   const chainId = useSelector(getCurrentChainId);
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
+  const ipfsGateway = useSelector(getIpfsGateway);
 
   useEffect(() => {
     if (
@@ -86,7 +87,6 @@ export default function NftsItems({
     dispatch,
   ]);
 
-  const ipfsGateway = useSelector(getIpfsGateway);
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
@@ -172,7 +172,7 @@ export default function NftsItems({
               const { image, address, tokenId, name, imageOriginal } = nft;
               const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
               const nftImageAlt = getNftImageAlt(nft);
-              const showNftDefaultImage = image === nftImage;
+
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
               return (
@@ -191,7 +191,6 @@ export default function NftsItems({
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
                     clickable
-                    showNftDefaultImage={showNftDefaultImage}
                   />
                 </Box>
               );
