@@ -1,7 +1,11 @@
 import React from 'react';
-import type { BoxProps } from '../../ui/box/box.d';
 
-export interface HeaderBaseProps extends BoxProps {
+import type {
+  StyleUtilityProps,
+  PolymorphicComponentPropWithRef,
+} from '../box';
+
+export interface HeaderBaseStyleUtilityProps extends StyleUtilityProps {
   /**
    * The children is the title area of the HeaderBase
    */
@@ -9,7 +13,7 @@ export interface HeaderBaseProps extends BoxProps {
   /**
    * Use the `childrenWrapperProps` prop to define the props to the children wrapper
    */
-  childrenWrapperProps?: BoxProps;
+  childrenWrapperProps?: StyleUtilityProps;
   /**
    * The start(default left) content area of HeaderBase
    */
@@ -17,7 +21,7 @@ export interface HeaderBaseProps extends BoxProps {
   /**
    * Use the `startAccessoryWrapperProps` prop to define the props to the start accessory wrapper
    */
-  startAccessoryWrapperProps?: BoxProps;
+  startAccessoryWrapperProps?: StyleUtilityProps;
   /**
    * The end (default right) content area of HeaderBase
    */
@@ -25,9 +29,16 @@ export interface HeaderBaseProps extends BoxProps {
   /**
    * Use the `endAccessoryWrapperProps` prop to define the props to the end accessory wrapper
    */
-  endAccessoryWrapperProps?: BoxProps;
+  endAccessoryWrapperProps?: StyleUtilityProps;
   /**
    * An additional className to apply to the HeaderBase
    */
   className?: string;
 }
+
+export type HeaderBaseProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, HeaderBaseStyleUtilityProps>;
+
+export type HeaderBaseComponent = <C extends React.ElementType = 'span'>(
+  props: HeaderBaseProps<C>,
+) => React.ReactElement | null;
