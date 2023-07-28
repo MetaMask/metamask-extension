@@ -50,16 +50,17 @@ export default function InstitutionalEntityDonePage(props) {
               marginTop={4}
               marginBottom={4}
               color={TextColor.textDefault}
+              textAlign={TextAlign.Left}
             >
               {state.title}
             </Text>
             <Text
               as="p"
-              color={TextColor.textAlternative}
+              color={TextColor.textDefault}
               marginTop={2}
               marginBottom={5}
               variant={TypographyVariant.headingSm}
-              textAlign={TextAlign.Center}
+              textAlign={TextAlign.Left}
             >
               {state.description}
             </Text>

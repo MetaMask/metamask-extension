@@ -12,23 +12,23 @@ The `AvatarToken` is a component responsible for display of the image of a given
 
 ## Props
 
-The `AvatarToken` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
+The `AvatarToken` accepts all props below as well as all [Box](/docs/components-componentlibrary-box--docs#props) component props
 
 <ArgsTable of={AvatarToken} />
 
 ### Size
 
-Use the `size` prop to set the size of the `AvatarToken`.
+Use the `size` prop and the `AvatarTokenSize` enum to change the size of `AvatarToken`. Defaults to `IconSize.Sm`
 
 Possible sizes include:
 
-- `xs` 16px
-- `sm` 24px
-- `md` 32px
-- `lg` 40px
-- `xl` 48px
+- `AvatarTokenSize.Xs` 16px
+- `AvatarTokenSize.Sm` 24px
+- `AvatarTokenSize.Md` 32px
+- `AvatarTokenSize.Lg` 40px
+- `AvatarTokenSize.Xl` 48px
 
-Defaults to `md`
+Defaults to `AvatarTokenSize.Md`
 
 The fallback display of the `AvatarToken` is a circle with the initial letter of the network name. The size of the initial letter is calculated based on the size of the `AvatarToken` component.
 
@@ -37,13 +37,13 @@ The fallback display of the `AvatarToken` is a circle with the initial letter of
 </Canvas>
 
 ```jsx
-import { AvatarToken } from '../../component-library';
+import { AvatarToken, AvatarTokenSize } from '../../component-library';
 
-<AvatarToken size={Size.XS} />
-<AvatarToken size={Size.SM} />
-<AvatarToken size={Size.MD} />
-<AvatarToken size={Size.LG} />
-<AvatarToken size={Size.XL} />
+<AvatarToken size={AvatarTokenSize.Xs} />
+<AvatarToken size={AvatarTokenSize.Sm} />
+<AvatarToken size={AvatarTokenSize.Md} />
+<AvatarToken size={AvatarTokenSize.Lg} />
+<AvatarToken size={AvatarTokenSize.Xl} />
 ```
 
 ### Name
@@ -104,24 +104,22 @@ Use the `color`, `backgroundColor` and `borderColor` props to set the text color
 </Canvas>
 
 ```jsx
-import {   TextColor,
-           BackgroundColor,
-           BorderColor, } from '../../../helpers/constants/design-system';
+import { TextColor, BackgroundColor, BorderColor, } from '../../../helpers/constants/design-system';
 import { AvatarToken } from '../../component-library';
 
 <AvatarToken
-      backgroundColor={BackgroundColor.goerli}
-      borderColor={BorderColor.goerli}
-      name="G"
-      color={Color.primaryInverse}
+    backgroundColor={BackgroundColor.goerli}
+    borderColor={BorderColor.goerli}
+    name="G"
+    color={Color.primaryInverse}
 >
   G
 </AvatarToken>
 <AvatarToken
-    backgroundColor={BackgroundColor.sepolia}
-      borderColor={BorderColor.sepolia}
-      name="S"
-      color={Color.primaryInverse}
+  backgroundColor={BackgroundColor.sepolia}
+  borderColor={BorderColor.sepolia}
+  name="S"
+  color={Color.primaryInverse}
 >
   S
 </AvatarToken>
