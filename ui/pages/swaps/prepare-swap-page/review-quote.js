@@ -108,17 +108,12 @@ import {
   DISPLAY,
   AlignItems,
   FLEX_DIRECTION,
-  SEVERITIES,
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
   Size,
 } from '../../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  ButtonLink,
-  Text,
-} from '../../../components/component-library';
+import { ButtonLink, Text } from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -139,6 +134,7 @@ import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+import NotEnoughBalance from './not-enough-balance';
 
 let intervalId;
 
@@ -1072,27 +1068,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             {viewQuotePriceDifferenceWarning}
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
               <Box display={DISPLAY.FLEX} marginTop={2}>
-                <BannerAlert
-                  severity={SEVERITIES.INFO}
+                <NotEnoughBalance
                   title={t('notEnoughBalance')}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    as="h6"
-                    data-testid="mm-banner-alert-notification-text"
-                  >
-                    {actionableBalanceErrorMessage}
-
-                    {needsMoreGas && (
-                      <ButtonLink
-                        onClick={() => openBuyCryptoInPdapp()}
-                        size={Size.inherit}
-                      >
-                        {t('buyMoreAsset', [nativeCurrencySymbol])}
-                      </ButtonLink>
-                    )}
-                  </Text>
-                </BannerAlert>
+                  actionableBalanceErrorMessage={actionableBalanceErrorMessage}
+                  needsMoreGas={needsMoreGas}
+                  openBuyCryptoInPdapp={openBuyCryptoInPdapp}
+                  needsMoreGasText={t('buyMoreAsset', [nativeCurrencySymbol])}
+                />
               </Box>
             )}
           </>
