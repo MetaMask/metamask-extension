@@ -9098,13 +9098,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/parsers@npm:^3.0.0-rc.6":
-  version: 3.0.0-rc.26
-  resolution: "@yarnpkg/parsers@npm:3.0.0-rc.26"
+"@yarnpkg/parsers@npm:^3.0.0-rc.32":
+  version: 3.0.0-rc.48.1
+  resolution: "@yarnpkg/parsers@npm:3.0.0-rc.48.1"
   dependencies:
     js-yaml: ^3.10.0
     tslib: ^2.4.0
-  checksum: a6a30d4a3dca3efb79800e1dd41fad568e309abbf6042cba35808a1d641be9890675f1e38d40fb61cadc31a16c9d0199f5a7626bb8584c37720bd3a7329ca59f
+  checksum: c4328cad81ec91de0840b065dfcfda9afa038dadf7507f27f73415675e257a9ad3b21247a6e28a6e90533c411645320104fd529ef85659173932ae38b26a7b0e
   languageName: node
   linkType: hard
 
@@ -23285,37 +23285,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lockfile-lint-api@npm:5.4.6":
-  version: 5.4.6
-  resolution: "lockfile-lint-api@npm:5.4.6"
+"lockfile-lint-api@npm:^5.5.5":
+  version: 5.5.5
+  resolution: "lockfile-lint-api@npm:5.5.5"
   dependencies:
-    "@yarnpkg/parsers": ^3.0.0-rc.6
+    "@yarnpkg/parsers": ^3.0.0-rc.32
     object-hash: ^3.0.0
-  checksum: ed659ad25712126e7385c60bda6dfca38fb292b61114edd2ec8990224c63879208d8183b17548fd13181d1229727ca85b4fd9d4ae474ad209ebe04beaa699144
+  checksum: 334ffbd29370f106980f17b58f794054f498abef39c2e1cf4a1276c097f78c72f3d087115643c913049b72a84ff7e28a563654271938e09250ae7f6b91a90830
   languageName: node
   linkType: hard
 
-"lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::locator=metamask-crx%40workspace%3A.":
-  version: 5.4.6
-  resolution: "lockfile-lint-api@patch:lockfile-lint-api@npm%3A5.4.6#./.yarn/patches/lockfile-lint-api-npm-5.4.6-dc86b73900.patch::version=5.4.6&hash=9339a7&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@yarnpkg/parsers": ^3.0.0-rc.6
-    object-hash: ^3.0.0
-  checksum: d08c6b8fbd19330bfebde24917b3ec544a31be0383cbb35d76453bba4d4248218837b04d74cf5cf943306ed5e8a21aea2e28eb0e574d797e5b07288a1e2a02d2
-  languageName: node
-  linkType: hard
-
-"lockfile-lint@npm:^4.9.6":
-  version: 4.9.6
-  resolution: "lockfile-lint@npm:4.9.6"
+"lockfile-lint@npm:^4.10.6":
+  version: 4.10.6
+  resolution: "lockfile-lint@npm:4.10.6"
   dependencies:
     cosmiconfig: ^7.0.1
     debug: ^4.1.1
-    lockfile-lint-api: ^5.4.6
+    lockfile-lint-api: ^5.5.5
     yargs: ^16.0.0
   bin:
-    lockfile-lint: ./bin/lockfile-lint.js
-  checksum: f573f3fe111d5499c3a7de8636f330b008123c23ad117102d297c3b5e7085b1524f96be6563e0d151a0e63b1080ac56f45d0c6ffdd7cc02fd3c1e5a496a118cf
+    lockfile-lint: bin/lockfile-lint.js
+  checksum: e031e8578e334ca2e8563bb6fd40dc1708fe77d7a4419de8d6bec6e7e9d26c2c685edec57407568e2b1662d48118003a826c9c4bee9b938836dfc97207d4fe42
   languageName: node
   linkType: hard
 
@@ -24472,7 +24462,7 @@ __metadata:
     lavamoat-browserify: ^15.7.0
     lavamoat-viz: ^6.0.9
     localforage: ^1.9.0
-    lockfile-lint: ^4.9.6
+    lockfile-lint: ^4.10.6
     lodash: ^4.17.21
     loglevel: ^1.8.1
     loose-envify: ^1.4.0
