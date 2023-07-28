@@ -389,6 +389,12 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return results;
   },
+  [EndowmentPermissions['endowment:lifecycle-hooks']]: ({ t }) => ({
+    label: t('permission_lifecycleHooks'),
+    description: t('permission_lifecycleHooksDescription'),
+    leftIcon: IconName.Hierarchy,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t }) => ({
