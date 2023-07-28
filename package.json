@@ -96,7 +96,8 @@
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
-    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts"
+    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts",
+    "check-pr-has-required-labels": "ts-node ./.github/scripts/check-pr-has-required-labels.ts"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
