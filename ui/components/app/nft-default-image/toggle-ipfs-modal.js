@@ -29,7 +29,7 @@ export const ToggleIpfsModal = ({ onClose }) => {
       onClose={() => {
         onClose();
       }}
-      className="import-nfts-modal"
+      className="toggle-ipfs-modal"
     >
       <ModalOverlay />
       <ModalContent>
