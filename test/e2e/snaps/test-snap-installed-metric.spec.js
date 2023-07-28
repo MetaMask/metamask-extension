@@ -80,8 +80,8 @@ describe('Snap Installed Event', function () {
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
-          snap_id: 'npm:@metamask/test-snap-dialog',
-          version: '5.5.0',
+          snap_id: 'npm:@metamask/dialog-example-snap',
+          version: '0.37.2-flask.1',
           category: 'Snaps',
           locale: 'en',
           chain_id: '0x539',
