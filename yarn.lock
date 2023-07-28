@@ -4061,21 +4061,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@metamask/eth-keyring-controller@npm:11.0.0"
-  dependencies:
-    "@ethereumjs/tx": ^4.1.1
-    "@metamask/browser-passworder": ^4.1.0
-    "@metamask/eth-hd-keyring": ^6.0.0
-    "@metamask/eth-sig-util": ^5.1.0
-    "@metamask/eth-simple-keyring": ^5.0.0
-    "@metamask/utils": ^5.0.0
-    obs-store: ^4.0.3
-  checksum: 84ade74649bf4020f9c06c985f8116f3cf080c96df201bbd919a6defcffd4824f50feb4b26a630e14d5d2d00fd74e0fde800e5165d63317e834a05a270733d8b
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-keyring-controller@npm:^13.0.0":
   version: 13.0.0
   resolution: "@metamask/eth-keyring-controller@npm:13.0.0"
@@ -24218,7 +24203,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": ^9.0.0
     "@metamask/eslint-config-typescript": ^9.0.1
     "@metamask/eth-json-rpc-middleware": ^11.0.0
-    "@metamask/eth-keyring-controller": ^11.0.0
+    "@metamask/eth-keyring-controller": ^13.0.0
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
     "@metamask/eth-snap-keyring": ^0.1.3
     "@metamask/eth-token-tracker": ^4.0.0
@@ -26486,18 +26471,6 @@ __metadata:
   version: 1.0.5
   resolution: "objectorarray@npm:1.0.5"
   checksum: 8fd776aa495d113e217837f4adc1d53e63f656498237094d25f84c3e2c038b34b71d6fd85c4b60c7ae5f558790e5042426a400fae3eac35f297e11be12643a78
-  languageName: node
-  linkType: hard
-
-"obs-store@npm:^4.0.3":
-  version: 4.0.3
-  resolution: "obs-store@npm:4.0.3"
-  dependencies:
-    readable-stream: ^2.2.2
-    safe-event-emitter: ^1.0.1
-    through2: ^2.0.3
-    xtend: ^4.0.1
-  checksum: a3c05dad7483489f2c083059256f24838b106e10012dd296c7d3e8066869bbc7313dc90775354b519cbeb7aa4c230b0f66cc87ef1414189bad6d03adb0b00b75
   languageName: node
   linkType: hard
 
