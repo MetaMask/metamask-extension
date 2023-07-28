@@ -9,6 +9,7 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
+  setUseAddressBarEnsResolution,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => {
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
+    useAddressBarEnsResolution,
   } = metamask;
 
   return {
@@ -36,6 +38,7 @@ const mapStateToProps = (state) => {
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
+    useAddressBarEnsResolution,
   };
 };
 
@@ -56,6 +59,8 @@ const mapDispatchToProps = (dispatch) => {
     setUseMultiAccountBalanceChecker: (value) => {
       return dispatch(setUseMultiAccountBalanceChecker(value));
     },
+    setUseAddressBarEnsResolution: (value) =>
+      dispatch(setUseAddressBarEnsResolution(value)),
   };
 };
 
