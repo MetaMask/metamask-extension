@@ -1399,9 +1399,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "showNft": {
-    "message": "Show NFT"
-  },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
   },
@@ -2056,6 +2053,16 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
+  "ipfsToggleModalDescriptionOne": {
+    "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
+  "ipfsToggleModalDescriptionTwo": {
+    "message": "Selecting Confirm turns on IPFS resolution. You can turn it off in $1 at any time.",
+    "description": "$1 is the method to turn off ipfs"
+  },
+  "ipfsToggleModalSettings": {
+    "message": "Settings > Security and privacy"
   },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
@@ -2839,16 +2846,6 @@
   "notificationsInfos": {
     "message": "$1 from $2",
     "description": "$1 is the date at which the notification has been dispatched and $2 is the link to the snap that dispatched the notification."
-  },
-  "ipfsToggleModalDescriptionOne":{
-    "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
-  },
-  "ipfsToggleModalDescriptionTwo":{
-    "message": "Selecting Confirm turns on IPFS resolution. You can turn it off in $1 at any time.",
-    "description": "$1 is the method to turn off ipfs"
-  },
-  "ipfsToggleModalSettings":{
-    "message": "Settings > Security and privacy"
   },
   "notificationsMarkAllAsRead": {
     "message": "Mark all as read"
@@ -3833,6 +3830,9 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showNft": {
+    "message": "Show NFT"
   },
   "showPermissions": {
     "message": "Show permissions"

@@ -15,10 +15,7 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import {
-  getIpfsGateway,
-  getTestNetworkBackgroundColor,
-} from '../../../selectors';
+import { getTestNetworkBackgroundColor } from '../../../selectors';
 
 export const NftItem = ({
   alt,
@@ -28,9 +25,9 @@ export const NftItem = ({
   networkSrc,
   tokenId,
   onClick,
-  clickable = true,
+  isIpfsEnabled,
+  clickable,
 }) => {
-  const ipfsGateway = useSelector(getIpfsGateway);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   return (
     <Box
@@ -62,7 +59,7 @@ export const NftItem = ({
           />
         }
       >
-        {ipfsGateway ? (
+        {isIpfsEnabled ? (
           <Box
             className="nft-item__item nft-item__item-image"
             data-testid="nft-image"
@@ -79,6 +76,7 @@ export const NftItem = ({
             name={name}
             tokenId={tokenId}
             clickable={clickable}
+            isIpfsEnabled={isIpfsEnabled}
           />
         )}
       </BadgeWrapper>
@@ -95,4 +93,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
+  isIpfsEnabled: PropTypes.string,
 };

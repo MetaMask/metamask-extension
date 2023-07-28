@@ -4,15 +4,14 @@ import { fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import { NftItem } from '.';
 
 describe('NftItem component', () => {
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-      ipfsGateway: '',
-    },
-  });
+  const store = configureStore()(mockState);
+  jest.mock('../../../store/actions.ts', () => ({
+    getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
+  }));
   describe('render', () => {
     const props = {
       alt: 'Test Alt',
@@ -23,13 +22,11 @@ describe('NftItem component', () => {
       networkSrc: 'test-network-src',
       tokenId: '1',
       onClick: jest.fn(),
+      isIpfsEnabled: IPFS_DEFAULT_GATEWAY_URL,
     };
 
     it('renders correctly with an image source', () => {
-      const { getByTestId } = renderWithProvider(
-        <NftItem {...props} showNftDefaultImage />,
-        store,
-      );
+      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
 
       expect(getByTestId('nft-item')).toBeInTheDocument();
       expect(getByTestId('nft-network-badge')).toBeInTheDocument();
@@ -39,7 +36,7 @@ describe('NftItem component', () => {
 
     it('renders correctly with default image when no image source is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem {...props} />,
+        <NftItem {...props} isIpfsEnabled="" />,
         store,
       );
 
@@ -48,10 +45,7 @@ describe('NftItem component', () => {
     });
 
     it('calls onClick when the NFT image is clicked', () => {
-      const { getByTestId } = renderWithProvider(
-        <NftItem {...props} showNftDefaultImage />,
-        store,
-      );
+      const { getByTestId } = renderWithProvider(<NftItem {...props} />, store);
 
       fireEvent.click(getByTestId('nft-image'));
       expect(props.onClick).toHaveBeenCalled();

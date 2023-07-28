@@ -14,11 +14,15 @@ export default {
     clickable: {
       control: 'boolean',
     },
+    isIpfsEnabled: {
+      control: 'text',
+    },
   },
   args: {
     name: null,
     tokenId: '12345',
     clickable: true,
+    isIpfsEnabled: 'dweb.link',
   },
 };
 
@@ -29,3 +33,15 @@ export const DefaultStory = (args) => (
 );
 
 DefaultStory.storyName = 'Default';
+
+export const NoImage = (args) => {
+  return (
+    <div style={{ width: 200, height: 200 }}>
+      <NftDefaultImage {...args} />
+    </div>
+  );
+};
+
+NoImage.args = {
+  isIpfsEnabled: '',
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Display,
   AlignItems,
@@ -16,16 +16,15 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ButtonLink, Text } from '../../component-library';
 import Box from '../../ui/box/box';
 import { showIpfsModal } from '../../../store/actions';
-import { getIpfsGateway } from '../../../selectors';
 
 export default function NftDefaultImage({
   name,
   tokenId,
   className,
-  clickable = false,
+  isIpfsEnabled,
+  clickable,
 }) {
   const t = useI18nContext();
-  const ipfsGateway = useSelector(getIpfsGateway);
   const dispatch = useDispatch();
 
   return (
@@ -51,7 +50,7 @@ export default function NftDefaultImage({
       >
         {name ?? t('unknownCollection')} <br /> #{tokenId}
       </Text>
-      {!ipfsGateway?.length > 0 && (
+      {!isIpfsEnabled && (
         <ButtonLink
           paddingTop={4}
           paddingBottom={4}
@@ -81,6 +80,10 @@ NftDefaultImage.propTypes = {
    * Controls the css class for the cursor hover
    */
   clickable: PropTypes.bool,
+  /**
+   * Check if ipfs is Enabled or not based on Ipfs Value
+   */
+  isIpfsEnabled: PropTypes.string,
   /**
    * An additional className to apply to the NFT default image
    */
