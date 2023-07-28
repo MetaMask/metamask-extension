@@ -2385,10 +2385,12 @@ export default class TransactionController extends EventEmitter {
       uiCustomizations = null;
     }
 
+    /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
       referrer,
       source,
+      status,
       network,
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
@@ -2410,7 +2412,6 @@ export default class TransactionController extends EventEmitter {
     }
 
     let sensitiveProperties = {
-      status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
