@@ -330,13 +330,10 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager.wipeTransactions(address);
   }
 
-<<<<<<< HEAD
-  /* eslint-disable */
-=======
   /* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
->>>>>>> blockaid_metrics
   /**
    * Add a new unapproved transaction
+   *
    * @param {object} txParams - Standard parameters for an Ethereum transaction
    * @param {object} opts - Options
    * @param {string} opts.actionId - Unique ID to prevent duplicate requests
