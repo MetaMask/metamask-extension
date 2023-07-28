@@ -17,6 +17,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   addToAddressBook,
+  setSelectedAddress,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -41,6 +42,7 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
+  getSelectedAccount,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -160,6 +162,7 @@ const mapStateToProps = (state, ownProps) => {
   const toAccounts = getSendToAccounts(state);
 
   const tokenList = getTokenList(state);
+  const selectedAccount = getSelectedAccount(state);
 
   const toName =
     identities[toAddress]?.name ||
@@ -279,6 +282,7 @@ const mapStateToProps = (state, ownProps) => {
     isMultiLayerFeeNetwork,
     chainId,
     isBuyableChain,
+    selectedAccount,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
@@ -293,6 +297,7 @@ export const mapDispatchToProps = (dispatch) => {
   const mmiActions = mmiActionsFactory();
   ///: END:ONLY_INCLUDE_IN
   return {
+    setSelectedAddress: (address) => dispatch(setSelectedAddress(address)),
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
     },

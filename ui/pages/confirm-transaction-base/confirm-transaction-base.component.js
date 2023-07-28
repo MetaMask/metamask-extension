@@ -86,6 +86,7 @@ export default class ConfirmTransactionBase extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func,
     toAccounts: PropTypes.array,
     toAddress: PropTypes.string,
+    selectedAccount: PropTypes.string,
     tokenData: PropTypes.object,
     tokenProps: PropTypes.object,
     toName: PropTypes.string,
@@ -846,8 +847,14 @@ export default class ConfirmTransactionBase extends Component {
       toAddress,
       txData: { origin } = {},
       getNextNonce,
+      fromAddress,
+      selectedAccount,
       tryReverseResolveAddress,
     } = this.props;
+    // To ensure that the extension goes to the address the User wants to send a transfer from after the approval
+    if (fromAddress !== selectedAccount) {
+      this.props.setSelectedAddress(fromAddress);
+    }
     const { trackEvent } = this.context;
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
