@@ -33,9 +33,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsContextProp,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
-///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -43,7 +40,9 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,
@@ -69,13 +68,13 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const metaMetricsId = useSelector(getMetaMetricsId);
   const address = useSelector(getSelectedAddress);
 
   const hasUnapprovedTransactions = useSelector(
     (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
   );
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const metaMetricsId = useSelector(getMetaMetricsId);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
   ///: END:ONLY_INCLUDE_IN
@@ -145,40 +144,6 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         )
         ///: END:ONLY_INCLUDE_IN
       }
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-        <MenuItem
-          iconName={IconName.Diagram}
-          onClick={() => {
-            const portfolioUrl = getPortfolioUrl('', 'ext', metaMetricsId);
-            global.platform.openTab({
-              url: portfolioUrl,
-            });
-            trackEvent(
-              {
-                category: MetaMetricsEventCategory.Home,
-                event: MetaMetricsEventName.PortfolioLinkClicked,
-                properties: {
-                  url: portfolioUrl,
-                  location: METRICS_LOCATION,
-                },
-              },
-              {
-                contextPropsIntoEventProperties: [
-                  MetaMetricsContextProp.PageTitle,
-                ],
-              },
-            );
-            closeMenu();
-          }}
-          data-testid="global-menu-portfolio"
-        >
-          {t('portfolioView')}
-        </MenuItem>
-        ///: END:ONLY_INCLUDE_IN
-      }
-
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

@@ -330,7 +330,11 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager.wipeTransactions(address);
   }
 
+<<<<<<< HEAD
   /* eslint-disable */
+=======
+  /* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
+>>>>>>> blockaid_metrics
   /**
    * Add a new unapproved transaction
    * @param {object} txParams - Standard parameters for an Ethereum transaction
@@ -345,7 +349,7 @@ export default class TransactionController extends EventEmitter {
    * @param {boolean} opts.swaps.meta - Additional metadata to store for the transaction
    * @param {TransactionType} opts.type - Type of transaction to add, such as 'cancel' or 'swap'
    * @returns {Promise<{transactionMeta: TransactionMeta, result: Promise<string>}>} An object containing the transaction metadata, and a promise that resolves to the transaction hash after being submitted to the network
-   */
+   */ /* eslint-enable jsdoc/require-param, jsdoc/check-param-names */
   async addTransaction(
     txParams,
     {
@@ -566,54 +570,6 @@ export default class TransactionController extends EventEmitter {
     txGasFees = pickBy(txGasFees);
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
-   *
-   * @param {string} txId - transaction id
-   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
-   * @param {string} txEstimateBaseFees.estimatedBaseFee
-   * @param {string} txEstimateBaseFees.decEstimatedBaseFee
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionEstimatedBaseFee(
-    txId,
-    { estimatedBaseFee, decEstimatedBaseFee },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(
-      txId,
-      'updateTransactionEstimatedBaseFee',
-    );
-
-    let txEstimateBaseFees = { estimatedBaseFee, decEstimatedBaseFee };
-    // only update what is defined
-    txEstimateBaseFees = pickBy(txEstimateBaseFees);
-
-    const note = `Update Transaction Estimated Base Fees for ${txId}`;
-    this._updateTransaction(txId, txEstimateBaseFees, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates a transaction's user settings only if the transaction state is unapproved
-   *
-   * @param {string} txId
-   * @param {object} userSettings - holds the metadata
-   * @param {string} userSettings.userEditedGasLimit
-   * @param {string} userSettings.userFeeLevel
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionUserSettings');
-
-    let userSettings = { userEditedGasLimit, userFeeLevel };
-    // only update what is defined
-    userSettings = pickBy(userSettings);
-
-    const note = `Update User Settings for ${txId}`;
-    this._updateTransaction(txId, userSettings, note);
     return this._getTransaction(txId);
   }
 

@@ -776,7 +776,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -945,11 +945,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
