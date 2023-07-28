@@ -16,7 +16,6 @@ import {
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { setSeedPhraseBackedUp } from '../../../store/actions';
-import Checkbox from '../../../components/ui/check-box';
 import { ONBOARDING_COMPLETION_ROUTE } from '../../../helpers/constants/routes';
 import {
   MetaMetricsEventCategory,
@@ -27,6 +26,7 @@ import {
   Icon,
   IconName,
   IconSize,
+  Checkbox
 } from '../../../components/component-library';
 
 export default function SkipSRPBackup({ handleClose }) {
@@ -101,9 +101,9 @@ export default function SkipSRPBackup({ handleClose }) {
           <label className="skip-srp-backup-popover__label">
             <Checkbox
               className="skip-srp-backup-popover__checkbox"
-              onClick={() => setChecked(!checked)}
-              checked={checked}
-              dataTestId="skip-srp-backup-popover-checkbox"
+              onChange={() => setChecked(!checked)}
+              isChecked={checked}
+              data-testid="skip-srp-backup-popover-checkbox"
             />
             <Typography
               className="skip-srp-backup-popover__details"
