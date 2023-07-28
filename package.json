@@ -98,6 +98,7 @@
     "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts"
   },
   "resolutions": {
+    "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.21.5#./.yarn/patches/@babel-core-npm-7.21.5-c72c337956.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.18.9#./.yarn/patches/@babel-runtime-npm-7.18.9-28ca6b5f61.patch",
     "@metamask/approval-controller": "^3.4.0",
@@ -528,7 +529,7 @@
     "sass": "^1.32.4",
     "sass-loader": "^10.1.1",
     "selenium-webdriver": "^4.9.0",
-    "semver": "^7.3.5",
+    "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
     "sinon": "^9.0.0",
     "source-map": "^0.7.2",
