@@ -4,7 +4,6 @@ import { fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import { NftItem } from '.';
 
 describe('NftItem component', () => {
