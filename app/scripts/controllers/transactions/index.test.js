@@ -2163,6 +2163,7 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2173,7 +2174,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2250,6 +2250,7 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2260,7 +2261,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2349,6 +2349,7 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2359,7 +2360,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2438,6 +2438,7 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2448,7 +2449,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2529,6 +2529,7 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -2537,7 +2538,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
       await txController._trackTransactionMetricsEvent(
@@ -2601,6 +2601,7 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2611,7 +2612,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2675,6 +2675,7 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_malicious'],
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2685,7 +2686,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2749,6 +2749,7 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_safety_unknown'],
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2759,7 +2760,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2831,6 +2831,7 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2842,7 +2843,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
-          status: 'unapproved',
           estimate_suggested: GasRecommendations.medium,
           estimate_used: GasRecommendations.high,
           default_estimate: 'medium',
