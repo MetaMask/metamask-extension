@@ -911,9 +911,6 @@
   "delete": {
     "message": "Hapus"
   },
-  "deleteAccount": {
-    "message": "Hapus akun"
-  },
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
