@@ -4,7 +4,6 @@ import {
   EncryptionPublicKeyManager,
   EncryptionPublicKeyParamsMetamask,
 } from '@metamask/message-manager';
-import { KeyringController } from '@metamask/eth-keyring-controller';
 import {
   AbstractMessageManager,
   AbstractMessage,
@@ -83,7 +82,8 @@ export type EncryptionPublicKeyControllerMessenger =
 
 export type EncryptionPublicKeyControllerOptions = {
   messenger: EncryptionPublicKeyControllerMessenger;
-  keyringController: KeyringController;
+  getEncryptionPublicKey: (address: string) => Promise<string>;
+  getAccountKeyringType: (account: string) => Promise<string>;
   getState: () => any;
   metricsEvent: (payload: any, options?: any) => void;
 };
@@ -98,7 +98,9 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
 > {
   hub: EventEmitter;
 
-  private _keyringController: KeyringController;
+  private _getEncryptionPublicKey: (address: string) => Promise<string>;
+
+  private _getAccountKeyringType: (account: string) => Promise<string>;
 
   private _getState: () => any;
 
@@ -111,13 +113,15 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
    *
    * @param options - The controller options.
    * @param options.messenger - The restricted controller messenger for the EncryptionPublicKey controller.
-   * @param options.keyringController - An instance of a keyring controller used to extract the encryption public key.
+   * @param options.getEncryptionPublicKey - Callback to get the keyring encryption public key.
+   * @param options.getAccountKeyringType - Callback to get the keyring type.
    * @param options.getState - Callback to retrieve all user state.
    * @param options.metricsEvent - A function for emitting a metric event.
    */
   constructor({
     messenger,
-    keyringController,
+    getEncryptionPublicKey,
+    getAccountKeyringType,
     getState,
     metricsEvent,
   }: EncryptionPublicKeyControllerOptions) {
@@ -128,7 +132,8 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
       state: getDefaultState(),
     });
 
-    this._keyringController = keyringController;
+    this._getEncryptionPublicKey = getEncryptionPublicKey;
+    this._getAccountKeyringType = getAccountKeyringType;
     this._getState = getState;
     this._metricsEvent = metricsEvent;
 
@@ -186,9 +191,9 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
     address: string,
     req: OriginalRequest,
   ): Promise<string> {
-    const keyring = await this._keyringController.getKeyringForAccount(address);
+    const keyringType = await this._getAccountKeyringType(address);
 
-    switch (keyring.type) {
+    switch (keyringType) {
       case KeyringType.ledger: {
         return new Promise((_, reject) => {
           reject(
@@ -244,7 +249,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
         await this._encryptionPublicKeyManager.approveMessage(msgParams);
 
       // EncryptionPublicKey message
-      const publicKey = await this._keyringController.getEncryptionPublicKey(
+      const publicKey = await this._getEncryptionPublicKey(
         cleanMessageParams.from,
       );
 
