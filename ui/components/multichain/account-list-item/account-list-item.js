@@ -97,6 +97,8 @@ export const AccountListItem = ({
   }, [itemRef, selected]);
 
   const { keyring } = account.metadata;
+  const isRemovable =
+    keyring.type !== KeyringType.hdKeyTree && keyring.type !== KeyringType.snap;
   const label = getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -261,7 +263,7 @@ export const AccountListItem = ({
         account={account}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}
-        isRemovable={keyring !== KeyringType.hdKeyTree}
+        isRemovable={isRemovable}
         closeMenu={closeMenu}
       />
     </Box>
