@@ -612,6 +612,18 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
+  PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
+  QuotesRequested = 'Quotes Requested',
+  QuotesReceived = 'Quotes Received',
+  BestQuoteReviewed = 'Best Quote Reviewed',
+  AllAvailableQuotesOpened = 'All Available Quotes Opened',
+  SwapStarted = 'Swap Started',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApproved = 'Transaction Approved',
+  SwapCompleted = 'Swap Completed',
+  TransactionFinalized = 'Transaction Finalized',
+  ExitedSwaps = 'Exited Swaps',
 }
 
 export enum MetaMetricsEventAccountType {

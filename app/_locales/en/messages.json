@@ -1426,6 +1426,24 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
   },
+  "ensDomainsSettingDescriptionIntro": {
+    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
+  },
+  "ensDomainsSettingDescriptionOutro": {
+    "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
+  },
+  "ensDomainsSettingDescriptionPoint1": {
+    "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
+  },
+  "ensDomainsSettingDescriptionPoint2": {
+    "message": "If the code is linked to IPFS, it gets the content from the IPFS network."
+  },
+  "ensDomainsSettingDescriptionPoint3": {
+    "message": "Then, you can see the content, usually a website or something similar."
+  },
+  "ensDomainsSettingTitle": {
+    "message": "Show ENS domains in address bar"
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -2520,6 +2538,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -2715,6 +2736,15 @@
   },
   "notifications21Title": {
     "message": "Introducing new and refreshed Swaps!"
+  },
+  "notifications22ActionText": {
+    "message": "Got it"
+  },
+  "notifications22Description": {
+    "message": "💡 Just click the global menu or account menu to find them!"
+  },
+  "notifications22Title": {
+    "message": "Looking for your account details or the block explorer URL?"
   },
   "notifications3ActionText": {
     "message": "Read more",
