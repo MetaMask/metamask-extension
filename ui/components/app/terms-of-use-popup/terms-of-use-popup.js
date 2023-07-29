@@ -16,9 +16,9 @@ import {
   ButtonLink,
   Label,
   Text,
+  Checkbox,
 } from '../../component-library';
 import Box from '../../ui/box';
-import CheckBox from '../../ui/check-box/check-box.component';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -1168,12 +1168,12 @@ export default function TermsOfUsePopup({ onAccept }) {
             marginRight={3}
             gap={2}
           >
-            <CheckBox
+            <Checkbox
               id="terms-of-use__checkbox"
               className="terms-of-use__checkbox"
-              dataTestId="terms-of-use-checkbox"
-              checked={isTermsOfUseChecked}
-              onClick={() => {
+              datatest-id="terms-of-use-checkbox"
+              isChecked={isTermsOfUseChecked}
+              onChange={() => {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
               }}
             />
