@@ -8,6 +8,9 @@ import { BN } from 'ethereumjs-util';
  * their keyed by decimal number chainId and another hexadecimal chainId property
  * exists within the same object.
  * Further explanation in ./077-supplements.md
+ *
+ * @param state - The persisted MetaMask state, keyed by controller.
+ * @returns Updated versioned MetaMask extension state.
  */
 export default function transformState077For086(
   state: Record<string, unknown>,
@@ -28,9 +31,8 @@ export default function transformState077For086(
         )
       ) {
         Object.keys(allNftContracts).forEach((address) => {
-          const nftContractsByChainId = allNftContracts[address];
-
-          if (isObject(nftContractsByChainId)) {
+          if (isObject(allNftContracts[address])) {
+            const nftContractsByChainId = allNftContracts[address];
             for (const chainId of Object.keys(nftContractsByChainId)) {
               if (
                 !isStrictHexString(chainId) &&
@@ -53,9 +55,8 @@ export default function transformState077For086(
 
       if (Object.keys(allNfts).every((address) => isObject(allNfts[address]))) {
         Object.keys(allNfts).forEach((address) => {
-          const nftsByChainId = allNfts[address];
-
-          if (isObject(nftsByChainId)) {
+          if (isObject(allNfts[address])) {
+            const nftsByChainId = allNfts[address];
             for (const chainId of Object.keys(nftsByChainId)) {
               if (
                 !isStrictHexString(chainId) &&
