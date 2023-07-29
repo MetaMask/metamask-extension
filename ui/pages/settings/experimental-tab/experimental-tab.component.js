@@ -6,15 +6,11 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import Typography from '../../../components/ui/typography/typography';
 import { Text } from '../../../components/component-library';
 import {
-  FONT_WEIGHT,
+  FontWeight,
   TextColor,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   TextVariant,
-  ///: END:ONLY_INCLUDE_IN
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
@@ -146,14 +142,14 @@ export default class ExperimentalTab extends PureComponent {
 
     return (
       <>
-        <Typography
-          variant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingSm}
           color={TextColor.textAlternative}
           marginBottom={2}
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
         >
           {t('privacy')}
-        </Typography>
+        </Text>
         <div
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
@@ -161,29 +157,29 @@ export default class ExperimentalTab extends PureComponent {
           <div className="settings-page__content-item">
             <span>{t('transactionSecurityCheck')}</span>
             <div className="settings-page__content-description">
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {t('transactionSecurityCheckDescription')}
-              </Typography>
-              <Typography
+              </Text>
+              <Text
                 marginTop={3}
                 marginBottom={1}
-                variant={TypographyVariant.H6}
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {t('selectProvider')}
-              </Typography>
+              </Text>
               <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
-                <Typography
-                  variant={TypographyVariant.H5}
+                <Text
+                  variant={TextVariant.bodyMd}
                   color={TextColor.textDefault}
-                  fontWeight={FONT_WEIGHT.MEDIUM}
+                  fontWeight={FontWeight.Medium}
                   marginBottom={0}
                 >
                   {t('openSea')}
-                </Typography>
+                </Text>
                 <ToggleButton
                   value={transactionSecurityCheckEnabled}
                   onToggle={(value) => {
@@ -199,8 +195,8 @@ export default class ExperimentalTab extends PureComponent {
                   }}
                 />
               </div>
-              <Typography
-                variant={TypographyVariant.H6}
+              <Text
+                variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
                 marginTop={0}
               >
@@ -214,15 +210,15 @@ export default class ExperimentalTab extends PureComponent {
                     {t('termsOfUse')}
                   </a>,
                 ])}
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H5}
+              </Text>
+              <Text
+                variant={TextVariant.bodyMd}
                 color={TextColor.textMuted}
-                fontWeight={FONT_WEIGHT.MEDIUM}
+                fontWeight={FontWeight.Medium}
                 marginTop={2}
               >
                 {t('moreComingSoon')}
-              </Typography>
+              </Text>
             </div>
           </div>
         </div>
