@@ -12,7 +12,7 @@ import type { PolymorphicRef, BoxProps } from '../box';
 import { HeaderBaseProps, HeaderBaseComponent } from './header-base.types';
 
 export const HeaderBase: HeaderBaseComponent = React.forwardRef(
-  <C extends React.ElementType = 'span'>(
+  <C extends React.ElementType = 'div'>(
     {
       startAccessory,
       endAccessory,
@@ -85,7 +85,7 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
                   }
                 : undefined
             }
-            {...(startAccessoryWrapperProps as BoxProps<C>)}
+            {...(startAccessoryWrapperProps as BoxProps<'div'>)}
           >
             {startAccessory}
           </Box>
@@ -94,7 +94,7 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
           <Box
             width={BlockSize.Full}
             style={getTitleStyles}
-            {...(childrenWrapperProps as BoxProps<C>)}
+            {...(childrenWrapperProps as BoxProps<'div'>)}
           >
             {children}
           </Box>
@@ -111,7 +111,7 @@ export const HeaderBase: HeaderBaseComponent = React.forwardRef(
                   }
                 : undefined
             }
-            {...(endAccessoryWrapperProps as BoxProps<C>)}
+            {...(endAccessoryWrapperProps as BoxProps<'div'>)}
           >
             {endAccessory}
           </Box>
