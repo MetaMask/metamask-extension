@@ -2,7 +2,6 @@ import React, { useCallback, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { produce } from 'immer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box/check-box.component';
 
 import {
   BackgroundColor,
@@ -29,6 +28,7 @@ import {
   ModalContent,
   ModalHeader,
   BUTTON_SIZES,
+  Checkbox,
 } from '../../../component-library';
 
 /**
@@ -126,10 +126,10 @@ export default function SnapInstallWarning({
               gap={2}
               alignItems={AlignItems.center}
             >
-              <CheckBox
-                checked={checkboxState[warning.id] ?? false}
+              <Checkbox
+                isChecked={checkboxState[warning.id] ?? false}
                 id={warning.id}
-                onClick={() => onCheckboxClicked(warning.id)}
+                onChange={() => onCheckboxClicked(warning.id)}
               />
               <Label htmlFor={warning.id}>{warning.message}</Label>
             </Box>
