@@ -40,7 +40,6 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
