@@ -52,8 +52,15 @@
       cursor: pointer;
     }
 
-    .check-box {
+    .mm-box {
       color: var(--color-error-default);
+    }
+    .mm-checkbox__input:hover {
+      background-color: var(--color-error-default);
+    }
+    .mm-checkbox__input,  .mm-checkbox__input:focus {
+      border-color: var(--color-error-default);
+      background-color: var(--color-background-default);
     }
   }
 }

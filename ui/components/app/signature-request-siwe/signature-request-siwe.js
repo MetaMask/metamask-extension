@@ -5,9 +5,8 @@ import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { BannerAlert, Text } from '../../component-library';
+import { BannerAlert, Text, Checkbox} from '../../component-library';
 import Popover from '../../ui/popover';
-import Checkbox from '../../ui/check-box';
 import Button from '../../ui/button';
 import { I18nContext } from '../../../contexts/i18n';
 import { PageContainerFooter } from '../../ui/page-container';
@@ -217,11 +216,11 @@ export default function SignatureRequestSIWE({ txData }) {
           }
         >
           <div className="signature-request-siwe__warning-popover__checkbox-wrapper">
-            <Checkbox
+            < Checkbox
               id="signature-request-siwe_domain-checkbox"
-              checked={hasAgreedToDomainWarning}
+              isChecked={hasAgreedToDomainWarning}
               className="signature-request-siwe__warning-popover__checkbox-wrapper__checkbox"
-              onClick={() => setHasAgreedToDomainWarning((checked) => !checked)}
+              onChange={() => setHasAgreedToDomainWarning((checked) => !checked)}
             />
             <label
               className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
