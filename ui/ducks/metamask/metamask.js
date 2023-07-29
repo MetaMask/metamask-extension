@@ -10,7 +10,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getFirstInternalAccountByAddress,
-  getInternalAccount,
   getSelectedInternalAccount,
   getUseCurrencyRateCheck,
 } from '../../selectors';

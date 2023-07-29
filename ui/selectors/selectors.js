@@ -80,7 +80,6 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
-  findKeyringForAddress,
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
