@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import CheckBox from '../../../ui/check-box';
+// import CheckBox from '../../../ui/check-box';
 
 import {
   Display,
@@ -12,7 +12,7 @@ import {
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
-import { Box, Text } from '../../../component-library';
+import { Box, Text, Checkbox } from '../../../component-library';
 
 const DetectedTokenValues = ({
   token,
@@ -59,7 +59,8 @@ const DetectedTokenValues = ({
         </Text>
       </Box>
       <Box className="detected-token-values__checkbox">
-        <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} />
+        {/* <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} /> */}
+        <Checkbox isChecked={tokenSelection} onChange={handleCheckBoxSelection} />
       </Box>
     </Box>
   );
