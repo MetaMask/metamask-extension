@@ -7,10 +7,9 @@
     @include H7;
 
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0 16px;
     margin-top: 24px;
-
     &--first {
       margin-top: 0;
     }

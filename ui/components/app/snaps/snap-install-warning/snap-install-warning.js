@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { produce } from 'immer';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box/check-box.component';
+// import CheckBox from '../../../ui/check-box/check-box.component';
 
 import {
   BackgroundColor,
@@ -16,7 +16,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
-import { AvatarIcon, IconName, Text } from '../../../component-library';
+import { AvatarIcon, IconName, Text, Checkbox } from '../../../component-library';
 import Box from '../../../ui/box/box';
 
 /**
@@ -126,10 +126,15 @@ export default function SnapInstallWarning({
           })}
           key={warning.id}
         >
-          <CheckBox
+          {/* <CheckBox
             checked={checkboxState[warning.id] ?? false}
             id={warning.id}
             onClick={() => onCheckboxClicked(warning.id)}
+          /> */}
+          < Checkbox
+            isChecked={checkboxState[warning.id] ?? false}
+            id={warning.id}
+            onChange={() => onCheckboxClicked(warning.id)}
           />
           <label htmlFor={warning.id}>
             <Text variant={TextVariant.bodyMd}>{warning.message}</Text>
