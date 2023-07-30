@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { produce } from 'immer';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-// import CheckBox from '../../../ui/check-box/check-box.component';
 
 import {
   BackgroundColor,
@@ -126,11 +125,6 @@ export default function SnapInstallWarning({
           })}
           key={warning.id}
         >
-          {/* <CheckBox
-            checked={checkboxState[warning.id] ?? false}
-            id={warning.id}
-            onClick={() => onCheckboxClicked(warning.id)}
-          /> */}
           < Checkbox
             isChecked={checkboxState[warning.id] ?? false}
             id={warning.id}
