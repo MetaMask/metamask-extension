@@ -466,6 +466,9 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 

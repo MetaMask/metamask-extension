@@ -63,7 +63,10 @@ import {
   checkNetworkAndAccountSupports1559,
 } from '../../selectors';
 
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -787,6 +790,18 @@ export const fetchQuotesAndSetQuoteState = (
       } else {
         const newSelectedQuote = fetchedQuotes[selectedAggId];
 
+        const tokenToAmountBN = calcTokenAmount(
+          newSelectedQuote.destinationAmount,
+          newSelectedQuote.decimals || 18,
+        );
+
+        // Firefox and Chrome have different implementations of the APIs
+        // that we rely on for communication accross the app. On Chrome big
+        // numbers are converted into number strings, on firefox they remain
+        // Big Number objects. As such, we convert them here for both
+        // browsers.
+        const tokenToAmountToString = tokenToAmountBN.toString(10);
+
         trackEvent({
           event: 'Quotes Received',
           category: MetaMetricsEventCategory.Swaps,
@@ -794,10 +809,7 @@ export const fetchQuotesAndSetQuoteState = (
             token_from: fromTokenSymbol,
             token_from_amount: String(inputValue),
             token_to: toTokenSymbol,
-            token_to_amount: calcTokenAmount(
-              newSelectedQuote.destinationAmount,
-              newSelectedQuote.decimals || 18,
-            ),
+            token_to_amount: tokenToAmountToString,
             request_type: balanceError ? 'Quote' : 'Order',
             slippage: maxSlippage,
             custom_slippage: maxSlippage !== Slippage.default,
@@ -1177,7 +1189,7 @@ export const signAndSendTransactions = (
     }
 
     trackEvent({
-      event: 'Swap Started',
+      event: MetaMetricsEventName.SwapStarted,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: swapMetaData,
     });
