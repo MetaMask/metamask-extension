@@ -55,13 +55,22 @@ exports[`Eth Sign Modal should match snapshot 1`] = `
     <div
       class="box box--gap-2 box--flex-direction-row box--align-items-flex-start box--display-flex"
     >
-      <input
-        class="check-box eth-sign__checkbox far fa-square"
+      <label
+        class="mm-box mm-text mm-checkbox eth-sign__checkbox mm-text--body-md mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         data-testid="eth-sign__checkbox"
-        id="eth-sign__checkbox"
-        readonly=""
-        type="checkbox"
-      />
+        for="eth-sign__checkbox"
+      >
+        <span
+          class="mm-checkbox__input-wrapper"
+        >
+          <input
+            class="mm-box mm-checkbox__input mm-box--margin-0 mm-box--margin-right-0 mm-box--display-flex mm-box--background-color-transparent mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-2 box--border-style-solid"
+            id="eth-sign__checkbox"
+            title="eth-sign__checkbox"
+            type="checkbox"
+          />
+        </span>
+      </label>
       <label
         class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         for="eth-sign__checkbox"

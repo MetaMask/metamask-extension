@@ -15,6 +15,7 @@ import {
   IconSize,
   Label,
   Text,
+  Checkbox
 } from '../../../component-library';
 import {
   AlignItems,
@@ -28,7 +29,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import CheckBox from '../../../ui/check-box';
+// import CheckBox from '../../../ui/check-box';
 import { setDisabledRpcMethodPreference } from '../../../../store/actions';
 import { getDisabledRpcMethodPreferences } from '../../../../selectors';
 import {
@@ -129,12 +130,21 @@ const EthSignModal = ({ hideModal }) => {
           alignItems={AlignItems.flexStart}
           gap={2}
         >
-          <CheckBox
+          {/* <CheckBox
             id="eth-sign__checkbox"
             className="eth-sign__checkbox"
             dataTestId="eth-sign__checkbox"
             checked={isEthSignChecked}
             onClick={() => {
+              setIsEthSignChecked(!isEthSignChecked);
+            }}
+          /> */}
+          <Checkbox
+            id="eth-sign__checkbox"
+            className="eth-sign__checkbox"
+            data-testid="eth-sign__checkbox"
+            isChecked={isEthSignChecked}
+            onChange={() => {
               setIsEthSignChecked(!isEthSignChecked);
             }}
           />
