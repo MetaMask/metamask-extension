@@ -12,6 +12,12 @@ export default {
     onCanceled: {
       action: 'onCanceled',
     },
+    isOpen: {
+      control: 'boolean',
+    },
+  },
+  args: {
+    isOpen: true,
   },
 };
 
