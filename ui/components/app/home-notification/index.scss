@@ -49,6 +49,7 @@
   &__checkbox {
     height: 13px;
     width: 13px;
+    vertical-align: middle;
     font-size: 16px;
     cursor: pointer;
   }
@@ -57,7 +58,7 @@
     @include H7;
 
     color: var(--color-text-default);
-    margin-left: 8px;
+    margin-left: 16px;
     margin-top: 1px;
     user-select: none;
     -moz-user-select: none;
