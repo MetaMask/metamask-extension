@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-
-// import CheckBox from '../../../ui/check-box';
-
 import {
   Display,
   TextColor,
@@ -59,7 +56,6 @@ const DetectedTokenValues = ({
         </Text>
       </Box>
       <Box className="detected-token-values__checkbox">
-        {/* <CheckBox checked={tokenSelection} onClick={handleCheckBoxSelection} /> */}
         <Checkbox isChecked={tokenSelection} onChange={handleCheckBoxSelection} />
       </Box>
     </Box>
