@@ -3,9 +3,8 @@ import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
 import Button from '../../../components/ui/button';
-import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
-
+import { Checkbox } from '../../../components/component-library';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
@@ -114,9 +113,9 @@ class AccountList extends Component {
               <div className="hw-account-list__item__checkbox">
                 <Checkbox
                   id={`address-${idx}`}
-                  checked={checked}
-                  disabled={accountAlreadyConnected}
-                  onClick={() => {
+                  isChecked={checked}
+                  isDisabled={accountAlreadyConnected}
+                  onChange={() => {
                     this.props.onAccountChange(value);
                   }}
                 />
