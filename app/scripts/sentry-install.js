@@ -10,8 +10,7 @@ global.sentry = setupSentry({
 });
 
 /**
- * As soon as state is available via getSentryState we can call the
- * toggleSession method added to sentry in setupSentry to start automatic
+ * As soon as state is available via getSentryState we can start automatic
  * session tracking.
  */
 async function waitForStateHooks() {
@@ -20,7 +19,7 @@ async function waitForStateHooks() {
     // point it means that we are in dev mode and do not need to toggle the
     // session. Using optional chaining is sufficient to prevent the error in
     // development.
-    await global.sentry?.toggleSession();
+    await global.sentry?.startSession();
   } else {
     setTimeout(waitForStateHooks, 100);
   }
