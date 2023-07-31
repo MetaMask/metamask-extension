@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 import NftDefaultImage from '../../app/nft-default-image/nft-default-image';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   BadgeWrapper,
   BadgeWrapperAnchorElementShape,
   Box,
@@ -12,8 +14,8 @@ import {
   BackgroundColor,
   Display,
   JustifyContent,
-  Size,
 } from '../../../helpers/constants/design-system';
+import { getTestNetworkBackgroundColor } from '../../../selectors';
 
 export const NftItem = ({
   alt,
@@ -25,6 +27,7 @@ export const NftItem = ({
   onClick,
   clickable = false,
 }) => {
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   return (
     <Box
       className="nft-item__container"
@@ -38,12 +41,13 @@ export const NftItem = ({
         })}
         anchorElementShape={BadgeWrapperAnchorElementShape.circular}
         positionObj={{ top: -4, right: -4 }}
-        display={Display.BLOCK}
+        display={Display.Block}
         badge={
           <AvatarNetwork
             className="nft-item__network-badge"
+            backgroundColor={testNetworkBackgroundColor}
             data-testid="nft-network-badge"
-            size={Size.SM}
+            size={AvatarNetworkSize.Sm}
             name={networkName}
             src={networkSrc}
             borderWidth={2}

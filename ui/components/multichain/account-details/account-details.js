@@ -14,8 +14,8 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
 import { getMetaMaskAccountsOrdered } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';

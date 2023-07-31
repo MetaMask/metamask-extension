@@ -18,7 +18,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   Button,
-  Text,
   Label,
   Icon,
   IconName,
@@ -26,6 +25,7 @@ import {
   ButtonLink,
   BUTTON_VARIANT,
   BUTTON_SIZES,
+  Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 

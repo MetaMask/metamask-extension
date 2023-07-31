@@ -1,19 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { AvatarNetwork } from '../avatar-network';
-import { IconName, Icon, IconSize } from '../icon';
-import { Text } from '../text';
-import Box from '../../ui/box';
 import {
   AlignItems,
   DISPLAY,
-  Size,
   BorderRadius,
   TextVariant,
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import Box from '../../ui/box';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  IconName,
+  Icon,
+  IconSize,
+  Text,
+} from '..';
 
 export const PickerNetwork = ({
   className,
@@ -40,7 +44,7 @@ export const PickerNetwork = ({
         className="mm-picker-network__avatar-network"
         src={src}
         name={label}
-        size={Size.XS}
+        size={AvatarNetworkSize.Xs}
         {...avatarNetworkProps}
       />
       <Text ellipsis variant={TextVariant.bodySm}>
@@ -69,7 +73,7 @@ PickerNetwork.propTypes = {
   /**
    * It accepts all the props from AvatarNetwork
    */
-  avatarNetworkProps: PropTypes.shape(AvatarNetwork.PropTypes),
+  avatarNetworkProps: PropTypes.object,
   /**
    * It accepts all the props from Icon
    */

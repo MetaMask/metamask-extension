@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import NftsItems from '../nfts-items';
@@ -19,13 +18,14 @@ import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
+  showImportNftsModal,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NftsDetectionNotice from '../nfts-detection-notice';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-export default function NftsTab({ onAddNFT }) {
+export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const history = useHistory();
@@ -60,7 +60,11 @@ export default function NftsTab({ onAddNFT }) {
         />
       ) : (
         <>
-          {isMainnet && !useNftDetection ? <NftsDetectionNotice /> : null}{' '}
+          {isMainnet && !useNftDetection ? (
+            <Box padding={4}>
+              <NftsDetectionNotice />
+            </Box>
+          ) : null}
           <Box
             padding={12}
             display={Display.Flex}
@@ -90,7 +94,6 @@ export default function NftsTab({ onAddNFT }) {
               </Text>
               <ButtonLink
                 size={Size.MD}
-                data-testid="import-nft-button"
                 href={ZENDESK_URLS.NFT_TOKENS}
                 externalLink
               >
@@ -113,7 +116,9 @@ export default function NftsTab({ onAddNFT }) {
           size={Size.MD}
           data-testid="import-nft-button"
           startIconName={IconName.Add}
-          onClick={onAddNFT}
+          onClick={() => {
+            dispatch(showImportNftsModal());
+          }}
         >
           {t('importNFT')}
         </ButtonLink>
@@ -149,7 +154,3 @@ export default function NftsTab({ onAddNFT }) {
     </Box>
   );
 }
-
-NftsTab.propTypes = {
-  onAddNFT: PropTypes.func.isRequired,
-};

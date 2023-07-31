@@ -3,7 +3,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import testData from '../../../../.storybook/test-data';
+import mockState from '../../../../test/data/mock-state.json';
 import ConfirmRemoveJwt from '.';
 
 const mockedRemoveAccount = jest.fn();
@@ -18,7 +18,7 @@ const address = '0xaD6D458402F60fD3Bd25163575031ACDce07538D';
 
 const props = {
   hideModal: mockedHideModal,
-  token: { address },
+  token: address,
   custodyAccountDetails: [
     {
       address,
@@ -30,13 +30,8 @@ const props = {
   accounts: [{ address, balance: '0x0' }],
 };
 
-const mockStore = {
-  ...testData,
-  metamask: {},
-};
-
 const middleware = [thunk];
-const store = configureMockStore(middleware)(mockStore);
+const store = configureMockStore(middleware)(mockState);
 
 const render = () => {
   return renderWithProvider(<ConfirmRemoveJwt {...props} />, store);

@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Text,
   Box,
   Button,
   BUTTON_VARIANT,
+  Text,
 } from '../../../components/component-library';
 import {
   TextColor,
@@ -50,16 +50,17 @@ export default function InstitutionalEntityDonePage(props) {
               marginTop={4}
               marginBottom={4}
               color={TextColor.textDefault}
+              textAlign={TextAlign.Left}
             >
               {state.title}
             </Text>
             <Text
               as="p"
-              color={TextColor.textAlternative}
+              color={TextColor.textDefault}
               marginTop={2}
               marginBottom={5}
               variant={TypographyVariant.headingSm}
-              textAlign={TextAlign.Center}
+              textAlign={TextAlign.Left}
             >
               {state.description}
             </Text>

@@ -9,22 +9,23 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
-  Size,
   TextColor,
   TextVariant,
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
+  AvatarNetworkSize,
   AvatarToken,
   BadgeWrapper,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
 import {
   getCurrentChainId,
   getCurrentNetwork,
   getNativeCurrencyImage,
+  getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -50,6 +51,8 @@ export const TokenListItem = ({
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
   return (
     <Box
       className={classnames('multichain-token-list-item', className)}
@@ -83,9 +86,10 @@ export const TokenListItem = ({
         <BadgeWrapper
           badge={
             <AvatarNetwork
-              size={Size.XS}
+              size={AvatarNetworkSize.Xs}
               name={currentNetwork?.nickname}
               src={currentNetwork?.rpcPrefs?.imageUrl}
+              backgroundColor={testNetworkBackgroundColor}
               borderColor={
                 primaryTokenImage
                   ? BorderColor.borderMuted
