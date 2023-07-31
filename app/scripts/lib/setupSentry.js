@@ -126,7 +126,7 @@ export default function setupSentry({ release, getState }) {
     try {
       const persistedState = await globalThis.stateHooks.getPersistedState();
       return Boolean(
-        persistedState?.data?.MetaMetricsController.participateInMetaMetrics,
+        persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
       );
     } catch (error) {
       console.error(error);
