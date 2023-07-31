@@ -824,14 +824,6 @@ describe('migration #77', () => {
                     },
                   ],
                 },
-                '0x333': {
-                  256: [
-                    {
-                      name: 'Contract 3',
-                      address: '0xccc',
-                    },
-                  ],
-                },
               },
             },
           },
@@ -861,6 +853,41 @@ describe('migration #77', () => {
                   },
                 ],
               },
+            },
+          },
+        });
+      });
+
+      it('does not delete entries in NftController.allNftContracts that have decimal chain ID keys if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 76 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {},
+            },
+            NftController: {
+              allNftContracts: {
+                '0x333': {
+                  256: [
+                    {
+                      name: 'Contract 3',
+                      address: '0xccc',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {},
+          },
+          NftController: {
+            allNftContracts: {
               '0x333': {
                 256: [
                   {
@@ -996,6 +1023,57 @@ describe('migration #77', () => {
                   },
                 ],
               },
+              '0x333': {
+                256: [
+                  {
+                    name: 'NFT 3',
+                    description: 'Description for NFT 3',
+                    image: 'nft3.jpg',
+                    standard: 'ERC721',
+                    tokenId: '3',
+                    address: '0xccc',
+                  },
+                ],
+              },
+            },
+          },
+        });
+      });
+
+      it('does not delete entries in NftController.allNfts that have decimal chain ID keys if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 76 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {},
+            },
+            NftController: {
+              allNfts: {
+                '0x333': {
+                  256: [
+                    {
+                      name: 'NFT 3',
+                      description: 'Description for NFT 3',
+                      image: 'nft3.jpg',
+                      standard: 'ERC721',
+                      tokenId: '3',
+                      address: '0xccc',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {},
+          },
+          NftController: {
+            allNfts: {
               '0x333': {
                 256: [
                   {
