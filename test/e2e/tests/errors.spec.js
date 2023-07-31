@@ -1,14 +1,17 @@
 const { strict: assert } = require('assert');
+const { Browser } = require('selenium-webdriver');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Sentry errors', function () {
+  const migrationError =
+    process.env.SELENIUM_BROWSER === Browser.CHROME
+      ? `Cannot read properties of undefined (reading 'version')`
+      : 'meta is undefined';
   async function mockSentryMigratorError(mockServer) {
     return await mockServer
       .forPost('https://sentry.io/api/0000000/envelope/')
-      .withBodyIncluding(
-        `Cannot read properties of undefined (reading 'version')`,
-      )
+      .withBodyIncluding(migrationError)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -104,10 +107,7 @@ describe('Sentry errors', function () {
           const [{ type, value }] = mockJsonBody.exception.values;
           // Verify request
           assert.equal(type, 'TypeError');
-          assert.equal(
-            value,
-            `Cannot read properties of undefined (reading 'version')`,
-          );
+          assert(value.includes(migrationError));
           assert.equal(level, 'error');
         },
       );
