@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Security Provider Banner Alert should match snapshot 1`] = `
+<div>
+  <div
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div>
+      <h5
+        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
+        data-testid="mm-banner-base-title"
+      >
+        Malicious third party detected
+      </h5>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+      >
+        This is a description to warn the user of malicious or suspicious transactions.
+      </p>
+      <div
+        class="disclosure"
+      >
+        <details>
+          <summary
+            class="disclosure__summary is-arrow"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+            >
+              [seeDetails]
+            </p>
+            <span
+              class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+              style="mask-image: url('./images/icons/arrow-up.svg');"
+            />
+          </summary>
+          <div
+            class="disclosure__content normal"
+          >
+            <ul>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+            </ul>
+          </div>
+          <div
+            class="disclosure__footer"
+          />
+        </details>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+      >
+        <span
+          class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+          style="mask-image: url('./images/icons/security-tick.svg');"
+        />
+        [securityProviderAdviceBy]
+      </p>
+    </div>
+  </div>
+</div>
+`;

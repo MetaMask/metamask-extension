@@ -1,0 +1,94 @@
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index 66eb3236059f88f73355d4fddef9e06a0169b407..04f067d2bda8af760c0a95ca6b5d85bcdfb2421a 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,11 +1,12 @@
+-import { type ParserOptions } from './parser/index.js';
++import { ParserOptions } from './parser/index.js';
+ import type { DefaultTreeAdapterMap } from './tree-adapters/default.js';
+ import type { TreeAdapterTypeMap } from './tree-adapters/interface.js';
+-export { type DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
++export { DefaultTreeAdapterMap, defaultTreeAdapter } from './tree-adapters/default.js';
+ export type { TreeAdapter, TreeAdapterTypeMap } from './tree-adapters/interface.js';
+-export { type ParserOptions, /** @internal */ Parser } from './parser/index.js';
+-export { serialize, serializeOuter, type SerializerOptions } from './serializer/index.js';
+-export { ERR as ErrorCodes, type ParserError } from './common/error-codes.js';
++export { ParserOptions, /** @internal */ Parser } from './parser/index.js';
++export { serialize, serializeOuter, SerializerOptions } from './serializer/index.js';
++export type { ParserError } from './common/error-codes.js';
++export { ERR as ErrorCodes } from './common/error-codes.js';
+ /** @internal */
+ export * as foreignContent from './common/foreign-content.js';
+ /** @internal */
+@@ -13,7 +14,7 @@ export * as html from './common/html.js';
+ /** @internal */
+ export * as Token from './common/token.js';
+ /** @internal */
+-export { Tokenizer, type TokenizerOptions, TokenizerMode, type TokenHandler } from './tokenizer/index.js';
++export { Tokenizer, TokenizerOptions, TokenizerMode, TokenHandler } from './tokenizer/index.js';
+ /**
+  * Parses an HTML string.
+  *
+diff --git a/dist/parser/index.d.ts b/dist/parser/index.d.ts
+index 50a9bd0c73649e4a78edd0d18b4ee44ae9cdf3b7..85cc630db81d7a4ebd01691223d81187cdd8adcb 100644
+--- a/dist/parser/index.d.ts
++++ b/dist/parser/index.d.ts
+@@ -1,10 +1,10 @@
+-import { Tokenizer, TokenizerMode, type TokenHandler } from '../tokenizer/index.js';
+-import { OpenElementStack, type StackHandler } from './open-element-stack.js';
++import { Tokenizer, TokenizerMode, TokenHandler } from '../tokenizer/index.js';
++import { OpenElementStack, StackHandler } from './open-element-stack.js';
+ import { FormattingElementList } from './formatting-element-list.js';
+-import { ERR, type ParserErrorHandler } from '../common/error-codes.js';
++import { ERR, ParserErrorHandler } from '../common/error-codes.js';
+ import { TAG_ID as $, NS } from '../common/html.js';
+ import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
+-import { type Token, type CommentToken, type CharacterToken, type TagToken, type DoctypeToken, type EOFToken, type LocationWithAttributes } from '../common/token.js';
++import { Token, CommentToken, CharacterToken, TagToken, DoctypeToken, EOFToken, LocationWithAttributes } from '../common/token.js';
+ declare enum InsertionMode {
+     INITIAL = 0,
+     BEFORE_HTML = 1,
+diff --git a/dist/serializer/index.d.ts b/dist/serializer/index.d.ts
+index bf759e63ba1be31a2ab14884fcfd6bd3e8ecd2d7..839e21e45dc13e678c9874c51524a8ed1a463591 100644
+--- a/dist/serializer/index.d.ts
++++ b/dist/serializer/index.d.ts
+@@ -1,5 +1,5 @@
+ import type { TreeAdapter, TreeAdapterTypeMap } from '../tree-adapters/interface.js';
+-import { type DefaultTreeAdapterMap } from '../tree-adapters/default.js';
++import { DefaultTreeAdapterMap } from '../tree-adapters/default.js';
+ export interface SerializerOptions<T extends TreeAdapterTypeMap> {
+     /**
+      * Specifies input tree format.
+diff --git a/dist/tokenizer/index.d.ts b/dist/tokenizer/index.d.ts
+index 5afab96d6499bb0bba706aee7d2f153647db8713..3680d732d8a3570b6a1d9336c0ebdf8fe4f392db 100644
+--- a/dist/tokenizer/index.d.ts
++++ b/dist/tokenizer/index.d.ts
+@@ -1,6 +1,6 @@
+ import { Preprocessor } from './preprocessor.js';
+-import { type CharacterToken, type DoctypeToken, type TagToken, type EOFToken, type CommentToken } from '../common/token.js';
+-import { type ParserErrorHandler } from '../common/error-codes.js';
++import { CharacterToken, DoctypeToken, TagToken, EOFToken, CommentToken } from '../common/token.js';
++import { ParserErrorHandler } from '../common/error-codes.js';
+ declare const enum State {
+     DATA = 0,
+     RCDATA = 1,
+diff --git a/dist/tree-adapters/default.d.ts b/dist/tree-adapters/default.d.ts
+index 547d714bdc5a664ba1414c16bdfc9247c71ab4de..d96a23d6ce3e80d78da21d958c059de194bb5146 100644
+--- a/dist/tree-adapters/default.d.ts
++++ b/dist/tree-adapters/default.d.ts
+@@ -1,4 +1,4 @@
+-import { DOCUMENT_MODE, type NS } from '../common/html.js';
++import { DOCUMENT_MODE, NS } from '../common/html.js';
+ import type { Attribute, Location, ElementLocation } from '../common/token.js';
+ import type { TreeAdapter, TreeAdapterTypeMap } from './interface.js';
+ export interface Document {
+diff --git a/dist/tokenizer/preprocessor.d.ts b/dist/tokenizer/preprocessor.d.ts
+index e74a590783b4688fb6498b019c1a75cfd9ac23e7..7350e44b4ed952bcb8f167e30a94958e9fcf743a 100644
+--- a/dist/tokenizer/preprocessor.d.ts
++++ b/dist/tokenizer/preprocessor.d.ts
+@@ -1,4 +1,4 @@
+-import { ERR, type ParserError, type ParserErrorHandler } from '../common/error-codes.js';
++import { ERR, ParserError, ParserErrorHandler } from '../common/error-codes.js';
+ export declare class Preprocessor {
+     private handler;
+     html: string;

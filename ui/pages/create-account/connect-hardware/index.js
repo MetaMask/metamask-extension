@@ -371,6 +371,7 @@ class ConnectHardwareForm extends Component {
           connectToHardwareWallet={this.connectToHardwareWallet}
           browserSupported={this.state.browserSupported}
           ledgerTransportType={this.props.ledgerTransportType}
+          onCancel={this.onCancel}
         />
       );
     }

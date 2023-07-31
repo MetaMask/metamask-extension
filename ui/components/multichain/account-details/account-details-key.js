@@ -5,9 +5,10 @@ import {
   ButtonIcon,
   ButtonPrimary,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../component-library';
+
 import {
   AlignItems,
   BorderColor,
@@ -44,7 +45,11 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
         padding={4}
         gap={4}
       >
-        <Text variant={TextVariant.bodySm} style={{ wordBreak: 'break-word' }}>
+        <Text
+          data-testid="account-details-key"
+          variant={TextVariant.bodySm}
+          style={{ wordBreak: 'break-word' }}
+        >
           {privateKey}
         </Text>
         <ButtonIcon
@@ -55,7 +60,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
       <BannerAlert severity={Severity.Danger} marginTop={4}>
         <Text variant={TextVariant.bodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
-      <ButtonPrimary marginTop={6} onClick={onClose}>
+      <ButtonPrimary marginTop={6} onClick={onClose} block>
         {t('done')}
       </ButtonPrimary>
     </>

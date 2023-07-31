@@ -9,7 +9,6 @@ import {
 } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import {
-  ADD_NFT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   SECURITY_ROUTE,
 } from '../../helpers/constants/routes';
@@ -60,6 +59,11 @@ class ImportToken extends Component {
      * Clear the list of pending tokens. Called when closing the modal.
      */
     clearPendingTokens: PropTypes.func,
+
+    /**
+     * Clear the list of pending tokens. Called when closing the modal.
+     */
+    showImportNftsModal: PropTypes.func,
 
     /**
      * The list of already added tokens.
@@ -315,21 +319,15 @@ class ImportToken extends Component {
           nftAddressError: this.context.t('nftAddressError', [
             <a
               className="import-token__nft-address-error-link"
-              onClick={() =>
-                this.props.history.push({
-                  pathname: ADD_NFT_ROUTE,
-                  state: {
-                    addressEnteredOnImportTokensPage: this.state.customAddress,
-                  },
-                })
-              }
+              onClick={() => {
+                this.props.showImportNftsModal();
+              }}
               key="nftAddressError"
             >
               {this.context.t('importNFTPage')}
             </a>,
           ]),
         });
-
         break;
       case isMainnetToken && !isMainnetNetwork:
         this.setState({

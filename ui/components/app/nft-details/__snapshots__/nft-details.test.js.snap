@@ -9,7 +9,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
       class="asset-breadcrumb"
     >
       <span
-        class="box mm-icon mm-icon--size-xs box--margin-inline-end-3 box--display-inline-block box--flex-direction-row box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-xs mm-box--margin-inline-end-3 mm-box--display-inline-block mm-box--color-inherit"
         data-testid="asset__back"
         style="mask-image: url('./images/icons/arrow-left.svg');"
       />
@@ -30,7 +30,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         data-testid="nft-options__button"
       >
         <span
-          class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/more-vertical.svg');"
         />
       </button>
@@ -50,7 +50,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           data-testid="nft-item"
         >
           <div
-            class="box mm-badge-wrapper nft-item__badge-wrapper box--flex-direction-row"
+            class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
           >
             <img
               alt="MUNK #1 1"
@@ -59,14 +59,14 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
             />
             <div
-              class="box mm-badge-wrapper__badge-container box--flex-direction-row"
+              class="mm-box mm-badge-wrapper__badge-container"
               style="top: -4px; right: -4px;"
             >
               <div
-                class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-width-2 box--border-style-solid"
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network nft-item__network-badge mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                 data-testid="nft-network-badge"
               >
-                G
+                C
               </div>
             </div>
           </div>
@@ -77,12 +77,12 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
       >
         <div>
           <h4
-            class="box mm-text mm-text--heading-sm mm-text--font-weight-bold box--margin-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--heading-sm mm-text--font-weight-bold mm-box--margin-bottom-2 mm-box--color-text-default"
           >
             MUNK #1
           </h4>
           <h5
-            class="box mm-text mm-text--body-md mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-muted"
+            class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-muted"
           >
             #
             1
@@ -109,7 +109,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
         >
           Last sold
         </h6>
@@ -117,7 +117,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
             1/18/2023
           </h6>
@@ -127,7 +127,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
         >
           Last price sold
         </h6>
@@ -135,7 +135,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
             0.0049 ETH
           </h6>
@@ -145,12 +145,12 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
         >
           Source
         </h6>
         <h6
-          class="box mm-text nft-details__image-source mm-text--body-sm box--margin-bottom-4 box--flex-direction-row box--color-primary-default"
+          class="mm-box mm-text nft-details__image-source mm-text--body-sm mm-box--margin-bottom-4 mm-box--color-primary-default"
         >
           <a
             href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
@@ -166,7 +166,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         class="box box--display-flex box--flex-direction-row"
       >
         <h6
-          class="box mm-text nft-details__link-title mm-text--body-sm-bold box--margin-right-2 box--margin-bottom-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
         >
           Contract address
         </h6>
@@ -174,7 +174,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           class="box nft-details__contract-wrapper box--display-flex box--flex-direction-row"
         >
           <h6
-            class="box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word box--margin-bottom-4 box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
             0xDc7...6414
           </h6>
@@ -195,7 +195,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                 data-testid="nft-address-copy"
               >
                 <span
-                  class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-inherit"
+                  class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/copy.svg');"
                 />
               </button>
@@ -204,7 +204,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         </div>
       </div>
       <h6
-        class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
       >
         Disclaimer: MetaMask pulls the media file from the source url. This url sometimes is changed by the marketplace the NFT was minted on.
       </h6>

@@ -25,7 +25,7 @@ import {
   removeSnapIdPrefix,
 } from '../../../../helpers/utils/util';
 
-import { Text, ButtonLink } from '../../../component-library';
+import { ButtonLink, Text } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

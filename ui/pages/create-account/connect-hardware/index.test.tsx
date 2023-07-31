@@ -28,19 +28,24 @@ jest.mock('../../../selectors', () => ({
   },
 }));
 
+const MOCK_RECENT_PAGE = '/home';
 jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: () => '',
+  getMostRecentOverviewPage: jest
+    .fn()
+    .mockImplementation(() => MOCK_RECENT_PAGE),
 }));
 
 const mockTrackEvent = jest.fn();
-
+const mockHistoryPush = jest.fn();
 const mockProps = {
   forgetDevice: () => jest.fn(),
   showAlert: () => jest.fn(),
   hideAlert: () => jest.fn(),
   unlockHardwareWalletAccount: () => jest.fn(),
   setHardwareWalletDefaultHdPath: () => jest.fn(),
-  history: {},
+  history: {
+    push: mockHistoryPush,
+  },
   defaultHdPath: "m/44'/60'/0'/0",
   mostRecentOverviewPage: '',
   trackEvent: () => mockTrackEvent,
@@ -83,6 +88,7 @@ const mockState = {
 
 describe('ConnectHardwareForm', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
@@ -90,6 +96,17 @@ describe('ConnectHardwareForm', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should close the form when close button is clicked', () => {
+    const { getByTestId } = renderWithProvider(
+      <ConnectHardwareForm {...mockProps} />,
+      mockStore,
+    );
+    const closeButton = getByTestId('hardware-connect-close-btn');
+    fireEvent.click(closeButton);
+    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    expect(mockHistoryPush).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
   });
 
   describe('U2F Error', () => {

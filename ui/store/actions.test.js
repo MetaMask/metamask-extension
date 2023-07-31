@@ -1619,6 +1619,32 @@ describe('Actions', () => {
     });
   });
 
+  describe('#setParticipateInMetaMetrics', () => {
+    beforeAll(() => {
+      window.sentry = {
+        toggleSession: jest.fn(),
+        endSession: jest.fn(),
+      };
+    });
+    it('sets participateInMetaMetrics to true', async () => {
+      const store = mockStore();
+      const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
+
+      background.getApi.returns({
+        setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
+      });
+
+      _setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.setParticipateInMetaMetrics(true));
+      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(
+        true,
+        expect.anything(),
+      );
+      expect(window.sentry.toggleSession).toHaveBeenCalled();
+    });
+  });
+
   describe('#setUseBlockie', () => {
     afterEach(() => {
       sinon.restore();

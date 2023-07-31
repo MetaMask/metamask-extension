@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import {
   BUTTON_VARIANT,
   Button,
-  Text,
   Box,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {

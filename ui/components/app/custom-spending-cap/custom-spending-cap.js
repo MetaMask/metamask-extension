@@ -8,11 +8,10 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
 import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { Text, ButtonLink, Icon, IconName } from '../../component-library';
+import { ButtonLink, Icon, IconName, Text } from '../../component-library';
+
 import {
   AlignItems,
-  DISPLAY,
-  FLEX_DIRECTION,
   TextAlign,
   TextVariant,
   JustifyContent,
@@ -20,6 +19,8 @@ import {
   BLOCK_SIZES,
   BackgroundColor,
   TextColor,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
@@ -81,7 +82,7 @@ export default function CustomSpendingCap({
           <Text
             key="custom-spending-cap"
             variant={TextVariant.bodySmBold}
-            as="h6"
+            as="span"
             className="custom-spending-cap__input-value-and-token-name"
           >
             {replaceCommaToDot(inputNumber)} {tokenName}
@@ -196,7 +197,7 @@ export default function CustomSpendingCap({
         <Text
           key="tooltip-text"
           variant={TextVariant.bodySmBold}
-          as="h6"
+          as="span"
           color={TextColor.errorDefault}
         >
           <Icon name={IconName.Warning} /> {t('beCareful')}
@@ -212,15 +213,15 @@ export default function CustomSpendingCap({
         paddingTop={2}
         paddingRight={6}
         paddingLeft={6}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         alignItems={AlignItems.flexStart}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         backgroundColor={BackgroundColor.backgroundAlternative}
         gap={2}
       >
         <Box
           justifyContent={JustifyContent.center}
-          display={DISPLAY.BLOCK}
+          display={Display.Block}
           className="custom-spending-cap__input"
         >
           <label

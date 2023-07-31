@@ -16,15 +16,15 @@ import {
   Color,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
+import { Box } from '..';
+
 import README from './README.mdx';
 import { Text } from './text';
-import { ValidTag, TextDirection } from './text.types';
+import { TextDirection } from './text.types';
 
 export default {
   title: 'Components/ComponentLibrary/Text',
   component: Text,
-
   parameters: {
     docs: {
       page: README,
@@ -198,25 +198,58 @@ export const Ellipsis: StoryFn<typeof Text> = (args) => (
 
 export const As: StoryFn<typeof Text> = (args) => (
   <>
-    {Object.keys(ValidTag).map((tag) => {
-      if (ValidTag[tag] === ValidTag.Input) {
-        return (
-          <Text
-            key={ValidTag[tag]}
-            {...args}
-            as={ValidTag[tag]}
-            placeholder={ValidTag[tag]}
-          />
-        );
-      }
-      return (
-        <div key={ValidTag[tag]}>
-          <Text {...args} as={ValidTag[tag]}>
-            {ValidTag[tag]}
-          </Text>
-        </div>
-      );
-    })}
+    <Text {...args} as="dd">
+      dd
+    </Text>
+    <Text {...args} as="div">
+      div
+    </Text>
+    <Text {...args} as="dt">
+      dt
+    </Text>
+    <Text {...args} as="em">
+      em
+    </Text>
+    <Text {...args} as="h1">
+      h1
+    </Text>
+    <Text {...args} as="h2">
+      h2
+    </Text>
+    <Text {...args} as="h3">
+      h3
+    </Text>
+    <Text {...args} as="h4">
+      h4
+    </Text>
+    <Text {...args} as="h5">
+      h5
+    </Text>
+    <Text {...args} as="h6">
+      h6
+    </Text>
+    <Text {...args} as="li">
+      li
+    </Text>
+    <Text {...args} as="p">
+      p
+    </Text>
+    <Text {...args} display={Display.Block} as="span">
+      span
+    </Text>
+    <Text {...args} display={Display.Block} as="strong">
+      strong
+    </Text>
+    <Text {...args} as="ul">
+      ul
+    </Text>
+    <Text {...args} as="label">
+      label
+    </Text>
+    <Text {...args} as="header">
+      header
+    </Text>
+    <Text {...args} as="input" placeholder="input" />
   </>
 );
 
@@ -243,10 +276,10 @@ export const TextDirectionStory: StoryFn<typeof Text> = (args) => (
 export const Strong: StoryFn<typeof Text> = (args) => (
   <>
     <Text {...args} as="strong">
-      This is an as="strong" demo.
+      Text as="strong" tag
     </Text>
     <Text {...args}>
-      This is a <strong>strong element</strong> demo.
+      This is a <strong>strong tag</strong> as a child inside of Text
     </Text>
   </>
 );

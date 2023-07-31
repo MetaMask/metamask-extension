@@ -53,7 +53,7 @@ import {
   isNftOwner,
   getTokenStandardAndDetails,
   showModal,
-  addUnapprovedTransactionAndRouteToConfirmationPage,
+  addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
 } from '../../store/actions';
@@ -2334,12 +2334,10 @@ export function signTransaction() {
       );
 
       dispatch(
-        addUnapprovedTransactionAndRouteToConfirmationPage(
-          undefined,
-          txParams,
-          transactionType,
-          draftTransaction.history,
-        ),
+        addTransactionAndRouteToConfirmationPage(txParams, {
+          sendFlowHistory: draftTransaction.history,
+          type: transactionType,
+        }),
       );
     }
   };

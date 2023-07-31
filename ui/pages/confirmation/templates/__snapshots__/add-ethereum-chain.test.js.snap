@@ -85,7 +85,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -110,7 +110,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -135,7 +135,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -160,7 +160,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -292,7 +292,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -317,7 +317,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -342,7 +342,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -367,7 +367,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
                 tabindex="0"
               >
                 <span
-                  class="box mm-icon mm-icon--size-sm box--margin-left-1 box--display-inline-block box--flex-direction-row box--color-icon-default"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-default"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -407,7 +407,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           />
         </svg>
         <p
-          class="box mm-text callout__content mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text callout__content mm-text--body-md mm-box--color-text-default"
         >
           <span>
             This custom network is not recognized
@@ -417,7 +417,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           class="box mm-button-icon mm-button-icon--size-sm callout__close-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/close.svg');"
           />
         </button>
@@ -438,7 +438,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           />
         </svg>
         <p
-          class="box mm-text callout__content mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text callout__content mm-text--body-md mm-box--color-text-default"
         >
           <span>
             <span>
@@ -460,7 +460,7 @@ exports[`add-ethereum-chain confirmation should match snapshot 2`] = `
           class="box mm-button-icon mm-button-icon--size-sm callout__close-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
             style="mask-image: url('./images/icons/close.svg');"
           />
         </button>

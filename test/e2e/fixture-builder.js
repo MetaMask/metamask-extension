@@ -140,6 +140,11 @@ function defaultFixture() {
             id: 21,
             isShown: true,
           },
+          22: {
+            date: null,
+            id: 22,
+            isShown: true,
+          },
         },
       },
       AppStateController: {
@@ -214,6 +219,7 @@ function defaultFixture() {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -345,6 +351,7 @@ function onboardingFixture() {
           rpcUrl: 'http://localhost:8545',
           caipChainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -354,6 +361,7 @@ function onboardingFixture() {
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
             networkConfigurationId: 'networkConfigurationId',
+            type: 'rpc',
           },
         },
       },

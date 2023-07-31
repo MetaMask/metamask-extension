@@ -135,15 +135,12 @@ export default class IncomingTransactionsController {
   }
 
   start() {
-    const { featureFlags = {} } = this.preferencesController.store.getState();
-    const { showIncomingTransactions } = featureFlags;
+    const caipChainId = this.getCurrentCaipChainId();
 
-    if (!showIncomingTransactions) {
-      return;
+    if (this._allowedToMakeFetchIncomingTx(caipChainId)) {
+      this.blockTracker.removeListener('latest', this._onLatestBlock);
+      this.blockTracker.addListener('latest', this._onLatestBlock);
     }
-
-    this.blockTracker.removeListener('latest', this._onLatestBlock);
-    this.blockTracker.addListener('latest', this._onLatestBlock);
   }
 
   stop() {
@@ -161,13 +158,8 @@ export default class IncomingTransactionsController {
    * @param {number} [newBlockNumberDec] - block number to begin fetching from
    */
   async _update(address, newBlockNumberDec) {
-    const { completedOnboarding } = this.onboardingController.store.getState();
     const caipChainId = this.getCurrentCaipChainId();
-    if (
-      !Object.hasOwnProperty.call(ETHERSCAN_SUPPORTED_NETWORKS, caipChainId) ||
-      !address ||
-      !completedOnboarding
-    ) {
+    if (!address || !this._allowedToMakeFetchIncomingTx(caipChainId)) {
       return;
     }
     try {
@@ -302,5 +294,27 @@ export default class IncomingTransactionsController {
       hash: etherscanTransaction.hash,
       type: TransactionType.incoming,
     };
+  }
+
+  /**
+   * @param caipChainId - {string} The caipChainId of the current network
+   * @returns {boolean} Whether or not the user has consented to show incoming transactions
+   */
+  _allowedToMakeFetchIncomingTx(caipChainId) {
+    const { featureFlags = {} } = this.preferencesController.store.getState();
+    const { completedOnboarding } = this.onboardingController.store.getState();
+
+    const hasIncomingTransactionsFeatureEnabled = Boolean(
+      featureFlags.showIncomingTransactions,
+    );
+
+    const isEtherscanSupportedNetwork = Boolean(
+      ETHERSCAN_SUPPORTED_NETWORKS[caipChainId],
+    );
+    return (
+      completedOnboarding &&
+      isEtherscanSupportedNetwork &&
+      hasIncomingTransactionsFeatureEnabled
+    );
   }
 }

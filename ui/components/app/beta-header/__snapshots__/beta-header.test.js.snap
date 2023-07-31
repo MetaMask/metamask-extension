@@ -6,7 +6,7 @@ exports[`Beta Header should match snapshot 1`] = `
     class="box beta-header box--padding-2 box--display-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-warning-default"
   >
     <h6
-      class="box mm-text beta-header__message mm-text--body-sm box--flex-direction-row box--color-warning-inverse"
+      class="mm-box mm-text beta-header__message mm-text--body-sm mm-box--color-warning-inverse"
     >
       <span>
          
@@ -28,7 +28,7 @@ exports[`Beta Header should match snapshot 1`] = `
       data-testid="beta-header-close"
     >
       <span
-        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/close.svg');"
       />
     </button>

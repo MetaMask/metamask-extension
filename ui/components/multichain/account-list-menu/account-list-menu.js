@@ -7,12 +7,12 @@ import {
   IconName,
   ButtonLink,
   TextFieldSearch,
-  Text,
   Box,
   Modal,
   ModalContent,
   ModalOverlay,
   ModalHeader,
+  Text,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -260,7 +260,7 @@ export const AccountListMenu = ({ onClose }) => {
                     }
                   }}
                 >
-                  {t('hardwareWallet')}
+                  {t('addHardwareWallet')}
                 </ButtonLink>
               </Box>
               {
@@ -298,7 +298,7 @@ export const AccountListMenu = ({ onClose }) => {
                       trackEvent({
                         category: MetaMetricsEventCategory.Navigation,
                         event:
-                          MetaMetricsEventName.UserClickedConnectCustodialAccount,
+                          MetaMetricsEventName.ConnectCustodialAccountClicked,
                       });
                       if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
                         global.platform.openExtensionInBrowser(

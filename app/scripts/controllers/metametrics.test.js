@@ -145,6 +145,14 @@ describe('MetaMetricsController', function () {
   const now = new Date();
   let clock;
   beforeEach(function () {
+    globalThis.sentry = {
+      startSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+      endSession: sinon.fake(() => {
+        /** NOOP */
+      }),
+    };
     clock = sinon.useFakeTimers(now.getTime());
     sinon.stub(Utils, 'generateRandomId').returns('DUMMY_RANDOM_ID');
   });
@@ -311,6 +319,7 @@ describe('MetaMetricsController', function () {
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
       metaMetricsController.setParticipateInMetaMetrics(true);
+      assert.ok(globalThis.sentry.startSession.calledOnce);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
       metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
@@ -327,6 +336,7 @@ describe('MetaMetricsController', function () {
     it('should nullify the metaMetricsId when set to false', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController.setParticipateInMetaMetrics(false);
+      assert.ok(globalThis.sentry.endSession.calledOnce);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
   });
