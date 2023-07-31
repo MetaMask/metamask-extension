@@ -3,7 +3,6 @@ const path = require('path');
 const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
-const { Browser } = require('selenium-webdriver');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
