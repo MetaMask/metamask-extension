@@ -1,6 +1,5 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-// import { useArgs } from '@storybook/client-api';
 import NotEnoughBalance from './not-enough-balance';
 
 export default {
