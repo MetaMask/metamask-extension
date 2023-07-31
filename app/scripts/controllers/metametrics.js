@@ -419,7 +419,7 @@ export default class MetaMetricsController {
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
    *  to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null
+   * @returns {Promise<string|null>} the string of the new metametrics id, or null
    *  if not set
    */
   async setParticipateInMetaMetrics(participateInMetaMetrics) {
