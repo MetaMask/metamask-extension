@@ -14,6 +14,7 @@ import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
+import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 ///: END:ONLY_INCLUDE_IN
 
 import { I18nContext } from '../../../contexts/i18n';
@@ -258,7 +259,7 @@ const EthOverview = ({ className, showAddress }) => {
             onClick={() => {
               if (accountType === 'custody') {
                 global.platform.openTab({
-                  url: 'https://metamask-institutional.io/swap',
+                  url: MMI_SWAPS_URL,
                 });
 
                 return;
