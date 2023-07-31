@@ -3735,7 +3735,7 @@ export default class MetamaskController extends EventEmitter {
   handleWatchAssetRequest = (asset, type, origin) => {
     switch (type) {
       case ERC20:
-        return this.tokensController.watchAsset(asset, type, origin);
+        return this.tokensController.watchAsset(asset, type);
       case ERC721:
       case ERC1155:
         return this.nftController.watchNft(asset, type, origin);
@@ -4056,6 +4056,7 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
+    const { blockTracker, provider } = this;
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
@@ -4078,15 +4079,12 @@ export default class MetamaskController extends EventEmitter {
     );
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({
-      provider: networkClient.provider,
-      blockTracker: networkClient.blockTracker,
-    });
+    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager({
-      provider: networkClient.provider,
-      blockTracker: networkClient.blockTracker,
+      provider,
+      blockTracker,
     });
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
@@ -4103,7 +4101,6 @@ export default class MetamaskController extends EventEmitter {
 
     // logging
     engine.push(createLoggerMiddleware({ origin }));
-
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -4314,7 +4311,7 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.metamaskMiddleware);
 
     // forward to metamask primary provider
-    engine.push(providerAsMiddleware(networkClient.provider));
+    engine.push(providerAsMiddleware(provider));
 
     return engine;
   }
