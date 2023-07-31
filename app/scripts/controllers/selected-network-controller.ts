@@ -12,10 +12,12 @@ import { NetworkClientId, NetworkControllerStateChangeEvent, NetworkState } from
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
   domains: { persist: true, anonymous: false },
+  perDomainNetwork: { persist: true, anonymous: false }
 };
 
 const getDefaultState = () => ({
   domains: {},
+  perDomainNetwork: false
 });
 
 type Domain = string;
@@ -24,6 +26,10 @@ const METAMASK_DOMAIN = 'metamask' as const;
 
 export type SelectedNetworkControllerState = {
   domains: Record<Domain, NetworkClientId>;
+  // Feature flag to start returning networkClientId based on the domain.
+  // when the flag is false, the 'metamask' domain will always be used.
+  // defaults to false
+  perDomainNetwork: boolean;
 };
 
 export type GetSelectedNetworkState = {
@@ -63,10 +69,6 @@ export type SelectedNetworkControllerMessenger = RestrictedControllerMessenger<
 
 export type SelectedNetworkControllerOptions = {
   messenger: SelectedNetworkControllerMessenger;
-  // Feature flag to start returning networkClientId based on the domain.
-  // when the flag is false, the 'metamask' domain will always be used.
-  // defaults to false
-  perDomainNetwork: Boolean;
 };
 
 /**
@@ -77,21 +79,19 @@ export default class SelectedNetworkController extends BaseControllerV2<
   SelectedNetworkControllerState,
   SelectedNetworkControllerMessenger
 > {
-  private perDomainNetwork: Boolean;
   /**
    * Construct a SelectedNetworkController controller.
    *
    * @param options - The controller options.
    * @param options.messenger - The restricted controller messenger for the EncryptionPublicKey controller.
    */
-  constructor({ perDomainNetwork, messenger }: SelectedNetworkControllerOptions) {
+  constructor({ messenger }: SelectedNetworkControllerOptions) {
     super({
       name: controllerName,
       metadata: stateMetadata,
       messenger,
       state: getDefaultState(),
     });
-    this.perDomainNetwork = perDomainNetwork || false;
     this.registerMessageHandlers();
   }
 
@@ -135,7 +135,7 @@ export default class SelectedNetworkController extends BaseControllerV2<
   }
 
   getNetworkClientIdForDomain(domain: Domain) {
-    if (this.perDomainNetwork == true) {
+    if (this.state.perDomainNetwork == true) {
       return this.state.domains[domain];
     } else {
       return this.state.domains[METAMASK_DOMAIN];
