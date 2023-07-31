@@ -474,7 +474,7 @@
     "fancy-log": "^1.3.3",
     "fast-glob": "^3.2.2",
     "fs-extra": "^8.1.0",
-    "ganache": "^v7.0.4",
+    "ganache": "^7.9.0",
     "geckodriver": "^4.0.4",
     "gh-pages": "^5.0.0",
     "globby": "^11.0.4",
