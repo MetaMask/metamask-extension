@@ -3402,13 +3402,12 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const { identities: oldIdentities } =
-      this.preferencesController.store.getState();
+    const oldAccounts = await this.coreKeyringController.getAccounts();
 
     const { addedAccountAddress } =
       await this.coreKeyringController.addNewAccount(accountCount);
 
-    if (Object.keys(oldIdentities).length === accountCount) {
+    if (!oldAccounts.includes(addedAccountAddress)) {
       this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
 
