@@ -40,7 +40,10 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
@@ -2154,7 +2157,7 @@ export default class TransactionController extends EventEmitter {
         );
 
         this._trackMetaMetricsEvent({
-          event: 'Swap Completed',
+          event: MetaMetricsEventName.SwapCompleted,
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             ...txMeta.swapMetaData,
@@ -2165,6 +2168,12 @@ export default class TransactionController extends EventEmitter {
             trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
             trade_and_approval_gas_cost_in_eth:
               transactionsCost.tradeAndApprovalGasCostInEth,
+            // Firefox and Chrome have different implementations of the APIs
+            // that we rely on for communication accross the app. On Chrome big
+            // numbers are converted into number strings, on firefox they remain
+            // Big Number objects. As such, we convert them here for both
+            // browsers.
+            token_to_amount: txMeta.swapMetaData.token_to_amount.toString(10),
           },
         });
       }
@@ -2423,10 +2432,12 @@ export default class TransactionController extends EventEmitter {
     }
     ///: END:ONLY_INCLUDE_IN
 
+    /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
       referrer,
       source,
+      status,
       network,
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
@@ -2454,7 +2465,6 @@ export default class TransactionController extends EventEmitter {
     }
 
     let sensitiveProperties = {
-      status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
