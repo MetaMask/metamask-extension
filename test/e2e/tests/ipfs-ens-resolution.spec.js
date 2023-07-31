@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
-const { withFixtures } = require('../helpers');
+const { withFixtures, largeDelayMs } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Settings', function () {
@@ -22,6 +22,10 @@ describe('Settings', function () {
       // Ignore ERR_PROXY_CONNECTION_FAILED error
       // since all we care about is getting to the correct URL
     }
+
+    // Provide time for the browser to error, send the the error to
+    // browser.webRequest.onErrorOccurred, and our system to redirect
+    await driver.delay(largeDelayMs);
 
     // Ensure that the redirect to ENS Domains has happened
     const currentUrl = await driver.getCurrentUrl();
@@ -68,6 +72,10 @@ describe('Settings', function () {
           // Ignore ERR_PROXY_CONNECTION_FAILED error
           // since all we care about is getting to the correct URL
         }
+
+        // Provide time for the browser to error, send the the error to
+        // browser.webRequest.onErrorOccurred, and do *no* redirect
+        await driver.delay(largeDelayMs);
 
         // Ensure that the redirect to ENS Domains does not happen
         // Instead, the domain will be kept which is a 404
