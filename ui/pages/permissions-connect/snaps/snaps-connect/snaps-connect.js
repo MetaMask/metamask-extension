@@ -200,6 +200,7 @@ export default function SnapsConnect({
     >
       {isShowingSnapsPrivacyWarning && (
         <SnapPrivacyWarning
+          isOpen
           onAccepted={() => {
             setIsShowingSnapsPrivacyWarning(false);
             setSnapsInstallPrivacyWarningShownStatus(true);

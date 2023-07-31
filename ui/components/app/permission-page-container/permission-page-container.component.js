@@ -196,6 +196,7 @@ export default class PermissionPageContainer extends Component {
           <>
             {this.state.isShowingSnapsPrivacyWarning && (
               <SnapPrivacyWarning
+                isOpen
                 onAccepted={() => confirmSnapsPrivacyWarning()}
                 onCanceled={() => this.onCancel()}
               />
