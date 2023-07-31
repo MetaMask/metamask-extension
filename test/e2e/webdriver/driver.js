@@ -375,10 +375,6 @@ class Driver {
     await this.driver.switchTo().newWindow('window');
   }
 
-  async switchToNewTab() {
-    await this.driver.switchTo().newWindow('tab');
-  }
-
   async switchToFrame(element) {
     await this.driver.switchTo().frame(element);
   }
