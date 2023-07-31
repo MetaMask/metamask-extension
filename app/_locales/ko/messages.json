@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "네트워크를 삭제할까요?"
   },
-  "deleteNetworkDescription": {
-    "message": "이 네트워크를 삭제할까요?"
-  },
   "deposit": {
     "message": "예치"
   },

@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
-  "deleteNetworkDescription": {
-    "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
   "deposit": {
     "message": "Depositar"
   },

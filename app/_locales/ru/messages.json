@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Удалить сеть?"
   },
-  "deleteNetworkDescription": {
-    "message": "Уверены, что хотите удалить эту сеть?"
-  },
   "deposit": {
     "message": "Внести деньги"
   },

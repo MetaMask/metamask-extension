@@ -10,7 +10,7 @@ describe('Confirm Delete Network', () => {
     hideModal: jest.fn(),
     onConfirm: jest.fn(),
     removeNetworkConfiguration: jest.fn().mockResolvedValue(),
-    target: 'target',
+    target: 'testNetworkConfigurationId',
   };
 
   it('should match snapshot', () => {

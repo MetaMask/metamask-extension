@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },
-  "deleteNetworkDescription": {
-    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
   "deposit": {
     "message": "Κατάθεση"
   },
