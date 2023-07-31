@@ -14,7 +14,7 @@ import { BN } from 'ethereumjs-util';
  */
 export default function transformState077For086(
   state: Record<string, unknown>,
-): void {
+): Record<string, unknown> {
   if (hasProperty(state, 'NftController') && isObject(state.NftController)) {
     const nftControllerState = state.NftController;
 
@@ -31,14 +31,15 @@ export default function transformState077For086(
         )
       ) {
         Object.keys(allNftContracts).forEach((address) => {
-          if (isObject(allNftContracts[address])) {
-            const nftContractsByChainId = allNftContracts[address];
+          const nftContractsByChainId = allNftContracts[address];
+          if (isObject(nftContractsByChainId)) {
             for (const chainId of Object.keys(nftContractsByChainId)) {
               if (
                 !isStrictHexString(chainId) &&
                 nftContractsByChainId[toHex(chainId)]
               ) {
-                delete allNftContracts[address][chainId];
+                delete nftContractsByChainId[chainId];
+                allNftContracts[address] = nftContractsByChainId;
               }
             }
           }
@@ -55,14 +56,15 @@ export default function transformState077For086(
 
       if (Object.keys(allNfts).every((address) => isObject(allNfts[address]))) {
         Object.keys(allNfts).forEach((address) => {
-          if (isObject(allNfts[address])) {
-            const nftsByChainId = allNfts[address];
+          const nftsByChainId = allNfts[address];
+          if (isObject(nftsByChainId)) {
             for (const chainId of Object.keys(nftsByChainId)) {
               if (
                 !isStrictHexString(chainId) &&
                 nftsByChainId[toHex(chainId)]
               ) {
-                delete allNfts[address][chainId];
+                delete nftsByChainId[chainId];
+                allNfts[address] = nftsByChainId;
               }
             }
           }
