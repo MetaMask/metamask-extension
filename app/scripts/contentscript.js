@@ -617,7 +617,9 @@ function redirectToPhishingWarning() {
   window.location.href = `${baseUrl}#${querystring}`;
   // eslint-disable-next-line no-constant-condition
   while (1) {
-    console.log('MetaMask: Locking js execution');
+    console.log(
+      'MetaMask: Locking js execution, redirection will complete shortly',
+    );
   }
 }
 
