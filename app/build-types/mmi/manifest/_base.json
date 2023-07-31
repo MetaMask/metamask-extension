@@ -23,5 +23,5 @@
   },
   "name": "__MSG_appNameMmi__",
   "short_name": "__MSG_appNameMmi__",
-  "mmi_version": "18"
+  "version_name": "10.34.1-mmi.18"
 }
