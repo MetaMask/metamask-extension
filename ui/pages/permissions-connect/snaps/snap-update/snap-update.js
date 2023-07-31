@@ -216,6 +216,7 @@ export default function SnapUpdate({
       </Box>
       {isShowingWarning && (
         <SnapInstallWarning
+          isOpen
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
           snapName={snapName}
