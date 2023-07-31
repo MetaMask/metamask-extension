@@ -1254,7 +1254,7 @@ describe('migration #77', () => {
         });
       });
 
-      it('deletes entries in TokensController.allDetectedTokens that have decimal chain IDs if there exists an entry with the equivalent chainId in hex', async () => {
+      it('deletes entries in TokensController.allDetectedTokens that have decimal chain IDs', async () => {
         const oldStorage = {
           meta: { version: 87 },
           data: {
