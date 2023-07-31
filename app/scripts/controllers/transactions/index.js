@@ -40,7 +40,10 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import { isSwapsDefaultTokenAddress } from '../../../../shared/modules/swaps.utils';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP,
   NETWORK_TYPES,
@@ -554,54 +557,6 @@ export default class TransactionController extends EventEmitter {
     txGasFees = pickBy(txGasFees);
     const note = `Update Transaction Gas Fees for ${txId}`;
     this._updateTransaction(txId, txGasFees, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates the estimate base fees of the transaction with id if the transaction state is unapproved
-   *
-   * @param {string} txId - transaction id
-   * @param {object} txEstimateBaseFees - holds the estimate base fees parameters
-   * @param {string} txEstimateBaseFees.estimatedBaseFee
-   * @param {string} txEstimateBaseFees.decEstimatedBaseFee
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionEstimatedBaseFee(
-    txId,
-    { estimatedBaseFee, decEstimatedBaseFee },
-  ) {
-    this._throwErrorIfNotUnapprovedTx(
-      txId,
-      'updateTransactionEstimatedBaseFee',
-    );
-
-    let txEstimateBaseFees = { estimatedBaseFee, decEstimatedBaseFee };
-    // only update what is defined
-    txEstimateBaseFees = pickBy(txEstimateBaseFees);
-
-    const note = `Update Transaction Estimated Base Fees for ${txId}`;
-    this._updateTransaction(txId, txEstimateBaseFees, note);
-    return this._getTransaction(txId);
-  }
-
-  /**
-   * updates a transaction's user settings only if the transaction state is unapproved
-   *
-   * @param {string} txId
-   * @param {object} userSettings - holds the metadata
-   * @param {string} userSettings.userEditedGasLimit
-   * @param {string} userSettings.userFeeLevel
-   * @returns {TransactionMeta} the txMeta of the updated transaction
-   */
-  updateTransactionUserSettings(txId, { userEditedGasLimit, userFeeLevel }) {
-    this._throwErrorIfNotUnapprovedTx(txId, 'updateTransactionUserSettings');
-
-    let userSettings = { userEditedGasLimit, userFeeLevel };
-    // only update what is defined
-    userSettings = pickBy(userSettings);
-
-    const note = `Update User Settings for ${txId}`;
-    this._updateTransaction(txId, userSettings, note);
     return this._getTransaction(txId);
   }
 
@@ -2176,7 +2131,7 @@ export default class TransactionController extends EventEmitter {
         );
 
         this._trackMetaMetricsEvent({
-          event: 'Swap Completed',
+          event: MetaMetricsEventName.SwapCompleted,
           category: MetaMetricsEventCategory.Swaps,
           sensitiveProperties: {
             ...txMeta.swapMetaData,
@@ -2187,6 +2142,12 @@ export default class TransactionController extends EventEmitter {
             trade_gas_cost_in_eth: transactionsCost.tradeGasCostInEth,
             trade_and_approval_gas_cost_in_eth:
               transactionsCost.tradeAndApprovalGasCostInEth,
+            // Firefox and Chrome have different implementations of the APIs
+            // that we rely on for communication accross the app. On Chrome big
+            // numbers are converted into number strings, on firefox they remain
+            // Big Number objects. As such, we convert them here for both
+            // browsers.
+            token_to_amount: txMeta.swapMetaData.token_to_amount.toString(10),
           },
         });
       }
@@ -2433,10 +2394,12 @@ export default class TransactionController extends EventEmitter {
       uiCustomizations = null;
     }
 
+    /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
     let properties = {
       chain_id: chainId,
       referrer,
       source,
+      status,
       network,
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
@@ -2458,7 +2421,6 @@ export default class TransactionController extends EventEmitter {
     }
 
     let sensitiveProperties = {
-      status,
       transaction_envelope_type: isEIP1559Transaction(txMeta)
         ? TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET
         : TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,

@@ -1211,6 +1211,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       id: NETWORK_TYPES.GOERLI,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1219,6 +1220,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       id: NETWORK_TYPES.SEPOLIA,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1230,11 +1232,12 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       id: NETWORK_TYPES.LINEA_GOERLI,
+      removable: false,
     },
     // Localhosts
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 
@@ -1253,6 +1256,7 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
       id: NETWORK_TYPES.MAINNET,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1264,11 +1268,12 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_MAINNET,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
       id: NETWORK_TYPES.LINEA_MAINNET,
+      removable: false,
     },
     // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 
