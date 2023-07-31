@@ -127,8 +127,6 @@ async function switchEthereumChainHandler(
       }
       const networkClientId = findNetworkClientIdByChainId(_chainId);
       setNetworkClientIdForDomain(req.origin, networkClientId);
-      // set it for the 'global' network to preserve functionality for the
-      // selectedNetworkController.perDomainNetwork feature flag being off
       res.result = null;
     } catch (error) {
       return end(error);
