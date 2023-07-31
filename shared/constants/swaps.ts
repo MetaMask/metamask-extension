@@ -133,9 +133,7 @@ export const WETH_ARBITRUM_CONTRACT_ADDRESS =
 
 const SWAPS_TESTNET_CHAIN_ID = '0x539';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 export const MMI_SWAPS_URL = 'https://metamask-institutional.io/swap';
-///: END:ONLY_INCLUDE_IN
 
 export const SWAPS_API_V2_BASE_URL = 'https://swap.metaswap.codefi.network';
 export const SWAPS_DEV_API_V2_BASE_URL = 'https://swap.dev-api.cx.metamask.io';
