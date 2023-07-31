@@ -22,6 +22,5 @@
     "512": "images/icon-512.png"
   },
   "name": "__MSG_appNameMmi__",
-  "short_name": "__MSG_appNameMmi__",
-  "version_name": "10.34.1-mmi.18"
+  "short_name": "__MSG_appNameMmi__"
 }

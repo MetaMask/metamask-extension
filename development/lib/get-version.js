@@ -1,4 +1,4 @@
-const { version: manifestVersion } = require('../../package.json');
+const { version: manifestVersion, mmiBuildVersion } = require('../../package.json');
 const { loadBuildTypesConfig } = require('./build-type');
 
 /**
@@ -13,6 +13,9 @@ const { loadBuildTypesConfig } = require('./build-type');
  * @returns {string} The MetaMask extension version.
  */
 function getVersion(buildType, buildVersion) {
+  if(buildType === 'mmi') {
+    return `${manifestVersion}-${buildType}.${mmiBuildVersion}`;
+  }
   return loadBuildTypesConfig().buildTypes[buildType].isPrerelease === true
     ? `${manifestVersion}-${buildType}.${buildVersion}`
     : manifestVersion;
