@@ -345,7 +345,7 @@ describe('Selectors', () => {
   });
 
   describe('#getCurrentNetwork', () => {
-    it('returns the correct custom network when there is a chainId collision', () => {
+    it('returns the correct custom network when there is a caipChainId collision', () => {
       const modifiedMockState = {
         ...mockState,
         metamask: {
@@ -353,8 +353,8 @@ describe('Selectors', () => {
           providerConfig: {
             ...mockState.metamask.networkConfigurations
               .testNetworkConfigurationId,
-            // 0x1 would collide with Ethereum Mainnet
-            chainId: '0x1',
+            // 'eip155:1' would collide with Ethereum Mainnet
+            caipChainId: 'eip155:1',
             // type of "rpc" signals custom network
             type: 'rpc',
           },
@@ -363,7 +363,7 @@ describe('Selectors', () => {
 
       const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
       expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
-      expect(currentNetwork.chainId).toBe('0x1');
+      expect(currentNetwork.caipChainId).toBe('eip155:1');
     });
 
     it('returns the correct mainnet network when there is a chainId collision', () => {

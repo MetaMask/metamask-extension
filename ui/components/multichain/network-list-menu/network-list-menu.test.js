@@ -21,7 +21,7 @@ jest.mock('../../../store/actions.ts', () => ({
 
 const render = (
   showTestNetworks = false,
-  currentChainId = '0x5',
+  currentCaipChainId = 'eip155:5',
   providerConfigId = 'chain5',
 ) => {
   const state = {
@@ -29,7 +29,7 @@ const render = (
       ...mockState.metamask,
       providerConfig: {
         ...mockState.metamask.providerConfig,
-        chainId: currentChainId,
+        caipChainId: currentCaipChainId,
         id: providerConfigId,
       },
       preferences: {
@@ -82,7 +82,7 @@ describe('NetworkListMenu', () => {
 
   it('shows the correct selected network when networks share the same chain ID', () => {
     // Mainnet and Custom Mainnet RPC both use chain ID 0x1
-    render(false, '0x1', 'testNetworkConfigurationId');
+    render(false, 'eip155:1', 'testNetworkConfigurationId');
 
     // Contains Mainnet and the two custom networks
     const networkItems = document.querySelectorAll(

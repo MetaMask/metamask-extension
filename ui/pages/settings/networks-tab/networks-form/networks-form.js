@@ -14,7 +14,6 @@ import { isEqual } from 'lodash';
 import {
   getCaipChainIdFromEthChainId,
   getEthChainIdDecFromCaipChainId,
-  getEthChainIdHexFromCaipChainId,
   isEthCaipChainId,
 } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -133,8 +132,8 @@ const NetworksForm = ({
     const chainIdIsUnchanged =
       typeof selectedNetwork.caipChainId === 'string' &&
       isEthCaipChainId(selectedNetwork.caipChainId) &&
-      chainId && // getEthChainIdHexFromCaipChainId should be updated to handle empty input
-      getEthChainIdHexFromCaipChainId(chainId) ===
+      isEthCaipChainId(chainId) &&
+      getEthChainIdDecFromCaipChainId(chainId) ===
         getDisplayChainId(selectedNetwork.caipChainId);
     return (
       rpcUrl === selectedNetwork.rpcUrl &&

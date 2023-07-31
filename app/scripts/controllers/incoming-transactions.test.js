@@ -236,7 +236,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: {},
-          getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
         },
       );
 
@@ -901,11 +901,11 @@ describe('IncomingTransactionsController', function () {
       assertStubNotCalled(fetchStub);
     });
 
-    it('should not happen when chain id is not supported', async function () {
+    it('should not happen when caip chain id is not supported', async function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           ...getDefaultControllerOpts(),
-          getCurrentChainId: () => FAKE_CAIP_CHAIN_ID,
+          getCurrentCaipChainId: () => FAKE_CAIP_CHAIN_ID,
         },
       );
 
@@ -918,7 +918,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           ...getDefaultControllerOpts(),
-          getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
           onboardingController: getMockOnboardingController({
             completedOnboarding: true,
           }),

@@ -1563,6 +1563,7 @@ describe('Transaction Controller', function () {
       assert.equal(txController.getChainId(), 0);
     });
 
+    // currently throws an error about caip chain id. what should this do now?
     it('returns 0 when the chain ID cannot be parsed as a hex string', function () {
       networkStatusStore.putState(NetworkStatus.Available);
       getCurrentCaipChainId.returns('$fdsjfldf');

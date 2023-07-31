@@ -1,10 +1,11 @@
+import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import switchEthereumChain from './switch-ethereum-chain';
 
-const NON_INFURA_CHAIN_ID = '0x123456789';
+const NON_INFURA_CAIP_CHAIN_ID = 'eip155:123456789';
 
 const mockRequestUserApproval = ({ requestData }) => {
   return Promise.resolve(requestData);
@@ -29,13 +30,13 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.MAINNET }],
+        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.MAINNET) }],
       },
       {},
       jest.fn(),
       jest.fn(),
       {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getCurrentCaipChainId: () => NON_INFURA_CAIP_CHAIN_ID,
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -55,13 +56,13 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.LINEA_MAINNET.toLowerCase() }],
+        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.LINEA_MAINNET).toLowerCase() }],
       },
       {},
       jest.fn(),
       jest.fn(),
       {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getCurrentCaipChainId: () => NON_INFURA_CAIP_CHAIN_ID,
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -81,13 +82,13 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: CHAIN_IDS.LINEA_MAINNET.toUpperCase() }],
+        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.LINEA_MAINNET).toUpperCase() }],
       },
       {},
       jest.fn(),
       jest.fn(),
       {
-        getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getCurrentCaipChainId: () => NON_INFURA_CAIP_CHAIN_ID,
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -107,13 +108,13 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: NON_INFURA_CHAIN_ID }],
+        params: [{ chainId: getEthChainIdHexFromCaipChainId(NON_INFURA_CAIP_CHAIN_ID) }],
       },
       {},
       jest.fn(),
       jest.fn(),
       {
-        getCurrentChainId: () => CHAIN_IDS.MAINNET,
+        getCurrentCaipChainId: () => CHAIN_IDS.MAINNET,
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
