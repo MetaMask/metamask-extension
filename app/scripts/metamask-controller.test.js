@@ -859,7 +859,10 @@ describe('MetaMaskController', function () {
         sinon.stub(metamaskController.keyringController, 'removeAccount');
         sinon.stub(metamaskController, 'removeAllAccountPermissions');
         sinon
-          .stub(metamaskController.keyringController, 'getKeyringForAccount')
+          .stub(
+            metamaskController.coreKeyringController,
+            'getKeyringForAccount',
+          )
           .returns(Promise.resolve(mockKeyring));
 
         ret = await metamaskController.removeAccount(addressToRemove);
@@ -906,9 +909,9 @@ describe('MetaMaskController', function () {
       it('should return address', async function () {
         assert.equal(ret, '0x1');
       });
-      it('should call keyringController.getKeyringForAccount', async function () {
+      it('should call coreKeyringController.getKeyringForAccount', async function () {
         assert(
-          metamaskController.keyringController.getKeyringForAccount.calledWith(
+          metamaskController.coreKeyringController.getKeyringForAccount.calledWith(
             addressToRemove,
           ),
         );

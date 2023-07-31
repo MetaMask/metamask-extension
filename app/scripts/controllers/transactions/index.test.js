@@ -2169,6 +2169,7 @@ describe('Transaction Controller', function () {
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
             security_alert_response: BlockaidResultType.NotApplicable,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2179,7 +2180,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2258,6 +2258,7 @@ describe('Transaction Controller', function () {
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
             security_alert_response: BlockaidResultType.NotApplicable,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2268,7 +2269,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2359,6 +2359,7 @@ describe('Transaction Controller', function () {
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
             security_alert_response: BlockaidResultType.NotApplicable,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2369,7 +2370,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2450,6 +2450,7 @@ describe('Transaction Controller', function () {
             ui_customizations: null,
             security_alert_reason: BlockaidReason.notApplicable,
             security_alert_response: BlockaidResultType.NotApplicable,
+            status: 'unapproved',
           },
           sensitiveProperties: {
             default_gas: '0.000031501',
@@ -2460,7 +2461,6 @@ describe('Transaction Controller', function () {
             transaction_replaced: undefined,
             first_seen: 1624408066355,
             transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-            status: 'unapproved',
           },
         };
 
@@ -2547,6 +2547,7 @@ describe('Transaction Controller', function () {
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
           security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           gas_price: '2',
@@ -2555,7 +2556,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
       await txController._trackTransactionMetricsEvent(
@@ -2621,6 +2621,7 @@ describe('Transaction Controller', function () {
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
           security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2631,7 +2632,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2697,6 +2697,7 @@ describe('Transaction Controller', function () {
           ui_customizations: ['flagged_as_malicious'],
           security_alert_reason: BlockaidReason.notApplicable,
           security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2707,7 +2708,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2773,6 +2773,7 @@ describe('Transaction Controller', function () {
           ui_customizations: ['flagged_as_safety_unknown'],
           security_alert_reason: BlockaidReason.notApplicable,
           security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2783,7 +2784,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 
@@ -2857,6 +2857,7 @@ describe('Transaction Controller', function () {
           ui_customizations: null,
           security_alert_reason: BlockaidReason.notApplicable,
           security_alert_response: BlockaidResultType.NotApplicable,
+          status: 'unapproved',
         },
         sensitiveProperties: {
           baz: 3.0,
@@ -2868,7 +2869,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.FEE_MARKET,
-          status: 'unapproved',
           estimate_suggested: GasRecommendations.medium,
           estimate_used: GasRecommendations.high,
           default_estimate: 'medium',

@@ -206,6 +206,13 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('ensDomainsSettingTitle'),
+    descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntro'),
+    route: `${SECURITY_ROUTE}#ens-domains`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
