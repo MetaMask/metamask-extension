@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  SEVERITIES,
   TextVariant,
   Size,
+  Severity,
 } from '../../../helpers/constants/design-system';
 import {
   BannerAlert,
@@ -28,7 +28,11 @@ export default function NotEnoughBalance({
   needsMoreGasText,
 }: Props) {
   return (
-    <BannerAlert severity={SEVERITIES.INFO} title={title} className="">
+    <BannerAlert
+      severity={Severity.Info}
+      title={title}
+      className="not-enough-balance__banner"
+    >
       <Text
         variant={TextVariant.bodyMd}
         as="h6"
@@ -40,10 +44,9 @@ export default function NotEnoughBalance({
           <ButtonLink
             onClick={() => openBuyCryptoInPdapp()}
             size={Size.inherit}
-            className=""
+            className="not-enough-balance__button"
             danger={false}
             disabled={false}
-            style={{ verticalAlign: 'baseline' }}
           >
             {needsMoreGasText}
           </ButtonLink>
