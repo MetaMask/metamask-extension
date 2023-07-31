@@ -624,6 +624,7 @@ export enum MetaMetricsEventName {
   SwapCompleted = 'Swap Completed',
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
+  UiWarnings = 'UI Warnings',
 }
 
 export enum MetaMetricsEventAccountType {
