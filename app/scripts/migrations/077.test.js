@@ -735,7 +735,7 @@ describe('migration #77', () => {
         });
       });
 
-      it('should not delete `network` from the NetworkController state, if there is no `networkId` in NetworkController state', async () => {
+      it('should not delete `provider` from the NetworkController state, if there is no `providerConfig` in NetworkController state', async () => {
         const oldStorage = {
           meta: {
             version: 76,
