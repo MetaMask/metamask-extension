@@ -110,6 +110,9 @@ export default class SelectedNetworkController extends BaseControllerV2<
     // update the value for the domain 'metamask'
     this.messagingSystem.subscribe('NetworkController:stateChange', (state: NetworkState, patch: Patch[]) => {
       const isChangingNetwork = patch.find((p) => p.path[0] === 'selectedNetworkClientId');
+
+      // set it for the 'global' network to preserve functionality for the
+      // selectedNetworkController.perDomainNetwork feature flag being off
       this.setNetworkClientIdForMetamask(state.selectedNetworkClientId);
     });
   }
