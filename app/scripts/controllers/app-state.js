@@ -460,7 +460,7 @@ export default class AppStateController extends EventEmitter {
         this._approvalRequestId,
       );
     } catch (error) {
-      log.error('Failed to accept approval request', error);
+      log.error('Failed to unlock approval request', error);
     }
 
     this._approvalRequestId = null;
