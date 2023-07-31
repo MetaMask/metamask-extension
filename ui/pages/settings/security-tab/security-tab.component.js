@@ -374,15 +374,17 @@ export default class SecurityTab extends PureComponent {
             {t('addCustomIPFSGatewayDescription')}
           </div>
         </div>
-        <ToggleButton
-          value={this.state.ipfsGateway}
-          onToggle={(value) => {
-            handleIpfsToggle(value);
-            this.setState({ ipfsToggle: Boolean(value) });
-          }}
-          offLabel={t('off')}
-          onLabel={t('on')}
-        />
+        <div className="settings-page__content-item">
+          <ToggleButton
+            value={this.state.ipfsGateway}
+            onToggle={(value) => {
+              handleIpfsToggle(value);
+              this.setState({ ipfsToggle: Boolean(value) });
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
         {!this.state.ipfsToggle && (
           <div className="settings-page__content-item">
             <div className="settings-page__content-item-col">
