@@ -41,11 +41,10 @@ function createEtcTasks({ browserPlatforms, buildType, livereload, version }) {
 
 function createZipTask(platform, buildType, version) {
   return async () => {
-
     let path =
-    buildType === loadBuildTypesConfig().default
-      ? `metamask-${platform}-${version}`
-      : `metamask-${buildType}-${platform}-${version}`;
+      buildType === loadBuildTypesConfig().default
+        ? `metamask-${platform}-${version}`
+        : `metamask-${buildType}-${platform}-${version}`;
 
     if (buildType === 'mmi') {
       path = `metamask-institutional-${platform}-${version}`;
