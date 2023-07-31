@@ -694,6 +694,9 @@ jobs:
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+      - run:
+          name: check yarn resolutions
+          command: yarn --check-resolutions
 
   test-lint-changelog:
     executor: node-browsers
