@@ -99,6 +99,9 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.featureFlags = {};
   }
 
+  // Returning from here triggers "long load" UI
+  // return;
+
   const { currentLocaleMessages, enLocaleMessages } = await setupLocale(
     metamaskState.currentLocale,
   );

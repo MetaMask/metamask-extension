@@ -3,6 +3,15 @@
   height: 10rem;
   align-self: center;
   margin: 10rem 0 0 0;
+  opacity: 0;
+  transition-property: opacity;
+  transition-delay: 1s;
+  transition-duration: 0.5s;
+  transition-timing-function: linear;
+
+  &.activated {
+    opacity: 1;
+  }
 }
 
 .loading-spinner {
