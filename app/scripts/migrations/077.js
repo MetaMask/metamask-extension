@@ -46,7 +46,7 @@ function transformState(state) {
       }
     } else if (
       Object.keys(dataCache)[0]?.toLowerCase() !==
-      dataCache[Object.keys(dataCache)[0]]?.address.toLowerCase()
+      dataCache[Object.keys(dataCache)[0]]?.address?.toLowerCase()
     ) {
       // for the users who already updated to the recent version
       // and the dataCache is already an object keyed with 0,1,2,3 etc

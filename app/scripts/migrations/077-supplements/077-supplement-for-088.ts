@@ -35,8 +35,7 @@ export default function transformState077For086(
           if (isObject(nftContractsByChainId)) {
             for (const chainId of Object.keys(nftContractsByChainId)) {
               if (
-                !isStrictHexString(chainId) &&
-                nftContractsByChainId[toHex(chainId)]
+                !isStrictHexString(chainId)
               ) {
                 delete nftContractsByChainId[chainId];
               }
@@ -59,8 +58,7 @@ export default function transformState077For086(
           if (isObject(nftsByChainId)) {
             for (const chainId of Object.keys(nftsByChainId)) {
               if (
-                !isStrictHexString(chainId) &&
-                nftsByChainId[toHex(chainId)]
+                !isStrictHexString(chainId)
               ) {
                 delete nftsByChainId[chainId];
               }
@@ -88,8 +86,7 @@ export default function transformState077For086(
         tokenListControllerState.tokensChainsCache,
       )) {
         if (
-          !isStrictHexString(chainId) &&
-          tokenListControllerState.tokensChainsCache[toHex(chainId)]
+          !isStrictHexString(chainId)
         ) {
           delete tokenListControllerState.tokensChainsCache[chainId];
         }
@@ -111,7 +108,7 @@ export default function transformState077For086(
       const { allTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allTokens)) {
-        if (!isStrictHexString(chainId) && allTokens[toHex(chainId)]) {
+        if (!isStrictHexString(chainId)) {
           delete tokensControllerState.allTokens[chainId];
         }
       }
@@ -125,7 +122,7 @@ export default function transformState077For086(
       const { allIgnoredTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allIgnoredTokens)) {
-        if (!isStrictHexString(chainId) && allIgnoredTokens[toHex(chainId)]) {
+        if (!isStrictHexString(chainId)) {
           delete tokensControllerState.allIgnoredTokens[chainId];
         }
       }
@@ -139,7 +136,7 @@ export default function transformState077For086(
       const { allDetectedTokens } = tokensControllerState;
 
       for (const chainId of Object.keys(allDetectedTokens)) {
-        if (!isStrictHexString(chainId) && allDetectedTokens[toHex(chainId)]) {
+        if (!isStrictHexString(chainId)) {
           delete tokensControllerState.allDetectedTokens[chainId];
         }
       }

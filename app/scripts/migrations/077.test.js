@@ -82,6 +82,75 @@ describe('migration #77', () => {
       },
     });
   });
+  it('should leave the data from array to object for a single network', async () => {
+    const oldStorage = {
+      meta: {
+        version: 76,
+      },
+      data: {
+        TokenListController: {
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+            },
+          },
+          tokensChainsCache: {
+            1: {
+              timestamp: 1234,
+              data: [
+                {
+                  address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                  symbol: 'LINK',
+                  decimals: 18,
+                },
+                {
+                  address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+                  symbol: 'COMP',
+                  decimals: 18,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+    const newStorage = await migration77.migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 77,
+      },
+      data: {
+        TokenListController: {
+          tokenList: {
+            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+              address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+              symbol: 'LINK',
+              decimals: 18,
+            },
+          },
+          tokensChainsCache: {
+            1: {
+              timestamp: 1234,
+              data: {
+                '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                  address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                  symbol: 'LINK',
+                  decimals: 18,
+                },
+                '0xc00e94cb662c3520282e6f5717214004a7f26888': {
+                  address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+                  symbol: 'COMP',
+                  decimals: 18,
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  });
   it('should set data to an empty object if it is undefined', async () => {
     const oldStorage = {
       meta: {
@@ -775,7 +844,7 @@ describe('migration #77', () => {
     });
 
     describe('state transformation to ahead of migration 88', () => {
-      it('deletes entries in NftController.allNftContracts that have decimal chain IDs if there exists an entry with the equivalent chainId in hex', async () => {
+      it('deletes entries in NftController.allNftContracts that have decimal chain IDs', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -824,6 +893,14 @@ describe('migration #77', () => {
                     },
                   ],
                 },
+                '0x333': {
+                  256: [
+                    {
+                      name: 'Contract 3',
+                      address: '0xccc',
+                    },
+                  ],
+                },
               },
             },
           },
@@ -838,12 +915,6 @@ describe('migration #77', () => {
           NftController: {
             allNftContracts: {
               '0x111': {
-                16: [
-                  {
-                    name: 'Contract 1',
-                    address: '0xaaa',
-                  },
-                ],
                 '0x20': [
                   {
                     name: 'Contract 2',
@@ -858,19 +929,14 @@ describe('migration #77', () => {
                     address: '0xccc',
                   },
                 ],
-                128: [
-                  {
-                    name: 'Contract 4',
-                    address: '0xddd',
-                  },
-                ],
               },
+              '0x333': {},
             },
           },
         });
       });
 
-      it('deletes entries in NftController.allNfts that have decimal chain IDs if there exists an entry with the equivalent chainId in hex', async () => {
+      it('deletes entries in NftController.allNfts that have decimal chain IDs', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -943,6 +1009,18 @@ describe('migration #77', () => {
                     },
                   ],
                 },
+                '0x333': {
+                  256: [
+                    {
+                      name: 'NFT 3',
+                      description: 'Description for NFT 3',
+                      image: 'nft3.jpg',
+                      standard: 'ERC721',
+                      tokenId: '3',
+                      address: '0xccc',
+                    },
+                  ],
+                },
               },
             },
           },
@@ -957,16 +1035,6 @@ describe('migration #77', () => {
           NftController: {
             allNfts: {
               '0x111': {
-                16: [
-                  {
-                    name: 'NFT 1',
-                    description: 'Description for NFT 1',
-                    image: 'nft1.jpg',
-                    standard: 'ERC721',
-                    tokenId: '1',
-                    address: '0xaaa',
-                  },
-                ],
                 '0x20': [
                   {
                     name: 'NFT 2',
@@ -989,23 +1057,14 @@ describe('migration #77', () => {
                     address: '0xccc',
                   },
                 ],
-                128: [
-                  {
-                    name: 'NFT 4',
-                    description: 'Description for NFT 4',
-                    image: 'nft4.jpg',
-                    standard: 'ERC721',
-                    tokenId: '4',
-                    address: '0xddd',
-                  },
-                ],
               },
+              '0x333': {},
             },
           },
         });
       });
 
-      it('deletes entries in TokenListController.tokensChainsCache that have decimal chain IDs if there exists an entry with the equivalent chainId in hex', async () => {
+      it('deletes entries in TokenListController.tokensChainsCache that have decimal chain IDs', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -1081,21 +1140,6 @@ describe('migration #77', () => {
                   },
                 },
               },
-              32: {
-                timestamp: 222222,
-                data: {
-                  '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47': {
-                    address: '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
-                    symbol: 'ADA',
-                    decimals: 18,
-                  },
-                  '0x928e55dab735aa8260af3cedada18b5f70c72f1b': {
-                    address: '0x928e55dab735aa8260af3cedada18b5f70c72f1b',
-                    symbol: 'FRONT',
-                    decimals: 18,
-                  },
-                },
-              },
             },
           },
         });
@@ -1158,15 +1202,6 @@ describe('migration #77', () => {
                   },
                 ],
               },
-              32: {
-                '0x222': [
-                  {
-                    address: '0xbbb',
-                    decimals: 1,
-                    symbol: 'TEST2',
-                  },
-                ],
-              },
             },
           },
         });
@@ -1214,11 +1249,6 @@ describe('migration #77', () => {
                   '0x222': ['0xbbb'],
                 },
               },
-              32: {
-                '0x2': {
-                  '0x222': ['0xbbb'],
-                },
-              },
             },
           },
         });
@@ -1263,11 +1293,6 @@ describe('migration #77', () => {
             allDetectedTokens: {
               '0x10': {
                 '0x1': {
-                  '0x222': ['0xbbb'],
-                },
-              },
-              32: {
-                '0x2': {
                   '0x222': ['0xbbb'],
                 },
               },
