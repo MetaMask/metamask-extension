@@ -1,11 +1,19 @@
 .snap-privacy-warning {
   &__content {
-    max-height: 325px;
     overflow-y: auto;
+
+    @include screen-sm-max {
+      max-height: 312px; // fits for popover view
+    }
+
 
     &__scroll-button {
       position: sticky;
       bottom: 16px;
+
+      @include screen-sm-min {
+        display: none; // hides scroll button
+      }
     }
   }
 }
