@@ -39,7 +39,6 @@ export default function transformState077For086(
                 nftContractsByChainId[toHex(chainId)]
               ) {
                 delete nftContractsByChainId[chainId];
-                allNftContracts[address] = nftContractsByChainId;
               }
             }
           }
@@ -64,7 +63,6 @@ export default function transformState077For086(
                 nftsByChainId[toHex(chainId)]
               ) {
                 delete nftsByChainId[chainId];
-                allNfts[address] = nftsByChainId;
               }
             }
           }
