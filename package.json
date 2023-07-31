@@ -593,7 +593,6 @@
       "eth-trezor-keyring>trezor-connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "ethereumjs-util>ethereum-cryptography>keccak": false,
       "ethjs-query>babel-runtime>core-js": false,
-      "fast-glob>micromatch": true,
       "ganache>@trufflesuite/bigint-buffer": false,
       "ganache>bufferutil": false,
       "ganache>keccak": false,
