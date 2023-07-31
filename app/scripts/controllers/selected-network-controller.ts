@@ -7,12 +7,11 @@ import {
   createEventEmitterProxy,
   createSwappableProxy,
 } from '@metamask/swappable-obj-proxy';
-import { NetworkClient } from '@metamask/network-controller';
+import { NetworkClientId, NetworkControllerStateChangeEvent, NetworkState } from '@metamask/network-controller';
 
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
   domains: { persist: true, anonymous: false },
-  queue: { persist: false, anonymous: false },
 };
 
 const getDefaultState = () => ({
@@ -20,11 +19,11 @@ const getDefaultState = () => ({
 });
 
 type Domain = string;
-type ChainId = `0x${string}`;
-type RequestQueue = Record<Domain, Promise<unknown>[]>;
+
+const METAMASK_DOMAIN = 'metamask' as const;
 
 export type SelectedNetworkControllerState = {
-  domains: Record<Domain, ChainId>;
+  domains: Record<Domain, NetworkClientId>;
 };
 
 export type GetSelectedNetworkState = {
@@ -37,81 +36,82 @@ export type GetSelectedNetworkStateChange = {
   payload: [SelectedNetworkControllerState, Patch[]];
 };
 
-export type GetClientForDomain = {
-  type: `SelectedNetworkController:getClientForDomain`;
-  handler: (origin: string) => NetworkClient;
+export type GetNetworkClientIdChainForDomain = {
+  type: `SelectedNetworkController:getNetworkClientIdForDomain`;
+  handler: (domain: string) => NetworkClientId;
 };
 
-export type GetChainForDomain = {
-  type: `SelectedNetworkController:getChainForDomain`;
-  handler: (origin: string) => `0x${string}`;
+export type SetNetworkClientIdChainForDomain = {
+  type: `SelectedNetworkController:setNetworkClientIdForDomain`;
+  handler: (domain: string, NetworkClientId: NetworkClientId) => void;
 };
 
 export type SelectedNetworkControllerActions =
   | GetSelectedNetworkState
-  | GetClientForDomain
-  | GetChainForDomain;
+  | GetNetworkClientIdChainForDomain
+  | SetNetworkClientIdChainForDomain;
 
 export type SelectedNetworkControllerEvents = GetSelectedNetworkStateChange;
 
 export type SelectedNetworkControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
   SelectedNetworkControllerActions,
-  SelectedNetworkControllerEvents,
+  NetworkControllerStateChangeEvent | SelectedNetworkControllerEvents,
   never,
-  never
+  NetworkControllerStateChangeEvent['type']
 >;
-
-type SwitchNetwork = (chainId: ChainId) => void;
 
 export type SelectedNetworkControllerOptions = {
   messenger: SelectedNetworkControllerMessenger;
-  switchNetwork: SwitchNetwork;
+  // Feature flag to start returning networkClientId based on the domain.
+  // when the flag is false, the 'metamask' domain will always be used.
+  // defaults to false
+  perDomainNetwork: Boolean;
 };
 
 /**
- * Controller for requesting encryption public key requests requiring user approval.
+ * Controller for getting and setting the network for a particular domain.
  */
 export default class SelectedNetworkController extends BaseControllerV2<
   typeof controllerName,
   SelectedNetworkControllerState,
   SelectedNetworkControllerMessenger
 > {
-  private switchNetwork: SwitchNetwork;
-
-  private requestQueue: RequestQueue = {};
-
-  private clientsByDomain: Record<string, any> = {};
-
+  private perDomainNetwork: Boolean;
   /**
    * Construct a SelectedNetworkController controller.
    *
    * @param options - The controller options.
    * @param options.messenger - The restricted controller messenger for the EncryptionPublicKey controller.
-   * @param options.switchNetwork - A function for switching the current network.
    */
-  constructor({ messenger, switchNetwork }: SelectedNetworkControllerOptions) {
+  constructor({ perDomainNetwork, messenger }: SelectedNetworkControllerOptions) {
     super({
       name: controllerName,
       metadata: stateMetadata,
       messenger,
       state: getDefaultState(),
     });
-    this.switchNetwork = switchNetwork;
-    this.clientsByDomain = {};
+    this.perDomainNetwork = perDomainNetwork || false;
     this.registerMessageHandlers();
   }
 
   private registerMessageHandlers(): void {
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getClientForDomain` as const,
-      this.getClientForDomain.bind(this),
+      `${controllerName}:getNetworkClientIdForDomain` as const,
+      this.getNetworkClientIdForDomain.bind(this),
     );
 
     this.messagingSystem.registerActionHandler(
-      `${controllerName}:getChainForDomain` as const,
-      this.getChainForDomain.bind(this),
+      `${controllerName}:setNetworkClientIdForDomain` as const,
+      this.setNetworkClientIdForDomain.bind(this),
     );
+
+    // subscribe to networkController statechange:: selectedNetworkClientId changed
+    // update the value for the domain 'metamask'
+    this.messagingSystem.subscribe('NetworkController:stateChange', (state: NetworkState, patch: Patch[]) => {
+      const isChangingNetwork = patch.find((p) => p.path[0] === 'selectedNetworkClientId');
+      this.setNetworkClientIdForMetamask(state.selectedNetworkClientId);
+    });
   }
 
   /**
@@ -121,72 +121,21 @@ export default class SelectedNetworkController extends BaseControllerV2<
     this.update(() => getDefaultState());
   }
 
-  setChainForDomain(origin: Domain, chainId: ChainId) {
+  setNetworkClientIdForMetamask(networkClientId: NetworkClientId) {
+    return this.setNetworkClientIdForDomain(METAMASK_DOMAIN, networkClientId);
+  }
+
+  setNetworkClientIdForDomain(domain: Domain, networkClientId: NetworkClientId) {
     this.update((state) => {
-      state.domains[origin] = chainId;
+      state.domains[domain] = networkClientId;
     });
   }
 
-  setClientForDomain(origin: Domain, client: any) {
-    if (this.clientsByDomain[origin] !== undefined) {
-      this.clientsByDomain[origin].provider.setTarget(client.provider);
-      this.clientsByDomain[origin].blockTracker.setTarget(client.blockTracker);
-      this.clientsByDomain[origin].configuration.setTarget(
-        client.configuration,
-      );
-      return;
+  getNetworkClientIdForDomain(domain: Domain) {
+    if (this.perDomainNetwork == true) {
+      return this.state.domains[domain];
+    } else {
+      return this.state.domains[METAMASK_DOMAIN];
     }
-    this.clientsByDomain[origin] = {
-      configuration: createSwappableProxy(client.configuration),
-      provider: createEventEmitterProxy(client.provider),
-      blockTracker: createEventEmitterProxy(client.blockTracker, {
-        eventFilter: 'skipInternal',
-      }),
-    };
   }
-
-  getClientForDomain(origin: Domain) {
-    return this.clientsByDomain[origin];
-  }
-
-  getChainForDomain(origin: Domain) {
-    return this.state.domains[origin];
-  }
-
-  getAllConfigurationsByChainId() {
-    return this.clientsByDomain.reduce(
-      (acc: Record<ChainId, any>, client: any) => {
-        acc[client.configuration.chainId] = client.configuration;
-        return acc;
-      },
-      {},
-    );
-  }
-
-  // hasQueuedRequests(origin?: Domain) {
-  //   if (origin) {
-  //     return this.requestQueue[origin].length > 0;
-  //   }
-  //   return Object.keys(this.requestQueue).length > 0;
-  // }
-
-  // enqueueRequest(origin: Domain, requestNext: Promise<unknown>) {
-  //   if (this.requestQueue[origin] === undefined) {
-  //     this.requestQueue[origin] = [];
-  //   }
-
-  //   this.requestQueue[origin].push(requestNext);
-
-  //   return this.requestQueue;
-  // }
-
-  // async waitForRequestQueue() {
-  //   console.log('request queue when starting to wait: ', this.requestQueue);
-  //   const domainQueues = Object.values(this.requestQueue).map((domainQueue) =>
-  //     Promise.all(domainQueue),
-  //   );
-  //   await Promise.all(domainQueues);
-  //   this.requestQueue = {};
-  //   return true;
-  // }
 }

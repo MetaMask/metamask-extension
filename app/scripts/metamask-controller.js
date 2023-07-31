@@ -4065,50 +4065,26 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    // set chainid for domain if not exist
-    if (
-      this.selectedNetworkController.getChainForDomain(origin) === undefined
-    ) {
-      console.log(
-        'getChainForDomain',
-        this.selectedNetworkController.getChainForDomain(origin),
-        origin,
-      );
-      console.log(
-        'setting default chain id for ',
-        origin,
-        'to ',
-        this.networkController.state.providerConfig.chainId,
-      );
-      this.selectedNetworkController.setChainForDomain(
-        origin,
-        this.networkController.state.providerConfig.chainId,
-      );
-    }
-
-    const chainIdForRequest =
-      this.selectedNetworkController.getChainForDomain(origin);
-
-    console.log('chainIdForRequest', chainIdForRequest);
-    console.log(
-      'getNetworkClientsById',
-      this.networkController.getNetworkClientsById(),
-    );
-
-    if (
-      this.selectedNetworkController.getClientForDomain(origin) === undefined
-    ) {
-      this.selectedNetworkController.setClientForDomain(
-        origin,
-        this.findFullNetworkConfigurationByChainId(chainIdForRequest),
-      );
-    }
-
-    const networkClient =
-      this.selectedNetworkController.getClientForDomain(origin);
-
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
+
+    engine.push(
+      createAsyncMiddleware(async (req, res, next) => {
+        if (
+          this.selectedNetworkController.getClientNetworkIdForDomain(req.origin) === undefined
+        ) {
+          this.selectedNetworkController.setNetworkClientIdForDomain(
+            req.origin,
+            this.networkController.state.selectedNetworkClientId
+          );
+        }
+
+        const networkClientIdForRequest = this.selectedNetworkController.getClientNetworkIdForDomain(req.origin);
+
+        req.networkClientId = networkClientIdForRequest;
+        return next();
+      })
+    );
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({
@@ -4261,7 +4237,9 @@ export default class MetamaskController extends EventEmitter {
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
+        findNetworkClientIdByChainId: this.findNetworkClientIdByChainId.bind(this),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        setNetworkClientIdForDomain: this.selectedNetworkController.setNetworkClientIdForDomain.bind(this.selectedNetworkController),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
@@ -4677,19 +4655,19 @@ export default class MetamaskController extends EventEmitter {
     return networkConfiguration || null;
   }
 
-  findFullNetworkConfigurationByChainId(chainId) {
+  findNetworkClientIdByChainId(chainId) {
     const networkClients = this.networkController.getNetworkClientsById();
     const type = CHAIN_ID_TO_TYPE_MAP[chainId];
     if (type && networkClients[type]) {
       return networkClients[type];
     }
-    const networkConfiguration = Object.values(networkClients).find(
+    const networkConfigurationIndex = Object.values(networkClients).findIndex(
       (networkClient) => {
         return networkClient.configuration.chainId === chainId;
       },
     );
-
-    return networkConfiguration || null;
+    if (networkConfigurationIndex === -1) { return null; }
+    return Object.keys(networkClients)[networkConfigurationIndex];
   }
 
   /**
