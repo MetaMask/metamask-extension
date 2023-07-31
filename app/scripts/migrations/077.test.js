@@ -844,7 +844,7 @@ describe('migration #77', () => {
     });
 
     describe('state transformation to ahead of migration 88', () => {
-      it('deletes entries in NftController.allNftContracts that have decimal chain IDs', async () => {
+      it('deletes entries in NftController.allNftContracts that have decimal chain ID keys only if any chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -930,13 +930,20 @@ describe('migration #77', () => {
                   },
                 ],
               },
-              '0x333': {},
+              '0x333': {
+                256: [
+                  {
+                    name: 'Contract 3',
+                    address: '0xccc',
+                  },
+                ],
+              },
             },
           },
         });
       });
 
-      it('deletes entries in NftController.allNfts that have decimal chain IDs', async () => {
+      it('deletes entries in NftController.allNfts that have decimal chain ID keys only if any chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -1058,13 +1065,24 @@ describe('migration #77', () => {
                   },
                 ],
               },
-              '0x333': {},
+              '0x333': {
+                256: [
+                  {
+                    name: 'NFT 3',
+                    description: 'Description for NFT 3',
+                    image: 'nft3.jpg',
+                    standard: 'ERC721',
+                    tokenId: '3',
+                    address: '0xccc',
+                  },
+                ],
+              },
             },
           },
         });
       });
 
-      it('deletes entries in TokenListController.tokensChainsCache that have decimal chain IDs', async () => {
+      it('deletes entries in TokenListController.tokensChainsCache that have decimal chain ID keys only if any other chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -1144,7 +1162,87 @@ describe('migration #77', () => {
           },
         });
       });
-      it('deletes entries in TokensController.allTokens that have decimal chain IDs', async () => {
+      it('does not delete entries in TokenListController.tokensChainsCache that have decimal chain ID keys if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 76 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {
+                16: {
+                  timestamp: 111111,
+                  data: [
+                    {
+                      address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                      symbol: 'LINK',
+                      decimals: 18,
+                    },
+                    {
+                      address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+                      symbol: 'COMP',
+                      decimals: 18,
+                    },
+                  ],
+                },
+                32: {
+                  timestamp: 222222,
+                  data: [
+                    {
+                      address: '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
+                      symbol: 'ADA',
+                      decimals: 18,
+                    },
+                    {
+                      address: '0x928e55dab735aa8260af3cedada18b5f70c72f1b',
+                      symbol: 'FRONT',
+                      decimals: 18,
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {
+              16: {
+                timestamp: 111111,
+                data: {
+                  '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                    address: '0x514910771af9ca656af840dff83e8264ecf986ca',
+                    symbol: 'LINK',
+                    decimals: 18,
+                  },
+                  '0xc00e94cb662c3520282e6f5717214004a7f26888': {
+                    address: '0xc00e94cb662c3520282e6f5717214004a7f26888',
+                    symbol: 'COMP',
+                    decimals: 18,
+                  },
+                },
+              },
+              32: {
+                timestamp: 222222,
+                data: {
+                  '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47': {
+                    address: '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
+                    symbol: 'ADA',
+                    decimals: 18,
+                  },
+                  '0x928e55dab735aa8260af3cedada18b5f70c72f1b': {
+                    address: '0x928e55dab735aa8260af3cedada18b5f70c72f1b',
+                    symbol: 'FRONT',
+                    decimals: 18,
+                  },
+                },
+              },
+            },
+          },
+        });
+      });
+      it('deletes entries in TokensController.allTokens that have decimal chain IDs only if any other chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 76 },
           data: {
@@ -1207,7 +1305,70 @@ describe('migration #77', () => {
         });
       });
 
-      it('deletes entries in TokensController.allIgnoredTokens that have decimal chain IDs', async () => {
+      it('does not delete entries in TokensController.allTokens that have decimal chain IDs if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 76 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {},
+            },
+            TokensController: {
+              allTokens: {
+                16: {
+                  '0x111': [
+                    {
+                      address: '0xaaa',
+                      decimals: 1,
+                      symbol: 'TEST1',
+                    },
+                  ],
+                },
+                32: {
+                  '0x222': [
+                    {
+                      address: '0xbbb',
+                      decimals: 1,
+                      symbol: 'TEST2',
+                    },
+                  ],
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {},
+          },
+          TokensController: {
+            allTokens: {
+              16: {
+                '0x111': [
+                  {
+                    address: '0xaaa',
+                    decimals: 1,
+                    symbol: 'TEST1',
+                  },
+                ],
+              },
+              32: {
+                '0x222': [
+                  {
+                    address: '0xbbb',
+                    decimals: 1,
+                    symbol: 'TEST2',
+                  },
+                ],
+              },
+            },
+          },
+        });
+      });
+
+      it('deletes entries in TokensController.allIgnoredTokens that have decimal chain IDs only if any other chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 87 },
           data: {
@@ -1254,7 +1415,54 @@ describe('migration #77', () => {
         });
       });
 
-      it('deletes entries in TokensController.allDetectedTokens that have decimal chain IDs', async () => {
+      it('does not delete entries in TokensController.allIgnoredTokens that have decimal chain IDs if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 87 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {},
+            },
+            TokensController: {
+              allIgnoredTokens: {
+                16: {
+                  '0x1': {
+                    '0x111': ['0xaaa'],
+                  },
+                },
+                32: {
+                  '0x2': {
+                    '0x222': ['0xbbb'],
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {},
+          },
+          TokensController: {
+            allIgnoredTokens: {
+              16: {
+                '0x1': {
+                  '0x111': ['0xaaa'],
+                },
+              },
+              32: {
+                '0x2': {
+                  '0x222': ['0xbbb'],
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('deletes entries in TokensController.allDetectedTokens that have decimal chain IDs only if any other chain ID keys are hex', async () => {
         const oldStorage = {
           meta: { version: 87 },
           data: {
@@ -1293,6 +1501,53 @@ describe('migration #77', () => {
             allDetectedTokens: {
               '0x10': {
                 '0x1': {
+                  '0x222': ['0xbbb'],
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('does not delete entries in TokensController.allDetectedTokens that have decimal chain IDs if no other chain ID keys are hex', async () => {
+        const oldStorage = {
+          meta: { version: 87 },
+          data: {
+            TokenListController: {
+              tokensChainsCache: {},
+            },
+            TokensController: {
+              allDetectedTokens: {
+                16: {
+                  '0x1': {
+                    '0x111': ['0xaaa'],
+                  },
+                },
+                32: {
+                  '0x2': {
+                    '0x222': ['0xbbb'],
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const newStorage = await migration77.migrate(oldStorage);
+
+        expect(newStorage.data).toStrictEqual({
+          TokenListController: {
+            tokensChainsCache: {},
+          },
+          TokensController: {
+            allDetectedTokens: {
+              16: {
+                '0x1': {
+                  '0x111': ['0xaaa'],
+                },
+              },
+              32: {
+                '0x2': {
                   '0x222': ['0xbbb'],
                 },
               },

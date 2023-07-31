@@ -1,5 +1,4 @@
-import { hasProperty, Hex, isObject, isStrictHexString } from '@metamask/utils';
-import { BN } from 'ethereumjs-util';
+import { hasProperty, isObject, isStrictHexString } from '@metamask/utils';
 
 /**
  * Deletes properties of `NftController.allNftContracts`, `NftController.allNfts`,
@@ -32,7 +31,10 @@ export default function transformState077For086(
       ) {
         Object.keys(allNftContracts).forEach((address) => {
           const nftContractsByChainId = allNftContracts[address];
-          if (isObject(nftContractsByChainId)) {
+          if (
+            isObject(nftContractsByChainId) &&
+            anyKeysAreHex(nftContractsByChainId)
+          ) {
             for (const chainId of Object.keys(nftContractsByChainId)) {
               if (!isStrictHexString(chainId)) {
                 delete nftContractsByChainId[chainId];
@@ -53,7 +55,7 @@ export default function transformState077For086(
       if (Object.keys(allNfts).every((address) => isObject(allNfts[address]))) {
         Object.keys(allNfts).forEach((address) => {
           const nftsByChainId = allNfts[address];
-          if (isObject(nftsByChainId)) {
+          if (isObject(nftsByChainId) && anyKeysAreHex(nftsByChainId)) {
             for (const chainId of Object.keys(nftsByChainId)) {
               if (!isStrictHexString(chainId)) {
                 delete nftsByChainId[chainId];
@@ -76,7 +78,8 @@ export default function transformState077For086(
     // Migrate TokenListController.tokensChainsCache
     if (
       hasProperty(tokenListControllerState, 'tokensChainsCache') &&
-      isObject(tokenListControllerState.tokensChainsCache)
+      isObject(tokenListControllerState.tokensChainsCache) &&
+      anyKeysAreHex(tokenListControllerState.tokensChainsCache)
     ) {
       for (const chainId of Object.keys(
         tokenListControllerState.tokensChainsCache,
@@ -97,7 +100,8 @@ export default function transformState077For086(
     // Migrate TokensController.allTokens
     if (
       hasProperty(tokensControllerState, 'allTokens') &&
-      isObject(tokensControllerState.allTokens)
+      isObject(tokensControllerState.allTokens) &&
+      anyKeysAreHex(tokensControllerState.allTokens)
     ) {
       const { allTokens } = tokensControllerState;
 
@@ -111,7 +115,8 @@ export default function transformState077For086(
     // Migrate TokensController.allIgnoredTokens
     if (
       hasProperty(tokensControllerState, 'allIgnoredTokens') &&
-      isObject(tokensControllerState.allIgnoredTokens)
+      isObject(tokensControllerState.allIgnoredTokens) &&
+      anyKeysAreHex(tokensControllerState.allIgnoredTokens)
     ) {
       const { allIgnoredTokens } = tokensControllerState;
 
@@ -125,7 +130,8 @@ export default function transformState077For086(
     // Migrate TokensController.allDetectedTokens
     if (
       hasProperty(tokensControllerState, 'allDetectedTokens') &&
-      isObject(tokensControllerState.allDetectedTokens)
+      isObject(tokensControllerState.allDetectedTokens) &&
+      anyKeysAreHex(tokensControllerState.allDetectedTokens)
     ) {
       const { allDetectedTokens } = tokensControllerState;
 
@@ -141,12 +147,6 @@ export default function transformState077For086(
   return state;
 }
 
-function toHex(value: number | string | BN): Hex {
-  if (typeof value === 'string' && isStrictHexString(value)) {
-    return value;
-  }
-  const hexString = BN.isBN(value)
-    ? value.toString(16)
-    : new BN(value.toString(), 10).toString(16);
-  return `0x${hexString}`;
+function anyKeysAreHex(obj: Record<string, unknown>) {
+  return Object.keys(obj).some((chainId) => isStrictHexString(chainId));
 }
