@@ -34,9 +34,7 @@ export default function transformState077For086(
           const nftContractsByChainId = allNftContracts[address];
           if (isObject(nftContractsByChainId)) {
             for (const chainId of Object.keys(nftContractsByChainId)) {
-              if (
-                !isStrictHexString(chainId)
-              ) {
+              if (!isStrictHexString(chainId)) {
                 delete nftContractsByChainId[chainId];
               }
             }
@@ -57,9 +55,7 @@ export default function transformState077For086(
           const nftsByChainId = allNfts[address];
           if (isObject(nftsByChainId)) {
             for (const chainId of Object.keys(nftsByChainId)) {
-              if (
-                !isStrictHexString(chainId)
-              ) {
+              if (!isStrictHexString(chainId)) {
                 delete nftsByChainId[chainId];
               }
             }
@@ -85,9 +81,7 @@ export default function transformState077For086(
       for (const chainId of Object.keys(
         tokenListControllerState.tokensChainsCache,
       )) {
-        if (
-          !isStrictHexString(chainId)
-        ) {
+        if (!isStrictHexString(chainId)) {
           delete tokenListControllerState.tokensChainsCache[chainId];
         }
       }
