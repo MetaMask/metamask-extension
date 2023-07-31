@@ -624,7 +624,7 @@ export enum MetaMetricsEventName {
   SwapCompleted = 'Swap Completed',
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
-  UiWarnings = 'UI Warnings',
+  SwapError = 'Swap Error',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -680,6 +680,10 @@ export enum MetaMetricsEventLinkType {
 export enum MetaMetricsEventKeyType {
   Pkey = 'private_key',
   Srp = 'srp',
+}
+
+export enum MetaMetricsEventErrorType {
+  InsufficientGas = 'insufficient_gas',
 }
 
 export enum MetaMetricsNetworkEventSource {

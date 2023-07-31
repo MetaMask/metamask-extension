@@ -74,7 +74,6 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
-import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -123,6 +122,7 @@ import {
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsEventErrorType,
 } from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
@@ -508,6 +508,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionsError.currentBalanceWei,
     );
   }
+  const prevEthBalanceNeededStx = usePrevious(ethBalanceNeededStx);
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
@@ -702,23 +703,28 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   ]);
 
   useEffect(() => {
-    if (quotesLastFetched === prevQuotesLastFetched) {
+    if (
+      ((isSmartTransaction && prevEthBalanceNeededStx) ||
+        !isSmartTransaction) &&
+      quotesLastFetched === prevQuotesLastFetched
+    ) {
       return;
     }
-    let balanceNeeded;
+    let additionalBalanceNeeded;
     if (isSmartTransaction && ethBalanceNeededStx) {
-      balanceNeeded = ethBalanceNeededStx;
+      additionalBalanceNeeded = ethBalanceNeededStx;
     } else if (!isSmartTransaction && ethBalanceNeeded) {
-      balanceNeeded = ethBalanceNeeded;
+      additionalBalanceNeeded = ethBalanceNeeded;
     } else {
       return; // A user has enough balance for a gas fee, so we don't need to track it.
     }
     trackEvent({
-      event: MetaMetricsEventName.UiWarnings,
+      event: MetaMetricsEventName.SwapError,
       category: MetaMetricsEventCategory.Swaps,
       sensitiveProperties: {
         ...eventObjectBase,
-        balance_needed: balanceNeeded,
+        error_type: MetaMetricsEventErrorType.InsufficientGas,
+        additional_balance_needed: additionalBalanceNeeded,
       },
     });
   }, [
@@ -990,16 +996,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     chainId,
     usedQuote,
   ]);
-
-  useEffect(() => {
-    if (isSmartTransaction) {
-      // Removes a smart transactions error when the component loads.
-      dispatch({
-        type: SET_SMART_TRANSACTIONS_ERROR,
-        payload: null,
-      });
-    }
-  }, [isSmartTransaction, dispatch]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,
