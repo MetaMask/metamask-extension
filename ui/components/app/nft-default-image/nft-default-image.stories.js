@@ -8,13 +8,6 @@ export default {
     clickable: {
       control: 'boolean',
     },
-    isIpfsEnabled: {
-      control: 'boolean',
-    },
-  },
-  args: {
-    clickable: true,
-    isIpfsEnabled: false,
   },
 };
 

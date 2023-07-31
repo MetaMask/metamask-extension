@@ -190,7 +190,6 @@ export default function NftsItems({
                     networkName={currentChain.nickname}
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
-                    isIpfsEnabled={Boolean(ipfsGateway)}
                     clickable
                   />
                 </Box>

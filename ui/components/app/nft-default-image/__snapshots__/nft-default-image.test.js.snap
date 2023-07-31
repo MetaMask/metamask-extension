@@ -6,13 +6,7 @@ exports[`NFT Default Image should match snapshot with all provided props 1`] = `
     class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
-  >
-    <button
-      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-    >
-      Show
-    </button>
-  </div>
+  />
 </div>
 `;
 
@@ -22,13 +16,7 @@ exports[`NFT Default Image should match snapshot with missing clickable prop 1`]
     class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
-  >
-    <button
-      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-    >
-      Show
-    </button>
-  </div>
+  />
 </div>
 `;
 
@@ -38,12 +26,6 @@ exports[`NFT Default Image should render with no props 1`] = `
     class="mm-box nft-default mm-box--display-flex mm-box--rounded-lg"
     data-testid="nft-default-image"
     tabindex="0"
-  >
-    <button
-      class="mm-box mm-text mm-button-base mm-button-base--block nft-default__button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-    >
-      Show
-    </button>
-  </div>
+  />
 </div>
 `;

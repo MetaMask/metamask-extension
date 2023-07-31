@@ -194,7 +194,6 @@ export default function NftDetails({ nft }) {
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
-              isIpfsEnabled={Boolean(ipfsGateway)}
             />
           </Box>
           <Box
