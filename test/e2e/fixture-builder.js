@@ -150,7 +150,7 @@ function defaultFixture() {
           23: {
             date: null,
             id: 23,
-            isShown: true,
+            isShown: false,
           },
           ///: END:ONLY_INCLUDE_IN
         },
