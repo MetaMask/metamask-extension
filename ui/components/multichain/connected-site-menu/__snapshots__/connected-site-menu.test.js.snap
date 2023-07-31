@@ -19,7 +19,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -56,7 +56,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div
@@ -93,7 +93,7 @@ exports[`Connected Site Menu should render the site menu in not connected to cur
           class="mm-box mm-badge-wrapper mm-box--display-inline-block"
         >
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/global.svg');"
           />
           <div

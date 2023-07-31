@@ -31,7 +31,7 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  class="mm-box info-circle mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>
@@ -84,7 +84,7 @@ exports[`SendGasRow Component render should match snapshot 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="box info-circle mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-icon-alternative"
+                  class="mm-box info-circle mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
                   style="mask-image: url('./images/icons/info.svg');"
                 />
               </div>

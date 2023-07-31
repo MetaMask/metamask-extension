@@ -105,7 +105,7 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-5 box--margin-left-5 box--padding-1 box--sm:padding-3 box--lg:padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
       >
         <span
-          class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
           style="mask-image: url('./images/icons/danger.svg');"
         />
         <div>
