@@ -169,7 +169,7 @@ describe('migration #88', () => {
                   address: '0xaaa',
                 },
               ],
-              'undefined': [
+              undefined: [
                 {
                   name: 'Contract 2',
                   address: '0xbbb',
