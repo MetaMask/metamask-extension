@@ -419,18 +419,18 @@ export default class MetaMetricsController {
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
    *  to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null
+   * @returns {Promise<string|null>} the string of the new metametrics id, or null
    *  if not set
    */
-  setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
       // We also need to start sentry automatic session tracking at this point
-      globalThis.sentry?.startSession();
+      await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
-      globalThis.sentry?.endSession();
+      await globalThis.sentry?.endSession();
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });

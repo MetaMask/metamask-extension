@@ -14,6 +14,7 @@ import {
   TextColor,
   Size,
   IconColor,
+  Display,
 } from '../../../../helpers/constants/design-system';
 
 import {
@@ -33,7 +34,7 @@ export default function SnapContentFooter({ snapName, snapId }) {
     e.stopPropagation();
     history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`);
   };
-  // TODO: add truncation to the snap name, need to pick a character length at which to cut off
+
   return (
     <Box
       display={Display.Flex}
@@ -49,7 +50,7 @@ export default function SnapContentFooter({ snapName, snapId }) {
         name={IconName.Warning}
         size={Size.SM}
         color={IconColor.iconMuted}
-        paddingRight={1}
+        marginRight={1}
       />
       <Text color={TextColor.textMuted} variant={TextVariant.bodySm} as="h6">
         {t('snapContent', [

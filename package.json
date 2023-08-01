@@ -96,7 +96,8 @@
     "fitness-functions": "ts-node development/fitness-functions/index.ts",
     "generate-beta-commit": "node ./development/generate-beta-commit.js",
     "validate-branch-name": "validate-branch-name",
-    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts"
+    "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts",
+    "check-pr-has-required-labels": "ts-node ./.github/scripts/check-pr-has-required-labels.ts"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
@@ -255,7 +256,7 @@
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^4.0.0",
-    "@metamask/phishing-controller": "^3.0.0",
+    "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@metamask/ppom-validator": "^0.1.2",
     "@metamask/providers": "^11.1.0",
@@ -558,7 +559,7 @@
     "yargs": "^17.0.1"
   },
   "engines": {
-    "node": "^16.20.0",
+    "node": ">= 18",
     "yarn": "^3.2.4"
   },
   "lavamoat": {
