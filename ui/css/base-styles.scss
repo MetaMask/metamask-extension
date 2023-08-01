@@ -47,14 +47,22 @@ html {
   height: 100%;
   display: flex;
   flex-direction: column;
+  background: var(--color-background-alternative);
 
+  @include screen-sm-max {
+    background-color: var(--color-background-default);
+  }
   /*
     Until we get the user's preference from React state,
     assume the user is in dark mode, because the default
     theme is system preference
   */
   @media (prefers-color-scheme: dark) {
-    background-color: var(--brand-colors-grey-grey800);
+    background-color: var(--brand-colors-grey-grey900);
+
+    @include screen-sm-max {
+      background-color: var(--brand-colors-grey-grey800);
+    }
   }
 }
 /* stylelint-enable */

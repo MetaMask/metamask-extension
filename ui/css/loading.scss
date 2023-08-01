@@ -4,12 +4,12 @@
   align-self: center;
   margin: 10rem 0 0 0;
   opacity: 0;
-  transition-property: opacity;
-  transition-delay: 1s;
-  transition-duration: 0.5s;
-  transition-timing-function: linear;
 
   &.activated {
+    transition-property: opacity;
+    transition-delay: 1s;
+    transition-duration: 0.5s;
+    transition-timing-function: linear;
     opacity: 1;
   }
 }
