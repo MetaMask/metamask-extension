@@ -1364,6 +1364,42 @@ describe('migration #88', () => {
     });
   });
 
+  it('deletes undefined-keyed properties from  TokensController.allDetectedTokens', async () => {
+    const oldStorage = {
+      meta: { version: 87 },
+      data: {
+        TokensController: {
+          allDetectedTokens: {
+            '16': {
+              '0x1': {
+                '0x111': ['0xaaa'],
+              },
+            },
+            undefined: {
+              '0x2': {
+                '0x222': ['0xbbb'],
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual({
+      TokensController: {
+        allDetectedTokens: {
+          '0x10': {
+            '0x1': {
+              '0x111': ['0xaaa'],
+            },
+          },
+        },
+      },
+    });
+  });
+
   it('does not convert chain IDs in TokensController.allDetectedTokens which are already hex strings', async () => {
     const oldStorage = {
       meta: { version: 87 },
