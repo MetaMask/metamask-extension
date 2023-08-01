@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 export const version = 91;
 
 /**
- * Add an `id` to the `providerConfig` object.
+ * Delete network configurations if they do not have a chain id
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
