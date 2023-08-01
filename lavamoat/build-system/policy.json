@@ -6251,12 +6251,13 @@
     "lavamoat-browserify>concat-stream": {
       "globals": {
         "Buffer.concat": true,
-        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
+        "browserify>concat-stream>typedarray": true,
         "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
