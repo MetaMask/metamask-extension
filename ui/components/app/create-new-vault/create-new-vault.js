@@ -2,8 +2,12 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
-import CheckBox from '../../ui/check-box';
-import { BUTTON_VARIANT, Button, Text } from '../../component-library';
+import {
+  BUTTON_VARIANT,
+  Button,
+  Checkbox,
+  Text,
+} from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
@@ -126,7 +130,7 @@ export default function CreateNewVault({
       </div>
       {includeTerms ? (
         <div className="create-new-vault__terms">
-          <CheckBox
+          <Checkbox
             id="create-new-vault__terms-checkbox"
             dataTestId="create-new-vault__terms-checkbox"
             checked={termsChecked}
