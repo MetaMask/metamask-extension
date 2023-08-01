@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "我们会将账户分批并向 Infura 查询，以对应地显示您的余额。如果禁用此选项，将仅查询活动账户。必须连接钱包，否则有一些去中心化应用程序（dapp）将无法工作。"
-  },
   "useNftDetection": {
     "message": "自动检测NFT"
   },

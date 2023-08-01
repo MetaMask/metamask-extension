@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Kelompokkan permintaan saldo akun"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
-  },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
   },
