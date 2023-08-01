@@ -32,6 +32,11 @@
         "process.versions": true
       }
     },
+    "browserify>concat-stream": {
+      "globals": {
+        "Uint8Array": true
+      }
+    },
     "depcheck>@babel/traverse": {
       "packages": {
         "babel/preset-env>b@babel/types": true

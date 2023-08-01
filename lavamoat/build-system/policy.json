@@ -1784,7 +1784,8 @@
     "browserify>concat-stream": {
       "globals": {
         "Buffer.concat": true,
-        "Buffer.isBuffer": true
+        "Buffer.isBuffer": true,
+        "Uint8Array": true
       },
       "packages": {
         "browserify>concat-stream>typedarray": true,
