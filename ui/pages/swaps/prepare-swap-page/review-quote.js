@@ -74,7 +74,6 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
-import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -120,7 +119,11 @@ import {
   ButtonLink,
   Text,
 } from '../../../components/component-library';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventErrorType,
+} from '../../../../shared/constants/metametrics';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -176,6 +179,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   }, [history, quotes, routeState]);
 
   const quotesLastFetched = useSelector(getQuotesLastFetched);
+  const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 
   // Select necessary data
   const gasPrice = useSelector(getUsedSwapsGasPrice);
@@ -504,6 +508,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionsError.currentBalanceWei,
     );
   }
+  const prevEthBalanceNeededStx = usePrevious(ethBalanceNeededStx);
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
@@ -518,8 +523,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     } else if (balanceError && !insufficientTokens && !insufficientEth) {
       dispatch(setBalanceError(false));
     }
-    // eslint-disable-next-line
-  }, [insufficientTokens, insufficientEth, dispatch, isSmartTransaction]);
+  }, [
+    insufficientTokens,
+    insufficientEth,
+    dispatch,
+    isSmartTransaction,
+    balanceError,
+  ]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -697,6 +707,42 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     trackBestQuoteReviewedEvent,
   ]);
 
+  useEffect(() => {
+    if (
+      ((isSmartTransaction && prevEthBalanceNeededStx) ||
+        !isSmartTransaction) &&
+      quotesLastFetched === prevQuotesLastFetched
+    ) {
+      return;
+    }
+    let additionalBalanceNeeded;
+    if (isSmartTransaction && ethBalanceNeededStx) {
+      additionalBalanceNeeded = ethBalanceNeededStx;
+    } else if (!isSmartTransaction && ethBalanceNeeded) {
+      additionalBalanceNeeded = ethBalanceNeeded;
+    } else {
+      return; // A user has enough balance for a gas fee, so we don't need to track it.
+    }
+    trackEvent({
+      event: MetaMetricsEventName.SwapError,
+      category: MetaMetricsEventCategory.Swaps,
+      sensitiveProperties: {
+        ...eventObjectBase,
+        error_type: MetaMetricsEventErrorType.InsufficientGas,
+        additional_balance_needed: additionalBalanceNeeded,
+      },
+    });
+  }, [
+    quotesLastFetched,
+    prevQuotesLastFetched,
+    ethBalanceNeededStx,
+    isSmartTransaction,
+    trackEvent,
+    prevEthBalanceNeededStx,
+    ethBalanceNeeded,
+    eventObjectBase,
+  ]);
+
   const metaMaskFee = usedQuote.fee;
 
   /* istanbul ignore next */
@@ -793,6 +839,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       10,
     );
   }
+  const prevPriceDifferencePercentage = usePrevious(priceDifferencePercentage);
 
   const shouldShowPriceDifferenceWarning =
     !tokenBalanceUnavailable &&
@@ -840,6 +887,25 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionsOptInStatus &&
         !smartTransactionFees?.tradeTxFees),
   );
+
+  useEffect(() => {
+    if (
+      shouldShowPriceDifferenceWarning &&
+      acknowledgedPriceDifference &&
+      quotesLastFetched !== prevQuotesLastFetched &&
+      priceDifferencePercentage !== prevPriceDifferencePercentage
+    ) {
+      // Reset price difference acknowledgement if price diff % changed.
+      setAcknowledgedPriceDifference(false);
+    }
+  }, [
+    acknowledgedPriceDifference,
+    prevQuotesLastFetched,
+    quotesLastFetched,
+    shouldShowPriceDifferenceWarning,
+    priceDifferencePercentage,
+    prevPriceDifferencePercentage,
+  ]);
 
   useEffect(() => {
     if (isSmartTransaction && !insufficientTokens) {
@@ -947,16 +1013,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     chainId,
     usedQuote,
   ]);
-
-  useEffect(() => {
-    if (isSmartTransaction) {
-      // Removes a smart transactions error when the component loads.
-      dispatch({
-        type: SET_SMART_TRANSACTIONS_ERROR,
-        payload: null,
-      });
-    }
-  }, [isSmartTransaction, dispatch]);
 
   const destinationValue = calcTokenValue(
     destinationTokenValue,
