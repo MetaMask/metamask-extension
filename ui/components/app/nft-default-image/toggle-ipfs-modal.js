@@ -24,22 +24,10 @@ export const ToggleIpfsModal = ({ onClose }) => {
   const dispatch = useDispatch();
 
   return (
-    <Modal
-      isOpen
-      onClose={() => {
-        onClose();
-      }}
-      className="toggle-ipfs-modal"
-    >
+    <Modal isOpen onClose={onClose} className="toggle-ipfs-modal">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-          onClose={() => {
-            onClose();
-          }}
-        >
-          {t('showNft')}
-        </ModalHeader>
+        <ModalHeader onClose={onClose}>{t('showNft')}</ModalHeader>
         <Box className="toggle-ipfs-modal" marginTop={6}>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('ipfsToggleModalDescriptionOne')}

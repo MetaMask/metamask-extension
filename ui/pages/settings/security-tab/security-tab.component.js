@@ -358,7 +358,7 @@ export default class SecurityTab extends PureComponent {
     };
 
     const handleIpfsToggle = (url) => {
-      url === null || url.length < 1
+      url?.length < 1
         ? handleIpfsGatewayChange(IPFS_DEFAULT_GATEWAY_URL)
         : handleIpfsGatewayChange('');
     };
