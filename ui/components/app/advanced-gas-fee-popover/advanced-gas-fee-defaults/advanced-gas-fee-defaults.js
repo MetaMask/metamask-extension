@@ -3,19 +3,17 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { EditGasModes } from '../../../../../shared/constants/gas';
-import Box from '../../../ui/box';
+
 import {
   Display,
   FlexDirection,
-  TextColor,
-  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
 import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Text, Checkbox } from '../../../component-library';
+import { Checkbox, Box } from '../../../component-library';
 
 const AdvancedGasFeeDefaults = () => {
   const t = useI18nContext();
@@ -76,27 +74,21 @@ const AdvancedGasFeeDefaults = () => {
       marginTop={4}
       marginLeft={2}
       marginRight={2}
+      padding={4}
       className="advanced-gas-fee-defaults"
     >
-      <label className="advanced-gas-fee-defaults__label">
-        <Checkbox
-          isChecked={isDefaultSettingsSelected}
-          className="advanced-gas-fee-defaults__checkbox"
-          onChange={handleUpdateDefaultSettings}
-          isDisabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
-        />
-        <Text
-          variant={TextVariant.bodySm}
-          as="h6"
-          color={TextColor.textAlternative}
-        >
-          {isDefaultSettingsSelected
+      <Checkbox
+        isChecked={isDefaultSettingsSelected}
+        onChange={handleUpdateDefaultSettings}
+        isDisabled={gasErrors.maxFeePerGas || gasErrors.maxPriorityFeePerGas}
+        label={
+          isDefaultSettingsSelected
             ? t('advancedGasFeeDefaultOptOut')
             : t('advancedGasFeeDefaultOptIn', [
                 <strong key="default-value-change">{t('newValues')}</strong>,
-              ])}
-        </Text>
-      </label>
+              ])
+        }
+      />
     </Box>
   );
 };
