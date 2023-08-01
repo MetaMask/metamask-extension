@@ -12,7 +12,7 @@ const store = configureStore({
   },
 });
 
-const noIpsStore = configureStore({
+const noIpfsStore = configureStore({
   metamask: {
     ...mockState.metamask,
     ipfsGateway: '',
@@ -47,7 +47,7 @@ describe('NftItem component', () => {
     it('renders correctly with default image when no image source is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
         <NftItem {...props} />,
-        noIpsStore,
+        noIpfsStore,
       );
 
       expect(queryByTestId('nft-image')).not.toBeInTheDocument();
