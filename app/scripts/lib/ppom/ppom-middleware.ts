@@ -52,7 +52,7 @@ export function createPPOMMiddleware(
       req.securityAlertResponse = {
         result_type: BlockaidResultType.Failed,
         reason: error.message,
-        description: 'Validating the confirmation failed by  throwing error.',
+        description: 'Validating the confirmation failed by throwing error.',
       };
     } finally {
       next();
