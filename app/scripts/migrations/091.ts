@@ -31,7 +31,9 @@ function transformState(state: Record<string, unknown>) {
   ) {
     const { networkConfigurations } = state.NetworkController;
 
-    for (const [networkConfigurationId, networkConfiguration] of Object.entries(networkConfigurations)) {
+    for (const [networkConfigurationId, networkConfiguration] of Object.entries(
+      networkConfigurations,
+    )) {
       if (isObject(networkConfiguration)) {
         if (!networkConfiguration.chainId) {
           delete networkConfigurations[networkConfigurationId];
