@@ -67,6 +67,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[3]);
     fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
+    fireEvent.click(toggles[6]);
     fireEvent.click(submitButton);
 
     expect(setFeatureFlagStub).toHaveBeenCalledTimes(1);
@@ -96,6 +97,7 @@ describe('Privacy Settings Onboarding View', () => {
     fireEvent.click(toggles[3]);
     fireEvent.click(toggles[4]);
     fireEvent.click(toggles[5]);
+    fireEvent.click(toggles[6]);
     fireEvent.click(submitButton);
     expect(setFeatureFlagStub).toHaveBeenCalledTimes(2);
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(2);

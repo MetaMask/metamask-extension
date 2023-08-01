@@ -254,13 +254,6 @@ export default class PreferencesController {
   }
 
   /**
-   * Clear knownMethodData from state. Used when 4Byte Resolution toggle is turned off
-   */
-  clearKnownMethodData() {
-    this.store.updateState({ knownMethodData: {} });
-  }
-
-  /**
    * Setter for the `currentLocale` property
    *
    * @param {string} key - he preferred language locale key
