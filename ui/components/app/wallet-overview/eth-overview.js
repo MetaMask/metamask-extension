@@ -15,7 +15,7 @@ import {
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
-
+import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -25,6 +25,7 @@ import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
+  getAccountType,
   isBalanceCached,
   getShouldShowFiat,
   getCurrentKeyring,
@@ -77,6 +78,7 @@ const EthOverview = ({ className, showAddress }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
+  const accountType = useSelector(getAccountType);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -254,6 +256,14 @@ const EthOverview = ({ className, showAddress }) => {
               />
             }
             onClick={() => {
+              if (accountType === 'custody') {
+                global.platform.openTab({
+                  url: MMI_SWAPS_URL,
+                });
+
+                return;
+              }
+
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
