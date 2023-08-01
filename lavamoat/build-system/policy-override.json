@@ -37,6 +37,11 @@
         "Uint8Array": true
       }
     },
+    "lavamoat-browserify>concat-stream": {
+      "globals": {
+        "Uint8Array": true
+      }
+    },
     "depcheck>@babel/traverse": {
       "packages": {
         "babel/preset-env>b@babel/types": true
