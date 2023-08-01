@@ -7,7 +7,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
   TextVariant,
-  Display,
   FlexDirection,
   JustifyContent,
   AlignItems,
