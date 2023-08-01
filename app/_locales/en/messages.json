@@ -1426,6 +1426,24 @@
   "enhancedTokenDetectionAlertMessage": {
     "message": "Enhanced token detection is currently available on $1. $2"
   },
+  "ensDomainsSettingDescriptionIntro": {
+    "message": "MetaMask lets you see ENS domains like \"https://metamask.eth\" right in your browser's address bar. Here's how it works:"
+  },
+  "ensDomainsSettingDescriptionOutro": {
+    "message": "Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services."
+  },
+  "ensDomainsSettingDescriptionPoint1": {
+    "message": "MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name."
+  },
+  "ensDomainsSettingDescriptionPoint2": {
+    "message": "If the code is linked to IPFS, it gets the content from the IPFS network."
+  },
+  "ensDomainsSettingDescriptionPoint3": {
+    "message": "Then, you can see the content, usually a website or something similar."
+  },
+  "ensDomainsSettingTitle": {
+    "message": "Show ENS domains in address bar"
+  },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
   },
@@ -2036,6 +2054,16 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
+  "ipfsToggleModalDescriptionOne": {
+    "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
+  "ipfsToggleModalDescriptionTwo": {
+    "message": "Selecting Confirm turns on IPFS resolution. You can turn it off in $1 at any time.",
+    "description": "$1 is the method to turn off ipfs"
+  },
+  "ipfsToggleModalSettings": {
+    "message": "Settings > Security and privacy"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -2520,6 +2548,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -2715,6 +2746,15 @@
   },
   "notifications21Title": {
     "message": "Introducing new and refreshed Swaps!"
+  },
+  "notifications22ActionText": {
+    "message": "Got it"
+  },
+  "notifications22Description": {
+    "message": "💡 Just click the global menu or account menu to find them!"
+  },
+  "notifications22Title": {
+    "message": "Looking for your account details or the block explorer URL?"
   },
   "notifications3ActionText": {
     "message": "Read more",
@@ -3124,6 +3164,14 @@
     "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_getEntropy` permission"
   },
+  "permission_lifecycleHooks": {
+    "message": "Use lifecycle hooks.",
+    "description": "The description for the `endowment:lifecycle-hooks` permission"
+  },
+  "permission_lifecycleHooksDescription": {
+    "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+  },
   "permission_longRunning": {
     "message": "Run indefinitely.",
     "description": "The description for the `endowment:long-running` permission"
@@ -3247,9 +3295,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
-  },
-  "portfolioView": {
-    "message": "Portfolio view"
   },
   "preferredLedgerConnectionType": {
     "message": "Preferred Ledger connection type",
@@ -3785,6 +3830,9 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showNft": {
+    "message": "Show NFT"
   },
   "showPermissions": {
     "message": "Show permissions"
@@ -5130,8 +5178,8 @@
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "We batch accounts and query Infura to responsively show your balances. If you turn this off, only active accounts will be queried. Some dapps won't work unless you connect your wallet."
+  "useMultiAccountBalanceCheckerSettingDescription": {
+    "message": "Get faster balance updates by batching account balance requests. This lets us fetch your account balances together, so you get quicker updates for an improved experience. When this feature is off, third parties may be less likely to associate your accounts with each other."
   },
   "useNftDetection": {
     "message": "Autodetect NFTs"
