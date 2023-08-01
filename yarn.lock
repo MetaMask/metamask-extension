@@ -4354,6 +4354,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/message-manager@npm:^7.0.2":
+  version: 7.3.0
+  resolution: "@metamask/message-manager@npm:7.3.0"
+  dependencies:
+    "@metamask/base-controller": ^3.2.0
+    "@metamask/controller-utils": ^4.3.0
+    "@metamask/eth-sig-util": ^6.0.0
+    "@metamask/utils": ^6.2.0
+    "@types/uuid": ^8.3.0
+    ethereumjs-util: ^7.0.10
+    jsonschema: ^1.2.4
+    uuid: ^8.3.2
+  checksum: dd5c521136b218ae268df38e64fe501863aa942b2ad84f7aa10a611d8c1ea623fc1e90dcbee4ed629cb2fe0a9fbb1ecb2c5e3c30afbadc3b4353e680dfa3cf12
+  languageName: node
+  linkType: hard
+
 "@metamask/message-manager@npm:^7.2.0":
   version: 7.2.0
   resolution: "@metamask/message-manager@npm:7.2.0"
@@ -24267,7 +24283,7 @@ __metadata:
     "@metamask/key-tree": ^9.0.0
     "@metamask/keyring-controller": ^7.0.0
     "@metamask/logo": ^3.1.1
-    "@metamask/message-manager": ^7.2.0
+    "@metamask/message-manager": ^7.0.2
     "@metamask/metamask-eth-abis": ^3.0.0
     "@metamask/network-controller": ^10.3.1
     "@metamask/notification-controller": ^3.0.0
