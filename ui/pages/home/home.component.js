@@ -790,7 +790,7 @@ export default class Home extends PureComponent {
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // The style in activity screen for support is different
     const activitySupportDisplayStyle =
       defaultHomeActiveTabName === 'activity'
