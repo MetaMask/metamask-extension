@@ -2931,7 +2931,7 @@ export default class MetamaskController extends EventEmitter {
       // create new vault
       const vault = await this.coreKeyringController.createNewVaultAndRestore(
         password,
-        this._bufferToUint8Array(seedPhraseAsBuffer),
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
       const ethQuery = new EthQuery(this.provider);
@@ -2974,17 +2974,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get a Uint8Array mnemonic from Buffer.
+   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
    *
-   * @param {Buffer} mnemonic - The mnemonic phrase as a Buffer
-   * @returns {Uint8Array} The mnemonic phrase as a Uint8Array
+   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
+   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
    */
-  _bufferToUint8Array(mnemonic) {
+  _convertMnemonicToWordlistIndices(mnemonic) {
     const indices = mnemonic
       .toString()
       .split(' ')
       .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(new Uint16Array(indices).buffer);
+    return new Uint8Array(indices);
   }
 
   /**
