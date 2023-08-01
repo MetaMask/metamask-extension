@@ -1677,16 +1677,16 @@
         "@metamask/browser-passworder": true,
         "@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
         "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
-        "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/obs-store": true,
         "browserify>events": true
       }
     },
-    "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util": {
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
@@ -1694,16 +1694,16 @@
         "eth-sig-util>tweetnacl-util": true
       }
     },
-    "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": {
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true
       },
       "packages": {
-        "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/keyring-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2105,50 +2105,12 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/signature-controller>@metamask/message-manager": true,
+        "@metamask/message-manager": true,
         "browserify>buffer": true,
         "browserify>events": true,
         "eth-rpc-errors": true,
         "ethereumjs-util": true,
         "lodash": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/message-manager": {
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/message-manager>jsonschema": true,
-        "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util": true,
-        "browserify>buffer": true,
-        "browserify>events": true,
-        "ethereumjs-util": true,
-        "uuid": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/signature-controller>@metamask/message-manager>@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
       }
     },
     "@metamask/smart-transactions-controller": {

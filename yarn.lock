@@ -1619,10 +1619,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/ppom@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@blockaid/ppom@npm:1.0.1"
-  checksum: 66254238a081199f9ded3e7778ae072f82d373a399dd813069539e0cc1c7b4dcfd035095de8f11c5fffade0b2c1f3adc99ed474f8f689803af970667e8d3269a
+"@blockaid/ppom@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@blockaid/ppom@npm:0.1.2"
+  checksum: 986b23086c6bc2b37342f460f1178278d3e11d4b3beaba5664ad91b71a21466528b6c915c51df7828ba636fc927676f14e5373193ff35ee26dd19da5dfaab05b
   languageName: node
   linkType: hard
 
@@ -4355,8 +4355,8 @@ __metadata:
   linkType: hard
 
 "@metamask/message-manager@npm:^7.0.2, @metamask/message-manager@npm:^7.2.0":
-  version: 7.3.0
-  resolution: "@metamask/message-manager@npm:7.3.0"
+  version: 7.2.0
+  resolution: "@metamask/message-manager@npm:7.2.0"
   dependencies:
     "@metamask/base-controller": ^3.2.0
     "@metamask/controller-utils": ^4.3.0
@@ -4366,7 +4366,7 @@ __metadata:
     ethereumjs-util: ^7.0.10
     jsonschema: ^1.2.4
     uuid: ^8.3.2
-  checksum: dd5c521136b218ae268df38e64fe501863aa942b2ad84f7aa10a611d8c1ea623fc1e90dcbee4ed629cb2fe0a9fbb1ecb2c5e3c30afbadc3b4353e680dfa3cf12
+  checksum: 450132c11d621218613f9769794d362da756b38235103d100fdd41ce571f891df96e665f1f111f0a5210e53b895c206bfd156d14e776b39c2c70a9855be1d530
   languageName: node
   linkType: hard
 
@@ -24213,7 +24213,7 @@ __metadata:
     "@babel/preset-typescript": ^7.16.7
     "@babel/register": ^7.5.5
     "@babel/runtime": ^7.18.9
-    "@blockaid/ppom": ^1.0.1
+    "@blockaid/ppom": ^0.1.2
     "@download/blockies": ^1.0.3
     "@ensdomains/content-hash": ^2.5.6
     "@ethereumjs/common": ^3.1.1
