@@ -11172,15 +11172,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browser-resolve@npm:^1.11.0":
-  version: 1.11.3
-  resolution: "browser-resolve@npm:1.11.3"
-  dependencies:
-    resolve: 1.1.7
-  checksum: 431bfc1a17406362a3010a2c35503eb7d1253dbcb8081c1ce236ddb0b954a33d52dcaf0b07f64c0f20394d6eeec1be4f6551da3734ce9ed5dcc38e876c96d5d5
-  languageName: node
-  linkType: hard
-
 "browser-resolve@npm:^2.0.0":
   version: 2.0.0
   resolution: "browser-resolve@npm:2.0.0"
@@ -11284,13 +11275,13 @@ __metadata:
   linkType: hard
 
 "browserify@npm:^16.5.1":
-  version: 16.5.1
-  resolution: "browserify@npm:16.5.1"
+  version: 16.5.2
+  resolution: "browserify@npm:16.5.2"
   dependencies:
     JSONStream: ^1.0.3
     assert: ^1.4.0
     browser-pack: ^6.0.1
-    browser-resolve: ^1.11.0
+    browser-resolve: ^2.0.0
     browserify-zlib: ~0.2.0
     buffer: ~5.2.1
     cached-path-relative: ^1.0.0
@@ -11311,7 +11302,7 @@ __metadata:
     insert-module-globals: ^7.0.0
     labeled-stream-splicer: ^2.0.0
     mkdirp-classic: ^0.5.2
-    module-deps: ^6.0.0
+    module-deps: ^6.2.3
     os-browserify: ~0.3.0
     parents: ^1.0.1
     path-browserify: ~0.0.0
@@ -11337,7 +11328,7 @@ __metadata:
     xtend: ^4.0.0
   bin:
     browserify: bin/cmd.js
-  checksum: 71c02959ffbcedc6364fb77db75dbf9ac7d945747414774287202327b7be9ae390257acfbf788455a90a088daa18c5134ec7b46315b747ff51ccddb73ad2e3ea
+  checksum: 75dacf5c82355146b49a2febb3bf9f7898893931973cf901849791827e44782afcb562be7bc3a893d9022ae528fd6fccdf24fc8812cb5aa1b081bb7ce34c46b5
   languageName: node
   linkType: hard
 
@@ -25442,7 +25433,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"module-deps@npm:^6.0.0, module-deps@npm:^6.2.3":
+"module-deps@npm:^6.2.3":
   version: 6.2.3
   resolution: "module-deps@npm:6.2.3"
   dependencies:
@@ -30093,13 +30084,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:1.1.7":
-  version: 1.1.7
-  resolution: "resolve@npm:1.1.7"
-  checksum: afd20873fbde7641c9125efe3f940c2a99f6b1f90f1b7b743e744bdaac1cb105b2e4e0317bcc052ed7e31d57afa86b394a4dc9a1b33a297977be134fdf0250ab
-  languageName: node
-  linkType: hard
-
 "resolve@npm:^1.1.4, resolve@npm:^1.1.5, resolve@npm:^1.1.6, resolve@npm:^1.1.7, resolve@npm:^1.10.0, resolve@npm:^1.10.1, resolve@npm:^1.11.1, resolve@npm:^1.14.2, resolve@npm:^1.15.1, resolve@npm:^1.17.0, resolve@npm:^1.18.1, resolve@npm:^1.19.0, resolve@npm:^1.20.0, resolve@npm:^1.21.0, resolve@npm:^1.22.0, resolve@npm:^1.22.1, resolve@npm:^1.22.3, resolve@npm:^1.4.0":
   version: 1.22.3
   resolution: "resolve@npm:1.22.3"
@@ -30123,13 +30107,6 @@ __metadata:
   bin:
     resolve: bin/resolve
   checksum: c438ac9a650f2030fd074219d7f12ceb983b475da2d89ad3d6dd05fbf6b7a0a8cd37d4d10b43cb1f632bc19f22246ab7f36ebda54d84a29bfb2910a0680906d3
-  languageName: node
-  linkType: hard
-
-"resolve@patch:resolve@1.1.7#~builtin<compat/resolve>":
-  version: 1.1.7
-  resolution: "resolve@patch:resolve@npm%3A1.1.7#~builtin<compat/resolve>::version=1.1.7&hash=07638b"
-  checksum: e9dbca78600ae56835c43a09f1276876c883e4b4bbd43e2683fa140671519d2bdebeb1c1576ca87c8c508ae2987b3ec481645ac5d3054b0f23254cfc1ce49942
   languageName: node
   linkType: hard
 
