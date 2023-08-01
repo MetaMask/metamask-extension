@@ -98,7 +98,7 @@ export async function getErrorHtml(
             ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
             ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
           </p>
-          <span id='critical-error-button' class="critical-error__alert__action-link">
+          <span id='critical-error-button' class="critical-error__link critical-error__alert__action-link">
             ${t('restartMetamask')}
           </span>
         </div>
@@ -106,7 +106,7 @@ export async function getErrorHtml(
           ${t('stillGettingMessage')}
           <a
             href=${supportLink}
-            class="critical-error__paragraph__link"
+            class="critical-error__link critical-error__paragraph__link"
             target="_blank"
             rel="noopener noreferrer">
               ${t('sendBugReport')}

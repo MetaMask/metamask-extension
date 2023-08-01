@@ -13,6 +13,16 @@
     padding-top: 4px;
   }
 
+  &__link {
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--color-primary-default);
+
+    &:hover {
+      color: var(--color-primary-alternative);
+    }
+  }
+
   &__description {
     flex-grow: 1;
   }
@@ -31,22 +41,11 @@
 
     &__action-link {
       line-height: 40px;
-      color: var(--color-primary-default);
-      text-decoration: none;
-      cursor: pointer;
       margin: 8px 0 20px;
     }
   }
 
   &__paragraph {
     color: var(--color-text-default);
-
-    &__link {
-      color: var(--color-primary-default);
-
-      &:hover {
-        color: var(--color-primary-alternative);
-      }
-    }
   }
 }
