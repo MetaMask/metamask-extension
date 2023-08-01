@@ -74,7 +74,8 @@ const AdvancedGasFeeDefaults = () => {
       marginTop={4}
       marginLeft={2}
       marginRight={2}
-      padding={4}
+      paddingTop={4}
+      paddingBottom={4}
       className="advanced-gas-fee-defaults"
     >
       <Checkbox
