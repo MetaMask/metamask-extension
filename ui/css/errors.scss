@@ -14,6 +14,17 @@
     margin: 0 auto;
   }
 
+  &__footer {
+    display: inline-flex;
+    flex-wrap: wrap;
+
+    > span {
+      flex: 0 0 auto;
+      max-width: 100%;
+      padding-right: 4px;
+    }
+  }
+
   &__icon {
     padding-top: 4px;
   }
@@ -26,10 +37,6 @@
     &:hover {
       color: var(--color-primary-alternative);
     }
-  }
-
-  &__link-bug-report {
-    white-space: nowrap;
   }
 
   &__link-restart {
