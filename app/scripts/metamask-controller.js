@@ -226,6 +226,7 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IN
 import { updateCurrentLocale } from './translate';
+import createSelectedNetworkMiddleware from './controllers/selected-network-middleware';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -2177,13 +2178,6 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 
-  getCurrentChainId(origin) {
-    if (origin) {
-      return this.selectedNetworkController.getChainForDomain(origin);
-    }
-    return this.networkController.state.providerConfig.chainId;
-  }
-
   //=============================================================================
   // EXPOSED TO THE UI SUBSYSTEM
   //=============================================================================
@@ -4061,21 +4055,10 @@ export default class MetamaskController extends EventEmitter {
     engine.push(createOriginMiddleware({ origin }));
 
     engine.push(
-      createAsyncMiddleware(async (req, res, next) => {
-        if (
-          this.selectedNetworkController.getClientNetworkIdForDomain(req.origin) === undefined
-        ) {
-          this.selectedNetworkController.setNetworkClientIdForDomain(
-            req.origin,
-            this.networkController.state.selectedNetworkClientId
-          );
-        }
-
-        const networkClientIdForRequest = this.selectedNetworkController.getClientNetworkIdForDomain(req.origin);
-
-        req.networkClientId = networkClientIdForRequest;
-        return next();
-      })
+      createSelectedNetworkMiddleware(
+        this.selectedNetworkController,
+        this.networkController,
+      ),
     );
 
     // create filter polyfill middleware
@@ -4137,24 +4120,6 @@ export default class MetamaskController extends EventEmitter {
         origin,
 
         subjectType,
-
-        setClientForDomain:
-          this.selectedNetworkController.setClientForDomain.bind(
-            this.selectedNetworkController,
-          ),
-
-        findFullNetworkConfigurationByChainId:
-          this.findFullNetworkConfigurationByChainId.bind(this),
-
-        getChainForDomain:
-          this.selectedNetworkController.getChainForDomain.bind(
-            this.selectedNetworkController,
-          ),
-
-        setChainForDomain:
-          this.selectedNetworkController.setChainForDomain.bind(
-            this.selectedNetworkController,
-          ),
 
         // Miscellaneous
         addSubjectMetadata:
@@ -4225,9 +4190,13 @@ export default class MetamaskController extends EventEmitter {
         setActiveNetwork: this.networkController.setActiveNetwork.bind(
           this.networkController,
         ),
-        findNetworkClientIdByChainId: this.findNetworkClientIdByChainId.bind(this),
+        findNetworkClientIdByChainId:
+          this.findNetworkClientIdByChainId.bind(this),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
-        setNetworkClientIdForDomain: this.selectedNetworkController.setNetworkClientIdForDomain.bind(this.selectedNetworkController),
+        setNetworkClientIdForDomain:
+          this.selectedNetworkController.setNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setProviderType: this.networkController.setProviderType.bind(
           this.networkController,
         ),
