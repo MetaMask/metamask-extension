@@ -3,6 +3,7 @@ const {
   withFixtures,
   convertToHexValue,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -26,8 +27,7 @@ describe('Import flow', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Token list is only on mainnet
         await driver.clickElement('[data-testid="network-display"]');
