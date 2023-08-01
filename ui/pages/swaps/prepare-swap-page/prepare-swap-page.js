@@ -846,14 +846,15 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}

@@ -12,7 +12,7 @@ import {
   setProviderType,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getCurrentChainId,
@@ -51,12 +51,6 @@ import {
   getCompletedOnboarding,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
-
-const UNREMOVABLE_CHAIN_IDS = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  ...TEST_CHAINS,
-];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -117,9 +111,7 @@ export const NetworkListMenu = ({ onClose }) => {
       }
 
       const isCurrentNetwork = currentNetwork.id === network.id;
-
-      const canDeleteNetwork =
-        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+      const canDeleteNetwork = !isCurrentNetwork && network.removable;
 
       return (
         <NetworkListItem
