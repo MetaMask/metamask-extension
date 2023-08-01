@@ -1818,7 +1818,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSnapKeyring() {
     if (!this.snapKeyring) {
-      let [snapKeyring] = this.keyringController.getKeyringsByType(
+      let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
         KeyringType.snap,
       );
       if (!snapKeyring) {
@@ -2933,7 +2933,7 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const [primaryKeyring] = keyringController.getKeyringsByType(
+      const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
         KeyringType.hdKeyTree,
       );
       if (!primaryKeyring) {
@@ -3123,7 +3123,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
+    const [keyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!keyring.mnemonic) {
@@ -3138,7 +3138,8 @@ export default class MetamaskController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
+    const keyring =
+      this.coreKeyringController.getKeyringsByType(custodyType)[0];
     return keyring?.getAccountDetails(address) ? keyring : undefined;
   }
   ///: END:ONLY_INCLUDE_IN
@@ -3175,7 +3176,9 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
     }
-    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
+    let [keyring] = await this.coreKeyringController.getKeyringsByType(
+      keyringName,
+    );
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName);
     }
@@ -3388,7 +3391,7 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
@@ -3433,7 +3436,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
@@ -4655,14 +4658,14 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    const [trezorKeyring] = this.keyringController.getKeyringsByType(
+    const [trezorKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
-    const [ledgerKeyring] = this.keyringController.getKeyringsByType(
+    const [ledgerKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.ledger,
     );
     ledgerKeyring?.destroy?.();
