@@ -41,6 +41,7 @@ const getDefaultState = () => ({
 
 export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
+  securityAlertResponse: Record<string, unknown>;
 };
 
 export type StateMessage = Required<
@@ -382,7 +383,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
       origin: messageParams.origin,
     };
 
-    return stateMessage as any;
+    return stateMessage;
   }
 
   private _requestApproval(
