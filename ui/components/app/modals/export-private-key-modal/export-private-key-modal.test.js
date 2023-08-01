@@ -76,7 +76,9 @@ describe('Export PrivateKey Modal', () => {
 
     expect(actions.exportAccount).toHaveBeenCalledWith(
       password,
-      mockState.metamask.selectedAddress,
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].address,
     );
   });
 });

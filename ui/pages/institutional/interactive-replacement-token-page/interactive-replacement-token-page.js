@@ -3,7 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getMetaMaskAccounts } from '../../../selectors';
+import {
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
@@ -52,14 +55,15 @@ export default function InteractiveReplacementTokenPage({ history }) {
     (state) => state.appState.modal.modalState.props?.address,
   );
   const {
-    selectedAddress,
     custodyAccountDetails,
     interactiveReplacementToken,
     mmiConfiguration,
   } = useSelector((state) => state.metamask);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { custodianName } =
-    custodyAccountDetails[toChecksumHexAddress(address || selectedAddress)] ||
-    {};
+    custodyAccountDetails[
+      toChecksumHexAddress(address || selectedAccount.address)
+    ] || {};
   const { url } = interactiveReplacementToken || {};
   const { custodians } = mmiConfiguration;
   const custodian =
@@ -106,20 +110,21 @@ export default function InteractiveReplacementTokenPage({ history }) {
           ),
         );
 
-        const filteredAccounts = custodianAccounts.filter(
-          (account) => metaMaskAccounts[account.address.toLowerCase()],
-        );
-
-        const mappedAccounts = filteredAccounts.map((account) => ({
-          address: account.address,
-          name: account.name,
-          labels: account.labels,
-          balance:
-            metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
-        }));
+        const custodianAccountsWithBalances = custodianAccounts
+          .map((custodianAccount) => {
+            return {
+              ...custodianAccount,
+              balance: Object.values(metaMaskAccounts).find(
+                (account) =>
+                  account.address.toLowerCase() ===
+                  custodianAccount.address.toLowerCase(),
+              )?.balance,
+            };
+          })
+          .filter((custodianAccount) => custodianAccount.balance !== undefined);
 
         if (isMounted) {
-          setTokenAccounts(mappedAccounts);
+          setTokenAccounts(custodianAccountsWithBalances);
           setIsLoading(false);
         }
       } catch (e) {
@@ -210,9 +215,13 @@ export default function InteractiveReplacementTokenPage({ history }) {
         setIsLoading(false);
       }
     } catch (e) {
+      console.log('in error', e);
       console.error(e);
     }
   };
+
+  console.log('custodian', custodian);
+  console.log('tokenAccounts', tokenAccounts);
 
   return (
     <Box className="page-container" data-testid="interactive-replacement-token">

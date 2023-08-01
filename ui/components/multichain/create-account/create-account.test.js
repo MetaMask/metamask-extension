@@ -10,7 +10,31 @@ const render = (props = { onActionComplete: () => jest.fn() }) => {
   return renderWithProvider(<CreateAccount {...props} />, store);
 };
 
-const mockAddNewAccount = jest.fn().mockReturnValue({ type: 'TYPE' });
+const mockInternalAccount = {
+  id: '0179ecc1-19c2-4c78-8df9-e08b604665e9',
+  name: 'test',
+  address: '0x1',
+  metadata: {
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  supportedMethods: [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v2',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
+
+const mockAddNewAccount = jest.fn().mockReturnValue(mockInternalAccount);
 const mockSetAccountLabel = jest.fn().mockReturnValue({ type: 'TYPE' });
 
 jest.mock('../../../store/actions', () => ({
@@ -44,7 +68,7 @@ describe('CreateAccount', () => {
     await waitFor(() => expect(mockAddNewAccount).toHaveBeenCalled());
     await waitFor(() =>
       expect(mockSetAccountLabel).toHaveBeenCalledWith(
-        { type: 'TYPE' },
+        mockInternalAccount.id,
         newAccountName,
       ),
     );

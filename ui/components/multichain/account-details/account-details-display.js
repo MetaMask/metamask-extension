@@ -61,7 +61,7 @@ export const AccountDetailsDisplay = ({
       <EditableLabel
         defaultValue={accountName}
         onSubmit={(label) => {
-          dispatch(setAccountLabel(address, label));
+          dispatch(setAccountLabel(accountId, label));
           trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.AccountRenamed,

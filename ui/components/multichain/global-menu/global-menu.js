@@ -40,7 +40,9 @@ import {
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN
   getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getUnreadNotificationsCount,

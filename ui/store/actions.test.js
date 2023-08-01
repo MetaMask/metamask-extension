@@ -264,15 +264,15 @@ describe('Actions', () => {
           },
           internalAccounts: {
             accounts: {
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              '22497cc9-e791-42b8-adef-2f13ef216b86': {
                 address: '0xAnotherAddress',
-                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                id: '22497cc9-e791-42b8-adef-2f13ef216b86',
                 metadata: {
                   keyring: {
                     type: 'HD Key Tree',
                   },
                 },
-                name: 'Test Account',
+                name: 'Test Account 2',
                 options: {},
                 supportedMethods: [
                   'personal_sign',
@@ -288,7 +288,7 @@ describe('Actions', () => {
                 type: 'eip155:eoa',
               },
             },
-            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            selectedAccount: '22497cc9-e791-42b8-adef-2f13ef216b86',
           },
           cachedBalances: {
             '0x1': {
@@ -472,6 +472,53 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'DISPLAY_WARNING', payload: 'error' },
         { type: 'HIDE_LOADING_INDICATION' },
+        {
+          type: 'UPDATE_METAMASK_STATE',
+          value: {
+            accounts: {
+              '0xFirstAddress': {
+                balance: '0x0',
+              },
+            },
+            cachedBalances: {
+              '0x1': {
+                '0xFirstAddress': '0x0',
+              },
+            },
+            currentLocale: 'test',
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xFirstAddress',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  name: 'Test Account',
+                  options: {},
+                  supportedMethods: [
+                    'personal_sign',
+                    'eth_sendTransaction',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
+            providerConfig: {
+              chainId: '0x1',
+            },
+          },
+        },
       ];
 
       await expect(store.dispatch(actions.addNewAccount(1))).rejects.toThrow(
@@ -1952,6 +1999,34 @@ describe('Actions', () => {
               '0xFirstAddress': {
                 balance: '0x0',
               },
+            },
+            internalAccounts: {
+              accounts: {
+                '8e110453-2231-4e62-82de-29b913dfef4b': {
+                  address: '0xFirstAddress',
+                  id: '8e110453-2231-4e62-82de-29b913dfef4b',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  name: 'Test Account 2',
+                  options: {},
+                  supportedMethods: [
+                    'personal_sign',
+                    'eth_sendTransaction',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+              },
+              selectedAccount: '8e110453-2231-4e62-82de-29b913dfef4b',
             },
             cachedBalances: {
               '0x1': {

@@ -8,13 +8,17 @@ import configureStore from '../../../../store/store';
 
 import ConfirmLegacyGasDisplay from './confirm-legacy-gas-display';
 
+const selectedAddress =
+  mockState.metamask.internalAccounts.accounts[
+    mockState.metamask.internalAccounts.selectedAccount
+  ].address;
 const mmState = {
   ...mockState,
   metamask: {
     ...mockState.metamask,
     accounts: {
-      [mockState.metamask.selectedAddress]: {
-        address: mockState.metamask.selectedAddress,
+      [selectedAddress]: {
+        address: selectedAddress,
         balance: '0x1F4',
       },
     },

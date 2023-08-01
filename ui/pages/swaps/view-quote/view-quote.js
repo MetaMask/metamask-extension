@@ -55,7 +55,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
-  getSelectedAccount,
+  getSelectedInternalAccountWithBalance,
   getCurrentCurrency,
   getTokenExchangeRates,
   getSwapsDefaultToken,
@@ -165,7 +165,10 @@ export default function ViewQuote() {
   const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
-  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
+  const { balance: ethBalance } = useSelector(
+    getSelectedInternalAccountWithBalance,
+    shallowEqual,
+  );
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
   const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);

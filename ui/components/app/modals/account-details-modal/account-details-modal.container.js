@@ -11,9 +11,9 @@ import {
   getCurrentChainId,
   getMetaMaskAccountsOrdered,
   getBlockExplorerLinkText,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
-  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -39,8 +39,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     showExportPrivateKeyModal: () =>
       dispatch(showModal({ name: 'EXPORT_PRIVATE_KEY' })),
-    setAccountLabel: (address, label) =>
-      dispatch(setAccountLabel(address, label)),
+    setAccountLabel: (accountId, label) =>
+      dispatch(setAccountLabel(accountId, label)),
     hideModal: () => {
       dispatch(hideModal());
     },

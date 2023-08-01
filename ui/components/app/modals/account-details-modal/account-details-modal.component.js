@@ -60,6 +60,7 @@ export default class AccountDetailsModal extends Component {
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
     const {
+      id: accountId,
       name,
       address,
       metadata: { keyring },
@@ -104,7 +105,7 @@ export default class AccountDetailsModal extends Component {
         <EditableLabel
           className="account-details-modal__name"
           defaultValue={name}
-          onSubmit={(label) => setAccountLabel(address, label)}
+          onSubmit={(label) => setAccountLabel(accountId, label)}
           accounts={this.props.accounts}
         />
         {

@@ -19,13 +19,37 @@ function buildState(overrides = {}) {
         type: 'test',
         chainId: toHex(1),
       },
-      identities: {
-        '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': {
-          name: 'Custody Account A',
-          address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+      internalAccounts: {
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              keyring: {
+                type: 'Custody',
+              },
+            },
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            code: '0x',
+            balance: '0x47c9d71831c76efe',
+            nonce: '0x1b',
+            address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+            name: 'Custody Account A',
+          },
         },
       },
-      selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
       waitForConfirmDeepLinkDialog: '123',
       keyrings: [
         {
@@ -156,23 +180,42 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          identities: {
-            [accountAddress]: {
-              address: accountAddress,
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+                name: 'Custody Account A',
+              },
             },
           },
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
-            },
-          ],
           custodianSupportedChains: {
             [accountAddress]: {
               supportedChains: ['1', '2', '3'],
             },
           },
-          selectedAddress: accountAddress,
           providerConfig: {
             chainId: toHex(1),
           },
@@ -188,12 +231,37 @@ describe('Institutional selectors', () => {
       const accountAddress = '0x1';
       const state = buildState({
         metamask: {
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: [accountAddress],
+          internalAccounts: {
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+                code: '0x',
+                balance: '0x47c9d71831c76efe',
+                nonce: '0x1b',
+                address: accountAddress,
+                name: 'Custody Account A',
+              },
             },
-          ],
+          },
           custodianSupportedChains: {
             [accountAddress]: {
               supportedChains: ['4'],

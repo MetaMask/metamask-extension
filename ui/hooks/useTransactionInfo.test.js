@@ -15,8 +15,12 @@ describe('useTransactionInfo', () => {
       expect(result.current.isNftTransfer).toStrictEqual(false);
     });
     it('should return true if transaction is NFT transfer', () => {
+      const selectedAddress =
+        mockState.metamask.internalAccounts.accounts[
+          mockState.metamask.internalAccounts.selectedAccount
+        ].address;
       mockState.metamask.allNftContracts = {
-        [mockState.metamask.selectedAddress]: {
+        [selectedAddress]: {
           [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
         },
       };

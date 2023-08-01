@@ -22,7 +22,6 @@ import { NonEmptyArray } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { HandlerType } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
-import { InternalAccount } from '@metamask/eth-snap-keyring';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -37,13 +36,13 @@ import {
   getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
+  getInternalAccount,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
-  getSelectedAccount,
-  getInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -1527,18 +1526,21 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress } = currentState;
+    const {
+      currentLocale,
+      internalAccounts: { selectedAccount: selectedAccountId },
+    } = currentState;
     const {
       currentLocale: newLocale,
-      selectedAddress: newSelectedAddress,
       providerConfig: newProviderConfig,
+      internalAccounts: { selectedAccount: newSelectedAccountId },
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
 
-    if (selectedAddress !== newSelectedAddress) {
+    if (selectedAccountId !== newSelectedAccountId) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
@@ -1550,8 +1552,8 @@ export function updateMetamaskState(
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: currentState });
-    const newSelectedAccount = newAccounts[newSelectedAddress];
-    const oldSelectedAccount = newAccounts[selectedAddress];
+    const newSelectedAccount = newAccounts[newSelectedAccountId];
+    const oldSelectedAccount = newAccounts[selectedAccountId];
     // dispatch an ACCOUNT_CHANGED for any account whose balance or other
     // properties changed in this update
     Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
@@ -1694,7 +1696,7 @@ export function setSelectedInternalAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const selectedAccount = getSelectedAccount(state);
+    const selectedAccount = getSelectedInternalAccount(state);
     const accountToBeSet = getInternalAccount(state, accountId);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);
@@ -2706,7 +2708,7 @@ export function showPrivateKey(key: string): PayloadAction<string> {
 }
 
 export function setAccountLabel(
-  account: InternalAccount,
+  accountId: string,
   label: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2714,7 +2716,7 @@ export function setAccountLabel(
     log.debug(`background.setAccountLabel`);
 
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('setAccountLabel', [account.id, label], (err) => {
+      callBackgroundMethod('setAccountLabel', [accountId, label], (err) => {
         dispatch(hideLoadingIndication());
 
         if (err) {
@@ -2725,9 +2727,9 @@ export function setAccountLabel(
 
         dispatch({
           type: actionConstants.SET_ACCOUNT_LABEL,
-          value: { account, label },
+          value: { accountId, label },
         });
-        resolve(account);
+        resolve(accountId);
       });
     });
   };

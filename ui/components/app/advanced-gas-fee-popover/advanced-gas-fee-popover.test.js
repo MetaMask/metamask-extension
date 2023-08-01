@@ -29,12 +29,16 @@ jest.mock('../../../contexts/transaction-modal', () => ({
 }));
 
 const render = () => {
+  const selectedAddress =
+    mockState.metamask.internalAccounts.accounts[
+      mockState.metamask.internalAccounts.selectedAccount
+    ].address;
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [selectedAddress]: {
+          address: selectedAddress,
           balance: '0x1F4',
         },
       },

@@ -6,7 +6,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
   getConversionRate,
-  getSelectedAccount,
+  getSelectedInternalAccountWithBalance,
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
@@ -98,7 +98,7 @@ const mockStore = configureStore();
 const generateUseSelectorRouter = (opts) => (selector) => {
   if (selector === getConversionRate) {
     return 1;
-  } else if (selector === getSelectedAccount) {
+  } else if (selector === getSelectedInternalAccountWithBalance) {
     return {
       balance: opts.balance ?? '2AA1EFB94E0000',
     };

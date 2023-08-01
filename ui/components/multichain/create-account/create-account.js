@@ -46,8 +46,9 @@ export const CreateAccount = ({ onActionComplete }) => {
 
   const onCreateAccount = async (name) => {
     const newAccount = await dispatch(addNewAccount(name));
+    console.log(newAccount);
     if (name) {
-      dispatch(setAccountLabel(newAccount, name));
+      dispatch(setAccountLabel(newAccount.id, name));
     }
   };
 

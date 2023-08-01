@@ -3,7 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
-  getSelectedAccount,
+  getSelectedInternalAccountWithBalance,
 } from '../../selectors';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
@@ -267,7 +267,10 @@ export function useGasFeeErrors({
     [gasErrors, gasWarnings],
   );
 
-  const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
+  const { balance: ethBalance } = useSelector(
+    getSelectedInternalAccountWithBalance,
+    shallowEqual,
+  );
   const balanceError = hasBalanceError(
     minimumCostInHexWei,
     transaction,

@@ -21,8 +21,10 @@ const mapStateToProps = (state, ownProps) => {
     nativeCurrency,
     useBlockie,
     currentLocale,
-    selectedAddress,
+    internalAccounts: { accounts, selectedAccount },
   } = metamask;
+
+  const { address: selectedAddress } = accounts[selectedAccount];
   const { useNativeCurrencyAsPrimaryCurrency, hideZeroBalanceTokens } =
     getPreferences(state);
 

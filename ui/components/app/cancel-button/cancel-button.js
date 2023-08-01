@@ -9,7 +9,7 @@ import { getConversionRate } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIncrementedGasFees } from '../../../hooks/useIncrementedGasFees';
 import { isBalanceSufficient } from '../../../pages/send/send.utils';
-import { getSelectedAccount } from '../../../selectors';
+import { getSelectedInternalAccountWithBalance } from '../../../selectors';
 
 export default function CancelButton({
   cancelTransaction,
@@ -20,7 +20,7 @@ export default function CancelButton({
 
   const customCancelGasSettings = useIncrementedGasFees(transaction);
 
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccountWithBalance);
   const conversionRate = useSelector(getConversionRate);
 
   const hasEnoughCancelGas = isBalanceSufficient({

@@ -1912,7 +1912,10 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
             providerConfig: {
               chainId: '0x1',
             },
@@ -2020,7 +2023,10 @@ describe('Send Slice', () => {
         const tokenState = {
           metamask: {
             addressBook: {},
-            identities: {},
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
@@ -2436,7 +2442,10 @@ describe('Send Slice', () => {
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
-            identities: {},
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
             accounts: {
               [mockAddress1]: {
                 address: mockAddress1,
@@ -2763,7 +2772,33 @@ describe('Send Slice', () => {
       const editTransactionState = {
         metamask: {
           blockGasLimit: '0x3a98',
-          selectedAddress: '',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: mockAddress1,
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
@@ -2782,7 +2817,6 @@ describe('Send Slice', () => {
           addressBook: {
             [CHAIN_IDS.GOERLI]: {},
           },
-          identities: {},
           accounts: {
             [mockAddress1]: {
               address: mockAddress1,
@@ -2846,7 +2880,7 @@ describe('Send Slice', () => {
       await store.dispatch(editExistingTransaction(AssetType.token, 1));
       const actionResult = store.getActions();
 
-      expect(actionResult).toHaveLength(8);
+      expect(actionResult).toHaveLength(9);
       expect(actionResult[0].type).toStrictEqual('send/clearPreviousDrafts');
       expect(actionResult[1]).toStrictEqual({
         type: 'send/addNewDraft',
@@ -2864,6 +2898,25 @@ describe('Send Slice', () => {
           fromAccount: {
             address: mockAddress1,
             balance: '0x0',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            options: {},
+            supportedMethods: [
+              'personal_sign',
+              'eth_sendTransaction',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v2',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
           },
           gas: {
             error: null,
@@ -3199,7 +3252,10 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               addressBook: {},
               providerConfig: {
                 chainId: '0x5',
@@ -3215,7 +3271,10 @@ describe('Send Slice', () => {
             metamask: {
               ensResolutionsByAddress: {},
               addressBook: {},
-              identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               providerConfig: {
                 chainId: '0x5',
               },
@@ -3262,7 +3321,10 @@ describe('Send Slice', () => {
             send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
             metamask: {
               ensResolutionsByAddress: {},
-              identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               addressBook: {},
               providerConfig: {
                 chainId: '0x5',

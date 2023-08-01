@@ -25,7 +25,6 @@ import {
   getCustomNonceValue,
   getIsMainnet,
   getKnownMethodData,
-  getMetaMaskAccounts,
   getUseNonceField,
   transactionFeeSelector,
   getNoGasPriceFetched,
@@ -42,6 +41,7 @@ import {
   getFullTxData,
   getUseCurrencyRateCheck,
   getFirstInternalAccountByAddress,
+  getInternalAccountWithBalanceByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -137,14 +137,15 @@ const mapStateToProps = (state, ownProps) => {
     value: amount,
     data,
   } = (transaction && transaction.txParams) || txParams;
-  const accounts = getMetaMaskAccounts(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
-  const { balance } = accounts[fromAddress];
-  const fromAccount = getFirstInternalAccountByAddress(state, fromAddress);
-  const { name: fromName } = fromAccount;
+  const fromAccount = getInternalAccountWithBalanceByAddress(
+    state,
+    fromAddress,
+  );
+  const { name: fromName, balance } = fromAccount;
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);

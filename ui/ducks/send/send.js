@@ -39,6 +39,7 @@ import {
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedInternalAccount,
+  getInternalAccountWithBalanceByAddress,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -1733,7 +1734,10 @@ export function editExistingTransaction(assetType, transactionId) {
     const state = getState();
     const unapprovedTransactions = getUnapprovedTxs(state);
     const transaction = unapprovedTransactions[transactionId];
-    const account = getTargetAccount(state, transaction.txParams.from);
+    const account = getInternalAccountWithBalanceByAddress(
+      state,
+      transaction.txParams.from,
+    );
 
     if (assetType === AssetType.native) {
       await dispatch(

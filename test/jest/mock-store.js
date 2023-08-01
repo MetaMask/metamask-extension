@@ -320,24 +320,6 @@ export const createSwapsMockStore = () => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
-      identities: {
-        '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
-          address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
-          name: 'Send Account 1',
-        },
-        '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
-          address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-          name: 'Send Account 2',
-        },
-        '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
-          address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
-          name: 'Send Account 3',
-        },
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          name: 'Send Account 4',
-        },
-      },
       accounts: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

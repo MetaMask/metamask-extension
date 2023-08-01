@@ -25,7 +25,10 @@ const initialState = {
   isUnlocked: false,
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
-  identities: {},
+  internalAccounts: {
+    accounts: {},
+    selectedAccount: '',
+  },
   unapprovedTxs: {},
   networkConfigurations: {},
   addressBook: [],
@@ -81,12 +84,15 @@ export default function reduceMetamask(state = initialState, action) {
       };
 
     case actionConstants.SET_ACCOUNT_LABEL: {
-      const { account: newAccount } = action.value;
+      const { accountId, label } = action.value;
       const internalAccounts = {
         ...metamaskState.internalAccounts,
         accounts: {
           ...metamaskState.internalAccounts.accounts,
-          ...{ [newAccount.id]: newAccount },
+          [accountId]: {
+            ...metamaskState.internalAccounts.accounts[accountId],
+            name: label,
+          },
         },
       };
       return Object.assign(metamaskState, { internalAccounts });

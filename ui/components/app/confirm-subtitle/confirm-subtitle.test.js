@@ -43,9 +43,13 @@ describe('ConfirmSubTitle', () => {
   });
 
   it('should not return null if it is NFT Transfer', async () => {
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount
+      ].address;
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
-      [mockState.metamask.selectedAddress]: {
+      [selectedAddress]: {
         [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
       },
     };

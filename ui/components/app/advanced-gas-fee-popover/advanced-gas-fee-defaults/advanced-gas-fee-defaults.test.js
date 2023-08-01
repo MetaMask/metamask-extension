@@ -30,13 +30,17 @@ jest.mock('../../../../store/actions', () => ({
 }));
 
 const render = (defaultGasParams, contextParams) => {
+  const selectedAddress =
+    mockState.metamask.internalAccounts.accounts[
+      mockState.metamask.internalAccounts.selectedAccount
+    ].address;
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
       ...defaultGasParams,
       accounts: {
-        [mockState.metamask.selectedAddress]: {
-          address: mockState.metamask.selectedAddress,
+        [selectedAddress]: {
+          address: selectedAddress,
           balance: '0x1F4',
         },
       },

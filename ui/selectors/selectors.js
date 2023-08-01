@@ -283,27 +283,34 @@ export function deprecatedGetCurrentNetworkId(state) {
 }
 
 export const getMetaMaskAccounts = createSelector(
+  getInternalAccounts,
   getMetaMaskAccountsRaw,
   getMetaMaskCachedBalances,
-  (currentAccounts, cachedBalances) =>
-    Object.entries(currentAccounts).reduce(
-      (selectedAccounts, [accountID, account]) => {
-        if (account.balance === null || account.balance === undefined) {
-          return {
-            ...selectedAccounts,
-            [accountID]: {
-              ...account,
-              balance: cachedBalances && cachedBalances[accountID],
-            },
-          };
-        }
+  (internalAccounts, currentAccounts, cachedBalances) => {
+    return internalAccounts.reduce((selectedAccounts, account) => {
+      if (
+        currentAccounts[account.address]?.balance === null ||
+        currentAccounts[account.address]?.balance === undefined
+      ) {
         return {
           ...selectedAccounts,
-          [accountID]: account,
+          [account.id]: {
+            ...account,
+            ...currentAccounts[account.address],
+            balance: cachedBalances && cachedBalances[account.address],
+          },
         };
-      },
-      {},
-    ),
+      }
+      return {
+        ...selectedAccounts,
+        [account.id]: {
+          ...account,
+          ...currentAccounts[account.address],
+          balance: currentAccounts[account.address].balance,
+        },
+      };
+    }, {});
+  },
 );
 
 export function getSelectedAddress(state) {
@@ -320,6 +327,25 @@ export function getSelectedIdentity(state) {
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
+}
+
+export function getSelectedInternalAccountWithBalance(state) {
+  const selectedAccount = getSelectedInternalAccount(state);
+  const { balance } = getMetaMaskAccountsRaw(state)[selectedAccount.address];
+
+  const selectedAccountWithBalance = {
+    ...selectedAccount,
+    balance,
+  };
+
+  return selectedAccountWithBalance;
+}
+
+export function getInternalAccountWithBalanceByAddress(state, address) {
+  const accountsWithBalance = getMetaMaskAccounts(state);
+  return Object.values(accountsWithBalance).find((account) =>
+    isEqualCaseInsensitive(account.address, address),
+  );
 }
 
 export function getInternalAccounts(state) {
@@ -341,15 +367,6 @@ export function getInternalAccountsSortedByKeyring(state) {
       return -1;
     }
     if (previousKeyringType > currentKeyringType) {
-      return 1;
-    }
-    // if keyring types are the same, sort accounts by address in alphabetical order
-    const previousAddress = previousAccount.address.toLowerCase();
-    const currentAddress = currentAccount.address.toLowerCase();
-    if (previousAddress < currentAddress) {
-      return -1;
-    }
-    if (previousAddress > currentAddress) {
       return 1;
     }
     return 0;
@@ -395,7 +412,7 @@ export const getMetaMaskAccountsOrdered = createSelector(
   (internalAccounts, accounts) => {
     return internalAccounts.map((internalAccount) => ({
       ...internalAccount,
-      ...accounts[internalAccount.address],
+      ...accounts[internalAccount.id],
     }));
   },
 );
@@ -427,7 +444,7 @@ export function getSelectedAccount(state) {
 
   return {
     ...selectedAccount,
-    ...accounts[selectedAccount.address],
+    ...accounts[selectedAccount.id],
   };
 }
 
@@ -506,7 +523,7 @@ export function accountsWithSendEtherInfoSelector(state) {
     (internalAccount) => {
       return {
         ...internalAccount,
-        ...accounts[internalAccount.address],
+        ...accounts[internalAccount.id],
       };
     },
   );
@@ -1566,7 +1583,11 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
-  const accountBalance = getCurrentEthBalance(state) ?? 0;
+
+  // if there is no account, we don't need to show the seed phrase reminder
+  const accountBalance = getSelectedInternalAccount(state)
+    ? getCurrentEthBalance(state)
+    : 0;
   return (
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&

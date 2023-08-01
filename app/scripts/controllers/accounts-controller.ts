@@ -5,16 +5,25 @@ import {
 import { Patch } from 'immer';
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
-import { InternalAccount, SnapKeyring } from '@metamask/eth-snap-keyring';
+import {
+  InternalAccount,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SnapKeyring,
+  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
+} from '@metamask/eth-snap-keyring';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import {
   SnapController,
   SnapControllerEvents,
 } from '@metamask/snaps-controllers';
+///: END:ONLY_INCLUDE_IN(keyring-snaps)
 import {
   KeyringControllerState,
   KeyringController,
 } from '@metamask/keyring-controller';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { SnapControllerState } from '@metamask/snaps-controllers-flask';
+///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
 const controllerName = 'AccountsController';
 
@@ -74,7 +83,9 @@ export default class AccountsController extends BaseControllerV2<
 > {
   #keyringController: KeyringController;
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   #snapController: SnapController;
+  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   identities: any;
 
@@ -83,23 +94,27 @@ export default class AccountsController extends BaseControllerV2<
     state,
     identities,
     keyringController,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController,
-    onKeyringStateChange,
-    onKeyringAccountRemoved,
     onSnapStateChange,
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
+    onKeyringStateChange,
   }: {
     messenger: AccountsControllerMessenger;
     state: AccountsControllerState;
     keyringController: KeyringController;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     snapController: SnapController;
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     identities: any;
     onKeyringStateChange: (
       listener: (keyringState: KeyringControllerState) => void,
     ) => void;
-    onKeyringAccountRemoved: (listener: (address: string) => void) => void;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange: (
       listener: (snapState: SnapControllerState) => void,
     ) => void;
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
   }) {
     super({
       messenger,
@@ -112,13 +127,17 @@ export default class AccountsController extends BaseControllerV2<
     });
 
     this.#keyringController = keyringController;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     this.#snapController = snapController;
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     this.identities = identities;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     onSnapStateChange(async (snapState: SnapControllerState) => {
       console.log('snap state changed', snapState);
       await this.updateAccounts();
     });
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     onKeyringStateChange(async (keyringState: KeyringControllerState) => {
       console.log('keyring state changed', keyringState);
@@ -146,11 +165,6 @@ export default class AccountsController extends BaseControllerV2<
           this.setSelectedAccount(this.getAccountExpect(newAddress).id);
         }
       }
-    });
-
-    onKeyringAccountRemoved(async (address: string) => {
-      console.log('keyring account removed', address);
-      await this.updateAccounts();
     });
   }
 
@@ -184,18 +198,6 @@ export default class AccountsController extends BaseControllerV2<
     return account;
   }
 
-  getAccountsByKeyring(keyring: string): InternalAccount[] {
-    return Object.values(this.state.internalAccounts.accounts).filter(
-      (internalAccount) => internalAccount.type === keyring,
-    );
-  }
-
-  getAccountsBySnapId(snapId: string): InternalAccount[] {
-    return Object.values(this.state.internalAccounts.accounts).filter(
-      (internalAccount) => internalAccount.metadata.snap?.id === snapId,
-    );
-  }
-
   getSelectedAccount(): InternalAccount {
     return this.getAccountByIdExpect(
       this.state.internalAccounts.selectedAccount,
@@ -204,7 +206,9 @@ export default class AccountsController extends BaseControllerV2<
 
   async updateAccounts(): Promise<void> {
     const legacyAccounts = await this.#listLegacyAccounts();
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const snapAccounts = await this.#listSnapAccounts();
+    ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     const accountNames = identitesToAccountNames(this.identities);
 
     // console.log('legacy accounts', legacyAccounts);
@@ -215,7 +219,9 @@ export default class AccountsController extends BaseControllerV2<
 
     const accounts: Record<string, InternalAccount> = [
       ...legacyAccounts,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       ...snapAccounts,
+      ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     ].reduce((internalAccountMap, internalAccount) => {
       const keyringAccountIndex =
         keyringTypes.get(internalAccount.metadata.keyring.type) ?? 0;
@@ -262,6 +268,7 @@ export default class AccountsController extends BaseControllerV2<
     // }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   async #listSnapAccounts(): Promise<InternalAccount[]> {
     const [snapKeyring] = this.#keyringController.getKeyringsByType(
       SnapKeyring.type,
@@ -289,6 +296,7 @@ export default class AccountsController extends BaseControllerV2<
 
     return snapAccounts;
   }
+  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
   async #listLegacyAccounts(): Promise<InternalAccount[]> {
     const addresses = await this.#keyringController.getAccounts();
@@ -337,6 +345,13 @@ export default class AccountsController extends BaseControllerV2<
     console.log('set selected account', account);
 
     this.update((currentState: AccountsControllerState) => {
+      currentState.internalAccounts.accounts[account.id] = {
+        ...currentState.internalAccounts.accounts[account.id],
+        metadata: {
+          ...currentState.internalAccounts.accounts[account.id].metadata,
+          lastSelected: Date.now(),
+        },
+      };
       currentState.internalAccounts.selectedAccount = account.id;
     });
   }
@@ -350,22 +365,11 @@ export default class AccountsController extends BaseControllerV2<
         name: accountName,
       };
     });
+
+    console.log('state after set account name', this.state);
   }
 
-  #disableSnap(snapId: string): void {
-    const accounts = this.getAccountsBySnapId(snapId);
-
-    this.update((currentState: AccountsControllerState) => {
-      accounts.forEach((account) => {
-        account.metadata.snap = {
-          ...account.metadata.snap,
-          enabled: false,
-        };
-        currentState.internalAccounts.accounts[account.id] = account;
-      });
-    });
-  }
-
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   async #getSnapStatus(snapId: string): Promise<boolean> {
     const snap = await this.#snapController.getSnapState(snapId);
     if (!snap) {
@@ -374,6 +378,7 @@ export default class AccountsController extends BaseControllerV2<
 
     return snap?.enabled && !snap?.blocked;
   }
+  ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 }
 
 export function identitesToAccountNames(
