@@ -177,6 +177,18 @@ const firstTimeState = {
       },
     },
   },
+  PhishingController: {
+    phishingLists: [
+      {
+        allowlist: [],
+        blocklist: ['test.metamask-phishing.io'],
+        fuzzylist: [],
+        tolerance: 0,
+        version: 0,
+        name: 'MetaMask',
+      },
+    ],
+  },
 };
 
 const noop = () => undefined;
@@ -205,7 +217,7 @@ describe('MetaMaskController', function () {
           eth_phishing_detect_config: {
             fuzzylist: [],
             allowlist: [],
-            blocklist: ['127.0.0.1'],
+            blocklist: ['test.metamask-phishing.io'],
             name: ListNames.MetaMask,
           },
           phishfort_hotlist: {
@@ -218,7 +230,11 @@ describe('MetaMaskController', function () {
       .reply(
         200,
         JSON.stringify([
-          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+          {
+            url: 'test.metamask-phishing.io',
+            targetList: 'blocklist',
+            timestamp: 0,
+          },
         ]),
       );
 
@@ -310,9 +326,9 @@ describe('MetaMaskController', function () {
         ]);
       });
 
-      it('adds private key to keyrings in KeyringController', async function () {
+      it('adds private key to keyrings in core KeyringController', async function () {
         const simpleKeyrings =
-          metamaskController.keyringController.getKeyringsByType(
+          metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.imported,
           );
         const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
@@ -595,7 +611,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.trezor, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.deepEqual(
@@ -611,7 +627,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.ledger, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.ledger,
           );
         assert.deepEqual(
@@ -638,7 +654,7 @@ describe('MetaMaskController', function () {
           mnemonic: uint8ArrayMnemonic,
         };
         sinon
-          .stub(metamaskController.keyringController, 'getKeyringsByType')
+          .stub(metamaskController.coreKeyringController, 'getKeyringsByType')
           .returns([mockHDKeyring]);
 
         const recoveredMnemonic =
@@ -692,7 +708,7 @@ describe('MetaMaskController', function () {
           .catch(() => null);
         await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
 
@@ -755,7 +771,7 @@ describe('MetaMaskController', function () {
 
       it('should set unlockedAccount in the keyring', async function () {
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
@@ -963,7 +979,7 @@ describe('MetaMaskController', function () {
 
       it('sets up phishing stream for untrusted communication', async function () {
         const phishingMessageSender = {
-          url: 'http://myethereumwalletntw.com',
+          url: 'http://test.metamask-phishing.io',
           tab: {},
         };
 
