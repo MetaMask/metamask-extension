@@ -100,11 +100,11 @@ export async function getErrorHtml(
         <span id='critical-error-button' class="critical-error__link critical-error__link-restart">
           ${t('restartMetamask')}
         </span>
-        <p class="critical-error__paragraph">
+        <p>
           ${t('stillGettingMessage')}
           <a
             href=${supportLink}
-            class="critical-error__link critical-error__paragraph__link"
+            class="critical-error__link critical-error__link-bug-report"
             target="_blank"
             rel="noopener noreferrer">
               ${t('sendBugReport')}

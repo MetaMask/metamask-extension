@@ -24,7 +24,9 @@
       color: var(--color-primary-alternative);
     }
   }
-
+  &__link-bug-report {
+    white-space: nowrap;
+  }
   &__link-restart {
     line-height: 40px;
     margin: 8px 0 20px;
