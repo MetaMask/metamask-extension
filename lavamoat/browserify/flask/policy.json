@@ -2205,7 +2205,9 @@
       "packages": {
         "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true,
         "browserify>buffer": true,
-        "pumpify>inherits": true
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
