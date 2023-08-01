@@ -7,17 +7,21 @@ import {
   createEventEmitterProxy,
   createSwappableProxy,
 } from '@metamask/swappable-obj-proxy';
-import { NetworkClientId, NetworkControllerStateChangeEvent, NetworkState } from '@metamask/network-controller';
+import {
+  NetworkClientId,
+  NetworkControllerStateChangeEvent,
+  NetworkState,
+} from '@metamask/network-controller';
 
 const controllerName = 'SelectedNetworkController';
 const stateMetadata = {
   domains: { persist: true, anonymous: false },
-  perDomainNetwork: { persist: true, anonymous: false }
+  perDomainNetwork: { persist: true, anonymous: false },
 };
 
 const getDefaultState = () => ({
   domains: {},
-  perDomainNetwork: false
+  perDomainNetwork: false,
 });
 
 type Domain = string;
@@ -108,13 +112,21 @@ export default class SelectedNetworkController extends BaseControllerV2<
 
     // subscribe to networkController statechange:: selectedNetworkClientId changed
     // update the value for the domain 'metamask'
-    this.messagingSystem.subscribe('NetworkController:stateChange', (state: NetworkState, patch: Patch[]) => {
-      const isChangingNetwork = patch.find((p) => p.path[0] === 'selectedNetworkClientId');
+    this.messagingSystem.subscribe(
+      'NetworkController:stateChange',
+      (state: NetworkState, patch: Patch[]) => {
+        const isChangingNetwork = patch.find(
+          (p) => p.path[0] === 'selectedNetworkClientId',
+        );
+        if (!isChangingNetwork) {
+          return;
+        }
 
-      // set it for the 'global' network to preserve functionality for the
-      // selectedNetworkController.perDomainNetwork feature flag being off
-      this.setNetworkClientIdForMetamask(state.selectedNetworkClientId);
-    });
+        // set it for the 'global' network to preserve functionality for the
+        // selectedNetworkController.perDomainNetwork feature flag being off
+        this.setNetworkClientIdForMetamask(state.selectedNetworkClientId);
+      },
+    );
   }
 
   /**
@@ -128,17 +140,19 @@ export default class SelectedNetworkController extends BaseControllerV2<
     return this.setNetworkClientIdForDomain(METAMASK_DOMAIN, networkClientId);
   }
 
-  setNetworkClientIdForDomain(domain: Domain, networkClientId: NetworkClientId) {
+  setNetworkClientIdForDomain(
+    domain: Domain,
+    networkClientId: NetworkClientId,
+  ) {
     this.update((state) => {
       state.domains[domain] = networkClientId;
     });
   }
 
   getNetworkClientIdForDomain(domain: Domain) {
-    if (this.state.perDomainNetwork == true) {
+    if (this.state.perDomainNetwork === true) {
       return this.state.domains[domain];
-    } else {
-      return this.state.domains[METAMASK_DOMAIN];
     }
+    return this.state.domains[METAMASK_DOMAIN];
   }
 }
