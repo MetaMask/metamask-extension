@@ -169,7 +169,7 @@ describe('migration #88', () => {
                   address: '0xaaa',
                 },
               ],
-              'undefined': [
+              undefined: [
                 {
                   name: 'Contract 2',
                   address: '0xbbb',
@@ -477,7 +477,7 @@ describe('migration #88', () => {
                   address: '0xaaa',
                 },
               ],
-              'undefined': [
+              undefined: [
                 {
                   name: 'NFT 2',
                   description: 'Description for NFT 2',
@@ -801,7 +801,7 @@ describe('migration #88', () => {
                 },
               },
             },
-            'undefined': {
+            undefined: {
               timestamp: 222222,
               data: {
                 '0x222': {
@@ -1062,7 +1062,7 @@ describe('migration #88', () => {
                 },
               ],
             },
-            'undefined': {
+            undefined: {
               '0x333': [
                 {
                   address: '0xbbb',
@@ -1259,7 +1259,7 @@ describe('migration #88', () => {
                 '0x222': ['0xbbb'],
               },
             },
-            'undefined': {
+            undefined: {
               '0x2': {
                 '0x222': ['0xbbb'],
               },
