@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { migrate, version } from './091';
 
 jest.mock('uuid', () => {
@@ -35,7 +36,7 @@ describe('migration #91', () => {
       data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
+    const newStorage = await migrate(cloneDeep(oldStorage));
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
@@ -55,7 +56,7 @@ describe('migration #91', () => {
       data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
+    const newStorage = await migrate(cloneDeep(oldStorage));
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
@@ -85,7 +86,7 @@ describe('migration #91', () => {
       data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
+    const newStorage = await migrate(cloneDeep(oldStorage));
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
@@ -126,7 +127,7 @@ describe('migration #91', () => {
       data: oldData,
     };
 
-    const newStorage = await migrate(oldStorage);
+    const newStorage = await migrate(cloneDeep(oldStorage));
     expect(newStorage.data).toStrictEqual({
       other: 'data',
       NetworkController: {
