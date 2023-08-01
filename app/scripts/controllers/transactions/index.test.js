@@ -9,6 +9,10 @@ import sinon from 'sinon';
 
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
@@ -2163,6 +2167,8 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            security_alert_reason: BlockaidReason.notApplicable,
+            security_alert_response: BlockaidResultType.NotApplicable,
             status: 'unapproved',
           },
           sensitiveProperties: {
@@ -2250,6 +2256,8 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            security_alert_reason: BlockaidReason.notApplicable,
+            security_alert_response: BlockaidResultType.NotApplicable,
             status: 'unapproved',
           },
           sensitiveProperties: {
@@ -2349,6 +2357,8 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            security_alert_reason: BlockaidReason.notApplicable,
+            security_alert_response: BlockaidResultType.NotApplicable,
             status: 'unapproved',
           },
           sensitiveProperties: {
@@ -2438,6 +2448,8 @@ describe('Transaction Controller', function () {
             device_model: 'N/A',
             transaction_speed_up: false,
             ui_customizations: null,
+            security_alert_reason: BlockaidReason.notApplicable,
+            security_alert_response: BlockaidResultType.NotApplicable,
             status: 'unapproved',
           },
           sensitiveProperties: {
@@ -2505,6 +2517,10 @@ describe('Transaction Controller', function () {
         securityProviderResponse: {
           flagAsDangerous: 0,
         },
+        securityAlertResponse: {
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
+        },
       };
 
       const expectedPayload = {
@@ -2529,6 +2545,8 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
           status: 'unapproved',
         },
         sensitiveProperties: {
@@ -2601,6 +2619,8 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
           status: 'unapproved',
         },
         sensitiveProperties: {
@@ -2675,6 +2695,8 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
           status: 'unapproved',
         },
         sensitiveProperties: {
@@ -2749,6 +2771,8 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: ['flagged_as_safety_unknown'],
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
           status: 'unapproved',
         },
         sensitiveProperties: {
@@ -2831,6 +2855,8 @@ describe('Transaction Controller', function () {
           device_model: 'N/A',
           transaction_speed_up: false,
           ui_customizations: null,
+          security_alert_reason: BlockaidReason.notApplicable,
+          security_alert_response: BlockaidResultType.NotApplicable,
           status: 'unapproved',
         },
         sensitiveProperties: {
