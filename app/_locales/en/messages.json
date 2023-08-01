@@ -2054,6 +2054,16 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
+  "ipfsToggleModalDescriptionOne": {
+    "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
+  "ipfsToggleModalDescriptionTwo": {
+    "message": "Selecting Confirm turns on IPFS resolution. You can turn it off in $1 at any time.",
+    "description": "$1 is the method to turn off ipfs"
+  },
+  "ipfsToggleModalSettings": {
+    "message": "Settings > Security and privacy"
+  },
   "jazzAndBlockies": {
     "message": "Jazzicons and Blockies are two different styles of unique icons that help you identify an account at a glance."
   },
@@ -3820,6 +3830,9 @@
   },
   "showMore": {
     "message": "Show more"
+  },
+  "showNft": {
+    "message": "Show NFT"
   },
   "showPermissions": {
     "message": "Show permissions"
