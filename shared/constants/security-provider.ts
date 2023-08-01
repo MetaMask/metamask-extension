@@ -49,7 +49,7 @@ export enum BlockaidReason {
   other = 'other',
 
   // Locally defined
-  notApplicable = 'not_applicable',
+  notApplicable = 'NotApplicable',
 }
 
 export enum BlockaidResultType {
@@ -57,7 +57,7 @@ export enum BlockaidResultType {
   Warning = 'Warning',
   Benign = 'Benign',
   // Locally defined
-  NotApplicable = 'not_applicable',
+  NotApplicable = 'NotApplicable',
 }
 
 /**
