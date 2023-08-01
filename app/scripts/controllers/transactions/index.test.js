@@ -2685,6 +2685,7 @@ describe('Transaction Controller', function () {
           network: '5',
           referrer: 'other',
           source: MetaMetricsTransactionEventSource.Dapp,
+          status: 'unapproved',
           transaction_type: TransactionType.simpleSend,
           chain_id: '0x5',
           eip_1559_version: '0',
@@ -2708,7 +2709,6 @@ describe('Transaction Controller', function () {
           transaction_replaced: undefined,
           first_seen: 1624408066355,
           transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          status: 'unapproved',
         },
       };
 

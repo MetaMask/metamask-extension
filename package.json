@@ -250,7 +250,7 @@
     "@metamask/key-tree": "^9.0.0",
     "@metamask/keyring-controller": "^7.0.0",
     "@metamask/logo": "^3.1.1",
-    "@metamask/message-manager": "^7.3.0",
+    "@metamask/message-manager": "^7.2.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/network-controller": "^10.3.1",
     "@metamask/notification-controller": "^3.0.0",

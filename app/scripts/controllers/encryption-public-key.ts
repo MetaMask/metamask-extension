@@ -41,7 +41,6 @@ const getDefaultState = () => ({
 
 export type CoreMessage = AbstractMessage & {
   messageParams: AbstractMessageParams;
-  securityAlertResponse: Record<string, unknown>;
 };
 
 export type StateMessage = Required<
