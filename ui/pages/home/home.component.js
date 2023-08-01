@@ -378,6 +378,21 @@ export default class Home extends PureComponent {
     });
   };
 
+  onSupportLinkClick = () => {
+    this.context.trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_LINK,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+  };
+
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
@@ -881,6 +896,20 @@ export default class Home extends PureComponent {
                         history.push(`${ASSET_ROUTE}/${asset}`)
                       }
                     />
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      paddingLeft={4}
+                      marginBottom={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
                   </Box>
                 </Tab>
                 {
@@ -893,6 +922,20 @@ export default class Home extends PureComponent {
                     tabKey="nfts"
                   >
                     <NftsTab />
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      paddingLeft={4}
+                      marginBottom={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
                   </Tab>
                   ///: END:ONLY_INCLUDE_IN
                 }
@@ -904,42 +947,22 @@ export default class Home extends PureComponent {
                   tabKey="activity"
                 >
                   <TransactionList />
+                  <ButtonLink
+                    size={Size.MD}
+                    startIconName={IconName.MessageQuestion}
+                    data-testid="need-help-link"
+                    href={SUPPORT_LINK}
+                    display={Display.Flex}
+                    justifyContent={JustifyContent.center}
+                    marginBottom={4}
+                    marginTop={4}
+                    onClick={this.onSupportLinkClick}
+                    externalLink
+                  >
+                    {t('needHelpLinkText')}
+                  </ButtonLink>
                 </Tab>
               </Tabs>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.MessageQuestion}
-                  data-testid="need-help-link"
-                  href={SUPPORT_LINK}
-                  display={Display.Flex}
-                  justifyContent={activitySupportDisplayStyle.justifyContent}
-                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
-                  marginBottom={activitySupportDisplayStyle.marginBottom}
-                  marginTop={activitySupportDisplayStyle.marginTop}
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                  externalLink
-                >
-                  {t('needHelpLinkText')}
-                </ButtonLink>
-                ///: END:ONLY_INCLUDE_IN
-              }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <InstitutionalHomeFooter
