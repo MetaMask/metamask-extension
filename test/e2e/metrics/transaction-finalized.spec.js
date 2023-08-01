@@ -263,6 +263,7 @@ describe('Transaction Finalized Event', function () {
             category: 'Transactions',
             locale: 'en',
             environment_type: 'background',
+            status: 'submitted',
           },
           'Transaction Submitted event without sensitive properties does not match the expected payload',
         );
@@ -317,6 +318,7 @@ describe('Transaction Finalized Event', function () {
             category: 'Transactions',
             locale: 'en',
             environment_type: 'background',
+            status: 'confirmed',
           },
           'Transaction Finalized event without sensitive properties does not match the expected payload',
         );

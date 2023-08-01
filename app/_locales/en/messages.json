@@ -2538,6 +2538,9 @@
   "noNFTs": {
     "message": "No NFTs yet"
   },
+  "noNetworksFound": {
+    "message": "No networks found for the given search query"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
@@ -2733,6 +2736,15 @@
   },
   "notifications21Title": {
     "message": "Introducing new and refreshed Swaps!"
+  },
+  "notifications22ActionText": {
+    "message": "Got it"
+  },
+  "notifications22Description": {
+    "message": "💡 Just click the global menu or account menu to find them!"
+  },
+  "notifications22Title": {
+    "message": "Looking for your account details or the block explorer URL?"
   },
   "notifications3ActionText": {
     "message": "Read more",
