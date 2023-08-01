@@ -498,7 +498,7 @@
         "@ngraveio/bc-ur": true,
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "wait-on>rxjs>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -4639,6 +4639,11 @@
       "packages": {
         "browserify>process": true,
         "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "mockttp>graphql-tag>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "nanoid": {
