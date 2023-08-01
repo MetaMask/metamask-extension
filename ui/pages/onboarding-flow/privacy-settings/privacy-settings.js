@@ -181,7 +181,7 @@ export default function PrivacySettings() {
             value={isMultiAccountBalanceCheckerEnabled}
             setValue={setMultiAccountBalanceCheckerEnabled}
             title={t('useMultiAccountBalanceChecker')}
-            description={t('useMultiAccountBalanceCheckerDescription')}
+            description={t('useMultiAccountBalanceCheckerSettingDescription')}
           />
           <Setting
             title={t('onboardingAdvancedPrivacyNetworkTitle')}
