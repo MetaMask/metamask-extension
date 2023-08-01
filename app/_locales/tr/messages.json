@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Toplu hesap bakiyesi talepleri"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Hesapları toplarız ve bakiyelerinizi göstermek için Infura'yı sorgularız. Bunu kapattığınız takdirde sadece aktif hesaplar sorgulanır. Bazı merkeziyetsiz uygulamalar siz cüzdanınızı bağlamadığınız sürece çalışmaz."
-  },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
   },

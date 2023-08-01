@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "모든 계정을 일괄 처리하여 잔액을 신속하게 표시하도록 Infura에 요청합니다. 이 기능을 끄면 활성 계정에 대한 잔액만 요청합니다. 일부 dapp은 지갑을 연결하지 않으면 작동하지 않습니다."
-  },
   "useNftDetection": {
     "message": "NFT 자동 감지"
   },
