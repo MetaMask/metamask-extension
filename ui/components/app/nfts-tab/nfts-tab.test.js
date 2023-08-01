@@ -3,7 +3,10 @@ import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest/rendering';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import {
+  EXPERIMENTAL_ROUTE,
+  SECURITY_ROUTE,
+} from '../../../helpers/constants/routes';
 import { setBackgroundConnection } from '../../../../test/jest';
 import NftsTab from '.';
 
@@ -292,7 +295,7 @@ describe('NFT Items', () => {
       expect(historyPushMock).toHaveBeenCalledTimes(0);
       fireEvent.click(screen.queryByText('Enable autodetect'));
       expect(historyPushMock).toHaveBeenCalledTimes(1);
-      expect(historyPushMock).toHaveBeenCalledWith(EXPERIMENTAL_ROUTE);
+      expect(historyPushMock).toHaveBeenCalledWith(SECURITY_ROUTE);
     });
   });
 });
