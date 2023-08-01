@@ -118,16 +118,20 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
    * is enabled, `false` otherwise.
    */
-  function getMetaMetricsEnabled() {
-    if (getState) {
-      const appState = getState();
-      if (!appState?.store?.metamask?.participateInMetaMetrics) {
-        return false;
-      }
-    } else {
+  async function getMetaMetricsEnabled() {
+    const appState = getState();
+    if (Object.keys(appState) > 0) {
+      return Boolean(appState?.store?.metamask?.participateInMetaMetrics);
+    }
+    try {
+      const persistedState = await globalThis.stateHooks.getPersistedState();
+      return Boolean(
+        persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
+      );
+    } catch (error) {
+      console.error(error);
       return false;
     }
-    return true;
   }
 
   Sentry.init({
@@ -186,10 +190,10 @@ export default function setupSentry({ release, getState }) {
    * opted into MetaMetrics, change the autoSessionTracking option and start
    * a new sentry session.
    */
-  const startSession = () => {
+  const startSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && getMetaMetricsEnabled() === true) {
+    if (hub && (await getMetaMetricsEnabled()) === true) {
       options.autoSessionTracking = true;
       hub.startSession();
     }
@@ -200,10 +204,10 @@ export default function setupSentry({ release, getState }) {
    * opted out of MetaMetrics, change the autoSessionTracking option and end
    * the current sentry session.
    */
-  const endSession = () => {
+  const endSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && getMetaMetricsEnabled() === false) {
+    if (hub && (await getMetaMetricsEnabled()) === false) {
       options.autoSessionTracking = false;
       hub.endSession();
     }
@@ -214,22 +218,22 @@ export default function setupSentry({ release, getState }) {
    * on the state of metaMetrics optin and the state of autoSessionTracking on
    * the Sentry client.
    */
-  const toggleSession = () => {
+  const toggleSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {
       autoSessionTracking: false,
     };
-    const isMetaMetricsEnabled = getMetaMetricsEnabled();
+    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
     if (
       isMetaMetricsEnabled === true &&
       options.autoSessionTracking === false
     ) {
-      startSession();
+      await startSession();
     } else if (
       isMetaMetricsEnabled === false &&
       options.autoSessionTracking === true
     ) {
-      endSession();
+      await endSession();
     }
   };
 
