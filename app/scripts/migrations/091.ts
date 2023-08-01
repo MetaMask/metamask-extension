@@ -1,7 +1,7 @@
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
 
-export const version = 89;
+export const version = 91;
 
 /**
  * Add an `id` to the `providerConfig` object.
