@@ -313,30 +313,30 @@ describe('MetaMetricsController', function () {
   });
 
   describe('setParticipateInMetaMetrics', function () {
-    it('should update the value of participateInMetaMetrics', function () {
+    it('should update the value of participateInMetaMetrics', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.participateInMetaMetrics, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
+      await metaMetricsController.setParticipateInMetaMetrics(true);
       assert.ok(globalThis.sentry.startSession.calledOnce);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, true);
-      metaMetricsController.setParticipateInMetaMetrics(false);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
       assert.equal(metaMetricsController.state.participateInMetaMetrics, false);
     });
-    it('should generate and update the metaMetricsId when set to true', function () {
+    it('should generate and update the metaMetricsId when set to true', async function () {
       const metaMetricsController = getMetaMetricsController({
         participateInMetaMetrics: null,
         metaMetricsId: null,
       });
       assert.equal(metaMetricsController.state.metaMetricsId, null);
-      metaMetricsController.setParticipateInMetaMetrics(true);
+      await metaMetricsController.setParticipateInMetaMetrics(true);
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
     });
-    it('should nullify the metaMetricsId when set to false', function () {
+    it('should nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
-      metaMetricsController.setParticipateInMetaMetrics(false);
+      await metaMetricsController.setParticipateInMetaMetrics(false);
       assert.ok(globalThis.sentry.endSession.calledOnce);
       assert.equal(metaMetricsController.state.metaMetricsId, null);
     });
