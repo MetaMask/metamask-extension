@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { useSelector } from 'react-redux';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getRpcPrefsForCurrentProvider } from '../../../selectors';
-import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '..';
 import {
@@ -87,14 +87,19 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
+  // If this is the selected item in the Account menu,
+  // scroll the item into view
+  const itemRef = useRef(null);
+  useEffect(() => {
+    if (selected) {
+      itemRef.current?.scrollIntoView?.();
+    }
+  }, [itemRef, selected]);
+
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
   const label = getLabel(keyring, t);
-
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const { blockExplorerUrl } = rpcPrefs;
-  const blockExplorerUrlSubTitle = getURLHostName(blockExplorerUrl);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -107,6 +112,7 @@ export const AccountListItem = ({
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
       })}
+      ref={itemRef}
       onClick={() => {
         // Without this check, the account will be selected after
         // the account options menu closes
@@ -202,7 +208,7 @@ export const AccountListItem = ({
               />
             ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(identity.address)}
+              {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
           <Text
@@ -250,7 +256,6 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        blockExplorerUrlSubTitle={blockExplorerUrlSubTitle}
         identity={identity}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}
