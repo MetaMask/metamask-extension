@@ -169,7 +169,7 @@ describe('migration #88', () => {
                   address: '0xaaa',
                 },
               ],
-              undefined: [
+              'undefined': [
                 {
                   name: 'Contract 2',
                   address: '0xbbb',
@@ -181,12 +181,6 @@ describe('migration #88', () => {
                 {
                   name: 'Contract 3',
                   address: '0xccc',
-                },
-              ],
-              [undefined]: [
-                {
-                  name: 'Contract 4',
-                  address: '0xddd',
                 },
               ],
             },
@@ -499,16 +493,6 @@ describe('migration #88', () => {
                   address: '0xccc',
                 },
               ],
-              [undefined]: [
-                {
-                  name: 'NFT 4',
-                  description: 'Description for NFT 4',
-                  image: 'nft4.jpg',
-                  standard: 'ERC721',
-                  tokenId: '4',
-                  address: '0xddd',
-                },
-              ],
             },
           },
         },
@@ -815,20 +799,6 @@ describe('migration #88', () => {
                 },
               },
             },
-            [undefined]: {
-              timestamp: 333333,
-              data: {
-                '0x333': {
-                  address: '0x222',
-                  symbol: 'TEST2',
-                  decimals: 1,
-                  occurrences: 1,
-                  name: 'Token 2',
-                  iconUrl: 'https://url/to/token2.png',
-                  aggregators: [],
-                },
-              },
-            },
           },
         },
       },
@@ -1071,15 +1041,6 @@ describe('migration #88', () => {
                 },
               ],
             },
-            [undefined]: {
-              '0x444': [
-                {
-                  address: '0xbbb',
-                  decimals: 1,
-                  symbol: 'TEST2',
-                },
-              ],
-            },
           },
         },
       },
@@ -1260,11 +1221,6 @@ describe('migration #88', () => {
               },
             },
             undefined: {
-              '0x2': {
-                '0x222': ['0xbbb'],
-              },
-            },
-            [undefined]: {
               '0x2': {
                 '0x222': ['0xbbb'],
               },
