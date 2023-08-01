@@ -801,6 +801,11 @@ export function setupController(
     });
   }
   ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block.
+  controller.controllerMessenger.call('SnapController:updateBlockedSnaps');
+  ///: END:ONLY_INCLUDE_IN
 }
 
 //
