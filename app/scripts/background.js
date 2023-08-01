@@ -2,6 +2,10 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// This import sets up a global function required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-persisted-state-hook';
+
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
@@ -466,6 +470,9 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 

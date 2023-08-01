@@ -6,10 +6,20 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 
 const getTestPathsForTestDir = async (testDir) => {
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
+  const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
+  const testPaths = [];
+
+  for (const itemInDirectory of testFilenames) {
+    const fullPath = path.join(testDir, itemInDirectory.name);
+
+    if (itemInDirectory.isDirectory()) {
+      const subDirPaths = await getTestPathsForTestDir(fullPath);
+      testPaths.push(...subDirPaths);
+    } else if (fullPath.endsWith('.spec.js')) {
+      testPaths.push(fullPath);
+    }
+  }
+
   return testPaths;
 };
 
@@ -50,6 +60,10 @@ async function main() {
             description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
+          .option('rpc', {
+            description: `run json-rpc specific e2e tests`,
+            type: 'boolean',
+          })
           .option('retries', {
             description:
               'Set how many times the test should be retried upon failure.',
@@ -59,12 +73,15 @@ async function main() {
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3 } = argv;
+  const { browser, debug, retries, snaps, mv3, rpc } = argv;
 
   let testPaths;
 
   if (snaps) {
     const testDir = path.join(__dirname, 'snaps');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (rpc) {
+    const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');

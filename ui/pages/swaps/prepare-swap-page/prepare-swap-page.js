@@ -99,6 +99,7 @@ import {
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   countDecimals,
   fetchTokenPrice,
@@ -556,7 +557,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
+  }, [dispatch]);
 
   const BlockExplorerLink = () => {
     return (
@@ -630,6 +631,10 @@ export default function PrepareSwapPage({
       if (!isReviewSwapButtonDisabled) {
         if (isSmartTransaction) {
           clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+          dispatch({
+            type: SET_SMART_TRANSACTIONS_ERROR,
+            payload: null,
+          });
         }
         // Only do quotes prefetching if the Review swap button is enabled.
         prefetchQuotesWithoutRedirecting();
@@ -776,7 +781,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -846,14 +851,15 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -945,11 +951,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
