@@ -382,7 +382,7 @@ export default class EncryptionPublicKeyController extends BaseControllerV2<
       origin: messageParams.origin,
     };
 
-    return stateMessage;
+    return stateMessage as any;
   }
 
   private _requestApproval(
