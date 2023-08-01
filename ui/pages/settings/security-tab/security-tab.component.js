@@ -500,7 +500,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
-            {t('useMultiAccountBalanceCheckerDescription')}
+            {t('useMultiAccountBalanceCheckerSettingDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
