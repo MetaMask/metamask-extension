@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scroll to selected account when opening account list menu ([#20166](https://github.com/MetaMask/metamask-extension/pull/20166))
 - Remove fallback phishing warning configuration ([#20327](https://github.com/MetaMask/metamask-extension/pull/20327))
   - The phishing warning feature will no longer function if the wallet is unable to receive configuration updates. Previously a fallback config was used in this case, but we found that it was too outdated to be helpful and it caused many problems for users.
+- Improved UI for downloading state logs on Chromium-based browsers ([#19872](https://github.com/MetaMask/metamask-extension/pull/19872))
+  - We now use a file picker to let you select the download location, rather than saving the state logs in your downloads folder.
 
 ### Fixed
 - Fixed bug that could cause loss of network or token data for users upgrading from old versions ([#20276](https://github.com/MetaMask/metamask-extension/pull/20276))
