@@ -12,7 +12,7 @@ import {
   setProviderType,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getShowTestNetworks,
   getCurrentChainId,
@@ -51,12 +51,6 @@ import {
   getCompletedOnboarding,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
-
-const UNREMOVABLE_CHAIN_IDS = [
-  CHAIN_IDS.MAINNET,
-  CHAIN_IDS.LINEA_MAINNET,
-  ...TEST_CHAINS,
-];
 
 export const NetworkListMenu = ({ onClose }) => {
   const t = useI18nContext();
@@ -111,21 +105,19 @@ export const NetworkListMenu = ({ onClose }) => {
   }
 
   const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network, index) => {
+    return desiredNetworks.map((network) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
 
       const isCurrentNetwork = currentNetwork.id === network.id;
-
-      const canDeleteNetwork =
-        !isCurrentNetwork && !UNREMOVABLE_CHAIN_IDS.includes(network.chainId);
+      const canDeleteNetwork = !isCurrentNetwork && network.removable;
 
       return (
         <NetworkListItem
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
-          key={`${network.id || network.chainId}-${index}`}
+          key={network.id}
           selected={isCurrentNetwork}
           focus={isCurrentNetwork && !showSearch}
           onClick={() => {
@@ -142,7 +134,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 location: 'Network Menu',
                 chain_id: currentChainId,
                 from_network: currentChainId,
-                to_network: network.id || network.chainId,
+                to_network: network.chainId,
               },
             });
           }}
@@ -153,7 +145,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.chainId,
+                      target: network.id,
                       onConfirm: () => undefined,
                     }),
                   );
