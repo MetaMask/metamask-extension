@@ -47,12 +47,17 @@ export enum BlockaidReason {
   unfairTrade = 'unfair_trade',
 
   other = 'other',
+
+  // Locally defined
+  notApplicable = 'NotApplicable',
 }
 
 export enum BlockaidResultType {
   Malicious = 'Malicious',
   Warning = 'Warning',
   Benign = 'Benign',
+  // Locally defined
+  NotApplicable = 'NotApplicable',
 }
 
 /**
