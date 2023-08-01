@@ -29,7 +29,7 @@ export class FilterEvents implements Integration {
    * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
    * is enabled, `false` otherwise.
    */
-  private getMetaMetricsEnabled: () => boolean;
+  private getMetaMetricsEnabled: () => Promise<boolean>;
 
   /**
    * @param options - Constructor options.
@@ -40,7 +40,7 @@ export class FilterEvents implements Integration {
   constructor({
     getMetaMetricsEnabled,
   }: {
-    getMetaMetricsEnabled: () => boolean;
+    getMetaMetricsEnabled: () => Promise<boolean>;
   }) {
     this.getMetaMetricsEnabled = getMetaMetricsEnabled;
   }
@@ -56,13 +56,13 @@ export class FilterEvents implements Integration {
     addGlobalEventProcessor: (callback: EventProcessor) => void,
     getCurrentHub: () => Hub,
   ): void {
-    addGlobalEventProcessor((currentEvent: SentryEvent) => {
+    addGlobalEventProcessor(async (currentEvent: SentryEvent) => {
       // Sentry integrations use the Sentry hub to get "this" references, for
       // reasons I don't fully understand.
       // eslint-disable-next-line consistent-this
       const self = getCurrentHub().getIntegration(FilterEvents);
       if (self) {
-        if (!self.getMetaMetricsEnabled()) {
+        if (!(await self.getMetaMetricsEnabled())) {
           logger.warn(`Event dropped due to MetaMetrics setting.`);
           return null;
         }
