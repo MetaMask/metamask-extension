@@ -126,6 +126,7 @@ describe('Transaction Finalized Event', function () {
         delete transactionFinalizedNoMMId.properties.first_seen;
         delete transactionFinalizedNoMMId.properties.completion_time;
 
+        console.log('transactionFinalizedNoMMId', transactionFinalizedNoMMId)
         // Assert that the event names begin with the appropriate prefixes. Even finalized events begin with transaction-submitted
         // because they start as event fragments created when the transaction is submitted.
         assert.ok(
