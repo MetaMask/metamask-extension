@@ -2984,7 +2984,7 @@ export default class MetamaskController extends EventEmitter {
       .toString()
       .split(' ')
       .map((word) => wordlist.indexOf(word));
-    return new Uint8Array(indices);
+    return new Uint8Array(new Uint16Array(indices).buffer);
   }
 
   /**
