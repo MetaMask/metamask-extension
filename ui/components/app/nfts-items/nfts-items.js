@@ -172,6 +172,9 @@ export default function NftsItems({
               const { image, address, tokenId, name, imageOriginal } = nft;
               const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
               const nftImageAlt = getNftImageAlt(nft);
+              const nftImageURL = imageOriginal?.includes('ipfs')
+                ? nftImage
+                : image;
 
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
@@ -183,8 +186,9 @@ export default function NftsItems({
                   className="nfts-items__item-wrapper"
                 >
                   <NftItem
-                    src={image ? nftImage : ''}
+                    nftImageURL={nftImageURL}
                     alt={nftImageAlt}
+                    src={image}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}

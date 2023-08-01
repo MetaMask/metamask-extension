@@ -33,6 +33,7 @@ describe('NftItem component', () => {
       networkSrc: 'test-network-src',
       tokenId: '1',
       onClick: jest.fn(),
+      nftImageURL: '',
     };
 
     it('renders correctly with an image source', () => {
@@ -44,9 +45,12 @@ describe('NftItem component', () => {
       expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
     });
 
-    it('renders correctly with default image when no image source is provided', () => {
+    it('renders correctly with default image when no ipfs is off and no image is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem {...props} />,
+        <NftItem
+          {...props}
+          nftImageURL="ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL"
+        />,
         noIpfsStore,
       );
 
