@@ -368,9 +368,3 @@
 @keyframes slide-in {
   100% { transform: translateY(0%); }
 }
-
-.not-enough-balance {
-  &__button {
-    vertical-align: baseline;
-  }
-}
