@@ -8,6 +8,7 @@
   display: flex;
   padding: 12px 12px 12px 8px;
   gap: 16px;
+  line-height: 24px;
 
   &__icon {
     color: var(--color-error-default);
@@ -24,17 +25,8 @@
     }
   }
 
-  &__alert {
-    display: flex;
-    flex-direction: column;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 24px;
-
-    &__action-link {
-      line-height: 40px;
-      margin: 8px 0 20px;
-    }
+  &__link-restart {
+    line-height: 40px;
+    margin: 8px 0 20px;
   }
 }

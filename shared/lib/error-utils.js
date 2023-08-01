@@ -93,15 +93,13 @@ export async function getErrorHtml(
         </svg>
       </div>
       <div>
-        <div class="critical-error__alert">
-          <p>
-            ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
-            ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
-          </p>
-          <span id='critical-error-button' class="critical-error__link critical-error__alert__action-link">
-            ${t('restartMetamask')}
-          </span>
-        </div>
+        <p>
+          ${errorKey === 'troubleStarting' ? t('troubleStarting') : ''}
+          ${errorKey === 'somethingIsWrong' ? t('somethingIsWrong') : ''}
+        </p>
+        <span id='critical-error-button' class="critical-error__link critical-error__link-restart">
+          ${t('restartMetamask')}
+        </span>
         <p class="critical-error__paragraph">
           ${t('stillGettingMessage')}
           <a
