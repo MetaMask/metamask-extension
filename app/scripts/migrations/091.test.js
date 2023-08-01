@@ -50,7 +50,7 @@ describe('migration #91', () => {
     };
     const oldStorage = {
       meta: {
-        version: 88,
+        version: 90,
       },
       data: oldData,
     };
@@ -80,7 +80,7 @@ describe('migration #91', () => {
     };
     const oldStorage = {
       meta: {
-        version: 88,
+        version: 90,
       },
       data: oldData,
     };
@@ -121,7 +121,7 @@ describe('migration #91', () => {
     };
     const oldStorage = {
       meta: {
-        version: 88,
+        version: 90,
       },
       data: oldData,
     };
