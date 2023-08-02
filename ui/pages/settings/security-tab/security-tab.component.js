@@ -318,8 +318,6 @@ export default class SecurityTab extends PureComponent {
   renderIpfsGatewayControl() {
     const { t } = this.context;
     const { ipfsGatewayError } = this.state;
-    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
-      this.props;
 
     const handleIpfsGatewaySave = (gateway) => {
       const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
@@ -400,11 +398,21 @@ export default class SecurityTab extends PureComponent {
             </div>
           </div>
         )}
-        <div
-          className="settings-page__content-item"
-          ref={this.settingsRefs[9]}
-          id="ens-domains"
-        >
+      </div>
+    );
+  }
+
+  renderEnsToggle() {
+    const { t } = this.context;
+    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
+      this.props;
+    return (
+      <div
+        ref={this.settingsRefs[9]}
+        className="settings-page__content-row"
+        data-testid="ens-domains"
+      >
+        <div className="settings-page__content-item">
           {t('ensDomainsSettingTitle')}
           <div className="settings-page__content-description">
             <Text color={TextColor.inherit} variant={TextVariant.inherit}>
@@ -635,6 +643,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderChooseYourNetworkButton()}
           {this.renderIpfsGatewayControl()}
+          {this.renderEnsToggle()}
         </div>
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('tokenAutoDetection')}

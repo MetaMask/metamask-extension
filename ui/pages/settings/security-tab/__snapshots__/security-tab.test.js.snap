@@ -454,9 +454,13 @@ exports[`Security Tab should match snapshot 1`] = `
             </div>
           </div>
         </div>
+      </div>
+      <div
+        class="settings-page__content-row"
+        data-testid="ens-domains"
+      >
         <div
           class="settings-page__content-item"
-          id="ens-domains"
         >
           Show ENS domains in address bar
           <div
