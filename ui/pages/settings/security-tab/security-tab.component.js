@@ -617,7 +617,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
 
     return (
-      <div ref={this.settingsRefs[9]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[10]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('enableOpenSeaAPI')}</span>
           <div className="settings-page__content-description">
@@ -664,7 +664,7 @@ export default class SecurityTab extends PureComponent {
       setUseNftDetection,
     } = this.props;
     return (
-      <div ref={this.settingsRefs[10]} className="settings-page__content-row">
+      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
         <div className="settings-page__content-item">
           <span>{t('useNftDetection')}</span>
           <div className="settings-page__content-description">
