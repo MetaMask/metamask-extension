@@ -1,26 +1,11 @@
 import React from 'react';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 
-import {
-  renderWithProvider,
-  fireEvent,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { renderWithProvider, fireEvent } from '../../../../test/jest';
 import {
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_TOO_LOW_ERROR,
 } from '../../../../shared/constants/swaps';
 import SlippageNotificationModal from './slippage-notification-modal';
-
-jest.mock('react-redux', () => {
-  const actual = jest.requireActual('react-redux');
-
-  return {
-    ...actual,
-    useDispatch: () => jest.fn(),
-  };
-});
 
 const createProps = (customProps = {}) => {
   return {
@@ -32,21 +17,11 @@ const createProps = (customProps = {}) => {
   };
 };
 
-const middleware = [thunk];
-
 describe('SlippageNotificationModal', () => {
-  let store;
-
-  beforeEach(() => {
-    const swapsMockStore = createSwapsMockStore();
-    store = configureMockStore(middleware)(swapsMockStore);
-  });
-
   it('renders the component with the SLIPPAGE_VERY_HIGH_ERROR, clicks on "Swap anyway"', () => {
     const props = createProps();
     const { getByText } = renderWithProvider(
       <SlippageNotificationModal {...props} />,
-      store,
     );
     expect(getByText('High slippage')).toBeInTheDocument();
     expect(getByText('Very high slippage')).toBeInTheDocument();
@@ -73,7 +48,6 @@ describe('SlippageNotificationModal', () => {
     });
     const { getByText } = renderWithProvider(
       <SlippageNotificationModal {...props} />,
-      store,
     );
     expect(getByText('Low slippage')).toBeInTheDocument();
     expect(
