@@ -37,7 +37,7 @@ export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
   ) => {
     return (
       <Box
-        className={classnames('mm-tag', className)}
+        className={classnames('mm-picker-network', className)}
         ref={ref}
         as="button"
         backgroundColor={BackgroundColor.backgroundAlternative}
