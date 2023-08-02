@@ -115,7 +115,7 @@ export const Popover: PopoverComponent = React.forwardRef(
           },
           className,
         )}
-        ref={setPopperElement}
+        ref={ref || setPopperElement}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
         style={{ ...styles.popper, ...contentStyle, ...props.style }}
