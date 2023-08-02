@@ -185,7 +185,7 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
-export const EUROPA_SKALE_DISPLAY_NAME = 'Europa Liquidity Hub | SKALE';
+export const EUROPA_SKALE_DISPLAY_NAME = 'SKALE Europa DeFi Hub';
 export const CALYPSO_SKALE_DISPLAY_NAME = 'SKALE Calypso NFT Hub';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
