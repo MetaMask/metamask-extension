@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
-  },
   "useNftDetection": {
     "message": "Detección automática de NFT"
   },

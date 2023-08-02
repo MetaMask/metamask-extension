@@ -3,7 +3,6 @@ import SnapAuthorshipHeader from './snap-authorship-header';
 
 export default {
   title: 'Components/App/Snaps/SnapAuthorshipHeader',
-
   component: SnapAuthorshipHeader,
   argTypes: {
     snapId: {
