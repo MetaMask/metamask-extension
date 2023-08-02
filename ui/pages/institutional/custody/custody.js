@@ -49,6 +49,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
+import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -61,6 +62,10 @@ const CustodyPage = () => {
   const { custodians } = useSelector(getMMIConfiguration);
 
   const [loading, setLoading] = useState(true);
+  const [
+    isConfirmConnectCustodianModalVisible,
+    setIsConfirmConnectCustodianModalVisible,
+  ] = useState(false);
   const [selectedAccounts, setSelectedAccounts] = useState({});
   const [selectedCustodianName, setSelectedCustodianName] = useState('');
   const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
@@ -134,13 +139,20 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async () => {
+              // open confirm Connect Custodian modal
+              setIsConfirmConnectCustodianModalVisible(true);
+              //
+
               const jwtListValue = await dispatch(
                 mmiActions.getCustodianJWTList(custodian.name),
               );
               setSelectedCustodianName(custodian.name);
               setSelectedCustodianType(custodian.type);
               setSelectedCustodianImage(custodian.iconUrl);
-              setSelectedCustodianDisplayName(custodian.displayName);
+
+              //
+              // setSelectedCustodianDisplayName(custodian.displayName);
+              //
               setApiUrl(custodian.apiUrl);
               setCurrentJwt(jwtListValue[0] || '');
               setJwtList(jwtListValue);
@@ -576,7 +588,9 @@ const CustodyPage = () => {
                   pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
                   state: {
                     imgSrc: selectedCustodian.iconUrl,
-                    title: t('custodianAccountAddedTitle'),
+                    title: t('custodianAccountAddedTitle', [
+                      selectedCustodianDisplayName,
+                    ]),
                     description: t('custodianAccountAddedDesc'),
                   },
                 });
@@ -640,6 +654,14 @@ const CustodyPage = () => {
             </Button>
           </Box>
         </>
+      )}
+
+      {isConfirmConnectCustodianModalVisible && (
+        <ConfirmConnectCustodianModal
+          onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
+          custodianName={selectedCustodianName}
+          custodianURL="https://qredo.com"
+        />
       )}
     </Box>
   );

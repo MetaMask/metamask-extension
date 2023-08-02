@@ -356,8 +356,14 @@
     "message": "All of your NFTs from $1",
     "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
   },
+  "allow": {
+    "message": "Allow"
+  },
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
+  },
+  "allowMmiToConnectToCustodian": {
+    "message": "This will allow MMI to connecto to $1 to import your accounts."
   },
   "allowSpendToken": {
     "message": "Give permission to access your $1?",
@@ -715,6 +721,15 @@
   "confirm": {
     "message": "Confirm"
   },
+  "confirmConnectCustodianRedirect": {
+    "message": "We will redirect you to $1 upon clicking continue."
+  },
+  "confirmConnectCustodianText": {
+    "message": "To connect your accounts log into your $1 account and click on the 'connect to MMI' button."
+  },
+  "confirmConnectionTitle": {
+    "message": "Confirm connection to $1"
+  },
   "confirmPassword": {
     "message": "Confirm password"
   },
@@ -747,6 +762,9 @@
   },
   "connectCustodialAccountTitle": {
     "message": "Custodial Accounts"
+  },
+  "connectCustodianAccounts": {
+    "message": "Connect $1 accounts"
   },
   "connectManually": {
     "message": "Manually connect to current site"
@@ -964,14 +982,11 @@
   "custodian": {
     "message": "Custodian"
   },
-  "custodianAccount": {
-    "message": "Custodian account"
-  },
   "custodianAccountAddedDesc": {
-    "message": "You can now use your custodian accounts in MetaMask Institutional."
+    "message": "You can now use your accounts in MetaMask Institutional."
   },
   "custodianAccountAddedTitle": {
-    "message": "Selected custodian accounts have been added."
+    "message": "Selected $1 accounts have been added."
   },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
@@ -2308,9 +2323,6 @@
   },
   "missingSettingRequest": {
     "message": "Request here"
-  },
-  "mmiAddToken": {
-    "message": "The page at $1 would like to authorise the following custodian token in MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional is designed and built around the world."

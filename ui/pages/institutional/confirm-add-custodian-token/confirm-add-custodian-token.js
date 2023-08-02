@@ -5,12 +5,14 @@ import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import {
-  AlignItems,
   Display,
   TextColor,
   TextAlign,
-  FlexDirection,
+  FontWeight,
+  TextVariant,
+  BorderColor,
 } from '../../../helpers/constants/design-system';
+import Chip from '../../../components/ui/chip';
 import { BUILT_IN_NETWORKS } from '../../../../shared/constants/network';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -18,8 +20,6 @@ import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { setProviderType } from '../../../store/actions';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import {
-  Label,
-  ButtonLink,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
@@ -41,7 +41,6 @@ const ConfirmAddCustodianToken = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
-  const [showMore, setShowMore] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
@@ -81,79 +80,37 @@ const ConfirmAddCustodianToken = () => {
 
   return (
     <Box className="page-container">
-      <Box className="page-container__header">
-        <Text className="page-container__title">{t('custodianAccount')}</Text>
-        <Text className="page-container__subtitle">
-          {t('mmiAddToken', [connectRequest.origin])}
+      <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
+        <Text>
+          <Chip
+            borderColor={BorderColor.borderMuted}
+            label={connectRequest.origin}
+            maxContent={false}
+            leftIconUrl="https://dashboard.metamask-institutional.io/custodian-icons/qredo-icon.svg"
+            labelProps={{
+              textAlign: TextAlign.Center,
+            }}
+          />
         </Text>
       </Box>
       <Box padding={4} className="page-container__content">
-        {custodianLabel && (
-          <>
-            <Text padding={4} color={TextColor.textDefault}>
-              {t('custodian')}
-            </Text>
-            <Label
-              marginRight={4}
-              marginLeft={4}
-              color={TextColor.textAlternative}
-              className="add_custodian_token_confirm__url"
-            >
-              {custodianLabel}
-            </Label>
-          </>
-        )}
-
-        <Text padding={4} color={TextColor.textDefault}>
-          {t('token')}
-        </Text>
-        <Box
-          marginRight={4}
-          marginLeft={4}
-          className="add_custodian_token_confirm__token"
+        <Text
+          padding={4}
+          fontWeight={FontWeight.Bold}
+          variant={TextVariant.headingSm}
+          as="h5"
         >
-          <Box
-            paddingTop={2}
-            paddingBottom={2}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-          >
-            <Text>
-              {showMore && connectRequest?.token
-                ? connectRequest?.token
-                : `...${connectRequest?.token.slice(-9)}`}
-            </Text>
-            {!showMore && (
-              <Box paddingLeft={2}>
-                <ButtonLink
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    setShowMore(true);
-                  }}
-                >
-                  {t('showMore')}
-                </ButtonLink>
-              </Box>
-            )}
-          </Box>
-        </Box>
-        {connectRequest.apiUrl && (
-          <Box>
-            <Text padding={4} color={TextColor.textDefault}>
-              {t('apiUrl')}
-            </Text>
-            <Text
-              marginRight={4}
-              marginLeft={4}
-              color={TextColor.textAlternative}
-              fontSize="14"
-              className="add_custodian_token_confirm__url"
-            >
-              {connectRequest.apiUrl}
-            </Text>
-          </Box>
-        )}
+          {t('confirmConnectionTitle', [custodianLabel])}
+        </Text>
+
+        <Text
+          paddingTop={3}
+          paddingLeft={4}
+          paddingRight={4}
+          color={TextColor.textAlternative}
+        >
+          {t('allowMmiToConnectToCustodian', [custodianLabel])}
+        </Text>
       </Box>
 
       <Box marginTop={4} data-testid="connect-custodian-token-error">
@@ -258,7 +215,7 @@ const ConfirmAddCustodianToken = () => {
                 }
               }}
             >
-              {t('confirm')}
+              {t('allow')}
             </Button>
           </Box>
         )}
