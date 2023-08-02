@@ -242,7 +242,6 @@ export default function PrivacySettings() {
                   {ipfsURL ? (
                     <Text
                       variant={TextVariant.bodySm}
-                      as="h6"
                       color={
                         ipfsError
                           ? TextColor.errorDefault
