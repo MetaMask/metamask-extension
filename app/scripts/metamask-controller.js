@@ -4190,7 +4190,7 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
         findNetworkClientIdByChainId:
-          this.findNetworkClientIdByChainId.bind(this),
+          this.networkController.findNetworkClientIdByChainId.bind(this.networkController),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
@@ -4609,21 +4609,6 @@ export default class MetamaskController extends EventEmitter {
     );
 
     return networkConfiguration || null;
-  }
-
-  findNetworkClientIdByChainId(chainId) {
-    const networkClients = this.networkController.getNetworkClientsById();
-    const type = CHAIN_ID_TO_TYPE_MAP[chainId];
-    if (type && networkClients[type]) {
-      return networkClients[type];
-    }
-    const networkConfigurationIndex = Object.values(networkClients).findIndex(
-      (networkClient) => {
-        return networkClient.configuration.chainId === chainId;
-      },
-    );
-    if (networkConfigurationIndex === -1) { return null; }
-    return Object.keys(networkClients)[networkConfigurationIndex];
   }
 
   /**
