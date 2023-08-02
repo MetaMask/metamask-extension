@@ -48,6 +48,7 @@ export const TokenListItem = ({
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+  const tokenTitle = title === 'ETH' ? t('networkNameEthereum') : title;
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -121,21 +122,30 @@ export const TokenListItem = ({
             gap={1}
           >
             <Box width={BlockSize.OneThird}>
-              <Tooltip
-                position="bottom"
-                interactive
-                html={title}
-                disabled={title?.length < 12}
-                tooltipInnerClassName="multichain-token-list-item__tooltip"
-              >
+              {title?.length > 12 ? (
+                <Tooltip
+                  position="bottom"
+                  interactive
+                  html={title}
+                  tooltipInnerClassName="multichain-token-list-item__tooltip"
+                >
+                  <Text
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyMd}
+                    ellipsis
+                  >
+                    {tokenTitle}
+                  </Text>
+                </Tooltip>
+              ) : (
                 <Text
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {title === 'ETH' ? t('networkNameEthereum') : title}
+                  {tokenTitle}
                 </Text>
-              </Tooltip>
+              )}
             </Box>
             <Text
               fontWeight={FontWeight.Medium}
