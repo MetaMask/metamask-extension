@@ -63,6 +63,8 @@ import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
 import * as txUtils from './lib/util';
+import { IncomingTransactionHelper } from './IncomingTransactionHelper';
+import { EtherscanRemoteTransactionSource } from './EtherscanRemoteTransactionSource';
 
 const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
@@ -118,6 +120,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {object} opts.initState - initial transaction list default is an empty array
  * @param {Function} opts.getNetworkId - Get the current network ID.
  * @param {Function} opts.getNetworkStatus - Get the current network status.
+ * @param {Function} opts.getNetworkState - Get the network state.
  * @param {Function} opts.onNetworkStateChange - Subscribe to network state change events.
  * @param {object} opts.blockTracker - An instance of eth-blocktracker
  * @param {object} opts.provider - A network provider.
@@ -125,6 +128,7 @@ const METRICS_STATUS_FAILED = 'failed on-chain';
  * @param {object} opts.getPermittedAccounts - get accounts that an origin has permissions for
  * @param {Function} opts.signTransaction - ethTx signer that returns a rawTx
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
+ * @param {Function} opts.hasCompletedOnboarding - Returns whether or not the user has completed the onboarding flow
  * @param {object} opts.preferencesStore
  */
 
@@ -133,6 +137,7 @@ export default class TransactionController extends EventEmitter {
     super();
     this.getNetworkId = opts.getNetworkId;
     this.getNetworkStatus = opts.getNetworkStatus;
+    this._getNetworkState = opts.getNetworkState;
     this._getCurrentChainId = opts.getCurrentChainId;
     this.getProviderConfig = opts.getProviderConfig;
     this._getCurrentNetworkEIP1559Compatibility =
@@ -157,8 +162,11 @@ export default class TransactionController extends EventEmitter {
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.messagingSystem = opts.messenger;
+    this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
-    this.memStore = new ObservableStore({});
+    this.memStore = new ObservableStore({
+      incomingTransactions: opts.initState?.incomingTransactions || {},
+    });
 
     this.resetState = () => {
       this._updateMemstore();
@@ -206,6 +214,51 @@ export default class TransactionController extends EventEmitter {
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
     });
+
+    this.incomingTransactionHelper = new IncomingTransactionHelper({
+      blockTracker: this.blockTracker,
+      getCurrentAccount: () => this.getSelectedAddress(),
+      getNetworkState: () => this._getNetworkState(),
+      incomingOnly: true,
+      isEnabled: () =>
+        Boolean(
+          this.preferencesStore.getState().featureFlags
+            ?.showIncomingTransactions && this._hasCompletedOnboarding(),
+        ),
+      lastFetchedBlockNumbers: opts.initState?.lastFetchedBlockNumbers || {},
+      remoteTransactionSource: new EtherscanRemoteTransactionSource({
+        includeTokenTransfers: false,
+      }),
+    });
+
+    this.incomingTransactionHelper.hub.on(
+      'updatedTransactions',
+      (transactions) => {
+        log.debug('Detected new incoming transactions', transactions);
+
+        const newState = {
+          incomingTransactions: transactions.reduce(
+            (result, tx) => {
+              result[tx.hash] = tx;
+              return result;
+            },
+            {
+              ...this.memStore.getState().incomingTransactions,
+            },
+          ),
+        };
+
+        this.memStore.updateState(newState);
+        this.store.updateState(newState);
+      },
+    );
+
+    this.incomingTransactionHelper.hub.on(
+      'updatedLastFetchedBlockNumbers',
+      (lastFetchedBlockNumbers) => {
+        this.store.updateState({ lastFetchedBlockNumbers });
+      },
+    );
 
     this.txStateManager.store.subscribe(() =>
       this.emit(METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE),
@@ -386,6 +439,14 @@ export default class TransactionController extends EventEmitter {
         log.error('Error during persisted transaction approval', error);
       });
     });
+  }
+
+  startIncomingTransactionProcessing() {
+    this.incomingTransactionHelper.start();
+  }
+
+  stopIncomingTransactionProcessing() {
+    this.incomingTransactionHelper.stop();
   }
 
   // ====================================================================================================================================================

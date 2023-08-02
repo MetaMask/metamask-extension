@@ -269,7 +269,7 @@ export interface TxParams {
   /** The amount of wei, in hexadecimal, to send */
   value: string;
   /** The transaction count for the current account/network */
-  nonce: number;
+  nonce: string;
   /** The amount of gwei, in hexadecimal, per unit of gas */
   gasPrice?: string;
   /** The max amount of gwei, in hexadecimal, the user is willing to pay */
@@ -329,6 +329,7 @@ export interface TransactionMeta {
    * on incoming transactions!
    */
   blockNumber?: string;
+  chainId: string;
   /** An internally unique tx identifier. */
   id: number;
   /** Time the transaction was first suggested, in unix epoch time (ms). */

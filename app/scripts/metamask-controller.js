@@ -180,7 +180,6 @@ import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
 import BackupController from './controllers/backup';
-import IncomingTransactionsController from './controllers/incoming-transactions';
 import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
@@ -723,19 +722,6 @@ export default class MetamaskController extends EventEmitter {
       initState: initState.OnboardingController,
     });
 
-    this.incomingTransactionsController = new IncomingTransactionsController({
-      blockTracker: this.blockTracker,
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      preferencesController: this.preferencesController,
-      onboardingController: this.onboardingController,
-      initState: initState.IncomingTransactionsController,
-    });
-
     // account tracker watches balances, nonces, and any code at their address
     this.accountTracker = new AccountTracker({
       provider: this.provider,
@@ -1160,6 +1146,9 @@ export default class MetamaskController extends EventEmitter {
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkId: () => this.networkController.state.networkId,
       getNetworkStatus: () => this.networkController.state.networkStatus,
+      getNetworkState: () => this.networkController.state,
+      hasCompletedOnboarding: () =>
+        this.onboardingController.store.getState().completedOnboarding,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -1214,6 +1203,14 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
         ],
       }),
+    });
+
+    this.preferencesController.store.subscribe((state) => {
+      if (state?.featureFlags?.showIncomingTransactions) {
+        this.txController.startIncomingTransactionProcessing();
+      } else {
+        this.txController.stopIncomingTransactionProcessing();
+      }
     });
 
     this.txController.on(`tx:status-update`, async (txId, status) => {
@@ -1619,7 +1616,6 @@ export default class MetamaskController extends EventEmitter {
       CachedBalancesController: this.cachedBalancesController.store,
       AlertController: this.alertController.store,
       OnboardingController: this.onboardingController.store,
-      IncomingTransactionsController: this.incomingTransactionsController.store,
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
@@ -1665,8 +1661,6 @@ export default class MetamaskController extends EventEmitter {
         CurrencyController: this.currencyRateController,
         AlertController: this.alertController.store,
         OnboardingController: this.onboardingController.store,
-        IncomingTransactionsController:
-          this.incomingTransactionsController.store,
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
@@ -1766,7 +1760,7 @@ export default class MetamaskController extends EventEmitter {
 
   triggerNetworkrequests() {
     this.accountTracker.start();
-    this.incomingTransactionsController.start();
+    this.txController.startIncomingTransactionProcessing();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.start();
     }
@@ -1777,7 +1771,7 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.accountTracker.stop();
-    this.incomingTransactionsController.stop();
+    this.txController.stopIncomingTransactionProcessing();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.stop();
     }
