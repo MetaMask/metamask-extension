@@ -86,7 +86,7 @@ describe('4byte setting', function () {
         await openDapp(driver, contractAddress);
 
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
-        await driver.delay(largeDelayMs);
+        await driver.findClickableElement('#depositButton');
         await driver.clickElement('#depositButton');
 
         await driver.waitForSelector({
@@ -96,14 +96,18 @@ describe('4byte setting', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        const contractInteraction = 'Contract interaction';
         const actionElement = await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
-          text: 'Contract interaction',
+          text: contractInteraction,
         });
         // We add a delay here to wait for any potential UI changes
         await driver.delay(veryLargeDelayMs);
-
-        assert.equal(await actionElement.getText(), 'CONTRACT INTERACTION');
+        // css text-transform: uppercase is applied to the text
+        assert.equal(
+          await actionElement.getText(),
+          contractInteraction.toUpperCase(),
+        );
       },
     );
   });
