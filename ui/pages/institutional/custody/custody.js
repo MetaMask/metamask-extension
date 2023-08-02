@@ -50,6 +50,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
+import { CUSTODIAN_WEBSITES } from '../../../../shared/constants/institutional/custodian-websites';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -71,6 +72,7 @@ const CustodyPage = () => {
   const [selectedCustodianImage, setSelectedCustodianImage] = useState(null);
   const [selectedCustodianDisplayName, setSelectedCustodianDisplayName] =
     useState('');
+  const [matchedCustodian, setMatchedCustodian] = useState(null);
   const [selectedCustodianType, setSelectedCustodianType] = useState('');
   const [connectError, setConnectError] = useState('');
   const [currentJwt, setCurrentJwt] = useState('');
@@ -139,23 +141,36 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async () => {
-              // open confirm Connect Custodian modal
-              setIsConfirmConnectCustodianModalVisible(true);
-              //
-
+              const matchedCustodian = findCustodianByDisplayName(
+                custodian.displayName,
+              );
               const jwtListValue = await dispatch(
                 mmiActions.getCustodianJWTList(custodian.name),
               );
               setSelectedCustodianName(custodian.name);
-              setSelectedCustodianType(custodian.type);
+              setSelectedCustodianDisplayName(custodian.displayName);
               setSelectedCustodianImage(custodian.iconUrl);
 
-              //
-              // setSelectedCustodianDisplayName(custodian.displayName);
-              //
-              setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtListValue[0] || '');
-              setJwtList(jwtListValue);
+              /**
+               * @TODO USE THE CONFIGURATION API VALUES
+               * We need to get the urls of the custodians that have UI
+               * and for those do: setIsConfirmConnectCustodianModalVisible(true)
+               * For custodians that don't have a UI and need to manually add the token in our
+               * view, we do: setSelectedCustodianDisplayName(custodian.displayName)
+               */
+              // open confirm Connect Custodian modal
+              if (matchedCustodian) {
+                setMatchedCustodian(matchedCustodian);
+                console.log('Custodian with UI found:', matchedCustodian);
+                setIsConfirmConnectCustodianModalVisible(true);
+              } else {
+                console.log('Custodian with UI not found.');
+                setSelectedCustodianType(custodian.type);
+                setApiUrl(custodian.apiUrl);
+                setCurrentJwt(jwtListValue[0] || '');
+                setJwtList(jwtListValue);
+              }
+
               trackEvent({
                 category: MetaMetricsEventCategory.MMI,
                 event: MetaMetricsEventName.CustodianSelected,
@@ -217,6 +232,21 @@ const CustodyPage = () => {
     },
     [selectedCustodianName, trackEvent],
   );
+
+  function findCustodianByDisplayName(displayName) {
+    const formatedDisplayName = displayName.toLowerCase();
+    for (const custodianKey in CUSTODIAN_WEBSITES) {
+      const custodian = CUSTODIAN_WEBSITES[custodianKey];
+      const custodianDisplayName = custodian.displayName.toLowerCase();
+      if (
+        custodianKey.toLowerCase().includes(formatedDisplayName) ||
+        custodianDisplayName.includes(formatedDisplayName)
+      ) {
+        return custodian;
+      }
+    }
+    return null; // no matching custodian is found
+  }
 
   useEffect(() => {
     const fetchConnectRequest = async () => {
@@ -660,7 +690,7 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianName}
-          custodianURL="https://qredo.com"
+          custodianURL={matchedCustodian?.website}
         />
       )}
     </Box>
