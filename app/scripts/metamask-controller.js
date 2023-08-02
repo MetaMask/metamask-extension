@@ -904,9 +904,8 @@ export default class MetamaskController extends EventEmitter {
               (address) => !identities[address],
             );
             const keyringTypesWithMissingIdentities =
-              accountsMissingIdentities.map(
-                (address) =>
-                  this.keyringController.getKeyringForAccount(address)?.type,
+              accountsMissingIdentities.map((address) =>
+                this.coreKeyringController.getAccountKeyringType(address),
               );
 
             const identitiesCount = Object.keys(identities || {}).length;
@@ -987,6 +986,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
+        'SnapsRegistry:update',
       ],
     });
 
@@ -1349,7 +1349,14 @@ export default class MetamaskController extends EventEmitter {
           `${this.approvalController.name}:rejectRequest`,
         ],
       }),
-      keyringController: this.keyringController,
+      getEncryptionPublicKey:
+        this.keyringController.getEncryptionPublicKey.bind(
+          this.keyringController,
+        ),
+      getAccountKeyringType:
+        this.coreKeyringController.getAccountKeyringType.bind(
+          this.coreKeyringController,
+        ),
       getState: this.getState.bind(this),
       metricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
@@ -1811,7 +1818,7 @@ export default class MetamaskController extends EventEmitter {
    */
   async getSnapKeyring() {
     if (!this.snapKeyring) {
-      let [snapKeyring] = this.keyringController.getKeyringsByType(
+      let [snapKeyring] = this.coreKeyringController.getKeyringsByType(
         KeyringType.snap,
       );
       if (!snapKeyring) {
@@ -2233,6 +2240,10 @@ export default class MetamaskController extends EventEmitter {
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
+      setUseAddressBarEnsResolution:
+        preferencesController.setUseAddressBarEnsResolution.bind(
+          preferencesController,
+        ),
       setParticipateInMetaMetrics:
         metaMetricsController.setParticipateInMetaMetrics.bind(
           metaMetricsController,
@@ -2922,7 +2933,7 @@ export default class MetamaskController extends EventEmitter {
         ethQuery,
       );
 
-      const [primaryKeyring] = keyringController.getKeyringsByType(
+      const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
         KeyringType.hdKeyTree,
       );
       if (!primaryKeyring) {
@@ -3112,7 +3123,7 @@ export default class MetamaskController extends EventEmitter {
    * Gets the mnemonic of the user's primary keyring.
    */
   getPrimaryKeyringMnemonic() {
-    const [keyring] = this.keyringController.getKeyringsByType(
+    const [keyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!keyring.mnemonic) {
@@ -3127,7 +3138,8 @@ export default class MetamaskController extends EventEmitter {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
-    const keyring = this.keyringController.getKeyringsByType(custodyType)[0];
+    const keyring =
+      this.coreKeyringController.getKeyringsByType(custodyType)[0];
     return keyring?.getAccountDetails(address) ? keyring : undefined;
   }
   ///: END:ONLY_INCLUDE_IN
@@ -3164,7 +3176,9 @@ export default class MetamaskController extends EventEmitter {
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
     }
-    let [keyring] = await this.keyringController.getKeyringsByType(keyringName);
+    let [keyring] = await this.coreKeyringController.getKeyringsByType(
+      keyringName,
+    );
     if (!keyring) {
       keyring = await this.keyringController.addNewKeyring(keyringName);
     }
@@ -3261,8 +3275,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'MetaMask'}
    */
   async getAccountType(address) {
-    const keyring = await this.keyringController.getKeyringForAccount(address);
-    switch (keyring.type) {
+    const keyringType = await this.coreKeyringController.getAccountKeyringType(
+      address,
+    );
+    switch (keyringType) {
       case KeyringType.trezor:
       case KeyringType.lattice:
       case KeyringType.qr:
@@ -3284,7 +3300,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | 'N/A' | string}
    */
   async getDeviceModel(address) {
-    const keyring = await this.keyringController.getKeyringForAccount(address);
+    const keyring = await this.coreKeyringController.getKeyringForAccount(
+      address,
+    );
     switch (keyring.type) {
       case KeyringType.trezor:
         return keyring.getModel();
@@ -3373,7 +3391,7 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
@@ -3418,7 +3436,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    const [primaryKeyring] = this.keyringController.getKeyringsByType(
+    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.hdKeyTree,
     );
     if (!primaryKeyring) {
@@ -3523,7 +3541,9 @@ export default class MetamaskController extends EventEmitter {
     this.custodyController.removeAccount(address);
     ///: END:ONLY_INCLUDE_IN(build-mmi)
 
-    const keyring = await this.keyringController.getKeyringForAccount(address);
+    const keyring = await this.coreKeyringController.getKeyringForAccount(
+      address,
+    );
     // Remove account from the keyring
     await this.keyringController.removeAccount(address);
     const updatedKeyringAccounts = keyring ? await keyring.getAccounts() : {};
@@ -3576,6 +3596,9 @@ export default class MetamaskController extends EventEmitter {
       origin: req.origin,
       // This is the default behaviour but specified here for clarity
       requireApproval: true,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse: req.securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     return await result;
@@ -4633,14 +4656,14 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    const [trezorKeyring] = this.keyringController.getKeyringsByType(
+    const [trezorKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.trezor,
     );
     if (trezorKeyring) {
       trezorKeyring.dispose();
     }
 
-    const [ledgerKeyring] = this.keyringController.getKeyringsByType(
+    const [ledgerKeyring] = this.coreKeyringController.getKeyringsByType(
       KeyringType.ledger,
     );
     ledgerKeyring?.destroy?.();
