@@ -986,6 +986,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
+        'SnapsRegistry:update',
       ],
     });
 
@@ -3595,6 +3596,9 @@ export default class MetamaskController extends EventEmitter {
       origin: req.origin,
       // This is the default behaviour but specified here for clarity
       requireApproval: true,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse: req.securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     return await result;

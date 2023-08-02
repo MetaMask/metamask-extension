@@ -2427,6 +2427,17 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function showIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_OPEN,
+  };
+}
+
+export function hideIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
+  };
+}
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
