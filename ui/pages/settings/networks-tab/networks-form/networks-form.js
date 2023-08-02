@@ -12,8 +12,8 @@ import log from 'loglevel';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 import {
-  getCaipChainIdFromEthChainId,
-  getEthChainIdDecFromCaipChainId,
+  buildEthCaipChainId,
+  parseEthCaipChainId,
   isEthCaipChainId,
 } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -68,7 +68,7 @@ const getDisplayChainId = (chainId) => {
   }
 
   return isEthCaipChainId(chainId)
-    ? getEthChainIdDecFromCaipChainId(chainId)
+    ? parseEthCaipChainId(chainId)
     : chainId;
 };
 
@@ -93,7 +93,11 @@ const NetworksForm = ({
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
-  const [chainId, setChainId] = useState(selectedNetwork?.caipChainId || '');
+  const [chainId, setChainId] = useState(getDisplayChainId(selectedNetwork?.caipChainId) || '');
+  let caipChainId = ""
+  try {
+    caipChainId = buildEthCaipChainId(chainId)
+  } catch(e) {}
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
@@ -102,10 +106,9 @@ const NetworksForm = ({
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainIdMatchesFeaturedRPC =
-    chainId &&
     FEATURED_RPCS.some(
       (featuredRpc) =>
-        featuredRpc.caipChainId === getCaipChainIdFromEthChainId(chainId),
+        featuredRpc.caipChainId === caipChainId
     );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
@@ -130,11 +133,8 @@ const NetworksForm = ({
     // was possible in versions <8.1 of the extension.
     // Basically, we always want to be able to overwrite an invalid chain ID.
     const chainIdIsUnchanged =
-      typeof selectedNetwork.caipChainId === 'string' &&
       isEthCaipChainId(selectedNetwork.caipChainId) &&
-      isEthCaipChainId(chainId) &&
-      getEthChainIdDecFromCaipChainId(chainId) ===
-        getDisplayChainId(selectedNetwork.caipChainId);
+      chainId === getDisplayChainId(selectedNetwork.caipChainId);
     return (
       rpcUrl === selectedNetwork.rpcUrl &&
       chainIdIsUnchanged &&
@@ -256,7 +256,7 @@ const NetworksForm = ({
         }
       }
 
-      const caipChainId = getCaipChainIdFromEthChainId(hexChainId);
+      const caipChainId = buildEthCaipChainId(hexChainId);
 
       const [matchingChainId] = networksToRender.filter(
         (e) => e.caipChainId === caipChainId && e.rpcUrl !== rpcUrl,
@@ -511,7 +511,7 @@ const NetworksForm = ({
     setIsSubmitting(true);
     try {
       const formChainId = chainId.trim().toLowerCase();
-      const caipChainId = getCaipChainIdFromEthChainId(formChainId);
+      const caipChainId = buildEthCaipChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
