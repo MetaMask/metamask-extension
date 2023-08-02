@@ -8,6 +8,7 @@ const AVALANCHE_IMAGE_URL = './images/avax-token.png';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
 const EUROPA_IMAGE_URL = './images/europa.svg';
+const CALYPSO_IMAGE_URL = './images/calypso.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -116,6 +117,17 @@ export default {
           blockExplorerUrl:
             'https://elated-tan-skat.explorer.mainnet.skalenodes.com/',
           imageUrl: EUROPA_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '1564830818',
+        nickname: 'SKALE Calypso NFT Hub',
+        rpcUrl: 'https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague',
+        ticker: 'sFUEL',
+        rpcPrefs: {
+          blockExplorerUrl:
+            'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com/',
+          imageUrl: CALYPSO_IMAGE_URL,
         },
       },
     ],
