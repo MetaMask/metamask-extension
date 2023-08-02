@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Kontakt hinzufügen"
   },
-  "addCustomIPFSGateway": {
-    "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
-  },
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
@@ -4159,9 +4153,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Kontoguthaben-Anfragen sammeln"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
   },
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"

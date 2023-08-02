@@ -177,6 +177,18 @@ const firstTimeState = {
       },
     },
   },
+  PhishingController: {
+    phishingLists: [
+      {
+        allowlist: [],
+        blocklist: ['test.metamask-phishing.io'],
+        fuzzylist: [],
+        tolerance: 0,
+        version: 0,
+        name: 'MetaMask',
+      },
+    ],
+  },
 };
 
 const noop = () => undefined;
@@ -205,7 +217,7 @@ describe('MetaMaskController', function () {
           eth_phishing_detect_config: {
             fuzzylist: [],
             allowlist: [],
-            blocklist: ['127.0.0.1'],
+            blocklist: ['test.metamask-phishing.io'],
             name: ListNames.MetaMask,
           },
           phishfort_hotlist: {
@@ -218,7 +230,11 @@ describe('MetaMaskController', function () {
       .reply(
         200,
         JSON.stringify([
-          { url: '127.0.0.1', targetList: 'blocklist', timestamp: 0 },
+          {
+            url: 'test.metamask-phishing.io',
+            targetList: 'blocklist',
+            timestamp: 0,
+          },
         ]),
       );
 
@@ -963,7 +979,7 @@ describe('MetaMaskController', function () {
 
       it('sets up phishing stream for untrusted communication', async function () {
         const phishingMessageSender = {
-          url: 'http://myethereumwalletntw.com',
+          url: 'http://test.metamask-phishing.io',
           tab: {},
         };
 

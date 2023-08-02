@@ -105,7 +105,7 @@ export const NetworkListMenu = ({ onClose }) => {
   }
 
   const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network, index) => {
+    return desiredNetworks.map((network) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
@@ -117,7 +117,7 @@ export const NetworkListMenu = ({ onClose }) => {
         <NetworkListItem
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
-          key={`${network.id || network.caipChainId}-${index}`}
+          key={network.id}
           selected={isCurrentNetwork}
           focus={isCurrentNetwork && !showSearch}
           onClick={() => {
@@ -134,7 +134,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 location: 'Network Menu',
                 chain_id: currentCaipChainId,
                 from_network: currentCaipChainId,
-                to_network: network.id || network.caipChainId,
+                to_network: network.chainId,
               },
             });
           }}
@@ -145,7 +145,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.caipChainId,
+                      target: network.id,
                       onConfirm: () => undefined,
                     }),
                   );

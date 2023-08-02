@@ -1,6 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import Box from '../../ui/box';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   IconName,
   Button,
@@ -8,6 +7,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   Text,
+  Box,
 } from '..';
 
 import {
@@ -27,11 +27,9 @@ export default {
       page: README,
     },
   },
-} as ComponentMeta<typeof HeaderBase>;
+} as Meta<typeof HeaderBase>;
 
-const Template: ComponentStory<typeof HeaderBase> = (args) => (
-  <HeaderBase {...args} />
-);
+const Template: StoryFn<typeof HeaderBase> = (args) => <HeaderBase {...args} />;
 
 export const DefaultStory = Template.bind({});
 

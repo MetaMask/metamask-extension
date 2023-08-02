@@ -59,6 +59,12 @@ import {
   isEIP1559Transaction,
 } from '../../../../shared/modules/transaction.utils';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 import {
   calcGasTotal,
   getSwapsTokensReceivedFromTxMeta,
@@ -329,6 +335,7 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager.wipeTransactions(address);
   }
 
+  /* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
   /**
    * Add a new unapproved transaction
    *
@@ -344,7 +351,7 @@ export default class TransactionController extends EventEmitter {
    * @param {boolean} opts.swaps.meta - Additional metadata to store for the transaction
    * @param {TransactionType} opts.type - Type of transaction to add, such as 'cancel' or 'swap'
    * @returns {Promise<{transactionMeta: TransactionMeta, result: Promise<string>}>} An object containing the transaction metadata, and a promise that resolves to the transaction hash after being submitted to the network
-   */
+   */ /* eslint-enable jsdoc/require-param, jsdoc/check-param-names */
   async addTransaction(
     txParams,
     {
@@ -355,6 +362,9 @@ export default class TransactionController extends EventEmitter {
       sendFlowHistory,
       swaps: { hasApproveTx, meta } = {},
       type,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     } = {},
   ) {
     log.debug(`MetaMaskController addTransaction ${JSON.stringify(txParams)}`);
@@ -366,6 +376,9 @@ export default class TransactionController extends EventEmitter {
       sendFlowHistory,
       swaps: { hasApproveTx, meta },
       type,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     return {
@@ -1472,7 +1485,17 @@ export default class TransactionController extends EventEmitter {
 
   async _createTransaction(
     txParams,
-    { actionId, method, origin, sendFlowHistory = [], swaps, type },
+    {
+      actionId,
+      method,
+      origin,
+      sendFlowHistory = [],
+      swaps,
+      type,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
+    },
   ) {
     if (
       type !== undefined &&
@@ -1507,6 +1530,9 @@ export default class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       origin,
       sendFlowHistory,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     });
 
     // Add actionId to txMeta to check if same actionId is seen again
@@ -2236,6 +2262,9 @@ export default class TransactionController extends EventEmitter {
       finalApprovalAmount,
       contractMethodName,
       securityProviderResponse,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IN
     } = txMeta;
 
     const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -2414,6 +2443,12 @@ export default class TransactionController extends EventEmitter {
       transaction_type: transactionType,
       transaction_speed_up: type === TransactionType.retry,
       ui_customizations: uiCustomizations,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      security_alert_response:
+        securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
+      security_alert_reason:
+        securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+      ///: END:ONLY_INCLUDE_IN
     };
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {
