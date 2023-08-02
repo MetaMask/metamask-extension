@@ -81,6 +81,10 @@ describe('network utils', () => {
       expect(isTokenDetectionEnabledForNetwork('0x79f99296')).toBe(true);
     });
 
+    it('returns true given the chain ID for Calypso', () => {
+      expect(isTokenDetectionEnabledForNetwork('0x5d456c62')).toBe(true);
+    });
+
     it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
       expect(isTokenDetectionEnabledForNetwork('some other chain ID')).toBe(
         false,
