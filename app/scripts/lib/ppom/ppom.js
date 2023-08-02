@@ -1,4 +1,5 @@
 /* eslint-disable */
+// The contents of this file were provided by the Blockaid team and pasted verbatim
 
 let wasm;
 
