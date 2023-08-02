@@ -25,7 +25,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
-            Enable this to have your transactions and signature requests reviewed locally (no data shared with third parties) and warnings displayed when malicious activity is detected.
+            This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
@@ -90,7 +90,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-muted"
           >
-            More coming soon...
+            More providers coming soon
           </p>
         </div>
       </div>
@@ -192,7 +192,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <h5
             class="box box--margin-top-2 box--margin-bottom-1 box--flex-direction-row typography typography--h5 typography--weight-medium typography--style-normal typography--color-text-muted"
           >
-            More coming soon...
+            More providers coming soon
           </h5>
         </div>
       </div>
