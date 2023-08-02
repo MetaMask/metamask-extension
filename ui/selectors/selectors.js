@@ -1373,7 +1373,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AURORA,
     CHAIN_IDS.EUROPA_SKALE,
     CHAIN_IDS.CALYPSO_SKALE,
-    CHAIN_IDS.NEBULA_SKALE
+    CHAIN_IDS.NEBULA_SKALE,
   ].includes(chainId);
 }
 
