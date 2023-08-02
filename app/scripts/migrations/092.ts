@@ -36,8 +36,8 @@ function transformState(state: Record<string, unknown>) {
     }
 
     state.NetworkController.providerConfig = {
-      ...providerConfig,
       ticker: 'ETH',
+      ...providerConfig,
     };
 
     return {
