@@ -158,7 +158,7 @@ export const CHAIN_IDS = {
   CRONOS: '0x19',
   GNOSIS: '0x64',
   EUROPA_SKALE: '0x79f99296',
-  CALYPSO_SKALE: '0x5d456c62'
+  CALYPSO_SKALE: '0x5d456c62',
 } as const;
 
 /**
