@@ -47,6 +47,10 @@ export default class SecurityTab extends PureComponent {
   static propTypes = {
     warning: PropTypes.string,
     history: PropTypes.object,
+    openSeaEnabled: PropTypes.bool,
+    setOpenSeaEnabled: PropTypes.func,
+    useNftDetection: PropTypes.bool,
+    setUseNftDetection: PropTypes.func,
     participateInMetaMetrics: PropTypes.bool.isRequired,
     setParticipateInMetaMetrics: PropTypes.func.isRequired,
     showIncomingTransactions: PropTypes.bool.isRequired,
@@ -603,6 +607,110 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderOpenSeaEnabledToggle() {
+    const { t } = this.context;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useNftDetection,
+      setUseNftDetection,
+    } = this.props;
+
+    return (
+      <div ref={this.settingsRefs[10]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('enableOpenSeaAPI')}</span>
+          <div className="settings-page__content-description">
+            {t('enableOpenSeaAPIDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="enableOpenSeaAPI"
+          >
+            <ToggleButton
+              value={openSeaEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: 'Enabled/Disable OpenSea',
+                  properties: {
+                    action: 'Enabled/Disable OpenSea',
+                    legacy_event: true,
+                  },
+                });
+                // value is positive when being toggled off
+                if (value && useNftDetection) {
+                  setUseNftDetection(false);
+                }
+                setOpenSeaEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderNftDetectionToggle() {
+    const { t } = this.context;
+    const {
+      openSeaEnabled,
+      setOpenSeaEnabled,
+      useNftDetection,
+      setUseNftDetection,
+    } = this.props;
+    return (
+      <div ref={this.settingsRefs[11]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('useNftDetection')}</span>
+          <div className="settings-page__content-description">
+            <Text color={TextColor.textAlternative}>
+              {t('useNftDetectionDescription')}
+            </Text>
+            <ul className="settings-page__content-unordered-list">
+              <li>{t('useNftDetectionDescriptionLine2')}</li>
+              <li>{t('useNftDetectionDescriptionLine3')}</li>
+              <li>{t('useNftDetectionDescriptionLine4')}</li>
+            </ul>
+            <Text color={TextColor.textAlternative} paddingTop={4}>
+              {t('useNftDetectionDescriptionLine5')}
+            </Text>
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="useNftDetection"
+          >
+            <ToggleButton
+              value={useNftDetection}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: 'NFT Detected',
+                  properties: {
+                    action: 'NFT Detected',
+                    legacy_event: true,
+                  },
+                });
+                if (!value && !openSeaEnabled) {
+                  setOpenSeaEnabled(!value);
+                }
+                setUseNftDetection(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { warning } = this.props;
 
@@ -643,6 +751,8 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-padded">
           {this.renderAutoDetectTokensToggle()}
           {this.renderBatchAccountBalanceRequestsToggle()}
+          {this.renderOpenSeaEnabledToggle()}
+          {this.renderNftDetectionToggle()}
         </div>
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
