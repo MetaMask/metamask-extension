@@ -249,6 +249,10 @@
   "addHardwareWallet": {
     "message": "Add hardware wallet"
   },
+  "addIPFSGateway": {
+    "message": "Add your preferred IPFS gateway"
+  },
+
   "addMemo": {
     "message": "Add memo"
   },
@@ -2053,6 +2057,12 @@
   },
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
+  },
+  "ipfsGateway": {
+    "message": "IPFS gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
   "ipfsToggleModalDescriptionOne": {
     "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."

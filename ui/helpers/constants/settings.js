@@ -179,8 +179,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('addCustomIPFSGateway'),
-    descriptionMessage: (t) => t('addCustomIPFSGatewayDescription'),
+    sectionMessage: (t) => t('ipfsGateway'),
+    descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
