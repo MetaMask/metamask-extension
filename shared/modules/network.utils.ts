@@ -40,6 +40,7 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.POLYGON:
     case CHAIN_IDS.AVALANCHE:
     case CHAIN_IDS.AURORA:
+    case CHAIN_IDS.CALYPSO_SKALE:
       return true;
     default:
       return false;
