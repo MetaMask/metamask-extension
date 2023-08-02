@@ -21,6 +21,7 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
+import { Box, Text } from '../../../components/component-library';
 import {
   BUTTON_SIZES,
   Button,
@@ -30,9 +31,6 @@ import {
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -76,10 +74,10 @@ export default class SecurityTab extends PureComponent {
   };
 
   state = {
-    ipfsGateway: this.props.ipfsGateway,
+    ipfsGateway: this.props.ipfsGateway || IPFS_DEFAULT_GATEWAY_URL,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
-    ipfsToggle: false,
+    ipfsToggle: this.props.ipfsGateway.length > 0,
   };
 
   settingsRefCounter = 0;
@@ -369,13 +367,6 @@ export default class SecurityTab extends PureComponent {
     const { t } = this.context;
     let ipfsError = '';
 
-    const handleIpfsGatewaySave = (gateway) => {
-      const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
-      const { host } = url;
-
-      this.props.setIpfsGateway(host);
-    };
-
     const handleIpfsGatewayChange = (url) => {
       if (url.length > 0) {
         try {
@@ -408,11 +399,6 @@ export default class SecurityTab extends PureComponent {
       });
     };
 
-    const handleIpfsToggle = (url) => {
-      url?.length < 1
-        ? handleIpfsGatewayChange(IPFS_DEFAULT_GATEWAY_URL)
-        : handleIpfsGatewayChange('');
-    };
     return (
       <Box
         ref={this.settingsRefs[6]}
@@ -429,22 +415,28 @@ export default class SecurityTab extends PureComponent {
         </div>
         <div className="settings-page__content-item-col">
           <ToggleButton
-            value={this.state.ipfsGateway}
+            value={this.state.ipfsToggle}
             onToggle={(value) => {
-              handleIpfsToggle(value);
-              this.setState({ ipfsToggle: Boolean(value) });
+              if (value) {
+                // turning from true to false
+                this.props.setIpfsGateway('');
+              } else {
+                // turning from false to true
+                handleIpfsGatewayChange(this.state.ipfsGateway);
+              }
+
+              this.setState({ ipfsToggle: !value });
             }}
             offLabel={t('off')}
             onLabel={t('on')}
           />
         </div>
-        {!this.state.ipfsToggle && (
+        {this.state.ipfsToggle && (
           <div className="settings-page__content-item">
             <span>{t('addIPFSGateway')}</span>
             <div className="settings-page__content-item-col">
               <TextField
                 type="text"
-                disabled={!this.state.ipfsGateway}
                 value={this.state.ipfsGateway}
                 onChange={(e) => handleIpfsGatewayChange(e.target.value)}
                 error={this.state.ipfsGatewayError}
