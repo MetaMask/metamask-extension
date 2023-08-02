@@ -158,6 +158,7 @@ export const CHAIN_IDS = {
   CRONOS: '0x19',
   GNOSIS: '0x64',
   EUROPA_SKALE: '0x79f99296',
+  CALYPSO_SKALE: '0x5d456c62'
 } as const;
 
 /**
@@ -185,6 +186,7 @@ export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const EUROPA_SKALE_DISPLAY_NAME = 'Europa Liquidity Hub | SKALE';
+export const CALYPSO_SKALE_DISPLAY_NAME = 'SKALE Calypso NFT Hub';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -258,6 +260,7 @@ export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const SFUEL_TOKEN_IMAGE_URL = './images/sfuel.png';
 
 export const EUROPA_LOGO_IMAGE_URL = './images/europa.svg';
+export const CALYPSO_LOGO_IMAGE_URL = './images/calypso.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -394,6 +397,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.EUROPA_SKALE]: EUROPA_LOGO_IMAGE_URL,
+  [CHAIN_IDS.CALYPSO_SKALE]: CALYPSO_LOGO_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -570,6 +574,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.EUROPA_SKALE
+    | typeof CHAIN_IDS.CALYPSO_SKALE
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -758,6 +763,17 @@ export const FEATURED_RPCS: RPCDefinition[] = [
       blockExplorerUrl:
         'https://elated-tan-skat.explorer.mainnet.skalenodes.com',
       imageUrl: EUROPA_LOGO_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.CALYPSO_SKALE,
+    nickname: CALYPSO_SKALE_DISPLAY_NAME,
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/honorable-steel-rasalhague',
+    ticker: CURRENCY_SYMBOLS.SFUEL,
+    rpcPrefs: {
+      blockExplorerUrl:
+        'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com',
+      imageUrl: CALYPSO_LOGO_IMAGE_URL,
     },
   },
 ];
