@@ -2756,6 +2756,21 @@
   "notifications22Title": {
     "message": "Looking for your account details or the block explorer URL?"
   },
+  "notifications23ActionText": {
+    "message": "Enable security alerts"
+  },
+  "notifications23DescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
+  },
+  "notifications23DescriptionThree": {
+    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+  },
+  "notifications23DescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notifications23Title": {
+    "message": "Stay safe with security alerts"
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."
