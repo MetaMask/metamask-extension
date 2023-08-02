@@ -13,6 +13,7 @@ import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import { captureException } from '@sentry/browser';
 import PropTypes from 'prop-types';
+import { ZERO_ADDRESS } from '@truffle/codec/dist/lib/evm/utils';
 
 import { I18nContext } from '../../../contexts/i18n';
 import SelectQuotePopover from '../select-quote-popover';
@@ -787,11 +788,16 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
   const needsMoreGas = Boolean(ethBalanceNeededStx || ethBalanceNeeded);
 
+  // If source token is gas token, then use ethBalanceStx or ethBalanceNeeded, o/w use tokenBalanceNeeded
+  const isSourceNativeToken = fetchParams.sourceToken === ZERO_ADDRESS;
+
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
         <span key="swapApproveNeedMoreTokens-1">
-          {tokenBalanceNeeded || ethBalanceNeededStx || ethBalanceNeeded}
+          {isSourceNativeToken
+            ? ethBalanceNeededStx || ethBalanceNeeded
+            : tokenBalanceNeeded || ethBalanceNeededStx || ethBalanceNeeded}
         </span>,
         tokenBalanceNeeded && !(sourceTokenSymbol === defaultSwapsToken.symbol)
           ? sourceTokenSymbol
