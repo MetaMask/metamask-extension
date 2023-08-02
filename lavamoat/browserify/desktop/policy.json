@@ -1818,8 +1818,8 @@
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/utils": true,
         "browserify>assert": true,
         "eth-query": true,
         "eth-rpc-errors": true,
@@ -1855,6 +1855,19 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/network-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
