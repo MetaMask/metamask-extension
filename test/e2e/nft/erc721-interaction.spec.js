@@ -93,7 +93,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (3)' });
         const nftsListItemsFirstCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         assert.equal(nftsListItemsFirstCheck.length, 3);
 
@@ -119,7 +119,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (6)' });
         const nftsListItemsSecondCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
         assert.equal(nftsListItemsSecondCheck.length, 6);
       },
@@ -215,7 +215,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.clickElement({ text: 'NFTs', tag: 'button' });
         await driver.findElement({ text: 'TestDappNFTs (5)' });
         const nftsListItemsSecondCheck = await driver.findElements(
-          '.nft-item__item',
+          '.nft-item__container',
         );
 
         assert.equal(nftsListItemsSecondCheck.length, 5);

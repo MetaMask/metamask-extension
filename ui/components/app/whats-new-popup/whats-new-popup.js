@@ -100,6 +100,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 21: true });
       history.push(PREPARE_SWAP_ROUTE);
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: () => {
+      updateViewedNotifications({ 23: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return actionFunctions[id];
@@ -116,6 +122,7 @@ const renderDescription = (description) => {
         const isLast = index === description.length - 1;
         return (
           <Text
+            data-testid={`whats-new-description-item-${index}`}
             key={`item-${index}`}
             variant={TextVariant.bodyMd}
             marginBottom={isLast ? 0 : 4}
@@ -376,6 +383,9 @@ export default function WhatsNewPopup({
     18: renderFirstNotification,
     19: renderFirstNotification,
     21: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return (
