@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Mga kahilingan sa balanse ng batch account"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Pinagsasama-sama namin ang mga account at tanong sa Infura para maipakita ang inyong balanse. Kung io-off mo ito, ang mga aktibong account lamang ang makakapagtanong. Ang ilan sa dapps ay hindi gagana maliban kung nakakonekta ang iyongg wallet."
-  },
   "useNftDetection": {
     "message": "Awtomatikong tuklasin ang mga NFT"
   },

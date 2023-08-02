@@ -1,13 +1,28 @@
 import React from 'react';
-import configureStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
+import configureStore from '../../../store/store';
 import '@testing-library/jest-dom/extend-expect';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { NftItem } from '.';
 
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+});
+
+const noIpfsStore = configureStore({
+  metamask: {
+    ...mockState.metamask,
+    ipfsGateway: '',
+  },
+});
+
 describe('NftItem component', () => {
-  const store = configureStore()(mockState);
+  jest.mock('../../../store/actions.ts', () => ({
+    getTokenStandardAndDetails: jest.fn().mockResolvedValue(),
+  }));
   describe('render', () => {
     const props = {
       alt: 'Test Alt',
@@ -18,6 +33,7 @@ describe('NftItem component', () => {
       networkSrc: 'test-network-src',
       tokenId: '1',
       onClick: jest.fn(),
+      nftImageURL: '',
     };
 
     it('renders correctly with an image source', () => {
@@ -29,10 +45,13 @@ describe('NftItem component', () => {
       expect(getByTestId('nft-image')).toHaveAttribute('src', 'test-src');
     });
 
-    it('renders correctly with default image when no image source is provided', () => {
+    it('renders correctly with default image when no ipfs is off and no image is provided', () => {
       const { getByTestId, queryByTestId } = renderWithProvider(
-        <NftItem {...props} src="" />,
-        store,
+        <NftItem
+          {...props}
+          nftImageURL="ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL"
+        />,
+        noIpfsStore,
       );
 
       expect(queryByTestId('nft-image')).not.toBeInTheDocument();

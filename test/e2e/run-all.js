@@ -6,10 +6,20 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 
 const getTestPathsForTestDir = async (testDir) => {
-  const testFilenames = await fs.readdir(testDir);
-  const testPaths = testFilenames.map((filename) =>
-    path.join(testDir, filename),
-  );
+  const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
+  const testPaths = [];
+
+  for (const itemInDirectory of testFilenames) {
+    const fullPath = path.join(testDir, itemInDirectory.name);
+
+    if (itemInDirectory.isDirectory()) {
+      const subDirPaths = await getTestPathsForTestDir(fullPath);
+      testPaths.push(...subDirPaths);
+    } else if (fullPath.endsWith('.spec.js')) {
+      testPaths.push(fullPath);
+    }
+  }
+
   return testPaths;
 };
 

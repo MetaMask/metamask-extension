@@ -13,6 +13,7 @@ import {
 } from '../../../../shared/lib/ui-utils';
 import {
   PickerNetwork,
+  Text,
   TextField,
 } from '../../../components/component-library';
 import Box from '../../../components/ui/box/box';
@@ -22,6 +23,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   FONT_WEIGHT,
   TextColor,
+  TextVariant,
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
@@ -35,6 +37,7 @@ import {
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
+  setUseAddressBarEnsResolution,
   showModal,
   toggleNetworkMenu,
 } from '../../../store/actions';
@@ -54,6 +57,7 @@ export default function PrivacySettings() {
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
+  const [addressBarResolution, setAddressBarResolution] = useState(true);
   const [ipfsError, setIPFSError] = useState(null);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -70,6 +74,7 @@ export default function PrivacySettings() {
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
+    dispatch(setUseAddressBarEnsResolution(addressBarResolution));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -176,7 +181,7 @@ export default function PrivacySettings() {
             value={isMultiAccountBalanceCheckerEnabled}
             setValue={setMultiAccountBalanceCheckerEnabled}
             title={t('useMultiAccountBalanceChecker')}
-            description={t('useMultiAccountBalanceCheckerDescription')}
+            description={t('useMultiAccountBalanceCheckerSettingDescription')}
           />
           <Setting
             title={t('onboardingAdvancedPrivacyNetworkTitle')}
@@ -249,6 +254,38 @@ export default function PrivacySettings() {
                     </Typography>
                   ) : null}
                 </Box>
+              </>
+            }
+          />
+          <Setting
+            value={addressBarResolution}
+            setValue={setAddressBarResolution}
+            title={t('ensDomainsSettingTitle')}
+            description={
+              <>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionIntro')}
+                </Text>
+                <Box
+                  as="ul"
+                  marginTop={4}
+                  marginBottom={4}
+                  paddingInlineStart={4}
+                  style={{ listStyleType: 'circle' }}
+                >
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint1')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint2')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint3')}
+                  </Text>
+                </Box>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionOutro')}
+                </Text>
               </>
             }
           />
