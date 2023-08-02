@@ -136,6 +136,7 @@ export default function SrpInput({ onChange, srpText }) {
         className="import-srp__paste-tip"
         severity={Severity.Info}
         description={t('srpPasteTip')}
+        descriptionProps={{ className: 'banner-alert-text' }}
       />
       <Dropdown
         className="import-srp__number-of-words-dropdown"
@@ -203,6 +204,7 @@ export default function SrpInput({ onChange, srpText }) {
           className="import-srp__srp-error"
           severity={Severity.Danger}
           description={srpError}
+          descriptionProps={{ className: 'banner-alert-text' }}
         />
       ) : null}
       {pasteFailed ? (
@@ -212,6 +214,7 @@ export default function SrpInput({ onChange, srpText }) {
           actionButtonLabel={t('dismiss')}
           actionButtonOnClick={() => setPasteFailed(false)}
           description={t('srpPasteFailedTooManyWords')}
+          descriptionProps={{ className: 'banner-alert-text' }}
         />
       ) : null}
     </div>
