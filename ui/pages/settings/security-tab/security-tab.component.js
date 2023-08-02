@@ -369,9 +369,9 @@ export default class SecurityTab extends PureComponent {
         data-testid="setting-ipfs-gateway"
       >
         <div className="settings-page__content-item">
-          <span>{t('addCustomIPFSGateway')}</span>
+          <span>{t('ipfsGateway')}</span>
           <div className="settings-page__content-description">
-            {t('addCustomIPFSGatewayDescription')}
+            {t('ipfsGatewayDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -387,6 +387,7 @@ export default class SecurityTab extends PureComponent {
         </div>
         {!this.state.ipfsToggle && (
           <div className="settings-page__content-item">
+            <span>{t('addIPFSGateway')}</span>
             <div className="settings-page__content-item-col">
               <TextField
                 type="text"

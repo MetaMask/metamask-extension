@@ -183,12 +183,6 @@
   "addContact": {
     "message": "संपर्क जोड़ें"
   },
-  "addCustomIPFSGateway": {
-    "message": "कस्टम IPFS गेटवे जोड़ें"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS (आईपीएफएस) गेटवे तृतीय पक्षों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का उपयोग जारी रख सकते हैं।"
-  },
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
   },
