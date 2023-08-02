@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "当社は残高を素早く表示できるよう、アカウントをまとめて Infura にクエリを送ります。この機能をオフにすると、アクティブなアカウントのみクエリの対象となります。Dapps によっては、ウォレットを接続しないと機能しないものもあります。"
-  },
   "useNftDetection": {
     "message": "NFTを自動検出"
   },
