@@ -5,7 +5,12 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
+  sleepSeconds,
+  getEventPayloads,
+  tinyDelayMs,
 } = require('../helpers');
+const { toHex } = require('@metamask/controller-utils');
 
 describe('Custom network', function () {
   const chainID = '42161';
@@ -102,7 +107,7 @@ describe('Custom network', function () {
     );
   });
 
-  it('don’t add bad rpc custom network', async function () {
+  it("don't add bad rpc custom network", async function () {
     await withFixtures(
       {
         dapp: true,
@@ -173,7 +178,7 @@ describe('Custom network', function () {
     );
   });
 
-  it('don’t add unreachable custom network', async function () {
+  it("don't add unreachable custom network", async function () {
     await withFixtures(
       {
         dapp: true,
@@ -417,4 +422,296 @@ describe('Custom network', function () {
       },
     );
   });
+
+  it('When the network details validation toggle is turned on, validate user inserted details against data from "chainid.network"', async function () {
+    async function mockRPCURLAndChainId(mockServer) {
+      return [
+        await mockServer
+          .forPost('https://unresponsive-rpc.url/')
+          // 502 Error communicating with upstream server
+          .thenCallback(() => ({ statusCode: 502 })),
+
+        await mockServer
+          .forGet('https://chainid.network/chains.json')
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: MOCK_CHAINLIST_RESPONSE,
+          })),
+      ];
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+        testSpecificMock: mockRPCURLAndChainId,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await unlockWallet(driver);
+
+        await checkThatSafeChainsListValidationToggleIsOn(driver);
+
+        await failCandidateNetworkValidation(driver);
+      },
+    );
+  });
+
+  it.only("When the network details validation toggle is turned off, don't validate user inserted details", async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+
+        await unlockWallet(driver);
+
+        await toggleOffSafeChainsListValidation(driver);
+
+        await sleepSeconds(1);
+
+        await candidateNetworkIsNotValidated(driver);
+
+        await sleepSeconds(100);
+
+        // await failCandidateNetworkValidation(driver);
+      },
+    );
+  });
+
+  it.skip('The user can search for the toggle using search', async function () {
+    //...
+  });
 });
+
+const MOCK_CHAINLIST_RESPONSE = [
+  {
+    name: 'Ethereum Mainnet',
+    chain: 'ETH',
+    icon: 'ethereum',
+    rpc: [
+      'https://mainnet.infura.io/v3/${INFURA_API_KEY}',
+      'wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}',
+      'https://api.mycryptoapi.com/eth',
+      'https://cloudflare-eth.com',
+      'https://ethereum.publicnode.com',
+    ],
+    features: [
+      {
+        name: 'EIP155',
+      },
+      {
+        name: 'EIP1559',
+      },
+    ],
+    faucets: [],
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    infoURL: 'https://ethereum.org',
+    shortName: 'eth',
+    chainId: 1,
+    networkId: 1,
+    slip44: 60,
+    ens: {
+      registry: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+    },
+    explorers: [
+      {
+        name: 'etherscan',
+        url: 'https://etherscan.io',
+        standard: 'EIP3091',
+      },
+      {
+        name: 'blockscout',
+        url: 'https://eth.blockscout.com',
+        icon: 'blockscout',
+        standard: 'EIP3091',
+      },
+    ],
+  },
+];
+
+async function checkThatSafeChainsListValidationToggleIsOn(driver) {
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
+  await driver.waitForSelector(globalMenuSettingsSelector);
+  await driver.clickElement(globalMenuSettingsSelector);
+
+  const securityAndPrivacyTabRawLocator = {
+    text: 'Security & privacy',
+    tag: 'div',
+  };
+  await driver.clickElement(securityAndPrivacyTabRawLocator);
+
+  const useSafeChainsListValidationToggleSelector =
+    '[data-testid="useSafeChainsListValidation"]';
+  const useSafeChainsListValidationToggleElement = await driver.waitForSelector(
+    useSafeChainsListValidationToggleSelector,
+  );
+  const useSafeChainsListValidationToggleState =
+    await useSafeChainsListValidationToggleElement.getText();
+
+  assert.equal(
+    useSafeChainsListValidationToggleState,
+    'ON',
+    'Safe chains list validation toggle is off',
+  );
+
+  // return to the home screen
+  const appHeaderSelector = '[data-testid="app-header-logo"]';
+  await driver.waitForSelector(appHeaderSelector);
+  await driver.clickElement(appHeaderSelector);
+}
+
+async function failCandidateNetworkValidation(driver) {
+  const networkMenuSelector = '[data-testid="network-display"]';
+  await driver.waitForSelector(networkMenuSelector);
+  await driver.clickElement(networkMenuSelector);
+
+  await driver.clickElement({ text: 'Add network', tag: 'button' });
+
+  const addNetworkManuallyButtonSelector =
+    '[data-testid="add-network-manually"]';
+  await driver.waitForSelector(addNetworkManuallyButtonSelector);
+  await driver.clickElement(addNetworkManuallyButtonSelector);
+
+  const [
+    // first element is the search input that we don't need to fill
+    _,
+    networkNameInputEl,
+    newRPCURLInputEl,
+    chainIDInputEl,
+    currencySymbolInputEl,
+    blockExplorerURLInputEl,
+  ] = await driver.findElements('input');
+
+  await networkNameInputEl.fill('cheapETH');
+  await newRPCURLInputEl.fill('https://unresponsive-rpc.url');
+  await chainIDInputEl.fill(toHex(777));
+  await currencySymbolInputEl.fill('cTH');
+  await blockExplorerURLInputEl.fill('https://block-explorer.url');
+
+  const chainIdValidationMessageRawLocator = {
+    text: 'Could not fetch chain ID. Is your RPC URL correct?',
+    tag: 'h6',
+  };
+  await driver.waitForSelector(chainIdValidationMessageRawLocator);
+
+  const tickerSymbolValidationMessageRawLocator = {
+    text: 'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network',
+    tag: 'h6',
+  };
+  await driver.waitForSelector(tickerSymbolValidationMessageRawLocator);
+
+  const saveButtonRawLocator = {
+    text: 'Save',
+    tag: 'button',
+  };
+  const saveButtonEl = await driver.findElement(saveButtonRawLocator);
+  assert.equal(await saveButtonEl.isEnabled(), false);
+}
+
+async function toggleOffSafeChainsListValidation(driver) {
+  const accountOptionsMenuSelector =
+    '[data-testid="account-options-menu-button"]';
+  await driver.waitForSelector(accountOptionsMenuSelector);
+  await driver.clickElement(accountOptionsMenuSelector);
+
+  const globalMenuSettingsSelector = '[data-testid="global-menu-settings"]';
+  await driver.waitForSelector(globalMenuSettingsSelector);
+  await driver.clickElement(globalMenuSettingsSelector);
+
+  const securityAndPrivacyTabRawLocator = {
+    text: 'Security & privacy',
+    tag: 'div',
+  };
+  await driver.clickElement(securityAndPrivacyTabRawLocator);
+
+  const useSafeChainsListValidationToggleSelector =
+    '[data-testid="useSafeChainsListValidation"]';
+  let useSafeChainsListValidationToggleElement = await driver.waitForSelector(
+    useSafeChainsListValidationToggleSelector,
+  );
+  let useSafeChainsListValidationToggleState =
+    await useSafeChainsListValidationToggleElement.getText();
+
+  assert.equal(
+    useSafeChainsListValidationToggleState,
+    'ON',
+    'Safe chains list validation toggle is OFF',
+  );
+
+  await useSafeChainsListValidationToggleElement.click();
+  // wait for the toggle state change to finish
+  await driver.delay(regularDelayMs);
+
+  useSafeChainsListValidationToggleElement = await driver.waitForSelector(
+    useSafeChainsListValidationToggleSelector,
+  );
+
+  useSafeChainsListValidationToggleState =
+    await useSafeChainsListValidationToggleElement.getText();
+
+  assert.equal(
+    useSafeChainsListValidationToggleState,
+    'OFF',
+    'Safe chains list validation toggle is ON',
+  );
+
+  await sleepSeconds(1);
+
+  // return to the home screen
+  const appHeaderSelector = '[data-testid="app-header-logo"]';
+  await driver.waitForSelector(appHeaderSelector);
+  await driver.clickElement(appHeaderSelector);
+}
+
+async function candidateNetworkIsNotValidated(driver) {
+  const networkMenuSelector = '[data-testid="network-display"]';
+  await driver.waitForSelector(networkMenuSelector);
+  await driver.clickElement(networkMenuSelector);
+
+  await driver.clickElement({ text: 'Add network', tag: 'button' });
+
+  const addNetworkManuallyButtonSelector =
+    '[data-testid="add-network-manually"]';
+  await driver.waitForSelector(addNetworkManuallyButtonSelector);
+  await driver.clickElement(addNetworkManuallyButtonSelector);
+
+  const [
+    // first element is the search input that we don't need to fill
+    _,
+    networkNameInputEl,
+    newRPCURLInputEl,
+    chainIDInputEl,
+    currencySymbolInputEl,
+    blockExplorerURLInputEl,
+  ] = await driver.findElements('input');
+
+  await networkNameInputEl.fill('cheapETH');
+  await newRPCURLInputEl.fill('https://mainnet.infura.io/v3/');
+  await chainIDInputEl.fill(toHex(777));
+  await currencySymbolInputEl.fill('cTH');
+  await blockExplorerURLInputEl.fill('https://block-explorer.url');
+
+  await sleepSeconds(100);
+
+  const saveButtonRawLocator = {
+    text: 'Save',
+    tag: 'button',
+  };
+  const saveButtonEl = await driver.findElement(saveButtonRawLocator);
+  assert.equal(await saveButtonEl.isEnabled(), true);
+}

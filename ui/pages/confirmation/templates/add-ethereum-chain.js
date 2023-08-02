@@ -131,7 +131,7 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
-async function getAlerts(pendingApproval) {
+async function getAlerts(pendingApproval, state) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache({

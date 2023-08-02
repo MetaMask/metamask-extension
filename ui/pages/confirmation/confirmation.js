@@ -34,6 +34,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
+  useSafeChainsListValidationSelector,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -98,10 +99,14 @@ const alertStateReducer = produce((state, action) => {
  * user approval
  * @param {object} state - The state object consist of required info to determine alerts.
  * @param state.unapprovedTxsCount
+ * @param state.useSafeChainsListValidation
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
-function useAlertState(pendingConfirmation, { unapprovedTxsCount } = {}) {
+function useAlertState(
+  pendingConfirmation,
+  { unapprovedTxsCount, useSafeChainsListValidation } = {},
+) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
 
   /**
@@ -115,17 +120,18 @@ function useAlertState(pendingConfirmation, { unapprovedTxsCount } = {}) {
   useEffect(() => {
     let isMounted = true;
     if (pendingConfirmation) {
-      getTemplateAlerts(pendingConfirmation, { unapprovedTxsCount }).then(
-        (alerts) => {
-          if (isMounted && alerts.length > 0) {
-            dispatch({
-              type: 'set',
-              confirmationId: pendingConfirmation.id,
-              alerts,
-            });
-          }
-        },
-      );
+      getTemplateAlerts(pendingConfirmation, {
+        unapprovedTxsCount,
+        useSafeChainsListValidation,
+      }).then((alerts) => {
+        if (isMounted && alerts.length > 0) {
+          dispatch({
+            type: 'set',
+            confirmationId: pendingConfirmation.id,
+            alerts,
+          });
+        }
+      });
     }
     return () => {
       isMounted = false;
@@ -181,13 +187,18 @@ export default function ConfirmationPage({
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const useSafeChainsListValidation = useSelector(
+    useSafeChainsListValidationSelector,
+  );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
+  // TODO PEDRO: pass down the selector variable here
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
+    useSafeChainsListValidation,
   });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
