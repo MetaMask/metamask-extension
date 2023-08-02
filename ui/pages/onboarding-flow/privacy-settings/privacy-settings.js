@@ -212,8 +212,7 @@ export default function PrivacySettings() {
                   ) : (
                     <Button
                       variant={BUTTON_VARIANT.SECONDARY}
-                      rounded
-                      large
+                      size={BUTTON_SIZES.LG}
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
