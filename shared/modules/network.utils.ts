@@ -42,6 +42,7 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.AURORA:
     case CHAIN_IDS.EUROPA_SKALE:
     case CHAIN_IDS.CALYPSO_SKALE:
+    case CHAIN_IDS.NEBULA_SKALE:
       return true;
     default:
       return false;

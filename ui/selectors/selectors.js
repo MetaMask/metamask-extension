@@ -25,6 +25,7 @@ import {
   AURORA_DISPLAY_NAME,
   EUROPA_SKALE_DISPLAY_NAME,
   CALYPSO_SKALE_DISPLAY_NAME,
+  NEBULA_SKALE_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -1349,6 +1350,8 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return EUROPA_SKALE_DISPLAY_NAME;
     case CHAIN_IDS.CALYPSO_SKALE:
       return CALYPSO_SKALE_DISPLAY_NAME;
+    case CHAIN_IDS.NEBULA_SKALE:
+      return NEBULA_SKALE_DISPLAY_NAME;
     default:
       return '';
   }
@@ -1370,6 +1373,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AURORA,
     CHAIN_IDS.EUROPA_SKALE,
     CHAIN_IDS.CALYPSO_SKALE,
+    CHAIN_IDS.NEBULA_SKALE,
   ].includes(chainId);
 }
 
