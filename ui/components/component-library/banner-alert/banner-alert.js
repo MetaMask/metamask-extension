@@ -26,7 +26,7 @@ export const BannerAlert = ({
         };
       case Severity.Warning:
         return {
-          name: IconName.Warning,
+          name: IconName.Danger,
           color: IconColor.warningDefault,
         };
       case Severity.Success:
