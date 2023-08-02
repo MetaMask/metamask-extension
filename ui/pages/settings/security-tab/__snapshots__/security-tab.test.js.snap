@@ -373,12 +373,12 @@ exports[`Security Tab should match snapshot 1`] = `
           class="settings-page__content-item"
         >
           <span>
-            Add custom IPFS gateway
+            IPFS gateway
           </span>
           <div
             class="settings-page__content-description"
           >
-            The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default.
+            MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them.
           </div>
         </div>
         <div
@@ -433,6 +433,9 @@ exports[`Security Tab should match snapshot 1`] = `
         <div
           class="settings-page__content-item"
         >
+          <span>
+            Add your preferred IPFS gateway
+          </span>
           <div
             class="settings-page__content-item-col"
           >
