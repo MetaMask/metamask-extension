@@ -2329,7 +2329,7 @@
     "message": "more"
   },
   "moreComingSoon": {
-    "message": "More coming soon..."
+    "message": "More providers coming soon"
   },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to connect with $2 snaps. Only proceed if you trust this website.",
@@ -3643,7 +3643,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription1": {
-    "message": "Enable this to have your transactions and signature requests reviewed locally (no data shared with third parties) and warnings displayed when malicious activity is detected."
+    "message": "This feature alerts you to malicious activity by locally reviewing your transactions and signature requests. Your data isn't shared with the third parties providing this service. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
   },
   "securityAlertsDescription2": {
     "message": "Always be sure to do your own due diligence before approving any requests. There's no guarantee all mailcious activity will be detected by this feature."
