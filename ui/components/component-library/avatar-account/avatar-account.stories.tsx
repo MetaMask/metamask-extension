@@ -1,6 +1,7 @@
 import React from 'react';
-import Box from '../../ui/box/box';
-import { AlignItems, DISPLAY } from '../../../helpers/constants/design-system';
+import { StoryFn, Meta } from '@storybook/react';
+import { Box } from '../box';
+import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import { AvatarAccount } from './avatar-account';
 import {
   AvatarAccountVariant,
@@ -20,9 +21,7 @@ export default {
   argTypes: {
     size: {
       control: 'select',
-      options: Object.values(AvatarAccountSize).map(
-        (value) => value.toLowerCase(), // Removes reverse mapping from enum this is a temporary fix until we are using typescript for everything
-      ),
+      options: Object.values(AvatarAccountSize),
     },
     address: { control: 'text' },
     variant: {
@@ -35,14 +34,14 @@ export default {
     size: AvatarAccountSize.Md,
     variant: AvatarAccountVariant.Jazzicon,
   },
-};
+} as Meta<typeof AvatarAccount>;
 
 export const DefaultStory = (args) => <AvatarAccount {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const Size = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+export const Size: StoryFn<typeof AvatarAccount> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarAccount {...args} size={AvatarAccountSize.Xs} />
     <AvatarAccount {...args} size={AvatarAccountSize.Sm} />
     <AvatarAccount {...args} size={AvatarAccountSize.Md} />
@@ -51,15 +50,15 @@ export const Size = (args) => (
   </Box>
 );
 
-export const Variant = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
+export const Variant: StoryFn<typeof AvatarAccount> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarAccount {...args} variant={AvatarAccountVariant.Jazzicon} />
     <AvatarAccount {...args} variant={AvatarAccountVariant.Blockies} />
   </Box>
 );
 
-export const Address = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.BASELINE} gap={1}>
+export const Address: StoryFn<typeof AvatarAccount> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
     <AvatarAccount
       {...args}
       variant={AvatarAccountVariant.Jazzicon}

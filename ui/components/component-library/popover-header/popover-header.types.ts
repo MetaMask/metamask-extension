@@ -1,8 +1,8 @@
 import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
-import type { HeaderBaseProps } from '../header-base';
+import type { HeaderBaseStyleUtilityProps } from '../header-base';
 
-export interface PopoverHeaderProps extends HeaderBaseProps {
+export interface PopoverHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The contents within the PopoverHeader positioned middle (popular for title use case)
    */
