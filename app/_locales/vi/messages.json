@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Thêm địa chỉ liên hệ"
   },
-  "addCustomIPFSGateway": {
-    "message": "Thêm cổng IPFS tùy chỉnh"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
-  },
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
