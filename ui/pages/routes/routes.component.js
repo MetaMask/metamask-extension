@@ -19,7 +19,6 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import ImportTokenPage from '../import-token';
-import AddNftPage from '../add-nft';
 import ConfirmImportTokenPage from '../confirm-import-token';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
 import CreateAccountPage from '../create-account/create-account.component';
@@ -33,6 +32,7 @@ import {
   AccountListMenu,
   NetworkListMenu,
   AccountDetails,
+  ImportNftsModal,
 } from '../../components/multichain';
 import UnlockPage from '../unlock-page';
 import Alerts from '../../components/app/alerts';
@@ -42,18 +42,20 @@ import TokenDetailsPage from '../token-details';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import Notifications from '../notifications';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceFeaturePage from '../institutional/compliance-feature-page';
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
+import CustodyPage from '../institutional/custody';
 ///: END:ONLY_INCLUDE_IN
 
 import {
@@ -76,19 +78,20 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   ONBOARDING_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
+  CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   DESKTOP_PAIRING_ROUTE,
@@ -113,6 +116,8 @@ import { SEND_STAGES } from '../../ducks/send';
 import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { Box } from '../../components/component-library';
+import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -153,6 +158,10 @@ export default class Routes extends Component {
     isNetworkMenuOpen: PropTypes.bool,
     toggleNetworkMenu: PropTypes.func,
     accountDetailsAddress: PropTypes.string,
+    isImportNftsModalOpen: PropTypes.bool.isRequired,
+    hideImportNftsModal: PropTypes.func.isRequired,
+    isIpfsModalOpen: PropTypes.bool.isRequired,
+    hideIpfsModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -275,7 +284,6 @@ export default class Routes extends Component {
           component={ImportTokenPage}
           exact
         />
-        <Authenticated path={ADD_NFT_ROUTE} component={AddNftPage} exact />
         <Authenticated
           path={CONFIRM_IMPORT_TOKEN_ROUTE}
           component={ConfirmImportTokenPage}
@@ -319,21 +327,26 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={COMPLIANCE_FEATURE_ROUTE}
-          component={ComplianceFeaturePage}
-        />
-        <Authenticated
-          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
-          component={ConfirmAddInstitutionalFeature}
-        />
-        <Authenticated
           path={CONFIRM_ADD_CUSTODIAN_TOKEN}
           component={ConfirmAddCustodianToken}
+        />
+        <Authenticated
+          path={CUSTODY_ACCOUNT_ROUTE}
+          component={CustodyPage}
+          exact
         />
         {
           ///: END:ONLY_INCLUDE_IN
         }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          <Authenticated
+            path={ADD_SNAP_ACCOUNT_ROUTE}
+            component={AddSnapAccountPage}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}
@@ -503,6 +516,10 @@ export default class Routes extends Component {
       toggleNetworkMenu,
       accountDetailsAddress,
       location,
+      isImportNftsModalOpen,
+      hideImportNftsModal,
+      isIpfsModalOpen,
+      hideIpfsModal,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -561,11 +578,17 @@ export default class Routes extends Component {
         {accountDetailsAddress ? (
           <AccountDetails address={accountDetailsAddress} />
         ) : null}
-        <div className="main-container-wrapper">
+        {isImportNftsModalOpen ? (
+          <ImportNftsModal onClose={() => hideImportNftsModal()} />
+        ) : null}
+        {isIpfsModalOpen ? (
+          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
+        ) : null}
+        <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
-        </div>
+        </Box>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );

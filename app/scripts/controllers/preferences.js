@@ -1,12 +1,12 @@
 import { ObservableStore } from '@metamask/obs-store';
 import { normalize as normalizeAddress } from 'eth-sig-util';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { setDashboardCookie } from '@metamask-institutional/portfolio-dashboard';
-///: END:ONLY_INCLUDE_IN
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
+///: END:ONLY_INCLUDE_IN
 
 export default class PreferencesController {
   /**
@@ -41,6 +41,9 @@ export default class PreferencesController {
       useNftDetection: false,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -64,12 +67,17 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      useAddressBarEnsResolution: true,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
+      snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      snapsAddSnapAccountModalDismissed: false,
+      ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
       ...opts.initState,
     };
@@ -80,14 +88,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.handleMmiDashboardData = opts.handleMmiDashboardData;
-
-    if (!process.env.IN_TEST) {
-      this.mmiConfigurationStore = opts.mmiConfigurationStore.getState();
-    }
-    ///: END:ONLY_INCLUDE_IN
 
     this._subscribeToInfuraAvailability();
 
@@ -189,6 +189,19 @@ export default class PreferencesController {
     });
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * Setter for the `securityAlertsEnabled` property
+   *
+   * @param {boolean} securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
+   */
+  setSecurityAlertsEnabled(securityAlertsEnabled) {
+    this.store.updateState({
+      securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
   /**
    * Setter for the `advancedGasFee` property
    *
@@ -261,10 +274,6 @@ export default class PreferencesController {
       return ids;
     }, {});
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
-    ///: END:ONLY_INCLUDE_IN
-
     this.store.updateState({ identities });
   }
 
@@ -289,10 +298,6 @@ export default class PreferencesController {
       const [selected] = Object.keys(identities);
       this.setSelectedAddress(selected);
     }
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
-    ///: END:ONLY_INCLUDE_IN
 
     return address;
   }
@@ -349,10 +354,6 @@ export default class PreferencesController {
 
     this.store.updateState({ identities, lostIdentities });
     this.addAddresses(addresses);
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.prepareMmiPortfolio();
-    ///: END:ONLY_INCLUDE_IN
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
@@ -481,6 +482,15 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `useAddressBarEnsResolution` property
+   *
+   * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
+   */
+  async setUseAddressBarEnsResolution(useAddressBarEnsResolution) {
+    this.store.updateState({ useAddressBarEnsResolution });
+  }
+
+  /**
    * A setter for the `ledgerTransportType` property.
    *
    * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
@@ -534,18 +544,21 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      try {
-        const mmiDashboardData = await this.handleMmiDashboardData();
-        const cookieSetUrls =
-          this.mmiConfigurationStore.mmiConfiguration?.portfolio?.cookieSetUrls;
-        setDashboardCookie(mmiDashboardData, cookieSetUrls);
-      } catch (error) {
-        console.error(error);
-      }
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  setSnapsAddSnapAccountModalDismissed(value) {
+    this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
+  }
+
+  async updateSnapRegistry() {
+    let snapRegistry;
+    try {
+      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      snapRegistry = await response.json();
+    } catch (error) {
+      console.error(`Failed to fetch registry: `, error);
+      snapRegistry = {};
     }
+    this.store.updateState({ snapRegistryList: snapRegistry });
   }
   ///: END:ONLY_INCLUDE_IN
 

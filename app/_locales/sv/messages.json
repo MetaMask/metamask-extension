@@ -205,9 +205,6 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteAccount": {
-    "message": "Radera konto"
-  },
   "deleteNetwork": {
     "message": "Radera nätverk?"
   },
@@ -546,9 +543,6 @@
   },
   "privateNetwork": {
     "message": "Privat nätverk"
-  },
-  "queue": {
-    "message": "Utskriftskö"
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."

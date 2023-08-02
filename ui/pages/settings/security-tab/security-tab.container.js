@@ -1,14 +1,15 @@
-import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import { compose } from 'redux';
 import {
   setFeatureFlag,
+  setIpfsGateway,
   setParticipateInMetaMetrics,
+  setUseCurrencyRateCheck,
+  setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
   setUseTokenDetection,
-  setIpfsGateway,
-  setUseMultiAccountBalanceChecker,
-  setUseCurrencyRateCheck,
+  setUseAddressBarEnsResolution,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => {
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
+    useAddressBarEnsResolution,
   } = metamask;
 
   return {
@@ -36,6 +38,7 @@ const mapStateToProps = (state) => {
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
+    useAddressBarEnsResolution,
   };
 };
 
@@ -56,6 +59,8 @@ const mapDispatchToProps = (dispatch) => {
     setUseMultiAccountBalanceChecker: (value) => {
       return dispatch(setUseMultiAccountBalanceChecker(value));
     },
+    setUseAddressBarEnsResolution: (value) =>
+      dispatch(setUseAddressBarEnsResolution(value)),
   };
 };
 

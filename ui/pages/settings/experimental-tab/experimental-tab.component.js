@@ -11,6 +11,9 @@ import { Text } from '../../../components/component-library';
 import {
   FONT_WEIGHT,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  TextVariant,
+  ///: END:ONLY_INCLUDE_IN
   TypographyVariant,
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -30,6 +33,10 @@ export default class ExperimentalTab extends PureComponent {
     openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    securityAlertsEnabled: PropTypes.bool,
+    setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   settingsRefs = Array(
@@ -52,6 +59,87 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  renderSecurityAlertsToggle() {
+    const { t } = this.context;
+
+    const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+        >
+          {t('security')}
+        </Text>
+        <div
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+        >
+          <div className="settings-page__content-item">
+            <span>{t('securityAlerts')}</span>
+            <div className="settings-page__content-description">
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('securityAlertsDescription1')}
+              </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('securityAlertsDescription2')}
+              </Text>
+
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                marginTop={3}
+                marginBottom={1}
+              >
+                {t('selectProvider')}
+              </Text>
+              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textDefault}
+                  marginBottom={0}
+                >
+                  {t('blockaid')}
+                </Text>
+                <ToggleButton
+                  value={securityAlertsEnabled}
+                  onToggle={(value) => {
+                    this.context.trackEvent({
+                      category: MetaMetricsEventCategory.Settings,
+                      event: 'Enabled/Disable security_alerts_enabled',
+                      properties: {
+                        action: 'Enabled/Disable security_alerts_enabled',
+                        legacy_event: true,
+                      },
+                    });
+                    setSecurityAlertsEnabled(!value || false);
+                  }}
+                />
+              </div>
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textMuted}
+                marginTop={2}
+              >
+                {t('moreComingSoon')}
+              </Text>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   renderOpenSeaEnabledToggle() {
     const { t } = this.context;
@@ -261,6 +349,11 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          this.renderSecurityAlertsToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
         {this.renderTransactionSecurityCheckToggle()}
         {this.renderOpenSeaEnabledToggle()}
         {

@@ -406,9 +406,6 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
-  },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
   },
@@ -816,9 +813,6 @@
   "lock": {
     "message": "I-lock"
   },
-  "lockTimeTooGreat": {
-    "message": "Masyadong matagal ang oras ng pag-lock"
-  },
   "mainnet": {
     "message": "Ethereum Mainnet"
   },
@@ -1110,9 +1104,6 @@
   },
   "publicAddress": {
     "message": "Pampublikong Address"
-  },
-  "queue": {
-    "message": "Queue"
   },
   "queued": {
     "message": "Naka-queue"

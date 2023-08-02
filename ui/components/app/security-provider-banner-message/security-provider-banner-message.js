@@ -6,9 +6,9 @@ import {
   Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import { I18nContext } from '../../../../.storybook/i18n';
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from './security-provider-banner-message.constants';
 
 export default function SecurityProviderBannerMessage({
   securityProviderResponse,
@@ -21,7 +21,7 @@ export default function SecurityProviderBannerMessage({
 
   if (
     securityProviderResponse.flagAsDangerous ===
-    SECURITY_PROVIDER_MESSAGE_SEVERITIES.MALICIOUS
+    SECURITY_PROVIDER_MESSAGE_SEVERITY.MALICIOUS
   ) {
     messageTitle =
       securityProviderResponse.reason_header === ''
@@ -34,7 +34,7 @@ export default function SecurityProviderBannerMessage({
     severity = SEVERITIES.DANGER;
   } else if (
     securityProviderResponse.flagAsDangerous ===
-    SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_SAFE
+    SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_SAFE
   ) {
     messageTitle = t('requestMayNotBeSafe');
     messageText = t('requestMayNotBeSafeError');

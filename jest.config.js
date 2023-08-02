@@ -1,9 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/constants/error-utils.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.ts',
-    '!<rootDir>/app/scripts/controllers/network/**/test/*.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.js',
     '<rootDir>/app/scripts/controllers/sign.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.ts',
@@ -17,6 +14,7 @@ module.exports = {
     '<rootDir>/shared/**/*.(js|ts|tsx)',
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/helpers.test.js',
   ],
   coverageDirectory: './coverage',
   coveragePathIgnorePatterns: ['.stories.*', '.snap'],
@@ -40,8 +38,6 @@ module.exports = {
     '<rootDir>/app/scripts/constants/error-utils.test.js',
     '<rootDir>/app/scripts/controllers/app-state.test.js',
     '<rootDir>/app/scripts/controllers/mmi-controller.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.js',
-    '<rootDir>/app/scripts/controllers/network/**/*.test.ts',
     '<rootDir>/app/scripts/controllers/permissions/**/*.test.js',
     '<rootDir>/app/scripts/controllers/sign.test.ts',
     '<rootDir>/app/scripts/controllers/decrypt-message.test.ts',
@@ -51,9 +47,11 @@ module.exports = {
     '<rootDir>/app/scripts/lib/createRPCMethodTrackingMiddleware.test.js',
     '<rootDir>/app/scripts/migrations/*.test.(js|ts)',
     '<rootDir>/app/scripts/platforms/*.test.js',
+    '<rootDir>/app/scripts/translate.test.ts',
     '<rootDir>/shared/**/*.test.(js|ts)',
     '<rootDir>/ui/**/*.test.(js|ts|tsx)',
     '<rootDir>/development/fitness-functions/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/helpers.test.js',
   ],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The

@@ -1,46 +1,46 @@
-import React, { useState, useContext } from 'react';
-
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import Box from '../../../components/ui/box/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
+import { useHistory } from 'react-router-dom';
+import { addUrlProtocolPrefix } from '../../../../app/scripts/lib/util';
 import {
-  FONT_WEIGHT,
-  TextColor,
-  TypographyVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { addUrlProtocolPrefix } from '../../../helpers/utils/ipfs';
-import {
-  setCompletedOnboarding,
-  setFeatureFlag,
-  setUseMultiAccountBalanceChecker,
-  setUsePhishDetect,
-  setUseTokenDetection,
-  showModal,
-  setIpfsGateway,
-  setUseCurrencyRateCheck,
-  toggleNetworkMenu,
-} from '../../../store/actions';
-import { getCurrentNetwork } from '../../../selectors';
-import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
-import {
-  TextField,
-  PickerNetwork,
-} from '../../../components/component-library';
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   COINGECKO_LINK,
   CRYPTOCOMPARE_LINK,
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
+import {
+  PickerNetwork,
+  Text,
+  TextField,
+} from '../../../components/component-library';
+import Box from '../../../components/ui/box/box';
+import Button from '../../../components/ui/button';
+import Typography from '../../../components/ui/typography';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-
+  FONT_WEIGHT,
+  TextColor,
+  TextVariant,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
+import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentNetwork } from '../../../selectors';
+import {
+  setCompletedOnboarding,
+  setFeatureFlag,
+  setIpfsGateway,
+  setUseCurrencyRateCheck,
+  setUseMultiAccountBalanceChecker,
+  setUsePhishDetect,
+  setUseTokenDetection,
+  setUseAddressBarEnsResolution,
+  showModal,
+  toggleNetworkMenu,
+} from '../../../store/actions';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
@@ -57,6 +57,7 @@ export default function PrivacySettings() {
     setMultiAccountBalanceCheckerEnabled,
   ] = useState(true);
   const [ipfsURL, setIPFSURL] = useState('');
+  const [addressBarResolution, setAddressBarResolution] = useState(true);
   const [ipfsError, setIPFSError] = useState(null);
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -73,6 +74,7 @@ export default function PrivacySettings() {
     );
     dispatch(setUseCurrencyRateCheck(turnOnCurrencyRateCheck));
     dispatch(setCompletedOnboarding());
+    dispatch(setUseAddressBarEnsResolution(addressBarResolution));
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
@@ -179,7 +181,7 @@ export default function PrivacySettings() {
             value={isMultiAccountBalanceCheckerEnabled}
             setValue={setMultiAccountBalanceCheckerEnabled}
             title={t('useMultiAccountBalanceChecker')}
-            description={t('useMultiAccountBalanceCheckerDescription')}
+            description={t('useMultiAccountBalanceCheckerSettingDescription')}
           />
           <Setting
             title={t('onboardingAdvancedPrivacyNetworkTitle')}
@@ -252,6 +254,38 @@ export default function PrivacySettings() {
                     </Typography>
                   ) : null}
                 </Box>
+              </>
+            }
+          />
+          <Setting
+            value={addressBarResolution}
+            setValue={setAddressBarResolution}
+            title={t('ensDomainsSettingTitle')}
+            description={
+              <>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionIntro')}
+                </Text>
+                <Box
+                  as="ul"
+                  marginTop={4}
+                  marginBottom={4}
+                  paddingInlineStart={4}
+                  style={{ listStyleType: 'circle' }}
+                >
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint1')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint2')}
+                  </Text>
+                  <Text variant={TextVariant.inherit} as="li">
+                    {t('ensDomainsSettingDescriptionPoint3')}
+                  </Text>
+                </Box>
+                <Text variant={TextVariant.inherit}>
+                  {t('ensDomainsSettingDescriptionOutro')}
+                </Text>
               </>
             }
           />

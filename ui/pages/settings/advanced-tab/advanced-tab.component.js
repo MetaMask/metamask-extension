@@ -22,7 +22,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { exportAsFile } from '../../../helpers/utils/export-utils';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import {
+  exportAsFile,
+  ExportableContentType,
+} from '../../../helpers/utils/export-utils';
 import ActionableMessage from '../../../components/ui/actionable-message';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { BannerAlert } from '../../../components/component-library';
@@ -72,6 +76,7 @@ export default class AdvancedTab extends PureComponent {
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
+    autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
     showLedgerTransportWarning: false,
     showResultMessage: false,
@@ -148,7 +153,7 @@ export default class AdvancedTab extends PureComponent {
 
   backupUserData = async () => {
     const { fileName, data } = await this.props.backupUserData();
-    exportAsFile(fileName, data);
+    exportAsFile(fileName, data, ExportableContentType.JSON);
 
     this.context.trackEvent({
       event: 'User Data Exported',
@@ -183,7 +188,11 @@ export default class AdvancedTab extends PureComponent {
                   if (err) {
                     displayWarning(t('stateLogError'));
                   } else {
-                    exportAsFile(`${t('stateLogFileName')}.json`, result);
+                    exportAsFile(
+                      `${t('stateLogFileName')}.json`,
+                      result,
+                      ExportableContentType.JSON,
+                    );
                   }
                 });
               }}
@@ -202,7 +211,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[2]}
+        ref={this.settingsRefs[1]}
         className="settings-page__content-row"
         data-testid="advanced-setting-reset-account"
       >
@@ -242,7 +251,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[2]}
         className="settings-page__content-row"
         data-testid="advanced-setting-hex-data"
       >
@@ -273,7 +282,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[3]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -305,7 +314,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         data-testid="advanced-setting-show-testnet-conversion"
       >
@@ -335,7 +344,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-custom-nonce"
       >
@@ -366,7 +375,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-auto-lock"
       >
@@ -379,11 +388,10 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
             <TextField
-              type="number"
               id="autoTimeout"
               data-testid="auto-lockout-time"
-              placeholder="5"
-              value={this.state.autoLockTimeLimit}
+              placeholder="0"
+              value={this.state.autoLockTimeLimitBeforeNormalization}
               onChange={(e) => this.handleLockChange(e.target.value)}
               error={lockTimeError}
               fullWidth
@@ -454,7 +462,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testId="ledger-live-control"
       >
@@ -520,7 +528,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[9]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         data-testid="advanced-setting-dismiss-reminder"
       >
@@ -564,7 +572,7 @@ export default class AdvancedTab extends PureComponent {
     };
     return (
       <div
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         data-testid="advanced-setting-toggle-ethsign"
       >
@@ -601,21 +609,41 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  handleLockChange(time) {
+  handleLockChange(autoLockTimeLimitBeforeNormalization) {
     const { t } = this.context;
-    const autoLockTimeLimit = Math.max(Number(time), 0);
 
-    this.setState(() => {
-      let lockTimeError = '';
+    if (autoLockTimeLimitBeforeNormalization === '') {
+      this.setState({
+        autoLockTimeLimitBeforeNormalization,
+        autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT.toString(),
+        lockTimeError: '',
+      });
+      return;
+    }
 
-      if (autoLockTimeLimit > 10080) {
-        lockTimeError = t('lockTimeTooGreat');
-      }
+    const autoLockTimeLimitAfterNormalization = Number(
+      autoLockTimeLimitBeforeNormalization,
+    );
 
-      return {
-        autoLockTimeLimit,
-        lockTimeError,
-      };
+    if (
+      Number.isNaN(autoLockTimeLimitAfterNormalization) ||
+      autoLockTimeLimitAfterNormalization < 0 ||
+      autoLockTimeLimitAfterNormalization > 10080
+    ) {
+      this.setState({
+        autoLockTimeLimitBeforeNormalization,
+        autoLockTimeLimit: null,
+        lockTimeError: t('lockTimeInvalid'),
+      });
+      return;
+    }
+
+    const autoLockTimeLimit = autoLockTimeLimitAfterNormalization;
+
+    this.setState({
+      autoLockTimeLimitBeforeNormalization,
+      autoLockTimeLimit,
+      lockTimeError: '',
     });
   }
 
@@ -623,7 +651,7 @@ export default class AdvancedTab extends PureComponent {
     const { t } = this.context;
     return (
       <div
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[10]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-backup"
       >
@@ -663,7 +691,7 @@ export default class AdvancedTab extends PureComponent {
 
     return (
       <div
-        ref={this.settingsRefs[12]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         data-testid="advanced-setting-data-restore"
       >

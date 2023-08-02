@@ -211,9 +211,6 @@
   "delete": {
     "message": "Slet"
   },
-  "deleteAccount": {
-    "message": "Slet konto"
-  },
   "deleteNetwork": {
     "message": "Slet Netværk?"
   },
@@ -543,9 +540,6 @@
   },
   "privateNetwork": {
     "message": "Privat netværk"
-  },
-  "queue": {
-    "message": "Kø"
   },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."

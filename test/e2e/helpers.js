@@ -4,6 +4,7 @@ const { promises: fs } = require('fs');
 const BigNumber = require('bignumber.js');
 const mockttp = require('mockttp');
 const createStaticServer = require('../../development/create-static-server');
+const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
 const Ganache = require('./ganache');
 const FixtureServer = require('./fixture-server');
@@ -104,7 +105,9 @@ async function withFixtures(options, testSuite) {
         });
       }
     }
-    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock);
+    const mockedEndpoint = await setupMocking(mockServer, testSpecificMock, {
+      chainId: ganacheOptions?.chainId || 1337,
+    });
     await mockServer.start(8000);
 
     driver = (await buildWebDriver(driverOptions)).driver;
@@ -187,7 +190,14 @@ async function withFixtures(options, testSuite) {
       if (phishingPageServer.isRunning()) {
         await phishingPageServer.quit();
       }
-      await mockServer.stop();
+
+      // Since mockServer could be stop'd at another location,
+      // use a try/catch to avoid an error
+      try {
+        await mockServer.stop();
+      } catch (e) {
+        console.log('mockServer already stopped');
+      }
     }
   }
 }
@@ -293,22 +303,52 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+/**
+ * Begin the create new wallet flow on onboarding screen.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingBeginCreateNewWallet = async (driver) => {
   // agree to terms of use
   await driver.clickElement('[data-testid="onboarding-terms-checkbox"]');
 
   // welcome
   await driver.clickElement('[data-testid="onboarding-create-wallet"]');
+};
 
+/**
+ * Choose either "I Agree" or "No Thanks" on the MetaMetrics onboarding screen
+ *
+ * @param {WebDriver} driver
+ * @param {boolean} option - true to opt into metrics, default is false
+ */
+const onboardingChooseMetametricsOption = async (driver, option = false) => {
+  const optionIdentifier = option ? 'i-agree' : 'no-thanks';
   // metrics
-  await driver.clickElement('[data-testid="metametrics-no-thanks"]');
+  await driver.clickElement(`[data-testid="metametrics-${optionIdentifier}"]`);
+};
 
+/**
+ * Set a password for MetaMask during onboarding
+ *
+ * @param {WebDriver} driver
+ * @param {string} password - Password to set
+ */
+const onboardingCreatePassword = async (driver, password) => {
   // create password
   await driver.fill('[data-testid="create-password-new"]', password);
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-wallet"]');
+};
 
+/**
+ * Choose to secure wallet, and then get recovery phrase and confirm the SRP
+ * during onboarding flow.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingRevealAndConfirmSRP = async (driver) => {
   // secure my wallet
   await driver.clickElement('[data-testid="secure-wallet-recommended"]');
 
@@ -335,14 +375,38 @@ const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
   await driver.clickElement('[data-testid="confirm-recovery-phrase"]');
 
   await driver.clickElement({ text: 'Confirm', tag: 'button' });
+};
 
+/**
+ * Complete the onboarding flow by confirming completion. Final step before the
+ * reminder to pin the extension.
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingCompleteWalletCreation = async (driver) => {
   // complete
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
+};
 
+/**
+ * Move through the steps of pinning extension after successful onboarding
+ *
+ * @param {WebDriver} driver
+ */
+const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreation(driver);
+  await onboardingPinExtension(driver);
 };
 
 const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
@@ -384,6 +448,56 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await driver.navigate();
+  await driver.fill('#password', 'correct horse battery staple');
+  await driver.press('#password', driver.Key.ENTER);
+
+  // navigate settings to reveal SRP
+  await driver.clickElement('[data-testid="account-options-menu-button"]');
+  await driver.clickElement({ text: 'Settings', tag: 'div' });
+  await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
+  await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const completeSRPRevealQuiz = async (driver) => {
+  // start quiz
+  await driver.clickElement('[data-testid="srp-quiz-get-started"]');
+
+  // tap correct answer 1
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 1
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+
+  // tap correct answer 2
+  await driver.clickElement('[data-testid="srp-quiz-right-answer"]');
+
+  // tap Continue 2
+  await driver.clickElement('[data-testid="srp-quiz-continue"]');
+};
+
+const tapAndHoldToRevealSRP = async (driver) => {
+  await driver.holdMouseDownOnElement(
+    {
+      text: tEn('holdToRevealSRP'),
+      tag: 'span',
+    },
+    2000,
+  );
+};
+
+const closeSRPReveal = async (driver) => {
+  await driver.clickElement({
+    text: tEn('close'),
+    tag: 'button',
+  });
+  await driver.findVisibleElement({
+    text: tEn('tokens'),
+    tag: 'button',
+  });
+};
+
 const DAPP_URL = 'http://127.0.0.1:8080';
 const DAPP_ONE_URL = 'http://127.0.0.1:8081';
 
@@ -392,92 +506,14 @@ const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
     ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
     : await driver.openNewPage(dappURL);
 };
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
-
-const emptyHtmlPage = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>title</title>
-  </head>
-  <body>
-    Empty page
-  </body>
-</html>`;
-
-/**
- * Setup fetch mocks for the phishing detection feature.
- *
- * The mock configuration will show that "127.0.0.1" is blocked. The dynamic lookup on the warning
- * page can be customized, so that we can test both the MetaMask and PhishFort block cases.
- *
- * @param {import('mockttp').Mockttp} mockServer - The mock server.
- * @param {object} metamaskPhishingConfigResponse - The response for the dynamic phishing
- * configuration lookup performed by the warning page.
- */
-async function setupPhishingDetectionMocks(
-  mockServer,
-  metamaskPhishingConfigResponse,
-) {
-  await mockServer.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: {
-        version: 2,
-        tolerance: 2,
-        fuzzylist: [],
-        allowlist: [],
-        blocklist: ['127.0.0.1'],
-        lastUpdated: 0,
-      },
-    };
-  });
-
-  await mockServer
-    .forGet('https://github.com/MetaMask/eth-phishing-detect/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-  await mockServer
-    .forGet('https://github.com/phishfort/phishfort-lists/issues/new')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        body: emptyHtmlPage,
-      };
-    });
-
-  await mockServer
-    .forGet(
-      'https://raw.githubusercontent.com/MetaMask/eth-phishing-detect/master/src/config.json',
-    )
-    .thenCallback(() => metamaskPhishingConfigResponse);
-}
-
-function mockPhishingDetection(mockServer) {
-  setupPhishingDetectionMocks(mockServer, {
-    statusCode: 200,
-    json: {
-      version: 2,
-      tolerance: 2,
-      fuzzylist: [],
-      whitelist: [],
-      blacklist: ['127.0.0.1'],
-      lastUpdated: 0,
-    },
-  });
-}
 
 const PRIVATE_KEY =
   '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
 
-const generateETHBalance = (eth) => convertToHexValue(eth * 10 ** 18);
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
+
 const defaultGanacheOptions = {
-  accounts: [{ secretKey: PRIVATE_KEY, balance: generateETHBalance(25) }],
+  accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
 const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
@@ -500,10 +536,12 @@ const findAnotherAccountFromAccountList = async (
 ) => {
   await driver.clickElement('[data-testid="account-menu-icon"]');
   const accountMenuItemSelector = `.multichain-account-list-item:nth-child(${itemNumber})`;
-  const acctName = await driver.findElement(
-    `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
-  );
-  assert.equal(await acctName.getText(), accountName);
+
+  await driver.findElement({
+    css: `${accountMenuItemSelector} .multichain-account-list-item__account-name__button`,
+    text: accountName,
+  });
+
   return accountMenuItemSelector;
 };
 
@@ -530,31 +568,172 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     text: `${balance} ETH`,
   });
 };
+const DEFAULT_PRIVATE_KEY =
+  '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC';
+const WALLET_PASSWORD = 'correct horse battery staple';
 
-const restartServiceWorker = async (driver) => {
-  const serviceWorkerElements = await driver.findElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[1].click();
+const DEFAULT_GANACHE_OPTIONS = {
+  accounts: [
+    {
+      secretKey: DEFAULT_PRIVATE_KEY,
+      balance: convertETHToHexGwei(25),
+    },
+  ],
 };
+
+const generateGanacheOptions = (overrides) => ({
+  ...DEFAULT_GANACHE_OPTIONS,
+  ...overrides,
+});
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
     '[data-testid="eth-overview__primary-currency"]',
   );
 }
+const WINDOW_TITLES = Object.freeze({
+  ExtensionInFullScreenView: 'MetaMask',
+  TestDApp: 'E2E Test Dapp',
+  Notification: 'MetaMask Notification',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
+  InstalledExtensions: 'Extensions',
+});
 
-const login = async (driver) => {
+const unlockWallet = async (driver) => {
   await driver.fill('#password', 'correct horse battery staple');
   await driver.press('#password', driver.Key.ENTER);
 };
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
-  await login(driver);
+  await unlockWallet(driver);
   await assertAccountBalanceForDOM(driver, ganacheServer);
 };
+
+async function sleepSeconds(sec) {
+  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
+}
+
+function roundToXDecimalPlaces(number, decimalPlaces) {
+  return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
+}
+
+function generateRandNumBetween(x, y) {
+  const min = Math.min(x, y);
+  const max = Math.max(x, y);
+  const randomNumber = Math.random() * (max - min) + min;
+
+  return randomNumber;
+}
+
+function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
+  const initialBalance = roundToXDecimalPlaces(
+    generateRandNumBetween(minETHBal, maxETHBal),
+    decimalPlaces,
+  );
+
+  const initialBalanceInHex = convertETHToHexGwei(initialBalance);
+
+  return { initialBalance, initialBalanceInHex };
+}
+
+async function terminateServiceWorker(driver) {
+  await driver.openNewPage(SERVICE_WORKER_URL);
+
+  await driver.waitForSelector({
+    text: 'Service workers',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: 'Service workers',
+    tag: 'button',
+  });
+
+  await driver.delay(tinyDelayMs);
+  const serviceWorkerElements = await driver.findClickableElements({
+    text: 'terminate',
+    tag: 'span',
+  });
+
+  // 1st one is app-init.js; while 2nd one is service-worker.js
+  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
+
+  const serviceWorkerTab = await driver.switchToWindowWithTitle(
+    WINDOW_TITLES.ServiceWorkerSettings,
+  );
+
+  await driver.closeWindowHandle(serviceWorkerTab);
+}
+
+/**
+ * This method assumes the extension is open, the dapp is open and waits for a
+ * third window handle to open (the notification window). Once it does it
+ * switches to the new window.
+ *
+ * @param {WebDriver} driver
+ */
+async function switchToNotificationWindow(driver) {
+  await driver.waitUntilXWindowHandles(3);
+  const windowHandles = await driver.getAllWindowHandles();
+  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
+}
+
+/**
+ * When mocking the segment server and returning an array of mocks from the
+ * mockServer method, this method will allow getting all of the seen requests
+ * for each mock in the array.
+ *
+ * @param {WebDriver} driver
+ * @param {import('mockttp').Mockttp} mockedEndpoints
+ * @param {boolean} hasRequest
+ * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
+ */
+async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
+  await driver.wait(async () => {
+    let isPending = true;
+    for (const mockedEndpoint of mockedEndpoints) {
+      isPending = await mockedEndpoint.isPending();
+    }
+
+    return isPending === !hasRequest;
+  }, driver.timeout);
+  const mockedRequests = [];
+  for (const mockedEndpoint of mockedEndpoints) {
+    mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
+  }
+
+  return mockedRequests.map((req) => req.body.json?.batch).flat();
+}
+
+// Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
+function assertInAnyOrder(requests, assertions) {
+  // Clone the array to avoid mutating the original
+  const assertionsClone = [...assertions];
+
+  return (
+    requests.every((request) => {
+      for (let a = 0; a < assertionsClone.length; a++) {
+        const assertionArray = assertionsClone[a];
+
+        const passed = assertionArray.reduce(
+          (acc, currAssertionFn) => currAssertionFn(request) && acc,
+          true,
+        );
+
+        if (passed) {
+          // Remove the used assertion array
+          assertionsClone.splice(a, 1);
+          // Exit the loop early since we found a matching assertion
+          return true;
+        }
+      }
+
+      // No matching assertion found for this request
+      return false;
+    }) &&
+    // Ensure all assertions were used
+    assertionsClone.length === 0
+  );
+}
 
 module.exports = {
   DAPP_URL,
@@ -574,19 +753,39 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  passwordUnlockOpenSRPRevealQuiz,
+  completeSRPRevealQuiz,
+  closeSRPReveal,
+  tapAndHoldToRevealSRP,
   createDownloadFolder,
   importWrongSRPOnboardingFlow,
   testSRPDropdownIterations,
   openDapp,
-  mockPhishingDetection,
-  setupPhishingDetectionMocks,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
-  login,
+  unlockWallet,
   logInWithBalanceValidation,
   assertAccountBalanceForDOM,
   locateAccountBalanceDOM,
-  restartServiceWorker,
   waitForAccountRendered,
+  generateGanacheOptions,
+  WALLET_PASSWORD,
+  WINDOW_TITLES,
+  DEFAULT_GANACHE_OPTIONS,
+  convertETHToHexGwei,
+  roundToXDecimalPlaces,
+  generateRandNumBetween,
+  sleepSeconds,
+  terminateServiceWorker,
+  switchToNotificationWindow,
+  getEventPayloads,
+  onboardingBeginCreateNewWallet,
+  onboardingChooseMetametricsOption,
+  onboardingCreatePassword,
+  onboardingRevealAndConfirmSRP,
+  onboardingCompleteWalletCreation,
+  onboardingPinExtension,
+  assertInAnyOrder,
+  genRandInitBal,
 };

@@ -911,9 +911,6 @@
   "delete": {
     "message": "Удалить"
   },
-  "deleteAccount": {
-    "message": "Удалить счет"
-  },
   "deleteNetwork": {
     "message": "Удалить сеть?"
   },
@@ -1562,6 +1559,12 @@
     "message": "но злоумышленники-фишеры могут.",
     "description": "The text link in 'holdToRevealContent3'"
   },
+  "holdToRevealSRP": {
+    "message": "Удерживайте, чтобы показать СФВ"
+  },
+  "holdToRevealSRPTitle": {
+    "message": "Храните СФВ в безопасности"
+  },
   "ignoreAll": {
     "message": "Игнорировать все"
   },
@@ -1595,9 +1598,6 @@
   },
   "importNFTTokenIdToolTip": {
     "message": "Идентификатор коллекционного актива является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
-  },
-  "importNFTs": {
-    "message": "Импорт NFT"
   },
   "importSelectedTokens": {
     "message": "Импортировать выбранные токены?"
@@ -1857,9 +1857,6 @@
   "lock": {
     "message": "Заблокировать"
   },
-  "lockTimeTooGreat": {
-    "message": "Время блокировки слишком велико"
-  },
   "logo": {
     "message": "логотип $1",
     "description": "$1 is the name of the ticker"
@@ -1952,9 +1949,6 @@
   },
   "mismatchedRpcUrl": {
     "message": "Согласно нашим записям, отправленное значение URL-адреса RPC не соответствует известному поставщику для этого идентификатора блокчейна."
-  },
-  "missingNFT": {
-    "message": "Не видите свои NFT?"
   },
   "missingSetting": {
     "message": "Не удается найти настройку?"
@@ -2161,9 +2155,6 @@
   },
   "noConversionRateAvailable": {
     "message": "Нет доступного обменного курса"
-  },
-  "noNFTs": {
-    "message": "Пока нет NFT-токенов"
   },
   "noSnaps": {
     "message": "Снапы не установлены"
@@ -2762,9 +2753,6 @@
   "publicAddress": {
     "message": "Открытый адрес"
   },
-  "queue": {
-    "message": "Очередь"
-  },
   "queued": {
     "message": "В очереди"
   },
@@ -2965,9 +2953,6 @@
   "revealTheSeedPhrase": {
     "message": "Показать сид-фразу"
   },
-  "reviewSpendingCap": {
-    "message": "Проверьте свой лимит расходов"
-  },
   "revokeAllTokensTitle": {
     "message": "Отозвать разрешение на доступ ко всем вашим $1 и их перевод?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3149,10 +3134,6 @@
     "message": "Одобрить $1 без ограничений по расходам",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "Установить верхний лимит расходов для вашего $1",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "Настройки"
   },
@@ -3333,11 +3314,62 @@
   },
   "srpPasteFailedTooManyWords": {
     "message": "Не удалось вставить, так как он содержит более 24 слов. Секретная фраза для восстановления может содержать не более 24 слов.",
-    "description": "Description of SRP paste erorr when the pasted content has too many words"
+    "description": "Description of SRP paste error when the pasted content has too many words"
   },
   "srpPasteTip": {
     "message": "Вы можете вставить всю свою секретную фразу для восстановления в любое поле",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
+  },
+  "srpSecurityQuizGetStarted": {
+    "message": "Начать"
+  },
+  "srpSecurityQuizIntroduction": {
+    "message": "Чтобы увидеть свою секретную фразу для восстановления, вам нужно правильно ответить на два вопроса"
+  },
+  "srpSecurityQuizQuestionOneQuestion": {
+    "message": "Если вы потеряете свою секретную фразу для восстановления, MetaMask..."
+  },
+  "srpSecurityQuizQuestionOneRightAnswer": {
+    "message": "Не сможет вам помочь"
+  },
+  "srpSecurityQuizQuestionOneRightAnswerDescription": {
+    "message": "Запишите ее, выгравируйте ее на металле или храните в нескольких потайных местах, чтобы никогда не потерять. Если вы потеряете ее, она пропадет навсегда."
+  },
+  "srpSecurityQuizQuestionOneRightAnswerTitle": {
+    "message": "Правильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswer": {
+    "message": "Не сможет вернуть ее вам"
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerDescription": {
+    "message": "Если вы потеряете свою секретную фразу для восстановления, она пропадет навсегда. Никто не может помочь вам вернуть ее, что бы кто ни говорил."
+  },
+  "srpSecurityQuizQuestionOneWrongAnswerTitle": {
+    "message": "Неправильно! Никто не может помочь вернуть вашу секретную фразу для восстановления"
+  },
+  "srpSecurityQuizQuestionTwoQuestion": {
+    "message": "Если кто-нибудь, даже представитель службы поддержки, попросит вашу секретную фразу для восстановления..."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswer": {
+    "message": "Вас обманывают"
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerDescription": {
+    "message": "Любой, кто утверждает, что ему нужна ваша секретная фраза для восстановления, лжет вам. Если вы сообщите эту фразу ему (ей), он(-а) украдет ваши активы."
+  },
+  "srpSecurityQuizQuestionTwoRightAnswerTitle": {
+    "message": "Правильно! Сообщать кому-либо своей секретную фразу для восстановления — это всегда плохая идея"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswer": {
+    "message": "Вы должны сообщите фразу ему (ей)"
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
+    "message": "Любой, кто утверждает, что ему нужна ваша секретная фраза для восстановления, лжет вам. Если вы сообщите эту фразу ему (ей), он(-а) украдет ваши активы."
+  },
+  "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
+    "message": "Нет! Никогда никому не сообщайте никому свою секретную фразу для восстановления"
+  },
+  "srpSecurityQuizTitle": {
+    "message": "Тест по безопасности"
   },
   "srpToggleShow": {
     "message": "Показать/скрыть это слово секретной фразы для восстановления",
@@ -4125,14 +4157,8 @@
   "urlExistsErrorMsg": {
     "message": "Это URL-адрес в настоящее время используется сетью $1."
   },
-  "useDefault": {
-    "message": "Использовать значения по умолчанию"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Мы создаем пакет счетов и запрашиваем Infura, чтобы оперативно отображать ваши остатки. Если вы отключите это, запрос будет отправляться только в отношении активных счетов. Некоторые dapps не будут работать, пока вы не подключите свой кошелек."
   },
   "useNftDetection": {
     "message": "Автообнаружение NFT"

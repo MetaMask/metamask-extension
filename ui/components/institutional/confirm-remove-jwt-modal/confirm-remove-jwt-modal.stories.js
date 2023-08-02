@@ -11,7 +11,7 @@ export default {
     removeAccount: () => {
       /**/
     },
-    token: { address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D' },
+    token: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
     custodyAccountDetails: [
       {
         address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',

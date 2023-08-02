@@ -419,14 +419,18 @@ export default class MetaMetricsController {
    *
    * @param {boolean} participateInMetaMetrics - Whether or not the user wants
    *  to participate in MetaMetrics
-   * @returns {string|null} the string of the new metametrics id, or null
+   * @returns {Promise<string|null>} the string of the new metametrics id, or null
    *  if not set
    */
-  setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
     if (participateInMetaMetrics && !metaMetricsId) {
+      // We also need to start sentry automatic session tracking at this point
+      await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
     } else if (participateInMetaMetrics === false) {
+      // We also need to stop sentry automatic session tracking at this point
+      await globalThis.sentry?.endSession();
       metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
@@ -435,7 +439,10 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    ///: END:ONLY_INCLUDE_IN
+
     return metaMetricsId;
   }
 

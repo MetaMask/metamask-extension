@@ -716,9 +716,6 @@
   "delete": {
     "message": "Elimina"
   },
-  "deleteAccount": {
-    "message": "Cancella account"
-  },
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
@@ -1117,9 +1114,6 @@
   "lock": {
     "message": "Disconnetti"
   },
-  "lockTimeTooGreat": {
-    "message": "Tempo di inattività troppo lungo"
-  },
   "mainnet": {
     "message": "Rete Ethereum Principale"
   },
@@ -1306,9 +1300,6 @@
   },
   "provide": {
     "message": "Fornisci"
-  },
-  "queue": {
-    "message": "Coda"
   },
   "queued": {
     "message": "In coda"

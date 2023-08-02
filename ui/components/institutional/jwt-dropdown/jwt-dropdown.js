@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Dropdown from '../../ui/dropdown';
-import Box from '../../ui/box';
 import { Color } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const JwtDropdown = (props) => {

@@ -28,8 +28,8 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  IconSize,
   PickerNetwork,
+  Box,
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
@@ -41,13 +41,14 @@ import {
   getOriginOfCurrentTab,
   getSelectedIdentity,
   getShowProductTour,
+  getTestNetworkBackgroundColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
+  getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
 
-import Box from '../../ui/box/box';
 import {
   hideProductTour,
   toggleAccountMenu,
@@ -69,6 +70,7 @@ export const AppHeader = ({ location }) => {
   const menuRef = useRef(false);
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
+  const isHomePage = location.pathname === DEFAULT_ROUTE;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
@@ -78,6 +80,7 @@ export const AppHeader = ({ location }) => {
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
+  const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
@@ -89,8 +92,8 @@ export const AppHeader = ({ location }) => {
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
-  // Used to get the environment and connection status
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
   const showStatus =
     getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
@@ -149,6 +152,10 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  // This is required to ensure send and confirmation screens
+  // look as desired
+  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
+
   return (
     <>
       {isUnlocked && !popupStatus ? (
@@ -166,6 +173,7 @@ export const AppHeader = ({ location }) => {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             custodyImgSrc={custodianIcon}
             isUnlocked={isUnlocked}
+            theme={theme}
             ///: END:ONLY_INCLUDE_IN
           />
         </Box>
@@ -175,6 +183,7 @@ export const AppHeader = ({ location }) => {
         className={classnames('multichain-app-header', {
           'multichain-app-header-shadow': !isUnlocked || popupStatus,
         })}
+        marginBottom={headerBottomMargin}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         backgroundColor={
@@ -201,6 +210,9 @@ export const AppHeader = ({ location }) => {
                 <Box className="multichain-app-header__contents__container">
                   <Tooltip title={currentNetwork?.nickname} position="right">
                     <PickerNetwork
+                      avatarNetworkProps={{
+                        backgroundColor: testNetworkBackgroundColor,
+                      }}
                       className="multichain-app-header__contents--avatar-network"
                       ref={menuRef}
                       as="button"
@@ -220,6 +232,9 @@ export const AppHeader = ({ location }) => {
               ) : (
                 <div>
                   <PickerNetwork
+                    avatarNetworkProps={{
+                      backgroundColor: testNetworkBackgroundColor,
+                    }}
                     margin={2}
                     label={currentNetwork?.nickname}
                     src={currentNetwork?.rpcPrefs?.imageUrl}
@@ -237,6 +252,7 @@ export const AppHeader = ({ location }) => {
               )}
               {showProductTour &&
               popupStatus &&
+              isHomePage &&
               multichainProductTourStep === 1 ? (
                 <ProductTour
                   className="multichain-app-header__product-tour"
@@ -355,7 +371,6 @@ export const AppHeader = ({ location }) => {
                         setAccountOptionsMenuOpen(true);
                       }}
                       size={ButtonIconSize.Sm}
-                      iconProps={{ size: IconSize.Sm }}
                     />
                   </Box>
                 </Box>
@@ -406,6 +421,9 @@ export const AppHeader = ({ location }) => {
             >
               <div>
                 <PickerNetwork
+                  avatarNetworkProps={{
+                    backgroundColor: testNetworkBackgroundColor,
+                  }}
                   label={currentNetwork?.nickname}
                   src={currentNetwork?.rpcPrefs?.imageUrl}
                   onClick={(e) => {

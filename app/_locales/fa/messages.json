@@ -211,9 +211,6 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteAccount": {
-    "message": "حذف حساب"
-  },
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
   },
@@ -562,9 +559,6 @@
   },
   "privateNetwork": {
     "message": "شبکه شخصی"
-  },
-  "queue": {
-    "message": "صف"
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."

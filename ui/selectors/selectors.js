@@ -1,7 +1,7 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
-import { ApprovalType, ERC1155, ERC721 } from '@metamask/controller-utils';
+import { ApprovalType } from '@metamask/controller-utils';
 import {
   createSelector,
   createSelectorCreator,
@@ -35,8 +35,8 @@ import {
   CURRENCY_SYMBOLS,
   TEST_NETWORK_TICKER_MAP,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
-  LINEA_MAINNET_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
+  LINEA_MAINNET_TOKEN_IMAGE_URL,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -93,6 +93,7 @@ import {
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
+import { BackgroundColor } from '../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
@@ -575,7 +576,7 @@ export function getSuggestedNfts(state) {
     getUnapprovedConfirmations(state)?.filter(({ requestData, type }) => {
       return (
         type === ApprovalType.WatchAsset &&
-        [ERC721, ERC1155].includes(requestData?.asset?.standard)
+        requestData?.asset?.tokenId !== undefined
       );
     }) || []
   );
@@ -602,6 +603,18 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+export function getTestNetworkBackgroundColor(state) {
+  const currentNetwork = state.metamask.providerConfig.ticker;
+  switch (true) {
+    case currentNetwork?.includes(GOERLI_DISPLAY_NAME):
+      return BackgroundColor.goerli;
+    case currentNetwork?.includes(SEPOLIA_DISPLAY_NAME):
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
 }
 
 export function getDisabledRpcMethodPreferences(state) {
@@ -972,6 +985,7 @@ function getAllowedAnnouncementIds(state) {
   const currentlyUsingLedgerLive =
     getLedgerTransportType(state) === LedgerTransportTypes.live;
   const isFirefox = window.navigator.userAgent.includes('Firefox');
+  const isSwapsChain = getIsSwapsChain(state);
 
   return {
     1: false,
@@ -991,10 +1005,10 @@ function getAllowedAnnouncementIds(state) {
     15: false,
     16: false,
     17: false,
-    18: true,
-    19: true,
+    18: false,
+    19: false,
     20: currentKeyringIsLedger && isFirefox,
-    21: true,
+    21: isSwapsChain,
   };
 }
 
@@ -1170,58 +1184,35 @@ export function getNetworkConfigurations(state) {
 
 export function getCurrentNetwork(state) {
   const allNetworks = getAllNetworks(state);
-  const currentChainId = getCurrentChainId(state);
+  const providerConfig = getProviderConfig(state);
 
-  return allNetworks.find((network) => network.chainId === currentChainId);
+  const filter =
+    providerConfig.type === 'rpc'
+      ? (network) => network.id === providerConfig.id
+      : (network) => network.id === providerConfig.type;
+  return allNetworks.find(filter);
 }
 
 export function getAllEnabledNetworks(state) {
+  const nonTestNetworks = getNonTestNetworks(state);
   const allNetworks = getAllNetworks(state);
   const showTestnetNetworks = getShowTestNetworks(state);
 
-  return showTestnetNetworks
-    ? allNetworks
-    : allNetworks.filter(
-        (network) => TEST_CHAINS.includes(network.chainId) === false,
-      );
+  return showTestnetNetworks ? allNetworks : nonTestNetworks;
 }
 
-export function getAllNetworks(state) {
+export function getTestNetworks(state) {
   const networkConfigurations = getNetworkConfigurations(state) || {};
 
-  const networks = [
-    // Mainnet always first
-    {
-      chainId: CHAIN_IDS.MAINNET,
-      nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
-      rpcPrefs: {
-        imageUrl: ETH_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.MAINNET,
-      ticker: CURRENCY_SYMBOLS.ETH,
-    },
-    {
-      chainId: CHAIN_IDS.LINEA_MAINNET,
-      nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
-      rpcPrefs: {
-        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
-      },
-      providerType: NETWORK_TYPES.LINEA_MAINNET,
-      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
-    },
-    // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
-    // Test networks
+  return [
     {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
+      id: NETWORK_TYPES.GOERLI,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1229,6 +1220,8 @@ export function getAllNetworks(state) {
       rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
+      id: NETWORK_TYPES.SEPOLIA,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1239,11 +1232,58 @@ export function getAllNetworks(state) {
       },
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+      id: NETWORK_TYPES.LINEA_GOERLI,
+      removable: false,
     },
     // Localhosts
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+      .map((network) => ({ ...network, removable: true })),
+  ];
+}
+
+export function getNonTestNetworks(state) {
+  const networkConfigurations = getNetworkConfigurations(state) || {};
+
+  return [
+    // Mainnet always first
+    {
+      chainId: CHAIN_IDS.MAINNET,
+      nickname: MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcPrefs: {
+        imageUrl: ETH_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.MAINNET,
+      ticker: CURRENCY_SYMBOLS.ETH,
+      id: NETWORK_TYPES.MAINNET,
+      removable: false,
+    },
+    {
+      chainId: CHAIN_IDS.LINEA_MAINNET,
+      nickname: LINEA_MAINNET_DISPLAY_NAME,
+      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcPrefs: {
+        imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
+      },
+      providerType: NETWORK_TYPES.LINEA_MAINNET,
+      ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
+      id: NETWORK_TYPES.LINEA_MAINNET,
+      removable: false,
+    },
+    // Custom networks added by the user
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+      .map((network) => ({ ...network, removable: true })),
+  ];
+}
+
+export function getAllNetworks(state) {
+  const networks = [
+    // Mainnet and custom networks
+    ...getNonTestNetworks(state),
+    // Test networks
+    ...getTestNetworks(state),
   ];
 
   return networks;
@@ -1402,6 +1442,18 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+/**
+ * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsSecurityAlertsEnabled(state) {
+  return state.metamask.securityAlertsEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
 
@@ -1538,5 +1590,17 @@ export function getSnapsInstallPrivacyWarningShown(state) {
   }
 
   return snapsInstallPrivacyWarningShown;
+}
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
 }
 ///: END:ONLY_INCLUDE_IN

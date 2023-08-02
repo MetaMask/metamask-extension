@@ -211,9 +211,6 @@
   "delete": {
     "message": "Poista"
   },
-  "deleteAccount": {
-    "message": "Poista tili"
-  },
   "deleteNetwork": {
     "message": "Poistetaanko verkko?"
   },
@@ -559,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "Yksityinen verkko"
-  },
-  "queue": {
-    "message": "Jono"
   },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
