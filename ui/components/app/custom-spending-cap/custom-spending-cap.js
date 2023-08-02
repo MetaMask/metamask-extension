@@ -24,7 +24,6 @@ import {
   TextField,
   HelpText,
   Box,
-  TEXT_FIELD_TYPES,
 } from '../../component-library';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
