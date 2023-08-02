@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   MetaMetricsContextProp,
   ///: END:ONLY_INCLUDE_IN
   MetaMetricsEventCategory,
@@ -27,15 +27,15 @@ import WhatsNewPopup from '../../components/app/whats-new-popup';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
-  FONT_WEIGHT,
-  DISPLAY,
+  FontWeight,
+  Display,
   TextColor,
   TextVariant,
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   Size,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   JustifyContent,
-  Display,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
@@ -44,7 +44,7 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
   Text,
@@ -72,7 +72,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
@@ -154,6 +154,7 @@ export default class Home extends PureComponent {
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     swapsFetchParams: PropTypes.object,
+    location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
@@ -218,7 +219,9 @@ export default class Home extends PureComponent {
       hasWatchNftPendingApprovals,
       swapsFetchParams,
       hasTransactionPendingApprovals,
+      location,
     } = this.props;
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -229,6 +232,7 @@ export default class Home extends PureComponent {
       hasWatchTokenPendingApprovals ||
       hasWatchNftPendingApprovals ||
       (!isNotification &&
+        !stayOnHomePage &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
       this.state.redirecting = true;
@@ -289,19 +293,22 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
+      location,
       pendingConfirmations,
       hasApprovalFlows,
     } = this.props;
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.shouldCloseCurrentWindow();
     ///: END:ONLY_INCLUDE_IN
 
-    if (!isNotification && showAwaitingSwapScreen) {
+    const canRedirect = !isNotification && !stayOnHomePage;
+    if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (!isNotification && haveSwapsQuotes) {
+    } else if (canRedirect && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE);
-    } else if (!isNotification && swapsFetchParams) {
+    } else if (canRedirect && swapsFetchParams) {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);
@@ -461,7 +468,7 @@ export default class Home extends PureComponent {
             autoHideTime={autoHideDelay}
             onAutoHide={onAutoHide}
             message={
-              <Box display={DISPLAY.INLINE_FLEX}>
+              <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
                   {t('newNftAddedMessage')}
@@ -483,7 +490,7 @@ export default class Home extends PureComponent {
             autoHideTime={autoHideDelay}
             onAutoHide={onAutoHide}
             message={
-              <Box display={DISPLAY.INLINE_FLEX}>
+              <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-nft-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
                   {t('removeNftMessage')}
@@ -503,7 +510,7 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-network-notification"
             message={
-              <Box display={DISPLAY.INLINE_FLEX}>
+              <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-network-notification-icon" />
                 <Text variant={TextVariant.bodySm} as="h6">
                   {t('newNetworkAdded', [newNetworkAddedName])}
@@ -524,7 +531,7 @@ export default class Home extends PureComponent {
             type="success"
             className="home__new-tokens-imported-notification"
             message={
-              <Box display={DISPLAY.INLINE_FLEX}>
+              <Box display={Display.InlineFlex}>
                 <i className="fa fa-check-circle home__new-tokens-imported-notification-icon" />
                 <Box>
                   <Text
@@ -639,7 +646,7 @@ export default class Home extends PureComponent {
               marginRight={9}
               marginLeft={9}
               marginBottom={0}
-              fontWeight={FONT_WEIGHT.BOLD}
+              fontWeight={FontWeight.Bold}
             >
               {t('networkAddedSuccessfully')}
             </Text>

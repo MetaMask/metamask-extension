@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addCustomIPFSGateway": {
-    "message": "Agregar puerta de enlace IPFS personalizada"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
-  },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
@@ -4159,9 +4153,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
   },
   "useNftDetection": {
     "message": "Detección automática de NFT"

@@ -11,6 +11,7 @@ import {
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
   AUTO_DETECT_TOKEN_LEARN_MORE_LINK,
   COINGECKO_LINK,
@@ -31,6 +32,11 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+import { Box, Text } from '../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export default class SecurityTab extends PureComponent {
   static contextTypes = {
@@ -55,12 +61,15 @@ export default class SecurityTab extends PureComponent {
     setUseMultiAccountBalanceChecker: PropTypes.func.isRequired,
     useCurrencyRateCheck: PropTypes.bool.isRequired,
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
+    useAddressBarEnsResolution: PropTypes.bool.isRequired,
+    setUseAddressBarEnsResolution: PropTypes.func.isRequired,
   };
 
   state = {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
     srpQuizModalVisible: false,
+    ipfsToggle: false,
   };
 
   settingsRefCounter = 0;
@@ -309,9 +318,11 @@ export default class SecurityTab extends PureComponent {
   renderIpfsGatewayControl() {
     const { t } = this.context;
     const { ipfsGatewayError } = this.state;
+    const { useAddressBarEnsResolution, setUseAddressBarEnsResolution } =
+      this.props;
 
     const handleIpfsGatewaySave = (gateway) => {
-      const url = new URL(addUrlProtocolPrefix(gateway));
+      const url = gateway ? new URL(addUrlProtocolPrefix(gateway)) : '';
       const { host } = url;
 
       this.props.setIpfsGateway(host);
@@ -346,6 +357,11 @@ export default class SecurityTab extends PureComponent {
       });
     };
 
+    const handleIpfsToggle = (url) => {
+      url?.length < 1
+        ? handleIpfsGatewayChange(IPFS_DEFAULT_GATEWAY_URL)
+        : handleIpfsGatewayChange('');
+    };
     return (
       <div
         ref={this.settingsRefs[5]}
@@ -353,20 +369,92 @@ export default class SecurityTab extends PureComponent {
         data-testid="setting-ipfs-gateway"
       >
         <div className="settings-page__content-item">
-          <span>{t('addCustomIPFSGateway')}</span>
+          <span>{t('ipfsGateway')}</span>
           <div className="settings-page__content-description">
-            {t('addCustomIPFSGatewayDescription')}
+            {t('ipfsGatewayDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <TextField
-              type="text"
-              value={this.state.ipfsGateway}
-              onChange={(e) => handleIpfsGatewayChange(e.target.value)}
-              error={ipfsGatewayError}
-              fullWidth
-              margin="dense"
+          <ToggleButton
+            value={this.state.ipfsGateway}
+            onToggle={(value) => {
+              handleIpfsToggle(value);
+              this.setState({ ipfsToggle: Boolean(value) });
+            }}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+        {!this.state.ipfsToggle && (
+          <div className="settings-page__content-item">
+            <span>{t('addIPFSGateway')}</span>
+            <div className="settings-page__content-item-col">
+              <TextField
+                type="text"
+                disabled={!this.state.ipfsGateway}
+                value={this.state.ipfsGateway}
+                onChange={(e) => handleIpfsGatewayChange(e.target.value)}
+                error={ipfsGatewayError}
+                fullWidth
+                margin="dense"
+              />
+            </div>
+          </div>
+        )}
+        <div
+          className="settings-page__content-item"
+          ref={this.settingsRefs[9]}
+          id="ens-domains"
+        >
+          {t('ensDomainsSettingTitle')}
+          <div className="settings-page__content-description">
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionIntro')}
+            </Text>
+            <Box
+              as="ul"
+              marginTop={4}
+              marginBottom={4}
+              paddingInlineStart={4}
+              style={{ listStyleType: 'circle' }}
+            >
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint1')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint2')}
+              </Text>
+              <Text
+                as="li"
+                color={TextColor.inherit}
+                variant={TextVariant.inherit}
+              >
+                {t('ensDomainsSettingDescriptionPoint3')}
+              </Text>
+            </Box>
+            <Text color={TextColor.inherit} variant={TextVariant.inherit}>
+              {t('ensDomainsSettingDescriptionOutro')}
+            </Text>
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="ipfs-gateway-resolution-container"
+          >
+            <ToggleButton
+              value={useAddressBarEnsResolution}
+              onToggle={(value) => setUseAddressBarEnsResolution(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
             />
           </div>
         </div>
@@ -434,7 +522,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <span>{t('useMultiAccountBalanceChecker')}</span>
           <div className="settings-page__content-description">
-            {t('useMultiAccountBalanceCheckerDescription')}
+            {t('useMultiAccountBalanceCheckerSettingDescription')}
           </div>
         </div>
         <div className="settings-page__content-item">
