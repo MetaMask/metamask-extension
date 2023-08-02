@@ -4,7 +4,16 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 import { I18nContext } from '../../../contexts/i18n';
-
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  TextVariant,
+  Size,
+  BackgroundColor,
+  TextColor,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 import {
   Text,
   ButtonLink,
@@ -17,16 +26,6 @@ import {
   Box,
   TEXT_FIELD_TYPES,
 } from '../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  TextVariant,
-  Size,
-  BackgroundColor,
-  TextColor,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';

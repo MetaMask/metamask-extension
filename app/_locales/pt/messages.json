@@ -4160,9 +4160,6 @@
   "useMultiAccountBalanceChecker": {
     "message": "Agrupar solicitações de saldo de contas"
   },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
-  },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
