@@ -30,7 +30,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
   SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
-  SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE
+  SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE,
 } from '../constants/contracts';
 import { previousValueComparator } from './util';
 
@@ -327,7 +327,7 @@ export default class AccountTracker {
         case CHAIN_IDS.CALYPSO_SKALE:
           await this._updateAccountsViaBalanceChecker(
             addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE
+            SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE,
           );
           break;
 

@@ -1365,7 +1365,7 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.AURORA,
-    CHAIN_IDS.CALYPSO_SKALE
+    CHAIN_IDS.CALYPSO_SKALE,
   ].includes(chainId);
 }
 
