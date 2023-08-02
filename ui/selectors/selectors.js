@@ -105,7 +105,15 @@ import { getPermissionSubjects } from './permissions';
  * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.networkStatus !== NetworkStatus.Available;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].status !==
+    NetworkStatus.Available
+  );
+}
+
+export function getSelectedNetworkClientId(state) {
+  return state.metamask.selectedNetworkClientId;
 }
 
 export function getNetworkIdentifier(state) {
