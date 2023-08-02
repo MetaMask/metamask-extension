@@ -484,6 +484,8 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
+  ActivityDetailsOpened = 'Activity Details Opened',
+  ActivityDetailsClosed = 'Activity Details Closed',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -583,10 +585,21 @@ export enum MetaMetricsEventName {
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  UserClickedDeepLink = 'User Clicked Deeplink',
-  UserClickedConnectCustodialAccount = 'Clicked Connect Custodial Account',
-  UserClickedPortfolioButton = 'Clicked Portfolio Button',
-  UserClickedCompliance = 'Clicked Compliance',
+  DeeplinkClicked = 'Deeplink Clicked',
+  ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
+  MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
+  PortfolioDashboardModalButtonClicked = 'Portfolio Dashboard Modal Button Clicked',
+  PortfolioDashboardModalOpened = 'Portfolio Dashboard Modal Opened',
+  StakeButtonClicked = 'Stake Button Clicked',
+  InteractiveReplacementTokenButtonClicked = 'Interactive Replacement Token Button Clicked',
+  RefreshTokenListClicked = 'Refresh Token List Clicked',
+  SignatureDeeplinkDisplayed = 'Signature Deeplink Displayed',
+  InstitutionalFeatureConnected = 'Institutional Feature Connected',
+  CustodianSelected = 'Custodian Selected',
+  CustodianConnected = 'Custodian Connected',
+  CustodianConnectionCanceled = 'Custodian Connection Canceled',
+  CustodianConnectionFailed = 'Custodian Connection Failed',
+  CustodialAccountsConnected = 'Custodial Accounts Connected',
   ///: END:ONLY_INCLUDE_IN
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -599,6 +612,19 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
+  PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
+  QuotesRequested = 'Quotes Requested',
+  QuotesReceived = 'Quotes Received',
+  BestQuoteReviewed = 'Best Quote Reviewed',
+  AllAvailableQuotesOpened = 'All Available Quotes Opened',
+  SwapStarted = 'Swap Started',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApproved = 'Transaction Approved',
+  SwapCompleted = 'Swap Completed',
+  TransactionFinalized = 'Transaction Finalized',
+  ExitedSwaps = 'Exited Swaps',
+  SwapError = 'Swap Error',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -654,6 +680,10 @@ export enum MetaMetricsEventLinkType {
 export enum MetaMetricsEventKeyType {
   Pkey = 'private_key',
   Srp = 'srp',
+}
+
+export enum MetaMetricsEventErrorType {
+  InsufficientGas = 'insufficient_gas',
 }
 
 export enum MetaMetricsNetworkEventSource {

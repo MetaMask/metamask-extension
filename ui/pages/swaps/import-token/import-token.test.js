@@ -13,6 +13,7 @@ const createProps = (customProps = {}) => {
       name: 'PoSToken',
       address: '0xee609fe292128cad03b786dbb9bc2634ccdbe7fc',
     },
+    isOpen: true,
     ...customProps,
   };
 };
@@ -20,8 +21,10 @@ const createProps = (customProps = {}) => {
 describe('ImportToken', () => {
   it('renders the component with initial props', () => {
     const props = createProps();
-    const { getByText } = renderWithProvider(<ImportToken {...props} />);
+    const { getByText, getByDisplayValue } = renderWithProvider(
+      <ImportToken {...props} />,
+    );
     expect(getByText(props.tokenForImport.name)).toBeInTheDocument();
-    expect(getByText(props.tokenForImport.address)).toBeInTheDocument();
+    expect(getByDisplayValue(props.tokenForImport.address)).toBeInTheDocument();
   });
 });

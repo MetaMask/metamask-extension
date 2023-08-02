@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Tambah kontak"
   },
-  "addCustomIPFSGateway": {
-    "message": "Tambahkan gerbang IPFS khusus"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Gerbang IPFS memungkinkan untuk mengakses dan melihat data yang diselenggarakan oleh pihak ketiga. Anda dapat menambahkan gerbang IPFS khusus atau melanjutkan menggunakan yang awal."
-  },
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
@@ -2753,9 +2747,6 @@
   "publicAddress": {
     "message": "Alamat publik"
   },
-  "queue": {
-    "message": "Antrean"
-  },
   "queued": {
     "message": "Antrean"
   },
@@ -2956,9 +2947,6 @@
   "revealTheSeedPhrase": {
     "message": "Ungkap frasa seed"
   },
-  "reviewSpendingCap": {
-    "message": "Tinjau batas pengeluaran Anda"
-  },
   "revokeAllTokensTitle": {
     "message": "Cabut izin untuk mengakses dan mentransfer seluruh $1 Anda?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3127,6 @@
   "setApprovalForAllTitle": {
     "message": "Setujui $1 tanpa batas penggunaan",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Tetapkan batas pengeluaran untuk $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Pengaturan"
@@ -4167,14 +4151,8 @@
   "urlExistsErrorMsg": {
     "message": "URL ini saat ini digunakan oleh jaringan $1."
   },
-  "useDefault": {
-    "message": "Gunakan default"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Kelompokkan permintaan saldo akun"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
   },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"

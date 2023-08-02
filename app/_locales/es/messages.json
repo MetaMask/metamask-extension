@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addCustomIPFSGateway": {
-    "message": "Agregar puerta de enlace IPFS personalizada"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
-  },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
@@ -2753,9 +2747,6 @@
   "publicAddress": {
     "message": "Dirección pública"
   },
-  "queue": {
-    "message": "Cola"
-  },
   "queued": {
     "message": "En cola"
   },
@@ -2956,9 +2947,6 @@
   "revealTheSeedPhrase": {
     "message": "Revelar frase semilla"
   },
-  "reviewSpendingCap": {
-    "message": "Revise su límite de gasto"
-  },
   "revokeAllTokensTitle": {
     "message": "¿Revocar el permiso para acceder y transferir todos sus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3127,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprobar $1 sin límite preestablecido",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Establecer un límite de gasto para su $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Configuración"
@@ -4167,14 +4151,8 @@
   "urlExistsErrorMsg": {
     "message": "En este momento, la red $1 está utilizando esta dirección URL."
   },
-  "useDefault": {
-    "message": "Uso por defecto"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
   },
   "useNftDetection": {
     "message": "Detección automática de NFT"

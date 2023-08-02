@@ -6,18 +6,18 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     class="box page-container box--padding-top-8 box--padding-right-4 box--padding-bottom-8 box--padding-left-4 box--gap-4 box--flex-direction-row"
   >
     <h2
-      class="box mm-text mm-text--heading-lg box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--heading-lg mm-box--color-text-default"
     >
       Secret Recovery Phrase
     </h2>
     <p
-      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
          
         The 
         <a
-          class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360060826432-What-is-a-Secret-Recovery-Phrase-and-how-to-keep-your-crypto-wallet-secure"
           rel="noopener noreferrer"
           target="_blank"
@@ -26,7 +26,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
         </a>
          provides 
         <strong
-          class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
         >
           full access to your wallet and funds.
 
@@ -36,13 +36,13 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       </span>
     </p>
     <p
-      class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
     >
       <span>
          
         MetaMask is a 
         <a
-          class="box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://metamask.zendesk.com/hc/en-us/articles/360059952212-MetaMask-is-a-non-custodial-wallet"
           rel="noopener noreferrer"
           target="_blank"
@@ -57,18 +57,18 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
     >
       <span
-        class="box mm-icon mm-icon--size-lg box--display-inline-block box--flex-direction-row box--color-error-default"
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
         style="mask-image: url('./images/icons/danger.svg');"
       />
       <div>
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           <span>
              
             Make sure no one is looking at your screen. 
             <strong
-              class="box mm-text mm-text--body-md-bold mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-md-bold mm-box--color-text-default"
             >
               MetaMask Support will never request this.
             </strong>
@@ -80,7 +80,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
     </div>
     <form>
       <label
-        class="box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium box--display-inline-flex box--flex-direction-row box--align-items-center box--color-text-default"
+        class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
         for="password-box"
       >
         Enter password to continue
@@ -90,7 +90,7 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       >
         <input
           autocomplete="off"
-          class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-4 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+          class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
           data-testid="input-password"
           focused="true"
           id="password-box"
@@ -104,12 +104,12 @@ exports[`Reveal Seed Page should match snapshot 1`] = `
       class="box box--margin-top-auto box--display-flex box--gap-4 box--flex-direction-row"
     >
       <button
-        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-default box--background-color-transparent box--rounded-pill box--border-color-primary-default box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-secondary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
       >
         Cancel
       </button>
       <button
-        class="box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--width-full box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
         disabled=""
       >
         Next

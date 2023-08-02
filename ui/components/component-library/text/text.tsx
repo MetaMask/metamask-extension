@@ -1,12 +1,16 @@
-import React, { forwardRef, Ref } from 'react';
+import React from 'react';
 import classnames from 'classnames';
-import Box from '../../ui/box';
+
 import {
-  FontWeight,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { TextProps } from './text.types';
+
+import { Box } from '..';
+
+import type { PolymorphicRef, BoxProps } from '../box';
+
+import { TextProps, TextComponent } from './text.types';
 
 const getTextElementDefault = (variant: TextVariant) => {
   switch (variant) {
@@ -26,59 +30,51 @@ const getTextElementDefault = (variant: TextVariant) => {
   }
 };
 
-export const Text = forwardRef(function Text(
-  {
-    variant = TextVariant.bodyMd,
-    color = TextColor.textDefault,
-    fontWeight,
-    fontStyle,
-    textTransform,
-    textAlign,
-    textDirection,
-    overflowWrap,
-    ellipsis,
-    as,
-    className = '',
-    children,
-    ...props
-  }: TextProps,
-  ref: Ref<HTMLElement>,
-) {
-  // Check if as is set otherwise set a default tag based on variant
-  const Tag = as ?? getTextElementDefault(variant);
-  let strongTagFontWeight;
-
-  if (Tag === 'strong') {
-    strongTagFontWeight = FontWeight.Bold;
-  }
-
-  const computedClassName = classnames(
-    'mm-text',
-    className,
-    `mm-text--${variant}`,
+export const Text: TextComponent = React.forwardRef(
+  <C extends React.ElementType = 'p'>(
     {
-      [`mm-text--font-weight-${strongTagFontWeight || fontWeight}`]: Boolean(
-        strongTagFontWeight || fontWeight,
-      ),
-      [`mm-text--font-style-${String(fontStyle)}`]: Boolean(fontStyle),
-      [`mm-text--ellipsis`]: Boolean(ellipsis),
-      [`mm-text--text-transform-${String(textTransform)}`]:
-        Boolean(textTransform),
-      [`mm-text--text-align-${String(textAlign)}`]: Boolean(textAlign),
-      [`mm-text--overflow-wrap-${String(overflowWrap)}`]: Boolean(overflowWrap),
-    },
-  );
+      variant = TextVariant.bodyMd,
+      fontWeight,
+      fontStyle,
+      textTransform,
+      textAlign,
+      textDirection,
+      overflowWrap,
+      ellipsis,
+      className = '',
+      children,
+      ...props
+    }: TextProps<C>,
+    ref?: PolymorphicRef<C>,
+  ) => {
+    // Set tag based on variant
+    // If as prop is passed tag will be overridden
+    const tag = getTextElementDefault(variant);
+    const computedClassName = classnames(
+      'mm-text',
+      className,
+      `mm-text--${variant}`,
+      {
+        [`mm-text--font-weight-${fontWeight}`]: Boolean(fontWeight),
+        [`mm-text--font-style-${fontStyle}`]: Boolean(fontStyle),
+        [`mm-text--ellipsis`]: Boolean(ellipsis),
+        [`mm-text--text-transform-${textTransform}`]: Boolean(textTransform),
+        [`mm-text--text-align-${textAlign}`]: Boolean(textAlign),
+        [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
+      },
+    );
 
-  return (
-    <Box
-      className={classnames(computedClassName)}
-      as={Tag}
-      dir={textDirection}
-      color={color}
-      ref={ref}
-      {...props}
-    >
-      {children}
-    </Box>
-  );
-});
+    return (
+      <Box
+        className={classnames(computedClassName)}
+        as={tag}
+        dir={textDirection}
+        ref={ref}
+        color={TextColor.textDefault}
+        {...(props as BoxProps<C>)}
+      >
+        {children}
+      </Box>
+    );
+  },
+);

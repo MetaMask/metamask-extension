@@ -7,34 +7,34 @@ import { BannerBase, Icon, IconName, IconSize } from '..';
 import {
   BackgroundColor,
   IconColor,
-  SEVERITIES,
+  Severity,
 } from '../../../helpers/constants/design-system';
 import { BANNER_ALERT_SEVERITIES } from './banner-alert.constants';
 
 export const BannerAlert = ({
   children,
   className,
-  severity = SEVERITIES.INFO,
+  severity = Severity.Info,
   ...props
 }) => {
   const severityIcon = () => {
     switch (severity) {
-      case SEVERITIES.DANGER:
+      case Severity.Danger:
         return {
           name: IconName.Danger,
           color: IconColor.errorDefault,
         };
-      case SEVERITIES.WARNING:
+      case Severity.Warning:
         return {
           name: IconName.Warning,
           color: IconColor.warningDefault,
         };
-      case SEVERITIES.SUCCESS:
+      case Severity.Success:
         return {
           name: IconName.Confirmation,
           color: IconColor.successDefault,
         };
-      // Defaults to SEVERITIES.INFO
+      // Defaults to Severity.Info
       default:
         return {
           name: IconName.Info,
@@ -45,13 +45,13 @@ export const BannerAlert = ({
 
   const severityBackground = () => {
     switch (severity) {
-      case SEVERITIES.DANGER:
+      case Severity.Danger:
         return BackgroundColor.errorMuted;
-      case SEVERITIES.WARNING:
+      case Severity.Warning:
         return BackgroundColor.warningMuted;
-      case SEVERITIES.SUCCESS:
+      case Severity.Success:
         return BackgroundColor.successMuted;
-      // Defaults to SEVERITIES.INFO
+      // Defaults to Severity.Info
       default:
         return BackgroundColor.primaryMuted;
     }
@@ -84,8 +84,8 @@ BannerAlert.propTypes = {
    */
   className: PropTypes.string,
   /**
-   * Use the `severity` prop and the `SEVERITIES` object from `./ui/helpers/constants/design-system.js` to change the context of `Banner`.
-   * Possible options: `SEVERITIES.INFO`(Default), `SEVERITIES.WARNING`, `SEVERITIES.DANGER`, `SEVERITIES.SUCCESS`
+   * Use the `severity` prop and the `Severity` enum from `./ui/helpers/constants/design-system.js` to change the context of `Banner`.
+   * Possible options: `Severity.Info`(Default), `Severity.Warning`, `Severity.Danger`, `Severity.Success`
    */
   severity: PropTypes.oneOf(Object.values(BANNER_ALERT_SEVERITIES)),
   /**

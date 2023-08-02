@@ -14,7 +14,6 @@ import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message
 import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
 import {
   BLOCK_SIZES,
-  JustifyContent,
   DISPLAY,
   TextColor,
   IconColor,
@@ -38,6 +37,7 @@ import TransactionDetailItem from '../../../components/app/transaction-detail-it
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
+import CustomNonce from '../../../components/app/custom-nonce';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -351,55 +351,6 @@ export default class ConfirmApproveContent extends Component {
     return null;
   }
 
-  renderCustomNonceContent() {
-    const { t } = this.context;
-    const {
-      useNonceField,
-      customNonceValue,
-      updateCustomNonce,
-      getNextNonce,
-      nextNonce,
-      showCustomizeNonceModal,
-    } = this.props;
-    return (
-      <>
-        {useNonceField && (
-          <div className="confirm-approve-content__custom-nonce-content">
-            <Box
-              className="confirm-approve-content__custom-nonce-header"
-              justifyContent={JustifyContent.flexStart}
-            >
-              <Text variant={TextVariant.bodySm} as="h6">
-                {t('nonce')}
-              </Text>
-              <Button
-                type="link"
-                className="confirm-approve-content__custom-nonce-edit"
-                onClick={() =>
-                  showCustomizeNonceModal({
-                    nextNonce,
-                    customNonceValue,
-                    updateCustomNonce,
-                    getNextNonce,
-                  })
-                }
-              >
-                {t('edit')}
-              </Button>
-            </Box>
-            <Text
-              className="confirm-approve-content__custom-nonce-value"
-              variant={TextVariant.bodySmBold}
-              as="h6"
-            >
-              {customNonceValue || nextNonce}
-            </Text>
-          </div>
-        )}
-      </>
-    );
-  }
-
   getTokenName() {
     const { tokenId, assetName, assetStandard, tokenSymbol } = this.props;
     const { t } = this.context;
@@ -586,6 +537,11 @@ export default class ConfirmApproveContent extends Component {
       userAcknowledgedGasMissing,
       setUserAcknowledgedGasMissing,
       renderSimulationFailureWarning,
+      nextNonce,
+      getNextNonce,
+      customNonceValue,
+      updateCustomNonce,
+      showCustomizeNonceModal,
     } = this.props;
     const { showFullTxDetails, setShowContractDetails } = this.state;
 
@@ -709,7 +665,20 @@ export default class ConfirmApproveContent extends Component {
           {useNonceField &&
             this.renderApproveContentCard({
               showHeader: false,
-              content: this.renderCustomNonceContent(),
+              content: (
+                <CustomNonce
+                  nextNonce={nextNonce}
+                  customNonceValue={customNonceValue}
+                  showCustomizeNonceModal={() => {
+                    showCustomizeNonceModal({
+                      nextNonce,
+                      customNonceValue,
+                      updateCustomNonce,
+                      getNextNonce,
+                    });
+                  }}
+                />
+              ),
               useNonceField,
               noBorder: !showFullTxDetails,
               footer: (

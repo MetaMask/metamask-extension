@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resultType is 'Malicious 1`] = `
+<div
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+>
+  <span
+    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+    style="mask-image: url('./images/icons/danger.svg');"
+  />
+  <div>
+    <h5
+      class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
+      data-testid="mm-banner-base-title"
+    >
+      This is a deceptive request
+    </h5>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+    >
+      If you approve this request, a third party known for scams might take all your assets.
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+    >
+      <span
+        class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+        style="mask-image: url('./images/icons/security-tick.svg');"
+      />
+      <span>
+         
+        Security advice by 
+        <a
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://blockaid.io/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Blockaid
+        </a>
+        
+         
+      </span>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resultType is 'Warning 1`] = `
+<div
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+>
+  <span
+    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+    style="mask-image: url('./images/icons/warning.svg');"
+  />
+  <div>
+    <h5
+      class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
+      data-testid="mm-banner-base-title"
+    >
+      This is a deceptive request
+    </h5>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+    >
+      If you approve this request, a third party known for scams might take all your assets.
+    </p>
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+    >
+      <span
+        class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+        style="mask-image: url('./images/icons/security-tick.svg');"
+      />
+      <span>
+         
+        Security advice by 
+        <a
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://blockaid.io/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Blockaid
+        </a>
+        
+         
+      </span>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Blockaid Banner Alert should render details when provided 1`] = `
+<div>
+  <div
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+      style="mask-image: url('./images/icons/warning.svg');"
+    />
+    <div>
+      <h5
+        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
+        data-testid="mm-banner-base-title"
+      >
+        This is a deceptive request
+      </h5>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+      >
+        If you approve this request, a third party known for scams might take all your assets.
+      </p>
+      <div
+        class="disclosure"
+      >
+        <details>
+          <summary
+            class="disclosure__summary is-arrow"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+            >
+              See details
+            </p>
+            <span
+              class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+              style="mask-image: url('./images/icons/arrow-up.svg');"
+            />
+          </summary>
+          <div
+            class="disclosure__content normal"
+          >
+            <ul
+              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+            >
+              <li>
+                • 
+                Operator is an EOA
+              </li>
+              <li>
+                • 
+                Operator is untrusted according to previous activity
+              </li>
+            </ul>
+          </div>
+          <div
+            class="disclosure__footer"
+          />
+        </details>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+      >
+        <span
+          class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+          style="mask-image: url('./images/icons/security-tick.svg');"
+        />
+        <span>
+           
+          Security advice by 
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://blockaid.io/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Blockaid
+          </a>
+          
+           
+        </span>
+      </p>
+    </div>
+  </div>
+</div>
+`;

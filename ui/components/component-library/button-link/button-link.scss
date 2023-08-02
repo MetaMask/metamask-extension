@@ -1,36 +1,33 @@
 .mm-button-link {
-  &:hover {
-    opacity: 0.5;
+  &:hover:not(&--disabled) {
+    color: var(--color-primary-default);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
   }
 
-  &:active {
-    opacity: 0.5;
+  &:active:not(&--disabled) {
+    color: var(--color-primary-alternative);
   }
 
   &--disabled {
-    &:hover {
-      opacity: 0.3;
-    }
-
     &:active {
-      opacity: 0.3;
+      color: var(--color-primary-default);
     }
   }
 
   &--type-danger {
     &:hover {
       color: var(--color-error-default);
-      opacity: 0.5;
     }
 
     &:active {
-      color: var(--color-error-default);
-      opacity: 0.5;
+      color: var(--color-error-alternative);
     }
   }
 
-  &--type-danger#{&}--disabled:hover {
-    opacity: 0.3;
+  &--type-danger#{&}--disabled:active {
+    color: var(--color-error-default);
   }
 
   &--size-auto {
@@ -46,5 +43,10 @@
     font-size: inherit;
     line-height: inherit;
     letter-spacing: inherit;
+  }
+
+  &--size-inherit:hover:not(&--disabled) {
+    text-decoration-thickness: auto;
+    text-underline-offset: 2px;
   }
 }

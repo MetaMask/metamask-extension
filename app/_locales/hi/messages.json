@@ -183,12 +183,6 @@
   "addContact": {
     "message": "संपर्क जोड़ें"
   },
-  "addCustomIPFSGateway": {
-    "message": "कस्टम IPFS गेटवे जोड़ें"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS (आईपीएफएस) गेटवे तृतीय पक्षों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का उपयोग जारी रख सकते हैं।"
-  },
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
   },
@@ -2753,9 +2747,6 @@
   "publicAddress": {
     "message": "सार्वजनिक पता"
   },
-  "queue": {
-    "message": "कतार"
-  },
   "queued": {
     "message": "कतारबद्ध"
   },
@@ -2956,9 +2947,6 @@
   "revealTheSeedPhrase": {
     "message": "सीड फ़्रेज़ दिखाएं"
   },
-  "reviewSpendingCap": {
-    "message": "अपनी खर्च के सीमा की समीक्षा करें"
-  },
   "revokeAllTokensTitle": {
     "message": "आपके सभी $1 को एक्सेस और स्थानांतरित करने की अनुमति निरस्त करें?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3127,6 @@
   "setApprovalForAllTitle": {
     "message": "बिना किसी खर्च सीमा के $1 स्वीकृत करें",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "अपने $1 के लिए खर्च की सीमा को निर्धारित करें",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "सेटिंग"
@@ -4167,14 +4151,8 @@
   "urlExistsErrorMsg": {
     "message": "यह URL वर्तमान में $1 नेटवर्क द्वारा उपयोग किया जाता है।"
   },
-  "useDefault": {
-    "message": "डिफॉल्ट का उपयोग करें"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "खाता के शेष राशि के अनुरोधों को बैच करें"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "हम खातों को बैच करते हैं और Infura से आपकी शेष राशि को प्रतिक्रियात्मक रूप से दिखाने के लिए पूछताछ करते हैं। यदि आप इसे बंद कर देते हैं, तो केवल सक्रिय खातों के बारे में पूछताछ की जाएगी। कुछ डैप तब तक काम नहीं करेंगे जब तक आप अपने वॉलेट को कनेक्ट नहीं करते।"
   },
   "useNftDetection": {
     "message": "एनएफटी को ऑटो-डिटेक्ट करें"

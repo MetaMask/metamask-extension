@@ -31,10 +31,10 @@ describe('Test Snap bip-32', function () {
         await driver.delay(1000);
 
         // find and scroll to the bip32 test and connect
-        const snapButton1 = await driver.findElement('#connectBip32');
+        const snapButton1 = await driver.findElement('#connectbip32');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectBip32');
+        await driver.clickElement('#connectbip32');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -84,7 +84,7 @@ describe('Test Snap bip-32', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectBip32',
+          css: '#connectbip32',
           text: 'Reconnect to BIP-32 Snap',
         });
 

@@ -2,10 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
 
 import Card from '../card';
-import Box from '../box';
 
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
@@ -16,7 +15,6 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/UI/Logo',
-
   parameters: {
     docs: {
       page: README,

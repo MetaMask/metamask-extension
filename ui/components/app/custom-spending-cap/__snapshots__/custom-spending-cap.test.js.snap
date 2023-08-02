@@ -3,10 +3,10 @@
 exports[`CustomSpendingCap should match snapshot 1`] = `
 <div>
   <div
-    class="box custom-spending-cap box--padding-top-2 box--padding-right-6 box--padding-left-6 box--display-flex box--gap-2 box--flex-direction-column box--align-items-flex-start box--background-color-background-alternative box--rounded-sm"
+    class="mm-box custom-spending-cap mm-box--padding-top-2 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
   >
     <div
-      class="box custom-spending-cap__input box--display-block box--flex-direction-row box--justify-content-center"
+      class="mm-box custom-spending-cap__input mm-box--display-block mm-box--justify-content-center"
     >
       <label
         for="custom-spending-cap"
@@ -24,9 +24,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                 class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
               >
                 <h6
-                  class="box mm-text mm-text--body-sm-bold box--display-inline-block box--flex-direction-row box--color-text-default"
-                  for="custom-spending-cap"
-                  tag="label"
+                  class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
                 >
                   Custom spending cap
                 </h6>
@@ -44,21 +42,12 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
                       tabindex="0"
                     >
                       <span
-                        class="box mm-icon mm-icon--size-inherit box--display-inline-block box--flex-direction-row box--color-inherit"
+                        class="mm-box mm-icon mm-icon--size-inherit mm-box--display-inline-block mm-box--color-inherit"
                         style="mask-image: url('./images/icons/question.svg');"
                       />
                     </div>
                   </div>
                 </div>
-              </div>
-              <div
-                class="mm-box form-field__heading-detail mm-box--margin-right-0 mm-box--margin-bottom-2 mm-box--text-align-end"
-              >
-                <button
-                  class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
-                >
-                  Use default
-                </button>
               </div>
             </div>
             <input
@@ -67,40 +56,47 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
               id="custom-spending-cap"
               placeholder="Enter a number"
               type="text"
-              value="10"
+              value="7"
             />
             
           </div>
         </div>
         <div
-          class="box custom-spending-cap__max box--margin-left-auto box--padding-right-4 box--padding-bottom-2 box--flex-direction-row box--text-align-end box--width-max"
+          class="mm-box custom-spending-cap__max mm-box--margin-left-auto mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--text-align-end mm-box--width-max"
         >
           <button
-            class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           >
             Max
           </button>
         </div>
         <div
-          class="box custom-spending-cap__description box--flex-direction-row"
+          class="mm-box custom-spending-cap__description"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--padding-top-2 box--padding-bottom-2 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-top-2 mm-box--color-text-default"
           >
             <span>
                
               This allows the third party to spend 
-              <h6
-                class="box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              <span
+                class="mm-box mm-text custom-spending-cap__input-value-and-token-name mm-text--body-sm-bold mm-box--color-text-default"
               >
-                10
+                7
                  
                 TST
-              </h6>
+              </span>
                from your current balance.
                
             </span>
           </h6>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--margin-bottom-2 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
+            target="_blank"
+          >
+            Learn more
+          </a>
         </div>
       </label>
     </div>

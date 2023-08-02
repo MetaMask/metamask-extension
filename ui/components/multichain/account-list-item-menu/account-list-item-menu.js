@@ -20,12 +20,12 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
-  Text,
   IconName,
   Popover,
   PopoverPosition,
   ModalFocus,
   PopoverRole,
+  Text,
 } from '../../component-library';
 import {
   MetaMetricsEventCategory,
@@ -175,7 +175,9 @@ export const AccountListItemMenu = ({
                 ref={removeJWTItemRef}
                 data-testid="account-options-menu__remove-jwt"
                 onClick={async () => {
-                  const token = await dispatch(mmiActions.getCustodianToken());
+                  const token = await dispatch(
+                    mmiActions.getCustodianToken(identity.address),
+                  );
                   const custodyAccountDetails = await dispatch(
                     mmiActions.getAllCustodianAccountsWithToken(
                       keyring.type.split(' - ')[1],
