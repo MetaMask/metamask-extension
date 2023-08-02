@@ -694,6 +694,9 @@ jobs:
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+      - run:
+          name: check yarn resolutions
+          command: yarn --check-resolutions
 
   test-lint-changelog:
     executor: node-browsers
@@ -729,7 +732,7 @@ jobs:
           at: .
       - run:
           name: yarn audit
-          command: .circleci/scripts/yarn-audit.sh
+          command: yarn audit
 
   test-deps-depcheck:
     executor: node-browsers
