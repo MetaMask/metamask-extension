@@ -47,6 +47,10 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     const tag = href ? 'a' : as || 'button';
     const tagProps = href && tag === 'a' ? { href, ...props } : props;
 
+    if (tag === 'a' && loading) {
+      throw new Error('Loading is not supported on anchor tags');
+    }
+
     return (
       <Text
         as={tag}
