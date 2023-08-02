@@ -36,7 +36,7 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
         paddingRight={0}
         size={size === ButtonLinkSize.Inherit ? null : size}
         backgroundColor={BackgroundColor.transparent}
-        color={danger ? Color.errorDefault : Color.primaryDefault}
+        color={color || (danger ? Color.errorDefault : Color.primaryDefault)}
         borderRadius={null}
         startIconProps={{
           size:
