@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addCustomIPFSGateway": {
-    "message": "Agregar puerta de enlace IPFS personalizada"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
-  },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
