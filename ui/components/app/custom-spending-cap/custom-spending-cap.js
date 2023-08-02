@@ -6,21 +6,19 @@ import BigNumber from 'bignumber.js';
 import { addHexPrefix } from 'ethereumjs-util';
 
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../../ui/box';
 import FormField from '../../ui/form-field';
-import { ButtonLink, Icon, IconName, Text } from '../../component-library';
-
+import { Text, ButtonLink, Icon, IconName, Box } from '../../component-library';
 import {
   AlignItems,
+  Display,
+  FlexDirection,
   TextAlign,
   TextVariant,
   JustifyContent,
   Size,
-  BLOCK_SIZES,
+  BlockSize,
   BackgroundColor,
   TextColor,
-  Display,
-  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
@@ -279,7 +277,7 @@ export default function CustomSpendingCap({
               titleDetailWrapperProps={{ marginBottom: 2, marginRight: 0 }}
             />
             <Box
-              width={BLOCK_SIZES.MAX}
+              width={BlockSize.Max}
               marginLeft="auto"
               paddingRight={4}
               paddingBottom={2}
