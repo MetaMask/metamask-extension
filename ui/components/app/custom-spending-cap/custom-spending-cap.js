@@ -276,7 +276,6 @@ export default function CustomSpendingCap({
               ? TextColor.errorDefault
               : TextColor.textDefault,
             paddingInlineEnd: 4,
-            min: 0,
           }}
           id="custom-spending-cap"
           onChange={(e) => handleChange(e.target.value)}
@@ -294,7 +293,6 @@ export default function CustomSpendingCap({
             </ButtonLink>
           }
           width={BlockSize.Full}
-          type={TEXT_FIELD_TYPES.NUMBER}
         />
         <HelpText
           color={error ? TextColor.errorDefault : TextColor.textDefault}
