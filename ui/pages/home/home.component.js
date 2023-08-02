@@ -154,6 +154,7 @@ export default class Home extends PureComponent {
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
     swapsFetchParams: PropTypes.object,
+    location: PropTypes.object,
     shouldShowWeb3ShimUsageNotification: PropTypes.bool.isRequired,
     setWeb3ShimUsageAlertDismissed: PropTypes.func.isRequired,
     originOfCurrentTab: PropTypes.string,
@@ -218,7 +219,9 @@ export default class Home extends PureComponent {
       hasWatchNftPendingApprovals,
       swapsFetchParams,
       hasTransactionPendingApprovals,
+      location,
     } = this.props;
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     if (shouldCloseNotificationPopup(props)) {
       this.state.notificationClosing = true;
@@ -229,6 +232,7 @@ export default class Home extends PureComponent {
       hasWatchTokenPendingApprovals ||
       hasWatchNftPendingApprovals ||
       (!isNotification &&
+        !stayOnHomePage &&
         (showAwaitingSwapScreen || haveSwapsQuotes || swapsFetchParams))
     ) {
       this.state.redirecting = true;
@@ -289,19 +293,22 @@ export default class Home extends PureComponent {
       haveSwapsQuotes,
       showAwaitingSwapScreen,
       swapsFetchParams,
+      location,
       pendingConfirmations,
       hasApprovalFlows,
     } = this.props;
+    const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     this.shouldCloseCurrentWindow();
     ///: END:ONLY_INCLUDE_IN
 
-    if (!isNotification && showAwaitingSwapScreen) {
+    const canRedirect = !isNotification && !stayOnHomePage;
+    if (canRedirect && showAwaitingSwapScreen) {
       history.push(AWAITING_SWAP_ROUTE);
-    } else if (!isNotification && haveSwapsQuotes) {
+    } else if (canRedirect && haveSwapsQuotes) {
       history.push(VIEW_QUOTE_ROUTE);
-    } else if (!isNotification && swapsFetchParams) {
+    } else if (canRedirect && swapsFetchParams) {
       history.push(BUILD_QUOTE_ROUTE);
     } else if (firstPermissionsRequestId) {
       history.push(`${CONNECT_ROUTE}/${firstPermissionsRequestId}`);

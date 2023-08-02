@@ -3,10 +3,10 @@
 exports[`CustomSpendingCap should match snapshot 1`] = `
 <div>
   <div
-    class="box custom-spending-cap box--padding-top-2 box--padding-right-6 box--padding-left-6 box--display-flex box--gap-2 box--flex-direction-column box--align-items-flex-start box--background-color-background-alternative box--rounded-sm"
+    class="mm-box custom-spending-cap mm-box--padding-top-2 mm-box--padding-right-6 mm-box--padding-left-6 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-flex-start mm-box--background-color-background-alternative mm-box--rounded-sm"
   >
     <div
-      class="box custom-spending-cap__input box--display-block box--flex-direction-row box--justify-content-center"
+      class="mm-box custom-spending-cap__input mm-box--display-block mm-box--justify-content-center"
     >
       <label
         for="custom-spending-cap"
@@ -62,7 +62,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="box custom-spending-cap__max box--margin-left-auto box--padding-right-4 box--padding-bottom-2 box--flex-direction-row box--text-align-end box--width-max"
+          class="mm-box custom-spending-cap__max mm-box--margin-left-auto mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--text-align-end mm-box--width-max"
         >
           <button
             class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
@@ -71,7 +71,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
           </button>
         </div>
         <div
-          class="box custom-spending-cap__description box--flex-direction-row"
+          class="mm-box custom-spending-cap__description"
         >
           <h6
             class="mm-box mm-text mm-text--body-sm mm-box--padding-top-2 mm-box--color-text-default"

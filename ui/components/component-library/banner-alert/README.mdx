@@ -22,35 +22,35 @@ The `BannerAlert` accepts all `BannerBase` component props below
 
 ### Severity
 
-Use the `severity` prop and the `SEVERITIES` object from `./ui/helpers/constants/design-system.js` to change the context of `BannerAlert`.
+Use the `severity` prop and the `Severity` enum from `./ui/helpers/constants/design-system.js` to change the context of `BannerAlert`.
 
-Optional: `BANNER_ALERT_SEVERITIES` from `./banner` object can be used instead of `SEVERITIES`.
+Optional: `BANNER_ALERT_SEVERITIES` from `./banner` object can be used instead of `Severity`.
 
 Possible options:
 
-- `SEVERITIES.INFO` Default
-- `SEVERITIES.WARNING`
-- `SEVERITIES.DANGER`
-- `SEVERITIES.SUCCESS`
+- `Severity.Info` Default
+- `Severity.Warning`
+- `Severity.Danger`
+- `Severity.Success`
 
 <Canvas>
-  <Story id="components-componentlibrary-banneralert--severity" />
+  <Story id="components-componentlibrary-banneralert--severity-story" />
 </Canvas>
 
 ```jsx
 import { BannerAlert } from '../../component-library';
-import { SEVERITIES } from '../../../helpers/constants/design-system';
+import { Severity } from '../../../helpers/constants/design-system';
 
 <BannerAlert title="Info">
   This is a demo of severity Info.
 </BannerAlert>
-<BannerAlert severity={SEVERITIES.WARNING} title="Warning">
+<BannerAlert severity={Severity.Warning} title="Warning">
   This is a demo of severity Warning.
 </BannerAlert>
-<BannerAlert severity={SEVERITIES.DANGER} title="Danger">
+<BannerAlert severity={Severity.Danger} title="Danger">
   This is a demo of severity Danger.
 </BannerAlert>
-<BannerAlert severity={SEVERITIES.SUCCESS} title="Success">
+<BannerAlert severity={Severity.Success} title="Success">
   This is a demo of severity Success.
 </BannerAlert>
 ```
