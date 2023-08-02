@@ -331,7 +331,7 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('#addTransaction', function () {
+  describe('_addTransaction', function () {
     const selectedAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
     const recipientAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
 
@@ -750,7 +750,7 @@ describe('Transaction Controller', function () {
         providerResultStub.eth_estimateGas = '0x5209';
 
         signStub = sinon
-          .stub(txController, 'signTransaction')
+          .stub(txController, '_signTransaction')
           .callsFake(() => Promise.resolve());
 
         const pubStub = sinon
