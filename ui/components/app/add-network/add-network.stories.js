@@ -109,9 +109,9 @@ export default {
       },
       {
         chainId: '2046399126',
-        nickname: 'Europa Liquidity Hub | SKALE',
+        nickname: 'SKALE Europa DeFi Hub',
         rpcUrl: 'https://mainnet.skalenodes.com/v1/elated-tan-skat',
-        ticker: 'SFUEL',
+        ticker: 'sFUEL',
         rpcPrefs: {
           blockExplorerUrl:
             'https://elated-tan-skat.explorer.mainnet.skalenodes.com/',
