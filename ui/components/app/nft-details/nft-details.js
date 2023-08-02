@@ -187,7 +187,8 @@ export default function NftDetails({ nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={image ? nftImageURL : ''}
+              nftImageURL={nftImageURL}
+              src={image}
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
@@ -198,6 +199,7 @@ export default function NftDetails({ nft }) {
           <Box
             flexDirection={FlexDirection.Column}
             className="nft-details__info"
+            marginTop={4}
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>
