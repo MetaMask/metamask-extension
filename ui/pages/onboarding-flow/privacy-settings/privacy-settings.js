@@ -113,7 +113,6 @@ export default function PrivacySettings() {
           <Text
             variant={TextVariant.headingLg}
             as="h2"
-            fontWeight={FontWeight.Bold}
           >
             {t('advancedConfiguration')}
           </Text>
