@@ -13,6 +13,7 @@ import {
   BlockSize,
   Display,
   FlexDirection,
+  OverflowWrap,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -104,17 +105,29 @@ export default function SnapAccountDetailPage() {
             })}
           </Detail>
           <Detail title={t('snapDetailDeveloper')}>
-            <Text variant={TextVariant.bodyMd}>{currentSnap.developer}</Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              overflowWrap={OverflowWrap.BreakWord}
+            >
+              {currentSnap.developer}
+            </Text>
           </Detail>
-          <Detail title={t('snapDetailWebsite')}>{currentSnap.website}</Detail>
+          <Detail title={t('snapDetailWebsite')}>
+            <Text overflowWrap={OverflowWrap.BreakWord}>
+              {currentSnap.website}
+            </Text>
+          </Detail>
           <Detail title={t('snapDetailAudits')}>
             {currentSnap.auditUrls.map((auditLink, index) => {
               return (
-                <Text key={`audit-link-${index}`}>
-                  <Button variant={BUTTON_VARIANT.LINK} href={auditLink}>
-                    {auditLink}
-                  </Button>
-                </Text>
+                <Button
+                  key={`audit-link-${index}`}
+                  variant={BUTTON_VARIANT.LINK}
+                  overflowWrap={OverflowWrap.BreakWord}
+                  href={auditLink}
+                >
+                  {auditLink}
+                </Button>
               );
             })}
           </Detail>
