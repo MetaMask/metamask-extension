@@ -58,7 +58,7 @@ describe('migration #92', () => {
       other: 'data',
       NetworkController: {
         providerConfig: {
-          ticker: 'ETH',
+          ticker: 'GoerliETH',
           type: InfuraNetworkType.goerli,
           chainId: '5',
           nickname: 'Goerli Testnet',
