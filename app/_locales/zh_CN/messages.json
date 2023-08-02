@@ -183,12 +183,6 @@
   "addContact": {
     "message": "添加联系信息"
   },
-  "addCustomIPFSGateway": {
-    "message": "添加自定义IPFS网关"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
-  },
   "addCustomNetwork": {
     "message": "添加自定义网络"
   },

@@ -146,6 +146,13 @@ function defaultFixture() {
             id: 22,
             isShown: true,
           },
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          23: {
+            date: null,
+            id: 23,
+            isShown: false,
+          },
+          ///: END:ONLY_INCLUDE_IN
         },
       },
       AppStateController: {
