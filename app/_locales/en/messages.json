@@ -189,12 +189,6 @@
   "addContact": {
     "message": "Add contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Add custom IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
-  },
   "addCustomNetwork": {
     "message": "Add custom network"
   },
@@ -252,7 +246,6 @@
   "addIPFSGateway": {
     "message": "Add your preferred IPFS gateway"
   },
-
   "addMemo": {
     "message": "Add memo"
   },

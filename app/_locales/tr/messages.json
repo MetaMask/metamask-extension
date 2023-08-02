@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Kişi ekle"
   },
-  "addCustomIPFSGateway": {
-    "message": "Özel IPFS ağ geçidi ekle"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
-  },
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
