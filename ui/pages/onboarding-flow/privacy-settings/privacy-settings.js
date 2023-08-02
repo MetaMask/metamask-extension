@@ -321,8 +321,7 @@ export default function PrivacySettings() {
         </div>
         <Button
           variant={BUTTON_VARIANT.PRIMARY}
-          style={{ width: '100%' }}
-          rounded
+          block
           onClick={handleSubmit}
         >
           {t('done')}
