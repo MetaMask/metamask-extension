@@ -32,6 +32,7 @@ import {
   SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
   SINGLE_CALL_BALANCES_ADDRESS_EUROPA_SKALE,
   SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE,
+  SINGLE_CALL_BALANCES_ADDRESS_NEBULA_SKALE,
 } from '../constants/contracts';
 import { previousValueComparator } from './util';
 
@@ -336,6 +337,13 @@ export default class AccountTracker {
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_CALYPSO_SKALE,
+          );
+          break;
+
+        case CHAIN_IDS.NEBULA_SKALE:
+          await this._updateAccountsViaBalanceChecker(
+            addresses,
+            SINGLE_CALL_BALANCES_ADDRESS_NEBULA_SKALE,
           );
           break;
 

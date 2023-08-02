@@ -9,6 +9,7 @@ const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
 const EUROPA_IMAGE_URL = './images/europa.svg';
 const CALYPSO_IMAGE_URL = './images/calypso.svg';
+const NEBULA_IMAGE_URL = './images/nebula.png';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -128,6 +129,17 @@ export default {
           blockExplorerUrl:
             'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com/',
           imageUrl: CALYPSO_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '1482601649',
+        nickname: 'SKALE Nebula Gaming Hub',
+        rpcUrl: 'https://mainnet.skalenodes.com/v1/green-giddy-denebola',
+        ticker: 'sFUEL',
+        rpcPrefs: {
+          blockExplorerUrl:
+            'https://green-giddy-denebola.explorer.mainnet.skalenodes.com/',
+          imageUrl: NEBULA_IMAGE_URL,
         },
       },
     ],

@@ -159,6 +159,7 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   EUROPA_SKALE: '0x79f99296',
   CALYPSO_SKALE: '0x5d456c62',
+  NEBULA_SKALE: '0x585eb4b1',
 } as const;
 
 /**
@@ -187,6 +188,7 @@ export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const EUROPA_SKALE_DISPLAY_NAME = 'SKALE Europa DeFi Hub';
 export const CALYPSO_SKALE_DISPLAY_NAME = 'SKALE Calypso NFT Hub';
+export const NEBULA_SKALE_DISPLAY_NAME = 'SKALE Nebula Gaming Hub';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -261,6 +263,7 @@ export const SFUEL_TOKEN_IMAGE_URL = './images/sfuel.png';
 
 export const EUROPA_LOGO_IMAGE_URL = './images/europa.svg';
 export const CALYPSO_LOGO_IMAGE_URL = './images/calypso.svg';
+export const NEBULA_LOGO_IMAGE_URL = './images/nebula.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -398,6 +401,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.EUROPA_SKALE]: EUROPA_LOGO_IMAGE_URL,
   [CHAIN_IDS.CALYPSO_SKALE]: CALYPSO_LOGO_IMAGE_URL,
+  [CHAIN_IDS.NEBULA_SKALE]: NEBULA_LOGO_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -575,6 +579,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.EUROPA_SKALE
     | typeof CHAIN_IDS.CALYPSO_SKALE
+    | typeof CHAIN_IDS.NEBULA_SKALE
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -774,6 +779,17 @@ export const FEATURED_RPCS: RPCDefinition[] = [
       blockExplorerUrl:
         'https://honorable-steel-rasalhague.explorer.mainnet.skalenodes.com',
       imageUrl: CALYPSO_LOGO_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.NEBULA_SKALE,
+    nickname: NEBULA_SKALE_DISPLAY_NAME,
+    rpcUrl: 'https://mainnet.skalenodes.com/v1/green-giddy-denebola',
+    ticker: CURRENCY_SYMBOLS.SFUEL,
+    rpcPrefs: {
+      blockExplorerUrl:
+        'https://green-giddy-denebola.explorer.mainnet.skalenodes.com',
+      imageUrl: NEBULA_LOGO_IMAGE_URL,
     },
   },
 ];
