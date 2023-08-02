@@ -44,6 +44,7 @@ export const ConnectedSiteMenu = ({
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.center}
+      backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Tooltip
         title={
@@ -63,11 +64,9 @@ export const ConnectedSiteMenu = ({
           badge={
             <Box
               backgroundColor={globalMenuColor}
-              className={`multichain-connected-site-menu__badge ${
-                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
-                  ? 'not-connected'
-                  : ''
-              }`}
+              className={classNames('multichain-connected-site-menu__badge', {
+                'not-connected': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+              })}
               borderRadius={BorderRadius.full}
               borderColor={
                 status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT

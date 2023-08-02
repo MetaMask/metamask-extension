@@ -141,6 +141,18 @@ function defaultFixture() {
             id: 21,
             isShown: true,
           },
+          22: {
+            date: null,
+            id: 22,
+            isShown: true,
+          },
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          23: {
+            date: null,
+            id: 23,
+            isShown: false,
+          },
+          ///: END:ONLY_INCLUDE_IN
         },
       },
       AppStateController: {
@@ -215,6 +227,7 @@ function defaultFixture() {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -346,6 +359,7 @@ function onboardingFixture() {
           rpcUrl: 'http://localhost:8545',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -355,6 +369,7 @@ function onboardingFixture() {
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
             networkConfigurationId: 'networkConfigurationId',
+            type: 'rpc',
           },
         },
       },

@@ -6,7 +6,7 @@ import {
   TextColor,
   IconColor,
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
@@ -62,7 +62,7 @@ const SnapAvatar = ({
       ) : (
         <AvatarBase
           size={avatarSize}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}

@@ -1,1 +1,1 @@
-export { default } from './transaction-failed';
+export { default } from './transaction-failed-modal';

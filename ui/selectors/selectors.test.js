@@ -4,6 +4,7 @@ import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
+  NETWORK_TYPES,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
 
@@ -313,6 +314,73 @@ describe('Selectors', () => {
       });
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    });
+
+    it('properly assigns a network as removable', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const mainnet = networks.find(
+        (network) => network.id === NETWORK_TYPES.MAINNET,
+      );
+      expect(mainnet.removable).toBe(false);
+
+      const customNetwork = networks.find(
+        (network) => network.id === 'some-config-name',
+      );
+      expect(customNetwork.removable).toBe(true);
+    });
+  });
+
+  describe('#getCurrentNetwork', () => {
+    it('returns the correct custom network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.networkConfigurations
+              .testNetworkConfigurationId,
+            // 0x1 would collide with Ethereum Mainnet
+            chainId: '0x1',
+            // type of "rpc" signals custom network
+            type: 'rpc',
+          },
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
+      expect(currentNetwork.chainId).toBe('0x1');
+    });
+
+    it('returns the correct mainnet network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: '0x1',
+            // Changing type to 'mainnet' represents Ethereum Mainnet
+            type: 'mainnet',
+          },
+        },
+      };
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
     });
   });
 

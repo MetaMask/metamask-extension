@@ -7,7 +7,7 @@ exports[`App Header should match snapshot 1`] = `
     data-testid="app-header-logo"
   >
     <button
-      class="box app-header__logo-container app-header__logo-container--clickable box--flex-direction-row box--background-color-transparent"
+      class="mm-box app-header__logo-container app-header__logo-container--clickable mm-box--background-color-transparent"
       data-testid="app-header-logo"
     >
       <svg
@@ -212,30 +212,30 @@ exports[`App Header should match snapshot 1`] = `
           disabled=""
         >
           <div
-            class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            G
+            C
           </div>
           <p
-            class="box mm-text mm-text--body-sm mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
           >
-            Goerli
+            Chain 5
           </p>
           <span
-            class="box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </button>
       </div>
       <button
-        class="box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md mm-text--ellipsis box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-transparent box--rounded-lg"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md-medium mm-text--ellipsis mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="account-menu-icon"
       >
         <span
-          class="box mm-text mm-text--inherit mm-text--ellipsis box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--color-primary-inverse"
+          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--color-primary-inverse"
         >
           <div
-            class="box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-background-default box--border-style-solid box--border-width-1"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-account mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-background-default box--border-style-solid box--border-width-1"
           >
             <div
               class="mm-avatar-account__jazzicon"
@@ -278,12 +278,12 @@ exports[`App Header should match snapshot 1`] = `
             </div>
           </div>
           <span
-            class="box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--ellipsis mm-box--color-text-default"
           >
             Test Account
           </span>
           <span
-            class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
             style="mask-image: url('./images/icons/arrow-down.svg');"
           />
         </span>
@@ -304,7 +304,7 @@ exports[`App Header should match snapshot 1`] = `
               data-testid="account-options-menu-button"
             >
               <span
-                class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/more-vertical.svg');"
               />
             </button>

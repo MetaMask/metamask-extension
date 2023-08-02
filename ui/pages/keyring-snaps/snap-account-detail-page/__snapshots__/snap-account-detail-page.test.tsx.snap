@@ -12,16 +12,16 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
         class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <button
-          class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--margin-right-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-right-4 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         >
           Create a Snap Account
         </button>
         <span
-          class="box mm-icon mm-icon--size-md box--margin-right-4 box--display-inline-block box--flex-direction-row box--color-inherit"
+          class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-4 mm-box--display-inline-block mm-box--color-inherit"
           style="mask-image: url('./images/icons/arrow-right.svg');"
         />
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
         >
           Metamask Simple Keyring
         </p>
@@ -33,7 +33,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <h2
-            class="box mm-text mm-text--heading-lg box--margin-right-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--heading-lg mm-box--margin-right-1 mm-box--color-text-default"
           >
             Metamask Simple Keyring
           </h2>
@@ -42,7 +42,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box"
         >
           <button
-            class="box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md box--padding-right-4 box--padding-left-4 box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-inverse box--background-color-primary-default box--rounded-pill"
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
             Install snap
           </button>
@@ -61,21 +61,21 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           />
         </div>
         <div
-          class="box mm-tag box--margin-right-1 box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--color-info-default box--background-color-info-muted box--rounded-pill box--border-color-info-muted box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
               <span
-                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/star.svg');"
               />
                
               <p
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
               >
                 By MetaMask
               </p>
@@ -83,21 +83,21 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           </p>
         </div>
         <div
-          class="box mm-tag box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--color-info-default box--background-color-info-muted box--rounded-pill box--border-color-info-muted box--border-width-1 box--border-style-solid"
+          class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--color-info-default mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
             >
               <span
-                class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/star.svg');"
               />
                
               <p
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-info-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
               >
                 Audited
               </p>
@@ -113,12 +113,12 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-4/5"
       >
         <p
-          class="box mm-text mm-text--body-md-bold box--margin-bottom-2 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md-bold mm-box--margin-bottom-2 mm-box--color-text-alternative"
         >
           Secure your account with MetaMask Mobile
         </p>
         <p
-          class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.
         </p>
@@ -130,15 +130,15 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Tags
           </p>
           <div
-            class="box mm-tag box--margin-right-1 box--padding-right-1 box--padding-left-1 box--display-inline-block box--flex-direction-row box--justify-content-center box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
+            class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
           >
             <p
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               EOA
             </p>
@@ -148,12 +148,12 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Developer
           </p>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             Metamask
           </p>
@@ -162,7 +162,7 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Website
           </p>
@@ -172,25 +172,25 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Audit
           </p>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             <a
-              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="auditUrl1"
             >
               auditUrl1
             </a>
           </p>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             <a
-              class="box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-primary-default box--background-color-transparent"
+              class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="auditUrl2"
             >
               auditUrl2
@@ -201,12 +201,12 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Version
           </p>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             1.0.0
           </p>
@@ -215,12 +215,12 @@ exports[`SnapAccountDetails should take a snapshot 1`] = `
           class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
         >
           <p
-            class="box mm-text mm-text--body-sm-bold box--margin-bottom-1 box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-bottom-1 mm-box--color-text-default"
           >
             Updated
           </p>
           <p
-            class="box mm-text mm-text--body-md box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
           >
             April 20, 2023
           </p>

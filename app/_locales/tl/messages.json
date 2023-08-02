@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Magdagdag ng custom na IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
-  },
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
@@ -2753,9 +2747,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Pila"
-  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -2956,9 +2947,6 @@
   "revealTheSeedPhrase": {
     "message": "Ipakita ang seed phrase"
   },
-  "reviewSpendingCap": {
-    "message": "I-review ang iyong limitasyon sa paggastos"
-  },
   "revokeAllTokensTitle": {
     "message": "Bawiin ang pahintulot na i-access at ilipat ang lahat ng iyong $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3139,10 +3127,6 @@
   "setApprovalForAllTitle": {
     "message": "Aprubahan ang $1 nang walang limitasyon sa paggastos",
     "description": "The token symbol that is being approved"
-  },
-  "setSpendingCap": {
-    "message": "Magtakda ng limitasyon sa paggastos para sa iyong $1",
-    "description": "$1 is a token symbol"
   },
   "settings": {
     "message": "Mga Setting"
@@ -4167,14 +4151,8 @@
   "urlExistsErrorMsg": {
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
   },
-  "useDefault": {
-    "message": "Gamitin ang default"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Mga kahilingan sa balanse ng batch account"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Pinagsasama-sama namin ang mga account at tanong sa Infura para maipakita ang inyong balanse. Kung io-off mo ito, ang mga aktibong account lamang ang makakapagtanong. Ang ilan sa dapps ay hindi gagana maliban kung nakakonekta ang iyongg wallet."
   },
   "useNftDetection": {
     "message": "Awtomatikong tuklasin ang mga NFT"

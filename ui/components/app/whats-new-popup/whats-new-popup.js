@@ -9,11 +9,11 @@ import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
+  Text,
   Button,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
-  Text,
 } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import { getTranslatedUINotifications } from '../../../../shared/notifications';
@@ -100,6 +100,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 21: true });
       history.push(PREPARE_SWAP_ROUTE);
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: () => {
+      updateViewedNotifications({ 23: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return actionFunctions[id];
@@ -116,6 +122,7 @@ const renderDescription = (description) => {
         const isLast = index === description.length - 1;
         return (
           <Text
+            data-testid={`whats-new-description-item-${index}`}
             key={`item-${index}`}
             variant={TextVariant.bodyMd}
             marginBottom={isLast ? 0 : 4}
@@ -347,10 +354,26 @@ export default function WhatsNewPopup({
       observer.observe(ref.current);
     });
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent({
+      category: MetaMetricsEventCategory.MMI,
+      event: MetaMetricsEventName.MMIPortfolioDashboardModalOpen,
+      properties: {
+        action: 'Modal was opened',
+      },
+    });
+    ///: END:ONLY_INCLUDE_IN
+
     return () => {
       observer.disconnect();
     };
-  }, [idRefMap, setSeenNotifications]);
+  }, [
+    idRefMap,
+    setSeenNotifications,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    trackEvent,
+    ///: END:ONLY_INCLUDE_IN
+  ]);
 
   // Display the swaps notification with full image
   // Displays the NFTs & OpenSea notifications 18,19 with full image
@@ -360,6 +383,9 @@ export default function WhatsNewPopup({
     18: renderFirstNotification,
     19: renderFirstNotification,
     21: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return (
@@ -377,6 +403,15 @@ export default function WhatsNewPopup({
             completed_all: true,
           },
         });
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        trackEvent({
+          category: MetaMetricsEventCategory.MMI,
+          event: MetaMetricsEventName.MMIPortfolioDashboardModalButton,
+          properties: {
+            action: 'Button was clicked',
+          },
+        });
+        ///: END:ONLY_INCLUDE_IN
         onClose();
       }}
       popoverRef={popoverRef}

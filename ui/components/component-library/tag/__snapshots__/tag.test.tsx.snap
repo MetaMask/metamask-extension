@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tag should render the label inside the tag and match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    data-testid="tag"
+  >
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
+    >
+      Imported
+    </p>
+  </div>
+</div>
+`;

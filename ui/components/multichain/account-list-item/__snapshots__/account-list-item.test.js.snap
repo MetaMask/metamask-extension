@@ -6,7 +6,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
     class="mm-box multichain-account-list-item mm-box--padding-4 mm-box--display-flex mm-box--background-color-transparent"
   >
     <div
-      class="box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase box--margin-inline-end-2 box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-background-alternative box--rounded-full box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
     >
       <div
         class="mm-avatar-account__jazzicon"
@@ -58,35 +58,28 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
         >
           <div
-            class="box mm-text multichain-account-list-item__account-name mm-text--body-md mm-text--ellipsis box--margin-inline-end-2 box--flex-direction-row box--color-text-default"
+            class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
           >
             <button
-              class="box mm-text mm-button-base mm-button-base--ellipsis multichain-account-list-item__account-name__button mm-button-link mm-button-link--size-auto mm-text--body-md mm-text--ellipsis box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent"
+              class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
             >
-              <span
-                class="box mm-text mm-text--inherit mm-text--ellipsis box--flex-direction-row box--color-text-default"
-              >
-                Test Account
-              </span>
+              Test Account
             </button>
           </div>
           <div
-            class="box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end box--display-flex box--flex-direction-row box--align-items-center box--color-text-default"
+            class="mm-box mm-text multichain-account-list-item__asset mm-text--body-md mm-text--ellipsis mm-text--text-align-end mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-end mm-box--align-items-center mm-box--color-text-default"
           >
             <div
-              class="currency-display-component"
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
               title="0.006 ETH"
             >
               <span
-                class="currency-display-component__prefix"
-              />
-              <span
-                class="currency-display-component__text"
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
               >
                 0.006
               </span>
               <span
-                class="currency-display-component__suffix"
+                class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
               >
                 ETH
               </span>
@@ -101,28 +94,25 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
           class="mm-box mm-box--display-flex mm-box--align-items-center"
         >
           <p
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
-            0x0dc...e7bc
+            0x0DC...E7bc
           </p>
         </div>
         <div
-          class="box mm-text mm-text--body-sm mm-text--text-align-end box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
         >
           <div
-            class="currency-display-component"
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
             title="0.006 ETH"
           >
             <span
-              class="currency-display-component__prefix"
-            />
-            <span
-              class="currency-display-component__text"
+              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
             >
               0.006
             </span>
             <span
-              class="currency-display-component__suffix"
+              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
             >
               ETH
             </span>
@@ -136,7 +126,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
       data-testid="account-list-item-menu-button"
     >
       <span
-        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/more-vertical.svg');"
       />
     </button>

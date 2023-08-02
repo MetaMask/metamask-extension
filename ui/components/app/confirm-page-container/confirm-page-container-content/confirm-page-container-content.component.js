@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../../ui/actionable-message/actionable-message';
 import { PageContainerFooter } from '../../../ui/page-container';
 import ErrorMessage from '../../../ui/error-message';
@@ -57,7 +59,9 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     openBuyCryptoInPdapp: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
     txData: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     noteComponent: PropTypes.node,
@@ -123,9 +127,10 @@ export default class ConfirmPageContainerContent extends Component {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           noteComponent && (
             <Tab
+              data-testid="note-tab"
               className="confirm-page-container-content__tab"
               name={t('note')}
-              pillText={t('new')}
+              tabKey="note"
               onClick={() => {
                 this.context.trackEvent({
                   category: 'Note to trader',
@@ -196,7 +201,9 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
+      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       openBuyCryptoInPdapp,
+      ///: END:ONLY_INCLUDE_IN
       txData,
     } = this.props;
 

@@ -21,8 +21,8 @@ import {
   AvatarIcon,
   IconName,
   IconSize,
-  Text,
   ValidTag,
+  Text,
 } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';

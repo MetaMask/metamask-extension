@@ -68,12 +68,12 @@ describe('Failing contract interaction ', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // display the transaction status
         const transactionStatus = await driver.findElement(
-          '.transaction-list-item:nth-of-type(1) .transaction-status-label',
+          '.activity-list-item:nth-of-type(1) .transaction-status-label',
         );
         assert.equal(await transactionStatus.getText(), 'Failed');
       },
@@ -151,12 +151,12 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
         await driver.waitForSelector(
-          '.transaction-list__completed-transactions .transaction-list-item:nth-of-type(1)',
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
         // display the transaction status
         const transactionStatus = await driver.findElement(
-          '.transaction-list-item:nth-of-type(1) .transaction-status-label',
+          '.activity-list-item:nth-of-type(1) .transaction-status-label',
         );
         assert.equal(await transactionStatus.getText(), 'Failed');
       },

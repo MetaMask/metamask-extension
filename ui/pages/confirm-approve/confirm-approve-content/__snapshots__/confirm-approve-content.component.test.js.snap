@@ -21,7 +21,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -73,7 +73,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -129,26 +129,24 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="confirm-approve-content__custom-nonce-content"
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
           >
             <div
-              class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
-              <a
-                class="button btn-link confirm-approve-content__custom-nonce-edit"
-                role="button"
-                tabindex="0"
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
-              </a>
+              </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -197,7 +195,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -260,7 +258,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -316,26 +314,24 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="confirm-approve-content__custom-nonce-content"
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
           >
             <div
-              class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
-              <a
-                class="button btn-link confirm-approve-content__custom-nonce-edit"
-                role="button"
-                tabindex="0"
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
-              </a>
+              </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -384,7 +380,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -447,7 +443,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -503,26 +499,24 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="confirm-approve-content__custom-nonce-content"
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
           >
             <div
-              class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
-              <a
-                class="button btn-link confirm-approve-content__custom-nonce-edit"
-                role="button"
-                tabindex="0"
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
-              </a>
+              </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
@@ -571,7 +565,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           />
         </div>
         <h6
-          class="box mm-text mm-text--body-sm box--margin-left-1 box--flex-direction-row box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--margin-left-1 mm-box--color-text-alternative"
         >
           https://metamask.github.io/test-dapp/
         </h6>
@@ -634,7 +628,7 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
             class="confirm-approve-content__card-header__symbol"
           >
             <span
-              class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/tag.svg');"
             />
           </div>
@@ -690,26 +684,24 @@ exports[`ConfirmApproveContent Component should render Confirm approve page corr
           class="confirm-approve-content__card-content"
         >
           <div
-            class="confirm-approve-content__custom-nonce-content"
+            class="mm-box custom-nonce__content mm-box--margin-bottom-4 mm-box--padding-top-3 mm-box--padding-right-3 mm-box--padding-bottom-4 mm-box--padding-left-3 mm-box--display-flex mm-box--align-items-center mm-box--rounded-md"
           >
             <div
-              class="box confirm-approve-content__custom-nonce-header box--flex-direction-row box--justify-content-flex-start box--display-flex"
+              class="mm-box custom-nonce__header mm-box--display-inline-flex mm-box--justify-content-flex-start mm-box--align-items-center"
             >
               <h6
-                class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-default"
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
               >
                 Nonce
               </h6>
-              <a
-                class="button btn-link confirm-approve-content__custom-nonce-edit"
-                role="button"
-                tabindex="0"
+              <button
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-left-3 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               >
                 Edit
-              </a>
+              </button>
             </div>
             <h6
-              class="box mm-text confirm-approve-content__custom-nonce-value mm-text--body-sm-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text custom-nonce__value mm-text--body-sm-bold mm-box--color-text-default"
             >
               2
             </h6>
