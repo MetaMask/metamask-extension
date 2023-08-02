@@ -390,6 +390,8 @@ describe('MetaMaskController', function () {
 
     describe('setLocked', function () {
       it('should lock KeyringController', async function () {
+        sandbox.spy(metamaskController.coreKeyringController, 'setLocked');
+
         await metamaskController.setLocked();
 
         assert(metamaskController.coreKeyringController.setLocked.called);
