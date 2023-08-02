@@ -47,11 +47,6 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
     const tag = href ? 'a' : as || 'button';
     const tagProps = href && tag === 'a' ? { href, ...props } : props;
 
-    // Type-based check: Loading prop is not supported on anchor tags
-    if (tag === 'a' && loading) {
-      // TypeScript will show a type error, but it won't throw a runtime error.
-    }
-
     return (
       <Text
         as={tag}
