@@ -32,7 +32,6 @@ export const ButtonLink: ButtonLinkComponent = React.forwardRef(
           'mm-button-link--size-inherit': size === ButtonLinkSize.Inherit,
           'mm-button-link--size-auto': size === ButtonLinkSize.Auto,
         })}
-        padding={0}
         paddingLeft={0}
         paddingRight={0}
         size={size === ButtonLinkSize.Inherit ? null : size}

@@ -50,7 +50,7 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
         value="7"
       />
       <button
-        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
         data-testid="custom-spending-cap-max-button"
       >
         Max
@@ -60,21 +60,21 @@ exports[`CustomSpendingCap should match snapshot 1`] = `
       class="mm-box mm-text mm-help-text mm-text--body-sm mm-box--color-text-default"
     >
       <span>
-
-        This allows the third party to spend
+         
+        This allows the third party to spend 
         <span
           class="mm-box mm-text mm-text--body-sm-bold mm-box--color-text-default"
         >
           7
-
+           
           TST
         </span>
          from your current balance.
-
+         
       </span>
     </div>
     <a
-      class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       href="https://support.metamask.io/hc/en-us/articles/6055177143579-How-to-customize-token-approvals-with-a-spending-cap"
       rel="noopener noreferrer"
       target="_blank"
