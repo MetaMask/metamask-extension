@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { buildEthCaipChainId } from '@metamask/controller-utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep, mapKeys, mapValues } from 'lodash';
@@ -8,7 +7,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 91;
+export const version = 92;
 
 /**
  * - Rebuilds `allNftContracts` and `allNfts` in NftController state to be keyed
@@ -517,61 +516,3 @@ function migrateData(state: Record<string, unknown>): void {
   // What to do about MMI?
   // ui/selectors/institutional/selectors.test.js
 }
-||||||| 3b0d37c3b
-=======
-import { hasProperty, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
-
-export const version = 91;
-
-/**
- * Delete network configurations if they do not have a chain id
- *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
- */
-export async function migrate(originalVersionedData: {
-  meta: { version: number };
-  data: Record<string, unknown>;
-}) {
-  const versionedData = cloneDeep(originalVersionedData);
-  versionedData.meta.version = version;
-  versionedData.data = transformState(versionedData.data);
-  return versionedData;
-}
-
-function transformState(state: Record<string, unknown>) {
-  if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'networkConfigurations') &&
-    isObject(state.NetworkController.networkConfigurations)
-  ) {
-    const { networkConfigurations } = state.NetworkController;
-
-    for (const [networkConfigurationId, networkConfiguration] of Object.entries(
-      networkConfigurations,
-    )) {
-      if (isObject(networkConfiguration)) {
-        if (!networkConfiguration.chainId) {
-          delete networkConfigurations[networkConfigurationId];
-        }
-      }
-    }
-
-    state.NetworkController = {
-      ...state.NetworkController,
-      networkConfigurations,
-    };
-
-    return {
-      ...state,
-      NetworkController: state.NetworkController,
-    };
-  }
-  return state;
-}
->>>>>>> develop
