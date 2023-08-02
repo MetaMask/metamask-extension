@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../popover';
 import Button from '../button';
@@ -51,7 +51,7 @@ const NewNetworkInfo = () => {
 
   const getIsTokenDetectionSupported = async () => {
     const fetchedTokenData = await fetchWithCache(
-      `${TOKEN_API_METASWAP_CODEFI_URL}${getEthChainIdHexFromCaipChainId(
+      `${TOKEN_API_METASWAP_CODEFI_URL}${parseEthCaipChainIdHex(
         providerConfig.caipChainId,
       )}`,
     );

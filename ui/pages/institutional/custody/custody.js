@@ -8,7 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { getEthChainIdIntFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdInt } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -75,7 +75,7 @@ const CustodyPage = () => {
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
   const [chainId, setChainId] = useState(
-    getEthChainIdIntFromCaipChainId(currentCaipChainId),
+    parseEthCaipChainIdInt(currentCaipChainId),
   );
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
@@ -290,7 +290,7 @@ const CustodyPage = () => {
     }
 
     if (parseInt(chainId, 16) !== chainId) {
-      setChainId(getEthChainIdIntFromCaipChainId(currentCaipChainId));
+      setChainId(parseEthCaipChainIdInt(currentCaipChainId));
       handleNetworkChange();
     }
 

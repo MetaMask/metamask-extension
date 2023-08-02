@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 import { BN } from 'ethereumjs-util';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 
 function buildTxParams(txMeta) {
@@ -19,7 +19,7 @@ function buildTransactionCommon({ caipChainId, metamaskNetworkId }) {
   // considering that all we want to do is serialize a transaction, this works
   // fine for our use case.
   const chainId = caipChainId
-    ? getEthChainIdHexFromCaipChainId(caipChainId)
+    ? parseEthCaipChainIdHex(caipChainId)
     : '0x0';
   return Common.custom({
     chainId: new BN(stripHexPrefix(chainId), 16),

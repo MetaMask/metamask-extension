@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { addToAddressBook } from '../../../../store/actions';
 import {
   getRpcPrefsForCurrentProvider,
@@ -34,7 +34,7 @@ const NicknamePopovers = ({ address, onClose }) => {
 
   const explorerLink = getAccountLink(
     address,
-    getEthChainIdHexFromCaipChainId(caipChainId),
+    parseEthCaipChainIdHex(caipChainId),
     { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },
     null,
   );

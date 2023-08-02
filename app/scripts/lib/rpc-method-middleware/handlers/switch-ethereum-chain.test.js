@@ -1,4 +1,4 @@
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -30,7 +30,7 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.MAINNET) }],
+        params: [{ chainId: parseEthCaipChainIdHex(CHAIN_IDS.MAINNET) }],
       },
       {},
       jest.fn(),
@@ -56,7 +56,7 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.LINEA_MAINNET).toLowerCase() }],
+        params: [{ chainId: parseEthCaipChainIdHex(CHAIN_IDS.LINEA_MAINNET).toLowerCase() }],
       },
       {},
       jest.fn(),
@@ -82,7 +82,7 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: getEthChainIdHexFromCaipChainId(CHAIN_IDS.LINEA_MAINNET).toUpperCase() }],
+        params: [{ chainId: parseEthCaipChainIdHex(CHAIN_IDS.LINEA_MAINNET).toUpperCase() }],
       },
       {},
       jest.fn(),
@@ -108,7 +108,7 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: getEthChainIdHexFromCaipChainId(NON_INFURA_CAIP_CHAIN_ID) }],
+        params: [{ chainId: parseEthCaipChainIdHex(NON_INFURA_CAIP_CHAIN_ID) }],
       },
       {},
       jest.fn(),

@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
-import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainId } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import NetworksTabContent from '.';
@@ -68,7 +68,7 @@ describe('NetworksTabContent Component', () => {
     expect(getByDisplayValue(props.selectedNetwork.rpcUrl)).toBeInTheDocument();
     expect(
       getByDisplayValue(
-        getEthChainIdDecFromCaipChainId(props.selectedNetwork.caipChainId),
+        parseEthCaipChainId(props.selectedNetwork.caipChainId),
       ),
     ).toBeInTheDocument();
     expect(getByDisplayValue(props.selectedNetwork.ticker)).toBeInTheDocument();
@@ -98,7 +98,7 @@ describe('NetworksTabContent Component', () => {
 
     fireEvent.change(
       getByDisplayValue(
-        getEthChainIdDecFromCaipChainId(props.selectedNetwork.caipChainId),
+        parseEthCaipChainId(props.selectedNetwork.caipChainId),
       ),
       {
         target: { value: '1' },

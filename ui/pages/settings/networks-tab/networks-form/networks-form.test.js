@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import nock from 'nock';
-import { getEthChainIdDecFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainId } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../../test/jest/rendering';
 import { defaultNetworksData } from '../networks-tab.constants';
 import {
@@ -150,7 +150,7 @@ describe('NetworkForm Component', () => {
     ).toBeInTheDocument();
     expect(
       getByDisplayValue(
-        getEthChainIdDecFromCaipChainId(
+        parseEthCaipChainId(
           propNetworkDisplay.selectedNetwork.caipChainId,
         ),
       ),

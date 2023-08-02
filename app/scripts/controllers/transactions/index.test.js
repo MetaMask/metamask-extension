@@ -6,7 +6,7 @@ import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
 import {
   ApprovalType,
-  getEthChainIdIntFromCaipChainId,
+  parseEthCaipChainIdInt,
 } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
@@ -79,7 +79,7 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: getEthChainIdIntFromCaipChainId(currentCaipChainId),
+      chainId: parseEthCaipChainIdInt(currentCaipChainId),
     }).provider;
 
     networkStatusStore = new ObservableStore(currentNetworkStatus);

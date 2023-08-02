@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import {
   checkExistingAddresses,
@@ -416,7 +416,7 @@ class ImportToken extends Component {
     } = this.props;
     const blockExplorerTokenLink = getTokenTrackerLink(
       customAddress,
-      getEthChainIdHexFromCaipChainId(caipChainId),
+      parseEthCaipChainIdHex(caipChainId),
       null,
       null,
       { blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null },

@@ -3,7 +3,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -269,7 +269,7 @@ export default function SmartTransactionStatusPage() {
   }
   if (txHash && latestSmartTransactionUuid) {
     blockExplorerUrl = getBlockExplorerLink(
-      { hash: txHash, chainId: getEthChainIdHexFromCaipChainId(caipChainId) },
+      { hash: txHash, chainId: parseEthCaipChainIdHex(caipChainId) },
       { blockExplorerUrl: baseNetworkUrl },
     );
   }

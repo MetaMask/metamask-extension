@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { I18nContext } from '../../contexts/i18n';
 import ConfirmTransactionBase from '../confirm-transaction-base';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
@@ -83,7 +83,7 @@ export default function ConfirmTokenTransactionBase({
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        getEthChainIdHexFromCaipChainId(caipChainId),
+        parseEthCaipChainIdHex(caipChainId),
         null,
         userAddress,
         {

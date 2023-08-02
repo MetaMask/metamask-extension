@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
@@ -86,7 +86,7 @@ export default class TransactionListItemDetails extends PureComponent {
         hash,
         metamaskNetworkId,
         chainId: caipChainId
-          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          ? parseEthCaipChainIdHex(caipChainId)
           : '',
       },
       rpcPrefs,

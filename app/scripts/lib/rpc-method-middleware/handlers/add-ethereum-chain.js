@@ -3,7 +3,7 @@ import validUrl from 'valid-url';
 import { omit } from 'lodash';
 import {
   ApprovalType,
-  getCaipChainIdFromEthChainId,
+  buildEthCaipChainId,
 } from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
@@ -144,7 +144,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const caipChainId = getCaipChainIdFromEthChainId(_chainId);
+  const caipChainId = buildEthCaipChainId(_chainId);
 
   const existingNetwork = findNetworkConfigurationBy({ caipChainId });
 

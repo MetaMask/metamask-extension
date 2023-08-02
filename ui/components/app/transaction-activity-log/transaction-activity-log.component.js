@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { formatDate, getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getValueFromWeiHex } from '../../../../shared/modules/conversion.utils';
@@ -38,7 +38,7 @@ export default class TransactionActivityLog extends PureComponent {
         hash,
         metamaskNetworkId,
         chainId: caipChainId
-          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          ? parseEthCaipChainIdHex(caipChainId)
           : '',
       },
       rpcPrefs,

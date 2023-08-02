@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import isEqual from 'lodash/isEqual';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -142,7 +142,7 @@ export default function AwaitingSwap({
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[caipChainId] ??
     null;
   const blockExplorerUrl = getBlockExplorerLink(
-    { hash: txHash, chainId: getEthChainIdHexFromCaipChainId(caipChainId) },
+    { hash: txHash, chainId: parseEthCaipChainIdHex(caipChainId) },
     { blockExplorerUrl: baseNetworkUrl },
   );
 

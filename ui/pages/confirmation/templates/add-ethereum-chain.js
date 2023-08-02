@@ -1,10 +1,10 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
 import {
-  getCaipChainIdFromEthChainId,
-  getEthChainIdDecFromCaipChainId,
-  getEthChainIdHexFromCaipChainId,
-  getEthChainIdIntFromCaipChainId,
+  buildEthCaipChainId,
+  parseEthCaipChainId,
+  parseEthCaipChainIdHex,
+  parseEthCaipChainIdInt,
 } from '@metamask/controller-utils';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
@@ -141,7 +141,7 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const intChainId = getEthChainIdIntFromCaipChainId(
+  const intChainId = parseEthCaipChainIdInt(
     pendingApproval.requestData.caipChainId,
   );
   const matchedChain = safeChainsList.find(
@@ -357,8 +357,8 @@ function getValues(pendingApproval, t, actions, history) {
                 )
               : pendingApproval.requestData.rpcUrl,
             [t('chainId')]: originIsMetaMask
-              ? getEthChainIdDecFromCaipChainId(caipChainId)
-              : getEthChainIdHexFromCaipChainId(caipChainId),
+              ? parseEthCaipChainId(caipChainId)
+              : parseEthCaipChainIdHex(caipChainId),
             [t('currencySymbol')]: pendingApproval.requestData.ticker,
             [t('blockExplorerUrl')]:
               pendingApproval.requestData.rpcPrefs.blockExplorerUrl,
@@ -386,7 +386,7 @@ function getValues(pendingApproval, t, actions, history) {
         return [ERROR_CONNECTING_TO_RPC];
       }
 
-      const endpointCaipChainId = getCaipChainIdFromEthChainId(endpointChainId);
+      const endpointCaipChainId = buildEthCaipChainId(endpointChainId);
 
       if (pendingApproval.requestData.caipChainId !== endpointCaipChainId) {
         console.error(

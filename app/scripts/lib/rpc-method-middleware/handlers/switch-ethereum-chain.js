@@ -2,7 +2,7 @@ import { ethErrors } from 'eth-rpc-errors';
 import { omit } from 'lodash';
 import {
   ApprovalType,
-  getCaipChainIdFromEthChainId,
+  buildEthCaipChainId,
 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -103,7 +103,7 @@ async function switchEthereumChainHandler(
     );
   }
 
-  const caipChainId = getCaipChainIdFromEthChainId(_chainId);
+  const caipChainId = buildEthCaipChainId(_chainId);
 
   const requestData = findExistingNetwork(
     caipChainId,

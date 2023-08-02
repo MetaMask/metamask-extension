@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { uniqBy, isEqual } from 'lodash';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -339,7 +339,7 @@ export default function BuildQuote({
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     selectedToToken.address,
-    getEthChainIdHexFromCaipChainId(caipChainId),
+    parseEthCaipChainIdHex(caipChainId),
     null, // no networkId
     null, // no holderAddress
     {

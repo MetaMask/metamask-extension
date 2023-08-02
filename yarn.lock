@@ -3909,6 +3909,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/controller-utils@npm:4.3.1-preview.19a3a61":
+  version: 4.3.1-preview.19a3a61
+  resolution: "@metamask/controller-utils@npm:4.3.1-preview.19a3a61::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40metamask%2Fcontroller-utils%2F4.3.1-preview.19a3a61%2F9de775424fa1bce5425c1d4c4bcea3a8cde09260"
+  dependencies:
+    "@metamask/eth-query": ^3.0.1
+    "@metamask/utils": ^7.1.0
+    "@spruceid/siwe-parser": 1.1.3
+    eth-ens-namehash: ^2.0.8
+    eth-rpc-errors: ^4.0.2
+    ethereumjs-util: ^7.0.10
+    ethjs-unit: ^0.1.6
+    fast-deep-equal: ^3.1.3
+  checksum: fa6840aab6f85db56f8c09c724807ee298ce50eaafbb8f484bbf1bcec6c3baed78600c1b5dfdf291835ed8157846ad8c895f4efcecd70681de179186dc38ff01
+  languageName: node
+  linkType: hard
+
 "@metamask/controller-utils@npm:^3.0.0, @metamask/controller-utils@npm:^3.1.0, @metamask/controller-utils@npm:^3.4.0":
   version: 3.4.0
   resolution: "@metamask/controller-utils@npm:3.4.0"
@@ -4114,6 +4130,16 @@ __metadata:
     ethereumjs-util: ^7.0.9
     hdkey: 0.8.0
   checksum: a4c7ec98904c95cbbbf8f6e3e07ba26ff0328e8d20a94bb8bc2c1da2a944306bcf741a77d85586f25ed8f8f90bb1308d87751e6046d9fb1e531221e2804110e2
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-query@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/eth-query@npm:3.0.1"
+  dependencies:
+    json-rpc-random-id: ^1.0.0
+    xtend: ^4.0.1
+  checksum: b9a323dff67328eace7d54fc8b0bc4dd763bf15760870656cbd5aad5380d1ee4489fb5c59506290d5f77cf55e74e530ee97b52702a329f1090ec03a6158434b7
   languageName: node
   linkType: hard
 
@@ -5156,6 +5182,20 @@ __metadata:
     semver: ^7.3.8
     superstruct: ^1.0.3
   checksum: 0bc675358ecc09b3bc04da613d73666295d7afa51ff6b8554801585966900b24b8545bd93b8b2e9a17db867ebe421fe884baf3558ec4ca3199fa65504f677c1b
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^7.1.0":
+  version: 7.1.0
+  resolution: "@metamask/utils@npm:7.1.0"
+  dependencies:
+    "@ethereumjs/tx": ^4.1.2
+    "@noble/hashes": ^1.3.1
+    "@types/debug": ^4.1.7
+    debug: ^4.3.4
+    semver: ^7.5.4
+    superstruct: ^1.0.3
+  checksum: 165ed378f4ac5ca42c241d32154e15b609f9e772a9dc069b870613c005dc0e7e4fa92204c30e98ec2317f1e38c77747057671a26fd0a5ba36a288e3c9ef03790
   languageName: node
   linkType: hard
 
@@ -24246,7 +24286,7 @@ __metadata:
     "@metamask/base-controller": ^3.2.0
     "@metamask/browser-passworder": ^4.1.0
     "@metamask/contract-metadata": ^2.3.1
-    "@metamask/controller-utils": ^4.2.0
+    "@metamask/controller-utils": 4.3.1-preview.19a3a61
     "@metamask/design-tokens": ^1.12.0
     "@metamask/desktop": ^0.3.0
     "@metamask/eslint-config": ^9.0.0
@@ -24257,6 +24297,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": ^11.0.0
     "@metamask/eth-keyring-controller": ^10.0.1
     "@metamask/eth-ledger-bridge-keyring": ^0.15.0
+    "@metamask/eth-query": ^3.0.1
     "@metamask/eth-snap-keyring": ^0.1.3
     "@metamask/eth-token-tracker": ^4.0.0
     "@metamask/eth-trezor-keyring": ^1.0.0
@@ -24294,7 +24335,7 @@ __metadata:
     "@metamask/snaps-utils-flask": "npm:@metamask/snaps-utils@0.38.0-flask.1"
     "@metamask/subject-metadata-controller": ^2.0.0
     "@metamask/test-dapp": ^7.0.1
-    "@metamask/utils": ^5.0.0
+    "@metamask/utils": ^7.1.0
     "@ngraveio/bc-ur": ^1.1.6
     "@popperjs/core": ^2.4.0
     "@reduxjs/toolkit": ^1.6.2

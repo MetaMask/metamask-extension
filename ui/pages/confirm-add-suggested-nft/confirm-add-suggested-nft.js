@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -172,7 +172,7 @@ const ConfirmAddSuggestedNFT = () => {
                 const nftImageURL = getAssetImageURL(image, ipfsGateway);
                 const blockExplorerLink = getTokenTrackerLink(
                   address,
-                  getEthChainIdHexFromCaipChainId(caipChainId),
+                  parseEthCaipChainIdHex(caipChainId),
                   null,
                   null,
                   {

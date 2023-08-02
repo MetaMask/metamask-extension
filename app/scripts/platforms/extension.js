@@ -2,7 +2,7 @@ import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
-import { getEthChainIdHexFromCaipChainId } from '@metamask/controller-utils';
+import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
@@ -183,7 +183,7 @@ export default class ExtensionPlatform {
         hash,
         metamaskNetworkId,
         chainId: caipChainId
-          ? getEthChainIdHexFromCaipChainId(caipChainId)
+          ? parseEthCaipChainIdHex(caipChainId)
           : '',
       },
       rpcPrefs,

@@ -88,7 +88,7 @@ import {
   ERC1155,
   ERC20,
   ERC721,
-  getEthChainIdHexFromCaipChainId,
+  parseEthCaipChainIdHex,
 } from '@metamask/controller-utils';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -650,7 +650,7 @@ export default class MetamaskController extends EventEmitter {
       ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
       chainId: () =>
-        getEthChainIdHexFromCaipChainId(
+        parseEthCaipChainIdHex(
           this.networkController.state.providerConfig.caipChainId,
         ),
       onNetworkChange: networkControllerMessenger.subscribe.bind(
@@ -2103,7 +2103,7 @@ export default class MetamaskController extends EventEmitter {
     function selectPublicState(caipChainId, { isUnlocked, networkId }) {
       return {
         isUnlocked,
-        chainId: getEthChainIdHexFromCaipChainId(caipChainId), // not sure what to do here
+        chainId: parseEthCaipChainIdHex(caipChainId), // not sure what to do here
         networkVersion: networkId ?? 'loading',
       };
     }
@@ -2136,7 +2136,7 @@ export default class MetamaskController extends EventEmitter {
     const { networkId } = memState || this.getState();
 
     return {
-      chainId: getEthChainIdHexFromCaipChainId(
+      chainId: parseEthCaipChainIdHex(
         this.networkController.state.providerConfig.caipChainId,
       ),
       networkVersion: networkId ?? 'loading',
