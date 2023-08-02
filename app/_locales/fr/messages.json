@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Ajouter un contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Ajouter une passerelle IPFS personnalisée"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
-  },
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
@@ -4159,9 +4153,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Demandes d’informations concernant le solde de plusieurs comptes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Nous regroupons vos comptes et demandons à Infura de fournir des informations sur le solde de chacun de vos comptes. Si vous désactivez cette fonction, Infura ne fournira que des informations sur le solde des comptes actifs. Certaines applications décentralisées (dapps) ne fonctionneront pas si vous ne connectez pas votre portefeuille."
   },
   "useNftDetection": {
     "message": "Détection automatique des NFT"
