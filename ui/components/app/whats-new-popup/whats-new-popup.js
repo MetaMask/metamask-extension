@@ -10,7 +10,7 @@ import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
   Text,
-  Button,
+  ButtonPrimary,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
@@ -202,7 +202,7 @@ const renderFirstNotification = ({
       </div>
       {placeImageBelowDescription && imageComponent}
       {actionText && (
-        <Button
+        <ButtonPrimary
           type="primary"
           className="whats-new-popup__button"
           onClick={() => {
@@ -212,14 +212,15 @@ const renderFirstNotification = ({
               event: MetaMetricsEventName.WhatsNewClicked,
             });
           }}
+          block
         >
           {actionText}
-        </Button>
+        </ButtonPrimary>
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         customButton && customButton.name === 'mmi-portfolio' && (
-          <Button
+          <ButtonPrimary
             className="whats-new-popup__button"
             data-testid="view-mmi-portfolio"
             size={Size.SM}
@@ -229,9 +230,10 @@ const renderFirstNotification = ({
               onClose();
               window.open(mmiPortfolioUrl, '_blank');
             }}
+            block
           >
             {customButton.text}
-          </Button>
+          </ButtonPrimary>
         )
         ///: END:ONLY_INCLUDE_IN
       }
