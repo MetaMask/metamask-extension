@@ -240,47 +240,48 @@ export function addUrlProtocolPrefix(urlString: string) {
     trimmed = `https://${trimmed}`;
   }
 
-  if (isValidUrl(trimmed)) {
+  if (getValidUrl(trimmed) !== null) {
     return trimmed;
   }
 
   return null;
 }
 
-export function isLocalhostOrHttps(urlString: string) {
+export function getValidUrl(urlString: string): URL | null {
   try {
     const url = new URL(urlString);
-    return (
-      url.hostname === 'localhost' ||
-      url.hostname === '127.0.0.1' ||
-      url.protocol === 'https:'
-    );
+
+    if (url.hostname.length === 0 || url.pathname.length === 0) {
+      return null;
+    }
+
+    if (url.hostname !== decodeURIComponent(url.hostname)) {
+      return null; // will happen if there's a %, a space, or other invalid character in the hostname
+    }
+
+    return url;
   } catch (error) {
-    return false;
+    return null;
   }
 }
 
-export function isValidUrl(urlString: string): boolean {
-  try {
-    const url = new URL(urlString);
+export function isLocalhostOrHttps(urlString: string) {
+  const url = getValidUrl(urlString);
 
-    return url.hostname.length > 0 && url.pathname.length > 0;
-  } catch (error) {
-    return false;
-  }
+  return (
+    url !== null &&
+    (url.hostname === 'localhost' ||
+      url.hostname === '127.0.0.1' ||
+      url.protocol === 'https:')
+  );
 }
 
 export function isWebUrl(urlString: string): boolean {
-  try {
-    const url = new URL(urlString);
-    return (
-      url.hostname.length > 0 &&
-      (url.protocol === 'https:' || url.protocol === 'http:') &&
-      url.pathname.length > 0
-    );
-  } catch (error) {
-    return false;
-  }
+  const url = getValidUrl(urlString);
+
+  return (
+    url !== null && (url.protocol === 'https:' || url.protocol === 'http:')
+  );
 }
 
 interface FormattedTransactionMeta {
