@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
   "enableSnap": {
     "message": "Bật"
   },
