@@ -11,10 +11,12 @@ import { Text, Box } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
+  FontWeight,
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   Display,
   FlexDirection,
   JustifyContent,
-  FontWeight,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
