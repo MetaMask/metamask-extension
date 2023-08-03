@@ -19,7 +19,7 @@ exports[`Confirm Delete Network should match snapshot 1`] = `
         <div
           class="modal-content__description"
         >
-          If you delete this network, you will need to add it again to view your assets in this network.
+          If you delete this network, you will need to add it again to view your assets in this network
         </div>
       </div>
     </div>
