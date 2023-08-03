@@ -37,7 +37,7 @@ const IncomingTransactionToggle = ({
   });
 
   return (
-    <Box ref={wrapperRef}>
+    <Box ref={wrapperRef} className="mm-incoming-transaction-toggle">
       <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Bold}>
         {t('showIncomingTransactions')}
       </Text>

@@ -27,10 +27,6 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useNftDetection: PropTypes.bool,
-    setUseNftDetection: PropTypes.func,
-    setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)

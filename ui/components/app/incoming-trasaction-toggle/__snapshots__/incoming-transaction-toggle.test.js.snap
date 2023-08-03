@@ -3,7 +3,7 @@
 exports[`IncomingTransactionToggle should render existing incoming transaction preferences 1`] = `
 <div>
   <div
-    class="mm-box"
+    class="mm-box mm-incoming-transaction-toggle"
   >
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-text--font-weight-bold mm-box--color-text-default"

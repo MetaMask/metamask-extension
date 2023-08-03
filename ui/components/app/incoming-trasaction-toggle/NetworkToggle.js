@@ -31,7 +31,7 @@ const NetworkToggle = ({
 }) => {
   const t = useContext(I18nContext);
 
-  const { isShowIncomingTransactions, isATestNetwork } = networkPreferences;
+  const { isShowIncomingTransactions } = networkPreferences;
 
   const networkName = networkPreferences.label;
 

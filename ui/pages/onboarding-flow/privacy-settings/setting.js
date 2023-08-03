@@ -27,6 +27,7 @@ export const Setting = ({
       alignItems={AlignItems.center}
       marginTop={3}
       marginBottom={3}
+      className="privacy-settings__setting__wrapper"
     >
       <div className="privacy-settings__setting">
         <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Bold}>

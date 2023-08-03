@@ -1,12 +1,11 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
-import { within } from '@testing-library/dom';
+import { fireEvent, within } from '@testing-library/react';
 import configureMockState from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import IncomingTransactionToggle from './incoming-transaction-toggle.component';
+import IncomingTransactionToggle from './incoming-transaction-toggle';
 
 const mockTrackEvent = jest.fn();
 const ALL_NETWORKS_DATA = [
