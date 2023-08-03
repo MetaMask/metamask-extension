@@ -1,0 +1,42 @@
+name: Create release bug report issue when release branch gets created
+
+on:
+  create:
+    branches:
+      - 'Version-v*'
+
+jobs:
+  create-bug-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version from branch name
+        id: extract_version
+        run: echo "::set-output name=version::${GITHUB_REF#refs/heads/Version-v}"
+
+      - name: Create bug report issue on planning repo
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/MetaMask/MetaMask-planning/issues
+          owner: MetaMask
+          title: v${{ steps.extract_version.outputs.version }} Bug Report
+          body: |
+            This bug report was automatically created by a GitHub action upon the creation of release branch `Version-v${{ steps.extract_version.outputs.version }}` (release cut).
+
+
+            **Expected actions for release engineers:**
+
+            1. Convert this issue into a Zenhub epic and link all bugs identified during the release regression testing phase to this epic.
+
+            2. After completing the first regression run, move this epic to "Regression Completed" on the [Extension Release Regression board](https://app.zenhub.com/workspaces/extension-release-regression-6478c62d937eaa15e95c33c5/board?filterLogic=any&labels=release-${{ steps.extract_version.outputs.version }},release-task).
+
+
+            Note that once the release is prepared for store submission, meaning the `Version-v${{ steps.extract_version.outputs.version }}` branch merges into `main`, another GitHub action will automatically close this epic.
+
+          labels: |
+            [
+              "type-bug",
+              "regression-RC",
+              "release-${{ steps.extract_version.outputs.version }}"
+            ]
+        env:
+          GITHUB_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
