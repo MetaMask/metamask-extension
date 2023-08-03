@@ -34,8 +34,8 @@ import {
   Icon,
   IconName,
   Box,
+  Text,
 } from '../../components/component-library';
-import { Text } from '../../components/component-library/text/deprecated';
 import {
   AlignItems,
   Color,
@@ -165,7 +165,7 @@ class SettingsPage extends PureComponent {
             {this.renderTitle()}
             <Box
               className="settings-page__header__title-container__search"
-              display={[Display.BLOCK]}
+              display={[Display.Block]}
             >
               <SettingsSearch
                 onSearch={({ searchQuery = '', results = [] }) => {

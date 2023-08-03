@@ -51,10 +51,8 @@ import DesktopErrorPage from '../desktop-error';
 import DesktopPairingPage from '../desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceFeaturePage from '../institutional/compliance-feature-page';
 import InstitutionalEntityDonePage from '../institutional/institutional-entity-done-page';
 import InteractiveReplacementTokenNotification from '../../components/institutional/interactive-replacement-token-notification';
-import ConfirmAddInstitutionalFeature from '../institutional/confirm-add-institutional-feature';
 import ConfirmAddCustodianToken from '../institutional/confirm-add-custodian-token';
 import InteractiveReplacementTokenPage from '../institutional/interactive-replacement-token-page';
 import CustodyPage from '../institutional/custody';
@@ -83,10 +81,8 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE_FEATURE_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   CUSTODY_ACCOUNT_ROUTE,
@@ -121,6 +117,7 @@ import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
+import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -163,6 +160,8 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
+    isIpfsModalOpen: PropTypes.bool.isRequired,
+    hideIpfsModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -326,14 +325,6 @@ export default class Routes extends Component {
           path={INTERACTIVE_REPLACEMENT_TOKEN_PAGE}
           component={InteractiveReplacementTokenPage}
           exact
-        />
-        <Authenticated
-          path={COMPLIANCE_FEATURE_ROUTE}
-          component={ComplianceFeaturePage}
-        />
-        <Authenticated
-          path={CONFIRM_INSTITUTIONAL_FEATURE_CONNECT}
-          component={ConfirmAddInstitutionalFeature}
         />
         <Authenticated
           path={CONFIRM_ADD_CUSTODIAN_TOKEN}
@@ -527,6 +518,8 @@ export default class Routes extends Component {
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
+      isIpfsModalOpen,
+      hideIpfsModal,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -587,6 +580,9 @@ export default class Routes extends Component {
         ) : null}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
+        ) : null}
+        {isIpfsModalOpen ? (
+          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

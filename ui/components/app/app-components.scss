@@ -31,7 +31,6 @@
 @import 'flask/experimental-area/index';
 @import 'snaps/snap-content-footer/index';
 @import 'snaps/snap-install-warning/index';
-@import 'snaps/snap-remove-warning/index';
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
@@ -89,7 +88,6 @@
 @import 'advanced-gas-fee-popover/advanced-gas-fee-input-subtext/index';
 @import 'advanced-gas-fee-popover/advanced-gas-fee-defaults/index';
 @import 'currency-input/index';
-@import 'detected-token/detected-token-address/index';
 @import 'detected-token/detected-token-aggregators/index';
 @import 'detected-token/detected-token-values/index';
 @import 'detected-token/detected-token-details/index';
@@ -98,8 +96,9 @@
 @import 'network-account-balance-header/index';
 @import 'approve-content-card/index';
 @import 'transaction-alerts/transaction-alerts';
-@import '../institutional/compliance-details/index';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
+///: END:ONLY_INCLUDE_IN

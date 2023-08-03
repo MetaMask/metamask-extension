@@ -74,7 +74,6 @@ import {
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
-import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
@@ -109,15 +108,22 @@ import {
   DISPLAY,
   AlignItems,
   FLEX_DIRECTION,
-  SEVERITIES,
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
   Size,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import { BannerAlert, ButtonLink } from '../../../components/component-library';
-import { Text } from '../../../components/component-library/text/deprecated';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsEventErrorType,
+} from '../../../../shared/constants/metametrics';
+import {
+  ButtonLink,
+  Text,
+  BannerAlert,
+} from '../../../components/component-library';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -131,6 +137,7 @@ import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
 import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
+import useRamps from '../../../hooks/experiences/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
 
 let intervalId;
@@ -154,6 +161,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     useState(null);
   // We need to have currentTimestamp in state, otherwise it would change with each rerender.
   const [currentTimestamp] = useState(Date.now());
+  const { openBuyCryptoInPdapp } = useRamps();
 
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
@@ -173,6 +181,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   }, [history, quotes, routeState]);
 
   const quotesLastFetched = useSelector(getQuotesLastFetched);
+  const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 
   // Select necessary data
   const gasPrice = useSelector(getUsedSwapsGasPrice);
@@ -501,6 +510,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionsError.currentBalanceWei,
     );
   }
+  const prevEthBalanceNeededStx = usePrevious(ethBalanceNeededStx);
 
   const destinationToken = useSelector(getDestinationTokenInfo, isEqual);
   useEffect(() => {
@@ -515,8 +525,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     } else if (balanceError && !insufficientTokens && !insufficientEth) {
       dispatch(setBalanceError(false));
     }
-    // eslint-disable-next-line
-  }, [insufficientTokens, insufficientEth, dispatch, isSmartTransaction]);
+  }, [
+    insufficientTokens,
+    insufficientEth,
+    dispatch,
+    isSmartTransaction,
+    balanceError,
+  ]);
 
   useEffect(() => {
     const currentTime = Date.now();
@@ -694,6 +709,42 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     trackBestQuoteReviewedEvent,
   ]);
 
+  useEffect(() => {
+    if (
+      ((isSmartTransaction && prevEthBalanceNeededStx) ||
+        !isSmartTransaction) &&
+      quotesLastFetched === prevQuotesLastFetched
+    ) {
+      return;
+    }
+    let additionalBalanceNeeded;
+    if (isSmartTransaction && ethBalanceNeededStx) {
+      additionalBalanceNeeded = ethBalanceNeededStx;
+    } else if (!isSmartTransaction && ethBalanceNeeded) {
+      additionalBalanceNeeded = ethBalanceNeeded;
+    } else {
+      return; // A user has enough balance for a gas fee, so we don't need to track it.
+    }
+    trackEvent({
+      event: MetaMetricsEventName.SwapError,
+      category: MetaMetricsEventCategory.Swaps,
+      sensitiveProperties: {
+        ...eventObjectBase,
+        error_type: MetaMetricsEventErrorType.InsufficientGas,
+        additional_balance_needed: additionalBalanceNeeded,
+      },
+    });
+  }, [
+    quotesLastFetched,
+    prevQuotesLastFetched,
+    ethBalanceNeededStx,
+    isSmartTransaction,
+    trackEvent,
+    prevEthBalanceNeededStx,
+    ethBalanceNeeded,
+    eventObjectBase,
+  ]);
+
   const metaMaskFee = usedQuote.fee;
 
   /* istanbul ignore next */
@@ -733,6 +784,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       }),
     );
   };
+
+  const needsMoreGas = Boolean(ethBalanceNeededStx || ethBalanceNeeded);
+
   const actionableBalanceErrorMessage = tokenBalanceUnavailable
     ? t('swapTokenBalanceUnavailable', [sourceTokenSymbol])
     : t('swapApproveNeedMoreTokens', [
@@ -790,6 +844,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       10,
     );
   }
+  const prevPriceDifferencePercentage = usePrevious(priceDifferencePercentage);
 
   const shouldShowPriceDifferenceWarning =
     !tokenBalanceUnavailable &&
@@ -837,6 +892,25 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionsOptInStatus &&
         !smartTransactionFees?.tradeTxFees),
   );
+
+  useEffect(() => {
+    if (
+      shouldShowPriceDifferenceWarning &&
+      acknowledgedPriceDifference &&
+      quotesLastFetched !== prevQuotesLastFetched &&
+      priceDifferencePercentage !== prevPriceDifferencePercentage
+    ) {
+      // Reset price difference acknowledgement if price diff % changed.
+      setAcknowledgedPriceDifference(false);
+    }
+  }, [
+    acknowledgedPriceDifference,
+    prevQuotesLastFetched,
+    quotesLastFetched,
+    shouldShowPriceDifferenceWarning,
+    priceDifferencePercentage,
+    prevPriceDifferencePercentage,
+  ]);
 
   useEffect(() => {
     if (isSmartTransaction && !insufficientTokens) {
@@ -945,16 +1019,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     usedQuote,
   ]);
 
-  useEffect(() => {
-    if (isSmartTransaction) {
-      // Removes a smart transactions error when the component loads.
-      dispatch({
-        type: SET_SMART_TRANSACTIONS_ERROR,
-        payload: null,
-      });
-    }
-  }, [isSmartTransaction, dispatch]);
-
   const destinationValue = calcTokenValue(
     destinationTokenValue,
     destinationTokenDecimals,
@@ -1007,20 +1071,23 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           <>
             {viewQuotePriceDifferenceWarning}
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
-              <Box display={DISPLAY.FLEX} marginTop={2}>
-                <BannerAlert
-                  severity={SEVERITIES.INFO}
-                  title={t('notEnoughBalance')}
-                >
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    as="h6"
-                    data-testid="mm-banner-alert-notification-text"
-                  >
-                    {actionableBalanceErrorMessage}
-                  </Text>
-                </BannerAlert>
-              </Box>
+              <BannerAlert
+                title={t('notEnoughBalance')}
+                severity={Severity.Info}
+                description={actionableBalanceErrorMessage}
+                descriptionProps={{
+                  'data-testid': 'mm-banner-alert-notification-text',
+                }}
+                actionButtonLabel={
+                  needsMoreGas
+                    ? t('buyMoreAsset', [nativeCurrencySymbol])
+                    : undefined
+                }
+                actionButtonOnClick={
+                  needsMoreGas ? () => openBuyCryptoInPdapp() : undefined
+                }
+                marginTop={2}
+              />
             )}
           </>
         )}

@@ -14,15 +14,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
   showImportNftsModal,
 } from '../../../store/actions';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { Box, ButtonLink, IconName } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Box, ButtonLink, IconName, Text } from '../../component-library';
 import NftsDetectionNotice from '../nfts-detection-notice';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
@@ -37,7 +36,7 @@ export default function NftsTab() {
     useNftsCollections();
 
   const onEnableAutoDetect = () => {
-    history.push(EXPERIMENTAL_ROUTE);
+    history.push(SECURITY_ROUTE);
   };
 
   const onRefresh = () => {

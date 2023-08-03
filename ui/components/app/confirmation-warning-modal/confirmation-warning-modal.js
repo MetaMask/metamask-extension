@@ -14,8 +14,7 @@ import {
   AlignItems,
   IconColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize } from '../../component-library';
-import { Text } from '../../component-library/text/deprecated';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 const ConfirmationWarningModal = ({ onSubmit, onCancel }) => {
   const t = useI18nContext();

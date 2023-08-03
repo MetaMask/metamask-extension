@@ -8,7 +8,7 @@ import {
 
 import { Box } from '..';
 
-import type { PolymorphicRef } from '../box';
+import type { PolymorphicRef, BoxProps } from '../box';
 
 import { TextProps, TextComponent } from './text.types';
 
@@ -63,6 +63,7 @@ export const Text: TextComponent = React.forwardRef(
         [`mm-text--overflow-wrap-${overflowWrap}`]: Boolean(overflowWrap),
       },
     );
+
     return (
       <Box
         className={classnames(computedClassName)}
@@ -70,7 +71,7 @@ export const Text: TextComponent = React.forwardRef(
         dir={textDirection}
         ref={ref}
         color={TextColor.textDefault}
-        {...props} // TODO: Need to fix Box types to allow for spreading props
+        {...(props as BoxProps<C>)}
       >
         {children}
       </Box>

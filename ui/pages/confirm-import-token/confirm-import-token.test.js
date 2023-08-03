@@ -5,7 +5,7 @@ import {
   ASSET_ROUTE,
   IMPORT_TOKEN_ROUTE,
 } from '../../helpers/constants/routes';
-import { addTokens, clearPendingTokens } from '../../store/actions';
+import { addImportedTokens, clearPendingTokens } from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest';
 import ConfirmImportToken from '.';
@@ -26,7 +26,7 @@ const MOCK_PENDING_TOKENS = {
 };
 
 jest.mock('../../store/actions', () => ({
-  addTokens: jest.fn().mockReturnValue({ type: 'test' }),
+  addImportedTokens: jest.fn().mockReturnValue({ type: 'test' }),
   clearPendingTokens: jest
     .fn()
     .mockReturnValue({ type: 'CLEAR_PENDING_TOKENS' }),
@@ -118,7 +118,7 @@ describe('ConfirmImportToken Component', () => {
 
     await fireEvent.click(importTokensBtn);
 
-    expect(addTokens).toHaveBeenCalled();
+    expect(addImportedTokens).toHaveBeenCalled();
     expect(clearPendingTokens).toHaveBeenCalled();
     expect(mockHistoryPush).toHaveBeenCalledTimes(1);
     expect(mockHistoryPush).toHaveBeenCalledWith(

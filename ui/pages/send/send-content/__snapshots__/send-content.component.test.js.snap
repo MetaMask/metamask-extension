@@ -51,19 +51,16 @@ exports[`SendContent Component render should match snapshot 1`] = `
                       Balance:
                     </span>
                     <div
-                      class="currency-display-component"
+                      class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                       title="0 ETH"
                     >
                       <span
-                        class="currency-display-component__prefix"
-                      />
-                      <span
-                        class="currency-display-component__text"
+                        class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                       >
                         0
                       </span>
                       <span
-                        class="currency-display-component__suffix"
+                        class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                       >
                         ETH
                       </span>
@@ -187,7 +184,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 class="transaction-detail-item__row"
               >
                 <h6
-                  class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--flex-wrap-nowrap box--align-items-center typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                 >
                   <div
                     class="box box--display-flex box--flex-direction-row"
@@ -235,25 +232,22 @@ exports[`SendContent Component render should match snapshot 1`] = `
                   class="transaction-detail-item__detail-values"
                 >
                   <h6
-                    class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-1 box--flex-direction-row box--text-align-right typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                    class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
                   >
                     <div
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.0000315
                         </span>
                         <span
-                          class="currency-display-component__suffix"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
                           ETH
                         </span>
@@ -273,7 +267,7 @@ exports[`SendContent Component render should match snapshot 1`] = `
                   </h6>
                 </div>
                 <h6
-                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography transaction-detail-item__row-subText typography--h7 typography--weight-normal typography--style-normal typography--align-end typography--color-text-alternative"
+                  class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
                 >
                   <div
                     class="box gas-details-item__gasfee-label box--display-inline-flex box--flex-direction-row"
@@ -289,19 +283,16 @@ exports[`SendContent Component render should match snapshot 1`] = `
                       class="gas-details-item__currency-container"
                     >
                       <div
-                        class="currency-display-component"
+                        class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
                         title="0.0000315 ETH"
                       >
                         <span
-                          class="currency-display-component__prefix"
-                        />
-                        <span
-                          class="currency-display-component__text"
+                          class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
                           0.0000315
                         </span>
                         <span
-                          class="currency-display-component__suffix"
+                          class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
                         >
                           ETH
                         </span>
