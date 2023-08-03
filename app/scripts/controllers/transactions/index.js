@@ -164,9 +164,7 @@ export default class TransactionController extends EventEmitter {
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
-    this.memStore = new ObservableStore({
-      incomingTransactions: opts.initState?.incomingTransactions || {},
-    });
+    this.memStore = new ObservableStore({});
 
     this.resetState = () => {
       this._updateMemstore();
@@ -233,24 +231,7 @@ export default class TransactionController extends EventEmitter {
 
     this.incomingTransactionHelper.hub.on(
       'updatedTransactions',
-      (transactions) => {
-        log.debug('Detected new incoming transactions', transactions);
-
-        const newState = {
-          incomingTransactions: transactions.reduce(
-            (result, tx) => {
-              result[tx.hash] = tx;
-              return result;
-            },
-            {
-              ...this.memStore.getState().incomingTransactions,
-            },
-          ),
-        };
-
-        this.memStore.updateState(newState);
-        this.store.updateState(newState);
-      },
+      this._onIncomingTransactions.bind(this),
     );
 
     this.incomingTransactionHelper.hub.on(
@@ -459,6 +440,10 @@ export default class TransactionController extends EventEmitter {
   _getTransaction(txId) {
     const { transactions } = this.store.getState();
     return transactions[txId];
+  }
+
+  _hasTransactionHash(hash, transactions) {
+    return Object.values(transactions).some((tx) => tx.hash === hash);
   }
 
   /**
@@ -2166,11 +2151,18 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
+    const { transactions } = this.store.getState();
     const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
+
     const currentNetworkTxList = this.txStateManager.getTransactions({
       limit: MAX_MEMSTORE_TX_LIST_SIZE,
     });
-    this.memStore.updateState({ unapprovedTxs, currentNetworkTxList });
+
+    this.memStore.updateState({
+      unapprovedTxs,
+      currentNetworkTxList,
+      transactions,
+    });
   }
 
   _calculateTransactionsCost(txMeta, approvalTxMeta) {
@@ -2787,6 +2779,26 @@ export default class TransactionController extends EventEmitter {
       TransactionMetaMetricsEvent.added,
       txMeta.actionId,
     );
+  }
+
+  _onIncomingTransactions(transactions) {
+    log.debug('Detected new incoming transactions', transactions);
+
+    const currentTransactions = this.store.getState().transactions || {};
+
+    const incomingTransactions = transactions
+      .filter((tx) => !this._hasTransactionHash(tx, currentTransactions))
+      .reduce((result, tx) => {
+        result[tx.id] = tx;
+        return result;
+      }, {});
+
+    const updatedTransactions = {
+      ...currentTransactions,
+      ...incomingTransactions,
+    };
+
+    this.store.updateState({ transactions: updatedTransactions });
   }
 
   // Approvals
