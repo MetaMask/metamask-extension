@@ -189,12 +189,6 @@
   "addContact": {
     "message": "Add contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Add custom IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "The IPFS gateway makes it possible to access and view data hosted by third parties. You can add a custom IPFS gateway or continue using the default."
-  },
   "addCustomNetwork": {
     "message": "Add custom network"
   },
@@ -248,6 +242,9 @@
   },
   "addHardwareWallet": {
     "message": "Add hardware wallet"
+  },
+  "addIPFSGateway": {
+    "message": "Add your preferred IPFS gateway"
   },
   "addMemo": {
     "message": "Add memo"
@@ -612,6 +609,10 @@
   },
   "buyAsset": {
     "message": "Buy $1",
+    "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
+  },
+  "buyMoreAsset": {
+    "message": "Buy more $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyNow": {
@@ -2054,6 +2055,12 @@
   "invalidSeedPhraseCaseSensitive": {
     "message": "Invalid input! Secret Recovery Phrase is case sensitive."
   },
+  "ipfsGateway": {
+    "message": "IPFS gateway"
+  },
+  "ipfsGatewayDescription": {
+    "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
+  },
   "ipfsToggleModalDescriptionOne": {
     "message": "We use third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
   },
@@ -2755,6 +2762,21 @@
   },
   "notifications22Title": {
     "message": "Looking for your account details or the block explorer URL?"
+  },
+  "notifications23ActionText": {
+    "message": "Enable security alerts"
+  },
+  "notifications23DescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid."
+  },
+  "notifications23DescriptionThree": {
+    "message": "If you enabled security alerts from OpenSea, we've moved you over to this feature."
+  },
+  "notifications23DescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notifications23Title": {
+    "message": "Stay safe with security alerts"
   },
   "notifications3ActionText": {
     "message": "Read more",

@@ -165,7 +165,7 @@ describe('Settings Search Utils', () => {
     it('should get good security & privacy section number', () => {
       expect(
         getNumberOfSettingsInSection(t, t('securityAndPrivacy')),
-      ).toStrictEqual(10);
+      ).toStrictEqual(12);
     });
 
     it('should get good alerts section number', () => {
@@ -178,7 +178,7 @@ describe('Settings Search Utils', () => {
 
     it('should get good experimental section number', () => {
       expect(getNumberOfSettingsInSection(t, t('experimental'))).toStrictEqual(
-        3,
+        1,
       );
     });
 

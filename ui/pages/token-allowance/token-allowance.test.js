@@ -491,4 +491,28 @@ describe('TokenAllowancePage', () => {
     expect(queryByText('Account 1')).toBeInTheDocument();
     expect(queryByText('Account 2')).not.toBeInTheDocument();
   });
+
+  it('should display security alert if present', () => {
+    const { getByText } = renderWithProvider(
+      <TokenAllowance
+        {...props}
+        txData={{
+          ...props.txData,
+          securityAlertResponse: {
+            resultType: 'Malicious',
+            reason: 'blur_farming',
+            description:
+              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+            args: {
+              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+            },
+          },
+        }}
+      />,
+      store,
+    );
+
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
+  });
 });
