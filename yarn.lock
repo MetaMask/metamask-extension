@@ -3555,10 +3555,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:2.0.0":
-  version: 2.0.0
-  resolution: "@lavamoat/snow@npm:2.0.0"
-  checksum: 163bfba0b36c5bea868ec30015afe6eeff603199c001b17f1c477c19e9410c92a383ae84e2a25987c1e032ea51f57307515be85a3246c79928de95262f081a79
+"@lavamoat/snow@npm:2.0.1":
+  version: 2.0.1
+  resolution: "@lavamoat/snow@npm:2.0.1"
+  checksum: 349a37642e8de03f22febef3257e9b77ef3fa714b1aec98a71835547ad3dc12edd0a8ec06241a1eadc8ca43c07a6cd67b6601e656c301244fbe75479cfbdb522
   languageName: node
   linkType: hard
 
@@ -24623,7 +24623,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": ^0.13.1
     "@lavamoat/allow-scripts": ^2.0.3
     "@lavamoat/lavapack": ^5.2.0
-    "@lavamoat/snow": 2.0.0
+    "@lavamoat/snow": 2.0.1
     "@material-ui/core": ^4.11.0
     "@metamask-institutional/custody-controller": 0.2.6
     "@metamask-institutional/custody-keyring": ^0.0.25
