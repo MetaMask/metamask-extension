@@ -40,8 +40,8 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.mm-banner-alert')).toBeNull();
   });
 
-  it(`should not render when securityAlertResponse.result_type is '${BlockaidResultType.Failed}'`, () => {
-    const { container } = renderWithLocalization(
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
+    const { container, getByText } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
           ...mockSecurityAlertResponse,
@@ -49,8 +49,31 @@ describe('Blockaid Banner Alert', () => {
         }}
       />,
     );
+    const warningBannerAlert = container.querySelector(
+      '.mm-banner-alert--severity-warning',
+    );
 
-    expect(container.querySelector('.mm-banner-alert')).toBeNull();
+    expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
+
+    expect(getByText('Request may not be safe')).toBeInTheDocument();
+    expect(
+      getByText(
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
+    const { container } = renderWithLocalization(
+      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
+    );
+    const warningBannerAlert = container.querySelector(
+      '.mm-banner-alert--severity-warning',
+    );
+
+    expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
@@ -68,18 +91,6 @@ describe('Blockaid Banner Alert', () => {
 
     expect(dangerBannerAlert).toBeInTheDocument();
     expect(dangerBannerAlert).toMatchSnapshot();
-  });
-
-  it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
-    const { container } = renderWithLocalization(
-      <BlockaidBannerAlert securityAlertResponse={mockSecurityAlertResponse} />,
-    );
-    const warningBannerAlert = container.querySelector(
-      '.mm-banner-alert--severity-warning',
-    );
-
-    expect(warningBannerAlert).toBeInTheDocument();
-    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it('should render title, "This is a deceptive request"', () => {

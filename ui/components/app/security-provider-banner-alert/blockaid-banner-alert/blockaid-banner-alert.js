@@ -48,18 +48,19 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
 
   const { reason, result_type: resultType, features } = securityAlertResponse;
 
-  if (
-    resultType === BlockaidResultType.Benign ||
-    resultType === BlockaidResultType.Failed
-  ) {
+  if (resultType === BlockaidResultType.Benign) {
     return null;
   }
 
-  if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
+  const descriptionTKey =
+    resultType === BlockaidResultType.Failed
+      ? 'blockaidDescriptionFailed'
+      : REASON_TO_DESCRIPTION_TKEY[reason];
+  const description = t(descriptionTKey || 'other');
+
+  if (!descriptionTKey) {
     captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
   }
-
-  const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
 
   const details = Boolean(features?.length) && (
     <Text as="ul">
@@ -74,10 +75,14 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
       ? Severity.Danger
       : Severity.Warning;
 
-  const title =
-    SUSPCIOUS_REASON.indexOf(reason) > -1
-      ? t('blockaidTitleSuspicious')
-      : t('blockaidTitleDeceptive');
+  let title;
+  if (resultType === BlockaidResultType.Failed) {
+    title = t('blockaidTitleMayNotBeSafe');
+  } else if (SUSPCIOUS_REASON.indexOf(reason) > -1) {
+    title = t('blockaidTitleSuspicious');
+  } else {
+    title = t('blockaidTitleDeceptive');
+  }
 
   return (
     <SecurityProviderBannerAlert
