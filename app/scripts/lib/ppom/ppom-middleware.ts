@@ -5,7 +5,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-import PreferencesController from 'app/scripts/controllers/preferences';
+import PreferencesController from '../../controllers/preferences';
 
 const { sentry } = global as any;
 
