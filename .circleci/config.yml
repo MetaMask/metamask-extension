@@ -221,6 +221,7 @@ workflows:
             - prep-build-flask
       - all-tests-pass:
           requires:
+            - test-deps-depcheck
             - validate-lavamoat-allow-scripts
             - validate-lavamoat-policy-build
             - validate-lavamoat-policy-webapp
