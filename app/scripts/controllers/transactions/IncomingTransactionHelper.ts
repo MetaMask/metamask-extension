@@ -51,7 +51,7 @@ export class IncomingTransactionHelper {
     getLocalTransactions?: () => TransactionMeta[];
     incomingOnly?: boolean;
     isEnabled?: () => boolean;
-    lastFetchedBlockNumbers: Record<string, number>;
+    lastFetchedBlockNumbers?: Record<string, number>;
     remoteTransactionSource: RemoteTransactionSource;
     transactionLimit?: number;
   }) {
@@ -64,7 +64,7 @@ export class IncomingTransactionHelper {
     this.#incomingOnly = incomingOnly ?? false;
     this.#isEnabled = isEnabled ?? (() => true);
     this.#isRunning = false;
-    this.#lastFetchedBlockNumbers = lastFetchedBlockNumbers;
+    this.#lastFetchedBlockNumbers = lastFetchedBlockNumbers ?? {};
     this.#remoteTransactionSource = remoteTransactionSource;
     this.#transactionLimit = transactionLimit;
 
@@ -74,7 +74,6 @@ export class IncomingTransactionHelper {
       try {
         await this.#update(blockNumberHex);
       } catch (error) {
-        console.error(error);
         log.error('Error while checking incoming transactions', error);
       }
     };
@@ -85,7 +84,7 @@ export class IncomingTransactionHelper {
       return;
     }
 
-    if (!this.#canStart) {
+    if (!this.#canStart()) {
       return;
     }
 
