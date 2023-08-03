@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Magdagdag ng custom na IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
-  },
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
