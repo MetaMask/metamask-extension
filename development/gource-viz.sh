@@ -21,4 +21,13 @@ gource \
   --title "MetaMask Development History" \
   --output-ppm-stream - \
   --output-framerate 30 \
-  | ffmpeg -y -r 30 -f image2pipe -vcodec ppm -i - -b 65536K metamask-dev-history.mp4
+  | \
+ffmpeg \
+  -y \
+  -r 30 \
+  -f image2pipe \
+  -vcodec ppm \
+  -i \
+  - \
+  -b:v 65536K \
+  metamask-dev-history.mp4
