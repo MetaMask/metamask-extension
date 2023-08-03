@@ -121,6 +121,7 @@ const initialState = {
   currentSmartTransactionsError: '',
   swapsSTXLoading: false,
   transactionSettingsOpened: false,
+  latestAddedTokenTo: '',
 };
 
 const slice = createSlice({
@@ -149,6 +150,9 @@ const slice = createSlice({
     },
     setFetchingQuotes: (state, action) => {
       state.fetchingQuotes = action.payload;
+    },
+    setLatestAddedTokenTo: (state, action) => {
+      state.latestAddedTokenTo = action.payload;
     },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
@@ -244,6 +248,8 @@ export const getTopAssets = (state) => state.swaps.topAssets;
 export const getToToken = (state) => state.swaps.toToken;
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
+
+export const getLatestAddedTokenTo = (state) => state.swaps.latestAddedTokenTo;
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
@@ -479,6 +485,7 @@ const {
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
+  setLatestAddedTokenTo,
   setFromToken,
   setFromTokenError,
   setFromTokenInputValue,
@@ -502,6 +509,7 @@ export {
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
+  setLatestAddedTokenTo,
   setFromToken as setSwapsFromToken,
   setFromTokenError,
   setFromTokenInputValue,
@@ -665,7 +673,12 @@ export const fetchQuotesAndSetQuoteState = (
       iconUrl: fromTokenIconUrl,
       balance: fromTokenBalance,
     } = selectedFromToken;
-    const { address: toTokenAddress, symbol: toTokenSymbol } = selectedToToken;
+    const {
+      address: toTokenAddress,
+      symbol: toTokenSymbol,
+      decimals: toTokenDecimals,
+      iconUrl: toTokenIconUrl,
+    } = selectedToToken;
     // pageRedirectionDisabled is true if quotes prefetching is active (a user is on the Build Quote page).
     // In that case we just want to silently prefetch quotes without redirecting to the quotes loading page.
     if (!pageRedirectionDisabled) {
@@ -675,6 +688,30 @@ export const fetchQuotesAndSetQuoteState = (
     dispatch(setFetchingQuotes(true));
 
     const contractExchangeRates = getTokenExchangeRates(state);
+
+    if (
+      toTokenAddress &&
+      toTokenSymbol !== swapsDefaultToken.symbol &&
+      contractExchangeRates[toTokenAddress] === undefined &&
+      !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
+    ) {
+      await dispatch(
+        addToken(
+          toTokenAddress,
+          toTokenSymbol,
+          toTokenDecimals,
+          toTokenIconUrl,
+          true,
+        ),
+      );
+      await dispatch(setLatestAddedTokenTo(toTokenAddress));
+    } else {
+      const latestAddedTokenTo = getLatestAddedTokenTo(state);
+      // Only reset the latest added Token To if it's a different token.
+      if (latestAddedTokenTo !== toTokenAddress) {
+        await dispatch(setLatestAddedTokenTo(''));
+      }
+    }
 
     if (
       fromTokenAddress &&
@@ -831,36 +868,6 @@ export const fetchQuotesAndSetQuoteState = (
   };
 };
 
-const addTokenTo = (dispatch, state) => {
-  const fetchParams = getFetchParams(state);
-  const swapsDefaultToken = getSwapsDefaultToken(state);
-  const contractExchangeRates = getTokenExchangeRates(state);
-  const selectedToToken =
-    getToToken(state) || fetchParams?.metaData?.destinationTokenInfo || {};
-  const {
-    address: toTokenAddress,
-    symbol: toTokenSymbol,
-    decimals: toTokenDecimals,
-    iconUrl: toTokenIconUrl,
-  } = selectedToToken;
-  if (
-    toTokenAddress &&
-    toTokenSymbol !== swapsDefaultToken.symbol &&
-    contractExchangeRates[toTokenAddress] === undefined &&
-    !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
-  ) {
-    dispatch(
-      addToken(
-        toTokenAddress,
-        toTokenSymbol,
-        toTokenDecimals,
-        toTokenIconUrl,
-        true,
-      ),
-    );
-  }
-};
-
 export const signAndSendSwapsSmartTransaction = ({
   unsignedTransaction,
   trackEvent,
@@ -960,7 +967,6 @@ export const signAndSendSwapsSmartTransaction = ({
         dispatch(setCurrentSmartTransactionsError(StxErrorTypes.unavailable));
         return;
       }
-      addTokenTo(dispatch, state);
       if (approveTxParams) {
         updatedApproveTxParams.gas = `0x${decimalToHex(
           fees.approvalTxFees?.gasLimit || 0,
@@ -1204,7 +1210,6 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SIGNATURES_ROUTE);
     }
 
-    addTokenTo(dispatch, state);
     if (approveTxParams) {
       if (networkAndAccountSupports1559) {
         approveTxParams.maxFeePerGas = maxFeePerGas;

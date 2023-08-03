@@ -119,7 +119,6 @@ export const UI_NOTIFICATIONS = {
     date: null,
     image: {
       src: 'images/global-menu-block-explorer.svg',
-      width: '100%',
     },
   },
 };
