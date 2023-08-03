@@ -15,6 +15,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
   Color,
+  Display,
   IconColor,
   Severity,
   Size,
@@ -47,6 +48,7 @@ function SecurityProviderBannerAlert({
 
       <Text
         marginTop={2}
+        display={Display.Flex}
         alignItems={AlignItems.center}
         color={Color.textAlternative}
         variant={TextVariant.bodySm}
