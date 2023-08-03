@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import { ButtonBase } from '../button-base';
 import {
   BackgroundColor,
+  IconColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
@@ -34,6 +35,9 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
           'mm-button-primary--type-danger': danger,
           'mm-button-primary--disabled': disabled,
         })}
+        iconLoadingProps={{
+          color: danger ? IconColor.errorInverse : IconColor.primaryInverse,
+        }}
         size={size}
         ref={ref}
         {...{ disabled, ...(props as ButtonBaseProps<C>) }}

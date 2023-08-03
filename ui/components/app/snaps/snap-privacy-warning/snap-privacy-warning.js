@@ -7,7 +7,7 @@ import {
   AvatarIcon,
   Button,
   BUTTON_LINK_SIZES,
-  BUTTON_PRIMARY_SIZES,
+  BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonLink,
   IconName,
@@ -123,7 +123,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
           >
             <Button
               variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_PRIMARY_SIZES.LG}
+              size={BUTTON_SIZES.LG}
               width={BLOCK_SIZES.FULL}
               className="snap-privacy-warning__cancel-button"
               onClick={onCanceled}
@@ -133,7 +133,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
             </Button>
             <Button
               variant={BUTTON_VARIANT.PRIMARY}
-              size={BUTTON_PRIMARY_SIZES.LG}
+              size={BUTTON_SIZES.LG}
               width={BLOCK_SIZES.FULL}
               className="snap-privacy-warning__ok-button"
               onClick={onAccepted}
