@@ -33,7 +33,7 @@ export default class CachedBalancesController {
    * Updates the cachedBalances property for the current chain. Cached balances will be updated to those in the passed accounts
    * if balances in the passed accounts are truthy.
    *
-   * @param {object} obj - The the recently updated accounts object for the current chain
+   * @param {object} obj - The recently updated accounts object for the current chain
    * @param obj.accounts
    * @returns {Promise<void>}
    */
