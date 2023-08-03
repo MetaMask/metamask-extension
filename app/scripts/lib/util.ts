@@ -1,4 +1,4 @@
-import url from 'url';
+import urlLib from 'url';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -237,7 +237,7 @@ export function previousValueComparator<A>(
 export function addUrlProtocolPrefix(urlString: string) {
   let trimmed = urlString.trim();
 
-  if (trimmed.length && !url.parse(trimmed).protocol) {
+  if (trimmed.length && !urlLib.parse(trimmed).protocol) {
     trimmed = `https://${trimmed}`;
   }
 

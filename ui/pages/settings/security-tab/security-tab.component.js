@@ -21,16 +21,18 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import SRPQuiz from '../../../components/app/srp-quiz-modal/SRPQuiz';
-import { Box, Text } from '../../../components/component-library';
 import {
   BUTTON_SIZES,
-  Button,
   Box,
+  Button,
   Text,
 } from '../../../components/component-library';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
+  Display,
+  FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -413,7 +415,10 @@ export default class SecurityTab extends PureComponent {
             {t('ipfsGatewayDescription')}
           </div>
         </div>
-        <div className="settings-page__content-item-col" data-testid="ipfsToggle">
+        <div
+          className="settings-page__content-item-col"
+          data-testid="ipfsToggle"
+        >
           <ToggleButton
             value={this.state.ipfsToggle}
             onToggle={(value) => {
@@ -690,31 +695,32 @@ export default class SecurityTab extends PureComponent {
             {t('displayNftMediaDescription')}
           </div>
         </div>
-
-        <div
-          className="settings-page__content-item-col"
-          data-testid="displayNftMedia"
-        >
-          <ToggleButton
-            value={openSeaEnabled}
-            onToggle={(value) => {
-              this.context.trackEvent({
-                category: MetaMetricsEventCategory.Settings,
-                event: 'Enabled/Disable OpenSea',
-                properties: {
-                  action: 'Enabled/Disable OpenSea',
-                  legacy_event: true,
-                },
-              });
-              // value is positive when being toggled off
-              if (value && useNftDetection) {
-                setUseNftDetection(false);
-              }
-              setOpenSeaEnabled(!value);
-            }}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="enableOpenSeaAPI"
+          >
+            <ToggleButton
+              value={openSeaEnabled}
+              onToggle={(value) => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Settings,
+                  event: 'Enabled/Disable OpenSea',
+                  properties: {
+                    action: 'Enabled/Disable OpenSea',
+                    legacy_event: true,
+                  },
+                });
+                // value is positive when being toggled off
+                if (value && useNftDetection) {
+                  setUseNftDetection(false);
+                }
+                setOpenSeaEnabled(!value);
+              }}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
         </div>
       </Box>
     );
