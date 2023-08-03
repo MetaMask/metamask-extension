@@ -1,3 +1,4 @@
+import url from 'url';
 import { AccessList } from '@ethereumjs/tx';
 import BN from 'bn.js';
 import { memoize } from 'lodash';
@@ -236,7 +237,7 @@ export function previousValueComparator<A>(
 export function addUrlProtocolPrefix(urlString: string) {
   let trimmed = urlString.trim();
 
-  if (trimmed.length > 0 && !trimmed.match(/(^http:\/\/)|(^https:\/\/)/u)) {
+  if (trimmed.length && !url.parse(trimmed).protocol) {
     trimmed = `https://${trimmed}`;
   }
 
@@ -263,17 +264,6 @@ export function getValidUrl(urlString: string): URL | null {
   } catch (error) {
     return null;
   }
-}
-
-export function isLocalhostOrHttps(urlString: string) {
-  const url = getValidUrl(urlString);
-
-  return (
-    url !== null &&
-    (url.hostname === 'localhost' ||
-      url.hostname === '127.0.0.1' ||
-      url.protocol === 'https:')
-  );
 }
 
 export function isWebUrl(urlString: string): boolean {

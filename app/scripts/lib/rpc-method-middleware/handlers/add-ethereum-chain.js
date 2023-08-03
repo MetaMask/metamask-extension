@@ -1,16 +1,16 @@
-import { ethErrors, errorCodes } from 'eth-rpc-errors';
-import { omit } from 'lodash';
 import { ApprovalType } from '@metamask/controller-utils';
+import { errorCodes, ethErrors } from 'eth-rpc-errors';
+import { omit } from 'lodash';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
 } from '../../../../../shared/constants/app';
+import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
-import { isLocalhostOrHttps } from '../../util';
+import { getValidUrl } from '../../util';
 
 const addEthereumChain = {
   methodNames: [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN],
@@ -80,6 +80,17 @@ async function addEthereumChainHandler(
       ethErrors.rpc.invalidParams({
         message: `Received unexpected keys on object parameter. Unsupported keys:\n${otherKeys}`,
       }),
+    );
+  }
+
+  function isLocalhostOrHttps(urlString) {
+    const url = getValidUrl(urlString);
+
+    return (
+      url !== null &&
+      (url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.protocol === 'https:')
     );
   }
 

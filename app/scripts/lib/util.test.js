@@ -21,7 +21,6 @@ import {
   getEnvironmentType,
   getPlatform,
   getValidUrl,
-  isLocalhostOrHttps,
   isWebUrl,
 } from './util';
 
@@ -89,13 +88,6 @@ describe('app utils', () => {
         'https://example.com',
       );
       expect(addUrlProtocolPrefix('exa mple.com')).toStrictEqual(null);
-    });
-
-    it('should test isLocalhostOrHttps', () => {
-      expect(isLocalhostOrHttps('http://example.com')).toStrictEqual(false);
-      expect(isLocalhostOrHttps('https://example.com')).toStrictEqual(true);
-      expect(isLocalhostOrHttps('http://localhost')).toStrictEqual(true);
-      expect(isLocalhostOrHttps('http://127.0.0.1')).toStrictEqual(true);
     });
 
     it('should test isWebUrl', () => {
