@@ -1,6 +1,5 @@
-const { strict: assert } = require('assert');
 const { buildWebDriver } = require('../webdriver');
-const { withFixtures } = require('../helpers');
+const { withFixtures, tinyDelayMs } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Settings', function () {
@@ -24,8 +23,10 @@ describe('Settings', function () {
     }
 
     // Ensure that the redirect to ENS Domains has happened
-    const currentUrl = await driver.getCurrentUrl();
-    assert.equal(currentUrl, ENS_DESTINATION_URL);
+    await driver.wait(async () => {
+      const currentUrl = await driver.getCurrentUrl();
+      return currentUrl === ENS_DESTINATION_URL;
+    }, tinyDelayMs);
 
     await driver.quit();
   });
@@ -71,8 +72,10 @@ describe('Settings', function () {
 
         // Ensure that the redirect to ENS Domains does not happen
         // Instead, the domain will be kept which is a 404
-        const currentUrl = await driver.getCurrentUrl();
-        assert.equal(currentUrl, ENS_NAME_URL);
+        await driver.wait(async () => {
+          const currentUrl = await driver.getCurrentUrl();
+          return currentUrl === ENS_NAME_URL;
+        }, tinyDelayMs);
       },
     );
   });

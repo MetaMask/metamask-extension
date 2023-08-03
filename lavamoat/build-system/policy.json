@@ -1757,20 +1757,7 @@
         "process.platform": true
       },
       "packages": {
-        "browserify>browser-resolve>resolve": true
-      }
-    },
-    "browserify>browser-resolve>resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path": true
-      },
-      "globals": {
-        "process.nextTick": true,
-        "process.platform": true
+        "brfs>resolve": true
       }
     },
     "browserify>cached-path-relative": {
@@ -1879,6 +1866,7 @@
       },
       "packages": {
         "brfs>resolve": true,
+        "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
@@ -1886,7 +1874,6 @@
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
-        "lavamoat-browserify>browser-resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
         "readable-stream": true,
@@ -6224,8 +6211,8 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
+        "browserify>browser-resolve": true,
         "duplexify": true,
-        "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
@@ -6234,29 +6221,16 @@
         "lavamoat>lavamoat-core": true
       }
     },
-    "lavamoat-browserify>browser-resolve": {
-      "builtin": {
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "path": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.platform": true
-      },
-      "packages": {
-        "brfs>resolve": true
-      }
-    },
     "lavamoat-browserify>concat-stream": {
       "globals": {
         "Buffer.concat": true,
-        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
+        "browserify>concat-stream>typedarray": true,
         "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
