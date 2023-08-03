@@ -1121,7 +1121,7 @@
     "message": "Delete network?"
   },
   "deleteNetworkIntro": {
-    "message": "If you delete this network, you will need to add it again to view your assets in this network."
+    "message": "If you delete this network, you will need to add it again to view your assets in this network"
   },
   "deleteNetworkTitle": {
     "message": "Delete $1 network?",
