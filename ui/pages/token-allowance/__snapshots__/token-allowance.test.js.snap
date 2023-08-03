@@ -289,7 +289,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                 >
                   <button
                     aria-label="Copy to clipboard"
-                    class="box mm-button-icon mm-button-icon--size-lg box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
+                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
@@ -309,7 +309,7 @@ exports[`TokenAllowancePage should match snapshot 1`] = `
                 >
                   <button
                     aria-label="Open in block explorer"
-                    class="box mm-button-icon mm-button-icon--size-lg box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-muted box--background-color-transparent box--rounded-lg"
+                    class="mm-box mm-button-icon mm-button-icon--size-lg mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"

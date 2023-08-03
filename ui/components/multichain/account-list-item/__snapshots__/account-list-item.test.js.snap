@@ -122,7 +122,7 @@ exports[`AccountListItem renders AccountListItem component and shows account nam
     </div>
     <button
       aria-label="Test Account Options"
-      class="box mm-button-icon mm-button-icon--size-sm box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
       data-testid="account-list-item-menu-button"
     >
       <span
