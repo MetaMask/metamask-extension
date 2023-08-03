@@ -47,7 +47,7 @@ describe('Security Tab', () => {
   });
 
   it('toggles opensea api enabled', async () => {
-    expect(await toggleCheckbox('enableOpenSeaAPI', false)).toBe(true);
+    expect(await toggleCheckbox('displayNftMedia', false)).toBe(true);
   });
 
   it('toggles nft detection', async () => {
