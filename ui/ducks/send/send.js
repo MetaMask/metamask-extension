@@ -2035,7 +2035,10 @@ export function updateSendAsset(
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
       getSelectedInternalAccount(state).address;
-    const account = getTargetAccount(state, sendingAddress);
+    const account = getInternalAccountWithBalanceByAddress(
+      state,
+      sendingAddress,
+    );
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTxs(state);
       const unapprovedTx = unapprovedTxs?.[draftTransaction.id];

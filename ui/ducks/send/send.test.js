@@ -1277,8 +1277,34 @@ describe('Send Slice', () => {
                 1559: true,
               },
             },
-            selectedAddress: mockAddress1,
-            identities: { [mockAddress1]: { address: mockAddress1 } },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: mockAddress1,
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  name: 'Test Account',
+                  options: {},
+                  supportedMethods: [
+                    'personal_sign',
+                    'eth_sendTransaction',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
             keyrings: [
               {
                 type: KeyringType.hdKeyTree,
@@ -1340,7 +1366,7 @@ describe('Send Slice', () => {
         const action = initializeSendState();
         await action(dispatchSpy, getState, undefined);
 
-        expect(dispatchSpy).toHaveBeenCalledTimes(2);
+        expect(dispatchSpy).toHaveBeenCalledTimes(3);
 
         expect(dispatchSpy.mock.calls[0][0].type).toStrictEqual(
           'send/initializeSendState/pending',
@@ -1578,6 +1604,34 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '',
           selectedAddress: '',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: mockAddress1,
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                name: 'Test Account',
+                options: {},
+                supportedMethods: [
+                  'personal_sign',
+                  'eth_sendTransaction',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v2',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
@@ -2443,8 +2497,32 @@ describe('Send Slice', () => {
               [CHAIN_IDS.GOERLI]: {},
             },
             internalAccounts: {
-              accounts: {},
-              selectedAccount: '',
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: mockAddress1,
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  name: 'Test Account',
+                  options: {},
+                  supportedMethods: [
+                    'personal_sign',
+                    'eth_sendTransaction',
+                    'eth_sign',
+                    'eth_signTransaction',
+                    'eth_signTypedData',
+                    'eth_signTypedData_v1',
+                    'eth_signTypedData_v2',
+                    'eth_signTypedData_v3',
+                    'eth_signTypedData_v4',
+                  ],
+                  type: 'eip155:eoa',
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             },
             accounts: {
               [mockAddress1]: {
@@ -2491,7 +2569,7 @@ describe('Send Slice', () => {
         await store.dispatch(editExistingTransaction(AssetType.native, 1));
         const actionResult = store.getActions();
 
-        expect(actionResult).toHaveLength(6);
+        expect(actionResult).toHaveLength(7);
         expect(actionResult[0]).toMatchObject({
           type: 'send/clearPreviousDrafts',
         });
@@ -2511,6 +2589,26 @@ describe('Send Slice', () => {
             fromAccount: {
               address: mockAddress1,
               balance: '0x0',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
             },
             gas: {
               error: null,
@@ -2682,6 +2780,26 @@ describe('Send Slice', () => {
             fromAccount: {
               address: mockAddress1,
               balance: '0x0',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Test Account',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
             },
             gas: {
               error: null,

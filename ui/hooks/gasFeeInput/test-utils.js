@@ -14,6 +14,7 @@ import {
   txDataSelector,
   getCurrentKeyring,
   getTokenExchangeRates,
+  getSelectedInternalAccountWithBalance,
 } from '../../selectors';
 
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
@@ -142,6 +143,12 @@ export const generateUseSelectorRouter =
     if (selector === getTokenExchangeRates) {
       return { '0x1': '1' };
     }
+    if (selector === getSelectedInternalAccountWithBalance) {
+      return {
+        balance: '0x440aa47cc2556',
+      };
+    }
+
     return undefined;
   };
 

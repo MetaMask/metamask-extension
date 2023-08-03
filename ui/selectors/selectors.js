@@ -424,8 +424,8 @@ export const getMetaMaskAccountsConnected = createSelector(
 );
 
 export function isBalanceCached(state) {
-  const selectedAccountBalance =
-    state.metamask.accounts[getSelectedInternalAccount(state).address].balance;
+  const { balance: selectedAccountBalance } =
+    getSelectedInternalAccountWithBalance(state);
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);

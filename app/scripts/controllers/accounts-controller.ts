@@ -30,6 +30,7 @@ const controllerName = 'AccountsController';
 export type AccountsControllerState = {
   internalAccounts: {
     accounts: Record<string, InternalAccount>;
+    lostAccounts: Record<string, InternalAccount>;
     selectedAccount: string; // id of the selected account
   };
 };
@@ -72,6 +73,7 @@ const accountsControllerMetadata = {
 const defaultState: AccountsControllerState = {
   internalAccounts: {
     accounts: {},
+    lostAccounts: {},
     selectedAccount: '',
   },
 };
@@ -145,53 +147,59 @@ export default class AccountsController extends BaseControllerV2<
       // check if there are any new accounts added
       if (keyringState.isUnlocked) {
         // TODO: ACCOUNTS_CONTROLLER keyring will return accounts instead of addresses, remove this flatMap after and just get the latest id
-        const newAccounts = keyringState.keyrings.flatMap(
+        const updatedKeyringAccounts = keyringState.keyrings.flatMap(
           (keyring) => keyring.accounts,
         );
 
-        const accounts = this.getAllAccounts();
-        const [newAddress] = newAccounts.filter((address) => {
-          return (
-            accounts.findIndex(
-              (account) => account.address.toLowerCase() === address,
-            ) === -1
-          );
-        });
+        const accounts = this.listAccounts();
 
         await this.updateAccounts();
 
         if (newAddress) {
           console.log('setting new account', newAddress);
-          this.setSelectedAccount(this.getAccountExpect(newAddress).id);
+          const updatedAccountsList = this.listAccounts();
+          const { id: newAccountId } = updatedAccountsList.find(
+            (account) =>
+              account.address.toLowerCase() === newAddress.toLowerCase(),
+          );
+          this.setSelectedAccount(newAccountId);
         }
       }
     });
-  }
 
-  getAccount(address: string): InternalAccount | undefined {
-    return Object.values(this.state.internalAccounts.accounts).find(
-      (account) => account.address.toLowerCase() === address.toLowerCase(),
-    );
-  }
-
-  getAccountExpect(address: string): InternalAccount {
-    const account = this.getAccount(address);
-    if (account === undefined) {
-      throw new Error(`Account ${address} not found`);
+    // if somehow the selected account becomes lost then select the first account
+    if (
+      this.state.internalAccounts.selectedAccount !== '' &&
+      !this.getAccount(this.state.internalAccounts.selectedAccount)
+    ) {
+      this.setSelectedAccount(this.listAccounts()[0]?.id);
     }
-    return account;
   }
 
-  getAccountById(accountId: string): InternalAccount | undefined {
+  // getAccount(address: string): InternalAccount | undefined {
+  //   return Object.values(this.state.internalAccounts.accounts).find(
+  //     (account) => account.address.toLowerCase() === address.toLowerCase(),
+  //   );
+  // }
+
+  // getAccountExpect(address: string): InternalAccount {
+  //   const account = this.getAccount(address);
+  //   if (account === undefined) {
+  //     throw new Error(`Account ${address} not found`);
+  //   }
+  //   return account;
+  // }
+
+  getAccount(accountId: string): InternalAccount | undefined {
     return this.state.internalAccounts.accounts[accountId];
   }
 
-  getAllAccounts(): InternalAccount[] {
+  listAccounts(): InternalAccount[] {
     return Object.values(this.state.internalAccounts.accounts);
   }
 
-  getAccountByIdExpect(accountId: string): InternalAccount {
-    const account = this.getAccountById(accountId);
+  getAccountExpect(accountId: string): InternalAccount {
+    const account = this.getAccount(accountId);
     if (account === undefined) {
       throw new Error(`Account Id ${accountId} not found`);
     }
@@ -199,20 +207,22 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   getSelectedAccount(): InternalAccount {
-    return this.getAccountByIdExpect(
-      this.state.internalAccounts.selectedAccount,
-    );
+    return this.getAccountExpect(this.state.internalAccounts.selectedAccount);
   }
 
   async updateAccounts(): Promise<void> {
-    const legacyAccounts = await this.#listLegacyAccounts();
+    let legacyAccounts = await this.#listLegacyAccounts();
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const snapAccounts = await this.#listSnapAccounts();
+    // remove duplicate accounts that are retrieved from the snap keyring.
+    legacyAccounts = legacyAccounts.filter(
+      (account) =>
+        !snapAccounts.find(
+          (snapAccount) => snapAccount.address !== account.address,
+        ),
+    );
     ///: END:ONLY_INCLUDE_IN(keyring-snaps)
     const accountNames = identitesToAccountNames(this.identities);
-
-    // console.log('legacy accounts', legacyAccounts);
-    // console.log('snap accounts', snapAccounts);
 
     // keyring type map.
     const keyringTypes = new Map<string, number>();
@@ -243,30 +253,53 @@ export default class AccountsController extends BaseControllerV2<
         internalAccount.id
       ]
         ? accountNames[internalAccount.id]
-        : `${internalAccount.metadata.keyring.type} ${keyringAccountIndex + 1}`;
+        : `${keyringTypeToName(internalAccount.metadata.keyring.type)} ${
+            keyringAccountIndex + 1
+          }`;
 
       return internalAccountMap;
     }, {} as Record<string, InternalAccount>);
 
+    // find lost accounts
+    const lostAccounts = this.listAccounts()
+      .filter((existingAccount) => accounts[existingAccount.id] === undefined)
+      .reduce((lostAccountsMap, lostAccount) => {
+        lostAccountsMap[lostAccount.id] = lostAccount;
+        return lostAccountsMap;
+      }, {} as Record<string, InternalAccount>);
+
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts = accounts;
+      currentState.internalAccounts.lostAccounts = lostAccounts;
     });
 
     console.log('updated state', this.state);
   }
 
-  removeAccountByAddress(address: string): void {
-    const account = this.getAccount(address);
-    if (account) {
-      this.update((currentState: AccountsControllerState) => {
-        delete currentState.internalAccounts.accounts[account.id];
-      });
-    }
+  // removeAccount(accountId: string): void {
+  //   const accountToDelete = this.getAccount(accountId);
+  //   const accounts = this.getAllAccounts();
 
-    // this.update((currentState: AccountsControllerState) => {
-    //   currentState.internalAccounts
-    // }
-  }
+  //   console.log('removing account', accountToDelete);
+
+  //   if (accountToDelete) {
+  //     const previousAccount = accounts
+  //       .filter((account) => account.lastSelected && account.id !== accountId)
+  //       .sort((accountA, accountB) => {
+  //         // sort by lastSelected descending
+  //         return (
+  //           accountB.metadata.lastSelected - accountA.metadata.lastSelected
+  //         );
+  //       })[0];
+
+  //     console.log('setting new selected', previousAccount);
+
+  //     this.update((currentState: AccountsControllerState) => {
+  //       delete currentState.internalAccounts.accounts[accountToDelete.id];
+  //       currentState.internalAccounts.selectedAccount = previousAccount.id;
+  //     });
+  //   }
+  // }
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   async #listSnapAccounts(): Promise<InternalAccount[]> {
@@ -340,7 +373,7 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   setSelectedAccount(accountId: string): void {
-    const account = this.getAccountByIdExpect(accountId);
+    const account = this.getAccountExpect(accountId);
 
     console.log('set selected account', account);
 
@@ -357,7 +390,7 @@ export default class AccountsController extends BaseControllerV2<
   }
 
   setAccountName(accountId: string, accountName: string): void {
-    const account = this.getAccountByIdExpect(accountId);
+    const account = this.getAccountExpect(accountId);
 
     this.update((currentState: AccountsControllerState) => {
       currentState.internalAccounts.accounts[accountId] = {
@@ -394,4 +427,36 @@ export function identitesToAccountNames(
     accounts[accountId] = identity.name;
     return accounts;
   }, {} as Record<string, string>);
+}
+
+function keyringTypeToName(keyringType: string): string {
+  switch (keyringType) {
+    case 'Simple Key Pair': {
+      return 'Account';
+    }
+    case 'HD Key Tree': {
+      return 'Account';
+    }
+    case 'Trezor Hardware': {
+      return 'Trezor';
+    }
+    case 'Ledger Hardware': {
+      return 'Ledger';
+    }
+    case 'Lattice Hardware': {
+      return 'Lattice';
+    }
+    case 'QR Hardware Wallet Device': {
+      return 'QR';
+    }
+    case 'Snap Keyring': {
+      return 'Snap Account';
+    }
+    case 'Custody': {
+      return 'Custody';
+    }
+    default: {
+      return 'Account';
+    }
+  }
 }

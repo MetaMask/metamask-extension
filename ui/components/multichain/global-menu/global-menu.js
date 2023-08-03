@@ -68,7 +68,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const { address } = useSelector(getSelectedInternalAccount);
+  const account = useSelector(getSelectedInternalAccount);
 
   const hasUnapprovedTransactions = useSelector(
     (state) => Object.keys(state.metamask.unapprovedTxs).length > 0,
@@ -95,12 +95,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
-        address={address}
+        accountId={account.id}
       />
       <ViewExplorerMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
-        address={address}
+        address={account.address}
       />
       <MenuItem
         iconName={IconName.Connect}
