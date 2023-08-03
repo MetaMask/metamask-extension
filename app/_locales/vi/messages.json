@@ -1178,9 +1178,6 @@
   "enableFromSettings": {
     "message": " Bật lên trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
   "enableToken": {
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"

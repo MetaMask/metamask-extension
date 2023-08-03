@@ -1178,9 +1178,6 @@
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Settings."
   },
-  "enableOpenSeaAPI": {
-    "message": "Paganahin sa OpenSea API"
-  },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"

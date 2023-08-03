@@ -740,9 +740,6 @@
   "enableFromSettings": {
     "message": " Actívela en Configuración."
   },
-  "enableOpenSeaAPI": {
-    "message": "Activar API de OpenSea"
-  },
   "enableToken": {
     "message": "activar $1",
     "description": "$1 is a token symbol, e.g. ETH"

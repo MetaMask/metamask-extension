@@ -1178,9 +1178,6 @@
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API aktivieren"
-  },
   "enableToken": {
     "message": "$1 aktivieren",
     "description": "$1 is a token symbol, e.g. ETH"

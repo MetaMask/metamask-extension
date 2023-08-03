@@ -1178,9 +1178,6 @@
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API 활성화"
-  },
   "enableToken": {
     "message": "$1 활성화",
     "description": "$1 is a token symbol, e.g. ETH"

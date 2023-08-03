@@ -1400,9 +1400,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
   },

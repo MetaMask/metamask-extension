@@ -1178,9 +1178,6 @@
   "enableFromSettings": {
     "message": " Ενεργοποίηση του από τις Ρυθμίσεις."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ενεργοποίηση OpenSea API"
-  },
   "enableToken": {
     "message": "ενεργοποίηση $1",
     "description": "$1 is a token symbol, e.g. ETH"
