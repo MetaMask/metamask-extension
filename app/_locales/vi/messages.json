@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Thêm địa chỉ liên hệ"
   },
-  "addCustomIPFSGateway": {
-    "message": "Thêm cổng IPFS tùy chỉnh"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
-  },
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
@@ -4159,9 +4153,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Chúng tôi xử lý hàng loạt tài khoản và kiểm tra với Infura để hiển thị các số dư tài khoản của bạn một cách nhanh chóng. Nếu bạn tắt tính năng này, chỉ những tài khoản đang hoạt động mới được truy vấn. Một số dapp sẽ không hoạt động trừ khi bạn kết nối với ví của mình."
   },
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"
