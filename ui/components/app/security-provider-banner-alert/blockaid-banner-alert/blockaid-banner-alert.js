@@ -71,6 +71,8 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
     </Text>
   );
 
+  const isFailedResultType = resultType === BlockaidResultType.Failed;
+
   const severity =
     resultType === BlockaidResultType.Malicious
       ? Severity.Danger
@@ -82,7 +84,7 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
     <SecurityProviderBannerAlert
       description={description}
       details={details}
-      provider={SecurityProvider.Blockaid}
+      provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
     />
