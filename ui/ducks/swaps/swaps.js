@@ -124,6 +124,7 @@ const initialState = {
   currentSmartTransactionsError: '',
   swapsSTXLoading: false,
   transactionSettingsOpened: false,
+  latestAddedTokenTo: '',
 };
 
 const slice = createSlice({
@@ -708,7 +709,11 @@ export const fetchQuotesAndSetQuoteState = (
       );
       await dispatch(setLatestAddedTokenTo(toTokenAddress));
     } else {
-      await dispatch(setLatestAddedTokenTo(''));
+      const latestAddedTokenTo = getLatestAddedTokenTo(state);
+      // Only reset the latest added Token To if it's a different token.
+      if (latestAddedTokenTo !== toTokenAddress) {
+        await dispatch(setLatestAddedTokenTo(''));
+      }
     }
 
     if (
