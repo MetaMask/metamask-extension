@@ -10,7 +10,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexDirection,
   JustifyContent,
@@ -24,11 +23,23 @@ import { I18nContext } from '../../../contexts/i18n';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
+interface NetworkPreferences {
+  isShowIncomingTransactions: boolean;
+  label: string;
+  imageUrl: string;
+}
+
+interface NetworkToggleProps {
+  networkPreferences: NetworkPreferences;
+  toggleSingleNetwork: (chainId: string, value: boolean) => void;
+  chainId: string;
+}
+
 const NetworkToggle = ({
   networkPreferences,
   toggleSingleNetwork,
   chainId,
-}) => {
+}: NetworkToggleProps) => {
   const t = useContext(I18nContext);
 
   const { isShowIncomingTransactions } = networkPreferences;
@@ -43,10 +54,11 @@ const NetworkToggle = ({
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       data-testid={`network-toggle-${chainId}`}
+      className="network-toggle-wrapper"
     >
       <Box
         gap={2}
-        backgroundColor={Color.transparent}
+        backgroundColor={BackgroundColor.transparent}
         display={Display.Flex}
         alignItems={AlignItems.center}
         width={BlockSize.Full}

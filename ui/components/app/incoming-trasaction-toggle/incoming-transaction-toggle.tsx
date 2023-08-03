@@ -16,7 +16,7 @@ import {
 
 import { PolymorphicRef } from '../../component-library/box';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
-import NetworkToggle from './NetworkToggle';
+import NetworkToggle from './network-toggle';
 
 interface IncomingTransactionToggleProps {
   wrapperRef: PolymorphicRef<any>;

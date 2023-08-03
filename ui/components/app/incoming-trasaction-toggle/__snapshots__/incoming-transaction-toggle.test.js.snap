@@ -72,7 +72,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0x1"
     >
       <div
@@ -140,7 +140,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0xe708"
     >
       <div
@@ -208,7 +208,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0xfa"
     >
       <div
@@ -272,7 +272,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0x5"
     >
       <div
@@ -336,7 +336,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0xaa36a7"
     >
       <div
@@ -400,7 +400,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
       </label>
     </div>
     <div
-      class="mm-box mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box network-toggle-wrapper mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="network-toggle-0xe704"
     >
       <div
