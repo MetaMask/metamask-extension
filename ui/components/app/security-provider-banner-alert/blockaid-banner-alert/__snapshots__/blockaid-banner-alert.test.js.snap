@@ -59,12 +59,12 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
       class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
       data-testid="mm-banner-base-title"
     >
-      Request may not be safe
+      This is a deceptive request
     </h5>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
     >
-      Because of an error, this request was not verified by the security provider. Proceed with caution.
+      If you approve this request, a third party known for scams might take all your assets.
     </p>
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"

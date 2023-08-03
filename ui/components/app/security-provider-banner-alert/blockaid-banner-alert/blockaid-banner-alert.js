@@ -21,6 +21,8 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
+  [BlockaidReason.failed]: 'blockaidDescriptionFailed',
+
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
   [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
@@ -36,8 +38,11 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.other]: 'blockaidDescriptionMightLoseAssets',
 });
 
-/** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
-const SUSPCIOUS_REASON = [BlockaidReason.rawSignatureFarming];
+/** Reason to title translation key mapping. */
+const REASON_TO_TITLE_TKEY = Object.freeze({
+  [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
+  [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
+});
 
 function BlockaidBannerAlert({ securityAlertResponse }) {
   const t = useContext(I18nContext);
@@ -52,15 +57,11 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
     return null;
   }
 
-  const descriptionTKey =
-    resultType === BlockaidResultType.Failed
-      ? 'blockaidDescriptionFailed'
-      : REASON_TO_DESCRIPTION_TKEY[reason];
-  const description = t(descriptionTKey || 'other');
-
-  if (!descriptionTKey) {
+  if (!REASON_TO_DESCRIPTION_TKEY[reason]) {
     captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
   }
+
+  const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
 
   const details = Boolean(features?.length) && (
     <Text as="ul">
@@ -75,14 +76,7 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
       ? Severity.Danger
       : Severity.Warning;
 
-  let title;
-  if (resultType === BlockaidResultType.Failed) {
-    title = t('blockaidTitleMayNotBeSafe');
-  } else if (SUSPCIOUS_REASON.indexOf(reason) > -1) {
-    title = t('blockaidTitleSuspicious');
-  } else {
-    title = t('blockaidTitleDeceptive');
-  }
+  const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
   return (
     <SecurityProviderBannerAlert

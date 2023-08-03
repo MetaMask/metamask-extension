@@ -41,7 +41,7 @@ describe('Blockaid Banner Alert', () => {
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Failed}`, () => {
-    const { container, getByText } = renderWithLocalization(
+    const { container } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
           ...mockSecurityAlertResponse,
@@ -55,13 +55,6 @@ describe('Blockaid Banner Alert', () => {
 
     expect(warningBannerAlert).toBeInTheDocument();
     expect(warningBannerAlert).toMatchSnapshot();
-
-    expect(getByText('Request may not be safe')).toBeInTheDocument();
-    expect(
-      getByText(
-        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
-      ),
-    ).toBeInTheDocument();
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
@@ -101,7 +94,20 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 
-  it('should render title, "This is a suspicious request", when the reason is "raw_signature_farming"', () => {
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.failed}"`, () => {
+    const { getByText } = renderWithLocalization(
+      <BlockaidBannerAlert
+        securityAlertResponse={{
+          ...mockSecurityAlertResponse,
+          reason: BlockaidReason.failed,
+        }}
+      />,
+    );
+
+    expect(getByText('Request may not be safe')).toBeInTheDocument();
+  });
+
+  it(`should render title, "This is a suspicious request", when the reason is "${BlockaidReason.rawSignatureFarming}"`, () => {
     const { getByText } = renderWithLocalization(
       <BlockaidBannerAlert
         securityAlertResponse={{
@@ -142,6 +148,8 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, a third party known for scams might take all your assets.',
       [BlockaidReason.blurFarming]:
         'If you approve this request, someone can steal your assets listed on Blur.',
+      [BlockaidReason.failed]:
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
       [BlockaidReason.other]:
