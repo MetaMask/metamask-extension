@@ -300,7 +300,7 @@ describe('Custom network', function () {
           windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Notification,
             windowHandles,
           );
           await driver.clickElement({
