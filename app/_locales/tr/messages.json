@@ -1178,12 +1178,6 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
-  },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
     "description": "$1 is a token symbol, e.g. ETH"
