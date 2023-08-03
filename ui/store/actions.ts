@@ -2988,18 +2988,31 @@ export function setUseTokenDetection(
   };
 }
 
+export function setOpenSeaEnabled(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    try {
+      await submitRequestToBackground('setOpenSeaEnabled', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setUseNftDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
-    callBackgroundMethod('setUseNftDetection', [val], (err) => {
+    try {
+      await submitRequestToBackground('setUseNftDetection', [val]);
+    } finally {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    }
   };
 }
 
@@ -3010,21 +3023,6 @@ export function setUseCurrencyRateCheck(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseCurrencyRateCheck`);
     callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function setOpenSeaEnabled(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setOpenSeaEnabled`);
-    callBackgroundMethod('setOpenSeaEnabled', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err));
