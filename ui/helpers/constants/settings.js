@@ -214,6 +214,20 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-lock',
   },
   {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('enableOpenSeaAPI'),
+    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
+    route: `${SECURITY_ROUTE}#opensea-api`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
+    route: `${SECURITY_ROUTE}#autodetect-nfts`,
+    icon: 'fa fa-lock',
+  },
+  {
     tabMessage: (t) => t('alerts'),
     sectionMessage: (t) => t('alertSettingsUnconnectedAccount'),
     descriptionMessage: (t) => t('alertSettingsUnconnectedAccount'),
@@ -335,20 +349,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableOpenSeaAPI'),
-    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useNftDetection'),
-    descriptionMessage: (t) => t('useNftDetectionDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),

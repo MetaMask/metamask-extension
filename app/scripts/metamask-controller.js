@@ -656,6 +656,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store,
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
+      blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -4054,7 +4055,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    engine.push(createPPOMMiddleware(this.ppomController));
+    engine.push(
+      createPPOMMiddleware(this.ppomController, this.preferencesController),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     engine.push(
