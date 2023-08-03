@@ -13,7 +13,6 @@ The `ButtonLink` is an extension of `ButtonBase` to support link styles
 
 ## Props
 
-
 <ArgsTable of={ButtonLink} />
 
 The `ButtonLink` accepts all [ButtonBase](/docs/components-componentlibrary-buttonbase--default-story#props) component props
@@ -37,7 +36,7 @@ Possible sizes include:
 </Canvas>
 
 ```jsx
-import { ButtonLink, Text, TextVariant } from '../../component-library';
+import { ButtonLink, ButtonLinkSize, Text, TextVariant } from '../../component-library';
 
 <ButtonLink size={ButtonLinkSize.Auto}>
   Auto (default)
@@ -124,7 +123,7 @@ The default hit area for `ButtonLink` is the width of the text and height based 
 </Canvas>
 
 ```jsx
-import { ButtonLink } from '../../component-library';
+import { ButtonLink, ButtonLinkSize } from '../../component-library';
 
 <ButtonLink paddingLeft={4} paddingRight={4}>
   Auto (default)
