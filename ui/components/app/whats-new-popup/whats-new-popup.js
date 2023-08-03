@@ -100,6 +100,9 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 21: true });
       history.push(PREPARE_SWAP_ROUTE);
     },
+    22: () => {
+      updateViewedNotifications({ 22: true });
+    },
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: () => {
       updateViewedNotifications({ 23: true });
@@ -383,6 +386,7 @@ export default function WhatsNewPopup({
     18: renderFirstNotification,
     19: renderFirstNotification,
     21: renderFirstNotification,
+    22: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IN

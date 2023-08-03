@@ -10,6 +10,8 @@ import {
   setUsePhishDetect,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
+  setOpenSeaEnabled,
+  setUseNftDetection,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -27,6 +29,8 @@ const mapStateToProps = (state) => {
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
+    openSeaEnabled,
+    useNftDetection,
   } = metamask;
 
   return {
@@ -39,6 +43,8 @@ const mapStateToProps = (state) => {
     useMultiAccountBalanceChecker,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
+    openSeaEnabled,
+    useNftDetection,
   };
 };
 
@@ -61,6 +67,8 @@ const mapDispatchToProps = (dispatch) => {
     },
     setUseAddressBarEnsResolution: (value) =>
       dispatch(setUseAddressBarEnsResolution(value)),
+    setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
+    setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
   };
 };
 
