@@ -204,12 +204,12 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         class="settings-page__content-item"
       >
         <span>
-          Enable OpenSea API
+          Display NFT media
         </span>
         <div
           class="settings-page__content-description"
         >
-          Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.
+          Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.
         </div>
       </div>
       <div

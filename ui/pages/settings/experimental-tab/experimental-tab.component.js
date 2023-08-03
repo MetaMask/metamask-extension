@@ -154,9 +154,9 @@ export default class ExperimentalTab extends PureComponent {
       <>
         <div ref={this.settingsRefs[0]} className="settings-page__content-row">
           <div className="settings-page__content-item">
-            <span>{t('enableOpenSeaAPI')}</span>
+            <span>{t('displayNftMedia')}</span>
             <div className="settings-page__content-description">
-              {t('enableOpenSeaAPIDescription')}
+              {t('displayNftMediaDescription')}
             </div>
           </div>
           <div className="settings-page__content-item">
