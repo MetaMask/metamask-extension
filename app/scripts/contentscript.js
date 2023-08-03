@@ -5,7 +5,6 @@ import browser from 'webextension-polyfill';
 import PortStream from 'extension-port-stream';
 import { obj as createThoughStream } from 'through2';
 import log from 'loglevel';
-import { v4 as uuid } from 'uuid';
 
 import { EXTENSION_MESSAGES, MESSAGE_TYPE } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
@@ -72,20 +71,10 @@ let extensionMux,
  */
 function injectScript(content) {
   try {
-    const manifest = browser.runtime.getManifest();
-
     const container = document.head || document.documentElement;
     const scriptTag = document.createElement('script');
     scriptTag.setAttribute('async', 'false');
-    const scriptEnv = {
-      name: manifest.name,
-      uuid: uuid(),
-    };
-    const scriptContent = content.replace(
-      'const env = {};',
-      `const env = ${JSON.stringify(scriptEnv)};`,
-    );
-    scriptTag.textContent = scriptContent;
+    scriptTag.textContent = content;
     container.insertBefore(scriptTag, container.children[0]);
     container.removeChild(scriptTag);
   } catch (error) {

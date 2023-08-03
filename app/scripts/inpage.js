@@ -1,6 +1,3 @@
-// DO NOT CHANGE. This line gets replaced by content script
-const env = {};
-
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
@@ -35,6 +32,7 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
+import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -67,8 +65,8 @@ if (shouldInjectProvider()) {
     logger: log,
     shouldShimWeb3: true,
     providerInfo: {
-      name: env.name,
-      uuid: env.uuid,
+      name: process.env.METAMASK_BUILD_NAME,
+      uuid: uuid(),
       icon: iconUrl,
     },
   });

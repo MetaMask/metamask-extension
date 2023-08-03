@@ -220,6 +220,8 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_BUILD_TYPE
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_NAME
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - NODE_ENV
   # Defined by node itself
   # For the purposes of the build system we define it as empty below

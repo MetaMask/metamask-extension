@@ -1,5 +1,6 @@
 const path = require('path');
 const semver = require('semver');
+const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
 const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
@@ -218,8 +219,38 @@ function getPathInsideNodeModules(packageName, pathToFiles) {
   return targetPath;
 }
 
+/**
+ * Get the name for the current build.
+ *
+ * @param {object} options - The build options.
+ * @param {string} options.buildType - The build type of the current build.
+ * @param {boolean} options.applyLavaMoat - Flag if lavamoat was applied.
+ * @param {boolean} options.shouldIncludeSnow - Flag if snow should be included in the build name.
+ * @param options.environment
+ * @returns {string} The build name.
+ */
+function getBuildName({
+  environment,
+  buildType,
+  applyLavaMoat,
+  shouldIncludeSnow,
+}) {
+  if (environment === ENVIRONMENT.PRODUCTION) {
+    return 'MetaMask';
+  }
+
+  const mv3Str = process.env.ENABLE_MV3 ? ' MV3' : '';
+  const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
+  const snowStr = shouldIncludeSnow ? ' snow' : '';
+
+  return buildType === 'mmi'
+    ? `MetaMask Institutional ${mv3Str}`
+    : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
+}
+
 module.exports = {
   getBrowserVersionMap,
+  getBuildName,
   getEnvironment,
   isDevBuild,
   isTestBuild,
