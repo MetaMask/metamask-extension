@@ -1112,16 +1112,20 @@ export default class MetamaskController extends EventEmitter {
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
       keyringController: this.keyringController,
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       snapController: this.snapController,
+      ///: END:ONLY_INCLUDE_IN
       identities: initState.PreferencesController?.identities,
       onKeyringStateChange: keyringControllerMessenger.subscribe.bind(
         keyringControllerMessenger,
         'KeyringController:stateChange',
       ),
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       onSnapStateChange: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'SnapController:stateChange',
       ),
+      ///: END:ONLY_INCLUDE_IN
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
