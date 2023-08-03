@@ -141,7 +141,7 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async () => {
-              const matchedCustodian = findCustodianByDisplayName(
+              const custodianByDisplayName = findCustodianByDisplayName(
                 custodian.displayName,
               );
               const jwtListValue = await dispatch(
@@ -150,25 +150,23 @@ const CustodyPage = () => {
               setSelectedCustodianName(custodian.name);
               setSelectedCustodianDisplayName(custodian.displayName);
               setSelectedCustodianImage(custodian.iconUrl);
+              setApiUrl(custodian.apiUrl);
+              setCurrentJwt(jwtListValue[0] || '');
+              setJwtList(jwtListValue);
 
               /**
-               * @TODO USE THE CONFIGURATION API VALUES
+               * NOTE: USE THE CONFIGURATION API VALUES, WHEN AVAILABE
                * We need to get the urls of the custodians that have UI
-               * and for those do: setIsConfirmConnectCustodianModalVisible(true)
+               * and for those we do: setIsConfirmConnectCustodianModalVisible(true)
                * For custodians that don't have a UI and need to manually add the token in our
                * view, we do: setSelectedCustodianDisplayName(custodian.displayName)
                */
               // open confirm Connect Custodian modal
-              if (matchedCustodian) {
-                setMatchedCustodian(matchedCustodian);
-                console.log('Custodian with UI found:', matchedCustodian);
+              if (custodianByDisplayName) {
+                setMatchedCustodian(custodianByDisplayName);
                 setIsConfirmConnectCustodianModalVisible(true);
               } else {
-                console.log('Custodian with UI not found.');
                 setSelectedCustodianType(custodian.type);
-                setApiUrl(custodian.apiUrl);
-                setCurrentJwt(jwtListValue[0] || '');
-                setJwtList(jwtListValue);
               }
 
               trackEvent({
@@ -235,9 +233,12 @@ const CustodyPage = () => {
 
   function findCustodianByDisplayName(displayName) {
     const formatedDisplayName = displayName.toLowerCase();
-    for (const custodianKey in CUSTODIAN_WEBSITES) {
+    const custodianKeys = Object.keys(CUSTODIAN_WEBSITES);
+
+    for (const custodianKey of custodianKeys) {
       const custodian = CUSTODIAN_WEBSITES[custodianKey];
       const custodianDisplayName = custodian.displayName.toLowerCase();
+
       if (
         custodianKey.toLowerCase().includes(formatedDisplayName) ||
         custodianDisplayName.includes(formatedDisplayName)
@@ -245,6 +246,7 @@ const CustodyPage = () => {
         return custodian;
       }
     }
+
     return null; // no matching custodian is found
   }
 

@@ -33,6 +33,7 @@ const ConfirmConnectCustodianModal = ({
       isClosedOnOutsideClick
       isClosedOnEscapeKey
       className="mm-modal__custom-scrollbar"
+      data-testid="confirm-connect-custodian-modal"
     >
       <ModalOverlay />
       <ModalContent>

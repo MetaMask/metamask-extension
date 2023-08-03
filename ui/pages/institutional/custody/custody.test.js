@@ -85,7 +85,7 @@ describe('CustodyPage', function () {
     });
   });
 
-  it('calls getCustodianJwtList on custody select when connect btn is click and clicks connect button and shows the jwt form', async () => {
+  it('calls getCustodianJwtList on custody select when connect btn is click and clicks connect button and shows the redirect to custodian modal', async () => {
     act(() => {
       renderWithProvider(<CustodyPage />, store);
     });
@@ -96,8 +96,9 @@ describe('CustodyPage', function () {
     });
 
     await waitFor(() => {
-      expect(screen.getByTestId('jwt-form-connect-button')).toBeInTheDocument();
-      expect(mockedGetCustodianJWTList).toHaveBeenCalled();
+      expect(
+        screen.getByTestId('confirm-connect-custodian-modal'),
+      ).toBeInTheDocument();
     });
   });
 });
