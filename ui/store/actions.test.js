@@ -244,6 +244,9 @@ describe('Actions', () => {
               '0xAnotherAddress': '0x0',
             },
           },
+          identities: {
+            '0xAnotherAddress': {},
+          },
         }),
       );
 
@@ -1939,6 +1942,9 @@ describe('Actions', () => {
               '0xFirstAddress': {
                 balance: '0x0',
               },
+            },
+            identities: {
+              '0xFirstAddress': {},
             },
             cachedBalances: {
               '0x1': {
