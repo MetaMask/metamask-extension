@@ -1,32 +1,26 @@
 const { strict: assert } = require('assert');
-const { withFixtures, convertToHexValue } = require('../helpers');
+const {
+  withFixtures,
+  defaultGanacheOptions,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Settings', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('Shows nft default image when IPFS toggle is off and restore image once we toggle the ipfs modal', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         smartContract,
         title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
