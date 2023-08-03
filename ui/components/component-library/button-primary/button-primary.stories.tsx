@@ -7,7 +7,6 @@ import { ButtonPrimary, ButtonPrimarySize } from '.';
 
 export default {
   title: 'Components/ComponentLibrary/ButtonPrimary',
-
   component: ButtonPrimary,
   parameters: {
     docs: {

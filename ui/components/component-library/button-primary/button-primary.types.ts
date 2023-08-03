@@ -23,7 +23,8 @@ export interface ButtonPrimaryStyleUtilityProps
    */
   loading: boolean;
   /**
-   * Possible size values: 'ButtonPrimarySize.Auto'(auto), 'ButtonPrimarySize.Sm'(32px), 'ButtonPrimarySize.Md'(40px), 'ButtonPrimarySize.Lg'(48px), 'ButtonPrimarySize.Inherit'(inherits parents font-size)
+   * Possible size values: 'ButtonPrimarySize.Sm'(32px),
+   * 'ButtonPrimarySize.Md'(40px), 'ButtonPrimarySize.Lg'(48px)
    * Default value is 'ButtonPrimarySize.Auto'.
    */
   size: ButtonPrimarySize;
