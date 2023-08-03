@@ -637,7 +637,10 @@ export default class Home extends PureComponent {
           />
         ) : null}
         {newNetworkAddedConfigurationId && (
-          <Popover className="home__new-network-added">
+          <Popover
+            className="home__new-network-added"
+            onClose={() => clearNewNetworkAdded()}
+          >
             <i className="fa fa-check-circle fa-2x home__new-network-added__check-circle" />
             <Text
               variant={TextVariant.headingSm}

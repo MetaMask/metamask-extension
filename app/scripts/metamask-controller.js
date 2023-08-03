@@ -656,6 +656,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store,
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
+      blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -986,6 +987,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
+        'SnapsRegistry:update',
       ],
     });
 
@@ -1166,7 +1168,10 @@ export default class MetamaskController extends EventEmitter {
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkId: () => this.networkController.state.networkId,
-      getNetworkStatus: () => this.networkController.state.networkStatus,
+      getNetworkStatus: () =>
+        this.networkController.state.networksMetadata?.[
+          this.networkController.state.selectedNetworkClientId
+        ]?.status,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -2087,8 +2092,10 @@ export default class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
+      const networkStatus =
+        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
       const { chainId } = networkController.state.providerConfig;
-      if (memState.networkStatus === NetworkStatus.Available) {
+      if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
     }
@@ -4053,7 +4060,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    engine.push(createPPOMMiddleware(this.ppomController));
+    engine.push(
+      createPPOMMiddleware(this.ppomController, this.preferencesController),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     engine.push(

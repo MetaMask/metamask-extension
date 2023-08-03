@@ -1,4 +1,4 @@
-import { ApprovalType } from '@metamask/controller-utils';
+import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -493,8 +493,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -503,8 +505,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
