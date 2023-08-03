@@ -112,18 +112,24 @@ import {
   FRACTIONS,
   TEXT_ALIGN,
   Size,
+  FlexDirection,
   Severity,
 } from '../../../helpers/constants/design-system';
+import {
+  BannerAlert,
+  ButtonLink,
+  Text,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ButtonPrimary,
+} from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventErrorType,
 } from '../../../../shared/constants/metametrics';
-import {
-  ButtonLink,
-  Text,
-  BannerAlert,
-} from '../../../components/component-library';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -165,6 +171,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
     useState(false);
+  const [acknowledgedSlippage, setAcknowledgedSlippage] = useState(false);
+  const [highSlippageModalOpened, setHighSlippageModalOpened] = useState(false);
   const priceDifferenceRiskyBuckets = [
     GasRecommendations.high,
     GasRecommendations.medium,
@@ -1051,6 +1059,44 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   return (
     <div className="review-quote">
       <div className="review-quote__content">
+        <Modal
+          onClose={() => setHighSlippageModalOpened(false)}
+          isOpen={highSlippageModalOpened}
+          isClosedOnOutsideClick
+          isClosedOnEscapeKey
+          className="mm-modal__custom-scrollbar"
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setHighSlippageModalOpened(false)}>
+              {t('swapSlippageVeryHighTitle')}
+            </ModalHeader>
+            <Box
+              display={DISPLAY.FLEX}
+              flexDirection={FlexDirection.Column}
+              justifyContent={JustifyContent.spaceBetween}
+              alignItems={AlignItems.stretch}
+              className="high-slippage__content"
+              marginTop={7}
+            >
+              <Box display={DISPLAY.FLEX} marginBottom={5}>
+                <Text>{t('swapSlippageVeryHighDescription')}</Text>
+              </Box>
+              <Box marginTop={5}>
+                <ButtonPrimary
+                  onClick={() => {
+                    setAcknowledgedSlippage(true);
+                    setHighSlippageModalOpened(false);
+                  }}
+                  block
+                  data-testid="high-slippage-continue-anyway"
+                >
+                  {t('continueAnyway')}
+                </ButtonPrimary>
+              </Box>
+            </Box>
+          </ModalContent>
+        </Modal>
         {
           /* istanbul ignore next */
           selectQuotePopoverShown && (
@@ -1296,6 +1342,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       <SwapsFooter
         onSubmit={
           /* istanbul ignore next */ () => {
+            if (!acknowledgedSlippage) {
+              setHighSlippageModalOpened(true);
+              return;
+            }
             setSubmitClicked(true);
             if (!balanceError) {
               if (isSmartTransaction && smartTransactionFees?.tradeTxFees) {

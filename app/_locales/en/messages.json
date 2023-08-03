@@ -850,6 +850,9 @@
   "continue": {
     "message": "Continue"
   },
+  "continueAnyway": {
+    "message": "Continue anyway"
+  },
   "contract": {
     "message": "Contract"
   },
@@ -4652,8 +4655,14 @@
   "swapSlippageVeryHighDescription": {
     "message": "The slippage entered is considered very high and may result in a bad rate"
   },
+  "swapSlippageVeryHighDescription": {
+    "message": "Slippage this high means you'll get a bad rate. Are you sure you want to continue this swap?"
+  },
   "swapSlippageVeryHighTitle": {
     "message": "Very high slippage"
+  },
+  "swapSlippageVeryHighTitle": {
+    "message": "Your slippage is very high"
   },
   "swapSlippageZeroDescription": {
     "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
