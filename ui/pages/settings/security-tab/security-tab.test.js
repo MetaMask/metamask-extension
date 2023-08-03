@@ -46,7 +46,7 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('toggles opensea api enabled', async () => {
+  it('toggles Display NFT media enabled', async () => {
     expect(await toggleCheckbox('displayNftMedia', false)).toBe(true);
   });
 
