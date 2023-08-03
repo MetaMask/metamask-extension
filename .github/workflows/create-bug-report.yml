@@ -30,7 +30,7 @@ jobs:
             2. After completing the first regression run, move this epic to "Regression Completed" on the [Extension Release Regression board](https://app.zenhub.com/workspaces/extension-release-regression-6478c62d937eaa15e95c33c5/board?filterLogic=any&labels=release-${{ steps.extract_version.outputs.version }},release-task).
 
 
-            Note that once the release is prepared for store submission, meaning the `Version-v${{ steps.extract_version.outputs.version }}` branch merges into `main`, another GitHub action will automatically close this epic.
+            Note that once the release is prepared for store submission, meaning the `Version-v${{ steps.extract_version.outputs.version }}` branch merges into `master`, another GitHub action will automatically close this epic.
 
           labels: |
             [
