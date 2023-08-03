@@ -336,6 +336,10 @@ export default function ConfirmationPage({
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
+      const templatedValuess = await templatedValues;
+
+      console.log({ submitResult, templatedValuess, inputState });
+
       handleSubmitResult(submitResult);
     }
   };

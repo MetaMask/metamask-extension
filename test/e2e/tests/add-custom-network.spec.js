@@ -10,6 +10,7 @@ const {
   getEventPayloads,
   tinyDelayMs,
   WINDOW_TITLES,
+  getMockedRequests,
 } = require('../helpers');
 const { toHex } = require('@metamask/controller-utils');
 
@@ -63,17 +64,21 @@ describe('Custom network', function () {
             params
           })
         `);
+          console.log(1);
           const windowHandles = await driver.waitUntilXWindowHandles(3);
+          console.log(2);
 
           await driver.switchToWindowWithTitle(
             'MetaMask Notification',
             windowHandles,
           );
+          console.log(3);
 
           await driver.clickElement({
             tag: 'button',
             text: 'Approve',
           });
+          console.log(4);
 
           const warningTxt =
             'You are adding a new RPC provider for Ethereum Mainnet';
@@ -82,6 +87,7 @@ describe('Custom network', function () {
             tag: 'h4',
             text: warningTxt,
           });
+          console.log(5);
 
           await driver.clickElement({
             tag: 'button',
@@ -243,7 +249,24 @@ describe('Custom network', function () {
       );
     });
 
-    it.only('When the setting is turned off, no validation is not enforced', async function () {
+    it.only('When the setting is turned off, no validation is enforced', async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://rpc-exists-with-expected-chain-id.url')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: { result: '0x123' },
+            })),
+          await mockServer
+            .forGet('https://chainid.network/chains.json')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: MOCK_CHAINLIST_RESPONSE,
+            })),
+        ];
+      }
+
       await withFixtures(
         {
           dapp: true,
@@ -252,11 +275,12 @@ describe('Custom network', function () {
             .build(),
           ganacheOptions,
           title: this.test.title,
+          testSpecificMock: mockRPCURLAndChainId,
         },
-        async ({ driver }) => {
+        async ({ driver, mockedEndpoints }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -274,28 +298,28 @@ describe('Custom network', function () {
             windowHandles,
           );
 
-          await driver.executeScript(
-            `(${function () {
-              var params = [
-                {
-                  chainId: '0x123',
-                  chainName: 'Antani',
-                  nativeCurrency: {
-                    name: '',
-                    symbol: 'ANTANI',
-                    decimals: 18,
-                  },
-                  rpcUrls: ['https://doesntexist.abc/customRPC'],
-                  blockExplorerUrls: ['http://localhost:8080/api/customRPC'],
+          const addChainJSONRPCCall = function () {
+            var params = [
+              {
+                chainId: '0x123',
+                chainName: 'Antani',
+                nativeCurrency: {
+                  name: '',
+                  symbol: 'ANTANI',
+                  decimals: 18,
                 },
-              ];
+                rpcUrls: ['https://rpc-exists-with-expected-chain-id.url'],
+                blockExplorerUrls: ['http://localhost:8080/api/customRPC'],
+              },
+            ];
 
-              window.ethereum.request({
-                method: 'wallet_addEthereumChain',
-                params,
-              });
-            }.toString()})()`,
-          );
+            window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params,
+            });
+          }.toString();
+
+          await driver.executeScript(`(${addChainJSONRPCCall})()`);
 
           windowHandles = await driver.waitUntilXWindowHandles(3);
 
@@ -303,28 +327,27 @@ describe('Custom network', function () {
             WINDOW_TITLES.Notification,
             windowHandles,
           );
+
           await driver.clickElement({
             tag: 'button',
             text: 'Approve',
           });
 
-          await driver.findElement({
-            tag: 'span',
-            text: 'Error while connecting to the custom network.',
+          const switchNetworkBtn = await driver.findElement({
+            tag: 'button',
+            text: 'Switch network',
           });
 
-          const approveBtn = await driver.findElement({
-            tag: 'button',
-            text: 'Approve',
-          });
+          await switchNetworkBtn.click();
+
+          const mockedRequests = await getMockedRequests(
+            driver,
+            mockedEndpoints,
+          );
+
+          console.log({ mockedRequests });
 
           await sleepSeconds(100);
-
-          assert.equal(await approveBtn.isEnabled(), false);
-          await driver.clickElement({
-            tag: 'button',
-            text: 'Cancel',
-          });
         },
       );
     });
@@ -549,7 +572,7 @@ describe('Custom network', function () {
       );
     });
 
-    it.skip("When the network details validation toggle is turned off, don't validate user inserted details", async function () {
+    it("When the network details validation toggle is turned off, don't validate user inserted details", async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
