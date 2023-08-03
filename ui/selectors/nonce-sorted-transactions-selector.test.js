@@ -83,7 +83,7 @@ const getStateTree = ({
     featureFlags: {
       showIncomingTransactions: true,
     },
-    incomingTransactions: [...incomingTxList],
+    transactions: [...incomingTxList],
     currentNetworkTxList: [...txList],
   },
 });

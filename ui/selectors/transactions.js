@@ -36,7 +36,7 @@ export const incomingTxListSelector = (state) => {
   const { chainId } = getProviderConfig(state);
   const selectedAddress = getSelectedAddress(state);
 
-  return Object.values(state.metamask.transactions).filter(
+  return Object.values(state.metamask.transactions || {}).filter(
     (tx) =>
       tx.type === TransactionType.incoming &&
       tx.txParams.to === selectedAddress &&
