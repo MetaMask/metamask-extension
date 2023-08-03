@@ -1646,8 +1646,10 @@ export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
 
-export const useSafeChainsListValidationSelector = (state) =>
-  state.metamask.useSafeChainsListValidation;
+export const useSafeChainsListValidationSelector = (state) => {
+  console.log({ state });
+  return state.metamask.useSafeChainsListValidation;
+};
 
 /**
  * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion

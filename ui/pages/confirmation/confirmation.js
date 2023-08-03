@@ -196,6 +196,9 @@ export default function ConfirmationPage({
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
   // TODO PEDRO: pass down the selector variable here
+  console.log('ui/pages/confirmation/confirmation.js', {
+    useSafeChainsListValidation,
+  });
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
