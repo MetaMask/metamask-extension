@@ -740,12 +740,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ativar a API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"

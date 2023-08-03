@@ -69,7 +69,13 @@ interface TemporaryBackgroundState {
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
   networkId: string | null;
-  networkStatus: NetworkStatus;
+  networksMetadata: {
+    [NetworkClientId: string]: {
+      EIPS: { [eip: string]: boolean };
+      status: NetworkStatus;
+    };
+  };
+  selectedNetworkClientId: string;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   knownMethodData?: {
