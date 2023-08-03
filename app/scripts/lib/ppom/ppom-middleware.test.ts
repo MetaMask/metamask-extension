@@ -1,4 +1,7 @@
-import { BlockaidResultType } from '../../../../shared/constants/security-provider';
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
 import { createPPOMMiddleware } from './ppom-middleware';
 
 Object.defineProperty(globalThis, 'fetch', {
@@ -90,6 +93,9 @@ describe('PPOMMiddleware', () => {
     await middlewareFunction(req, undefined, () => undefined);
     expect((req.securityAlertResponse as any)?.result_type).toBe(
       BlockaidResultType.Failed,
+    );
+    expect((req.securityAlertResponse as any)?.reason).toBe(
+      BlockaidReason.failed,
     );
   });
 
