@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomIPFSGateway": {
-    "message": "Adicionar gateway IPFS personalizado"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
-  },
   "addCustomNetwork": {
     "message": "Adicionar rede personalizada"
   },
