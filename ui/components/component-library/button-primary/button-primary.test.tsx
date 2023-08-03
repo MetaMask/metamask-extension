@@ -2,8 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { ButtonPrimary } from './button-primary';
-import { BUTTON_PRIMARY_SIZES } from './button-primary.constants';
+import { ButtonPrimary, ButtonPrimarySize } from '.';
 
 describe('ButtonPrimary', () => {
   it('should render button element correctly', () => {
@@ -43,28 +42,28 @@ describe('ButtonPrimary', () => {
     const { getByTestId } = render(
       <>
         <ButtonPrimary
-          size={BUTTON_PRIMARY_SIZES.SM}
-          data-testid={BUTTON_PRIMARY_SIZES.SM}
+          size={ButtonPrimarySize.Sm}
+          data-testid={ButtonPrimarySize.Sm}
         />
         <ButtonPrimary
-          size={BUTTON_PRIMARY_SIZES.MD}
-          data-testid={BUTTON_PRIMARY_SIZES.MD}
+          size={ButtonPrimarySize.Md}
+          data-testid={ButtonPrimarySize.Md}
         />
         <ButtonPrimary
-          size={BUTTON_PRIMARY_SIZES.LG}
-          data-testid={BUTTON_PRIMARY_SIZES.LG}
+          size={ButtonPrimarySize.Lg}
+          data-testid={ButtonPrimarySize.Lg}
         />
       </>,
     );
 
-    expect(getByTestId(BUTTON_PRIMARY_SIZES.SM)).toHaveClass(
-      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.SM}`,
+    expect(getByTestId(ButtonPrimarySize.Sm)).toHaveClass(
+      `mm-button-base--size-${ButtonPrimarySize.Sm}`,
     );
-    expect(getByTestId(BUTTON_PRIMARY_SIZES.MD)).toHaveClass(
-      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.MD}`,
+    expect(getByTestId(ButtonPrimarySize.Md)).toHaveClass(
+      `mm-button-base--size-${ButtonPrimarySize.Md}`,
     );
-    expect(getByTestId(BUTTON_PRIMARY_SIZES.LG)).toHaveClass(
-      `mm-button-base--size-${BUTTON_PRIMARY_SIZES.LG}`,
+    expect(getByTestId(ButtonPrimarySize.Lg)).toHaveClass(
+      `mm-button-base--size-${ButtonPrimarySize.Lg}`,
     );
   });
 
