@@ -48,6 +48,7 @@ import {
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
   getSmartTransactionFees,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -145,6 +146,7 @@ export default function BuildQuote({
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -348,11 +350,10 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
-      if (destinationTokenAddedForSwap && token.address !== toAddress) {
+      if (latestAddedTokenTo && token.address !== toAddress) {
         dispatch(
           ignoreTokens({
             tokensToIgnore: toAddress,
@@ -363,7 +364,7 @@ export default function BuildQuote({
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, destinationTokenAddedForSwap, toAddress],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const hideDropdownItemIf = useCallback(

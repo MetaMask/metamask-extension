@@ -153,6 +153,9 @@ const slice = createSlice({
     setFetchingQuotes: (state, action) => {
       state.fetchingQuotes = action.payload;
     },
+    setLatestAddedTokenTo: (state, action) => {
+      state.latestAddedTokenTo = action.payload;
+    },
     setFromToken: (state, action) => {
       state.fromToken = action.payload;
     },
@@ -247,6 +250,8 @@ export const getTopAssets = (state) => state.swaps.topAssets;
 export const getToToken = (state) => state.swaps.toToken;
 
 export const getFetchingQuotes = (state) => state.swaps.fetchingQuotes;
+
+export const getLatestAddedTokenTo = (state) => state.swaps.latestAddedTokenTo;
 
 export const getQuotesFetchStartTime = (state) =>
   state.swaps.quotesFetchStartTime;
@@ -482,6 +487,7 @@ const {
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
+  setLatestAddedTokenTo,
   setFromToken,
   setFromTokenError,
   setFromTokenInputValue,
@@ -505,6 +511,7 @@ export {
   setAggregatorMetadata,
   setBalanceError,
   setFetchingQuotes,
+  setLatestAddedTokenTo,
   setFromToken as setSwapsFromToken,
   setFromTokenError,
   setFromTokenInputValue,
@@ -684,14 +691,12 @@ export const fetchQuotesAndSetQuoteState = (
 
     const contractExchangeRates = getTokenExchangeRates(state);
 
-    let destinationTokenAddedForSwap = false;
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
       contractExchangeRates[toTokenAddress] === undefined &&
       !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
     ) {
-      destinationTokenAddedForSwap = true;
       await dispatch(
         addToken(
           toTokenAddress,
@@ -701,6 +706,9 @@ export const fetchQuotesAndSetQuoteState = (
           true,
         ),
       );
+      await dispatch(setLatestAddedTokenTo(toTokenAddress));
+    } else {
+      await dispatch(setLatestAddedTokenTo(''));
     }
 
     if (
@@ -771,7 +779,6 @@ export const fetchQuotesAndSetQuoteState = (
             destinationToken: toTokenAddress,
             value: inputValue,
             fromAddress: selectedAccount.address,
-            destinationTokenAddedForSwap,
             balanceError,
             sourceDecimals: fromTokenDecimals,
           },

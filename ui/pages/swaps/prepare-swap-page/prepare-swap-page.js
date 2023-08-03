@@ -54,6 +54,7 @@ import {
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -184,6 +185,7 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
   const areQuotesPresent = numberOfQuotes > 0;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
@@ -451,11 +453,10 @@ export default function PrepareSwapPage({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
   const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
-      if (destinationTokenAddedForSwap && token.address !== toAddress) {
+      if (latestAddedTokenTo && token.address !== toAddress) {
         dispatch(
           ignoreTokens({
             tokensToIgnore: toAddress,
@@ -466,7 +467,7 @@ export default function PrepareSwapPage({
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch, destinationTokenAddedForSwap, toAddress],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>

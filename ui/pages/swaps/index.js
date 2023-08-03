@@ -50,6 +50,7 @@ import {
   navigateBackToBuildQuote,
   getSwapRedesignEnabled,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -135,6 +136,7 @@ export default function Swap() {
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const txList = useSelector(currentNetworkTxListSelector, shallowEqual);
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
@@ -183,8 +185,6 @@ export default function Swap() {
   const { balance: ethBalance, address: selectedAccountAddress } =
     selectedAccount;
 
-  const { destinationTokenAddedForSwap } = fetchParams || {};
-
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id);
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id);
@@ -215,13 +215,10 @@ export default function Swap() {
   const clearTemporaryTokenRef = useRef();
   useEffect(() => {
     clearTemporaryTokenRef.current = () => {
-      if (
-        destinationTokenAddedForSwap &&
-        (!isAwaitingSwapRoute || conversionError)
-      ) {
+      if (latestAddedTokenTo && (!isAwaitingSwapRoute || conversionError)) {
         dispatch(
           ignoreTokens({
-            tokensToIgnore: destinationTokenInfo?.address,
+            tokensToIgnore: latestAddedTokenTo,
             dontShowLoadingIndicator: true,
           }),
         );
@@ -230,7 +227,7 @@ export default function Swap() {
   }, [
     conversionError,
     dispatch,
-    destinationTokenAddedForSwap,
+    latestAddedTokenTo,
     destinationTokenInfo,
     fetchParams,
     isAwaitingSwapRoute,

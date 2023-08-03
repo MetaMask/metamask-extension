@@ -3205,7 +3205,6 @@ export function fetchAndSetQuotes(
     destinationToken: string;
     value: string;
     fromAddress: string;
-    destinationTokenAddedForSwap: string;
     balanceError: string;
     sourceDecimals: number;
   },
