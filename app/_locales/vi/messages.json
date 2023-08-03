@@ -1178,12 +1178,6 @@
   "enableFromSettings": {
     "message": " Bật lên trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
   "enableToken": {
     "message": "bật $1",
     "description": "$1 is a token symbol, e.g. ETH"
