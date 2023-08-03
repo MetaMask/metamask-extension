@@ -4,7 +4,7 @@ set -x
 gource \
   --seconds-per-day .025 \
   --user-scale 1.5 \
-  --default-user-image "./images/icon-512.png" \
+  --default-user-image "./app/images/icon-512.png" \
   --viewport 1280x720 \
   --auto-skip-seconds .05 \
   --multi-sampling \
