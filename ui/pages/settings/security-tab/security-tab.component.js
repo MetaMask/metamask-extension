@@ -627,7 +627,7 @@ export default class SecurityTab extends PureComponent {
         <div className="settings-page__content-item">
           <div
             className="settings-page__content-item-col"
-            data-testid="enableOpenSeaAPI"
+            data-testid="displayNftMedia"
           >
             <ToggleButton
               value={openSeaEnabled}
