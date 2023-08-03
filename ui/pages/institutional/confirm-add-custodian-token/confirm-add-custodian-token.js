@@ -31,6 +31,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getInstitutionalConnectRequests } from '../../../ducks/institutional/institutional';
+import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const ConfirmAddCustodianToken = () => {
   const t = useContext(I18nContext);
@@ -78,6 +79,8 @@ const ConfirmAddCustodianToken = () => {
     ).value;
   }
 
+  const custodian = findCustodianByDisplayName(custodianLabel);
+
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
@@ -86,7 +89,7 @@ const ConfirmAddCustodianToken = () => {
             borderColor={BorderColor.borderMuted}
             label={connectRequest.origin}
             maxContent={false}
-            leftIconUrl="https://dashboard.metamask-institutional.io/custodian-icons/qredo-icon.svg"
+            leftIconUrl={custodian?.icon}
             labelProps={{
               textAlign: TextAlign.Center,
             }}

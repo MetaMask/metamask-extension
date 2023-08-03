@@ -50,7 +50,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
-import { CUSTODIAN_WEBSITES } from '../../../../shared/constants/institutional/custodian-websites';
+import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -230,25 +230,6 @@ const CustodyPage = () => {
     },
     [selectedCustodianName, trackEvent],
   );
-
-  function findCustodianByDisplayName(displayName) {
-    const formatedDisplayName = displayName.toLowerCase();
-    const custodianKeys = Object.keys(CUSTODIAN_WEBSITES);
-
-    for (const custodianKey of custodianKeys) {
-      const custodian = CUSTODIAN_WEBSITES[custodianKey];
-      const custodianDisplayName = custodian.displayName.toLowerCase();
-
-      if (
-        custodianKey.toLowerCase().includes(formatedDisplayName) ||
-        custodianDisplayName.includes(formatedDisplayName)
-      ) {
-        return custodian;
-      }
-    }
-
-    return null; // no matching custodian is found
-  }
 
   useEffect(() => {
     const fetchConnectRequest = async () => {
@@ -621,7 +602,7 @@ const CustodyPage = () => {
                   state: {
                     imgSrc: selectedCustodian.iconUrl,
                     title: t('custodianAccountAddedTitle', [
-                      selectedCustodianDisplayName,
+                      selectedCustodian.displayName,
                     ]),
                     description: t('custodianAccountAddedDesc'),
                   },
@@ -691,7 +672,7 @@ const CustodyPage = () => {
       {isConfirmConnectCustodianModalVisible && (
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
-          custodianName={selectedCustodianName}
+          custodianName={selectedCustodianDisplayName}
           custodianURL={matchedCustodian?.website}
         />
       )}
