@@ -1761,18 +1761,18 @@ describe('Actions', () => {
       sinon.restore();
     });
 
-    it('calls setUse4ByteResolution in background', () => {
+    it('calls setUse4ByteResolution in background', async () => {
       const store = mockStore();
       const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => cb());
       _setBackgroundConnection({
         setUse4ByteResolution: setUse4ByteResolutionStub,
       });
 
-      store.dispatch(actions.setUse4ByteResolution());
+      await store.dispatch(actions.setUse4ByteResolution());
       expect(setUse4ByteResolutionStub.callCount).toStrictEqual(1);
     });
 
-    it('errors when setUse4ByteResolution in background throws', () => {
+    it('errors when setUse4ByteResolution in background throws', async () => {
       const store = mockStore();
       const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => {
         cb(new Error('error'));
@@ -1784,11 +1784,12 @@ describe('Actions', () => {
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'HIDE_LOADING_INDICATION' },
         { type: 'DISPLAY_WARNING', payload: 'error' },
+        { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      store.dispatch(actions.setUse4ByteResolution());
+      await store.dispatch(actions.setUse4ByteResolution());
+
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });

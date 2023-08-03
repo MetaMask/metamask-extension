@@ -3005,6 +3005,8 @@ export function setUse4ByteResolution(
     log.debug(`background.setUse4ByteResolution`);
     try {
       await submitRequestToBackground('setUse4ByteResolution', [val]);
+    } catch (error) {
+      dispatch(displayWarning(error));
     } finally {
       dispatch(hideLoadingIndication());
     }
