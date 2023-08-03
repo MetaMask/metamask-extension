@@ -47,7 +47,7 @@ import { previousValueComparator } from './util';
  * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
- * @property {object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
+ * @property {object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the current block
  */
 export default class AccountTracker {
   /**
@@ -333,7 +333,7 @@ export default class AccountTracker {
    * Updates the current balance of an account.
    *
    * @private
-   * @param {string} address - A hex address of a the account to be updated
+   * @param {string} address - A hex address of the account to be updated
    * @returns {Promise} after the account balance is updated
    */
   async _updateAccount(address) {
