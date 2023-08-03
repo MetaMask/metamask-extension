@@ -25,8 +25,10 @@ describe('Security Tab', () => {
 
   const mockStore = configureMockStore([thunk])(mockState);
 
-  function toggleCheckbox(testId, initialState) {
-    renderWithProvider(<SecurityTab />, mockStore);
+  function toggleCheckbox(testId, initialState, skipRender = false) {
+    if (!skipRender) {
+      renderWithProvider(<SecurityTab />, mockStore);
+    }
 
     const container = screen.getByTestId(testId);
     const checkbox = queryByRole(container, 'checkbox');
@@ -50,12 +52,35 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('toggles opensea api enabled off', async () => {
+    expect(await toggleCheckbox('enableOpenSeaAPI', true)).toBe(true);
+  });
+
+  it('toggles opensea api enabled on', async () => {
+    mockState.metamask.openSeaEnabled = false;
+
+    const localMockStore = configureMockStore([thunk])(mockState);
+    renderWithProvider(<SecurityTab />, localMockStore);
+
+    expect(await toggleCheckbox('enableOpenSeaAPI', false, true)).toBe(true);
+  });
+
   it('toggles Display NFT media enabled', async () => {
     expect(await toggleCheckbox('displayNftMedia', false)).toBe(true);
   });
 
   it('toggles nft detection', async () => {
-    expect(await toggleCheckbox('useNftDetection', false)).toBe(true);
+    expect(await toggleCheckbox('useNftDetection', true)).toBe(true);
+  });
+
+  it('toggles nft detection from another initial state', async () => {
+    mockState.metamask.openSeaEnabled = false;
+    mockState.metamask.useNftDetection = false;
+
+    const localMockStore = configureMockStore([thunk])(mockState);
+    renderWithProvider(<SecurityTab />, localMockStore);
+
+    expect(await toggleCheckbox('useNftDetection', false, true)).toBe(true);
   });
 
   it('toggles phishing detection', async () => {
@@ -149,6 +174,22 @@ describe('Security Tab', () => {
       screen.queryByText(tEn('invalidIpfsGateway')),
     ).not.toBeInTheDocument();
     expect(screen.queryByText(tEn('forbiddenIpfsGateway'))).toBeInTheDocument();
+  });
+
+  it('toggles IPFS gateway', async () => {
+    mockState.metamask.ipfsGateway = '';
+
+    const localMockStore = configureMockStore([thunk])(mockState);
+    renderWithProvider(<SecurityTab />, localMockStore);
+
+    expect(await toggleCheckbox('ipfsToggle', false, true)).toBe(true);
+    expect(await toggleCheckbox('ipfsToggle', true, true)).toBe(true);
+  });
+
+  it('toggles ENS domains in address bar', async () => {
+    expect(
+      await toggleCheckbox('ipfs-gateway-resolution-container', false),
+    ).toBe(true);
   });
 
   it('clicks "Add Custom Network"', async () => {

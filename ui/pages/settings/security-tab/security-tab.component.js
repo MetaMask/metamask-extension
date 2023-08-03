@@ -413,7 +413,7 @@ export default class SecurityTab extends PureComponent {
             {t('ipfsGatewayDescription')}
           </div>
         </div>
-        <div className="settings-page__content-item-col">
+        <div className="settings-page__content-item-col" data-testid="ipfsToggle">
           <ToggleButton
             value={this.state.ipfsToggle}
             onToggle={(value) => {
