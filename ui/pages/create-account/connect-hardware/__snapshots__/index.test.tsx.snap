@@ -18,7 +18,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
         </h3>
         <button
           aria-label="Close"
-          class="box mm-button-icon mm-button-icon--size-sm box--margin-left-auto box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="hardware-connect-close-btn"
         >
           <span
