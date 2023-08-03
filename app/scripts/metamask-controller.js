@@ -2999,20 +2999,6 @@ export default class MetamaskController extends EventEmitter {
       this.setLedgerTransportPreference(transportPreference);
 
       await this.accountsController.updateAccounts();
-      // const selectedAccount = uuid({
-      //   random: sha256FromString(
-      //     this.preferencesController.getSelectedAddress(),
-      //   ).slice(0, 16),
-      // });
-
-      // console.log('setting account');
-      // this.accountsController.setSelectedAccount(
-      //   'd92ecbfc-a77e-4d60-ac22-dd0ac927f398',
-      // );
-
-      // set new identities
-      this.preferencesController.setAddresses(accounts);
-      this.selectFirstIdentity();
 
       return vault;
     } finally {
@@ -3567,7 +3553,7 @@ export default class MetamaskController extends EventEmitter {
    * @param {string[]} accountId - A uuid of the account to remove.
    */
   async removeAccount(accountId) {
-    const { address } = this.accountsController.getAccountByIdExpect(accountId);
+    const { address } = this.accountsController.getAccountExpect(accountId);
 
     // Remove all associated permissions
     this.removeAllAccountPermissions(address);
