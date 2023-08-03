@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Tambah kontak"
   },
-  "addCustomIPFSGateway": {
-    "message": "Tambahkan gerbang IPFS khusus"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Gerbang IPFS memungkinkan untuk mengakses dan melihat data yang diselenggarakan oleh pihak ketiga. Anda dapat menambahkan gerbang IPFS khusus atau melanjutkan menggunakan yang awal."
-  },
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
