@@ -79,6 +79,7 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
@@ -182,6 +183,8 @@ export default function Swap() {
   const { balance: ethBalance, address: selectedAccountAddress } =
     selectedAccount;
 
+  const { destinationTokenAddedForSwap } = fetchParams || {};
+
   const approveTxData =
     approveTxId && txList.find(({ id }) => approveTxId === id);
   const tradeTxData = tradeTxId && txList.find(({ id }) => tradeTxId === id);
@@ -208,6 +211,35 @@ export default function Swap() {
   if (conversionError && swapsErrorKey !== CONTRACT_DATA_DISABLED_ERROR) {
     swapsErrorKey = SWAP_FAILED_ERROR;
   }
+
+  const clearTemporaryTokenRef = useRef();
+  useEffect(() => {
+    clearTemporaryTokenRef.current = () => {
+      if (
+        destinationTokenAddedForSwap &&
+        (!isAwaitingSwapRoute || conversionError)
+      ) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: destinationTokenInfo?.address,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
+    };
+  }, [
+    conversionError,
+    dispatch,
+    destinationTokenAddedForSwap,
+    destinationTokenInfo,
+    fetchParams,
+    isAwaitingSwapRoute,
+  ]);
+  useEffect(() => {
+    return () => {
+      clearTemporaryTokenRef.current();
+    };
+  }, []);
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -283,6 +315,7 @@ export default function Swap() {
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
     const fn = () => {
+      clearTemporaryTokenRef.current();
       if (isLoadingQuotesRoute) {
         dispatch(prepareToLeaveSwaps());
       }
@@ -349,6 +382,7 @@ export default function Swap() {
   }
 
   const redirectToDefaultRoute = async () => {
+    clearTemporaryTokenRef.current();
     history.push({
       pathname: DEFAULT_ROUTE,
       state: { stayOnHomePage: true },
@@ -403,6 +437,7 @@ export default function Swap() {
             <div
               className="swaps__header-cancel"
               onClick={async () => {
+                clearTemporaryTokenRef.current();
                 dispatch(clearSwapsState());
                 await dispatch(resetBackgroundSwapsState());
                 history.push(DEFAULT_ROUTE);
