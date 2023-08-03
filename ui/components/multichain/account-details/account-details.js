@@ -71,6 +71,7 @@ export const AccountDetails = ({ address }) => {
 
   return (
     <>
+      {/* This is the Modal that says "Show private key" on top and has a few states */}
       <Modal isOpen={!showHoldToReveal} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
@@ -130,6 +131,8 @@ export const AccountDetails = ({ address }) => {
           )}
         </ModalContent>
       </Modal>
+
+      {/* This is the Modal that says "Hold to reveal private key" */}
       <HoldToRevealModal
         isOpen={showHoldToReveal}
         onClose={() => {
@@ -140,6 +143,7 @@ export const AccountDetails = ({ address }) => {
               key_type: MetaMetricsEventKeyType.Pkey,
             },
           });
+          setPrivateKey('');
           setShowHoldToReveal(false);
         }}
         onLongPressed={() => {

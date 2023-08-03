@@ -54,7 +54,7 @@ describe('Reveal private key from account details', function () {
 
         // confirm private key is displayed and matches expected
         const displayedPrivateKey = await driver.findVisibleElement(
-          '[data-testid="private-key"]',
+          '[data-testid="account-details-key"]',
         );
         assert.equal(await displayedPrivateKey.getText(), pkString);
 
