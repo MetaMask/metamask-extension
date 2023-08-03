@@ -382,9 +382,6 @@
   "amount": {
     "message": "Amount"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
