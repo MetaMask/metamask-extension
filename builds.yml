@@ -47,7 +47,7 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
-    # - blockaid
+      # - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -120,6 +120,7 @@ features:
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: null
+      - BLOCKAID_PUBLIC_KEY: null
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
@@ -230,6 +231,8 @@ env:
   - EDITOR_URL: ''
   # CDN for blockaid files
   - BLOCKAID_FILE_CDN
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY
 
   ###
   # Meta variables
