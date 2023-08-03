@@ -331,7 +331,7 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('_addTransaction', function () {
+  describe('#addTransaction', function () {
     const selectedAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
     const recipientAddress = '0xc684832530fcbddae4b4230a47e991ddcec2831d';
 
