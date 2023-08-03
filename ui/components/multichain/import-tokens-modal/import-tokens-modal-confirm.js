@@ -63,7 +63,6 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
                   <Identicon diameter={36} address={address} />
                   <Box
                     marginInlineStart={4}
-                    marginInlineEnd={4}
                     className="import-tokens-modal__confirm-token-list-item-wrapper__text"
                   >
                     <Text ellipsis>{name}</Text>
