@@ -69,7 +69,7 @@ export const ActivityListItem = ({
         <Box
           display={Display.InlineFlex}
           width={BlockSize.Full}
-          style={{ overflow: 'hidden' }}
+          className="activity-list-item__content-container"
         >
           <Box
             display={Display.InlineFlex}
