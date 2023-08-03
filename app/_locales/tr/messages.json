@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Kişi ekle"
   },
-  "addCustomIPFSGateway": {
-    "message": "Özel IPFS ağ geçidi ekle"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
-  },
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
@@ -4144,9 +4138,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Toplu hesap bakiyesi talepleri"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Hesapları toplarız ve bakiyelerinizi göstermek için Infura'yı sorgularız. Bunu kapattığınız takdirde sadece aktif hesaplar sorgulanır. Bazı merkeziyetsiz uygulamalar siz cüzdanınızı bağlamadığınız sürece çalışmaz."
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"

@@ -46,9 +46,9 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
         gap={4}
       >
         <Text
+          data-testid="account-details-key"
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
-          data-testid="private-key"
         >
           {privateKey}
         </Text>

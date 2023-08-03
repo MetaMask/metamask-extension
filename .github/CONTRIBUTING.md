@@ -20,5 +20,6 @@ When you're done with your project / bugfix / feature and ready to submit a PR, 
 - [ ] **Keep it simple**: Try not to include multiple features in a single PR, and don't make extraneous changes outside the scope of your contribution. All those touched files make things harder to review ;)
 - [ ] **PR against `develop`**: Submit your PR against the `develop` branch. This is where we merge new features so they get some time to receive extra testing before being pushed to `master` for production. If your PR is a hot-fix that needs to be published urgently, you may submit a PR against the `master` branch, but this PR will receive tighter scrutiny before merging.
 - [ ] **Get reviewed by a core contributor**: Make sure you get a `:thumbsup`, `:+1`, or `LGTM` from a user with a `Member` badge before merging.
+- [ ] **Ensure the PR is correctly labeled.**: More detail about labels definitions can be found [here](https://github.com/MetaMask/metamask-extension/blob/develop/.github/LABELING_GUIDELINES.md).
 
 And that's it! Thanks for helping out.

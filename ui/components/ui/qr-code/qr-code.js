@@ -60,7 +60,7 @@ function QrCodeView({ Qr, warning }) {
       <Box marginBottom={6}>
         <AddressCopyButton
           wrap
-          address={toChecksumHexAddress(data)}
+          address={data}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Accounts,

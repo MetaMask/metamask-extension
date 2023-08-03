@@ -1,9 +1,11 @@
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { showPrivateKey } from '../../../../app/_locales/en/messages.json';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
+import { shortenAddress } from '../../../helpers/utils/util';
 import {
   exportAccount,
   hideWarning,
@@ -58,6 +60,10 @@ describe('AccountDetails', () => {
     const { queryByText, queryByPlaceholderText } = render();
     const exportPrivateKeyButton = queryByText(showPrivateKey.message);
     fireEvent.click(exportPrivateKeyButton);
+
+    expect(
+      queryByText(shortenAddress(toChecksumHexAddress(address))),
+    ).toBeInTheDocument();
 
     expect(queryByText('Show private key')).toBeInTheDocument();
     expect(queryByPlaceholderText('Password')).toBeInTheDocument();

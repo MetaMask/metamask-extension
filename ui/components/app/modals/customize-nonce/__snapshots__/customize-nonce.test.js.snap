@@ -24,7 +24,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
             class="box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
           >
             <span
-              class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/close.svg');"
             />
           </button>
