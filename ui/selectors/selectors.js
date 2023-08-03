@@ -977,7 +977,7 @@ export const getUnreadNotificationsCount = createSelector(
  * @param {object} state
  * @returns {object}
  */
-function getAllowedAnnouncementIds(state) {
+export function getAllowedAnnouncementIds(state) {
   const currentKeyring = getCurrentKeyring(state);
   const currentKeyringIsLedger = currentKeyring?.type === KeyringType.ledger;
   const supportsWebHid = window.navigator.hid !== undefined;
@@ -1008,6 +1008,7 @@ function getAllowedAnnouncementIds(state) {
     19: false,
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
+    22: true,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: true,
     ///: END:ONLY_INCLUDE_IN

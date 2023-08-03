@@ -6,6 +6,7 @@ import {
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
+import { UI_NOTIFICATIONS } from '../../shared/notifications';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/network.utils', () => {
@@ -737,5 +738,21 @@ describe('Selectors', () => {
 
     mockState.metamask.snapsInstallPrivacyWarningShown = null;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+  });
+
+  describe('#getAllowedAnnouncementIds', () => {
+    it('includes properties for all notifications exported from shared/nofitications/index.js', () => {
+      const allowedAnnouncements =
+        selectors.getAllowedAnnouncementIds(mockState);
+
+      const uiNotificationIds = Object.keys(UI_NOTIFICATIONS);
+
+      const uiNotificationIdsNotInAllowedAnnouncements =
+        uiNotificationIds.filter(
+          (id) => allowedAnnouncements[id] === undefined,
+        );
+
+      expect(uiNotificationIdsNotInAllowedAnnouncements).toStrictEqual([]);
+    });
   });
 });
