@@ -98,6 +98,7 @@
     "validate-branch-name": "validate-branch-name",
     "add-release-label-to-pr-and-linked-issues": "ts-node ./.github/scripts/add-release-label-to-pr-and-linked-issues.ts",
     "check-pr-has-required-labels": "ts-node ./.github/scripts/check-pr-has-required-labels.ts",
+    "close-release-bug-report-issue": "ts-node ./.github/scripts/close-release-bug-report-issue.ts",
     "audit": "yarn npm audit --recursive --environment production --severity moderate"
   },
   "resolutions": {
