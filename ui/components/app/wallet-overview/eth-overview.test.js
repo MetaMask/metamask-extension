@@ -241,12 +241,25 @@ describe('EthOverview', () => {
       const mockedStoreWithCustodyKeyring = {
         metamask: {
           ...mockStore.metamask,
-          keyrings: [
-            {
-              type: 'Custody',
-              accounts: ['0x1'],
+          internalAccounts: {
+            ...mockStore.metamask.internalAccounts,
+            accounts: {
+              ...mockStore.metamask.internalAccounts.accounts,
+              [mockStore.metamask.internalAccounts.selectedAccount]: {
+                ...mockStore.metamask.internalAccounts.accounts[
+                  mockStore.metamask.internalAccounts.selectedAccount
+                ],
+                metadata: {
+                  ...mockStore.metamask.internalAccounts.accounts[
+                    mockStore.metamask.internalAccounts.selectedAccount
+                  ].metadata,
+                  keyring: {
+                    type: 'Custody',
+                  },
+                },
+              },
             },
-          ],
+          },
         },
       };
 

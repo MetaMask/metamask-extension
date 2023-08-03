@@ -29,7 +29,6 @@ import {
   getCurrentChainId,
   getGasPriceInHexWei,
   getIsMainnet,
-  getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
