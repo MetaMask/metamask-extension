@@ -1178,12 +1178,6 @@
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Settings."
   },
-  "enableOpenSeaAPI": {
-    "message": "Paganahin sa OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
-  },
   "enableToken": {
     "message": "paganahin ang $1",
     "description": "$1 is a token symbol, e.g. ETH"
