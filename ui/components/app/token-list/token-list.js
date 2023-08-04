@@ -36,6 +36,7 @@ export default function TokenList({ onTokenClick }) {
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         padding={7}
+        data-testid="token-list-loading-message"
       >
         {t('loadingTokens')}
       </Box>

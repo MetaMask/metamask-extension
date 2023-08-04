@@ -90,6 +90,9 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
@@ -245,6 +248,13 @@ const SignatureRequest = ({ txData }) => {
         <SignatureRequestHeader txData={txData} />
       </div>
       <div className="signature-request-content">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
           txData?.securityProviderResponse?.flagAsDangerous !==
             SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Ajouter un contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Ajouter une passerelle IPFS personnalisée"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
-  },
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
@@ -1183,12 +1177,6 @@
   },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Activer l’API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
   "enableToken": {
     "message": "activer $1",
