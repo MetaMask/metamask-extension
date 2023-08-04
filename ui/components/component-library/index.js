@@ -19,7 +19,7 @@ export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
-export { ButtonPrimary, BUTTON_PRIMARY_SIZES } from './button-primary';
+export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
 export { Checkbox } from './checkbox';
 export { FormTextField } from './form-text-field';

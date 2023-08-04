@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "নেটওয়ার্ক মুছবেন?"
   },
-  "deleteNetworkDescription": {
-    "message": "আপনি কি এই নেটওয়ার্কটি মোছার বিষয়ে নিশ্চিত?"
-  },
   "details": {
     "message": "বিশদ বিবরণ"
   },

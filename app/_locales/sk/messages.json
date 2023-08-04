@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
   },
-  "deleteNetworkDescription": {
-    "message": "Naozaj chcete túto sieť odstrániť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },

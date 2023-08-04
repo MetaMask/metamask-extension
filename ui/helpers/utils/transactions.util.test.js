@@ -62,7 +62,7 @@ describe('Transactions utils', () => {
     global.ethereumProvider = new HttpProvider(
       'https://mainnet.infura.io/v3/341eacb578dd44a1a049cbc5f6fd4035',
     );
-    it('returns a valid signature for setApprovalForAll', async () => {
+    it('returns a valid signature for setApprovalForAll when use4ByteResolution privacy setting is ON', async () => {
       nock('https://www.4byte.directory:443', { encodedQueryParams: true })
         .get('/api/v1/signatures/')
         .query({ hex_signature: '0xa22cb465' })
@@ -87,7 +87,7 @@ describe('Transactions utils', () => {
             },
           ],
         });
-      expect(await utils.getMethodDataAsync('0xa22cb465')).toStrictEqual({
+      expect(await utils.getMethodDataAsync('0xa22cb465', true)).toStrictEqual({
         name: 'Set Approval For All',
         params: [{ type: 'address' }, { type: 'bool' }],
       });

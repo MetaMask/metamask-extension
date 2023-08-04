@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Radera nätverk?"
   },
-  "deleteNetworkDescription": {
-    "message": "Är du säker på att du vill ta bort detta nätverk?"
-  },
   "details": {
     "message": "Info"
   },
