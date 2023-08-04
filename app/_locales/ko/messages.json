@@ -183,12 +183,6 @@
   "addContact": {
     "message": "연락처 추가"
   },
-  "addCustomIPFSGateway": {
-    "message": "사용자 지정 IPFS 게이트웨이 추가"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS 게이트웨이를 사용하면 타사 호스팅 데이터에 액세스하여 이를 볼 수 있습니다. 사용자 지정 IPFS 게이트웨이를 추가하셔도 좋고 기본 설정을 계속 사용하셔도 됩니다."
-  },
   "addCustomNetwork": {
     "message": "커스텀 네트워크 추가"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "네트워크를 삭제할까요?"
   },
-  "deleteNetworkDescription": {
-    "message": "이 네트워크를 삭제할까요?"
-  },
   "deposit": {
     "message": "예치"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API 활성화"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
   "enableToken": {
     "message": "$1 활성화",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "죄송합니다! 문제가 생겼습니다."
   },
-  "source": {
-    "message": "소스"
-  },
   "speedUp": {
     "message": "가속화"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "일괄 계정 잔액 요청"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "모든 계정을 일괄 처리하여 잔액을 신속하게 표시하도록 Infura에 요청합니다. 이 기능을 끄면 활성 계정에 대한 잔액만 요청합니다. 일부 dapp은 지갑을 연결하지 않으면 작동하지 않습니다."
   },
   "useNftDetection": {
     "message": "NFT 자동 감지"

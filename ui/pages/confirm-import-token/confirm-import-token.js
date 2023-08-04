@@ -12,7 +12,7 @@ import { I18nContext } from '../../contexts/i18n';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import { getPendingTokens } from '../../ducks/metamask/metamask';
-import { addTokens, clearPendingTokens } from '../../store/actions';
+import { addImportedTokens, clearPendingTokens } from '../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -37,9 +37,9 @@ const ConfirmImportToken = () => {
   const pendingTokens = useSelector(getPendingTokens);
 
   const handleAddTokens = useCallback(async () => {
-    await dispatch(addTokens(pendingTokens));
-
     const addedTokenValues = Object.values(pendingTokens);
+    await dispatch(addImportedTokens(addedTokenValues));
+
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
     addedTokenValues.forEach((pendingToken) => {

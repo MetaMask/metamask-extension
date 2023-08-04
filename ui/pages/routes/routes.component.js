@@ -117,6 +117,7 @@ import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
+import { ToggleIpfsModal } from '../../components/app/nft-default-image/toggle-ipfs-modal';
 
 export default class Routes extends Component {
   static propTypes = {
@@ -159,6 +160,8 @@ export default class Routes extends Component {
     accountDetailsAddress: PropTypes.string,
     isImportNftsModalOpen: PropTypes.bool.isRequired,
     hideImportNftsModal: PropTypes.func.isRequired,
+    isIpfsModalOpen: PropTypes.bool.isRequired,
+    hideIpfsModal: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -515,6 +518,8 @@ export default class Routes extends Component {
       location,
       isImportNftsModalOpen,
       hideImportNftsModal,
+      isIpfsModalOpen,
+      hideIpfsModal,
     } = this.props;
     const loadMessage =
       loadingMessage || isNetworkLoading
@@ -575,6 +580,9 @@ export default class Routes extends Component {
         ) : null}
         {isImportNftsModalOpen ? (
           <ImportNftsModal onClose={() => hideImportNftsModal()} />
+        ) : null}
+        {isIpfsModalOpen ? (
+          <ToggleIpfsModal onClose={() => hideIpfsModal()} />
         ) : null}
         <Box className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}

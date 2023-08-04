@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor } from '@testing-library/react';
 
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 
@@ -40,6 +41,13 @@ const mockBaseStore = {
       rpcUrl: 'http://example-custom-rpc.metamask.io',
       chainId: '0x9999',
       nickname: 'Test initial state',
+    },
+    selectedNetworkClientId: 'test-network-client-id',
+    networksMetadata: {
+      'test-network-client-id': {
+        EIPS: {},
+        status: NetworkStatus.Available,
+      },
     },
   },
 };

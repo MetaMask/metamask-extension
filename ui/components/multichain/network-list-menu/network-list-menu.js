@@ -74,6 +74,8 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
+  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+
   const showSearch = nonTestNetworks.length > 3;
 
   useEffect(() => {
@@ -105,19 +107,21 @@ export const NetworkListMenu = ({ onClose }) => {
   }
 
   const generateMenuItems = (desiredNetworks) => {
-    return desiredNetworks.map((network, index) => {
+    return desiredNetworks.map((network) => {
       if (!lineaMainnetReleased && network.providerType === 'linea-mainnet') {
         return null;
       }
 
       const isCurrentNetwork = currentNetwork.id === network.id;
-      const canDeleteNetwork = !isCurrentNetwork && network.removable;
+
+      const canDeleteNetwork =
+        isUnlocked && !isCurrentNetwork && network.removable;
 
       return (
         <NetworkListItem
           name={network.nickname}
           iconSrc={network?.rpcPrefs?.imageUrl}
-          key={`${network.id || network.chainId}-${index}`}
+          key={network.id}
           selected={isCurrentNetwork}
           focus={isCurrentNetwork && !showSearch}
           onClick={() => {
@@ -134,7 +138,7 @@ export const NetworkListMenu = ({ onClose }) => {
                 location: 'Network Menu',
                 chain_id: currentChainId,
                 from_network: currentChainId,
-                to_network: network.id || network.chainId,
+                to_network: network.chainId,
               },
             });
           }}
@@ -145,7 +149,7 @@ export const NetworkListMenu = ({ onClose }) => {
                   dispatch(
                     showModal({
                       name: 'CONFIRM_DELETE_NETWORK',
-                      target: network.id || network.chainId,
+                      target: network.id,
                       onConfirm: () => undefined,
                     }),
                   );
@@ -227,7 +231,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
+              disabled={currentlyOnTestNetwork || !isUnlocked}
               onToggle={handleToggle}
             />
           </Box>
@@ -239,6 +243,7 @@ export const NetworkListMenu = ({ onClose }) => {
           <Box padding={4}>
             <ButtonSecondary
               size={BUTTON_SECONDARY_SIZES.LG}
+              disabled={!isUnlocked}
               block
               onClick={() => {
                 if (isFullScreen) {

@@ -858,6 +858,12 @@
         "ethjs>ethjs-unit": true
       }
     },
+    "@metamask/controller-utils>@metamask/eth-query": {
+      "packages": {
+        "eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
     "@metamask/controller-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -1663,14 +1669,14 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/utils": true,
         "browserify>assert": true,
-        "eth-query": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "uuid": true
@@ -1704,6 +1710,19 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/network-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
@@ -1772,32 +1791,10 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/phishing-controller>@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {

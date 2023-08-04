@@ -183,12 +183,6 @@
   "addContact": {
     "message": "संपर्क जोड़ें"
   },
-  "addCustomIPFSGateway": {
-    "message": "कस्टम IPFS गेटवे जोड़ें"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS (आईपीएफएस) गेटवे तृतीय पक्षों द्वारा होस्ट किए गए डेटा को एक्सेस करना और देखना संभव बनाता है। आप एक कस्टम IPFS गेटवे जोड़ सकते हैं या डिफॉल्ट का उपयोग जारी रख सकते हैं।"
-  },
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
   },
-  "deleteNetworkDescription": {
-    "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
-  },
   "deposit": {
     "message": "जमा करें"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API इनेबल करें"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
   },
-  "source": {
-    "message": "स्रोत"
-  },
   "speedUp": {
     "message": "जल्दी करें"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "खाता के शेष राशि के अनुरोधों को बैच करें"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "हम खातों को बैच करते हैं और Infura से आपकी शेष राशि को प्रतिक्रियात्मक रूप से दिखाने के लिए पूछताछ करते हैं। यदि आप इसे बंद कर देते हैं, तो केवल सक्रिय खातों के बारे में पूछताछ की जाएगी। कुछ डैप तब तक काम नहीं करेंगे जब तक आप अपने वॉलेट को कनेक्ट नहीं करते।"
   },
   "useNftDetection": {
     "message": "एनएफटी को ऑटो-डिटेक्ट करें"

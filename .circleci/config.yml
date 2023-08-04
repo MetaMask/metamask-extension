@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -694,6 +694,9 @@ jobs:
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+      - run:
+          name: check yarn resolutions
+          command: yarn --check-resolutions
 
   test-lint-changelog:
     executor: node-browsers
@@ -729,7 +732,7 @@ jobs:
           at: .
       - run:
           name: yarn audit
-          command: .circleci/scripts/yarn-audit.sh
+          command: yarn audit
 
   test-deps-depcheck:
     executor: node-browsers
