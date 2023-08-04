@@ -21,7 +21,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           </h4>
           <button
             aria-label="Close"
-            class="box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

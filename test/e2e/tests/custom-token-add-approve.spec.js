@@ -376,7 +376,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // set max spending cap
         await driver.clickElement({
-          css: '.custom-spending-cap__max',
+          css: '[data-testid="custom-spending-cap-max-button"]',
           text: 'Max',
         });
 
