@@ -4,14 +4,7 @@
   align-self: center;
   margin: 10rem 0 0 0;
   opacity: 0;
-
-  &.activated {
-    transition-property: opacity;
-    transition-delay: 1s;
-    transition-duration: 0.5s;
-    transition-timing-function: linear;
-    opacity: 1;
-  }
+  animation: fadeIn 5s;
 }
 
 .loading-spinner {
@@ -19,4 +12,9 @@
   height: 2rem;
   align-self: center;
   margin-top: 1rem;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
