@@ -47,7 +47,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -62,58 +62,54 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="usePhishingDetection"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="usePhishingDetection"
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -126,7 +122,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -169,62 +165,58 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="currencyRateCheckToggle"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="currencyRateCheckToggle"
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -259,58 +251,54 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="showIncomingTransactions"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="showIncomingTransactions"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -323,7 +311,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
         data-testid="advanced-setting-choose-your-network"
       >
         <div
@@ -351,22 +339,18 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
         >
-          <div
-            class="settings-page__content-item-col"
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+            type="secondary"
           >
-            <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-md settings-page__button mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
-              type="secondary"
-            >
-              Add custom network
-            </button>
-          </div>
+            Add custom network
+          </button>
         </div>
       </div>
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
         data-testid="setting-ipfs-gateway"
       >
         <div
@@ -382,7 +366,7 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
         >
           <label
             class="toggle-button toggle-button--on"
@@ -458,48 +442,46 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="mm-box settings-page__content-row mm-box--margin-top-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
           id="ens-domains"
         >
-          Show ENS domains in address bar
-          <div
-            class="settings-page__content-description"
-          >
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+          <div>
+            Show ENS domains in address bar
+            <div
+              class="settings-page__content-description"
             >
-              MetaMask lets you see ENS domains like "https://metamask.eth" right in your browser's address bar. Here's how it works:
-            </span>
-            <ul
-              class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-inline-start-4"
-              style="list-style-type: circle;"
-            >
-              <li
+              <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
               >
-                MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
-              </li>
-              <li
+                MetaMask lets you see ENS domains like "https://metamask.eth" right in your browser's address bar. Here's how it works:
+              </span>
+              <ul
+                class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--padding-inline-start-4"
+                style="list-style-type: circle;"
+              >
+                <li
+                  class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+                >
+                  MetaMask checks with Ethereum's ENS contract to find the code connected to the ENS name.
+                </li>
+                <li
+                  class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+                >
+                  If the code is linked to IPFS, it gets the content from the IPFS network.
+                </li>
+                <li
+                  class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
+                >
+                  Then, you can see the content, usually a website or something similar.
+                </li>
+              </ul>
+              <span
                 class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
               >
-                If the code is linked to IPFS, it gets the content from the IPFS network.
-              </li>
-              <li
-                class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
-              >
-                Then, you can see the content, usually a website or something similar.
-              </li>
-            </ul>
-            <span
-              class="mm-box mm-text mm-text--inherit mm-box--color-inherit"
-            >
-              Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services.
-            </span>
+                Regular browsers don't usually handle ENS or IPFS addresses, but MetaMask helps with that. Using this feature might share your IP address with IPFS third-party services.
+              </span>
+            </div>
           </div>
-        </div>
-        <div
-          class="settings-page__content-item"
-        >
           <div
             class="settings-page__content-item-col"
             data-testid="ipfs-gateway-resolution-container"
@@ -562,7 +544,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         data-testid="advanced-setting-gas-fee-estimation"
       >
         <div
@@ -590,62 +572,58 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="autoDetectTokens"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="autoDetectTokens"
+          <label
+            class="toggle-button toggle-button--on"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--on"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="true"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="true"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -660,62 +638,58 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="useMultiAccountBalanceChecker"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="useMultiAccountBalanceChecker"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -730,62 +704,58 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="displayNftMedia"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="displayNftMedia"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -822,58 +792,54 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="useNftDetection"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="useNftDetection"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>
@@ -886,7 +852,7 @@ exports[`Security Tab should match snapshot 1`] = `
       class="settings-page__content-padded"
     >
       <div
-        class="settings-page__content-row"
+        class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       >
         <div
           class="settings-page__content-item"
@@ -903,58 +869,54 @@ exports[`Security Tab should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="settings-page__content-item"
+          class="settings-page__content-item-col"
+          data-testid="participateInMetaMetrics"
         >
-          <div
-            class="settings-page__content-item-col"
-            data-testid="participateInMetaMetrics"
+          <label
+            class="toggle-button toggle-button--off"
+            tabindex="0"
           >
-            <label
-              class="toggle-button toggle-button--off"
-              tabindex="0"
+            <div
+              style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
               >
                 <div
-                  style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
-                >
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
-                  />
-                  <div
-                    style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
-                  />
-                </div>
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+                />
                 <div
-                  style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
-                >
-                  <div
-                    style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
-                  />
-                </div>
-                <input
-                  style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
-                  type="checkbox"
-                  value="false"
+                  style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
                 />
               </div>
               <div
-                class="toggle-button__status"
+                style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
               >
-                <span
-                  class="toggle-button__label-off"
-                >
-                  Off
-                </span>
-                <span
-                  class="toggle-button__label-on"
-                >
-                  On
-                </span>
+                <div
+                  style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+                />
               </div>
-            </label>
-          </div>
+              <input
+                style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+                type="checkbox"
+                value="false"
+              />
+            </div>
+            <div
+              class="toggle-button__status"
+            >
+              <span
+                class="toggle-button__label-off"
+              >
+                Off
+              </span>
+              <span
+                class="toggle-button__label-on"
+              >
+                On
+              </span>
+            </div>
+          </label>
         </div>
       </div>
     </div>

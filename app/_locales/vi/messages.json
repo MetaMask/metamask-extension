@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Xóa mạng?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bạn có chắc chắn muốn xóa mạng này không?"
-  },
   "deposit": {
     "message": "Nạp"
   },

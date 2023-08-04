@@ -584,9 +584,6 @@
   "deleteNetwork": {
     "message": "Excluir rede?"
   },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
-  },
   "description": {
     "message": "Descrição"
   },
