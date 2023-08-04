@@ -18,16 +18,14 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
           <div
             class="chip__left-icon"
           >
-            <span
-              class="loading-indicator"
+            <div
+              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
+              data-testid="color-icon-icon-muted"
             >
-              <img
-                alt="Attempting to connect to blockchain."
-                class="loading-indicator__spinner"
-                src="images/loading.svg"
-                title="Attempting to connect to blockchain."
+              <span
+                class="color-indicator__inner-circle"
               />
-            </span>
+            </div>
           </div>
           <span
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
@@ -143,16 +141,14 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           <div
             class="chip__left-icon"
           >
-            <span
-              class="loading-indicator"
+            <div
+              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
+              data-testid="color-icon-icon-muted"
             >
-              <img
-                alt="Attempting to connect to blockchain."
-                class="loading-indicator__spinner"
-                src="images/loading.svg"
-                title="Attempting to connect to blockchain."
+              <span
+                class="color-indicator__inner-circle"
               />
-            </span>
+            </div>
           </div>
           <span
             class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
@@ -248,7 +244,7 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
           </span>
         </p>
         <button
-          class="box mm-button-icon mm-button-icon--size-sm callout__close-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm callout__close-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

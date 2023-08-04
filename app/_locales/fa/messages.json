@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
   },
-  "deleteNetworkDescription": {
-    "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },

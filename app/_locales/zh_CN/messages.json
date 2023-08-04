@@ -183,12 +183,6 @@
   "addContact": {
     "message": "添加联系信息"
   },
-  "addCustomIPFSGateway": {
-    "message": "添加自定义IPFS网关"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
-  },
   "addCustomNetwork": {
     "message": "添加自定义网络"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "删除网络？"
   },
-  "deleteNetworkDescription": {
-    "message": "您确定要删除该网络吗？"
-  },
   "deposit": {
     "message": "存入"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
-  },
-  "enableOpenSeaAPI": {
-    "message": "启用 OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableToken": {
     "message": "启用 $1",

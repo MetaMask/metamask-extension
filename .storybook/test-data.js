@@ -1,5 +1,7 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 
 const state = {
   invalidCustomNetwork: {
@@ -162,6 +164,15 @@ const state = {
     networkDetails: {
       EIPS: {
         1559: true,
+      },
+    },
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: true,
+        },
+        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -1599,7 +1610,7 @@ const state = {
   },
 };
 
-export const networkList =  [
+export const networkList = [
   {
     blockExplorerUrl: 'https://etherscan.io',
     chainId: '0x1',
@@ -1673,6 +1684,6 @@ export const networkList =  [
     rpcUrl: 'https://polygon-rpc.com',
     ticker: 'MATIC',
   },
-]
+];
 
 export default state;

@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getIsMainnet, getUseNftDetection } from '../../../selectors';
-import { EXPERIMENTAL_ROUTE } from '../../../helpers/constants/routes';
+import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
@@ -36,7 +36,7 @@ export default function NftsTab() {
     useNftsCollections();
 
   const onEnableAutoDetect = () => {
-    history.push(EXPERIMENTAL_ROUTE);
+    history.push(SECURITY_ROUTE);
   };
 
   const onRefresh = () => {
