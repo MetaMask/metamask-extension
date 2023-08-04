@@ -36,13 +36,7 @@ function SecurityProviderBannerAlert({
   const t = useContext(I18nContext);
 
   return (
-    <BannerAlert
-      title={title}
-      severity={severity}
-      marginTop={4}
-      marginRight={4}
-      marginLeft={4}
-    >
+    <BannerAlert title={title} severity={severity} margin={4}>
       <Text marginTop={2}>{description}</Text>
 
       {details && (

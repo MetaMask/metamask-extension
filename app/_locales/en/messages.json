@@ -1269,6 +1269,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "displayNftMedia": {
+    "message": "Display NFT media"
+  },
+  "displayNftMediaDescription": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1391,14 +1397,11 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
+  "enableForAllNetworks": {
+    "message": "Enable for all networks"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -3849,6 +3852,9 @@
   "showIncomingTransactionsDescription": {
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+  },
+  "showIncomingTransactionsInformation": {
+    "message": "This relies on each network which will have access to your Ethereum address and your IP address."
   },
   "showMore": {
     "message": "Show more"
