@@ -72,6 +72,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-hex-data"
+      gaps="4"
     >
       <div
         class="settings-page__content-item"
@@ -138,6 +139,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
+      gaps="4"
     >
       <div
         class="settings-page__content-item"
@@ -204,6 +206,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-show-testnet-conversion"
+      gaps="4"
     >
       <div
         class="settings-page__content-item"
@@ -270,6 +273,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-custom-nonce"
+      gaps="4"
     >
       <div
         class="settings-page__content-item"
@@ -522,6 +526,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
     <div
       class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-dismiss-reminder"
+      gaps="4"
     >
       <div
         class="settings-page__content-item"
