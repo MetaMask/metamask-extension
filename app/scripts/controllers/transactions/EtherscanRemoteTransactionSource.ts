@@ -42,10 +42,15 @@ export class EtherscanRemoteTransactionSource
   async fetchTransactions(
     request: RemoteTransactionSourceRequest,
   ): Promise<TransactionMeta[]> {
-    const transactionPromise = fetchEtherscanTransactions(request);
+    const etherscanRequest = {
+      ...request,
+      chainId: request.currentChainId,
+    };
+
+    const transactionPromise = fetchEtherscanTransactions(etherscanRequest);
 
     const tokenTransactionPromise = this.#includeTokenTransfers
-      ? fetchEtherscanTokenTransactions(request)
+      ? fetchEtherscanTokenTransactions(etherscanRequest)
       : Promise.resolve({
           result: [] as EtherscanTokenTransactionMeta[],
         } as EtherscanTransactionResponse<EtherscanTokenTransactionMeta>);

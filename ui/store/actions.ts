@@ -85,6 +85,7 @@ import {
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
+  TransactionMeta,
   TransactionMetaMetricsEvent,
   TransactionType,
 } from '../../shared/constants/transaction';
@@ -95,10 +96,6 @@ import {
   logErrorWithMessage,
 } from '../../shared/modules/error';
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
-import {
-  CustomGasSettings,
-  TransactionMeta,
-} from '../../app/scripts/controllers/transactions';
 import { ThemeType } from '../../shared/constants/preferences';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -114,6 +111,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 
 export function goHome() {
   return {

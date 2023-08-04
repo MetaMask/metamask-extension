@@ -1,5 +1,9 @@
-import { NetworkType, handleFetch } from '@metamask/controller-utils';
+import { handleFetch } from '@metamask/controller-utils';
 
+import {
+  CHAIN_IDS,
+  ETHERSCAN_SUPPORTED_NETWORKS,
+} from '../../../../shared/constants/network';
 import type {
   EtherscanTransactionMeta,
   EtherscanTransactionRequest,
@@ -16,7 +20,7 @@ const ADDERSS_MOCK = '0x2A2D72308838A6A46a0B5FDA3055FE915b5D99eD';
 
 const REQUEST_MOCK: EtherscanTransactionRequest = {
   address: ADDERSS_MOCK,
-  networkType: NetworkType.goerli,
+  chainId: CHAIN_IDS.GOERLI,
   limit: 3,
   fromBlock: 2,
   apiKey: 'testApiKey',
@@ -57,7 +61,9 @@ describe('Etherscan', () => {
 
       expect(handleFetchMock).toHaveBeenCalledTimes(1);
       expect(handleFetchMock).toHaveBeenCalledWith(
-        `https://api-${REQUEST_MOCK.networkType}.etherscan.io/api?` +
+        `https://${ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.GOERLI].subdomain}.${
+          ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.GOERLI].domain
+        }/api?` +
           `module=account` +
           `&address=${REQUEST_MOCK.address}` +
           `&startBlock=${REQUEST_MOCK.fromBlock}` +
@@ -75,12 +81,14 @@ describe('Etherscan', () => {
 
       await (Etherscan as any)[method]({
         ...REQUEST_MOCK,
-        networkType: NetworkType.mainnet,
+        chainId: CHAIN_IDS.MAINNET,
       });
 
       expect(handleFetchMock).toHaveBeenCalledTimes(1);
       expect(handleFetchMock).toHaveBeenCalledWith(
-        `https://api.etherscan.io/api?` +
+        `https://${ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.MAINNET].subdomain}.${
+          ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.MAINNET].domain
+        }/api?` +
           `module=account` +
           `&address=${REQUEST_MOCK.address}` +
           `&startBlock=${REQUEST_MOCK.fromBlock}` +
@@ -105,6 +113,19 @@ describe('Etherscan', () => {
       );
     });
 
+    it('throws if chain is not supported', async () => {
+      const unsupportedChainId = '0x11111111111111111111';
+
+      await expect(
+        (Etherscan as any)[method]({
+          ...REQUEST_MOCK,
+          chainId: unsupportedChainId,
+        }),
+      ).rejects.toThrow(
+        `Etherscan does not support chain with ID: ${unsupportedChainId}`,
+      );
+    });
+
     it('does not include empty values in fetched URL', async () => {
       handleFetchMock.mockResolvedValueOnce(RESPONSE_MOCK);
 
@@ -116,7 +137,9 @@ describe('Etherscan', () => {
 
       expect(handleFetchMock).toHaveBeenCalledTimes(1);
       expect(handleFetchMock).toHaveBeenCalledWith(
-        `https://api-${REQUEST_MOCK.networkType}.etherscan.io/api?` +
+        `https://${ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.GOERLI].subdomain}.${
+          ETHERSCAN_SUPPORTED_NETWORKS[CHAIN_IDS.GOERLI].domain
+        }/api?` +
           `module=account` +
           `&address=${REQUEST_MOCK.address}` +
           `&offset=${REQUEST_MOCK.limit}` +

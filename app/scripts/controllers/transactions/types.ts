@@ -1,4 +1,3 @@
-import { NetworkType } from '@metamask/controller-utils';
 import { Hex } from '@metamask/utils';
 import { TransactionMeta } from '../../../../shared/constants/transaction';
 
@@ -35,11 +34,6 @@ export interface RemoteTransactionSourceRequest {
    * Maximum number of transactions to retrieve.
    */
   limit?: number;
-
-  /**
-   * The type of the current network.
-   */
-  networkType: NetworkType;
 }
 
 /**
