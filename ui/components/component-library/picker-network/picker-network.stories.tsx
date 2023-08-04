@@ -1,16 +1,16 @@
 import React from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
+import { Box } from '..';
 import README from './README.mdx';
 import { PickerNetwork } from './picker-network';
 
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
-
   component: PickerNetwork,
   parameters: {
     docs: {
@@ -29,12 +29,12 @@ export default {
     label: 'Avalanche C-Chain',
     src: './images/avax-token.png',
   },
-};
+} as Meta<typeof PickerNetwork>;
 
 export const DefaultStory = (args) => <PickerNetwork {...args} />;
 
-export const Label = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Label: StoryFn<typeof PickerNetwork> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <PickerNetwork {...args} label="Arbitrum One" />
     <PickerNetwork {...args} label="Polygon Mainnet" />
     <PickerNetwork {...args} label="Optimism" />
@@ -46,8 +46,8 @@ export const Label = (args) => (
   </Box>
 );
 
-export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Src: StoryFn<typeof PickerNetwork> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <PickerNetwork {...args} label="Arbitrum One" src="./images/arbitrum.svg" />
     <PickerNetwork
       {...args}
