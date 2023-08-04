@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bu ağı silmek istediğinizden emin misiniz?"
-  },
   "deposit": {
     "message": "Para Yatır"
   },

@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
   "deposit": {
     "message": "Deposit"
   },

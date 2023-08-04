@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Esborrar Xarxa?"
   },
-  "deleteNetworkDescription": {
-    "message": "Estàs segur que vols eliminar aquesta xarxa?"
-  },
   "details": {
     "message": "Detalls"
   },

@@ -205,9 +205,6 @@
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
   },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
