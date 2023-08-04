@@ -111,12 +111,13 @@ export default function NftDetails({ nft }) {
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
       case CHAIN_IDS.MAINNET:
-        return `https://opensea.io/assets/${address}/${tokenId}`;
+        return `https://opensea.io/assets/ethereum/${address}/${tokenId}`;
       case CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
       case CHAIN_IDS.GOERLI:
+        return `https://testnets.opensea.io/assets/goerli/${address}/${tokenId}`;
       case CHAIN_IDS.SEPOLIA:
-        return `https://testnets.opensea.io/assets/${address}/${tokenId}`;
+        return `https://testnets.opensea.io/assets/sepolia/${address}/${tokenId}`;
       default:
         return null;
     }
@@ -187,7 +188,8 @@ export default function NftDetails({ nft }) {
         >
           <Box className="nft-details__nft-item">
             <NftItem
-              src={image ? nftImageURL : ''}
+              nftImageURL={nftImageURL}
+              src={image}
               alt={image ? nftImageAlt : ''}
               name={name}
               tokenId={tokenId}
@@ -198,6 +200,7 @@ export default function NftDetails({ nft }) {
           <Box
             flexDirection={FlexDirection.Column}
             className="nft-details__info"
+            marginTop={4}
             justifyContent={JustifyContent.spaceBetween}
           >
             <div>

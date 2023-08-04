@@ -54,6 +54,7 @@ import {
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -92,6 +93,7 @@ import {
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
+  ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
@@ -99,6 +101,7 @@ import {
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   countDecimals,
   fetchTokenPrice,
@@ -182,6 +185,7 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
   const areQuotesPresent = numberOfQuotes > 0;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
@@ -449,12 +453,21 @@ export default function PrepareSwapPage({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
+      if (latestAddedTokenTo && token.address !== toAddress) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
@@ -556,7 +569,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
+  }, [dispatch]);
 
   const BlockExplorerLink = () => {
     return (
@@ -630,6 +643,10 @@ export default function PrepareSwapPage({
       if (!isReviewSwapButtonDisabled) {
         if (isSmartTransaction) {
           clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+          dispatch({
+            type: SET_SMART_TRANSACTIONS_ERROR,
+            payload: null,
+          });
         }
         // Only do quotes prefetching if the Review swap button is enabled.
         prefetchQuotesWithoutRedirecting();
@@ -776,7 +793,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -846,14 +863,15 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -945,11 +963,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,

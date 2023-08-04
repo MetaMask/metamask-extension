@@ -50,6 +50,7 @@ import {
   navigateBackToBuildQuote,
   getSwapRedesignEnabled,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
 import {
   checkNetworkAndAccountSupports1559,
@@ -79,6 +80,7 @@ import {
 import {
   resetBackgroundSwapsState,
   setSwapsTokens,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   setSwapsErrorKey,
 } from '../../store/actions';
@@ -134,6 +136,7 @@ export default function Swap() {
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const txList = useSelector(currentNetworkTxListSelector, shallowEqual);
   const tradeTxId = useSelector(getTradeTxId);
   const approveTxId = useSelector(getApproveTxId);
@@ -209,6 +212,32 @@ export default function Swap() {
     swapsErrorKey = SWAP_FAILED_ERROR;
   }
 
+  const clearTemporaryTokenRef = useRef();
+  useEffect(() => {
+    clearTemporaryTokenRef.current = () => {
+      if (latestAddedTokenTo && (!isAwaitingSwapRoute || conversionError)) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: latestAddedTokenTo,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
+    };
+  }, [
+    conversionError,
+    dispatch,
+    latestAddedTokenTo,
+    destinationTokenInfo,
+    fetchParams,
+    isAwaitingSwapRoute,
+  ]);
+  useEffect(() => {
+    return () => {
+      clearTemporaryTokenRef.current();
+    };
+  }, []);
+
   // eslint-disable-next-line
   useEffect(() => {
     if (!isSwapsChain) {
@@ -283,6 +312,7 @@ export default function Swap() {
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
     const fn = () => {
+      clearTemporaryTokenRef.current();
       if (isLoadingQuotesRoute) {
         dispatch(prepareToLeaveSwaps());
       }
@@ -349,9 +379,13 @@ export default function Swap() {
   }
 
   const redirectToDefaultRoute = async () => {
+    clearTemporaryTokenRef.current();
+    history.push({
+      pathname: DEFAULT_ROUTE,
+      state: { stayOnHomePage: true },
+    });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    history.push(DEFAULT_ROUTE);
   };
 
   return (
@@ -400,6 +434,7 @@ export default function Swap() {
             <div
               className="swaps__header-cancel"
               onClick={async () => {
+                clearTemporaryTokenRef.current();
                 dispatch(clearSwapsState());
                 await dispatch(resetBackgroundSwapsState());
                 history.push(DEFAULT_ROUTE);

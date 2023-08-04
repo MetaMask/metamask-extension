@@ -44,6 +44,7 @@ import {
   getTestNetworkBackgroundColor,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
+  getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
@@ -79,6 +80,7 @@ export const AppHeader = ({ location }) => {
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
+  const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IN
 
   // Used for account picker
@@ -171,6 +173,7 @@ export const AppHeader = ({ location }) => {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             custodyImgSrc={custodianIcon}
             isUnlocked={isUnlocked}
+            theme={theme}
             ///: END:ONLY_INCLUDE_IN
           />
         </Box>

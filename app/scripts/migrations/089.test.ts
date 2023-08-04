@@ -1,364 +1,224 @@
-import { migrate } from './089';
+import { migrate, version } from './089';
 
-const INCOMING_TRANSACTION_MOCK = {
-  blockNumber: '1',
-  chainId: '0x539',
-  hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
-  id: 1,
-  metamaskNetworkId: '1337',
-  status: 'confirmed',
-  time: 1671635520000,
-  txParams: {
-    from: '0xc87261ba337be737fa744f50e7aaf4a920bdfcd6',
-    gas: '0x5208',
-    gasPrice: '0x329af9707',
-    to: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-    value: '0xDE0B6B3A7640000',
-  },
-  type: 'incoming',
-};
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
 
-const INCOMING_TRANSACTION_2_MOCK = {
-  ...INCOMING_TRANSACTION_MOCK,
-  blockNumber: '2',
-  id: 2,
-  chainId: '0x540',
-  txParams: {
-    ...INCOMING_TRANSACTION_MOCK.txParams,
-    to: '0x2',
-  },
-};
-
-const TRANSACTION_MOCK = {
-  ...INCOMING_TRANSACTION_MOCK,
-  blockNumber: '3',
-  id: 3,
-  type: 'contractInteraction',
-};
+  return {
+    ...actual,
+    v4: jest.fn(),
+  };
+});
 
 describe('migration #89', () => {
-  it('updates the version metadata', async () => {
+  it('should update the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 88 },
+      meta: {
+        version: 88,
+      },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.meta).toStrictEqual({ version: 89 });
+    expect(newStorage.meta).toStrictEqual({
+      version,
+    });
   });
 
-  it('does nothing if no IncomingTransactionsController state', async () => {
+  it('should return state unaltered if there is no network controller state', async () => {
     const oldData = {
-      some: 'data',
+      other: 'data',
     };
-
     const oldStorage = {
-      meta: { version: 88 },
+      meta: {
+        version: 88,
+      },
       data: oldData,
     };
 
     const newStorage = await migrate(oldStorage);
-
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('removes IncomingTransactionsController state', async () => {
+  it('should return state unaltered if there is no network controller providerConfig state', async () => {
     const oldData = {
-      some: 'data',
-      IncomingTransactionsController: {
-        incomingTransactions: {
-          [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-        },
-        incomingTxLastFetchedBlockByChainId: {
-          '0x5': 1234,
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+          },
         },
       },
     };
-
     const oldStorage = {
-      meta: { version: 88 },
+      meta: {
+        version: 88,
+      },
       data: oldData,
     };
 
     const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({
-      some: oldData.some,
-      TransactionController: expect.any(Object),
-    });
+    expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  describe('moves incoming transactions', () => {
-    it('if no TransactionController state', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: INCOMING_TRANSACTION_2_MOCK,
+  it('should return state unaltered if the providerConfig already has an id', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
           },
         },
-      };
-
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: INCOMING_TRANSACTION_2_MOCK,
-          },
-          lastFetchedBlockNumbers: expect.any(Object),
+        providerConfig: {
+          id: 'test',
         },
-      });
-    });
-
-    it('if existing TransactionController state', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: INCOMING_TRANSACTION_2_MOCK,
-          },
-        },
-        TransactionController: {
-          transactions: {
-            [TRANSACTION_MOCK.id]: TRANSACTION_MOCK,
-          },
-        },
-      };
-
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: {
-            ...oldData.TransactionController.transactions,
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: INCOMING_TRANSACTION_2_MOCK,
-          },
-          lastFetchedBlockNumbers: expect.any(Object),
-        },
-      });
-    });
-
-    it.each([
-      ['undefined', undefined],
-      ['empty', {}],
-    ])(
-      'does nothing if incoming transactions %s',
-      async (_title, incomingTransactions) => {
-        const oldData = {
-          some: 'data',
-          IncomingTransactionsController: {
-            incomingTransactions,
-          },
-          TransactionController: {
-            transactions: {
-              [TRANSACTION_MOCK.id]: TRANSACTION_MOCK,
-            },
-          },
-        };
-
-        const oldStorage = {
-          meta: { version: 88 },
-          data: oldData,
-        };
-
-        const newStorage = await migrate(oldStorage);
-
-        expect(newStorage.data).toStrictEqual({
-          some: oldData.some,
-          TransactionController: oldData.TransactionController,
-        });
       },
-    );
+    };
+    const oldStorage = {
+      meta: {
+        version: 88,
+      },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  describe('generates last fetched block numbers', () => {
-    it('if incoming transactions have chain ID, block number, and to address', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: INCOMING_TRANSACTION_2_MOCK,
+  it('should return state unaltered if there is no network config with the same rpcUrl and the providerConfig', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+            rpcUrl: 'http://foo.bar',
           },
         },
-      };
+        providerConfig: {
+          rpcUrl: 'http://baz.buzz',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 88,
+      },
+      data: oldData,
+    };
 
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual(oldData);
+  });
 
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: expect.any(Object),
-          lastFetchedBlockNumbers: {
-            [`${INCOMING_TRANSACTION_MOCK.chainId}#${INCOMING_TRANSACTION_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_MOCK.blockNumber, 10),
-            [`${INCOMING_TRANSACTION_2_MOCK.chainId}#${INCOMING_TRANSACTION_2_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_2_MOCK.blockNumber, 10),
+  it('should update the provider config to have the id of a network config with the same rpcUrl', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+            rpcUrl: 'http://foo.bar',
+            id: 'test',
           },
         },
-      });
+        providerConfig: {
+          rpcUrl: 'http://foo.bar',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 88,
+      },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+            rpcUrl: 'http://foo.bar',
+            id: 'test',
+          },
+        },
+        providerConfig: {
+          rpcUrl: 'http://foo.bar',
+          id: 'test',
+        },
+      },
     });
+  });
 
-    it('using highest block number for each chain ID and to address', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: {
-              ...INCOMING_TRANSACTION_2_MOCK,
-              chainId: INCOMING_TRANSACTION_MOCK.chainId,
-              txParams: {
-                ...INCOMING_TRANSACTION_2_MOCK.txParams,
-                to: INCOMING_TRANSACTION_MOCK.txParams.to,
-              },
-            },
+  it('should update the provider config to have the id of a network config with the same rpcUrl, even if there are other networks with the same chainId', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+            rpcUrl: 'http://fizz.buzz',
+            id: 'FAILEDtest',
+            chainId: 1,
+          },
+          id2: {
+            foo: 'bar',
+            rpcUrl: 'http://foo.bar',
+            id: 'PASSEDtest',
+          },
+          id3: {
+            foo: 'bar',
+            rpcUrl: 'http://baz.buzz',
+            id: 'FAILEDtest',
+            chainId: 1,
           },
         },
-      };
+        providerConfig: {
+          rpcUrl: 'http://foo.bar',
+          chainId: 1,
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 88,
+      },
+      data: oldData,
+    };
 
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: expect.any(Object),
-          lastFetchedBlockNumbers: {
-            [`${INCOMING_TRANSACTION_MOCK.chainId}#${INCOMING_TRANSACTION_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_2_MOCK.blockNumber, 10),
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage.data).toStrictEqual({
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+            rpcUrl: 'http://fizz.buzz',
+            id: 'FAILEDtest',
+            chainId: 1,
+          },
+          id2: {
+            foo: 'bar',
+            rpcUrl: 'http://foo.bar',
+            id: 'PASSEDtest',
+          },
+          id3: {
+            foo: 'bar',
+            rpcUrl: 'http://baz.buzz',
+            id: 'FAILEDtest',
+            chainId: 1,
           },
         },
-      });
-    });
-
-    it('ignoring incoming transactions with no chain ID', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: {
-              ...INCOMING_TRANSACTION_2_MOCK,
-              chainId: undefined,
-            },
-          },
+        providerConfig: {
+          rpcUrl: 'http://foo.bar',
+          id: 'PASSEDtest',
+          chainId: 1,
         },
-      };
-
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: expect.any(Object),
-          lastFetchedBlockNumbers: {
-            [`${INCOMING_TRANSACTION_MOCK.chainId}#${INCOMING_TRANSACTION_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_MOCK.blockNumber, 10),
-          },
-        },
-      });
-    });
-
-    it('ignoring incoming transactions with no block number', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: {
-              ...INCOMING_TRANSACTION_2_MOCK,
-              blockNumber: undefined,
-            },
-          },
-        },
-      };
-
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: expect.any(Object),
-          lastFetchedBlockNumbers: {
-            [`${INCOMING_TRANSACTION_MOCK.chainId}#${INCOMING_TRANSACTION_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_MOCK.blockNumber, 10),
-          },
-        },
-      });
-    });
-
-    it('ignoring incoming transactions with no to address', async () => {
-      const oldData = {
-        some: 'data',
-        IncomingTransactionsController: {
-          incomingTransactions: {
-            [INCOMING_TRANSACTION_MOCK.id]: INCOMING_TRANSACTION_MOCK,
-            [INCOMING_TRANSACTION_2_MOCK.id]: {
-              ...INCOMING_TRANSACTION_2_MOCK,
-              txParams: {
-                ...INCOMING_TRANSACTION_2_MOCK.txParams,
-                to: undefined,
-              },
-            },
-          },
-        },
-      };
-
-      const oldStorage = {
-        meta: { version: 88 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        some: oldData.some,
-        TransactionController: {
-          transactions: expect.any(Object),
-          lastFetchedBlockNumbers: {
-            [`${INCOMING_TRANSACTION_MOCK.chainId}#${INCOMING_TRANSACTION_MOCK.txParams.to}`]:
-              parseInt(INCOMING_TRANSACTION_MOCK.blockNumber, 10),
-          },
-        },
-      });
+      },
     });
   });
 });

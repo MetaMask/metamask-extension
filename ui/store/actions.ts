@@ -1572,6 +1572,7 @@ export function updateMetamaskState(
         });
       }
     });
+
     // Also emit an event for the selected account changing, either due to a
     // property update or if the entire account changes.
     if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
@@ -2044,25 +2045,6 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
-export function addTokens(
-  tokens: Token[] | { [address: string]: Token },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    if (Array.isArray(tokens)) {
-      return Promise.all(
-        tokens.map(({ address, symbol, decimals }) =>
-          dispatch(addToken(address, symbol, decimals)),
-        ),
-      );
-    }
-    return Promise.all(
-      Object.entries(tokens).map(([_, { address, symbol, decimals }]) =>
-        dispatch(addToken(address, symbol, decimals)),
-      ),
-    );
-  };
-}
-
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -2428,6 +2410,17 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function showIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_OPEN,
+  };
+}
+
+export function hideIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
+  };
+}
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2885,6 +2878,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
+          /**
+           * We need to inform sentry that the user's optin preference may have
+           * changed. The logic to determine which way to toggle is in the
+           * toggleSession handler in setupSentry.js.
+           */
+          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
@@ -2972,18 +2971,31 @@ export function setUseTokenDetection(
   };
 }
 
+export function setOpenSeaEnabled(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    try {
+      await submitRequestToBackground('setOpenSeaEnabled', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setUseNftDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
-    callBackgroundMethod('setUseNftDetection', [val], (err) => {
+    try {
+      await submitRequestToBackground('setUseNftDetection', [val]);
+    } finally {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    }
   };
 }
 
@@ -2994,21 +3006,6 @@ export function setUseCurrencyRateCheck(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseCurrencyRateCheck`);
     callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function setOpenSeaEnabled(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setOpenSeaEnabled`);
-    callBackgroundMethod('setOpenSeaEnabled', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err));
@@ -3083,6 +3080,19 @@ export function setIpfsGateway(
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setIpfsGateway`);
     callBackgroundMethod('setIpfsGateway', [val], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
+export function setUseAddressBarEnsResolution(
+  val: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch: MetaMaskReduxDispatch) => {
+    log.debug(`background.setUseAddressBarEnsResolution`);
+    callBackgroundMethod('setUseAddressBarEnsResolution', [val], (err) => {
       if (err) {
         dispatch(displayWarning(err));
       }

@@ -447,5 +447,38 @@ describe('Signature Request Component', () => {
         container.querySelector('.request-signature__mismatch-info'),
       ).toBeInTheDocument();
     });
+
+    it('should display security alert if present', () => {
+      const msgParams = {
+        from: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+        data: JSON.stringify(messageData),
+        version: 'V4',
+        origin: 'test',
+      };
+
+      const { getByText } = renderWithProvider(
+        <SignatureRequest
+          {...baseProps}
+          conversionRate={null}
+          txData={{
+            msgParams,
+            securityAlertResponse: {
+              resultType: 'Malicious',
+              reason: 'blur_farming',
+              description:
+                'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+              args: {
+                contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+                operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+              },
+            },
+          }}
+          unapprovedMessagesCount={2}
+        />,
+        store,
+      );
+
+      expect(getByText('This is a deceptive request')).toBeInTheDocument();
+    });
   });
 });

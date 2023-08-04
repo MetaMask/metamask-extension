@@ -23,10 +23,12 @@ const render = (
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
+  isUnlocked = true,
 ) => {
   const state = {
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
       providerConfig: {
         ...mockState.metamask.providerConfig,
         chainId: currentChainId,
@@ -44,10 +46,11 @@ const render = (
 
 describe('NetworkListMenu', () => {
   it('displays important controls', () => {
-    const { getByText } = render();
+    const { getByText, getByPlaceholderText } = render();
 
     expect(getByText('Add network')).toBeInTheDocument();
     expect(getByText('Show test networks')).toBeInTheDocument();
+    expect(getByPlaceholderText('Search')).toBeInTheDocument();
   });
 
   it('renders mainnet item', () => {
@@ -98,5 +101,33 @@ describe('NetworkListMenu', () => {
       '.multichain-network-list-item__network-name',
     ).textContent;
     expect(selectedNodeText).toStrictEqual('Custom Mainnet RPC');
+  });
+
+  it('narrows down search results', () => {
+    const { queryByText, getByPlaceholderText } = render();
+
+    expect(queryByText('Chain 5')).toBeInTheDocument();
+
+    const searchBox = getByPlaceholderText('Search');
+    fireEvent.change(searchBox, { target: { value: 'Main' } });
+
+    expect(queryByText('Chain 5')).not.toBeInTheDocument();
+  });
+
+  it('disables the "Add Network" button when MetaMask is locked', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', false);
+    expect(queryByText('Add network')).toBeDisabled();
+  });
+
+  it('enables the "Add Network" button when MetaMask is true', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', true);
+    expect(queryByText('Add network')).toBeEnabled();
+  });
+
+  it('does not allow deleting networks when locked', () => {
+    render(false, '0x5', 'chain5', false);
+    expect(
+      document.querySelectorAll('multichain-network-list-item__delete'),
+    ).toHaveLength(0);
   });
 });

@@ -34,7 +34,10 @@ import {
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
 ///: END:ONLY_INCLUDE_IN
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   TransactionGroupCategory,
   TransactionStatus,
@@ -58,7 +61,9 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import CancelSpeedupPopover from '../cancel-speedup-popover';
+///: END:ONLY_INCLUDE_IN
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -172,8 +177,19 @@ function TransactionListItemInner({
       history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
       return;
     }
-    setShowDetails((prev) => !prev);
-  }, [isUnapproved, history, id]);
+    setShowDetails((prev) => {
+      trackEvent({
+        event: prev
+          ? MetaMetricsEventName.ActivityDetailsClosed
+          : MetaMetricsEventName.ActivityDetailsOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: category,
+        },
+      });
+      return !prev;
+    });
+  }, [isUnapproved, history, id, trackEvent, category]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const debugTransactionMeta = {
@@ -435,7 +451,11 @@ const TransactionListItem = (props) => {
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559 && (
           <>
-            <CancelSpeedupPopover />
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+              <CancelSpeedupPopover />
+              ///: END:ONLY_INCLUDE_IN
+            }
             <EditGasFeePopover />
             <AdvancedGasFeePopover />
           </>
