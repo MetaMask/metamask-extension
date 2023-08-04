@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import type { BlockTracker, NetworkState } from '@metamask/network-controller';
 import type { Hex } from '@metamask/utils';
-import { NetworkType } from '@metamask/controller-utils';
 import log from 'loglevel';
 import {
   TransactionMeta,
@@ -108,7 +107,6 @@ export class IncomingTransactionHelper {
     const localTransactions = this.#getLocalTransactions();
     const currentChainId = this.#getCurrentChainId();
     const currentNetworkId = this.#getCurrentNetworkId();
-    const networkType = this.#getCurrentNetworkType();
 
     let remoteTransactions = [];
 
@@ -120,7 +118,6 @@ export class IncomingTransactionHelper {
           currentNetworkId,
           fromBlock,
           limit: this.#transactionLimit,
-          networkType,
         });
     } catch (error: any) {
       log.debug('Ignoring failure to fetch remote transactions', {
@@ -306,9 +303,5 @@ export class IncomingTransactionHelper {
 
   #getCurrentNetworkId(): string {
     return this.#getNetworkState().networkId as string;
-  }
-
-  #getCurrentNetworkType(): NetworkType {
-    return this.#getNetworkState().providerConfig.type;
   }
 }
