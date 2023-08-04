@@ -115,7 +115,10 @@ async function start() {
   let isUIInitialised = false;
 
   // Start the logo animation
-  document.querySelector('.loading-logo').classList.add('activated');
+  document.documentElement.classList.add('metamask-loaded');
+  document.documentElement.addEventListener('animationend', ({ target }) => {
+    target.style.display = 'none';
+  });
 
   // setup stream to background
   extensionPort = browser.runtime.connect({ name: windowType });

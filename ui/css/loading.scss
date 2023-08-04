@@ -1,20 +1,44 @@
-.loading-logo {
-  width: 10rem;
-  height: 10rem;
-  align-self: center;
-  margin: 10rem 0 0 0;
-  opacity: 0;
-  animation: fadeIn 5s;
+#app-loader {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+
+  .metamask-loaded & {
+    animation: fadeOut 1s;
+    opacity: 0;
+  }
+
+  .loading-logo {
+    width: 10rem;
+    height: 10rem;
+    align-self: center;
+    margin: 10rem 0 0 0;
+  }
+
+  .loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+    margin-top: 1rem;
+  }
 }
 
-.loading-spinner {
-  width: 2rem;
-  height: 2rem;
-  align-self: center;
-  margin-top: 1rem;
-}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
 
-@keyframes fadeIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
