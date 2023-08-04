@@ -5,7 +5,7 @@
   $width-screen-lg-min: 62vw;
 
   flex-flow: column nowrap;
-  z-index: 55;
+  z-index: $header-z-index;
   min-height: 64px;
 
   &__contents {
