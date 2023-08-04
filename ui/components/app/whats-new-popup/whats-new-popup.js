@@ -203,7 +203,6 @@ const renderFirstNotification = ({
       {placeImageBelowDescription && imageComponent}
       {actionText && (
         <ButtonPrimary
-          type="primary"
           className="whats-new-popup__button"
           onClick={() => {
             actionFunction();
