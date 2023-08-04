@@ -64,10 +64,11 @@ if (shouldInjectProvider()) {
     connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
-    providerInfo: {
-      name: process.env.METAMASK_BUILD_NAME,
+    shouldAnnounceProviderInfo: {
       uuid: uuid(),
-      icon: iconUrl,
+      name: process.env.METAMASK_BUILD_NAME,
+      icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>", // update this
+      rdns: "io.consensys.metamask" // update this
     },
   });
 }
