@@ -424,210 +424,221 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        {isConfirming ? (
-          <ImportTokensModalConfirm
-            onBackClick={() => {
-              dispatch(clearPendingTokens());
-              setMode('');
-            }}
-            onImportClick={async () => {
-              await handleAddTokens();
-              onClose();
-            }}
-          />
-        ) : (
-          <>
-            <Tabs t={t} marginTop={6}>
-              {showSearchTab ? (
-                <Tab tabKey="search" name={t('search')}>
-                  <Box paddingTop={4} paddingBottom={4}>
-                    {useTokenDetection ? null : (
-                      <BannerAlert severity={Severity.Info} marginBottom={4}>
-                        <Text>
-                          {t('enhancedTokenDetectionAlertMessage', [
-                            networkName,
+        <Box marginTop={6}>
+          {isConfirming ? (
+            <ImportTokensModalConfirm
+              onBackClick={() => {
+                dispatch(clearPendingTokens());
+                setMode('');
+              }}
+              onImportClick={async () => {
+                await handleAddTokens();
+                onClose();
+              }}
+            />
+          ) : (
+            <>
+              <Tabs t={t}>
+                {showSearchTab ? (
+                  <Tab tabKey="search" name={t('search')}>
+                    <Box paddingTop={4} paddingBottom={4}>
+                      {useTokenDetection ? null : (
+                        <BannerAlert severity={Severity.Info} marginBottom={4}>
+                          <Text>
+                            {t('enhancedTokenDetectionAlertMessage', [
+                              networkName,
+                              <ButtonLink
+                                key="token-detection-announcement"
+                                className="import-tokens-modal__autodetect"
+                                onClick={() => {
+                                  history.push(
+                                    `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
+                                  );
+                                  onClose();
+                                }}
+                              >
+                                {t('enableFromSettings')}
+                              </ButtonLink>,
+                            ])}
+                          </Text>
+                        </BannerAlert>
+                      )}
+                      <TokenSearch
+                        onSearch={({ results = [] }) =>
+                          setSearchResults(results)
+                        }
+                        error={tokenSelectorError}
+                        tokenList={tokenList}
+                      />
+                      <Box
+                        marginTop={4}
+                        className="import-tokens-modal__search-list"
+                      >
+                        <TokenList
+                          results={searchResults}
+                          selectedTokens={selectedTokens}
+                          onToggleToken={(token) => handleToggleToken(token)}
+                        />
+                      </Box>
+                    </Box>
+                  </Tab>
+                ) : null}
+                <Tab tabKey="customToken" name={t('customToken')}>
+                  <Box
+                    padding={[2, 4, 4, 4]}
+                    className="import-tokens-modal__custom-token-form"
+                  >
+                    {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
+                      <BannerAlert severity={Severity.Warning}>
+                        {t(
+                          'customTokenWarningInTokenDetectionNetworkWithTDOFF',
+                          [
                             <ButtonLink
-                              key="token-detection-announcement"
-                              className="import-tokens-modal__autodetect"
-                              onClick={() => {
+                              key="import-token-security-risk"
+                              rel="noopener noreferrer"
+                              target="_blank"
+                              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                            >
+                              {t('tokenScamSecurityRisk')}
+                            </ButtonLink>,
+                            <ButtonLink
+                              type="link"
+                              key="import-token-token-detection-announcement"
+                              onClick={() =>
                                 history.push(
                                   `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
-                                );
-                                onClose();
-                              }}
+                                )
+                              }
                             >
-                              {t('enableFromSettings')}
+                              {t('inYourSettings')}
                             </ButtonLink>,
-                          ])}
-                        </Text>
+                          ],
+                        )}
+                      </BannerAlert>
+                    ) : (
+                      <BannerAlert
+                        severity={
+                          isDynamicTokenListAvailable
+                            ? Severity.Warning
+                            : Severity.Info
+                        }
+                      >
+                        {t(
+                          isDynamicTokenListAvailable
+                            ? 'customTokenWarningInTokenDetectionNetwork'
+                            : 'customTokenWarningInNonTokenDetectionNetwork',
+                          [
+                            <ButtonLink
+                              key="import-token-fake-token-warning"
+                              rel="noopener noreferrer"
+                              target="_blank"
+                              href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                            >
+                              {t('learnScamRisk')}
+                            </ButtonLink>,
+                          ],
+                        )}
                       </BannerAlert>
                     )}
-                    <TokenSearch
-                      onSearch={({ results = [] }) => setSearchResults(results)}
-                      error={tokenSelectorError}
-                      tokenList={tokenList}
-                    />
-                    <Box
-                      marginTop={4}
-                      className="import-tokens-modal__search-list"
-                    >
-                      <TokenList
-                        results={searchResults}
-                        selectedTokens={selectedTokens}
-                        onToggleToken={(token) => handleToggleToken(token)}
-                      />
-                    </Box>
-                  </Box>
-                </Tab>
-              ) : null}
-              <Tab tabKey="customToken" name={t('customToken')}>
-                <Box
-                  padding={[2, 4, 4, 4]}
-                  className="import-tokens-modal__custom-token-form"
-                >
-                  {tokenDetectionInactiveOnNonMainnetSupportedNetwork ? (
-                    <BannerAlert severity={Severity.Warning}>
-                      {t('customTokenWarningInTokenDetectionNetworkWithTDOFF', [
-                        <ButtonLink
-                          key="import-token-security-risk"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
-                        >
-                          {t('tokenScamSecurityRisk')}
-                        </ButtonLink>,
-                        <ButtonLink
-                          type="link"
-                          key="import-token-token-detection-announcement"
-                          onClick={() =>
-                            history.push(
-                              `${SECURITY_ROUTE}#advanced-settings-autodetect-tokens`,
-                            )
-                          }
-                        >
-                          {t('inYourSettings')}
-                        </ButtonLink>,
-                      ])}
-                    </BannerAlert>
-                  ) : (
-                    <BannerAlert
-                      severity={
-                        isDynamicTokenListAvailable
-                          ? Severity.Warning
-                          : Severity.Info
+                    <FormTextField
+                      label={t('tokenContractAddress')}
+                      value={customAddress}
+                      onChange={(e) =>
+                        handleCustomAddressChange(e.target.value)
                       }
-                    >
-                      {t(
-                        isDynamicTokenListAvailable
-                          ? 'customTokenWarningInTokenDetectionNetwork'
-                          : 'customTokenWarningInNonTokenDetectionNetwork',
-                        [
+                      helpText={
+                        customAddressError ||
+                        mainnetTokenWarning ||
+                        nftAddressError
+                      }
+                      error={
+                        customAddressError ||
+                        mainnetTokenWarning ||
+                        nftAddressError
+                      }
+                      autoFocus
+                      marginTop={6}
+                      inputProps={{
+                        'data-testid': 'import-tokens-modal-custom-address',
+                      }}
+                    />
+                    <FormTextField
+                      label={
+                        <>
+                          {t('tokenSymbol')}
+                          {symbolAutoFilled && !forceEditSymbol && (
+                            <ButtonLink
+                              onClick={() => setForceEditSymbol(true)}
+                              textAlign={TextAlign.End}
+                              paddingInlineEnd={1}
+                              paddingInlineStart={1}
+                              color={TextColor.primaryDefault}
+                            >
+                              {t('edit')}
+                            </ButtonLink>
+                          )}
+                        </>
+                      }
+                      value={customSymbol}
+                      onChange={(e) => handleCustomSymbolChange(e.target.value)}
+                      helpText={customSymbolError}
+                      error={customSymbolError}
+                      disabled={symbolAutoFilled && !forceEditSymbol}
+                      marginTop={6}
+                      inputProps={{
+                        'data-testid': 'import-tokens-modal-custom-symbol',
+                      }}
+                    />
+                    <FormTextField
+                      label={t('decimal')}
+                      type="number"
+                      value={customDecimals}
+                      onChange={(e) =>
+                        handleCustomDecimalsChange(e.target.value)
+                      }
+                      helpText={customDecimalsError}
+                      error={customDecimalsError}
+                      disabled={decimalAutoFilled}
+                      min={MIN_DECIMAL_VALUE}
+                      max={MAX_DECIMAL_VALUE}
+                      marginTop={6}
+                      inputProps={{
+                        'data-testid': 'import-tokens-modal-custom-decimals',
+                      }}
+                    />
+                    {customDecimals === '' && (
+                      <BannerAlert severity={Severity.Warning}>
+                        <Text fontWeight={FontWeight.Bold}>
+                          {t('tokenDecimalFetchFailed')}
+                        </Text>
+                        {t('verifyThisTokenDecimalOn', [
                           <ButtonLink
-                            key="import-token-fake-token-warning"
+                            key="import-token-verify-token-decimal"
                             rel="noopener noreferrer"
                             target="_blank"
-                            href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                            href={blockExplorerTokenLink}
                           >
-                            {t('learnScamRisk')}
+                            {blockExplorerLabel}
                           </ButtonLink>,
-                        ],
-                      )}
-                    </BannerAlert>
-                  )}
-                  <FormTextField
-                    label={t('tokenContractAddress')}
-                    value={customAddress}
-                    onChange={(e) => handleCustomAddressChange(e.target.value)}
-                    helpText={
-                      customAddressError ||
-                      mainnetTokenWarning ||
-                      nftAddressError
-                    }
-                    error={
-                      customAddressError ||
-                      mainnetTokenWarning ||
-                      nftAddressError
-                    }
-                    autoFocus
-                    marginTop={6}
-                    inputProps={{
-                      'data-testid': 'import-tokens-modal-custom-address',
-                    }}
-                  />
-                  <FormTextField
-                    label={
-                      <>
-                        {t('tokenSymbol')}
-                        {symbolAutoFilled && !forceEditSymbol && (
-                          <ButtonLink
-                            onClick={() => setForceEditSymbol(true)}
-                            textAlign={TextAlign.End}
-                            paddingInlineEnd={1}
-                            paddingInlineStart={1}
-                            color={TextColor.primaryDefault}
-                          >
-                            {t('edit')}
-                          </ButtonLink>
-                        )}
-                      </>
-                    }
-                    value={customSymbol}
-                    onChange={(e) => handleCustomSymbolChange(e.target.value)}
-                    helpText={customSymbolError}
-                    error={customSymbolError}
-                    disabled={symbolAutoFilled && !forceEditSymbol}
-                    marginTop={6}
-                    inputProps={{
-                      'data-testid': 'import-tokens-modal-custom-symbol',
-                    }}
-                  />
-                  <FormTextField
-                    label={t('decimal')}
-                    type="number"
-                    value={customDecimals}
-                    onChange={(e) => handleCustomDecimalsChange(e.target.value)}
-                    helpText={customDecimalsError}
-                    error={customDecimalsError}
-                    disabled={decimalAutoFilled}
-                    min={MIN_DECIMAL_VALUE}
-                    max={MAX_DECIMAL_VALUE}
-                    marginTop={6}
-                    inputProps={{
-                      'data-testid': 'import-tokens-modal-custom-decimals',
-                    }}
-                  />
-                  {customDecimals === '' && (
-                    <BannerAlert severity={Severity.Warning}>
-                      <Text fontWeight={FontWeight.Bold}>
-                        {t('tokenDecimalFetchFailed')}
-                      </Text>
-                      {t('verifyThisTokenDecimalOn', [
-                        <ButtonLink
-                          key="import-token-verify-token-decimal"
-                          rel="noopener noreferrer"
-                          target="_blank"
-                          href={blockExplorerTokenLink}
-                        >
-                          {blockExplorerLabel}
-                        </ButtonLink>,
-                      ])}
-                    </BannerAlert>
-                  )}
-                </Box>
-              </Tab>
-            </Tabs>
-            <Box paddingTop={6} paddingBottom={6}>
-              <ButtonPrimary
-                onClick={() => handleNext()}
-                size={Size.LG}
-                disabled={Boolean(hasError()) || !hasSelected()}
-                block
-              >
-                {t('next')}
-              </ButtonPrimary>
-            </Box>
-          </>
-        )}
+                        ])}
+                      </BannerAlert>
+                    )}
+                  </Box>
+                </Tab>
+              </Tabs>
+              <Box paddingTop={6} paddingBottom={6}>
+                <ButtonPrimary
+                  onClick={() => handleNext()}
+                  size={Size.LG}
+                  disabled={Boolean(hasError()) || !hasSelected()}
+                  block
+                >
+                  {t('next')}
+                </ButtonPrimary>
+              </Box>
+            </>
+          )}
+        </Box>
       </ModalContent>
     </Modal>
   );
