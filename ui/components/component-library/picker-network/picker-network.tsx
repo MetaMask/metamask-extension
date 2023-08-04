@@ -24,7 +24,7 @@ import {
 } from './picker-network.types';
 
 export const PickerNetwork: PickerNetworkComponent = React.forwardRef(
-  <C extends React.ElementType = 'div'>(
+  <C extends React.ElementType = 'button'>(
     {
       className = '',
       avatarNetworkProps,

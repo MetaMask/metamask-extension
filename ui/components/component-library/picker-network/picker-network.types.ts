@@ -31,6 +31,6 @@ export interface PickerNetworkStyleUtilityProps extends StyleUtilityProps {
 export type PickerNetworkProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, PickerNetworkStyleUtilityProps>;
 
-export type PickerNetworkComponent = <C extends React.ElementType = 'div'>(
+export type PickerNetworkComponent = <C extends React.ElementType = 'button'>(
   props: PickerNetworkProps<C>,
 ) => React.ReactElement | null;

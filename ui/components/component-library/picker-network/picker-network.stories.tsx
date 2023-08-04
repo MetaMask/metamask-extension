@@ -11,7 +11,6 @@ import { PickerNetwork } from './picker-network';
 
 export default {
   title: 'Components/ComponentLibrary/PickerNetwork',
-
   component: PickerNetwork,
   parameters: {
     docs: {
