@@ -13,7 +13,7 @@ describe('Settings', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
         title: this.test.title,
@@ -44,7 +44,7 @@ describe('Settings', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
         title: this.test.title,
