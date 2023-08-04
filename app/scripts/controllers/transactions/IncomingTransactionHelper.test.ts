@@ -141,7 +141,6 @@ describe('IncomingTransactionHelper', () => {
           currentNetworkId: NETWORK_STATE_MOCK.networkId,
           fromBlock: expect.any(Number),
           limit: CONTROLLER_ARGS_MOCK.transactionLimit,
-          networkType: NETWORK_STATE_MOCK.providerConfig.type,
         });
       });
 
