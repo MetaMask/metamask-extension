@@ -12,7 +12,7 @@
   z-index: 1000;
 
   .metamask-loaded & {
-    animation: fadeOut 1s;
+    animation: fadeOut 0.5s;
     opacity: 0;
   }
 
