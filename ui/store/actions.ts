@@ -97,6 +97,7 @@ import {
 } from '../../shared/modules/error';
 import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { ThemeType } from '../../shared/constants/preferences';
+import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -111,7 +112,6 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 
 export function goHome() {
   return {
