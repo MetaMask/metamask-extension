@@ -3914,6 +3914,9 @@
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
   },
+  "smartContracts": {
+    "message": "Smart contracts"
+  },
   "smartSwap": {
     "message": "Smart swap"
   },
@@ -5206,6 +5209,12 @@
   },
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
+  },
+  "use4ByteResolution": {
+    "message": "Decode smart contracts"
+  },
+  "use4ByteResolutionDescription": {
+    "message": "To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contact that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"
