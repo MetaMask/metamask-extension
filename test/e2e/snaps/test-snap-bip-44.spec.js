@@ -32,10 +32,10 @@ describe('Test Snap bip-44', function () {
         await driver.delay(1000);
 
         // find and scroll to the bip44 test and connect
-        const snapButton1 = await driver.findElement('#connectBip44Snap');
+        const snapButton1 = await driver.findElement('#connectbip44');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectBip44Snap');
+        await driver.clickElement('#connectbip44');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect and approve
@@ -53,6 +53,9 @@ describe('Test Snap bip-44', function () {
           tag: 'button',
         });
         await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
           text: 'Install',
           tag: 'button',
@@ -61,6 +64,7 @@ describe('Test Snap bip-44', function () {
         // deal with permissions popover
         await driver.delay(500);
         await driver.clickElement('#key-access-bip44-1-0');
+        await driver.clickElement('#key-access-bip44-3-1');
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -76,7 +80,7 @@ describe('Test Snap bip-44', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectBip44Snap',
+          css: '#connectbip44',
           text: 'Reconnect to BIP-44 Snap',
         });
 

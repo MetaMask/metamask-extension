@@ -26,6 +26,8 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
+  importNftsModalOpen: boolean;
+  showIpfsModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -94,6 +96,8 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
+  importNftsModalOpen: false,
+  showIpfsModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -161,6 +165,30 @@ export default function reduceApp(
       return {
         ...appState,
         networkDropdownOpen: false,
+      };
+
+    case actionConstants.IMPORT_NFTS_MODAL_OPEN:
+      return {
+        ...appState,
+        importNftsModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
+      return {
+        ...appState,
+        importNftsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_OPEN:
+      return {
+        ...appState,
+        showIpfsModalOpen: true,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_CLOSE:
+      return {
+        ...appState,
+        showIpfsModalOpen: false,
       };
 
     // alert methods

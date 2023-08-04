@@ -3,13 +3,22 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ethErrors, serializeError } from 'eth-rpc-errors';
+import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { MILLISECOND } from '../../../shared/constants/time';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import PermissionPageContainer from '../../components/app/permission-page-container';
-import { Icon, IconName, IconSize } from '../../components/component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+} from '../../components/component-library';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header/snap-authorship-header';
+///: END:ONLY_INCLUDE_IN
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -268,30 +277,57 @@ export default class PermissionConnect extends Component {
   }
 
   renderTopBar() {
-    const { redirecting } = this.state;
+    const {
+      redirecting,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      targetSubjectMetadata,
+      ///: END:ONLY_INCLUDE_IN
+    } = this.state;
     const { page, isRequestingAccounts, totalPages } = this.props;
     const { t } = this.context;
     return redirecting ? null : (
-      <div className="permissions-connect__top-bar">
-        {page === '2' && isRequestingAccounts ? (
-          <div
-            className="permissions-connect__back"
-            onClick={() => this.goBack()}
-          >
-            <Icon
-              name={IconName.ArrowLeft}
-              marginInlineEnd={1}
-              size={IconSize.Xs}
+      <Box
+        style={{
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          marginBottom:
+            targetSubjectMetadata.subjectType === SubjectType.Snap && '14px',
+          boxShadow:
+            targetSubjectMetadata.subjectType === SubjectType.Snap &&
+            'var(--shadow-size-lg) var(--color-shadow-default)',
+          ///: END:ONLY_INCLUDE_IN
+        }}
+      >
+        <div className="permissions-connect__top-bar">
+          {page === '2' && isRequestingAccounts ? (
+            <div
+              className="permissions-connect__back"
+              onClick={() => this.goBack()}
+            >
+              <Icon
+                name={IconName.ArrowLeft}
+                marginInlineEnd={1}
+                size={IconSize.Xs}
+              />
+              {t('back')}
+            </div>
+          ) : null}
+          {isRequestingAccounts ? (
+            <div className="permissions-connect__page-count">
+              {t('xOfY', [page, totalPages])}
+            </div>
+          ) : null}
+        </div>
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          targetSubjectMetadata.subjectType === SubjectType.Snap && (
+            <SnapAuthorshipHeader
+              snapId={targetSubjectMetadata.origin}
+              boxShadow="none"
             />
-            {t('back')}
-          </div>
-        ) : null}
-        {isRequestingAccounts ? (
-          <div className="permissions-connect__page-count">
-            {t('xOfY', [page, totalPages])}
-          </div>
-        ) : null}
-      </div>
+          )
+          ///: END:ONLY_INCLUDE_IN
+        }
+      </Box>
     );
   }
 

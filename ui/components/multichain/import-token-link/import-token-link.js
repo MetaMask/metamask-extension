@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import Box from '../../ui/box/box';
-import { ButtonLink, IconName } from '../../component-library';
+import { ButtonLink, IconName, Box } from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -27,6 +26,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
   const isTokenDetectionInactiveOnMainnet = useSelector(
@@ -69,7 +69,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
           size={Size.MD}
           startIconName={IconName.Refresh}
           data-testid="refresh-list-button"
-          onClick={() => detectNewTokens()}
+          onClick={() => dispatch(detectNewTokens())}
         >
           {t('refreshList')}
         </ButtonLink>

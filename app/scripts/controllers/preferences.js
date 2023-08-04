@@ -41,6 +41,9 @@ export default class PreferencesController {
       useNftDetection: false,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled: false,
+      ///: END:ONLY_INCLUDE_IN
       advancedGasFee: null,
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -64,6 +67,7 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      useAddressBarEnsResolution: true,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
@@ -184,6 +188,19 @@ export default class PreferencesController {
       openSeaEnabled,
     });
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * Setter for the `securityAlertsEnabled` property
+   *
+   * @param {boolean} securityAlertsEnabled - Whether or not the user prefers to use the security alerts.
+   */
+  setSecurityAlertsEnabled(securityAlertsEnabled) {
+    this.store.updateState({
+      securityAlertsEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   /**
    * Setter for the `advancedGasFee` property
@@ -465,6 +482,15 @@ export default class PreferencesController {
   }
 
   /**
+   * A setter for the `useAddressBarEnsResolution` property
+   *
+   * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
+   */
+  async setUseAddressBarEnsResolution(useAddressBarEnsResolution) {
+    this.store.updateState({ useAddressBarEnsResolution });
+  }
+
+  /**
    * A setter for the `ledgerTransportType` property.
    *
    * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
@@ -526,7 +552,8 @@ export default class PreferencesController {
   async updateSnapRegistry() {
     let snapRegistry;
     try {
-      snapRegistry = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
+      snapRegistry = await response.json();
     } catch (error) {
       console.error(`Failed to fetch registry: `, error);
       snapRegistry = {};

@@ -291,13 +291,12 @@ describe('MetaMask', function () {
 
     it('transitions to the confirm screen', async function () {
       // Continue to next screen
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Next', tag: 'button' });
-      await driver.delay(largeDelayMs);
     });
 
     it('displays the token transfer data', async function () {
-      await driver.delay(largeDelayMs);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Hex', tag: 'button' });
       await driver.delay(regularDelayMs);
 
@@ -340,12 +339,12 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1 TST',
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
@@ -371,10 +370,12 @@ describe('MetaMask', function () {
 
       await driver.findElements('.transaction-list__pending-transactions');
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item__primary-currency');
+      await driver.clickElement(
+        '[data-testid="transaction-list-item-primary-currency"]',
+      );
       await driver.delay(regularDelayMs);
 
       const transactionAmounts = await driver.findElements(
@@ -416,12 +417,12 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
 
       await driver.waitForSelector({
-        css: '.list-item__heading',
+        css: '[data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
     });
@@ -463,25 +464,25 @@ describe('MetaMask', function () {
       });
 
       await driver.switchToWindow(extension);
-      await driver.delay(regularDelayMs);
+      await driver.delay(veryLargeDelayMs);
 
       await driver.wait(async () => {
         const pendingTxes = await driver.findElements(
-          '.transaction-list__pending-transactions .transaction-list-item',
+          '.transaction-list__pending-transactions .activity-list-item',
         );
         return pendingTxes.length === 1;
       }, 10000);
 
       await driver.waitForSelector({
-        css: '.transaction-list-item__primary-currency',
+        css: '[data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
-      await driver.clickElement('.transaction-list-item');
+      await driver.clickElement('.activity-list-item');
       await driver.delay(regularDelayMs);
     });
 
     it('submits the transaction', async function () {
-      await driver.delay(largeDelayMs * 2);
+      await driver.waitForElementNotPresent('.loading-overlay');
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
       await driver.delay(largeDelayMs * 2);
     });
@@ -490,12 +491,12 @@ describe('MetaMask', function () {
       await driver.waitForSelector({
         // Select the heading of the first transaction list item in the
         // completed transaction list with text matching Send TST
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .list-item__heading',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="activity-list-item-action"]',
         text: 'Send TST',
       });
 
       await driver.waitForSelector({
-        css: '.transaction-list__completed-transactions .transaction-list-item:first-child .transaction-list-item__primary-currency',
+        css: '.transaction-list__completed-transactions .activity-list-item [data-testid="transaction-list-item-primary-currency"]',
         text: '-1.5 TST',
       });
     });

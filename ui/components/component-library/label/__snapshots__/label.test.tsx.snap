@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`label should render text inside the label 1`] = `
+<div>
+  <label
+    class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+  >
+    label
+  </label>
+</div>
+`;

@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:16.20-browsers
+      - image: cimg/node:18.17-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -101,6 +101,9 @@ workflows:
               build-type: [main, beta, flask, mmi, desktop]
           requires:
             - prep-deps
+      - prep-build-mmi:
+          requires:
+            - prep-deps
       - prep-build:
           requires:
             - prep-deps
@@ -142,6 +145,9 @@ workflows:
           requires:
             - prep-build-test
       - test-e2e-firefox:
+          requires:
+            - prep-build-test
+      - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
       - test-e2e-chrome-snaps:
@@ -186,6 +192,9 @@ workflows:
               ignore: master
           requires:
             - prep-build-desktop
+      - validate-source-maps-mmi:
+          requires:
+            - prep-build-mmi
       - validate-source-maps-flask:
           requires:
             - prep-build-flask
@@ -222,6 +231,7 @@ workflows:
             - validate-source-maps-beta
             - validate-source-maps-desktop
             - validate-source-maps-flask
+            - validate-source-maps-mmi
             - test-mozilla-lint
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
@@ -245,6 +255,7 @@ workflows:
             - prep-build
             - trigger-beta-build
             - prep-build-desktop
+            - prep-build-mmi
             - prep-build-flask
             - prep-build-storybook
             - prep-build-ts-migration-dashboard
@@ -261,6 +272,7 @@ workflows:
             - prep-deps
             - prep-build
             - prep-build-desktop
+            - prep-build-mmi
             - prep-build-flask
             - all-tests-pass
       - job-publish-storybook:
@@ -342,29 +354,8 @@ jobs:
             - dependency-cache-v1-
       - gh/install
       - run:
-          name: Set IS_DRAFT environment variable
-          command: |
-            PR_NUMBER="${CIRCLE_PULL_REQUEST##*/}"
-            if [ -n "$PR_NUMBER" ]
-            then
-              echo "IS_DRAFT=$(gh pr view --json isDraft --jq '.isDraft' "$PR_NUMBER")" >> "$BASH_ENV"
-              source "$BASH_ENV"
-            else
-              echo "Not a PR; skipping"
-            fi
-      - run:
-          name: Setup registry config for using package previews on draft PRs
-          command: |
-            if [[ $IS_DRAFT == 'true' ]]
-            then
-              printf '%s\n\n%s' '@metamask:registry=https://npm.pkg.github.com' "//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGE_READ_TOKEN}" > .npmrc
-            else
-              echo "Not draft; skipping GitHub registry setup"
-            fi
-      - run:
-          name: Install deps
-          command: |
-            .circleci/scripts/deps-install.sh
+          name: Install dependencies
+          command: .circleci/scripts/install-dependencies.sh
       - save_cache:
           key: dependency-cache-v1-{{ checksum "yarn.lock" }}
           paths:
@@ -474,6 +465,49 @@ jobs:
           paths:
             - dist-desktop
             - builds-desktop
+
+  prep-build-mmi:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - when:
+          condition:
+            not:
+              matches:
+                pattern: /^master$/
+                value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:dist
+                command: yarn build --build-type mmi dist
+      - when:
+          condition:
+            matches:
+              pattern: /^master$/
+              value: << pipeline.git.branch >>
+          steps:
+            - run:
+                name: build:prod
+                command: yarn build --build-type mmi prod
+      - run:
+          name: build:debug
+          command: find dist/ -type f -exec md5sum {} \; | sort -k 2
+      - run:
+          name: Move mmi build to 'dist-mmi' to avoid conflict with production build
+          command: mv ./dist ./dist-mmi
+      - run:
+          name: Move mmi zips to 'builds-mmi' to avoid conflict with production build
+          command: mv ./builds ./builds-mmi
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-mmi
+            - builds-mmi
+      - store_artifacts:
+          path: builds-mmi
+          destination: builds-mmi
 
   prep-build-flask:
     executor: node-browsers-medium-plus
@@ -660,6 +694,9 @@ jobs:
       - run:
           name: lockfile-lint
           command: yarn lint:lockfile
+      - run:
+          name: check yarn resolutions
+          command: yarn --check-resolutions
 
   test-lint-changelog:
     executor: node-browsers
@@ -695,7 +732,7 @@ jobs:
           at: .
       - run:
           name: yarn audit
-          command: .circleci/scripts/yarn-audit.sh
+          command: yarn audit
 
   test-deps-depcheck:
     executor: node-browsers
@@ -771,6 +808,43 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+
+  test-e2e-chrome-rpc:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: Re-Install Chrome
+          command: ./.circleci/scripts/chrome-install.sh
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome:rpc
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:rpc --retries 2
+            fi
+          no_output_timeout: 20m
+      - run:
+          name: Merge JUnit report
+          command: |
+            if [ "$(ls -A test/test-results/e2e)" ]; then
+              yarn test:e2e:report
+            fi
+          when: always
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e.xml
 
   test-e2e-firefox-snaps:
     executor: node-browsers
@@ -1187,6 +1261,22 @@ jobs:
       - run:
           name: Move desktop zips to builds
           command: mv ./builds-desktop ./builds
+      - run:
+          name: Validate source maps
+          command: yarn validate-source-maps
+
+  validate-source-maps-mmi:
+    executor: node-browsers
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move mmi build to dist
+          command: mv ./dist-mmi ./dist
+      - run:
+          name: Move mmi zips to builds
+          command: mv ./builds-mmi ./builds
       - run:
           name: Validate source maps
           command: yarn validate-source-maps

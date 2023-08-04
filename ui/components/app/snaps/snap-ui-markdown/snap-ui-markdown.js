@@ -2,21 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import {
-  TypographyVariant,
-  OVERFLOW_WRAP,
+  TextVariant,
+  OverflowWrap,
 } from '../../../../helpers/constants/design-system';
-import Typography from '../../../ui/typography/typography';
+import { Text } from '../../../component-library';
 
 const Paragraph = (props) => (
-  <Typography
+  <Text
     {...props}
-    variant={TypographyVariant.H6}
+    variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
-    overflowWrap={OVERFLOW_WRAP.BREAK_WORD}
+    overflowWrap={OverflowWrap.BreakWord}
   />
 );
 
-export const SnapUIMarkdown = ({ children }) => {
+export const SnapUIMarkdown = ({ children, markdown }) => {
+  if (markdown === false) {
+    return <Paragraph>{children}</Paragraph>;
+  }
+
   return (
     <ReactMarkdown
       allowedElements={['p', 'strong', 'em']}
@@ -29,4 +33,5 @@ export const SnapUIMarkdown = ({ children }) => {
 
 SnapUIMarkdown.propTypes = {
   children: PropTypes.string,
+  markdown: PropTypes.bool,
 };

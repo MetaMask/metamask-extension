@@ -6,12 +6,12 @@ exports[`ListWithSearch renders the component with initial props 1`] = `
   tabindex="0"
 >
   <span
-    class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-inherit"
+    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
     style="mask-image: url('./images/icons/search.svg');"
   />
   <input
     autocomplete="off"
-    class="box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md box--padding-right-4 box--padding-left-2 box--flex-direction-row box--color-text-default box--background-color-transparent box--border-style-none"
+    class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
     focused="true"
     id="list-with-search__text-search"
     placeholder="Enter token name or paste address"

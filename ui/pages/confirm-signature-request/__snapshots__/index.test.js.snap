@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Signature Request Component render should match snapshot 1`] = `
+exports[`Confirm Signature Request Component render should match snapshot 1`] = `
 <div>
   <div
     class="signature-request"
@@ -142,12 +142,12 @@ exports[`Signature Request Component render should match snapshot 1`] = `
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               Goerli test network
             </h6>
             <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
             >
               Account 1
             </h6>
@@ -157,13 +157,13 @@ exports[`Signature Request Component render should match snapshot 1`] = `
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             9.107408
              
@@ -178,56 +178,48 @@ exports[`Signature Request Component render should match snapshot 1`] = `
         class="signature-request__origin"
       >
         <div
-          class="site-origin"
+          class="box mm-tag-url box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-pill box--border-color-border-default box--border-width-1 box--border-style-solid"
         >
           <div
-            class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
-            <div
-              class="chip__left-icon"
-            >
-              <div
-                class=""
-              >
-                <span
-                  class="icon-with-fallback__fallback"
-                >
-                  M
-                </span>
-              </div>
-            </div>
             <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
-            >
-              https://metamask.github.io
-            </span>
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/global.svg');"
+            />
           </div>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-alternative"
+          >
+            https://metamask.github.io
+          </p>
         </div>
       </div>
-      <h3
-        class="box mm-text signature-request__content__title mm-text--heading-md box--margin-top-4 box--flex-direction-row box--color-text-default"
+      <h2
+        class="mm-box mm-text signature-request__content__title mm-text--heading-lg mm-box--margin-top-4 mm-box--color-text-default"
       >
         Signature request
-      </h3>
+      </h2>
       <h6
-        align="center"
-        class="box mm-text request-signature__content__subtitle mm-text--body-sm box--margin-12 box--margin-top-3 box--flex-direction-row box--color-text-alternative"
+        class="mm-box mm-text request-signature__content__subtitle mm-text--body-sm mm-text--text-align-center mm-box--margin-top-4 mm-box--margin-right-12 mm-box--margin-left-12 mm-box--color-text-alternative"
       >
         Only sign this message if you fully understand the content and trust the requesting site.
       </h6>
       <div>
-        <a
-          class="button btn-link signature-request-content__verify-contract-details"
+        <button
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="verify-contract-details"
-          role="button"
-          tabindex="0"
         >
-          <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-primary-default"
+          <span
+            class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
           >
-            Verify third-party details
-          </h6>
-        </a>
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-primary-default"
+            >
+              Verify third-party details
+            </h6>
+          </span>
+        </button>
       </div>
     </div>
     <div
@@ -237,86 +229,86 @@ exports[`Signature Request Component render should match snapshot 1`] = `
         class="box signature-request-message__root box--margin-2 box--padding-top-3 box--padding-right-3 box--padding-bottom-3 box--flex-direction-row box--background-color-background-default box--rounded-xl box--border-color-border-muted box--border-style-solid box--border-width-1"
       >
         <p
-          class="box mm-text mm-text--body-md mm-text--font-weight-bold box--margin-left-4 box--flex-direction-row box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
         >
           Mail
         </p>
-        <div
-          class="box signature-request-data__node box--flex-direction-row"
+        <ul
+          class="mm-box signature-request-data__node"
         >
-          <div
-            class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
           >
-            <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
             >
               Contents
               :
                
-            </span>
-            <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+            </div>
+            <div
+              class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
             >
               Hello, Bob!
-            </span>
-          </div>
-          <div
-            class="box signature-request-data__node box--padding-left-2 box--flex-direction-row"
+            </div>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
           >
-            <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
             >
               From
               :
                
-            </span>
-            <div
-              class="box signature-request-data__node box--flex-direction-row"
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
             >
-              <div
-                class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
               >
-                <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                 >
                   Name
                   :
                    
-                </span>
-                <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                </div>
+                <div
+                  class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                 >
                   Cow
-                </span>
-              </div>
-              <div
-                class="box signature-request-data__node box--padding-left-2 box--flex-direction-row"
+                </div>
+              </li>
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
               >
-                <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
                 >
                   Wallets
                   :
                    
-                </span>
-                <div
-                  class="box signature-request-data__node box--flex-direction-row"
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
                 >
-                  <div
-                    class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                   >
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                     >
                       0
                       :
                        
-                    </span>
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                     >
-                      <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
                       >
                         <div
                           class="tx-insight tx-insight-component tx-insight-component-address"
@@ -375,24 +367,24 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                             0xCD2...D826
                           </div>
                         </div>
-                      </h6>
-                    </span>
-                  </div>
-                  <div
-                    class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                      </div>
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                   >
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                     >
                       1
                       :
                        
-                    </span>
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                     >
-                      <h6
-                        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                      <div
+                        class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
                       >
                         <div
                           class="tx-insight tx-insight-component tx-insight-component-address"
@@ -451,83 +443,83 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                             0xDea...beeF
                           </div>
                         </div>
-                      </h6>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="box signature-request-data__node box--padding-left-2 box--flex-direction-row"
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li
+            class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
           >
-            <span
-              class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+            <div
+              class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
             >
               To
               :
                
-            </span>
-            <div
-              class="box signature-request-data__node box--flex-direction-row"
+            </div>
+            <ul
+              class="mm-box signature-request-data__node"
             >
-              <div
-                class="box signature-request-data__node box--padding-left-2 box--flex-direction-row"
+              <li
+                class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
               >
-                <span
-                  class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                <div
+                  class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
                 >
                   0
                   :
                    
-                </span>
-                <div
-                  class="box signature-request-data__node box--flex-direction-row"
+                </div>
+                <ul
+                  class="mm-box signature-request-data__node"
                 >
-                  <div
-                    class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                   >
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                     >
                       Name
                       :
                        
-                    </span>
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                    </div>
+                    <div
+                      class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                     >
                       Bob
-                    </span>
-                  </div>
-                  <div
-                    class="box signature-request-data__node box--padding-left-2 box--flex-direction-row"
+                    </div>
+                  </li>
+                  <li
+                    class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2"
                   >
-                    <span
-                      class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-bold typography--style-normal typography--color-text-default"
+                    <div
+                      class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--margin-left-4 mm-box--color-text-default"
                     >
                       Wallets
                       :
                        
-                    </span>
-                    <div
-                      class="box signature-request-data__node box--flex-direction-row"
+                    </div>
+                    <ul
+                      class="mm-box signature-request-data__node"
                     >
-                      <div
-                        class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                       >
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                         >
                           0
                           :
                            
-                        </span>
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                         >
-                          <h6
-                            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"
@@ -586,24 +578,24 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 0xbBb...BBbB
                               </div>
                             </div>
-                          </h6>
-                        </span>
-                      </div>
-                      <div
-                        class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                       >
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                         >
                           1
                           :
                            
-                        </span>
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                         >
-                          <h6
-                            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"
@@ -662,24 +654,24 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 0xB0B...Ea57
                               </div>
                             </div>
-                          </h6>
-                        </span>
-                      </div>
-                      <div
-                        class="box signature-request-data__node box--padding-left-2 box--display-flex box--flex-direction-row"
+                          </div>
+                        </div>
+                      </li>
+                      <li
+                        class="mm-box signature-request-data__node mm-box--margin-bottom-2 mm-box--padding-left-2 mm-box--display-flex"
                       >
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        <div
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-normal mm-box--margin-left-4 mm-box--color-text-default"
                         >
                           2
                           :
                            
-                        </span>
-                        <span
-                          class="box box--margin-top-1 box--margin-bottom-1 box--margin-left-4 box--flex-direction-row typography signature-request-data__node__value typography--p typography--weight-normal typography--style-normal typography--color-text-default"
+                        </div>
+                        <div
+                          class="mm-box mm-text signature-request-data__node__value mm-text--body-md mm-box--margin-left-4 mm-box--color-text-default"
                         >
-                          <h6
-                            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography signature-request-data__node__value__address typography--h7 typography--weight-normal typography--style-normal typography--color-info-default"
+                          <div
+                            class="mm-box mm-text signature-request-data__node__value__address mm-text--body-sm mm-box--color-info-default"
                           >
                             <div
                               class="tx-insight tx-insight-component tx-insight-component-address"
@@ -738,16 +730,16 @@ exports[`Signature Request Component render should match snapshot 1`] = `
                                 0xB0B...0000
                               </div>
                             </div>
-                          </h6>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
     <div

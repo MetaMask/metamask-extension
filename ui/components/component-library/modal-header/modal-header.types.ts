@@ -1,8 +1,8 @@
 import React from 'react';
 import type { ButtonIconProps } from '../button-icon/button-icon.types';
-import type { HeaderBaseProps } from '../header-base';
+import type { HeaderBaseStyleUtilityProps } from '../header-base';
 
-export interface ModalHeaderProps extends HeaderBaseProps {
+export interface ModalHeaderProps extends HeaderBaseStyleUtilityProps {
   /**
    * The contents within the ModalHeader positioned middle (popular for title use case)
    */
@@ -19,7 +19,7 @@ export interface ModalHeaderProps extends HeaderBaseProps {
   /**
    * The props to pass to the back `ButtonIcon`
    */
-  backButtonProps?: ButtonIconProps;
+  backButtonProps?: ButtonIconProps<'button'>;
   /**
    * The start (left) content area of ModalHeader
    * Default to have the back `ButtonIcon` when `onBack` is passed, but passing a  `startAccessory` will override this
@@ -33,7 +33,7 @@ export interface ModalHeaderProps extends HeaderBaseProps {
   /**
    * The props to pass to the close `ButtonIcon`
    */
-  closeButtonProps?: ButtonIconProps;
+  closeButtonProps?: ButtonIconProps<'button'>;
   /**
    * The end (right) content area of ModalHeader
    * Default to have the close `ButtonIcon` when `onClose` is passed, but passing a  `endAccessory` will override this

@@ -22,16 +22,17 @@ import {
 
 import Box from '../../components/ui/box';
 import {
-  Text,
   Label,
   BannerAlert,
   Button,
   TextField,
   HelpText,
+  HelpTextSeverity,
   BUTTON_VARIANT,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
   BUTTON_SIZES,
+  Text,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
@@ -143,7 +144,9 @@ const RevealSeedPage = () => {
           error={error}
           width={BLOCK_SIZES.FULL}
         />
-        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </form>
     );
   };

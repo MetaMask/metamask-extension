@@ -110,18 +110,26 @@
       "showIncomingTransactions": true
     },
     "networkId": "5",
-    "networkStatus": "available",
     "providerConfig": {
       "type": "rpc",
       "chainId": "0x5",
       "ticker": "ETH",
-      "id": "testNetworkConfigurationId"
+      "id": "chain5"
     },
     "networkConfigurations": {
       "testNetworkConfigurationId": {
         "rpcUrl": "https://testrpc.com",
         "chainId": "0x1",
-        "nickname": "Custom Mainnet RPC"
+        "nickname": "Custom Mainnet RPC",
+        "type": "rpc",
+        "id": "testNetworkConfigurationId"
+      },
+      "chain5": {
+        "type": "rpc",
+        "chainId": "0x5",
+        "ticker": "ETH",
+        "nickname": "Chain 5",
+        "id": "chain5"
       }
     },
     "keyrings": [
@@ -163,9 +171,11 @@
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
       }
     },
-    "networkDetails": {
-      "EIPS": {
-        "1559": true
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": { "1559": true },
+        "status": "available"
       }
     },
     "frequentRpcListDetail": [],
