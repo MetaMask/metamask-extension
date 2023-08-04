@@ -13,7 +13,7 @@ import {
   Text,
   Button,
   ButtonLink,
-  BUTTON_LINK_SIZES,
+  ButtonLinkSize,
   TextFieldSearch,
   IconName,
 } from '..';
@@ -72,7 +72,7 @@ export default {
 const LoremIpsum = (props) => (
   <Text marginBottom={8} {...props}>
     Lorem ipsum dolor sit amet, conse{' '}
-    <ButtonLink size={BUTTON_LINK_SIZES.INHERIT}>
+    <ButtonLink size={ButtonLinkSize.Inherit}>
       random focusable button
     </ButtonLink>{' '}
     ctetur adipiscing elit. Phasellus posuere nunc enim, quis efficitur dolor
@@ -127,7 +127,7 @@ const Template: ComponentStory<typeof Modal> = (args) => {
               showLoremIpsum ? IconName.Arrow2Up : IconName.Arrow2Down
             }
             onClick={handleMoreContent}
-            size={BUTTON_LINK_SIZES.INHERIT}
+            size={ButtonLinkSize.Inherit}
             marginBottom={2}
           >
             {showMoreModalContent ? 'Hide' : 'Show more'}
