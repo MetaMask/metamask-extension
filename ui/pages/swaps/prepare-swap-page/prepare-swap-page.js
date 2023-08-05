@@ -118,6 +118,7 @@ import {
   IconSize,
   TextField,
   ButtonLink,
+  ButtonLinkSize,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -1054,7 +1055,7 @@ export default function PrepareSwapPage({
                 </Text>
                 {!verificationClicked && (
                   <ButtonLink
-                    size={Size.INHERIT}
+                    size={ButtonLinkSize.Inherit}
                     textProps={{
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,
