@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
-  "deleteNetworkDescription": {
-    "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
   "deposit": {
     "message": "Depositar"
   },
@@ -3248,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
-  },
-  "source": {
-    "message": "Fuente"
   },
   "speedUp": {
     "message": "Acelerar"

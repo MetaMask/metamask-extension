@@ -426,7 +426,7 @@ const importWrongSRPOnboardingFlow = async (driver, seedPhrase) => {
   );
 
   const warningText = 'Invalid Secret Recovery Phrase';
-  const warnings = await driver.findElements('.actionable-message__message');
+  const warnings = await driver.findElements('.import-srp__banner-alert-text');
   const warning = warnings[1];
 
   assert.equal(await warning.getText(), warningText);
