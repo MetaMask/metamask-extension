@@ -7,7 +7,6 @@ import {
   DISPLAY,
   AlignItems,
   SEVERITIES,
-  Size,
   TextVariant,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
@@ -15,6 +14,7 @@ import { GasRecommendations } from '../../../../shared/constants/gas';
 import {
   BannerAlert,
   ButtonLink,
+  ButtonLinkSize,
   Text,
 } from '../../../components/component-library';
 
@@ -73,7 +73,7 @@ export default function ViewQuotePriceDifference(props) {
           </Text>
           {!acknowledged && (
             <ButtonLink
-              size={Size.INHERIT}
+              size={ButtonLinkSize.Inherit}
               textProps={{
                 variant: TextVariant.bodyMd,
                 alignItems: AlignItems.flexStart,

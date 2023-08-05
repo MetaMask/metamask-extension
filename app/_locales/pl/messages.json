@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Usunąć sieć?"
   },
-  "deleteNetworkDescription": {
-    "message": "Czy na pewno chcesz usunąć tę sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
