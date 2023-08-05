@@ -25,7 +25,7 @@ exports[`NetworkListItem renders properly 1`] = `
     </div>
     <button
       aria-label="[deleteNetwork]"
-      class="box mm-button-icon mm-button-icon--size-sm multichain-network-list-item__delete box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-error-default box--background-color-transparent box--rounded-lg"
+      class="mm-box mm-button-icon mm-button-icon--size-sm multichain-network-list-item__delete mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-error-default mm-box--background-color-transparent mm-box--rounded-lg"
     >
       <span
         class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

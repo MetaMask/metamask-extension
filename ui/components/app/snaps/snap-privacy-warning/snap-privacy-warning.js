@@ -20,10 +20,10 @@ import {
 import {
   AvatarIcon,
   Button,
-  BUTTON_LINK_SIZES,
-  BUTTON_PRIMARY_SIZES,
+  BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonLink,
+  ButtonLinkSize,
   IconName,
   Text,
   Box,

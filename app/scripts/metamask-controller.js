@@ -2230,6 +2230,9 @@ export default class MetamaskController extends EventEmitter {
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
         preferencesController,
       ),
+      setUse4ByteResolution: preferencesController.setUse4ByteResolution.bind(
+        preferencesController,
+      ),
       setUseCurrencyRateCheck:
         preferencesController.setUseCurrencyRateCheck.bind(
           preferencesController,

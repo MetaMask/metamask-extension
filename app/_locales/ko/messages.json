@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "네트워크를 삭제할까요?"
   },
-  "deleteNetworkDescription": {
-    "message": "이 네트워크를 삭제할까요?"
-  },
   "deposit": {
     "message": "예치"
   },
@@ -3248,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "죄송합니다! 문제가 생겼습니다."
-  },
-  "source": {
-    "message": "소스"
   },
   "speedUp": {
     "message": "가속화"

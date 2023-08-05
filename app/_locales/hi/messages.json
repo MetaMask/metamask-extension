@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
   },
-  "deleteNetworkDescription": {
-    "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
-  },
   "deposit": {
     "message": "जमा करें"
   },
@@ -3248,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
-  },
-  "source": {
-    "message": "स्रोत"
   },
   "speedUp": {
     "message": "जल्दी करें"

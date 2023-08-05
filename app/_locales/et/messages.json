@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Võrk kustutada?"
   },
-  "deleteNetworkDescription": {
-    "message": "Olete kindel, et soovite selle võrgu kustutada?"
-  },
   "details": {
     "message": "Üksikasjad"
   },

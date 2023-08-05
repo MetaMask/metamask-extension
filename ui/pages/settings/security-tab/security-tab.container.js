@@ -12,6 +12,7 @@ import {
   setUseAddressBarEnsResolution,
   setOpenSeaEnabled,
   setUseNftDetection,
+  setUse4ByteResolution,
 } from '../../../store/actions';
 import SecurityTab from './security-tab.component';
 
@@ -31,6 +32,7 @@ const mapStateToProps = (state) => {
     useAddressBarEnsResolution,
     openSeaEnabled,
     useNftDetection,
+    use4ByteResolution,
   } = metamask;
 
   return {
@@ -45,6 +47,7 @@ const mapStateToProps = (state) => {
     useAddressBarEnsResolution,
     openSeaEnabled,
     useNftDetection,
+    use4ByteResolution,
   };
 };
 
@@ -69,6 +72,9 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseAddressBarEnsResolution(value)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
+    setUse4ByteResolution: (value) => {
+      return dispatch(setUse4ByteResolution(value));
+    },
   };
 };
 

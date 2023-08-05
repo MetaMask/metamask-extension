@@ -207,7 +207,7 @@ exports[`App Header should match snapshot 1`] = `
     >
       <div>
         <button
-          class="box mm-picker-network multichain-app-header__contents__network-picker box--margin-2 box--padding-right-4 box--padding-left-2 box--display-none box--sm:display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-alternative box--rounded-pill"
+          class="mm-box mm-picker-network multichain-app-header__contents__network-picker mm-box--margin-2 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-none mm-box--sm:display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
           data-testid="network-display"
           disabled=""
         >
@@ -228,7 +228,7 @@ exports[`App Header should match snapshot 1`] = `
         </button>
       </div>
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md-medium mm-text--ellipsis mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="account-menu-icon"
       >
         <span
@@ -300,7 +300,7 @@ exports[`App Header should match snapshot 1`] = `
           >
             <button
               aria-label="Account options"
-              class="box mm-button-icon mm-button-icon--size-sm box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
               data-testid="account-options-menu-button"
             >
               <span
