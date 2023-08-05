@@ -146,8 +146,8 @@ describe('MetaMaskController', function () {
         metamaskController.addNewAccount(1),
       ]);
       assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
+        addNewAccountResult1.accounts,
+        addNewAccountResult2.accounts,
       );
     });
 
@@ -156,8 +156,8 @@ describe('MetaMaskController', function () {
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(1);
       assert.deepEqual(
-        Object.keys(addNewAccountResult1.identities),
-        Object.keys(addNewAccountResult2.identities),
+        addNewAccountResult1.accounts,
+        addNewAccountResult2.accounts,
       );
     });
 
@@ -165,6 +165,7 @@ describe('MetaMaskController', function () {
       await metamaskController.createNewVaultAndKeychain('test@123');
       const addNewAccountResult1 = await metamaskController.addNewAccount(1);
       const addNewAccountResult2 = await metamaskController.addNewAccount(2);
+      console.log(addNewAccountResult1, addNewAccountResult2);
       assert.notDeepEqual(addNewAccountResult1, addNewAccountResult2);
     });
   });

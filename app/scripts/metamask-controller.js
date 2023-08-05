@@ -1106,8 +1106,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    console.log('init accounts controller state', initState.AccountsController);
-
     this.accountsController = new AccountsController({
       messenger: accountsControllerMessenger,
       state: initState.AccountsController,
@@ -2398,6 +2396,9 @@ export default class MetamaskController extends EventEmitter {
       setSelectedInternalAccount:
         accountsController.setSelectedAccount.bind(accountsController),
 
+      setAccountName:
+        accountsController.setAccountName.bind(accountsController),
+
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
 
@@ -2909,9 +2910,7 @@ export default class MetamaskController extends EventEmitter {
         vault = await this.keyringController.createNewVaultAndKeychain(
           password,
         );
-        const addresses = await this.keyringController.getAccounts();
-        this.preferencesController.setAddresses(addresses);
-        this.selectFirstIdentity();
+        await this.accountsController.updateAccounts();
       }
 
       return vault;
@@ -2935,9 +2934,6 @@ export default class MetamaskController extends EventEmitter {
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       const { keyringController } = this;
-
-      // clear known identities
-      this.preferencesController.setAddresses([]);
 
       // clear permissions
       this.permissionController.clearState();
@@ -2988,10 +2984,18 @@ export default class MetamaskController extends EventEmitter {
         );
       }
 
+      await this.accountsController.updateAccounts();
+      const internalAccounts = this.accountsController.listAccounts();
+
       // remove extra zero balance account potentially created from seeking ahead
       if (accounts.length > 1 && lastBalance === '0x0') {
-        await this.removeAccount(accounts[accounts.length - 1]);
-        accounts = await keyringController.getAccounts();
+        await this.removeAccount(
+          internalAccounts.find(
+            (account) =>
+              account.address.toLowerCase() ===
+              accounts[accounts.length - 1].toLowerCase(),
+          ).id,
+        );
       }
 
       // This must be set as soon as possible to communicate to the
@@ -3151,10 +3155,20 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Sets the first address in the state to the selected address
    */
-  selectFirstIdentity() {
-    const { identities } = this.preferencesController.store.getState();
-    const [address] = Object.keys(identities);
-    this.preferencesController.setSelectedAddress(address);
+  selectFirstAccount() {
+    const [account] = this.accountsController.listAccounts();
+    this.accountsController.setSelectedAccount(account.id);
+  }
+
+  setAccountName(accountId, accountName) {
+    const accounts = this.accountsController.listAccounts();
+    if (accounts.some((account) => account.name === accountName)) {
+      throw new Error(
+        `An account with the name ${accountName} already exists.`,
+      );
+    }
+
+    this.accountsController.setAccountName(accountId, accountName);
   }
 
   /**
@@ -3418,10 +3432,10 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
-   * @param accountName
+   * @param accountCount
    * @returns {} keyState
    */
-  async addNewAccount(accountName) {
+  async addNewAccount(accountCount) {
     const isActionMetricsQueueE2ETest =
       this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
 
@@ -3436,19 +3450,24 @@ export default class MetamaskController extends EventEmitter {
       throw new Error('MetamaskController - No HD Key Tree found');
     }
     const { keyringController } = this;
-    await keyringController.addNewAccount(primaryKeyring);
-    await this.accountsController.updateAccounts();
-    let newAccount = this.accountsController.getSelectedAccount();
+    const currentAccounts = this.accountsController.listAccounts();
+    const numberOfHdKeyringAccounts = currentAccounts.filter(
+      (account) => account.metadata.keyring.type === KeyringType.hdKeyTree,
+    ).length;
 
-    if (accountName) {
-      console.log('setting new name', accountName);
-      this.accountsController.setAccountName(newAccount.id, accountName);
-      newAccount = this.accountsController.getSelectedAccount();
+    if (numberOfHdKeyringAccounts === accountCount) {
+      const keyState = await keyringController.addNewAccount(primaryKeyring);
+      await this.accountsController.updateAccounts();
+      const updatedAccounts = this.accountsController.listAccounts();
+      return {
+        ...keyState,
+        accounts: updatedAccounts,
+      };
     }
 
     return {
       ...keyringController.memStore.getState(),
-      account: newAccount,
+      accounts: currentAccounts,
     };
   }
 
@@ -4424,8 +4443,7 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.syncAddresses(addresses);
+    // Ensure account tracker controller know about all addresses
     this.accountTracker.syncWithAddresses(addresses);
   }
 

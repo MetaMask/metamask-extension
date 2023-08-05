@@ -161,7 +161,7 @@ export default class AccountsController extends BaseControllerV2<
     ///: END:ONLY_INCLUDE_IN(keyring-snaps)
 
     onKeyringStateChange(async (keyringState: KeyringControllerState) => {
-      console.log('keyring state changed', keyringState);
+      // console.log('keyring state changed', keyringState);
 
       // check if there are any new accounts added
       // TODO: change when accountAdded event is added to the keyring controller
@@ -187,13 +187,15 @@ export default class AccountsController extends BaseControllerV2<
 
           const newAccount = this.listAccounts().find(
             (account) =>
-              account.address.toLowerCase() === newAddress.toLowerCase(),
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              account.address.toLowerCase() === newAddress!.toLowerCase(),
           );
 
           console.log('new account in onKeyringStateChange', newAccount);
 
           // set the first new account as the selected account
-          this.setSelectedAccount(newAccount.id);
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          this.setSelectedAccount(newAccount!.id);
         } else if (
           updatedKeyringAddresses.length < previousAccounts.length &&
           !this.getAccount(this.state.internalAccounts.selectedAccount)
@@ -208,8 +210,8 @@ export default class AccountsController extends BaseControllerV2<
             .sort((accountA, accountB) => {
               // sort by lastSelected descending
               return (
-                accountB.metadata?.lastSelected -
-                accountA.metadata?.lastSelected
+                (accountB.metadata?.lastSelected ?? 0) -
+                (accountA.metadata?.lastSelected ?? 0)
               );
             })[0];
 
@@ -318,12 +320,10 @@ export default class AccountsController extends BaseControllerV2<
     const snapAccounts =
       (await (snapKeyring as SnapKeyring)?.listAccounts(false)) ?? [];
 
-    console.log('snap accounts', snapAccounts);
-
     for (const account of snapAccounts) {
       account.metadata = {
         snap: {
-          id: account?.metadata?.snap?.id,
+          id: account?.metadata?.snap?.id!,
           enabled: await this.#isSnapEnabled(
             account?.metadata?.snap?.id as string,
           ),
@@ -423,21 +423,6 @@ export default class AccountsController extends BaseControllerV2<
     return snap?.enabled && !snap?.blocked;
   }
   ///: END:ONLY_INCLUDE_IN(keyring-snaps)
-}
-
-export function identitesToAccountNames(
-  identities: Record<string, { address: string; name: string }>,
-): Record<string, string> {
-  if (!identities) {
-    return {};
-  }
-  return Object.values(identities).reduce((accounts, identity) => {
-    const accountId = uuid({
-      random: sha256FromString(identity.address).slice(0, 16),
-    });
-    accounts[accountId] = identity.name;
-    return accounts;
-  }, {} as Record<string, string>);
 }
 
 function keyringTypeToName(keyringType: string): string {
