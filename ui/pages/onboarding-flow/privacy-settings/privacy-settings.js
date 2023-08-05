@@ -321,6 +321,7 @@ export default function PrivacySettings() {
         </div>
         <Button
           variant={BUTTON_VARIANT.PRIMARY}
+          size={BUTTON_SIZES.LG}
           block
           onClick={handleSubmit}
         >
