@@ -61,6 +61,8 @@ export default class SecurityTab extends PureComponent {
     setShowIncomingTransactionsFeatureFlag: PropTypes.func.isRequired,
     setUsePhishDetect: PropTypes.func.isRequired,
     usePhishDetect: PropTypes.bool.isRequired,
+    setUse4ByteResolution: PropTypes.func.isRequired,
+    use4ByteResolution: PropTypes.bool.isRequired,
     useTokenDetection: PropTypes.bool.isRequired,
     setUseTokenDetection: PropTypes.func.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
@@ -254,6 +256,34 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
+  renderUse4ByteResolutionToggle() {
+    const { t } = this.context;
+    const { use4ByteResolution, setUse4ByteResolution } = this.props;
+    return (
+      <div ref={this.settingsRefs[3]} className="settings-page__content-row">
+        <div className="settings-page__content-item">
+          <span>{t('use4ByteResolution')}</span>
+          <div className="settings-page__content-description">
+            {t('use4ByteResolutionDescription')}
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div
+            className="settings-page__content-item-col"
+            data-testid="4byte-resolution-container"
+          >
+            <ToggleButton
+              value={use4ByteResolution}
+              onToggle={(value) => setUse4ByteResolution(!value)}
+              offLabel={t('off')}
+              onLabel={t('on')}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   renderMetaMetricsOptIn() {
     const { t } = this.context;
     const { participateInMetaMetrics, setParticipateInMetaMetrics } =
@@ -261,7 +291,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[3]}
+        ref={this.settingsRefs[4]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -294,7 +324,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
+        ref={this.settingsRefs[5]}
         className="settings-page__content-row"
         data-testid="advanced-setting-choose-your-network"
         display={Display.Flex}
@@ -384,7 +414,7 @@ export default class SecurityTab extends PureComponent {
     };
     return (
       <Box
-        ref={this.settingsRefs[5]}
+        ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="setting-ipfs-gateway"
         display={Display.Flex}
@@ -428,7 +458,7 @@ export default class SecurityTab extends PureComponent {
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.spaceBetween}
-          ref={this.settingsRefs[9]}
+          ref={this.settingsRefs[10]}
           marginTop={3}
           id="ens-domains"
         >
@@ -495,7 +525,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[6]}
+        ref={this.settingsRefs[7]}
         className="settings-page__content-row"
         data-testid="advanced-setting-gas-fee-estimation"
         display={Display.Flex}
@@ -548,7 +578,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[7]}
+        ref={this.settingsRefs[8]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -589,7 +619,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[8]}
+        ref={this.settingsRefs[9]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -653,7 +683,7 @@ export default class SecurityTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[10]}
+        ref={this.settingsRefs[11]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -705,7 +735,7 @@ export default class SecurityTab extends PureComponent {
     } = this.props;
     return (
       <Box
-        ref={this.settingsRefs[11]}
+        ref={this.settingsRefs[12]}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -770,12 +800,21 @@ export default class SecurityTab extends PureComponent {
           {this.context.t('privacy')}
         </span>
         <div>
-          <span className="settings-page__security-tab-sub-header">Alerts</span>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('alerts')}
+          </span>
         </div>
         <div className="settings-page__content-padded">
           {this.renderPhishingDetectionToggle()}
         </div>
-
+        <div>
+          <span className="settings-page__security-tab-sub-header">
+            {this.context.t('smartContracts')}
+          </span>
+        </div>
+        <div className="settings-page__content-padded">
+          {this.renderUse4ByteResolutionToggle()}
+        </div>
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('transactions')}
         </span>
