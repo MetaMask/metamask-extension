@@ -12,6 +12,7 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
+  BUTTON_SIZES,
   BUTTON_VARIANT,
   Box,
   Button,
@@ -21,7 +22,6 @@ import {
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -113,10 +113,7 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Text
-            variant={TextVariant.headingLg}
-            as="h2"
-          >
+          <Text variant={TextVariant.headingLg} as="h2">
             {t('advancedConfiguration')}
           </Text>
           <Text variant={TextVariant.headingSm} as="h4">
