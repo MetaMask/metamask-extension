@@ -18,7 +18,7 @@ export { Box } from './box';
 export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
-export { ButtonLink, BUTTON_LINK_SIZES } from './button-link';
+export { ButtonLink, ButtonLinkSize } from './button-link';
 export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export { ButtonSecondary, BUTTON_SECONDARY_SIZES } from './button-secondary';
 export { Checkbox } from './checkbox';
