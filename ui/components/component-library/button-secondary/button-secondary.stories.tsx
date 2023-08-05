@@ -1,10 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  AlignItems,
-  Display,
-  Size,
-} from '../../../helpers/constants/design-system';
+import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import { IconName, Box } from '..';
 import README from './README.mdx';
 import { ButtonSecondary, ButtonSecondarySize } from '.';
