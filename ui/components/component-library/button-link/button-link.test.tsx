@@ -1,10 +1,8 @@
 /* eslint-disable jest/require-top-level-describe */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { Size } from '../../../helpers/constants/design-system';
 import { IconName } from '..';
-import { ButtonLink } from './button-link';
-import { BUTTON_LINK_SIZES } from './button-link.constants';
+import { ButtonLink, ButtonLinkSize } from '.';
 
 describe('ButtonLink', () => {
   it('should render button element correctly', () => {
@@ -41,22 +39,28 @@ describe('ButtonLink', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <ButtonLink size={Size.SM} data-testid={Size.SM} />
-        <ButtonLink size={Size.MD} data-testid={Size.MD} />
-        <ButtonLink size={Size.LG} data-testid={Size.LG} />
+        <ButtonLink size={ButtonLinkSize.Sm} data-testid={ButtonLinkSize.Sm} />
+        <ButtonLink size={ButtonLinkSize.Md} data-testid={ButtonLinkSize.Md} />
+        <ButtonLink size={ButtonLinkSize.Lg} data-testid={ButtonLinkSize.Lg} />
       </>,
     );
 
-    expect(getByTestId(Size.SM)).toHaveClass(`mm-button-base--size-${Size.SM}`);
-    expect(getByTestId(Size.MD)).toHaveClass(`mm-button-base--size-${Size.MD}`);
-    expect(getByTestId(Size.LG)).toHaveClass(`mm-button-base--size-${Size.LG}`);
+    expect(getByTestId(ButtonLinkSize.Sm)).toHaveClass(
+      `mm-button-base--size-${ButtonLinkSize.Sm}`,
+    );
+    expect(getByTestId(ButtonLinkSize.Md)).toHaveClass(
+      `mm-button-base--size-${ButtonLinkSize.Md}`,
+    );
+    expect(getByTestId(ButtonLinkSize.Lg)).toHaveClass(
+      `mm-button-base--size-${ButtonLinkSize.Lg}`,
+    );
   });
 
   it('should render ButtonLink inherit size', () => {
     const { getByTestId } = render(
-      <ButtonLink size={BUTTON_LINK_SIZES.INHERIT} data-testid="inherit" />,
+      <ButtonLink size={ButtonLinkSize.Inherit} data-testid="inherit" />,
     );
-    // Different size classname compared to Size.SM, Size.MD, Size.LG
+    // Different size classname compared to ButtonLinkSize.Sm, ButtonLinkSize.Md, ButtonLinkSize.Lg
     expect(getByTestId('inherit')).toHaveClass(`mm-button-link--size-inherit`);
   });
 
