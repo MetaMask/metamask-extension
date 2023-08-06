@@ -18,6 +18,7 @@ import {
   Button,
   BUTTON_VARIANT,
   Box,
+  BUTTON_SIZES,
 } from '../../component-library';
 import EditGasDisplay from '../edit-gas-display';
 
@@ -210,6 +211,7 @@ export default function EditGasPopover({
           <Button
             block
             variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZES.LG}
             onClick={onSubmit}
             disabled={
               hasGasErrors || balanceError || !txParamsHaveBeenCustomized
