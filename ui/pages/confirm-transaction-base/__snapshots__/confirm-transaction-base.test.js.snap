@@ -492,26 +492,18 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         class="confirm-page-container-content__error-container"
       >
         <div
-          class="actionable-message actionable-message--danger actionable-message--warning actionable-message--with-icon"
+          class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger actionable-message--warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
         >
-          <svg
-            viewBox="0 0 10 10"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-              fill="var(--color-error-default)"
-            />
-          </svg>
-          
-          <div
-            class="actionable-message__message"
-          >
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-left typography--color-text-default"
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+            style="mask-image: url('./images/icons/danger.svg');"
+          />
+          <div>
+            <p
+              class="mm-box mm-text mm-text--h7 mm-text--text-align-left mm-box--color-text-default"
             >
               You do not have enough  in your account to pay for transaction fees on Goerli network. Deposit  from another account.
-            </h6>
+            </p>
           </div>
         </div>
       </div>
