@@ -492,7 +492,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
         class="confirm-page-container-content__error-container"
       >
         <div
-          class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger actionable-message--warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+          class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger confirm-page-container-content__banner-alert box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
         >
           <span
             class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"

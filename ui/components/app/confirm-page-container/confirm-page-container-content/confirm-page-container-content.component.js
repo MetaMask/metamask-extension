@@ -3,9 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  Button,
+  ///: END:ONLY_INCLUDE_IN
   BannerAlert,
   Text,
-  Button,
   BUTTON_VARIANT,
 } from '../../../component-library';
 import { PageContainerFooter } from '../../../ui/page-container';
@@ -268,7 +270,7 @@ export default class ConfirmPageContainerContent extends Component {
         {showInsuffienctFundsError && (
           <div className="confirm-page-container-content__error-container">
             <BannerAlert
-              className="actionable-message--warning"
+              className="confirm-page-container-content__banner-alert"
               severity={Severity.Danger}
             >
               {isBuyableChain ? (
