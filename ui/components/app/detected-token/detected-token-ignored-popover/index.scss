@@ -1,6 +1,11 @@
 .detected-token-ignored-popover {
   &__ignore-button {
     margin-inline-end: 8px;
+
+    &:hover{
+      background-color: var(--transparent);
+      color: var(--color-primary-default);
+    }
   }
 
   &__import-button {
