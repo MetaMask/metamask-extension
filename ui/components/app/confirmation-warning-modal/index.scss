@@ -23,5 +23,10 @@
   &__footer {
     width: 100%;
     height: 100px;
+
+    &__cancel-button:hover {
+      background-color: var(--transparent);
+      color: var(--color-primary-default);
+    }
   }
 }
