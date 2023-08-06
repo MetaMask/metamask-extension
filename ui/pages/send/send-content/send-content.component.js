@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component';
 import Dialog from '../../../components/ui/dialog';
-import ActionableMessage from '../../../components/ui/actionable-message';
+import { BannerAlert } from '../../../components/component-library';
+import { Severity } from '../../../helpers/constants/design-system';
 import {
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
@@ -103,15 +104,9 @@ export default class SendContent extends Component {
     const { t } = this.context;
     return (
       <div className="send__warning-container" data-testid="send-warning">
-        <ActionableMessage
-          type="danger"
-          useIcon
-          iconFillColor="var(--color-error-default)"
-          primaryActionV2={{
-            label: t('tooltipApproveButton'),
-            onClick: acknowledgeRecipientWarning,
-          }}
-          message={t('sendingToTokenContractWarning', [
+        <BannerAlert
+          severity={Severity.Danger}
+          description={t('sendingToTokenContractWarning', [
             <a
               key="contractWarningSupport"
               target="_blank"
@@ -122,7 +117,8 @@ export default class SendContent extends Component {
               {t('learnMoreUpperCase')}
             </a>,
           ])}
-          roundedButtons
+          actionButtonLabel={t('tooltipApproveButton')}
+          actionButtonOnClick={acknowledgeRecipientWarning}
         />
       </div>
     );
