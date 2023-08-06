@@ -58,33 +58,6 @@ const DetectedTokenIgnoredPopover = ({
   );
 
   return (
-    // <Popover
-    //   title={
-    //     partiallyIgnoreDetectedTokens
-    //       ? t('importSelectedTokens')
-    //       : t('areYouSure')
-    //   }
-    //   className={classNames('detected-token-ignored-popover', {
-    //     'detected-token-ignored-popover--import': partiallyIgnoreDetectedTokens,
-    //     'detected-token-ignored-popover--ignore':
-    //       !partiallyIgnoreDetectedTokens,
-    //   })}
-    //   footer={footer}
-    // >
-    //   <Text
-    //     variant={TextVariant.bodySm}
-    //     as="h6"
-    //     marginTop={0}
-    //     marginRight={5}
-    //     marginBottom={7}
-    //     marginLeft={5}
-    //   >
-    //     {partiallyIgnoreDetectedTokens
-    //       ? t('importSelectedTokensDescription')
-    //       : t('ignoreTokenWarning')}
-    //   </Text>
-    // </Popover>
-
     <Modal
       isOpen
       className={classNames('detected-token-ignored-popover', {
