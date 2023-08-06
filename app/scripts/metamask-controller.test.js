@@ -15,6 +15,8 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { v4 as uuid } from 'uuid';
+import { sha256FromString } from 'ethereumjs-util';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -125,6 +127,12 @@ const MAINNET_CHAIN_ID = '0x1';
 
 const firstTimeState = {
   config: {},
+  AccountsController: {
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  },
   NetworkController: {
     providerConfig: {
       type: NETWORK_TYPES.RPC,
@@ -353,7 +361,7 @@ describe('MetaMaskController', function () {
     });
 
     describe('submitPassword', function () {
-      it('removes any identities that do not correspond to known accounts.', async function () {
+      it('removes any account that do not correspond to known accounts.', async function () {
         const password = 'password';
         await metamaskController.createNewVaultAndKeychain(password);
 
@@ -361,23 +369,23 @@ describe('MetaMaskController', function () {
         metamaskController.preferencesController.addAddresses([fakeAddress]);
         await metamaskController.submitPassword(password);
 
-        const identities = Object.keys(
-          metamaskController.preferencesController.store.getState().identities,
-        );
         const addresses =
           await metamaskController.keyringController.getAccounts();
 
-        identities.forEach((identity) => {
+        const internalAccounts =
+          metamaskController.accountsController.listAccounts();
+
+        internalAccounts.forEach((account) => {
           assert.ok(
-            addresses.includes(identity),
-            `addresses should include all IDs: ${identity}`,
+            addresses.includes(account.address),
+            `addresses should include all IDs: ${account.address}`,
           );
         });
 
         addresses.forEach((address) => {
           assert.ok(
-            identities.includes(address),
-            `identities should include all Addresses: ${address}`,
+            internalAccounts.find((account) => account.address === address),
+            `internalAccounts should include all Addresses: ${address}`,
           );
         });
       });
@@ -387,7 +395,7 @@ describe('MetaMaskController', function () {
       it('can only create new vault on keyringController once', async function () {
         const selectStub = sandbox.stub(
           metamaskController,
-          'selectFirstIdentity',
+          'selectFirstAccount',
         );
 
         const password = 'a-fake-password';
@@ -423,7 +431,7 @@ describe('MetaMaskController', function () {
         );
       });
 
-      it('should clear previous identities after vault restoration', async function () {
+      it('should clear previous accounts after vault restoration', async function () {
         sandbox.stub(metamaskController, 'getBalance');
         metamaskController.getBalance.callsFake(() => {
           return Promise.resolve('0x0');
@@ -436,30 +444,78 @@ describe('MetaMaskController', function () {
         );
         let endTime = Date.now();
 
-        const firstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const originalVaultAccounts =
+          metamaskController.getState().internalAccounts;
+
+        const testAccount = cloneDeep(
+          Object.values(originalVaultAccounts.accounts).find(
+            (account) => account.address === TEST_ADDRESS,
+          ),
         );
+
         assert.ok(
-          firstVaultIdentities[TEST_ADDRESS].lastSelected >= startTime &&
-            firstVaultIdentities[TEST_ADDRESS].lastSelected <= endTime,
-          `'${firstVaultIdentities[TEST_ADDRESS].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
+          testAccount.metadata.lastSelected >= startTime &&
+            testAccount.metadata.lastSelected <= endTime,
+          `'${testAccount.metadata.lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
         );
-        delete firstVaultIdentities[TEST_ADDRESS].lastSelected;
-        assert.deepEqual(firstVaultIdentities, {
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+
+        delete testAccount.metadata.lastSelected;
+
+        assert.deepEqual(testAccount, {
+          id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+          metadata: {
+            keyring: { type: 'HD Key Tree' },
+          },
+          name: DEFAULT_LABEL,
         });
 
-        await metamaskController.preferencesController.setAccountLabel(
-          TEST_ADDRESS,
-          'Account Foo',
+        metamaskController.setAccountName(testAccount.id, 'Account Foo');
+
+        const labeledVaultAccounts =
+          metamaskController.getState().internalAccounts;
+
+        const labeledAccount = cloneDeep(
+          Object.values(labeledVaultAccounts.accounts).find(
+            (account) => account.address === TEST_ADDRESS,
+          ),
         );
 
-        const labelledFirstVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
-        );
-        delete labelledFirstVaultIdentities[TEST_ADDRESS].lastSelected;
-        assert.deepEqual(labelledFirstVaultIdentities, {
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: 'Account Foo' },
+        delete labeledAccount.metadata.lastSelected;
+
+        assert.deepEqual(labeledAccount, {
+          id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
+          address: TEST_ADDRESS,
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+          metadata: {
+            keyring: { type: 'HD Key Tree' },
+          },
+          name: 'Account Foo',
         });
 
         startTime = Date.now();
@@ -469,20 +525,43 @@ describe('MetaMaskController', function () {
         );
         endTime = Date.now();
 
-        const secondVaultIdentities = cloneDeep(
-          metamaskController.getState().identities,
+        const secondVaultAccounts =
+          metamaskController.getState().internalAccounts;
+
+        const secondTestAccount = cloneDeep(
+          Object.values(secondVaultAccounts.accounts).find(
+            (account) => account.address === TEST_ADDRESS_ALT,
+          ),
         );
+
         assert.ok(
-          secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected >= startTime &&
-            secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected <= endTime,
-          `'${secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
+          secondTestAccount.metadata.lastSelected >= startTime &&
+            secondTestAccount.metadata.lastSelected <= endTime,
+          `'${secondTestAccount.metadata.lastSelected}' expected to be between '${startTime}' and '${endTime}'`,
         );
-        delete secondVaultIdentities[TEST_ADDRESS_ALT].lastSelected;
-        assert.deepEqual(secondVaultIdentities, {
-          [TEST_ADDRESS_ALT]: {
-            address: TEST_ADDRESS_ALT,
-            name: DEFAULT_LABEL,
+
+        delete secondTestAccount.metadata.lastSelected;
+
+        assert.deepEqual(secondTestAccount, {
+          id: 'f73954ab-4605-459c-b0ff-23978b190709',
+          address: TEST_ADDRESS_ALT,
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+          metadata: {
+            keyring: { type: 'HD Key Tree' },
           },
+          name: DEFAULT_LABEL,
         });
       });
 
@@ -504,14 +583,42 @@ describe('MetaMaskController', function () {
           TEST_SEED,
         );
 
-        const identities = cloneDeep(metamaskController.getState().identities);
-        assert.ok(
-          identities[TEST_ADDRESS].lastSelected >= startTime &&
-            identities[TEST_ADDRESS].lastSelected <= Date.now(),
+        const restoredVaultAccounts =
+          metamaskController.getState().internalAccounts;
+
+        const testAccount = cloneDeep(
+          Object.values(restoredVaultAccounts.accounts).find(
+            (account) => account.address === TEST_ADDRESS,
+          ),
         );
-        delete identities[TEST_ADDRESS].lastSelected;
-        assert.deepEqual(identities, {
-          [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+
+        assert.ok(
+          testAccount.metadata.lastSelected >= startTime &&
+            testAccount.metadata.lastSelected <= Date.now(),
+        );
+
+        delete testAccount.metadata.lastSelected;
+
+        assert.deepEqual(testAccount, {
+          id: 'e26b5b50-739e-4d6a-a9d1-a9163f480a52',
+          address: TEST_ADDRESS,
+          options: {},
+          supportedMethods: [
+            'personal_sign',
+            'eth_sendTransaction',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v2',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+          metadata: {
+            keyring: { type: 'HD Key Tree' },
+          },
+          name: DEFAULT_LABEL,
         });
       });
     });
@@ -556,36 +663,33 @@ describe('MetaMaskController', function () {
       });
     });
 
-    describe('#selectFirstIdentity', function () {
-      let identities, address;
-
-      beforeEach(function () {
-        address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-        identities = {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address,
-            name: 'Account 1',
-          },
-          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-            name: 'Account 2',
-          },
-        };
-        metamaskController.preferencesController.store.updateState({
-          identities,
-        });
-        metamaskController.selectFirstIdentity();
+    describe('#selectFirstAccount', function () {
+      const expectedId = uuid({
+        random: sha256FromString(TEST_ADDRESS).slice(0, 16),
       });
 
-      it('changes preferences controller select address', function () {
-        const preferenceControllerState =
-          metamaskController.preferencesController.store.getState();
-        assert.equal(preferenceControllerState.selectedAddress, address);
+      beforeEach(async function () {
+        await metamaskController.createNewVaultAndRestore(
+          'password',
+          TEST_SEED,
+        );
+        metamaskController.addNewAccount(1);
+        metamaskController.addNewAccount(2);
+
+        metamaskController.selectFirstAccount();
+      });
+      it('changes accounts controller select account', function () {
+        const selectedAccount =
+          metamaskController.accountsController.getSelectedAccount();
+        assert.equal(selectedAccount.id, expectedId);
       });
 
-      it('changes metamask controller selected address', function () {
+      it('changes metamask controller selected account', function () {
         const metamaskState = metamaskController.getState();
-        assert.equal(metamaskState.selectedAddress, address);
+        assert.equal(
+          metamaskState.internalAccounts.selectedAccount,
+          expectedId,
+        );
       });
     });
 
@@ -891,15 +995,22 @@ describe('MetaMaskController', function () {
 
     describe('#removeAccount', function () {
       let ret;
-      const addressToRemove = '0x1';
       let mockKeyring;
+      const accountIdToBeRemoved = 'mock-id';
+      const accountAddressTobeRemoved = '0x1';
 
       beforeEach(async function () {
         mockKeyring = {
           getAccounts: sinon.stub().returns(Promise.resolve([])),
           destroy: sinon.stub(),
         };
-        sinon.stub(metamaskController.preferencesController, 'removeAddress');
+
+        sinon
+          .stub(metamaskController.accountsController, 'getAccountExpect')
+          .returns({
+            id: accountIdToBeRemoved,
+            address: accountAddressTobeRemoved,
+          });
         sinon.stub(metamaskController.accountTracker, 'removeAccount');
         sinon.stub(metamaskController.keyringController, 'removeAccount');
         sinon.stub(metamaskController, 'removeAllAccountPermissions');
@@ -910,44 +1021,44 @@ describe('MetaMaskController', function () {
           )
           .returns(Promise.resolve(mockKeyring));
 
-        ret = await metamaskController.removeAccount(addressToRemove);
+        ret = await metamaskController.removeAccount(accountIdToBeRemoved);
       });
 
       afterEach(function () {
         metamaskController.keyringController.removeAccount.restore();
         metamaskController.accountTracker.removeAccount.restore();
-        metamaskController.preferencesController.removeAddress.restore();
         metamaskController.removeAllAccountPermissions.restore();
+        metamaskController.accountsController.getAccountExpect.restore();
 
         mockKeyring.getAccounts.resetHistory();
         mockKeyring.destroy.resetHistory();
       });
 
-      it('should call preferencesController.removeAddress', async function () {
+      it('should call accountsController.getAccountExpect', async function () {
         assert(
-          metamaskController.preferencesController.removeAddress.calledWith(
-            addressToRemove,
+          metamaskController.accountsController.getAccountExpect.calledWith(
+            accountIdToBeRemoved,
           ),
         );
       });
       it('should call accountTracker.removeAccount', async function () {
         assert(
           metamaskController.accountTracker.removeAccount.calledWith([
-            addressToRemove,
+            accountAddressTobeRemoved,
           ]),
         );
       });
       it('should call keyringController.removeAccount', async function () {
         assert(
           metamaskController.keyringController.removeAccount.calledWith(
-            addressToRemove,
+            accountAddressTobeRemoved,
           ),
         );
       });
       it('should call metamaskController.removeAllAccountPermissions', async function () {
         assert(
           metamaskController.removeAllAccountPermissions.calledWith(
-            addressToRemove,
+            accountAddressTobeRemoved,
           ),
         );
       });
@@ -957,7 +1068,7 @@ describe('MetaMaskController', function () {
       it('should call coreKeyringController.getKeyringForAccount', async function () {
         assert(
           metamaskController.coreKeyringController.getKeyringForAccount.calledWith(
-            addressToRemove,
+            accountAddressTobeRemoved,
           ),
         );
       });
@@ -1145,11 +1256,7 @@ describe('MetaMaskController', function () {
       });
 
       it('should sync addresses if there are keyrings in state', async function () {
-        const syncAddresses = sinon.fake();
         const syncWithAddresses = sinon.fake();
-        sandbox.replace(metamaskController, 'preferencesController', {
-          syncAddresses,
-        });
         sandbox.replace(metamaskController, 'accountTracker', {
           syncWithAddresses,
         });
@@ -1163,17 +1270,12 @@ describe('MetaMaskController', function () {
           ],
         });
 
-        assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]]);
         assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]]);
         assert.deepEqual(metamaskController.getState(), oldState);
       });
 
       it('should NOT update selected address if already unlocked', async function () {
-        const syncAddresses = sinon.fake();
         const syncWithAddresses = sinon.fake();
-        sandbox.replace(metamaskController, 'preferencesController', {
-          syncAddresses,
-        });
         sandbox.replace(metamaskController, 'accountTracker', {
           syncWithAddresses,
         });
@@ -1188,7 +1290,6 @@ describe('MetaMaskController', function () {
           ],
         });
 
-        assert.deepEqual(syncAddresses.args, [[['0x1', '0x2']]]);
         assert.deepEqual(syncWithAddresses.args, [[['0x1', '0x2']]]);
         assert.deepEqual(metamaskController.getState(), oldState);
       });
