@@ -619,19 +619,79 @@ describe('selectors', () => {
         url: 'https://remix.ethereum.org/',
       },
       metamask: {
-        identities: {
-          '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {
-            address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
-            name: 'Really Long Name That Should Be Truncated',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x7250739de134d33ec7ab1ee592711e15098c9d2d',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Really Long Name That Should Be Truncated',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 1',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+            '15e69915-2a1a-4019-93b3-916e11fd432f': {
+              address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
+              id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 2',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
           },
-          '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5': {
-            address: '0x8e5d75d60224ea0c33d0041e75de68b1c3cb6dd5',
-            name: 'Account 1',
-          },
-          '0xb3958fb96c8201486ae20be1d5c9f58083df343a': {
-            address: '0xb3958fb96c8201486ae20be1d5c9f58083df343a',
-            name: 'Account 2',
-          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
         subjects: {
           'https://remix.ethereum.org': {

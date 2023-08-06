@@ -2130,7 +2130,6 @@ describe('Send Slice', () => {
         const updateRecipientState = {
           metamask: {
             addressBook: {},
-            identities: {},
             providerConfig: {
               chainId: '',
             },
@@ -2678,7 +2677,6 @@ describe('Send Slice', () => {
             addressBook: {
               [CHAIN_IDS.GOERLI]: {},
             },
-            identities: {},
             accounts: {
               [mockAddress1]: {
                 address: mockAddress1,

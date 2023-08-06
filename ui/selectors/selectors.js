@@ -317,13 +317,6 @@ export function getSelectedAddress(state) {
   return state.metamask.selectedAddress;
 }
 
-export function getSelectedIdentity(state) {
-  const selectedAddress = getSelectedAddress(state);
-  const { identities } = state.metamask;
-
-  return identities[selectedAddress];
-}
-
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
@@ -380,10 +373,6 @@ export function getNumberOfTokens(state) {
 
 export function getMetaMaskKeyrings(state) {
   return state.metamask.keyrings;
-}
-
-export function getMetaMaskIdentities(state) {
-  return state.metamask.identities;
 }
 
 export function getMetaMaskAccountsRaw(state) {
@@ -881,11 +870,6 @@ export function getShowWhatsNewPopup(state) {
 }
 
 const createDeepEqualSelector = createSelectorCreator(defaultMemoize, isEqual);
-
-export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
-  getMetaMaskIdentities,
-  (identities) => identities,
-);
 
 export const getMemoizedAddressBook = createDeepEqualSelector(
   getAddressBook,

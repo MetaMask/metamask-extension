@@ -2,7 +2,10 @@ import React from 'react';
 import testData from '../../../../../.storybook/test-data';
 import SignatureRequestSIWEHeader from '.';
 
-const primaryIdentity = Object.values(testData.metamask.identities)[0];
+const primaryIdentity =
+  testData.metamask.internalAccounts.accounts[
+    testData.metamask.internalAccounts.selectedAccount
+  ];
 const subjectMetadata = {
   iconUrl: '/images/logo/metamask-fox.svg',
   name: 'MetaMask',

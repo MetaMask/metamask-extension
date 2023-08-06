@@ -28,6 +28,7 @@ describe('Import Token', () => {
       push: historyStub,
     },
     showSearchTab: true,
+    accounts: [],
     tokenList: {},
   };
 
@@ -37,8 +38,57 @@ describe('Import Token', () => {
         tokens: [],
         providerConfig: { chainId: '0x1' },
         networkConfigurations: {},
-        identities: {},
-        selectedAddress: '0x1231231',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 1',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+            '28502799-71ba-41b3-b66d-7e51c8ada822': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: '28502799-71ba-41b3-b66d-7e51c8ada822',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'Account 2',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         useTokenDetection: true,
       },
       history: {

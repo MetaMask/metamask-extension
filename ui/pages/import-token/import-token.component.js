@@ -70,9 +70,9 @@ class ImportToken extends Component {
     tokens: PropTypes.array,
 
     /**
-     * The identities/accounts that are currently added to the wallet.
+     * The accounts that are currently added to the wallet.
      */
-    identities: PropTypes.object,
+    accounts: PropTypes.object,
 
     /**
      * Boolean flag that shows/hides the search tab.
@@ -115,7 +115,7 @@ class ImportToken extends Component {
     /**
      * The currently selected active address.
      */
-    selectedAddress: PropTypes.string,
+    selectedAccount: PropTypes.object,
     isDynamicTokenListAvailable: PropTypes.bool.isRequired,
     tokenDetectionInactiveOnNonMainnetSupportedNetwork:
       PropTypes.bool.isRequired,
@@ -292,7 +292,7 @@ class ImportToken extends Component {
       try {
         ({ standard } = await this.props.getTokenStandardAndDetails(
           standardAddress,
-          this.props.selectedAddress,
+          this.props.selectedAccount.address,
         ));
       } catch (error) {
         // ignore
@@ -338,7 +338,11 @@ class ImportToken extends Component {
         });
 
         break;
-      case Boolean(this.props.identities[standardAddress]):
+      case Boolean(
+        this.props.accounts.find(
+          (a) => a.address.toLowerCase() === customAddress.toLowerCase(),
+        ),
+      ):
         this.setState({
           customAddressError: this.context.t('personalAddressDetected'),
         });

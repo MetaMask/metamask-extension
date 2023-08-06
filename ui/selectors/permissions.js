@@ -5,6 +5,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import {
+  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
@@ -227,23 +228,20 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
+  const numberOfAccounts = getInternalAccounts(state).length;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-
-  const {
-    metamask: { identities },
-  } = state;
-  const numberOfAccounts = Object.keys(identities).length;
 
   if (
     connectedAccounts.length &&
     connectedAccounts.length !== numberOfAccounts
   ) {
     if (
-      connectedAccounts.findIndex((address) => address === selectedAddress) ===
-      -1
+      connectedAccounts.findIndex(
+        (address) => address === selectedAccount.address,
+      ) === -1
     ) {
-      return identities[selectedAddress];
+      return selectedAccount;
     }
   }
 

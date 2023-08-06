@@ -19,7 +19,10 @@ const mapStateToProps = (state, ownProps) => {
     : ownProps.match.params.id;
 
   const contact =
-    getAddressBookEntry(state, address) || state.metamask.identities[address];
+    getAddressBookEntry(state, address) ||
+    state.metamask.internalAccounts.accounts.find(
+      (account) => account.address.toLowerCase() === address,
+    );
   const { memo, name } = contact || {};
 
   return {

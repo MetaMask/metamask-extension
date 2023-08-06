@@ -56,11 +56,6 @@ interface TemporaryBackgroundState {
   };
   currentNetworkTxList: TransactionMeta[];
   selectedAddress: string;
-  identities: {
-    [address: string]: {
-      balance: string;
-    };
-  };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
   unapprovedTxs: {

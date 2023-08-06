@@ -13,9 +13,8 @@ const { metamask } = store.getState();
 
 const {
   networkConfigurations,
-  identities,
+  internalAccounts,
   pendingTokens,
-  selectedAddress,
   tokenList,
   tokens,
 } = metamask;
@@ -52,7 +51,7 @@ export default {
         type: 'object',
       },
     },
-    identities: {
+    accounts: {
       control: {
         type: 'object',
       },
@@ -90,9 +89,9 @@ export default {
     getTokenStandardAndDetails: {
       action: 'getTokenStandardAndDetails',
     },
-    selectedAddress: {
+    selectedAccount: {
       control: {
-        type: 'text',
+        type: 'object',
       },
     },
   },
@@ -102,14 +101,15 @@ export default {
     },
     pendingTokens,
     tokens,
-    identities,
+    accounts: Object.values(internalAccounts.accounts),
     showSearchTab: true,
     mostRecentOverviewPage: DEFAULT_ROUTE,
     chainId: networkConfigurations['test-networkConfigurationId-1'].chainId,
     rpcPrefs: networkConfigurations['test-networkConfigurationId-1'].rpcPrefs,
     tokenList,
     useTokenDetection: false,
-    selectedAddress,
+    selectedAccount:
+      internalAccounts.accounts[internalAccounts.selectedAccount],
   },
 };
 

@@ -6,22 +6,61 @@ export default {
   title: 'Pages/ConnectedAccounts',
 };
 
-const account = [
+const accounts = [
   {
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    metadata: {
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
     name: 'Account 1',
-    address: '0x983211ce699ea5ab57cc528086154b6db1ad8e55',
+    options: {},
+    supportedMethods: [
+      'personal_sign',
+      'eth_sendTransaction',
+      'eth_sign',
+      'eth_signTransaction',
+      'eth_signTypedData',
+      'eth_signTypedData_v1',
+      'eth_signTypedData_v2',
+      'eth_signTypedData_v3',
+      'eth_signTypedData_v4',
+    ],
+    type: 'eip155:eoa',
+  },
+  {
+    address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+    id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+    metadata: {
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
+    name: 'Test Account 2',
+    options: {},
+    supportedMethods: [
+      'personal_sign',
+      'eth_sendTransaction',
+      'eth_sign',
+      'eth_signTransaction',
+      'eth_signTypedData',
+      'eth_signTypedData_v1',
+      'eth_signTypedData_v2',
+      'eth_signTypedData_v3',
+      'eth_signTypedData_v4',
+    ],
+    type: 'eip155:eoa',
   },
 ];
-const identities = {
-  name: 'Account 1',
-  address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-};
+
 export const DefaultStory = () => {
   return (
     <ConnectedAccounts
-      connectedAccounts={account}
+      connectedAccounts={accounts}
       activeTabOrigin="https://metamask.github.io"
-      accountToConnect={identities}
+      accountToConnect={accounts[0]}
       connectAccount={action('Account Connected')}
       removePermittedAccount={action('Account Removed')}
       setSelectedAddress={action('Selected Address Changed')}

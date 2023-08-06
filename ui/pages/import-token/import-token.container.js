@@ -21,13 +21,7 @@ import ImportToken from './import-token.component';
 
 const mapStateToProps = (state) => {
   const {
-    metamask: {
-      identities,
-      tokens,
-      pendingTokens,
-      useTokenDetection,
-      selectedAddress,
-    },
+    metamask: { internalAccounts, tokens, pendingTokens, useTokenDetection },
   } = state;
   const { chainId } = getProviderConfig(state);
 
@@ -39,7 +33,7 @@ const mapStateToProps = (state) => {
     Boolean(process.env.IN_TEST);
 
   return {
-    identities,
+    accounts: Object.values(internalAccounts.accounts),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     tokens,
     pendingTokens,
@@ -48,7 +42,8 @@ const mapStateToProps = (state) => {
     rpcPrefs: getRpcPrefsForCurrentProvider(state),
     tokenList: getTokenList(state),
     useTokenDetection,
-    selectedAddress,
+    selectedAccount:
+      internalAccounts.accounts[internalAccounts.selectedAccount],
     isDynamicTokenListAvailable: getIsDynamicTokenListAvailable(state),
     networkName: getTokenDetectionSupportNetworkByChainId(state),
     tokenDetectionInactiveOnNonMainnetSupportedNetwork:

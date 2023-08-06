@@ -26,7 +26,22 @@ export default class SendAssetRow extends Component {
       }),
     ).isRequired,
     accounts: PropTypes.object.isRequired,
-    selectedAddress: PropTypes.string.isRequired,
+    selectedAccount: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      address: PropTypes.string.isRequired,
+      balance: PropTypes.string.isRequired,
+      metadata: PropTypes.shape({
+        snap: PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          name: PropTypes.string,
+          enabled: PropTypes.bool,
+        }),
+        keyring: PropTypes.shape({
+          type: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+    }).isRequired,
     sendAsset: PropTypes.object,
     updateSendAsset: PropTypes.func.isRequired,
     nativeCurrency: PropTypes.string,
@@ -186,12 +201,12 @@ export default class SendAssetRow extends Component {
 
   renderNativeCurrency(insideDropdown = false) {
     const { t } = this.context;
-    const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
+    const { accounts, selectedAccount, nativeCurrency, nativeCurrencyImage } =
       this.props;
     const { sendableTokens, sendableNfts } = this.state;
 
-    const balanceValue = accounts[selectedAddress]
-      ? accounts[selectedAddress].balance
+    const balanceValue = accounts[selectedAccount.address]
+      ? accounts[selectedAccount.address].balance
       : '';
 
     const sendableAssets = [...sendableTokens, ...sendableNfts];

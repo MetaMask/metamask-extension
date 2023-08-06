@@ -221,7 +221,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render first account name from wallets array if address exists in identities object', () => {
+    it('should render first account name from wallets array if address exists in internal account object', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -240,7 +240,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render second account name from wallets array if address exists in identities object', () => {
+    it('should render second account name from wallets array if address exists in internal account object', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -305,7 +305,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render first shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render first shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -324,7 +324,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render second shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render second shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,
@@ -343,7 +343,7 @@ describe('Signature Request Data', () => {
       expect(iconImage).toBeDefined();
     });
 
-    it('should render third shorten address from wallets array if address does not exists in identities and address book objects', () => {
+    it('should render third shorten address from wallets array if address does not exists in internal account and address book objects', () => {
       const { getByText } = renderWithProvider(
         <SignatureRequestData data={messageData.value} />,
         store,

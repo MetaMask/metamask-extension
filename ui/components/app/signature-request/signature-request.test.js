@@ -14,7 +14,6 @@ import {
   conversionRateSelector,
   getCurrentCurrency,
   getMemoizedAddressBook,
-  getMemoizedMetaMaskIdentities,
   getPreferences,
   getSelectedAccount,
   getInternalAccounts,
@@ -121,7 +120,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case accountsWithSendEtherInfoSelector:
       return Object.values(opts.metamask.accounts);
     case unconfirmedTransactionsHashSelector:
-    case getMemoizedMetaMaskIdentities:
       return {};
     default:
       return undefined;

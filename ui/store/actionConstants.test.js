@@ -4,7 +4,7 @@ import * as actionConstants from './actionConstants';
 
 describe('Redux actionConstants', () => {
   describe('SET_ACCOUNT_LABEL', () => {
-    it('updates the state.metamask.identities[:i].name property of the state to the action.value.label', () => {
+    it('updates the state.metamask.internalAccounts.accounts[accountId].name property of the state to the action.value.label', () => {
       const accountId = 'foo';
       const initialState = {
         metamask: {
