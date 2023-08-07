@@ -41,8 +41,8 @@ describe('Sentry errors', function () {
     ],
   };
 
-  describe('before initialization', function () {
-    it('should NOT send error events when participateInMetaMetrics is false', async function () {
+  describe('before initialization, after opting out of metrics', function () {
+    it('should NOT send error events', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -73,6 +73,9 @@ describe('Sentry errors', function () {
         },
       );
     });
+  });
+
+  describe('before initialization, after opting into metrics', function () {
     it('should send error events', async function () {
       await withFixtures(
         {
@@ -114,8 +117,8 @@ describe('Sentry errors', function () {
     });
   });
 
-  describe('after initialization', function () {
-    it('should NOT send error events when participateInMetaMetrics is false', async function () {
+  describe('after initialization, after opting out of metrics', function () {
+    it('should NOT send error events', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -145,6 +148,9 @@ describe('Sentry errors', function () {
         },
       );
     });
+  });
+
+  describe('after initialization, after opting into metrics', function () {
     it('should send error events', async function () {
       await withFixtures(
         {
