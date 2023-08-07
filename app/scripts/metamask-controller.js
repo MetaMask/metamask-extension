@@ -2771,6 +2771,9 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
+
+      // E2E testing
+      throwError: this.throwError.bind(this),
     };
   }
 
@@ -4537,6 +4540,21 @@ export default class MetamaskController extends EventEmitter {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwError(message) {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 
   //=============================================================================
