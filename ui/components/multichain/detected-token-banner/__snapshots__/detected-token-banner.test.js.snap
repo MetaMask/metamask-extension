@@ -3,7 +3,7 @@
 exports[`DetectedTokensBanner should render correctly 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-info multichain-detected-token-banner box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-primary-muted box--rounded-sm"
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-info multichain-detected-token-banner mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-primary-muted mm-box--rounded-sm"
     data-testid="detected-token-banner"
   >
     <span
