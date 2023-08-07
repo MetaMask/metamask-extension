@@ -62,4 +62,4 @@ export type BannerBaseProps<C extends React.ElementType> =
 
 export type BannerBaseComponent = <C extends React.ElementType = 'div'>(
   props: BannerBaseProps<C>,
-) => React.ElementType | null;
+) => React.ReactElement | null;
