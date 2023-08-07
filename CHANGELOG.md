@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [10.34.4]
-## Changed
+### Changed
 - Updated snaps execution environment ([#20420](https://github.com/MetaMask/metamask-extension/pull/20420))
 
 ## [10.34.3]
