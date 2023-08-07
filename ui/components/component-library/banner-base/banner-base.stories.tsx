@@ -1,7 +1,14 @@
 import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import { useState } from '@storybook/addons';
-import { Size } from '../../../helpers/constants/design-system';
-import { ButtonLink, ButtonPrimary, Icon, IconName, IconSize } from '..';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  ButtonPrimary,
+  Icon,
+  IconName,
+  IconSize,
+} from '..';
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
 
@@ -84,9 +91,9 @@ export default {
       table: { category: 'box props' },
     },
   },
-};
+} as Meta<typeof BannerBase>;
 
-export const DefaultStory = (args) => {
+export const DefaultStory: StoryFn<typeof BannerBase> = (args) => {
   const onClose = () => console.log('BannerBase onClose trigger');
   return <BannerBase {...args} onClose={onClose} />;
 };
@@ -100,7 +107,7 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const Title = (args) => {
+export const Title: StoryFn<typeof BannerBase> = (args) => {
   return <BannerBase {...args} />;
 };
 
@@ -109,7 +116,7 @@ Title.args = {
   children: 'Pass only a string through the title prop',
 };
 
-export const Description = (args) => {
+export const Description: StoryFn<typeof BannerBase> = (args) => {
   return <BannerBase {...args} />;
 };
 
@@ -119,12 +126,12 @@ Description.args = {
     'Pass only a string through the description prop or you can use children if the contents require more',
 };
 
-export const Children = (args) => {
+export const Children: StoryFn<typeof BannerBase> = (args) => {
   return (
     <BannerBase {...args}>
       {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
       <ButtonLink
-        size={Size.inherit}
+        size={ButtonLinkSize.Inherit}
         href="https://metamask.io/"
         target="_blank"
       >
@@ -134,7 +141,7 @@ export const Children = (args) => {
   );
 };
 
-export const ActionButton = (args) => {
+export const ActionButton: StoryFn<typeof BannerBase> = (args) => {
   return <BannerBase {...args} />;
 };
 
@@ -149,7 +156,7 @@ ActionButton.args = {
     'Use actionButtonLabel for action text, actionButtonOnClick for the onClick handler, and actionButtonProps to pass any ButtonLink prop types such as iconName',
 };
 
-export const OnClose = (args) => {
+export const OnClose: StoryFn<typeof BannerBase> = (args) => {
   const [isShown, setShown] = useState(true);
   const bannerToggle = () => {
     if (isShown) {
@@ -173,7 +180,7 @@ OnClose.args = {
   children: 'Click the close button icon to hide this notifcation',
 };
 
-export const StartAccessory = (args) => {
+export const StartAccessory: StoryFn<typeof BannerBase> = (args) => {
   return <BannerBase {...args} />;
 };
 
