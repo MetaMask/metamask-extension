@@ -203,6 +203,18 @@ function setupDebuggingHelpers(store) {
     error.name = 'TestError';
     throw error;
   };
+  /**
+   * The following stateHook is a method intended to throw an error in the
+   * background, used in our E2E test to ensure that errors are attempted to be
+   * sent to sentry.
+   *
+   * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+   */
+  window.stateHooks.throwBackgroundTestError = async function (
+    msg = 'Test Error',
+  ) {
+    store.dispatch(actions.throwBackgroundError(msg));
+  };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();

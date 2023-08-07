@@ -42,7 +42,7 @@ describe('Sentry errors', function () {
   };
 
   describe('before initialization, after opting out of metrics', function () {
-    it('should NOT send error events', async function () {
+    it('should NOT send error events in the background', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -73,10 +73,44 @@ describe('Sentry errors', function () {
         },
       );
     });
+
+    it('should NOT send error events in the UI', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withMetaMetricsController({
+              metaMetricsId: null,
+              participateInMetaMetrics: false,
+            })
+            .build(),
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryTestError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+          // Erase `getSentryState` hook, simulating a "before initialization" state
+          await driver.executeScript(
+            'window.stateHooks.getSentryState = undefined',
+          );
+
+          // Wait for Sentry request
+          await driver.delay(3000);
+          const isPending = await mockedEndpoint.isPending();
+          assert.ok(
+            isPending,
+            'A request to sentry was sent when it should not have been',
+          );
+        },
+      );
+    });
   });
 
   describe('before initialization, after opting into metrics', function () {
-    it('should send error events', async function () {
+    it('should send error events in background', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -115,43 +149,8 @@ describe('Sentry errors', function () {
         },
       );
     });
-  });
 
-  describe('after initialization, after opting out of metrics', function () {
-    it('should NOT send error events', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
-            })
-            .build(),
-          ganacheOptions,
-          title: this.test.title,
-          failOnConsoleError: false,
-          testSpecificMock: mockSentryTestError,
-        },
-        async ({ driver, mockedEndpoint }) => {
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
-          // Trigger error
-          driver.executeScript('window.stateHooks.throwTestError()');
-          driver.delay(3000);
-          // Wait for Sentry request
-          const isPending = await mockedEndpoint.isPending();
-          assert.ok(
-            isPending,
-            'A request to sentry was sent when it should not have been',
-          );
-        },
-      );
-    });
-  });
-
-  describe('after initialization, after opting into metrics', function () {
-    it('should send error events', async function () {
+    it('should send error events in UI', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -169,13 +168,173 @@ describe('Sentry errors', function () {
           await driver.navigate();
           await driver.fill('#password', 'correct horse battery staple');
           await driver.press('#password', driver.Key.ENTER);
+          // Erase `getSentryState` hook, simulating a "before initialization" state
+          await driver.executeScript(
+            'window.stateHooks.getSentryState = undefined',
+          );
+
           // Trigger error
-          driver.executeScript('window.stateHooks.throwTestError()');
+          await driver.executeScript('window.stateHooks.throwTestError()');
+
           // Wait for Sentry request
           await driver.wait(async () => {
             const isPending = await mockedEndpoint.isPending();
             return isPending === false;
-          }, 10000);
+          }, 3000);
+          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const { level } = mockJsonBody;
+          const [{ type, value }] = mockJsonBody.exception.values;
+          // Verify request
+          assert.equal(type, 'TestError');
+          assert.equal(value, 'Test Error');
+          assert.equal(level, 'error');
+        },
+      );
+    });
+  });
+
+  describe('after initialization, after opting out of metrics', function () {
+    it('should NOT send error events in the background', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withMetaMetricsController({
+              metaMetricsId: null,
+              participateInMetaMetrics: false,
+            })
+            .build(),
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryTestError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          // Trigger error
+          await driver.executeScript(
+            'window.stateHooks.throwBackgroundTestError()',
+          );
+
+          // Wait for Sentry request
+          const isPending = await mockedEndpoint.isPending();
+          assert.ok(
+            isPending,
+            'A request to sentry was sent when it should not have been',
+          );
+        },
+      );
+    });
+
+    it('should NOT send error events in the UI', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withMetaMetricsController({
+              metaMetricsId: null,
+              participateInMetaMetrics: false,
+            })
+            .build(),
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryTestError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          // Trigger error
+          await driver.executeScript('window.stateHooks.throwTestError()');
+
+          // Wait for Sentry request
+          const isPending = await mockedEndpoint.isPending();
+          assert.ok(
+            isPending,
+            'A request to sentry was sent when it should not have been',
+          );
+        },
+      );
+    });
+  });
+
+  describe('after initialization, after opting into metrics', function () {
+    it('should send error events in background', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withMetaMetricsController({
+              metaMetricsId: 'fake-metrics-id',
+              participateInMetaMetrics: true,
+            })
+            .build(),
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryTestError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          // Trigger error
+          await driver.executeScript(
+            'window.stateHooks.throwBackgroundTestError()',
+          );
+
+          // Wait for Sentry request
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, 3000);
+          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const { level, extra } = mockJsonBody;
+          const [{ type, value }] = mockJsonBody.exception.values;
+          const { participateInMetaMetrics } = extra.appState.store.metamask;
+          // Verify request
+          assert.equal(type, 'TestError');
+          assert.equal(value, 'Test Error');
+          assert.equal(level, 'error');
+          assert.equal(participateInMetaMetrics, true);
+        },
+      );
+    });
+
+    it('should send error events in UI', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withMetaMetricsController({
+              metaMetricsId: 'fake-metrics-id',
+              participateInMetaMetrics: true,
+            })
+            .build(),
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryTestError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          // Trigger error
+          await driver.executeScript('window.stateHooks.throwTestError()');
+
+          // Wait for Sentry request
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, 3000);
           const [mockedRequest] = await mockedEndpoint.getSeenRequests();
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
