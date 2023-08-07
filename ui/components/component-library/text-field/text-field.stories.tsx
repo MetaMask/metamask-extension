@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useArgs } from '@storybook/client-api';
-import PropTypes from 'prop-types';
 
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   AlignItems,
   TextVariant,
   IconColor,
@@ -12,7 +12,6 @@ import {
   TextColor,
   Size,
 } from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
 
 import {
   AvatarAccount,
@@ -20,13 +19,18 @@ import {
   AvatarToken,
   Button,
   ButtonIcon,
+  Box,
   Text,
   IconName,
   Icon,
   IconSize,
+  AvatarTokenSize,
 } from '..';
 
-import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
+import { BoxProps, PolymorphicRef, StyleUtilityProps } from '../box';
+import { InputProps } from '../input';
+import { InputComponent } from '../input/input.types';
+import { TextFieldSize, TextFieldType } from './text-field.types';
 import { TextField } from './text-field';
 
 import README from './README.mdx';
@@ -118,11 +122,11 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_SIZES),
+      options: Object.values(TextFieldSize),
     },
     type: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_TYPES),
+      options: Object.values(TextFieldType),
     },
     value: {
       control: 'text',
@@ -151,9 +155,9 @@ export default {
   args: {
     placeholder: 'Placeholder...',
   },
-};
+} as Meta<typeof TextField>;
 
-const Template = (args) => {
+const Template: StoryFn<typeof TextField> = (args) => {
   const [{ value }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
@@ -164,27 +168,27 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => {
+export const SizeStory: StoryFn<typeof TextField> = (args) => {
   return (
     <Box
-      display={DISPLAY.INLINE_FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Column}
       gap={4}
     >
       <TextField
         {...args}
         placeholder="Size.SM (height: 32px)"
-        size={Size.SM}
+        size={TextFieldSize.Sm}
       />
       <TextField
         {...args}
         placeholder="Size.MD (height: 40px)"
-        size={Size.MD}
+        size={TextFieldSize.Md}
       />
       <TextField
         {...args}
         placeholder="Size.LG (height: 48px)"
-        size={Size.LG}
+        size={TextFieldSize.Lg}
       />
     </Box>
   );
@@ -193,17 +197,13 @@ SizeStory.storyName = 'Size';
 
 export const Type = (args) => (
   <Box
-    display={DISPLAY.INLINE_FLEX}
-    flexDirection={FLEX_DIRECTION.COLUMN}
+    display={Display.InlineFlex}
+    flexDirection={FlexDirection.Column}
     gap={4}
   >
     <TextField {...args} placeholder="Default" />
-    <TextField
-      {...args}
-      type={TEXT_FIELD_TYPES.PASSWORD}
-      placeholder="Password"
-    />
-    <TextField {...args} type={TEXT_FIELD_TYPES.NUMBER} placeholder="Number" />
+    <TextField {...args} type={TextFieldType.Password} placeholder="Password" />
+    <TextField {...args} type={TextFieldType.Number} placeholder="Number" />
   </Box>
 );
 
@@ -230,8 +230,8 @@ export const StartAccessoryEndAccessory = (args) => {
   };
   return (
     <Box
-      display={DISPLAY.INLINE_FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Column}
       gap={4}
     >
       <TextField
@@ -272,13 +272,13 @@ export const StartAccessoryEndAccessory = (args) => {
             style={{ padding: 0 }}
             backgroundColor={BackgroundColor.transparent}
             gap={1}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.center}
           >
             <AvatarToken
               name="eth"
               src="./images/eth_logo.png"
-              size={Size.SM}
+              size={AvatarTokenSize.Sm}
             />
             <Text>ETH</Text>
             <Icon
@@ -308,7 +308,7 @@ export const StartAccessoryEndAccessory = (args) => {
         startAccessory={
           value.accountAddress && (
             <AvatarAccount
-              size={AvatarAccountSize.SM}
+              size={AvatarAccountSize.Sm}
               address={value.accountAddress}
             />
           )
@@ -324,16 +324,16 @@ export const StartAccessoryEndAccessory = (args) => {
 };
 
 export const InputRef = (args) => {
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const [value, setValue] = useState('');
   const handleOnClick = () => {
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
   const handleOnChange = (e) => {
     setValue(e.target.value);
   };
   return (
-    <Box display={DISPLAY.FLEX}>
+    <Box display={Display.Flex}>
       <TextField
         {...args}
         inputRef={inputRef}
@@ -347,8 +347,36 @@ export const InputRef = (args) => {
   );
 };
 
-const CustomInputComponent = React.forwardRef(
-  (
+interface CustomInputProps extends StyleUtilityProps {
+  as?: string;
+  autoComplete?: string;
+  autoFocus?: boolean;
+  defaultValue?: string | number;
+  disabled?: boolean;
+  focused?: boolean;
+  id?: string;
+  inputProps?: Record<string, any>;
+  inputRef?:
+    | ((instance: HTMLInputElement | null) => void)
+    | React.RefObject<HTMLInputElement>
+    | null;
+  maxLength?: number;
+  name?: string;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: React.FocusEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  readOnly?: boolean;
+  required?: boolean;
+  value?: string;
+  variant?: TextVariant;
+  type?: TextFieldType;
+  className?: string;
+  'aria-invalid'?: boolean;
+}
+
+const CustomInputComponent: InputComponent = React.forwardRef(
+  <C extends React.ElementType = 'input'>(
     {
       as,
       autoComplete,
@@ -376,16 +404,16 @@ const CustomInputComponent = React.forwardRef(
       className,
       'aria-invalid': ariaInvalid,
       ...props
-    },
+    }: CustomInputProps,
     ref,
   ) => (
     <Box
-      display={DISPLAY.FLEX}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       ref={ref}
-      {...{ padding, paddingLeft, paddingRight, ...props }}
+      {...{ padding, paddingLeft, paddingRight, ...(props as BoxProps<C>) }}
     >
-      <Box display={DISPLAY.INLINE_FLEX}>
+      <Box display={Display.InlineFlex}>
         <Text
           style={{ padding: 0 }}
           aria-invalid={ariaInvalid}
@@ -410,7 +438,7 @@ const CustomInputComponent = React.forwardRef(
             value,
             variant,
             type,
-            ...inputProps,
+            ...(inputProps as InputProps<C>),
           }}
         />
         <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
@@ -421,41 +449,6 @@ const CustomInputComponent = React.forwardRef(
     </Box>
   ),
 );
-
-CustomInputComponent.propTypes = {
-  /**
-   * The custom input component should accepts all props that the
-   * InputComponent accepts in ./text-field.js
-   */
-  autoFocus: PropTypes.bool,
-  className: PropTypes.string,
-  defaultValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  disabled: PropTypes.bool,
-  id: PropTypes.string,
-  inputProps: PropTypes.object,
-  inputRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
-  maxLength: PropTypes.number,
-  name: PropTypes.string,
-  onBlur: PropTypes.func,
-  onChange: PropTypes.func,
-  onFocus: PropTypes.func,
-  placeholder: PropTypes.string,
-  readOnly: PropTypes.bool,
-  required: PropTypes.bool,
-  type: PropTypes.oneOf(Object.values(TEXT_FIELD_TYPES)),
-  /**
-   * Because we manipulate the type in TextField so the html element
-   * receives the correct attribute we need to change the autoComplete
-   * propType to a string
-   */
-  autoComplete: PropTypes.string,
-  /**
-   * The custom input component should also accept all the props from Box
-   */
-  ...Box.propTypes,
-};
-
-CustomInputComponent.displayName = 'CustomInputComponent';
 
 export const InputComponent = (args) => (
   <TextField
@@ -498,5 +491,6 @@ MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
+// eslint-disable-next-line @typescript-eslint/no-shadow
 export const Required = Template.bind({});
 Required.args = { required: true, placeholder: 'Required' };
