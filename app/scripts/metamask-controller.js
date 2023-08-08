@@ -3433,9 +3433,10 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param accountCount
+   * @param accountName
    * @returns {} keyState
    */
-  async addNewAccount(accountCount) {
+  async addNewAccount(accountCount, accountName) {
     const isActionMetricsQueueE2ETest =
       this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
 
@@ -3458,6 +3459,12 @@ export default class MetamaskController extends EventEmitter {
     if (numberOfHdKeyringAccounts === accountCount) {
       const keyState = await keyringController.addNewAccount(primaryKeyring);
       await this.accountsController.updateAccounts();
+      if (accountName) {
+        this.accountsController.setAccountName(
+          this.accountsController.getSelectedAccount().id,
+          accountName,
+        );
+      }
       const updatedAccounts = this.accountsController.listAccounts();
       return {
         ...keyState,

@@ -424,22 +424,26 @@ export function importNewAccount(
 }
 
 export function addNewAccount(
-  accountCount: string,
+  accountName: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
     const oldAccounts = getState().metamask.internalAccounts.accounts;
-    // const oldHdAccounts = Object.values(oldAccounts).filter(
-    //   (account) => account.metadata.keyring.type === 'HD Key Tree',
-    // );
+    const oldHdAccounts = Object.values(oldAccounts).filter(
+      (account) => account.metadata.keyring.type === 'HD Key Tree',
+    );
 
     dispatch(showLoadingIndication());
 
     try {
       const { accounts } = await submitRequestToBackground('addNewAccount', [
-        accountCount,
+        oldHdAccounts.length,
       ]);
       const newAccount = accounts.find((account) => !oldAccounts[account.id]);
+
+      if (accountName) {
+        dispatch(setAccountLabel(newAccount.id, accountName));
+      }
       return newAccount;
     } catch (error) {
       dispatch(displayWarning(error));

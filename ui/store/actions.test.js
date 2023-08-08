@@ -458,7 +458,7 @@ describe('Actions', () => {
 
       _setBackgroundConnection(background);
 
-      await store.dispatch(actions.addNewAccount(1));
+      await store.dispatch(actions.addNewAccount());
       expect(addNewAccount.callCount).toStrictEqual(1);
     });
 
@@ -529,6 +529,50 @@ describe('Actions', () => {
       );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
+    });
+
+    it('adds a new account and sets the name', async () => {
+      const store = mockStore({
+        metamask: {
+          internalAccounts: { accounts: {}, selectedAccount: '' },
+          ...defaultState.metamask,
+        },
+      });
+
+      const addNewAccount = background.addNewAccount.callsFake((_, cb) =>
+        cb(null, {
+          accounts: [
+            {
+              address: '0xNewAddress',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb5',
+              metadata: {
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              name: 'new name',
+              options: {},
+              supportedMethods: [
+                'personal_sign',
+                'eth_sendTransaction',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v2',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          ],
+        }),
+      );
+
+      _setBackgroundConnection(background);
+
+      await store.dispatch(actions.addNewAccount('new name'));
+      expect(addNewAccount.callCount).toStrictEqual(1);
     });
   });
 

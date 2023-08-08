@@ -12,7 +12,7 @@ function mapDispatchToProps(dispatch) {
   return {
     hideModal: () => dispatch(actions.hideModal()),
     createAccount: (newAccountName) => {
-      return dispatch(actions.addNewAccount()).then((account) => {
+      return dispatch(actions.addNewAccount(newAccountName)).then((account) => {
         if (newAccountName) {
           dispatch(actions.setAccountLabel(account.id, newAccountName));
         }
