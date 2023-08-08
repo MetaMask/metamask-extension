@@ -2773,7 +2773,7 @@ export default class MetamaskController extends EventEmitter {
         ),
 
       // E2E testing
-      throwError: this.throwError.bind(this),
+      throwTestError: this.throwTestError.bind(this),
     };
   }
 
@@ -4549,7 +4549,7 @@ export default class MetamaskController extends EventEmitter {
    * @deprecated This is only mean to facilitiate E2E testing. We should not
    * use this for handling errors.
    */
-  throwError(message) {
+  throwTestError(message) {
     setTimeout(() => {
       const error = new Error(message);
       error.name = 'TestError';

@@ -4500,8 +4500,8 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
  * @deprecated This is only mean to facilitiate E2E testing. We should not use
  * this for handling errors.
  */
-export async function throwBackgroundError(message: string): Promise<void> {
-  await submitRequestToBackground('throwError', [message]);
+export async function throwTestBackgroundError(message: string): Promise<void> {
+  await submitRequestToBackground('throwTestError', [message]);
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
