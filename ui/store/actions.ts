@@ -114,6 +114,7 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { InternalAccount } from '@metamask/eth-snap-keyring';
 
 export function goHome() {
   return {
@@ -437,9 +438,10 @@ export function addNewAccount(
 
     let newAccount;
     try {
-      const { accounts } = await submitRequestToBackground('addNewAccount', [
-        oldHdAccounts.length,
-      ]);
+      const { accounts }: { accounts: InternalAccount[] } =
+        await submitRequestToBackground('addNewAccount', [
+          oldHdAccounts.length,
+        ]);
       newAccount = accounts.find((account) => !oldAccounts[account.id]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -448,7 +450,7 @@ export function addNewAccount(
       dispatch(hideLoadingIndication());
     }
     await forceUpdateMetamaskState(dispatch);
-    if (accountName) {
+    if (accountName && newAccount) {
       dispatch(setAccountLabel(newAccount.id, accountName));
     }
     return newAccount;
@@ -2935,6 +2937,12 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
+          /**
+           * We need to inform sentry that the user's optin preference may have
+           * changed. The logic to determine which way to toggle is in the
+           * toggleSession handler in setupSentry.js.
+           */
+          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
