@@ -293,7 +293,7 @@ describe('Sentry errors', function () {
 
           // Trigger error
           await driver.executeScript(
-            'window.stateHooks.throwBackgroundTestError()',
+            'window.stateHooks.throwTestBackgroundError()',
           );
 
           // Wait for Sentry request
@@ -361,7 +361,7 @@ describe('Sentry errors', function () {
 
           // Trigger error
           await driver.executeScript(
-            'window.stateHooks.throwBackgroundTestError()',
+            'window.stateHooks.throwTestBackgroundError()',
           );
 
           // Wait for Sentry request
@@ -405,7 +405,7 @@ describe('Sentry errors', function () {
 
           // Trigger error
           await driver.executeScript(
-            'window.stateHooks.throwBackgroundTestError()',
+            'window.stateHooks.throwTestBackgroundError()',
           );
 
           // Wait for Sentry request

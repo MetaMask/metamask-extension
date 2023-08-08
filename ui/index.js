@@ -210,10 +210,10 @@ function setupDebuggingHelpers(store) {
    *
    * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
    */
-  window.stateHooks.throwBackgroundTestError = async function (
+  window.stateHooks.throwTestBackgroundError = async function (
     msg = 'Test Error',
   ) {
-    store.dispatch(actions.throwBackgroundError(msg));
+    store.dispatch(actions.throwTestBackgroundError(msg));
   };
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
