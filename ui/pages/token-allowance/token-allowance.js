@@ -313,12 +313,6 @@ export default function TokenAllowance({
         handleNextClick();
       }, 3000);
     }
-
-    if (!isFirstPage) {
-      setTimeout(() => {
-        handleApprove();
-      }, 3000);
-    }
   }, [changedToMaxAmount]);
 
   return (
@@ -596,9 +590,9 @@ export default function TokenAllowance({
       {changedToMaxAmount && (
         <PageContainerFooter
           cancelText={t('reject')}
-          submitText={isFirstPage ? t('next') : t('approveButtonText')}
+          submitText={t('approveButtonText')}
           onCancel={() => handleReject()}
-          onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
+          onSubmit={() => handleApprove()}
           disabled={
             inputChangeInProgress || disableNextButton || disableApproveButton
           }
