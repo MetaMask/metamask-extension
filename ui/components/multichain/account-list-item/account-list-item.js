@@ -193,7 +193,7 @@ export const AccountListItem = ({
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
                 value={account.balance}
-                type={SECONDARY}
+                type={PRIMARY}
               />
             </Text>
           </Box>
@@ -224,7 +224,7 @@ export const AccountListItem = ({
             <UserPreferencedCurrencyDisplay
               ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
               value={account.balance}
-              type={PRIMARY}
+              type={SECONDARY}
             />
           </Text>
         </Box>

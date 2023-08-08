@@ -23,6 +23,7 @@
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
   },
   "metamask": {
+    "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
     "dismissSeedBackUpReminder": false,
     "usePhishDetect": true,
@@ -110,7 +111,6 @@
       "showIncomingTransactions": true
     },
     "networkId": "5",
-    "networkStatus": "available",
     "providerConfig": {
       "type": "rpc",
       "chainId": "0x5",
@@ -251,9 +251,11 @@
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
       }
     ],
-    "networkDetails": {
-      "EIPS": {
-        "1559": true
+    "selectedNetworkClientId": "goerli",
+    "networksMetadata": {
+      "goerli": {
+        "EIPS": { "1559": true },
+        "status": "available"
       }
     },
     "frequentRpcListDetail": [],

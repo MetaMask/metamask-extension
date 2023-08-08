@@ -2,6 +2,8 @@ import React from 'react';
 import configureMockState from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import thunk from 'redux-thunk';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import mockState from '../../../../../test/data/mock-state.json';
 import {
@@ -88,6 +90,7 @@ describe('Account Details Modal', () => {
         },
         providerConfig: {
           chainId: '0x99',
+          ticker: 'ETH',
         },
       },
     };
@@ -178,9 +181,13 @@ describe('Account Details Modal', () => {
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
-        networkDetails: {
-          EIPS: {
-            1559: true,
+        networksMetadata: {
+          selectedNetworkClientId: NetworkType.mainnet,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: false,
+            },
+            status: NetworkStatus.Available,
           },
         },
         frequentRpcListDetail: [],

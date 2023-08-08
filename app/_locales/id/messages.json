@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
   "deposit": {
     "message": "Deposit"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Aktifkan API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableToken": {
     "message": "aktifkan $1",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Ups! Ada yang salah."
-  },
-  "source": {
-    "message": "Sumber"
   },
   "speedUp": {
     "message": "Percepat"

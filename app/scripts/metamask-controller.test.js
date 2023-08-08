@@ -17,6 +17,7 @@ import {
 } from '@metamask/phishing-controller';
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
+import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -168,9 +169,13 @@ const firstTimeState = {
         id: NETWORK_CONFIGURATION_ID_1,
       },
     },
-    networkDetails: {
-      EIPS: {
-        1559: false,
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: false,
+        },
+        status: 'available',
       },
     },
   },

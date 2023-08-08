@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "네트워크를 삭제할까요?"
   },
-  "deleteNetworkDescription": {
-    "message": "이 네트워크를 삭제할까요?"
-  },
   "deposit": {
     "message": "예치"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " 설정에서 이 기능을 활성화합니다."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API 활성화"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
   "enableToken": {
     "message": "$1 활성화",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "죄송합니다! 문제가 생겼습니다."
-  },
-  "source": {
-    "message": "소스"
   },
   "speedUp": {
     "message": "가속화"

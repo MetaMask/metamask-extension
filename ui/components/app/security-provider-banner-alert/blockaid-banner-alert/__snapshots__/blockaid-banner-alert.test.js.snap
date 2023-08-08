@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resultType is 'Malicious 1`] = `
+exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertResponse.result_type is 'Malicious 1`] = `
 <div
-  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
@@ -31,7 +31,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resul
          
         Security advice by 
         <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://blockaid.io/"
           rel="noopener noreferrer"
           target="_blank"
@@ -46,9 +46,9 @@ exports[`Blockaid Banner Alert should render 'danger' UI when ppomResponse.resul
 </div>
 `;
 
-exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resultType is 'Warning 1`] = `
+exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Warning 1`] = `
 <div
-  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
@@ -77,7 +77,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resu
          
         Security advice by 
         <a
-          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           href="https://blockaid.io/"
           rel="noopener noreferrer"
           target="_blank"
@@ -95,7 +95,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when ppomResponse.resu
 exports[`Blockaid Banner Alert should render details when provided 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
   >
     <span
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
@@ -162,7 +162,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
            
           Security advice by 
           <a
-            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
             href="https://blockaid.io/"
             rel="noopener noreferrer"
             target="_blank"

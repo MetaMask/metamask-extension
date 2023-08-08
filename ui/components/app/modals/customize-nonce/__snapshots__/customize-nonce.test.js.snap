@@ -21,7 +21,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           </h4>
           <button
             aria-label="Close"
-            class="box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+            class="mm-box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           >
             <span
               class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -37,7 +37,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
           >
             This is an advanced feature, use cautiously.
             <a
-              class="mm-box mm-text mm-button-base customize-nonce-modal__link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              class="mm-box mm-text mm-button-base customize-nonce-modal__link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
               href="https://metamask.zendesk.com/hc/en-us/articles/7417499333531-How-to-customize-a-transaction-nonce"
               rel="noopener noreferrer"
               target="_blank"
@@ -61,7 +61,7 @@ exports[`Customize Nonce should match snapshot 1`] = `
               class="mm-box mm-box--width-1/6"
             >
               <button
-                class="mm-box mm-text mm-button-base customize-nonce-modal__reset mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                class="mm-box mm-text mm-button-base customize-nonce-modal__reset mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
                 data-testid="customize-nonce-reset"
               >
                 Reset

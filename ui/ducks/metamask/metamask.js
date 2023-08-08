@@ -11,6 +11,7 @@ import {
   getAddressBook,
   getFirstInternalAccountByAddress,
   getSelectedInternalAccount,
+  getSelectedNetworkClientId,
   getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
@@ -49,6 +50,7 @@ const initialState = {
   firstTimeFlowType: null,
   completedOnboarding: false,
   knownMethodData: {},
+  use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
   conversionRate: null,
@@ -319,7 +321,11 @@ export function getUnapprovedTxs(state) {
  * @param state
  */
 export function isNotEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === false;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
+    false
+  );
 }
 
 /**
@@ -328,7 +334,11 @@ export function isNotEIP1559Network(state) {
  * @param state
  */
 export function isEIP1559Network(state) {
-  return state.metamask.networkDetails?.EIPS[1559] === true;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata?.[selectedNetworkClientId].EIPS[1559] ===
+    true
+  );
 }
 
 export function getGasEstimateType(state) {

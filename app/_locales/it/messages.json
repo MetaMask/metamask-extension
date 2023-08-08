@@ -719,9 +719,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sei sicuro di voler eliminare questa rete?"
-  },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
   },

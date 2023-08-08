@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Удалить сеть?"
   },
-  "deleteNetworkDescription": {
-    "message": "Уверены, что хотите удалить эту сеть?"
-  },
   "deposit": {
     "message": "Внести деньги"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Включить API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
   "enableToken": {
     "message": "активирует для $1",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Ой! Что-то пошло не так."
-  },
-  "source": {
-    "message": "Источник"
   },
   "speedUp": {
     "message": "Ускорить"
