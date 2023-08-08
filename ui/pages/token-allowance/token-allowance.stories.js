@@ -34,7 +34,7 @@ export default {
       control: 'text',
     },
     isMultiLayerFeeNetwork: {
-      control: 'text',
+      control: 'boolean',
     },
     supportsEIP1559: {
       control: 'boolean',
@@ -84,7 +84,7 @@ export default {
     hexTransactionTotal: '0x44364c5bb0000',
     isMultiLayerFeeNetwork: false,
     supportsEIP1559: false,
-    userAddress: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
+    userAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     tokenAddress: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
     data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
     isSetApproveForAll: false,
@@ -109,7 +109,7 @@ export default {
       },
       sendFlowHistory: [],
       txParams: {
-        from: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
+        from: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
         to: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
         value: '0x0',
         data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
@@ -135,7 +135,7 @@ export default {
           },
           sendFlowHistory: [],
           txParams: {
-            from: '0xdd34b35ca1de17dfcdc07f79ff1f8f94868c40a1',
+            from: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
             to: '0x55797717b9947b31306f4aac7ad1365c6e3923bd',
             value: '0x0',
             data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
