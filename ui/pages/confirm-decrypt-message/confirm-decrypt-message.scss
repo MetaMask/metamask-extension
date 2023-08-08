@@ -165,7 +165,7 @@
   &__message {
     overflow-wrap: break-word;
     margin: 20px;
-    overflow: hidden;
+    overflow: auto;
     border: 1px solid var(--color-border-alternative);
     padding: 5px;
     border-radius: 5px;
