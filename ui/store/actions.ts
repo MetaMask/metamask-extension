@@ -435,23 +435,23 @@ export function addNewAccount(
 
     dispatch(showLoadingIndication());
 
+    let newAccount;
     try {
       const { accounts } = await submitRequestToBackground('addNewAccount', [
         oldHdAccounts.length,
       ]);
-      const newAccount = accounts.find((account) => !oldAccounts[account.id]);
-
-      if (accountName) {
-        dispatch(setAccountLabel(newAccount.id, accountName));
-      }
-      return newAccount;
+      newAccount = accounts.find((account) => !oldAccounts[account.id]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
     } finally {
       dispatch(hideLoadingIndication());
-      await forceUpdateMetamaskState(dispatch);
     }
+    await forceUpdateMetamaskState(dispatch);
+    if (accountName) {
+      dispatch(setAccountLabel(newAccount.id, accountName));
+    }
+    return newAccount;
   };
 }
 
