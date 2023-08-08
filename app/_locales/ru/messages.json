@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Удалить сеть?"
   },
-  "deleteNetworkDescription": {
-    "message": "Уверены, что хотите удалить эту сеть?"
-  },
   "deposit": {
     "message": "Внести деньги"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "Ой! Что-то пошло не так."
-  },
-  "source": {
-    "message": "Источник"
   },
   "speedUp": {
     "message": "Ускорить"

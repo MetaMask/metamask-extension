@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigur vreți să ștergeți această rețea?"
-  },
   "details": {
     "message": "Detalii"
   },

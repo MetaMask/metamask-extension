@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },
-  "deleteNetworkDescription": {
-    "message": "このネットワークを削除しますか?"
-  },
   "deposit": {
     "message": "入金"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "申し訳ありません。問題が発生しました。"
-  },
-  "source": {
-    "message": "ソース"
   },
   "speedUp": {
     "message": "スピードアップ"

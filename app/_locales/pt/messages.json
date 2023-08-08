@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Excluir rede?"
   },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
-  },
   "deposit": {
     "message": "Depositar"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
-  },
-  "source": {
-    "message": "Origem"
   },
   "speedUp": {
     "message": "Acelerar"

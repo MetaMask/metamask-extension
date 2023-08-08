@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Xóa mạng?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bạn có chắc chắn muốn xóa mạng này không?"
-  },
   "deposit": {
     "message": "Nạp"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "Rất tiếc! Đã xảy ra sự cố."
-  },
-  "source": {
-    "message": "Nguồn"
   },
   "speedUp": {
     "message": "Tăng tốc"

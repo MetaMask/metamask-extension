@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },

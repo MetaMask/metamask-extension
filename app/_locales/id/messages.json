@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
   "deposit": {
     "message": "Deposit"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "Ups! Ada yang salah."
-  },
-  "source": {
-    "message": "Sumber"
   },
   "speedUp": {
     "message": "Percepat"

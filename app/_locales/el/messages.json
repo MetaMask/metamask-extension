@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },
-  "deleteNetworkDescription": {
-    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
   "deposit": {
     "message": "Κατάθεση"
   },
@@ -3233,9 +3230,6 @@
   },
   "somethingWentWrong": {
     "message": "Ουπς! Κάτι πήγε στραβά."
-  },
-  "source": {
-    "message": "Πηγή"
   },
   "speedUp": {
     "message": "Επιτάχυνση"

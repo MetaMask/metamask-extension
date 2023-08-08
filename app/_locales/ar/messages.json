@@ -215,9 +215,6 @@
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
   },
-  "deleteNetworkDescription": {
-    "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },

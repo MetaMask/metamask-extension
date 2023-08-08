@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda pasti anda ingin padamkan rangkaian ini?"
-  },
   "details": {
     "message": "Butiran"
   },

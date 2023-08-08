@@ -905,9 +905,6 @@
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
   },
-  "deleteNetworkDescription": {
-    "message": "Souhaitez-vous vraiment supprimer ce réseau ?"
-  },
   "deposit": {
     "message": "Effectuez un dépôt"
   },
@@ -3236,9 +3233,6 @@
   },
   "somethingWentWrong": {
     "message": "Oups !  Quelque chose a mal tourné. "
-  },
-  "source": {
-    "message": "Source"
   },
   "speedUp": {
     "message": "Accélérer"

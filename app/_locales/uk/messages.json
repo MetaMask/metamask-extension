@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Видалити мережу?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
