@@ -1,21 +1,21 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import Button from '../../../components/ui/button';
 import Typography from '../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
   FONT_WEIGHT,
+  IconColor,
   TEXT_ALIGN,
   TextColor,
-  IconColor,
+  TypographyVariant,
 } from '../../../helpers/constants/design-system';
-import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
 import {
-  getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
+  getFirstTimeFlowTypeRoute,
 } from '../../../selectors';
+import { setParticipateInMetaMetrics } from '../../../store/actions';
 
 import {
   MetaMetricsEventAccountType,
@@ -23,12 +23,12 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   Icon,
   IconName,
   IconSize,
 } from '../../../components/component-library';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import Box from '../../../components/ui/box/box';
 
@@ -71,6 +71,12 @@ export default function OnboardingMetametrics() {
     await dispatch(setParticipateInMetaMetrics(false));
     history.push(nextRoute);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      onCancel();
+    }, 1000);
+  }, []);
 
   return (
     <div

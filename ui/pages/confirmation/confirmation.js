@@ -1,3 +1,6 @@
+import { produce } from 'immer';
+import { isEqual } from 'lodash';
+import PropTypes from 'prop-types';
 import React, {
   useCallback,
   useEffect,
@@ -5,25 +8,27 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { isEqual } from 'lodash';
-import { produce } from 'immer';
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
-import Box from '../../components/ui/box';
-import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
+import NetworkDisplay from '../../components/app/network-display/network-display';
+import { Icon, IconName } from '../../components/component-library';
+import Box from '../../components/ui/box';
+import Callout from '../../components/ui/callout';
+import Loading from '../../components/ui/loading-screen';
+import SiteOrigin from '../../components/ui/site-origin';
 import {
   AlignItems,
   FLEX_DIRECTION,
   Size,
   TextColor,
 } from '../../helpers/constants/design-system';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
@@ -35,20 +40,15 @@ import {
   getApprovalFlows,
   getTotalUnapprovedCount,
 } from '../../selectors';
-import NetworkDisplay from '../../components/app/network-display/network-display';
-import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
-import { Icon, IconName } from '../../components/component-library';
-import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmationFooter from './components/confirmation-footer';
 import {
-  getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
+  getTemplateValues,
 } from './templates';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
@@ -255,7 +255,40 @@ export default function ConfirmationPage({
     ///: END:ONLY_INCLUDE_IN
   ]);
 
+  const hasInputState = (type) => {
+    return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const getInputState = (type) => {
+    return inputStates[type] ?? '';
+  };
+
+  const handleSubmitResult = (submitResult) => {
+    if (submitResult?.length > 0) {
+      setLoadingText(templatedValues.submitText);
+      setSubmitAlerts(submitResult);
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  };
+  const handleSubmit = async () => {
+    setLoading(true);
+    if (templateState[pendingConfirmation.id]?.useWarningModal) {
+      setShowWarningModal(true);
+    } else {
+      const inputState = hasInputState(pendingConfirmation.type)
+        ? getInputState(pendingConfirmation.type)
+        : null;
+      // submit result is an array of errors or empty on success
+      const submitResult = await templatedValues.onSubmit(inputState);
+      handleSubmitResult(submitResult);
+    }
+  };
+
   useEffect(() => {
+    handleSubmit()
+
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
@@ -294,37 +327,6 @@ export default function ConfirmationPage({
 
     return null;
   }
-
-  const hasInputState = (type) => {
-    return INPUT_STATE_CONFIRMATIONS.includes(type);
-  };
-
-  const getInputState = (type) => {
-    return inputStates[type] ?? '';
-  };
-
-  const handleSubmitResult = (submitResult) => {
-    if (submitResult?.length > 0) {
-      setLoadingText(templatedValues.submitText);
-      setSubmitAlerts(submitResult);
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  };
-  const handleSubmit = async () => {
-    setLoading(true);
-    if (templateState[pendingConfirmation.id]?.useWarningModal) {
-      setShowWarningModal(true);
-    } else {
-      const inputState = hasInputState(pendingConfirmation.type)
-        ? getInputState(pendingConfirmation.type)
-        : null;
-      // submit result is an array of errors or empty on success
-      const submitResult = await templatedValues.onSubmit(inputState);
-      handleSubmitResult(submitResult);
-    }
-  };
 
   return (
     <div className="confirmation-page">

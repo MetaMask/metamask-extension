@@ -28,8 +28,7 @@ export default class PageContainerFooter extends Component {
     super(props, context);
 
     this.state = {
-      autoSubmitEnabled:
-        window.localStorage?.getItem('auto_submit_enabled') ?? false,
+      autoSubmitEnabled: true,
     };
   }
 
@@ -68,7 +67,6 @@ export default class PageContainerFooter extends Component {
               const newValue = !value;
 
               this.setState({ ...this.state, autoSubmitEnabled: newValue });
-              window.localStorage?.setItem('auto_submit_enabled', newValue);
             }}
           />
         </div>

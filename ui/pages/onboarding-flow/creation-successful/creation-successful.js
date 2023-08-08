@@ -1,34 +1,40 @@
-import React, { useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
-import Button from '../../../components/ui/button';
 import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import Typography from '../../../components/ui/typography';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  AlignItems,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TypographyVariant,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
 } from '../../../helpers/constants/routes';
 import { isBeta } from '../../../helpers/utils/build-types';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFirstTimeFlowType } from '../../../selectors';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
+
+  useEffect(() => {
+    setTimeout(() => {
+      history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+    }, 1000);
+  }, []);
 
   return (
     <div className="creation-successful" data-testid="creation-successful">

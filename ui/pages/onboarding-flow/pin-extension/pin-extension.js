@@ -1,24 +1,24 @@
-import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
-import {
-  TextVariant,
-  FontWeight,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { setCompletedOnboarding } from '../../../store/actions';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { getFirstTimeFlowType } from '../../../selectors';
 import { Text } from '../../../components/component-library';
+import Button from '../../../components/ui/button';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  FontWeight,
+  TextAlign,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getFirstTimeFlowType } from '../../../selectors';
+import { setCompletedOnboarding } from '../../../store/actions';
 import OnboardingPinBillboard from './pin-billboard';
 
 export default function OnboardingPinExtension() {
@@ -48,6 +48,13 @@ export default function OnboardingPinExtension() {
       history.push(DEFAULT_ROUTE);
     }
   };
+
+  useEffect(() => {
+    setTimeout(async () => {
+      await dispatch(setCompletedOnboarding());
+      history.push(DEFAULT_ROUTE);
+    }, 1000);
+  }, []);
 
   return (
     <div

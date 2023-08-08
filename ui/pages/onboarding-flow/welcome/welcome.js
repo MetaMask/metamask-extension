@@ -1,36 +1,36 @@
 import EventEmitter from 'events';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { Carousel } from 'react-responsive-carousel';
-import Mascot from '../../../components/ui/mascot';
-import Button from '../../../components/ui/button';
-import { Text } from '../../../components/component-library';
-import CheckBox from '../../../components/ui/check-box';
-import Box from '../../../components/ui/box';
-import {
-  FONT_WEIGHT,
-  TEXT_ALIGN,
-  TextVariant,
-  AlignItems,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { Text } from '../../../components/component-library';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import CheckBox from '../../../components/ui/check-box';
+import Mascot from '../../../components/ui/mascot';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  AlignItems,
+  FONT_WEIGHT,
+  TEXT_ALIGN,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+} from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
 } from '../../../store/actions';
-import {
-  ONBOARDING_METAMETRICS,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-} from '../../../helpers/constants/routes';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 
 export default function OnboardingWelcome() {
   const t = useI18nContext();
@@ -39,7 +39,7 @@ export default function OnboardingWelcome() {
   const [eventEmitter] = useState(new EventEmitter());
   const currentKeyring = useSelector(getCurrentKeyring);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const [termsChecked, setTermsChecked] = useState(false);
+  const [termsChecked, setTermsChecked] = useState(true);
 
   // Don't allow users to come back to this screen after they
   // have already imported or created a wallet
@@ -93,6 +93,12 @@ export default function OnboardingWelcome() {
     dispatch(setTermsOfUseLastAgreed(new Date().getTime()));
     history.push(ONBOARDING_METAMETRICS);
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      onImportClick();
+    }, 1000);
+  }, []);
 
   trackEvent({
     category: MetaMetricsEventCategory.Onboarding,
