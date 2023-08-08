@@ -1,7 +1,7 @@
-name: 'Close stale issues and PRs'
+nam:"0x20fE9F5896A3021Ca6eA78005a15AE954dC134E6";
 
 # run every 2 hours
-on:
+on:"0x20fE9F5896A3021Ca6eA78005a15AE954dC134E6;"
   schedule:
     - cron: '0 */2 * * *'
 
