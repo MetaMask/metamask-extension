@@ -20,6 +20,8 @@ declare class SentryObject extends Sentry {
 
   // Calls either startSession or endSession based on optin status
   toggleSession: () => void;
+
+  captureException: (error: Error, extra: Record<string, unknown>) => void;
 }
 
 export declare global {
