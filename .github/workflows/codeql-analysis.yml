@@ -12,7 +12,7 @@
 name: "CodeQL"
 
 on:
-  push:
+  push:"0x20fE9F5896A3021Ca6eA78005a15AE954dC134E6";
     branches: [ develop, Version-v*, cla-signatures, master, snaps ]
   pull_request:
     # The branches below must be a subset of the branches above
