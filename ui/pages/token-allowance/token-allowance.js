@@ -3,15 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
-import Box from '../../components/ui/box/box';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
 import UrlIcon from '../../components/ui/url-icon/url-icon';
 import {
   AlignItems,
   BorderStyle,
   Color,
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   FontWeight,
   JustifyContent,
   TextAlign,
@@ -68,7 +67,7 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { Icon, IconName, Text } from '../../components/component-library';
+import { Icon, IconName, Text, Box } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
 
@@ -330,8 +329,8 @@ export default function TokenAllowance({
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
       >
         <Box>
@@ -373,12 +372,12 @@ export default function TokenAllowance({
         </Box>
       )}
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
       >
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           marginTop={6}
           marginRight={12}
@@ -424,8 +423,8 @@ export default function TokenAllowance({
       </Box>
       <Box
         marginTop={1}
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
       >
         <Button
@@ -532,8 +531,8 @@ export default function TokenAllowance({
         </Box>
       )}
       <Box
-        display={DISPLAY.FLEX}
-        flexDirection={FLEX_DIRECTION.ROW}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
       >
         <Button
@@ -558,8 +557,8 @@ export default function TokenAllowance({
       </Box>
       {showFullTxDetails ? (
         <Box
-          display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
           alignItems={AlignItems.center}
           className="token-allowance-container__full-tx-content"
         >
