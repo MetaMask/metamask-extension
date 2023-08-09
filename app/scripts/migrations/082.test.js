@@ -539,7 +539,6 @@ describe('migration #82', () => {
       new Error(
         `state.PreferencesController.frequentRpcListDetail contains an element of type string`,
       ),
-      { extra: {} },
     );
   });
 
@@ -675,7 +674,6 @@ describe('migration #82', () => {
       new Error(
         `typeof state.PreferencesController.frequentRpcListDetail is undefined`,
       ),
-      { extra: {} },
     );
   });
 
@@ -753,7 +751,6 @@ describe('migration #82', () => {
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
       new Error(`typeof state.PreferencesController is undefined`),
-      { extra: {} },
     );
   });
 
@@ -770,7 +767,6 @@ describe('migration #82', () => {
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
       new Error(`typeof state.NetworkController is undefined`),
-      { extra: {} },
     );
   });
 });

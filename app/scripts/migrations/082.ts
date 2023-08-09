@@ -33,10 +33,6 @@ function transformState(state: Record<string, unknown>) {
       new Error(
         `typeof state.PreferencesController is ${typeof state.PreferencesController}`,
       ),
-      {
-        // "extra" key is required by Sentry
-        extra: {},
-      },
     );
     return state;
   }
@@ -48,10 +44,6 @@ function transformState(state: Record<string, unknown>) {
       new Error(
         `typeof state.NetworkController is ${typeof state.NetworkController}`,
       ),
-      {
-        // "extra" key is required by Sentry
-        extra: {},
-      },
     );
     return state;
   }
@@ -68,10 +60,6 @@ function transformState(state: Record<string, unknown>) {
           `typeof state.PreferencesController.frequentRpcListDetail is ${typeof state
             .PreferencesController.frequentRpcListDetail}`,
         ),
-        {
-          // "extra" key is required by Sentry
-          extra: {},
-        },
       );
     }
     return state;
@@ -85,10 +73,6 @@ function transformState(state: Record<string, unknown>) {
       new Error(
         `state.PreferencesController.frequentRpcListDetail contains an element of type ${typeof erroneousElement}`,
       ),
-      {
-        // "extra" key is required by Sentry
-        extra: {},
-      },
     );
     return state;
   }
