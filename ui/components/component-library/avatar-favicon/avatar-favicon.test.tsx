@@ -2,7 +2,8 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { AvatarFavicon, AVATAR_FAVICON_SIZES } from '.';
+import { AvatarFaviconSize } from './avatar-favicon.types';
+import { AvatarFavicon } from '.';
 
 describe('AvatarFavicon', () => {
   const args = {
@@ -51,46 +52,46 @@ describe('AvatarFavicon', () => {
     const { getByTestId } = render(
       <>
         <AvatarFavicon
-          size={AVATAR_FAVICON_SIZES.XS}
-          data-testid={AVATAR_FAVICON_SIZES.XS}
+          size={AvatarFaviconSize.Xs}
+          data-testid={AvatarFaviconSize.Xs}
           {...args}
         />
         <AvatarFavicon
-          size={AVATAR_FAVICON_SIZES.SM}
-          data-testid={AVATAR_FAVICON_SIZES.SM}
+          size={AvatarFaviconSize.Sm}
+          data-testid={AvatarFaviconSize.Sm}
           {...args}
         />
         <AvatarFavicon
-          size={AVATAR_FAVICON_SIZES.MD}
-          data-testid={AVATAR_FAVICON_SIZES.MD}
+          size={AvatarFaviconSize.Md}
+          data-testid={AvatarFaviconSize.Md}
           {...args}
         />
         <AvatarFavicon
-          size={AVATAR_FAVICON_SIZES.LG}
-          data-testid={AVATAR_FAVICON_SIZES.LG}
+          size={AvatarFaviconSize.Lg}
+          data-testid={AvatarFaviconSize.Lg}
           {...args}
         />
         <AvatarFavicon
-          size={AVATAR_FAVICON_SIZES.XL}
-          data-testid={AVATAR_FAVICON_SIZES.XL}
+          size={AvatarFaviconSize.Xl}
+          data-testid={AvatarFaviconSize.Xl}
           {...args}
         />
       </>,
     );
-    expect(getByTestId(AVATAR_FAVICON_SIZES.XS)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.XS}`,
+    expect(getByTestId(AvatarFaviconSize.Xs)).toHaveClass(
+      `mm-avatar-base--size-${AvatarFaviconSize.Xs}`,
     );
-    expect(getByTestId(AVATAR_FAVICON_SIZES.SM)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.SM}`,
+    expect(getByTestId(AvatarFaviconSize.Sm)).toHaveClass(
+      `mm-avatar-base--size-${AvatarFaviconSize.Sm}`,
     );
-    expect(getByTestId(AVATAR_FAVICON_SIZES.MD)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.MD}`,
+    expect(getByTestId(AvatarFaviconSize.Md)).toHaveClass(
+      `mm-avatar-base--size-${AvatarFaviconSize.Md}`,
     );
-    expect(getByTestId(AVATAR_FAVICON_SIZES.LG)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.LG}`,
+    expect(getByTestId(AvatarFaviconSize.Lg)).toHaveClass(
+      `mm-avatar-base--size-${AvatarFaviconSize.Lg}`,
     );
-    expect(getByTestId(AVATAR_FAVICON_SIZES.XL)).toHaveClass(
-      `mm-avatar-base--size-${AVATAR_FAVICON_SIZES.XL}`,
+    expect(getByTestId(AvatarFaviconSize.Xl)).toHaveClass(
+      `mm-avatar-base--size-${AvatarFaviconSize.Xl}`,
     );
   });
 
