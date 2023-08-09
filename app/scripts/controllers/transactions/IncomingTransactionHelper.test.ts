@@ -29,6 +29,7 @@ const FROM_BLOCK_DECIMAL_MOCK = 32;
 const BLOCK_TRACKER_MOCK = {
   addListener: jest.fn(),
   removeListener: jest.fn(),
+  getLatestBlock: jest.fn(() => FROM_BLOCK_HEX_MOCK),
 } as unknown as jest.Mocked<BlockTracker>;
 
 const CONTROLLER_ARGS_MOCK = {
@@ -42,7 +43,6 @@ const CONTROLLER_ARGS_MOCK = {
 const TRANSACTION_MOCK: TransactionMeta = {
   blockNumber: '123',
   chainId: '0x1',
-  hash: '0x1',
   status: TransactionStatus.submitted,
   time: 0,
   txParams: { to: '0x1' },
@@ -84,7 +84,7 @@ async function emitBlockTrackerLatestEvent(
     });
   }
 
-  helper.hub.addListener('updatedTransactions', transactionsListener);
+  helper.hub.addListener('transactions', transactionsListener);
   helper.hub.addListener('updatedLastFetchedBlockNumbers', blockNumberListener);
 
   if (start !== false) {
@@ -97,7 +97,8 @@ async function emitBlockTrackerLatestEvent(
 
   return {
     transactions: transactionsListener.mock.calls[0]?.[0],
-    lastFetchBlockNumbers: blockNumberListener.mock.calls[0]?.[0],
+    lastFetchedBlockNumbers:
+      blockNumberListener.mock.calls[0]?.[0].lastFetchedBlockNumbers,
     transactionsListener,
     blockNumberListener,
   };
@@ -191,25 +192,50 @@ describe('IncomingTransactionHelper', () => {
       });
     });
 
-    describe('emits updatedTransactions event', () => {
+    describe('emits transactions event', () => {
       it('if new transaction fetched', async () => {
         const helper = new IncomingTransactionHelper({
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource: createRemoteTransactionSourceMock([
             TRANSACTION_MOCK_2,
           ]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
         });
 
         const { transactions } = await emitBlockTrackerLatestEvent(helper);
 
-        expect(transactions).toStrictEqual([
-          TRANSACTION_MOCK,
-          TRANSACTION_MOCK_2,
-        ]);
+        expect(transactions).toStrictEqual({
+          added: [TRANSACTION_MOCK_2],
+          updated: [],
+        });
       });
 
-      it('if existing transaction fetched with different status', async () => {
+      it('if new outgoing transaction fetched and update transactions enabled', async () => {
+        const outgoingTransaction = {
+          ...TRANSACTION_MOCK_2,
+          txParams: {
+            ...TRANSACTION_MOCK_2.txParams,
+            from: '0x1',
+            to: '0x2',
+          },
+        };
+
+        const helper = new IncomingTransactionHelper({
+          ...CONTROLLER_ARGS_MOCK,
+          remoteTransactionSource: createRemoteTransactionSourceMock([
+            outgoingTransaction,
+          ]),
+          updateTransactions: true,
+        });
+
+        const { transactions } = await emitBlockTrackerLatestEvent(helper);
+
+        expect(transactions).toStrictEqual({
+          added: [outgoingTransaction],
+          updated: [],
+        });
+      });
+
+      it('if existing transaction fetched with different status and update transactions enabled', async () => {
         const updatedTransaction = {
           ...TRANSACTION_MOCK,
           status: TransactionStatus.confirmed,
@@ -221,31 +247,54 @@ describe('IncomingTransactionHelper', () => {
             updatedTransaction,
           ]),
           getLocalTransactions: () => [TRANSACTION_MOCK],
+          updateTransactions: true,
         });
 
         const { transactions } = await emitBlockTrackerLatestEvent(helper);
 
-        expect(transactions).toStrictEqual([updatedTransaction]);
+        expect(transactions).toStrictEqual({
+          added: [],
+          updated: [updatedTransaction],
+        });
       });
 
       it('sorted by time in ascending order', async () => {
-        const firstTransaction = { ...TRANSACTION_MOCK_2, time: 5 };
+        const firstTransaction = { ...TRANSACTION_MOCK, time: 5 };
         const secondTransaction = { ...TRANSACTION_MOCK, time: 6 };
+        const thirdTransaction = { ...TRANSACTION_MOCK, time: 7 };
 
         const helper = new IncomingTransactionHelper({
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource: createRemoteTransactionSourceMock([
             firstTransaction,
+            thirdTransaction,
+            secondTransaction,
           ]),
-          getLocalTransactions: () => [secondTransaction],
         });
 
         const { transactions } = await emitBlockTrackerLatestEvent(helper);
 
-        expect(transactions).toStrictEqual([
-          firstTransaction,
-          secondTransaction,
-        ]);
+        expect(transactions).toStrictEqual({
+          added: [firstTransaction, secondTransaction, thirdTransaction],
+          updated: [],
+        });
+      });
+
+      it('does not if identical transaction fetched and update transactions enabled', async () => {
+        const helper = new IncomingTransactionHelper({
+          ...CONTROLLER_ARGS_MOCK,
+          remoteTransactionSource: createRemoteTransactionSourceMock([
+            TRANSACTION_MOCK,
+          ]),
+          getLocalTransactions: () => [TRANSACTION_MOCK],
+          updateTransactions: true,
+        });
+
+        const { transactionsListener } = await emitBlockTrackerLatestEvent(
+          helper,
+        );
+
+        expect(transactionsListener).not.toHaveBeenCalled();
       });
 
       it('does not if disabled', async () => {
@@ -296,13 +345,19 @@ describe('IncomingTransactionHelper', () => {
         expect(transactionsListener).not.toHaveBeenCalled();
       });
 
-      it('does not if incoming only and no incoming transactions', async () => {
+      it('does not if update transactions disabled and no incoming transactions', async () => {
         const helper = new IncomingTransactionHelper({
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource: createRemoteTransactionSourceMock([
-            { ...TRANSACTION_MOCK, txParams: { to: '0x2' } } as TransactionMeta,
+            {
+              ...TRANSACTION_MOCK,
+              txParams: { to: '0x2' },
+            } as TransactionMeta,
+            {
+              ...TRANSACTION_MOCK,
+              txParams: { to: undefined } as any,
+            } as TransactionMeta,
           ]),
-          incomingOnly: true,
         });
 
         const { transactionsListener } = await emitBlockTrackerLatestEvent(
@@ -352,14 +407,13 @@ describe('IncomingTransactionHelper', () => {
           remoteTransactionSource: createRemoteTransactionSourceMock([
             TRANSACTION_MOCK_2,
           ]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
         });
 
-        const { lastFetchBlockNumbers } = await emitBlockTrackerLatestEvent(
+        const { lastFetchedBlockNumbers } = await emitBlockTrackerLatestEvent(
           helper,
         );
 
-        expect(lastFetchBlockNumbers).toStrictEqual({
+        expect(lastFetchedBlockNumbers).toStrictEqual({
           [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
             parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
         });
@@ -369,7 +423,6 @@ describe('IncomingTransactionHelper', () => {
         const helper = new IncomingTransactionHelper({
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource: createRemoteTransactionSourceMock([]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
         });
 
         const { blockNumberListener } = await emitBlockTrackerLatestEvent(
@@ -385,7 +438,6 @@ describe('IncomingTransactionHelper', () => {
           remoteTransactionSource: createRemoteTransactionSourceMock([
             { ...TRANSACTION_MOCK_2, blockNumber: undefined },
           ]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
         });
 
         const { blockNumberListener } = await emitBlockTrackerLatestEvent(
@@ -404,7 +456,6 @@ describe('IncomingTransactionHelper', () => {
               txParams: { to: '0x2' },
             } as TransactionMeta,
           ]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
         });
 
         const { blockNumberListener } = await emitBlockTrackerLatestEvent(
@@ -420,7 +471,6 @@ describe('IncomingTransactionHelper', () => {
           remoteTransactionSource: createRemoteTransactionSourceMock([
             TRANSACTION_MOCK_2,
           ]),
-          getLocalTransactions: () => [TRANSACTION_MOCK],
           lastFetchedBlockNumbers: {
             [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
               parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
@@ -507,6 +557,29 @@ describe('IncomingTransactionHelper', () => {
       expect(
         CONTROLLER_ARGS_MOCK.blockTracker.removeListener,
       ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('update', () => {
+    it('emits transactions event', async () => {
+      const listener = jest.fn();
+
+      const helper = new IncomingTransactionHelper({
+        ...CONTROLLER_ARGS_MOCK,
+        remoteTransactionSource: createRemoteTransactionSourceMock([
+          TRANSACTION_MOCK_2,
+        ]),
+      });
+
+      helper.hub.on('transactions', listener);
+
+      await helper.update();
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith({
+        added: [TRANSACTION_MOCK_2],
+        updated: [],
+      });
     });
   });
 });

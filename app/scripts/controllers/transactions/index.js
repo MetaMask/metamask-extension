@@ -226,7 +226,6 @@ export default class TransactionController extends EventEmitter {
       blockTracker: this.blockTracker,
       getCurrentAccount: () => this.getSelectedAddress(),
       getNetworkState: () => this._getNetworkState(),
-      incomingOnly: true,
       isEnabled: () =>
         Boolean(
           this.preferencesStore.getState().featureFlags
@@ -236,18 +235,17 @@ export default class TransactionController extends EventEmitter {
       remoteTransactionSource: new EtherscanRemoteTransactionSource({
         includeTokenTransfers: false,
       }),
+      updateTransactions: false,
     });
 
     this.incomingTransactionHelper.hub.on(
-      'updatedTransactions',
+      'transactions',
       this._onIncomingTransactions.bind(this),
     );
 
     this.incomingTransactionHelper.hub.on(
       'updatedLastFetchedBlockNumbers',
-      (lastFetchedBlockNumbers) => {
-        this.store.updateState({ lastFetchedBlockNumbers });
-      },
+      this._onUpdatedLastFetchedBlockNumbers.bind(this),
     );
 
     this.txStateManager.store.subscribe(() =>
@@ -2779,13 +2777,13 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  _onIncomingTransactions(transactions) {
+  _onIncomingTransactions({ added: transactions }) {
     log.debug('Detected new incoming transactions', transactions);
 
     const currentTransactions = this.store.getState().transactions || {};
 
     const incomingTransactions = transactions
-      .filter((tx) => !this._hasTransactionHash(tx, currentTransactions))
+      .filter((tx) => !this._hasTransactionHash(tx.hash, currentTransactions))
       .reduce((result, tx) => {
         result[tx.id] = tx;
         return result;
@@ -2797,6 +2795,10 @@ export default class TransactionController extends EventEmitter {
     };
 
     this.store.updateState({ transactions: updatedTransactions });
+  }
+
+  _onUpdatedLastFetchedBlockNumbers({ lastFetchedBlockNumbers }) {
+    this.store.updateState({ lastFetchedBlockNumbers });
   }
 
   _hasTransactionHash(hash, transactions) {

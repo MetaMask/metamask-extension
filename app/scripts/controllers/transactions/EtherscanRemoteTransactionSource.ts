@@ -13,6 +13,7 @@ import type {
   EtherscanTokenTransactionMeta,
   EtherscanTransactionMeta,
   EtherscanTransactionMetaBase,
+  EtherscanTransactionRequest,
   EtherscanTransactionResponse,
 } from './etherscan';
 import {
@@ -24,14 +25,21 @@ import {
   RemoteTransactionSourceRequest,
 } from './types';
 
+/**
+ * A RemoteTransactionSource that fetches transaction data from Etherscan.
+ */
 export class EtherscanRemoteTransactionSource
   implements RemoteTransactionSource
 {
+  #apiKey?: string;
+
   #includeTokenTransfers: boolean;
 
   constructor({
+    apiKey,
     includeTokenTransfers,
-  }: { includeTokenTransfers?: boolean } = {}) {
+  }: { apiKey?: string; includeTokenTransfers?: boolean } = {}) {
+    this.#apiKey = apiKey;
     this.#includeTokenTransfers = includeTokenTransfers ?? true;
   }
 
@@ -42,8 +50,9 @@ export class EtherscanRemoteTransactionSource
   async fetchTransactions(
     request: RemoteTransactionSourceRequest,
   ): Promise<TransactionMeta[]> {
-    const etherscanRequest = {
+    const etherscanRequest: EtherscanTransactionRequest = {
       ...request,
+      apiKey: this.#apiKey,
       chainId: request.currentChainId,
     };
 
