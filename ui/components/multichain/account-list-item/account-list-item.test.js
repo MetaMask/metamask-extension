@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -34,7 +35,7 @@ describe('AccountListItem', () => {
     const { container } = render();
     expect(screen.getByText(identity.name)).toBeInTheDocument();
     expect(
-      screen.getByText(shortenAddress(identity.address)),
+      screen.getByText(shortenAddress(toChecksumHexAddress(identity.address))),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
 
@@ -68,7 +69,9 @@ describe('AccountListItem', () => {
     );
     expect(optionsButton).toBeInTheDocument();
     fireEvent.click(optionsButton);
-    expect(document.querySelector('.menu__background')).toBeInTheDocument();
+    expect(
+      document.querySelector('.multichain-account-list-item-menu__popover'),
+    ).toBeInTheDocument();
   });
 
   it('executes the action when the item is clicked', () => {
@@ -100,4 +103,17 @@ describe('AccountListItem', () => {
 
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  it('renders the snap label for snap accounts', () => {
+    const { getByText } = render({
+      identity: {
+        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
+        name: 'Snap Account',
+      },
+    });
+
+    expect(getByText('Snaps')).toBeInTheDocument();
+  });
+  ///: END:ONLY_INCLUDE_IN
 });

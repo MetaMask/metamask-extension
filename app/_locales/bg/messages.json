@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Свързване с тестова мрежа на Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Свързване с тестова мрежа на Linea Goerli"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Изтриване"
   },
-  "deleteAccount": {
-    "message": "Изтриване на акаунт"
-  },
   "deleteNetwork": {
     "message": "Да се изтрие ли мрежата?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Наистина ли искате да изтриете тази мрежа?"
   },
   "details": {
     "message": "Подробности"
@@ -402,7 +396,7 @@
   "likeToImportTokens": {
     "message": "Искате ли да добавите тези жетони?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестова мрежа на Linea Goerli"
   },
   "links": {
@@ -440,9 +434,6 @@
   },
   "mustSelectOne": {
     "message": "Трябва да изберете поне 1 жетон."
-  },
-  "myAccounts": {
-    "message": "Моите акаунти"
   },
   "needImportFile": {
     "message": "Трябва да изберете файл за импортиране.",
@@ -561,9 +552,6 @@
   },
   "privateNetwork": {
     "message": "Частна мрежа"
-  },
-  "queue": {
-    "message": "Опашка"
   },
   "readdToken": {
     "message": "Можете да добавите този жетон в бъдеще, като отидете на „Добавяне на жетон“ в менюто с опции на акаунти."

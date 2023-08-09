@@ -3,7 +3,7 @@ import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 
-import { DetectedTokensBanner } from './detected-token-banner';
+import { DetectedTokensBanner } from '.';
 
 describe('DetectedTokensBanner', () => {
   let setShowDetectedTokensSpy;

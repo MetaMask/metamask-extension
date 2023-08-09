@@ -4,10 +4,11 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { GlobalMenu } from '.';
 
-const render = () => {
+const render = (metamaskStateChanges = {}) => {
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
+      ...metamaskStateChanges,
     },
   });
   return renderWithProvider(
@@ -17,8 +18,10 @@ const render = () => {
 };
 
 const mockLockMetaMask = jest.fn();
+const mockSetAccountDetailsAddress = jest.fn();
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
+  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 describe('AccountListItem', () => {
@@ -30,18 +33,6 @@ describe('AccountListItem', () => {
     });
   });
 
-  it('opens the portfolio site when item is clicked', async () => {
-    global.platform = { openTab: jest.fn() };
-
-    const { getByTestId } = render();
-    fireEvent.click(getByTestId('global-menu-portfolio'));
-    await waitFor(() => {
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: `/?metamaskEntry=ext&metametricsId=`,
-      });
-    });
-  });
-
   it('opens the support site when item is clicked', async () => {
     global.platform = { openTab: jest.fn() };
 
@@ -49,6 +40,34 @@ describe('AccountListItem', () => {
     fireEvent.click(getByTestId('global-menu-support'));
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalled();
+    });
+  });
+
+  it('disables the settings item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeDisabled();
+    });
+  });
+
+  it('enables the settings item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-settings')).toBeEnabled();
+    });
+  });
+
+  it('disables the connected sites item when there is an active transaction', async () => {
+    const { getByTestId } = render();
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeDisabled();
+    });
+  });
+
+  it('enables the connected sites item when there is no active transaction', async () => {
+    const { getByTestId } = render({ unapprovedTxs: {} });
+    await waitFor(() => {
+      expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
     });
   });
 

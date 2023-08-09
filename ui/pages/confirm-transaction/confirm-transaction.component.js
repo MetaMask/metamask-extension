@@ -33,6 +33,7 @@ import { usePrevious } from '../../hooks/usePrevious';
 import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
+  use4ByteResolutionSelector,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -71,6 +72,7 @@ const ConfirmTransaction = () => {
     unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
+  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -127,7 +129,7 @@ const ConfirmTransaction = () => {
       const { txParams: { data } = {}, origin } = transaction;
 
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
 
       const txId = transactionId || paramsTransactionId;
@@ -154,7 +156,7 @@ const ConfirmTransaction = () => {
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
@@ -178,6 +180,7 @@ const ConfirmTransaction = () => {
     totalUnapproved,
     transaction,
     transactionId,
+    use4ByteResolution,
   ]);
 
   if (isValidTokenMethod && isValidTransactionId) {

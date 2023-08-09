@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteAccount": {
-    "message": "Hapus Akaun"
-  },
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Anda pasti anda ingin padamkan rangkaian ini?"
   },
   "details": {
     "message": "Butiran"
@@ -395,7 +389,7 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
@@ -427,9 +421,6 @@
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
-  "myAccounts": {
-    "message": "Akaun Saya"
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -545,9 +536,6 @@
   },
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
-  },
-  "queue": {
-    "message": "Baris Gilir"
   },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."

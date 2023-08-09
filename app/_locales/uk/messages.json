@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Підключення до тестової мережі Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Підключення до тестової мережі Linea Goerli"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Видалити"
   },
-  "deleteAccount": {
-    "message": "Видалити обліковий запис"
-  },
   "deleteNetwork": {
     "message": "Видалити мережу?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Ви впевнені, що хочете видалити цю мережу?"
   },
   "details": {
     "message": "Деталі"
@@ -406,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Ви б хотіли додати ці токени?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Тестова мережа Linea Goerli"
   },
   "links": {
@@ -444,9 +438,6 @@
   },
   "mustSelectOne": {
     "message": "Слід вибрати хоча б 1 токен."
-  },
-  "myAccounts": {
-    "message": "Мої облікові записи"
   },
   "needImportFile": {
     "message": "Потрібно вибрати файл для імпорту.",
@@ -565,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "Приватна мережа"
-  },
-  "queue": {
-    "message": "Черга"
   },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "

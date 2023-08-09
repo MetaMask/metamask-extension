@@ -2,7 +2,12 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { useHistory, useLocation } from 'react-router-dom';
+import {
+  useHistory,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useLocation,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-router-dom';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -10,7 +15,7 @@ import {
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
 ///: END:ONLY_INCLUDE_IN
-
+import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
@@ -20,23 +25,25 @@ import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
+  getAccountType,
   isBalanceCached,
   getShouldShowFiat,
   getCurrentKeyring,
   getSwapsDefaultToken,
   getIsSwapsChain,
-  getIsBridgeChain,
-  getIsBuyableChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  getIsBridgeChain,
+  getIsBuyableChain,
   getMetaMetricsId,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
@@ -44,34 +51,34 @@ import {
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { AssetType } from '../../../../shared/constants/transaction';
-import {
-  ButtonIcon,
-  ButtonIconSize,
-  Icon,
-  IconName,
-} from '../../component-library';
+import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
+///: END:ONLY_INCLUDE_IN
 import WalletOverview from './wallet-overview';
 
-const EthOverview = ({ className }) => {
+const EthOverview = ({ className, showAddress }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const location = useLocation();
+  const isBridgeChain = useSelector(getIsBridgeChain);
+  const isBuyableChain = useSelector(getIsBuyableChain);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  ///: END:ONLY_INCLUDE_IN
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const isBridgeChain = useSelector(getIsBridgeChain);
-  const isBuyableChain = useSelector(getIsBuyableChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
-  const metaMetricsId = useSelector(getMetaMetricsId);
+  const accountType = useSelector(getAccountType);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -79,15 +86,15 @@ const EthOverview = ({ className }) => {
 
   const portfolioEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Portfolio Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 
   const stakingEvent = () => {
     trackEvent({
-      category: 'Navigation',
-      event: 'Clicked Stake Button',
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.MMIPortfolioButtonClicked,
     });
   };
 
@@ -96,12 +103,12 @@ const EthOverview = ({ className }) => {
       <>
         <IconButton
           className="eth-overview__button"
-          Icon={<Icon name={IconName.Stake} color={IconColor.primaryDefault} />}
+          Icon={<Icon name={IconName.Stake} color={IconColor.primaryInverse} />}
           label={t('stake')}
           onClick={() => {
             stakingEvent();
             global.platform.openTab({
-              url: 'https://metamask-institutional.io/staking',
+              url: 'https://metamask-institutional.io/stake',
             });
           }}
         />
@@ -109,7 +116,7 @@ const EthOverview = ({ className }) => {
           <IconButton
             className="eth-overview__button"
             Icon={
-              <Icon name={IconName.Diagram} color={IconColor.primaryDefault} />
+              <Icon name={IconName.Diagram} color={IconColor.primaryInverse} />
             }
             label={t('portfolio')}
             onClick={() => {
@@ -123,10 +130,13 @@ const EthOverview = ({ className }) => {
   };
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
+  ///: END:ONLY_INCLUDE_IN
 
   return (
     <WalletOverview
+      showAddress={showAddress}
       balance={
         <Tooltip
           position="top"
@@ -156,42 +166,6 @@ const EthOverview = ({ className }) => {
               {balanceIsCached ? (
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <ButtonIcon
-                  className="eth-overview__portfolio-button"
-                  data-testid="home__portfolio-site"
-                  color={IconColor.primaryDefault}
-                  iconName={IconName.Diagram}
-                  ariaLabel={t('portfolio')}
-                  size={ButtonIconSize.Lg}
-                  onClick={() => {
-                    const portfolioUrl = getPortfolioUrl(
-                      '',
-                      'ext',
-                      metaMetricsId,
-                    );
-                    global.platform.openTab({
-                      url: portfolioUrl,
-                    });
-                    trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.PortfolioLinkClicked,
-                        properties: {
-                          url: portfolioUrl,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
             </div>
             {showFiat && balance && (
               <UserPreferencedCurrencyDisplay
@@ -282,6 +256,14 @@ const EthOverview = ({ className }) => {
               />
             }
             onClick={() => {
+              if (accountType === 'custody') {
+                global.platform.openTab({
+                  url: MMI_SWAPS_URL,
+                });
+
+                return;
+              }
+
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -302,6 +284,7 @@ const EthOverview = ({ className }) => {
               }
             }}
             label={t('swap')}
+            data-testid="token-overview-button-swap"
             tooltipRender={
               isSwapsChain
                 ? null
@@ -364,6 +347,39 @@ const EthOverview = ({ className }) => {
             />
             ///: END:ONLY_INCLUDE_IN
           }
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            <IconButton
+              className="eth-overview__button"
+              data-testid="eth-overview-portfolio"
+              Icon={
+                <Icon
+                  name={IconName.Diagram}
+                  color={IconColor.primaryInverse}
+                />
+              }
+              label={t('portfolio')}
+              onClick={() => {
+                const url = getPortfolioUrl(
+                  '',
+                  'ext_portfolio_button',
+                  metaMetricsId,
+                );
+                global.platform.openTab({ url });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.PortfolioLinkClicked,
+                  properties: {
+                    location: 'Home',
+                    text: 'Portfolio',
+                    chain_id: chainId,
+                    token_symbol: 'ETH',
+                  },
+                });
+              }}
+            />
+            ///: END:ONLY_INCLUDE_IN
+          }
         </>
       }
       className={className}
@@ -373,10 +389,7 @@ const EthOverview = ({ className }) => {
 
 EthOverview.propTypes = {
   className: PropTypes.string,
-};
-
-EthOverview.defaultProps = {
-  className: undefined,
+  showAddress: PropTypes.bool,
 };
 
 export default EthOverview;

@@ -1,0 +1,15 @@
+.activity-list-item {
+  cursor: pointer;
+
+  &__content-container {
+    overflow: hidden;
+  }
+
+  &__primary-currency {
+    max-width: 130px;
+
+    @include screen-sm-min {
+      max-width: max-content;
+    }
+  }
+}

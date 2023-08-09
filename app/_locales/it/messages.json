@@ -158,10 +158,6 @@
   "addCustomToken": {
     "message": "Aggiungi token personalizzato"
   },
-  "addCustomTokenByContractAddress": {
-    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1.",
-    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -203,6 +199,10 @@
   },
   "addToken": {
     "message": "Aggiungi Token"
+  },
+  "addTokenByContractAddress": {
+    "message": "Non trovi un token? Puoi aggiungere qualsiasi token incollando il suo indirizzo. L'indirizzo del contratto del Token può essere trovato su $1",
+    "description": "$1 is a blockchain explorer for a specific network, e.g. Etherscan for Ethereum"
   },
   "address": {
     "message": "Indirizzo"
@@ -419,13 +419,6 @@
     "message": "Per $1 una transazione la commissione di gas deve crescere almeno del 10% per essere riconosciuto dalla rete.",
     "description": "$1 is string 'cancel' or 'speed up'"
   },
-  "cancelSwapForFee": {
-    "message": "Annulla scambio per ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Transaction"
-  },
-  "cancelSwapForFree": {
-    "message": "Annulla scambio gratuitamente"
-  },
   "cancelled": {
     "message": "Annullata"
   },
@@ -532,7 +525,7 @@
   "connectingToGoerli": {
     "message": "Connessione alla Rete di Test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Connessione alla Rete di test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -723,14 +716,8 @@
   "delete": {
     "message": "Elimina"
   },
-  "deleteAccount": {
-    "message": "Cancella account"
-  },
   "deleteNetwork": {
     "message": "Cancella la rete?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sei sicuro di voler eliminare questa rete?"
   },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
@@ -1106,7 +1093,7 @@
   "likeToImportTokens": {
     "message": "Vorresti aggiungere questi token?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rete di test Linea Goerli"
   },
   "links": {
@@ -1123,9 +1110,6 @@
   },
   "lock": {
     "message": "Disconnetti"
-  },
-  "lockTimeTooGreat": {
-    "message": "Tempo di inattività troppo lungo"
   },
   "mainnet": {
     "message": "Rete Ethereum Principale"
@@ -1156,9 +1140,6 @@
   },
   "mustSelectOne": {
     "message": "Devi selezionare almeno un token."
-  },
-  "myAccounts": {
-    "message": "Miei Account"
   },
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
@@ -1316,9 +1297,6 @@
   },
   "provide": {
     "message": "Fornisci"
-  },
-  "queue": {
-    "message": "Coda"
   },
   "queued": {
     "message": "In coda"

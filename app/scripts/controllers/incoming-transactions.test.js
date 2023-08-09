@@ -78,11 +78,11 @@ function getMockPreferencesController({
   };
 }
 
-function getMockOnboardingController() {
+function getMockOnboardingController({ completedOnboarding = true } = {}) {
   return {
     store: {
       getState: sinon.stub().returns({
-        completedOnboarding: true,
+        completedOnboarding,
       }),
       subscribe: sinon.spy(),
     },
@@ -95,6 +95,16 @@ function getMockBlockTracker() {
     removeListener: sinon.spy(),
     testProperty: 'fakeBlockTracker',
     getCurrentBlock: () => '0xa',
+  };
+}
+
+function getDefaultControllerOpts() {
+  return {
+    blockTracker: getMockBlockTracker(),
+    ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+    preferencesController: getMockPreferencesController(),
+    onboardingController: getMockOnboardingController(),
+    initState: getEmptyInitState(),
   };
 }
 
@@ -226,6 +236,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: {},
+          getCurrentChainId: () => CHAIN_IDS.GOERLI,
         },
       );
 
@@ -828,6 +839,97 @@ describe('IncomingTransactionsController', function () {
       } catch (error) {
         assert(error.message === 'TIMEOUT', 'TIMEOUT error should be thrown');
       }
+    });
+  });
+
+  describe('block explorer lookup', function () {
+    let sandbox;
+
+    beforeEach(function () {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(function () {
+      sandbox.restore();
+    });
+
+    function stubFetch() {
+      return sandbox.stub(window, 'fetch');
+    }
+
+    function assertStubNotCalled(stub) {
+      assert(stub.callCount === 0);
+    }
+
+    async function triggerUpdate(incomingTransactionsController) {
+      const subscription =
+        incomingTransactionsController.preferencesController.store.subscribe.getCall(
+          1,
+        ).args[0];
+
+      // Sets address causing a call to _update
+      await subscription({ selectedAddress: MOCK_SELECTED_ADDRESS });
+    }
+
+    it('should not happen when incoming transactions feature is disabled', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          preferencesController: getMockPreferencesController({
+            showIncomingTransactions: false,
+          }),
+        },
+      );
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should not happen when onboarding is in progress', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          onboardingController: getMockOnboardingController({
+            completedOnboarding: false,
+          }),
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should not happen when chain id is not supported', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          getCurrentChainId: () => FAKE_CHAIN_ID,
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assertStubNotCalled(fetchStub);
+    });
+
+    it('should make api call when chain id, incoming features, and onboarding status are ok', async function () {
+      const incomingTransactionsController = new IncomingTransactionsController(
+        {
+          ...getDefaultControllerOpts(),
+          getCurrentChainId: () => CHAIN_IDS.GOERLI,
+          onboardingController: getMockOnboardingController({
+            completedOnboarding: true,
+          }),
+          preferencesController: getMockPreferencesController({
+            showIncomingTransactions: true,
+          }),
+        },
+      );
+
+      const fetchStub = stubFetch();
+      await triggerUpdate(incomingTransactionsController);
+      assert(fetchStub.callCount === 1);
     });
   });
 

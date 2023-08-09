@@ -249,9 +249,6 @@
   "mustSelectOne": {
     "message": "குறைந்தது 1 டோக்கனை தேர்ந்தெடுக்க வேண்டும்."
   },
-  "myAccounts": {
-    "message": "எனது கணக்குகள்"
-  },
   "needImportFile": {
     "message": "இறக்குமதி செய்ய ஒரு கோப்பை நீங்கள் தேர்ந்தெடுக்க வேண்டும்.",
     "description": "User is important an account and needs to add a file to continue"
@@ -324,9 +321,6 @@
   },
   "privateNetwork": {
     "message": "தனியார் நெட்வொர்க்"
-  },
-  "queue": {
-    "message": "வரிசை"
   },
   "readdToken": {
     "message": "உங்கள் கணக்கு விருப்பங்கள் மெனுவில் \"டோக்கனைச் சேர்\" என்பதன் மூலம் நீங்கள் எதிர்காலத்தில் இந்த டோக்கனை மீண்டும் சேர்க்கலாம்."

@@ -1,15 +1,21 @@
 const { strict: assert } = require('assert');
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
-  mockPhishingDetection,
   openDapp,
   defaultGanacheOptions,
   assertAccountBalanceForDOM,
-  restartServiceWorker,
   SERVICE_WORKER_URL,
   regularDelayMs,
+  WALLET_PASSWORD,
+  unlockWallet,
+  terminateServiceWorker,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+
+const {
+  setupPhishingDetectionMocks,
+  BlockProvider,
+} = require('../tests/phishing-controller/helpers');
 
 describe('Phishing warning page', function () {
   const driverOptions = { openDevToolsForTabs: true };
@@ -19,21 +25,26 @@ describe('Phishing warning page', function () {
 
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
-        testSpecificMock: mockPhishingDetection,
         driverOptions,
+        testSpecificMock: async (mockServer) => {
+          return setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            blocklist: ['127.0.0.1'],
+          });
+        },
+        dapp: true,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
-        // log in wallet
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+
+        await unlockWallet(driver, WALLET_PASSWORD);
 
         // DAPP is detected as phishing page
         await openDapp(driver);
+
         const phishingPageHeader = await driver.findElements({
           text: 'Deceptive site ahead',
           tag: 'h1',
@@ -42,7 +53,7 @@ describe('Phishing warning page', function () {
 
         // Restart service worker
         await driver.openNewPage(SERVICE_WORKER_URL);
-        await restartServiceWorker(driver);
+        await terminateServiceWorker(driver);
 
         await driver.delay(regularDelayMs);
         // wait until extension is reloaded
@@ -55,6 +66,7 @@ describe('Phishing warning page', function () {
         await openDapp(driver);
         // - extension, dapp, service worker and new dapp
         await driver.waitUntilXWindowHandles(4);
+
         const newPhishingPageHeader = await driver.findElements({
           text: 'Deceptive site ahead',
           tag: 'h1',

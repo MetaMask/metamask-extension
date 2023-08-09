@@ -151,7 +151,7 @@
   "connectingToGoerli": {
     "message": "Ansluter till Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ansluter till Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -205,14 +205,8 @@
   "delete": {
     "message": "Radera"
   },
-  "deleteAccount": {
-    "message": "Radera konto"
-  },
   "deleteNetwork": {
     "message": "Radera nätverk?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Är du säker på att du vill ta bort detta nätverk?"
   },
   "details": {
     "message": "Info"
@@ -396,7 +390,7 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testnätverk"
   },
   "links": {
@@ -428,9 +422,6 @@
   },
   "mustSelectOne": {
     "message": "Minst 1 token måste väljas."
-  },
-  "myAccounts": {
-    "message": "Mina konton"
   },
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
@@ -549,9 +540,6 @@
   },
   "privateNetwork": {
     "message": "Privat nätverk"
-  },
-  "queue": {
-    "message": "Utskriftskö"
   },
   "readdToken": {
     "message": "Du kan lägga till denna token i framtiden genom att välja \"Lägg till token\" i kontots alternativmeny."

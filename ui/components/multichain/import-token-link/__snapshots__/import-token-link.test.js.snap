@@ -1,0 +1,75 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Import Token Link should match snapshot for goerli chainId 1`] = `
+<div>
+  <div
+    class="mm-box multichain-import-token-link"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="import-token-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/add.svg');"
+        />
+        Import tokens
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="refresh-list-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/refresh.svg');"
+        />
+        Refresh list
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Import Token Link should match snapshot for mainnet chainId 1`] = `
+<div>
+  <div
+    class="mm-box multichain-import-token-link"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="import-token-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/add.svg');"
+        />
+        Import tokens
+      </button>
+    </div>
+    <div
+      class="mm-box mm-box--padding-top-2 mm-box--display-flex mm-box--align-items-center"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-link mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        data-testid="refresh-list-button"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/refresh.svg');"
+        />
+        Refresh list
+      </button>
+    </div>
+  </div>
+</div>
+`;

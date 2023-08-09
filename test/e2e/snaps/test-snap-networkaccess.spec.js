@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -31,16 +30,14 @@ describe('Test Snap networkAccess', function () {
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const dialogButton = await driver.findElement(
-          '#connectNetworkAccessSnap',
-        );
+        const dialogButton = await driver.findElement('#connectnetwork-access');
         await driver.scrollToElement(dialogButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectNetworkAccessSnap');
+        await driver.clickElement('#connectnetwork-access');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
@@ -73,32 +70,18 @@ describe('Test Snap networkAccess', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectNetworkAccessSnap',
-          text: 'Reconnect to networkAccess Snap',
+          css: '#connectnetwork-access',
+          text: 'Reconnect to Network Access Snap',
         });
 
         // click on alert dialog
         await driver.clickElement('#sendNetworkAccessTest');
         await driver.delay(500);
 
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(500);
-
-        // check dialog contents
-        const result = await driver.findElement('.snap-ui-renderer__panel');
-        await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(await result.getText(), 'FETCHED_SUCCESSFULLY');
-
-        // click ok button
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
+        // check for result correctness
+        await driver.waitForSelector({
+          css: '#networkAccessResult',
+          text: '"hello": "world"',
         });
       },
     );

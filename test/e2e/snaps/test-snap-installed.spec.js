@@ -30,10 +30,10 @@ describe('Test Snap Installed', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const confirmButton = await driver.findElement('#connectDialogSnap');
+        const confirmButton = await driver.findElement('#connectdialogs');
         await driver.scrollToElement(confirmButton);
         await driver.delay(500);
-        await driver.clickElement('#connectDialogSnap');
+        await driver.clickElement('#connectdialogs');
         await driver.delay(500);
 
         // switch to metamask extension and click connect
@@ -70,14 +70,14 @@ describe('Test Snap Installed', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectDialogSnap',
-          text: 'Reconnect to Dialog Snap',
+          css: '#connectdialogs',
+          text: 'Reconnect to Dialogs Snap',
         });
 
-        const errorButton = await driver.findElement('#connectErrorSnap');
+        const errorButton = await driver.findElement('#connecterrors');
         await driver.scrollToElement(errorButton);
         await driver.delay(500);
-        await driver.clickElement('#connectErrorSnap');
+        await driver.clickElement('#connecterrors');
 
         // switch to metamask extension and click connect
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
@@ -109,7 +109,7 @@ describe('Test Snap Installed', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#installedSnapsResult',
-          text: 'npm:@metamask/test-snap-dialog, npm:@metamask/test-snap-error',
+          text: 'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         });
       },
     );

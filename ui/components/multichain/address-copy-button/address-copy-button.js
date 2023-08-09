@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { ButtonBase, IconName } from '../../component-library';
 import {
   BackgroundColor,
@@ -14,6 +15,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MINUTE } from '../../../../shared/constants/time';
 
 export const AddressCopyButton = ({
   address,
@@ -21,8 +23,11 @@ export const AddressCopyButton = ({
   wrap = false,
   onClick,
 }) => {
-  const displayAddress = shorten ? shortenAddress(address) : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+  const checksummedAddress = toChecksumHexAddress(address);
+  const displayAddress = shorten
+    ? shortenAddress(checksummedAddress)
+    : checksummedAddress;
+  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
   return (
@@ -30,7 +35,7 @@ export const AddressCopyButton = ({
       <ButtonBase
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
-          handleCopy(address);
+          handleCopy(checksummedAddress);
           onClick?.();
         }}
         paddingRight={4}

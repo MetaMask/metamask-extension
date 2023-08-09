@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import log from 'loglevel';
 import { isValidSIWEOrigin } from '@metamask/controller-utils';
+import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { BannerAlert, Text } from '../../component-library';
 import Popover from '../../ui/popover';
 import Checkbox from '../../ui/check-box';
@@ -18,6 +19,7 @@ import {
   unconfirmedMessagesHashSelector,
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -25,30 +27,32 @@ import {
   SEVERITIES,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import {
+  resolvePendingApproval,
+  rejectPendingApproval,
+  rejectAllMessages,
+  completedTx,
+  showModal,
+} from '../../../store/actions';
 
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { showModal, cancelMsgs } from '../../../store/actions';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({
-  txData,
-  cancelPersonalMessage,
-  signPersonalMessage,
-}) {
+export default function SignatureRequestSIWE({ txData }) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
-
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -59,6 +63,7 @@ export default function SignatureRequestSIWE({
       origin,
       siwe: { parsedMessage },
     },
+    id,
   } = txData;
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
@@ -75,34 +80,31 @@ export default function SignatureRequestSIWE({
   const [hasAgreedToDomainWarning, setHasAgreedToDomainWarning] =
     useState(false);
 
-  const showSecurityProviderBanner =
-    (txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
-      txData?.securityProviderResponse?.flagAsDangerous !==
-        SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS) ||
-    (txData?.securityProviderResponse &&
-      Object.keys(txData.securityProviderResponse).length === 0);
-
-  const onSign = useCallback(
-    async (event) => {
-      try {
-        await signPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [signPersonalMessage],
+  const showSecurityProviderBanner = isSuspiciousResponse(
+    txData?.securityProviderResponse,
   );
 
-  const onCancel = useCallback(
-    async (event) => {
-      try {
-        await cancelPersonalMessage(event);
-      } catch (e) {
-        log.error(e);
-      }
-    },
-    [cancelPersonalMessage],
-  );
+  const onSign = useCallback(async () => {
+    try {
+      await dispatch(resolvePendingApproval(id, null));
+      dispatch(completedTx(id));
+    } catch (e) {
+      log.error(e);
+    }
+  }, [id, dispatch]);
+
+  const onCancel = useCallback(async () => {
+    try {
+      await dispatch(
+        rejectPendingApproval(
+          id,
+          serializeError(ethErrors.provider.userRejectedRequest()),
+        ),
+      );
+    } catch (e) {
+      log.error(e);
+    }
+  }, []);
 
   const handleCancelAll = () => {
     const unapprovedTxCount = messagesCount;
@@ -112,7 +114,7 @@ export default function SignatureRequestSIWE({
         name: 'REJECT_TRANSACTIONS',
         unapprovedTxCount,
         onSubmit: async () => {
-          await dispatch(cancelMsgs(valuesFor(messagesList)));
+          await dispatch(rejectAllMessages(valuesFor(messagesList)));
           dispatch(clearConfirmTransaction());
           history.push(mostRecentOverviewPage);
         },
@@ -134,13 +136,18 @@ export default function SignatureRequestSIWE({
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
       {showSecurityProviderBanner && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
       )}
-
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert
@@ -155,13 +162,11 @@ export default function SignatureRequestSIWE({
           ])}
         </BannerAlert>
       )}
-
       {isLedgerWallet && (
         <div className="confirm-approve-content__ledger-instruction-wrapper">
           <LedgerInstructionField showDataInstruction />
         </div>
       )}
-
       {!isSIWEDomainValid && (
         <BannerAlert
           severity={SEVERITIES.DANGER}
@@ -242,12 +247,4 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
-  /**
-   * Handler for cancel button
-   */
-  cancelPersonalMessage: PropTypes.func.isRequired,
-  /**
-   * Handler for sign button
-   */
-  signPersonalMessage: PropTypes.func.isRequired,
 };

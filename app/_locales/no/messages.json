@@ -154,7 +154,7 @@
   "connectingToGoerli": {
     "message": "Oppretter forbindelse med Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Oppretter forbindelse med Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -208,14 +208,8 @@
   "delete": {
     "message": "Slett"
   },
-  "deleteAccount": {
-    "message": "Slett konto "
-  },
   "deleteNetwork": {
     "message": "Slette nettverk? "
-  },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på at du vil slette dette nettverket?"
   },
   "details": {
     "message": "Detaljer"
@@ -429,9 +423,6 @@
   "mustSelectOne": {
     "message": "Må velge minst 1 token. "
   },
-  "myAccounts": {
-    "message": "Mine kontoer "
-  },
   "needImportFile": {
     "message": "Du må velge en fil å importere.",
     "description": "User is important an account and needs to add a file to continue"
@@ -549,9 +540,6 @@
   },
   "privateNetwork": {
     "message": "Privat nettverk "
-  },
-  "queue": {
-    "message": "Kø"
   },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."

@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Goerli "
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "در حال اتصال به شبکه آزمایشی Linea Goerli"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteAccount": {
-    "message": "حذف حساب"
-  },
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
-  },
-  "deleteNetworkDescription": {
-    "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
   },
   "details": {
     "message": "جزئیات"
@@ -406,7 +400,7 @@
   "likeToImportTokens": {
     "message": "آیا میخواهید این رمزیاب ها را اضافه نمایید؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبکه آزمایشی Linea Goerli"
   },
   "links": {
@@ -444,9 +438,6 @@
   },
   "mustSelectOne": {
     "message": "باید حداقل 1 رمزیاب را انتخاب کنید."
-  },
-  "myAccounts": {
-    "message": "حساب های من"
   },
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
@@ -565,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "شبکه شخصی"
-  },
-  "queue": {
-    "message": "صف"
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."

@@ -106,10 +106,35 @@ export const UI_NOTIFICATIONS = {
     id: 20,
     date: null,
   },
+  21: {
+    id: 21,
+    date: null,
+    image: {
+      src: 'images/swaps-redesign.svg',
+      width: '100%',
+    },
+  },
+  22: {
+    id: 22,
+    date: null,
+    image: {
+      src: 'images/global-menu-block-explorer.svg',
+    },
+  },
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  23: {
+    id: 23,
+    date: null,
+    image: {
+      src: 'images/blockaid-security-provider.png',
+      width: '100%',
+    },
+  },
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
-  const formattedLocale = locale.replace('_', '-');
+  const formattedLocale = locale?.replace('_', '-');
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
@@ -294,5 +319,44 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    21: {
+      ...UI_NOTIFICATIONS[21],
+      title: t('notifications21Title'),
+      description: t('notifications21Description'),
+      actionText: t('notifications21ActionText'),
+      date: UI_NOTIFICATIONS[21].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[21].date),
+          )
+        : '',
+    },
+    22: {
+      ...UI_NOTIFICATIONS[22],
+      title: t('notifications22Title'),
+      description: t('notifications22Description'),
+      actionText: t('notifications22ActionText'),
+      date: UI_NOTIFICATIONS[22].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[22].date),
+          )
+        : '',
+    },
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: {
+      ...UI_NOTIFICATIONS[23],
+      title: t('notifications23Title'),
+      description: [
+        t('notifications23DescriptionOne'),
+        t('notifications23DescriptionTwo'),
+        t('notifications23DescriptionThree'),
+      ],
+      actionText: t('notifications23ActionText'),
+      date: UI_NOTIFICATIONS[23].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[23].date),
+          )
+        : '',
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };

@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Łączenie z siecią testową Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Łączenie z siecią testową Linea Goerli"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Usuń"
   },
-  "deleteAccount": {
-    "message": "Usuń konto"
-  },
   "deleteNetwork": {
     "message": "Usunąć sieć?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Czy na pewno chcesz usunąć tę sieć?"
   },
   "details": {
     "message": "Szczegóły"
@@ -406,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Czy chcesz dodać te tokeny?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Sieć testowa Linea Goerli"
   },
   "links": {
@@ -441,9 +435,6 @@
   },
   "mustSelectOne": {
     "message": "Należy wybrać co najmniej 1 token."
-  },
-  "myAccounts": {
-    "message": "Moje konta"
   },
   "needImportFile": {
     "message": "Musisz wybrać plik do zaimportowania.",
@@ -559,9 +550,6 @@
   },
   "privateNetwork": {
     "message": "Sieć prywatna"
-  },
-  "queue": {
-    "message": "Kolejka"
   },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."

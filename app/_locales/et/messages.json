@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Ühendamine Goerli testvõrguga"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Ühendamine Linea Goerli testvõrguga"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Kustuta"
   },
-  "deleteAccount": {
-    "message": "Kustuta konto"
-  },
   "deleteNetwork": {
     "message": "Võrk kustutada?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Olete kindel, et soovite selle võrgu kustutada?"
   },
   "details": {
     "message": "Üksikasjad"
@@ -402,7 +396,7 @@
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli testvõrk"
   },
   "links": {
@@ -434,9 +428,6 @@
   },
   "mustSelectOne": {
     "message": "Peate valima vähemalt 1 loa."
-  },
-  "myAccounts": {
-    "message": "Minu kontod"
   },
   "needImportFile": {
     "message": "Peate importimiseks faili valima.",
@@ -555,9 +546,6 @@
   },
   "privateNetwork": {
     "message": "Privaatvõrk"
-  },
-  "queue": {
-    "message": "Järjekord"
   },
   "readdToken": {
     "message": "Saate selle loa tulevikus tagasi lisada, kui lähete oma kontovalikute menüüs vahelehele „Lisa luba“."

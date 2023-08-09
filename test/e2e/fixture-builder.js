@@ -4,6 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
+const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
@@ -136,6 +137,23 @@ function defaultFixture() {
             id: 19,
             isShown: true,
           },
+          21: {
+            date: null,
+            id: 21,
+            isShown: true,
+          },
+          22: {
+            date: null,
+            id: 22,
+            isShown: true,
+          },
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          23: {
+            date: null,
+            id: 23,
+            isShown: false,
+          },
+          ///: END:ONLY_INCLUDE_IN
         },
       },
       AppStateController: {
@@ -156,6 +174,7 @@ function defaultFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
@@ -182,8 +201,10 @@ function defaultFixture() {
         incomingTransactions: {},
         incomingTxLastFetchedBlockByChainId: {
           [CHAIN_IDS.MAINNET]: null,
+          [CHAIN_IDS.LINEA_MAINNET]: null,
           [CHAIN_IDS.GOERLI]: null,
           [CHAIN_IDS.SEPOLIA]: null,
+          [CHAIN_IDS.LINEA_GOERLI]: null,
         },
       },
       KeyringController: {
@@ -199,7 +220,13 @@ function defaultFixture() {
       },
       NetworkController: {
         networkId: '1337',
-        networkStatus: 'available',
+        selectedNetworkClientId: 'networkConfigurationId',
+        networksMetadata: {
+          networkConfigurationId: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
         providerConfig: {
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
@@ -207,6 +234,7 @@ function defaultFixture() {
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
           type: 'rpc',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -323,6 +351,7 @@ function onboardingFixture() {
         trezorModel: null,
         usedNetworks: {
           [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
@@ -330,13 +359,20 @@ function onboardingFixture() {
       },
       NetworkController: {
         networkId: '1337',
-        networkStatus: 'available',
+        selectedNetworkClientId: 'networkConfigurationId',
+        networksMetadata: {
+          networkConfigurationId: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
         providerConfig: {
           ticker: 'ETH',
           type: 'rpc',
           rpcUrl: 'http://localhost:8545',
           chainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
+          id: 'networkConfigurationId',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -346,6 +382,7 @@ function onboardingFixture() {
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
             networkConfigurationId: 'networkConfigurationId',
+            type: 'rpc',
           },
         },
       },
@@ -555,7 +592,7 @@ class FixtureBuilder {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
-              name: 'TestDappCollectibles',
+              name: 'TestDappNFTs',
               symbol: 'TDC',
             },
           ],
@@ -566,12 +603,12 @@ class FixtureBuilder {
           [toHex(1337)]: [
             {
               address: `__FIXTURE_SUBSTITUTION__CONTRACT${SMART_CONTRACTS.NFTS}`,
-              description: 'Test Dapp Collectibles for testing.',
+              description: 'Test Dapp NFTs for testing.',
               favorite: false,
               image:
                 'data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjM1MCIgd2lkdGg9IjM1MCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdGggaWQ9Ik15UGF0aCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJyZWQiIGQ9Ik0xMCw5MCBROTAsOTAgOTAsNDUgUTkwLDEwIDUwLDEwIFExMCwxMCAxMCw0MCBRMTAsNzAgNDUsNzAgUTcwLDcwIDc1LDUwIiAvPjwvZGVmcz48dGV4dD48dGV4dFBhdGggaHJlZj0iI015UGF0aCI+UXVpY2sgYnJvd24gZm94IGp1bXBzIG92ZXIgdGhlIGxhenkgZG9nLjwvdGV4dFBhdGg+PC90ZXh0Pjwvc3ZnPg==',
               isCurrentlyOwned: true,
-              name: 'Test Dapp Collectibles #1',
+              name: 'Test Dapp NFTs #1',
               standard: 'ERC721',
               tokenId: '1',
             },

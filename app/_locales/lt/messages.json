@@ -157,7 +157,7 @@
   "connectingToGoerli": {
     "message": "Jungiamasi prie „Goerli“ bandomojo tinklo"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Jungiamasi prie „Linea“ bandomojo tinklo"
   },
   "connectingToMainnet": {
@@ -211,14 +211,8 @@
   "delete": {
     "message": "Ištrinti"
   },
-  "deleteAccount": {
-    "message": "Šalinti paskyrą"
-  },
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Ar tikrai norite panaikinti šį tinklą?"
   },
   "details": {
     "message": "Išsami informacija"
@@ -406,7 +400,7 @@
   "likeToImportTokens": {
     "message": "Ar norėtumėte pridėti šiuos žetonus?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "„Linea“ bandomasis tinklas"
   },
   "links": {
@@ -444,9 +438,6 @@
   },
   "mustSelectOne": {
     "message": "Turite pasirinkti bent 1 žetoną."
-  },
-  "myAccounts": {
-    "message": "Mano paskyros"
   },
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
@@ -565,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
-  },
-  "queue": {
-    "message": "Eilė"
   },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."

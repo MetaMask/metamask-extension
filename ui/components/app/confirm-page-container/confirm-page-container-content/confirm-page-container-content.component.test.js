@@ -1,13 +1,13 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../../shared/constants/security-provider';
 import { TransactionType } from '../../../../../shared/constants/transaction';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../../helpers/constants/error-keys';
-import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -155,7 +155,7 @@ describe('Confirm Page Container Content', () => {
 
   it('should not render SecurityProviderBannerMessage component when flagAsDangerous is not malicious', () => {
     props.txData.securityProviderResponse = {
-      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITIES.NOT_MALICIOUS,
+      flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
     };
 
     const { queryByText } = renderWithProvider(
@@ -196,5 +196,27 @@ describe('Confirm Page Container Content', () => {
       store,
     );
     expect(getByRole('button', { name: 'Buy' })).toBeInTheDocument();
+  });
+
+  it('should display security alert if present', () => {
+    const { getByText } = renderWithProvider(
+      <ConfirmPageContainerContent
+        {...props}
+        txData={{
+          securityAlertResponse: {
+            resultType: 'Malicious',
+            reason: 'blur_farming',
+            description:
+              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+            args: {
+              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+            },
+          },
+        }}
+      />,
+      store,
+    );
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

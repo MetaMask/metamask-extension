@@ -20,6 +20,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -69,7 +70,7 @@ export default function NetworkDisplay({
       label={
         networkType === NETWORK_TYPES.RPC
           ? nickname ?? t('privateNetwork')
-          : t(networkType)
+          : t(getNetworkLabelKey(networkType))
       }
       className={classnames('network-display', {
         'network-display--disabled': disabled,

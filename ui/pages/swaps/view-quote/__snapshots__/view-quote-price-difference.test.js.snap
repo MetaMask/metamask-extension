@@ -36,7 +36,7 @@ exports[`View Price Quote Difference displays a fiat error when calculationError
                   tabindex="0"
                 >
                   <span
-                    class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
@@ -94,7 +94,7 @@ exports[`View Price Quote Difference displays an error when in high bucket 1`] =
                   tabindex="0"
                 >
                   <span
-                    class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
@@ -152,7 +152,7 @@ exports[`View Price Quote Difference displays an error when in medium bucket 1`]
                   tabindex="0"
                 >
                   <span
-                    class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>
@@ -210,7 +210,7 @@ exports[`View Price Quote Difference should match snapshot 1`] = `
                   tabindex="0"
                 >
                   <span
-                    class="box mm-icon mm-icon--size-md box--display-inline-block box--flex-direction-row box--color-inherit"
+                    class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
                     style="mask-image: url('./images/icons/info.svg');"
                   />
                 </div>

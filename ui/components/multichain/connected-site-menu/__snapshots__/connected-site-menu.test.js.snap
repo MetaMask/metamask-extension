@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Connected Site Menu should render the site menu in connected state 1`] = `
+<div>
+  <button
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    data-testid="connection-menu"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-1"
+        class=""
+        data-original-title="Account 2 connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <div
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="mm-box mm-badge-wrapper__badge-container"
+            style="bottom: 2px; right: -4px; z-index: 1;"
+          >
+            <div
+              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-success-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`Connected Site Menu should render the site menu in not connected state 1`] = `
+<div>
+  <button
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    data-testid="connection-menu"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-2"
+        class=""
+        data-original-title="No accounts connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <div
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="mm-box mm-badge-wrapper__badge-container"
+            style="bottom: 2px; right: -4px; z-index: 1;"
+          >
+            <div
+              class="mm-box multichain-connected-site-menu__badge mm-box--background-color-icon-alternative mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;
+
+exports[`Connected Site Menu should render the site menu in not connected to current account state 1`] = `
+<div>
+  <button
+    class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
+    data-testid="connection-menu"
+  >
+    <div>
+      <div
+        aria-describedby="tippy-tooltip-3"
+        class=""
+        data-original-title="Account 2 not connected"
+        data-tooltipped=""
+        style="display: inline;"
+        tabindex="0"
+      >
+        <div
+          class="mm-box mm-badge-wrapper mm-box--display-inline-block"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+            style="mask-image: url('./images/icons/global.svg');"
+          />
+          <div
+            class="mm-box mm-badge-wrapper__badge-container"
+            style="bottom: 4px; right: -1px; z-index: 1;"
+          >
+            <div
+              class="mm-box multichain-connected-site-menu__badge not-connected mm-box--background-color-background-default mm-box--rounded-full mm-box--border-color-success-default mm-box--border-width-2 box--border-style-solid"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </button>
+</div>
+`;

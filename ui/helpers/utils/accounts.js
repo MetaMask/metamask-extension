@@ -1,4 +1,4 @@
-import { INVISIBLE_CHARACTER } from '../../components/component-library/text/deprecated';
+import { InvisibleCharacter } from '../../components/component-library';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -7,7 +7,7 @@ export function getAccountNameErrorMessage(
   defaultAccountName,
 ) {
   const isDuplicateAccountName = accounts.some(
-    (item) => item.name === newAccountName,
+    (item) => item.name.toLowerCase() === newAccountName.toLowerCase(),
   );
 
   const isEmptyAccountName = newAccountName === '';
@@ -25,12 +25,12 @@ export function getAccountNameErrorMessage(
   const isReservedAccountName = reservedRegEx.test(newAccountName);
 
   const isValidAccountName =
-    newAccountName === defaultAccountName || // What is written in the text field is the same as the placeholder
+    newAccountName.toLowerCase() === defaultAccountName.toLowerCase() || // What is written in the text field is the same as the placeholder
     (!isDuplicateAccountName && !isReservedAccountName && !isEmptyAccountName);
 
   let errorMessage;
   if (isValidAccountName) {
-    errorMessage = INVISIBLE_CHARACTER; // Using an invisible character, so the spacing stays constant
+    errorMessage = InvisibleCharacter; // Using an invisible character, so the spacing stays constant
   } else if (isDuplicateAccountName) {
     errorMessage = context.t('accountNameDuplicate');
   } else if (isReservedAccountName) {

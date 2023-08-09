@@ -1,11 +1,17 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-
+import {
+  ListNames,
+  METAMASK_STALELIST_URL,
+  METAMASK_HOTLIST_DIFF_URL,
+  PHISHING_CONFIG_BASE_URL,
+  METAMASK_STALELIST_FILE,
+  METAMASK_HOTLIST_DIFF_FILE,
+} from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
 
 const Ganache = require('../../test/e2e/ganache');
 
@@ -43,26 +49,11 @@ const createLoggerMiddlewareMock = () => (req, res, next) => {
   next();
 };
 
-// Temporarily replace the snaps packages with the Flask versions.
-const proxyPermissions = proxyquire('./controllers/permissions', {
-  './snaps/snap-permissions': proxyquire(
-    './controllers/permissions/snaps/snap-permissions',
-    {
-      // eslint-disable-next-line node/global-require
-      '@metamask/snaps-controllers': require('@metamask/snaps-controllers-flask'),
-      // eslint-disable-next-line node/global-require
-      '@metamask/rpc-methods': require('@metamask/rpc-methods-flask'),
-    },
-  ),
-});
-
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
 
 const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
-  // Temporarily replace the snaps packages with the Flask versions.
-  './controllers/permissions': proxyPermissions,
 }).default;
 
 describe('MetaMaskController', function () {
@@ -75,21 +66,28 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
-    nock('https://static.metafi.codefi.network')
+    nock(PHISHING_CONFIG_BASE_URL)
       .persist()
-      .get('/api/v1/lists/stalelist.json')
+      .get(METAMASK_STALELIST_FILE)
       .reply(
         200,
         JSON.stringify({
           version: 2,
           tolerance: 2,
-          fuzzylist: [],
-          allowlist: [],
-          blocklist: ['127.0.0.1'],
-          lastUpdated: 0,
+          lastUpdated: 1,
+          eth_phishing_detect_config: {
+            fuzzylist: [],
+            allowlist: [],
+            blocklist: ['127.0.0.1'],
+            name: ListNames.MetaMask,
+          },
+          phishfort_hotlist: {
+            blocklist: [],
+            name: ListNames.Phishfort,
+          },
         }),
       )
-      .get('/api/v1/lists/hotlist.json')
+      .get(METAMASK_HOTLIST_DIFF_FILE)
       .reply(
         200,
         JSON.stringify([
@@ -124,6 +122,20 @@ describe('MetaMaskController', function () {
 
   after(async function () {
     await ganacheServer.quit();
+  });
+
+  describe('Phishing Detection Mock', function () {
+    it('should be updated to use v1 of the API', function () {
+      // Update the fixture above if this test fails
+      assert.equal(
+        METAMASK_STALELIST_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+      );
+      assert.equal(
+        METAMASK_HOTLIST_DIFF_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+      );
+    });
   });
 
   describe('#addNewAccount', function () {
@@ -237,35 +249,6 @@ describe('MetaMaskController', function () {
     });
   });
 
-  describe('#updateTransactionSendFlowHistory', function () {
-    it('two sequential calls with same history give same result', async function () {
-      const recipientAddress = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
-
-      await metamaskController.createNewVaultAndKeychain('test@123');
-      const accounts = await metamaskController.keyringController.getAccounts();
-      const txMeta = await metamaskController.getApi().addUnapprovedTransaction(
-        undefined,
-        {
-          from: accounts[0],
-          to: recipientAddress,
-        },
-        ORIGIN_METAMASK,
-      );
-
-      const [transaction1, transaction2] = await Promise.all([
-        metamaskController
-          .getApi()
-          .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
-        Promise.resolve(1).then(() =>
-          metamaskController
-            .getApi()
-            .updateTransactionSendFlowHistory(txMeta.id, 2, ['foo1', 'foo2']),
-        ),
-      ]);
-      assert.deepEqual(transaction1, transaction2);
-    });
-  });
-
   describe('#removePermissionsFor', function () {
     it('should not propagate PermissionsRequestNotFoundError', function () {
       const error = new PermissionsRequestNotFoundError('123');
@@ -342,7 +325,7 @@ describe('MetaMaskController', function () {
   });
 
   describe('#resolvePendingApproval', function () {
-    it('should not propagate ApprovalRequestNotFoundError', function () {
+    it('should not propagate ApprovalRequestNotFoundError', async function () {
       const error = new ApprovalRequestNotFoundError('123');
       metamaskController.approvalController = {
         accept: () => {
@@ -350,7 +333,10 @@ describe('MetaMaskController', function () {
         },
       };
       // Line below will not throw error, in case it throws this test case will fail.
-      metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
+      await metamaskController.resolvePendingApproval(
+        'DUMMY_ID',
+        'DUMMY_VALUE',
+      );
     });
 
     it('should propagate Error other than ApprovalRequestNotFoundError', function () {
@@ -360,9 +346,11 @@ describe('MetaMaskController', function () {
           throw error;
         },
       };
-      assert.throws(() => {
-        metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE');
-      }, error);
+      assert.rejects(
+        () =>
+          metamaskController.resolvePendingApproval('DUMMY_ID', 'DUMMY_VALUE'),
+        error,
+      );
     });
   });
 
