@@ -4204,8 +4204,16 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/safe-event-emitter": true,
+        "json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
         "readable-stream": true
+      }
+    },
+    "json-rpc-middleware-stream>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>events": true
       }
     },
     "koa>is-generator-function>has-tostringtag": {
