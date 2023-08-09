@@ -1,41 +1,41 @@
-import React, { useState, useMemo, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
-import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
-import {
-  TEXT_ALIGN,
-  TypographyVariant,
-  JustifyContent,
-  FONT_WEIGHT,
-  AlignItems,
-} from '../../../helpers/constants/design-system';
-import {
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-} from '../../../helpers/constants/routes';
-import FormField from '../../../components/ui/form-field';
-import Box from '../../../components/ui/box';
-import CheckBox from '../../../components/ui/check-box';
-import {
-  ThreeStepProgressBar,
-  threeStepStages,
-  TwoStepProgressBar,
-  twoStepStages,
-} from '../../../components/app/step-progress-bar';
-import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
-import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  ThreeStepProgressBar,
+  TwoStepProgressBar,
+  threeStepStages,
+  twoStepStages,
+} from '../../../components/app/step-progress-bar';
 import { Icon, IconName } from '../../../components/component-library';
+import Box from '../../../components/ui/box';
+import Button from '../../../components/ui/button';
+import CheckBox from '../../../components/ui/check-box';
+import FormField from '../../../components/ui/form-field';
+import Typography from '../../../components/ui/typography';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
+import {
+  AlignItems,
+  FONT_WEIGHT,
+  JustifyContent,
+  TEXT_ALIGN,
+  TypographyVariant,
+} from '../../../helpers/constants/design-system';
+import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import {
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+} from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getCurrentKeyring, getFirstTimeFlowType } from '../../../selectors';
 
 export default function CreatePassword({
   createNewAccount,
@@ -143,6 +143,16 @@ export default function CreatePassword({
     setConfirmPassword(confirmPasswordInput);
     setConfirmPasswordError(error);
   };
+
+  useEffect(() => {
+    setTimeout(async () => {
+      await importWithRecoveryPhrase(
+        process.env.WALLET_PASSWORD,
+        secretRecoveryPhrase,
+      );
+      history.push(ONBOARDING_COMPLETION_ROUTE);
+    }, 1000);
+  }, []);
 
   const handleCreate = async (event) => {
     event?.preventDefault();
