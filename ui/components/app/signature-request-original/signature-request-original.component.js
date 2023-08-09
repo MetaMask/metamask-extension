@@ -42,6 +42,9 @@ import {
   Text,
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import Box from '../../ui/box/box';
 ///: END:ONLY_INCLUDE_IN
@@ -64,9 +67,6 @@ export default class SignatureRequestOriginal extends Component {
       address: PropTypes.string.isRequired,
       name: PropTypes.string,
     }).isRequired,
-    clearConfirmTransaction: PropTypes.func.isRequired,
-    history: PropTypes.object.isRequired,
-    mostRecentOverviewPage: PropTypes.string.isRequired,
     txData: PropTypes.object.isRequired,
     subjectMetadata: PropTypes.object,
     hardwareWalletRequiresConnection: PropTypes.bool,
@@ -75,6 +75,9 @@ export default class SignatureRequestOriginal extends Component {
     showRejectTransactionsConfirmationModal: PropTypes.func.isRequired,
     cancelAllApprovals: PropTypes.func.isRequired,
     rejectPendingApproval: PropTypes.func.isRequired,
+    clearConfirmTransaction: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired,
+    mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -150,12 +153,18 @@ export default class SignatureRequestOriginal extends Component {
 
     return (
       <div className="request-signature__body">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
           />
         )}
-
         {
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
           this.props.selectedAccount.address ===
@@ -183,7 +192,6 @@ export default class SignatureRequestOriginal extends Component {
           )
           ///: END:ONLY_INCLUDE_IN
         }
-
         <div className="request-signature__origin">
           {
             // Use legacy authorship header for snaps
@@ -211,7 +219,6 @@ export default class SignatureRequestOriginal extends Component {
             ///: END:ONLY_INCLUDE_IN
           }
         </div>
-
         <Typography
           className="request-signature__content__title"
           variant={TypographyVariant.H3}
@@ -229,7 +236,6 @@ export default class SignatureRequestOriginal extends Component {
         >
           {this.context.t('signatureRequestGuidance')}
         </Typography>
-
         <div className={classnames('request-signature__notice')}>{notice}</div>
         <div className="request-signature__rows">
           {rows.map(({ name, value }, index) => {
@@ -258,11 +264,11 @@ export default class SignatureRequestOriginal extends Component {
 
   onSubmit = async () => {
     const {
+      resolvePendingApproval,
+      completedTx,
       clearConfirmTransaction,
       history,
       mostRecentOverviewPage,
-      resolvePendingApproval,
-      completedTx,
       txData,
     } = this.props;
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -272,12 +278,10 @@ export default class SignatureRequestOriginal extends Component {
     }
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     await resolvePendingApproval(txData.id);
     completedTx(txData.id);
     clearConfirmTransaction();
     history.push(mostRecentOverviewPage);
-    ///: END:ONLY_INCLUDE_IN
   };
 
   onCancel = async () => {
@@ -332,11 +336,9 @@ export default class SignatureRequestOriginal extends Component {
             }
             ///: END:ONLY_INCLUDE_IN
 
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
             history.push(mostRecentOverviewPage);
-            ///: END:ONLY_INCLUDE_IN
           }
         }}
         disabled={

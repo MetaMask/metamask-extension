@@ -39,6 +39,7 @@ export default class PreferencesController {
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
       useNftDetection: false,
+      use4ByteResolution: true,
       useCurrencyRateCheck: true,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -67,6 +68,7 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      useAddressBarEnsResolution: true,
       infuraBlocked: null,
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
@@ -166,6 +168,15 @@ export default class PreferencesController {
    */
   setUseNftDetection(useNftDetection) {
     this.store.updateState({ useNftDetection });
+  }
+
+  /**
+   * Setter for the `use4ByteResolution` property
+   *
+   * @param {boolean} use4ByteResolution - (Privacy) Whether or not the user prefers to have smart contract name details resolved with 4byte.directory
+   */
+  setUse4ByteResolution(use4ByteResolution) {
+    this.store.updateState({ use4ByteResolution });
   }
 
   /**
@@ -478,6 +489,15 @@ export default class PreferencesController {
   async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
+  }
+
+  /**
+   * A setter for the `useAddressBarEnsResolution` property
+   *
+   * @param {boolean} useAddressBarEnsResolution - Whether or not user prefers IPFS resolution for domains
+   */
+  async setUseAddressBarEnsResolution(useAddressBarEnsResolution) {
+    this.store.updateState({ useAddressBarEnsResolution });
   }
 
   /**

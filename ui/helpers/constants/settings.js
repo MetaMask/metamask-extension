@@ -165,6 +165,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('use4ByteResolution'),
+    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    route: `${SECURITY_ROUTE}#decode-smart-contracts`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
     descriptionMessage: (t) => t('participateInMetaMetricsDescription'),
     route: `${SECURITY_ROUTE}#metametrics`,
@@ -179,8 +186,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('addCustomIPFSGateway'),
-    descriptionMessage: (t) => t('addCustomIPFSGatewayDescription'),
+    sectionMessage: (t) => t('ipfsGateway'),
+    descriptionMessage: (t) => t('ipfsGatewayDescription'),
     route: `${SECURITY_ROUTE}#add-custom-ipfs-gateway`,
     icon: 'fa fa-lock',
   },
@@ -194,7 +201,8 @@ export const SETTINGS_CONSTANTS = [
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('useMultiAccountBalanceChecker'),
-    descriptionMessage: (t) => t('useMultiAccountBalanceCheckerDescription'),
+    descriptionMessage: (t) =>
+      t('useMultiAccountBalanceCheckerSettingDescription'),
     route: `${SECURITY_ROUTE}#use-multi-account-balance-checker`,
     icon: 'fa fa-lock',
   },
@@ -203,6 +211,27 @@ export const SETTINGS_CONSTANTS = [
     sectionMessage: (t) => t('currencyRateCheckToggle'),
     descriptionMessage: (t) => t('currencyRateCheckToggleDescription'),
     route: `${SECURITY_ROUTE}#price-checker`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('ensDomainsSettingTitle'),
+    descriptionMessage: (t) => t('ensDomainsSettingDescriptionIntro'),
+    route: `${SECURITY_ROUTE}#ens-domains`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('displayNftMedia'),
+    descriptionMessage: (t) => t('displayNftMediaDescription'),
+    route: `${SECURITY_ROUTE}#opensea-api`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('useNftDetection'),
+    descriptionMessage: (t) => t('useNftDetectionDescription'),
+    route: `${SECURITY_ROUTE}#autodetect-nfts`,
     icon: 'fa fa-lock',
   },
   {
@@ -327,20 +356,6 @@ export const SETTINGS_CONSTANTS = [
     descriptionMessage: (t) => t('betaTerms'),
     route: `${ABOUT_US_ROUTE}#beta-terms`,
     iconName: IconName.Info,
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('enableOpenSeaAPI'),
-    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#opensea-api`,
-    icon: 'fa fa-flask',
-  },
-  {
-    tabMessage: (t) => t('experimental'),
-    sectionMessage: (t) => t('useNftDetection'),
-    descriptionMessage: (t) => t('useNftDetectionDescription'),
-    route: `${EXPERIMENTAL_ROUTE}#autodetect-nfts`,
-    icon: 'fa fa-flask',
   },
   {
     tabMessage: (t) => t('advanced'),

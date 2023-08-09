@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addCustomIPFSGateway": {
-    "message": "Agregar puerta de enlace IPFS personalizada"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La puerta de enlace de IPFS permite acceder y visualizar datos alojados por terceros. Puede agregar una puerta de enlace de IPFS personalizada o continuar usando la predeterminada."
-  },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
-  "deleteNetworkDescription": {
-    "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
   "deposit": {
     "message": "Depositar"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Habilite el API de OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
   "enableToken": {
     "message": "activar $1",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
   },
-  "source": {
-    "message": "Fuente"
-  },
   "speedUp": {
     "message": "Acelerar"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Solicitudes de saldo de cuenta por lotes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Procesamos cuentas por lotes y consultamos a Infura para mostrar sus saldos de manera receptiva. Si desactiva esta opción, solo se consultarán las cuentas activas. Algunas dapps no funcionarán a menos que conecte su biletera."
   },
   "useNftDetection": {
     "message": "Detección automática de NFT"

@@ -111,7 +111,7 @@ describe('Swaps - notifications', function () {
         });
         await checkNotification(driver, {
           title: 'Insufficient balance',
-          text: 'You need 50 more TESTETH to complete this swap',
+          text: 'You need 43.4467 more TESTETH to complete this swap',
         });
         await reviewQuote(driver, {
           swapFrom: 'TESTETH',
@@ -141,7 +141,7 @@ describe('Swaps - notifications', function () {
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
         });
         await driver.clickElement(
-          '[data-testid="page-container__import-button"]',
+          '[data-testid="import-tokens-import-button"]',
         );
         await checkNotification(driver, {
           title: 'Token added manually',

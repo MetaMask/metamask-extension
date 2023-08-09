@@ -105,7 +105,15 @@ import { getPermissionSubjects } from './permissions';
  * @param {object} state - Redux state object.
  */
 export function isNetworkLoading(state) {
-  return state.metamask.networkStatus !== NetworkStatus.Available;
+  const selectedNetworkClientId = getSelectedNetworkClientId(state);
+  return (
+    state.metamask.networksMetadata[selectedNetworkClientId].status !==
+    NetworkStatus.Available
+  );
+}
+
+export function getSelectedNetworkClientId(state) {
+  return state.metamask.selectedNetworkClientId;
 }
 
 export function getNetworkIdentifier(state) {
@@ -690,9 +698,9 @@ export function getKnownMethodData(state, data) {
   }
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData } = state.metamask;
-
-  return knownMethodData && knownMethodData[fourBytePrefix];
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+  // If 4byte setting is off, we do not want to return the knownMethodData
+  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {
@@ -1008,6 +1016,10 @@ function getAllowedAnnouncementIds(state) {
     19: false,
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
+    22: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: true,
+    ///: END:ONLY_INCLUDE_IN
   };
 }
 
@@ -1211,6 +1223,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       id: NETWORK_TYPES.GOERLI,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.SEPOLIA,
@@ -1219,6 +1232,7 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       id: NETWORK_TYPES.SEPOLIA,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_GOERLI,
@@ -1230,11 +1244,12 @@ export function getTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
       id: NETWORK_TYPES.LINEA_GOERLI,
+      removable: false,
     },
     // Localhosts
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => chainId === CHAIN_IDS.LOCALHOST,
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => chainId === CHAIN_IDS.LOCALHOST)
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 
@@ -1253,6 +1268,7 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.MAINNET,
       ticker: CURRENCY_SYMBOLS.ETH,
       id: NETWORK_TYPES.MAINNET,
+      removable: false,
     },
     {
       chainId: CHAIN_IDS.LINEA_MAINNET,
@@ -1264,11 +1280,12 @@ export function getNonTestNetworks(state) {
       providerType: NETWORK_TYPES.LINEA_MAINNET,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_MAINNET],
       id: NETWORK_TYPES.LINEA_MAINNET,
+      removable: false,
     },
     // Custom networks added by the user
-    ...Object.values(networkConfigurations).filter(
-      ({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId),
-    ),
+    ...Object.values(networkConfigurations)
+      .filter(({ chainId }) => ![CHAIN_IDS.LOCALHOST].includes(chainId))
+      .map((network) => ({ ...network, removable: true })),
   ];
 }
 

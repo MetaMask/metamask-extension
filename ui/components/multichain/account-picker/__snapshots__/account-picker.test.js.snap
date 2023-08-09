@@ -3,7 +3,7 @@
 exports[`AccountPicker renders properly 1`] = `
 <div>
   <button
-    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md-medium mm-text--ellipsis mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-lg"
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-base--ellipsis multichain-account-picker mm-button-primary mm-text--body-md-medium mm-text--ellipsis mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-transparent mm-box--rounded-lg"
     data-testid="account-menu-icon"
   >
     <span
@@ -31,7 +31,7 @@ exports[`AccountPicker renders properly 1`] = `
         Account 1
       </span>
       <span
-        class="box mm-icon mm-icon--size-sm box--display-inline-block box--flex-direction-row box--color-icon-default"
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
         style="mask-image: url('./images/icons/arrow-down.svg');"
       />
     </span>

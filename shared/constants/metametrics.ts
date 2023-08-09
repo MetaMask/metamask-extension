@@ -484,6 +484,8 @@ export enum MetaMetricsEventName {
   AccountPasswordCreated = 'Account Password Created',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
+  ActivityDetailsOpened = 'Activity Details Opened',
+  ActivityDetailsClosed = 'Activity Details Closed',
   AppInstalled = 'App Installed',
   AppUnlocked = 'App Unlocked',
   AppUnlockedFailed = 'App Unlocked Failed',
@@ -610,6 +612,19 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
+  PrepareSwapPageLoaded = 'Prepare Swap Page Loaded',
+  QuotesRequested = 'Quotes Requested',
+  QuotesReceived = 'Quotes Received',
+  BestQuoteReviewed = 'Best Quote Reviewed',
+  AllAvailableQuotesOpened = 'All Available Quotes Opened',
+  SwapStarted = 'Swap Started',
+  TransactionAdded = 'Transaction Added',
+  TransactionSubmitted = 'Transaction Submitted',
+  TransactionApproved = 'Transaction Approved',
+  SwapCompleted = 'Swap Completed',
+  TransactionFinalized = 'Transaction Finalized',
+  ExitedSwaps = 'Exited Swaps',
+  SwapError = 'Swap Error',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -665,6 +680,10 @@ export enum MetaMetricsEventLinkType {
 export enum MetaMetricsEventKeyType {
   Pkey = 'private_key',
   Srp = 'srp',
+}
+
+export enum MetaMetricsEventErrorType {
+  InsufficientGas = 'insufficient_gas',
 }
 
 export enum MetaMetricsNetworkEventSource {

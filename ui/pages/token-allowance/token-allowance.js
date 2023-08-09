@@ -68,6 +68,9 @@ import {
   updateCustomNonce,
 } from '../../store/actions';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -320,6 +323,13 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}

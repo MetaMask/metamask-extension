@@ -13,9 +13,11 @@ import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 ///: END:ONLY_INCLUDE_IN
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   resolvePendingApproval,
-  rejectPendingApproval,
   completedTx,
+  ///: END:ONLY_INCLUDE_IN
+  rejectPendingApproval,
 } from '../../../store/actions';
 import {
   doesAddressRequireLedgerHidConnection,
@@ -87,6 +89,9 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 
 import Message from './signature-request-message';
@@ -243,6 +248,13 @@ const SignatureRequest = ({ txData }) => {
         <SignatureRequestHeader txData={txData} />
       </div>
       <div className="signature-request-content">
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
           txData?.securityProviderResponse?.flagAsDangerous !==
             SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS) ||

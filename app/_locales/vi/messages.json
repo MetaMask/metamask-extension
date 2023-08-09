@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Thêm địa chỉ liên hệ"
   },
-  "addCustomIPFSGateway": {
-    "message": "Thêm cổng IPFS tùy chỉnh"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Cổng IPFS cho phép truy cập và xem dữ liệu do bên thứ ba lưu trữ. Bạn có thể thêm cổng IPFS tùy chỉnh hoặc tiếp tục sử dụng cổng mặc định."
-  },
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Xóa mạng?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bạn có chắc chắn muốn xóa mạng này không?"
-  },
   "deposit": {
     "message": "Nạp"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Bật lên trong Cài Đặt."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
   "enableToken": {
     "message": "bật $1",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Rất tiếc! Đã xảy ra sự cố."
   },
-  "source": {
-    "message": "Nguồn"
-  },
   "speedUp": {
     "message": "Tăng tốc"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Xử lý hàng loạt yêu cầu số dư tài khoản"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Chúng tôi xử lý hàng loạt tài khoản và kiểm tra với Infura để hiển thị các số dư tài khoản của bạn một cách nhanh chóng. Nếu bạn tắt tính năng này, chỉ những tài khoản đang hoạt động mới được truy vấn. Một số dapp sẽ không hoạt động trừ khi bạn kết nối với ví của mình."
   },
   "useNftDetection": {
     "message": "Tự động phát hiện NFT"

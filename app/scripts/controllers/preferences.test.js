@@ -233,6 +233,25 @@ describe('preferences controller', function () {
     });
   });
 
+  describe('setUse4ByteResolution', function () {
+    it('should default to true', function () {
+      const state = preferencesController.store.getState();
+      assert.equal(state.use4ByteResolution, true);
+    });
+
+    it('should set the use4ByteResolution property in state', function () {
+      assert.equal(
+        preferencesController.store.getState().use4ByteResolution,
+        true,
+      );
+      preferencesController.setUse4ByteResolution(false);
+      assert.equal(
+        preferencesController.store.getState().use4ByteResolution,
+        false,
+      );
+    });
+  });
+
   describe('setOpenSeaEnabled', function () {
     it('should default to false', function () {
       const state = preferencesController.store.getState();

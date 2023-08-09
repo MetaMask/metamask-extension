@@ -14,3 +14,5 @@ WALLET_PASSWORD=
 
 ; Set this to test changes to the phishing warning page.
 ;PHISHING_WARNING_PAGE_URL=
+BLOCKAID_FILE_CDN=
+BLOCKAID_PUBLIC_KEY=

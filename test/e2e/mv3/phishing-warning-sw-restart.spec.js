@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
+const FixtureBuilder = require('../fixture-builder');
 const {
   withFixtures,
-  mockPhishingDetection,
   openDapp,
   defaultGanacheOptions,
   assertAccountBalanceForDOM,
@@ -11,7 +11,11 @@ const {
   unlockWallet,
   terminateServiceWorker,
 } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+
+const {
+  setupPhishingDetectionMocks,
+  BlockProvider,
+} = require('../tests/phishing-controller/helpers');
 
 describe('Phishing warning page', function () {
   const driverOptions = { openDevToolsForTabs: true };
@@ -21,12 +25,17 @@ describe('Phishing warning page', function () {
 
     await withFixtures(
       {
-        dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
-        testSpecificMock: mockPhishingDetection,
         driverOptions,
+        testSpecificMock: async (mockServer) => {
+          return setupPhishingDetectionMocks(mockServer, {
+            blockProvider: BlockProvider.MetaMask,
+            blocklist: ['127.0.0.1'],
+          });
+        },
+        dapp: true,
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
