@@ -491,9 +491,9 @@
       },
       "packages": {
         "@ngraveio/bc-ur": true,
-        "async-mutex>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-wallet>bs58check": true
+        "ethereumjs-wallet>bs58check": true,
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -775,8 +775,8 @@
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/utils": true,
-        "async-mutex": true,
         "browserify>events": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
         "ethereumjs-util": true,
         "single-call-balance-checker-abi": true,
@@ -1433,8 +1433,8 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "async-mutex>tslib": true,
-        "browserify>events": true
+        "browserify>events": true,
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
@@ -1449,7 +1449,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "async-mutex>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -1671,7 +1671,7 @@
         "@metamask/keyring-controller>@metamask/eth-keyring-controller": true,
         "@metamask/keyring-controller>@metamask/utils": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
-        "async-mutex": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "ethereumjs-util": true
       }
     },
@@ -3282,19 +3282,6 @@
         "pumpify>inherits": true
       }
     },
-    "async-mutex": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "async-mutex>tslib": true
-      }
-    },
-    "async-mutex>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
     "await-semaphore": {
       "packages": {
         "browserify>process": true,
@@ -3780,10 +3767,18 @@
       },
       "packages": {
         "@metamask/safe-event-emitter": true,
-        "async-mutex": true,
+        "eth-json-rpc-filters>async-mutex": true,
         "eth-query": true,
         "json-rpc-engine": true,
         "pify": true
+      }
+    },
+    "eth-json-rpc-filters>async-mutex": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4614,6 +4609,11 @@
         "readable-stream>util-deprecate": true
       }
     },
+    "mockttp>graphql-tag>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4818,7 +4818,7 @@
         "setTimeout": true
       },
       "packages": {
-        "async-mutex>tslib": true
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4837,7 +4837,7 @@
         "console.error": true
       },
       "packages": {
-        "async-mutex>tslib": true,
+        "mockttp>graphql-tag>tslib": true,
         "react": true,
         "react-focus-lock>use-sidecar>detect-node-es": true
       }
