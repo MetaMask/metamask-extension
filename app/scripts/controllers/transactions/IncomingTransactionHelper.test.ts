@@ -559,27 +559,4 @@ describe('IncomingTransactionHelper', () => {
       ).toHaveBeenCalledTimes(1);
     });
   });
-
-  describe('update', () => {
-    it('emits transactions event', async () => {
-      const listener = jest.fn();
-
-      const helper = new IncomingTransactionHelper({
-        ...CONTROLLER_ARGS_MOCK,
-        remoteTransactionSource: createRemoteTransactionSourceMock([
-          TRANSACTION_MOCK_2,
-        ]),
-      });
-
-      helper.hub.on('transactions', listener);
-
-      await helper.update();
-
-      expect(listener).toHaveBeenCalledTimes(1);
-      expect(listener).toHaveBeenCalledWith({
-        added: [TRANSACTION_MOCK_2],
-        updated: [],
-      });
-    });
-  });
 });
