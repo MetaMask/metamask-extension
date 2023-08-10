@@ -37,5 +37,24 @@ function transformState(state: Record<string, unknown>) {
       NetworkController: networkControllerState,
     };
   }
+  if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+  } else if (!hasProperty(state.NetworkController, 'provider')) {
+    const inPost077SupplementFor086state =
+      state.NetworkController.providerConfig !== undefined;
+    if (!inPost077SupplementFor086state) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.NetworkController.provider is ${typeof state
+            .NetworkController.provider}`,
+        ),
+      );
+    }
+  }
+
   return state;
 }

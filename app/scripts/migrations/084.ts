@@ -25,9 +25,26 @@ export async function migrate(originalVersionedData: {
 function transformState(state: Record<string, unknown>) {
   if (
     !hasProperty(state, 'NetworkController') ||
-    !isObject(state.NetworkController) ||
-    !hasProperty(state.NetworkController, 'network')
+    !isObject(state.NetworkController)
   ) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
+    return state;
+  }
+  if (!hasProperty(state.NetworkController, 'network')) {
+    const inPost077SupplementFor084state =
+      state.NetworkController.networkId !== undefined;
+    if (!inPost077SupplementFor084state) {
+      global.sentry?.captureException?.(
+        new Error(
+          `typeof state.NetworkController.network is ${typeof state
+            .NetworkController.network}`,
+        ),
+      );
+    }
     return state;
   }
 
