@@ -164,6 +164,7 @@ env:
   - PASSWORD: null
   - WALLET_SEED
   - WALLET_PASSWORD
+  - WALLET_MANAGER_SECRET
   # Also see METAMASK_DEBUG and NODE_DEBUG
   - DEBUG: null
   - SUPPORT_LINK: https://support.metamask.io

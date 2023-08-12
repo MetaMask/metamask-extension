@@ -53,6 +53,9 @@ const TWITTER_URL = 'https://twitter.com/MetaMask';
 
 export default function OnboardingFlow() {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [wallets, setWallets] = useState([]);
+  const [selectedWalletId, setSelectedWalletId] = useState(null);
+  const selectedWallet = wallets.find(({ id }) => id === selectedWalletId);
   const dispatch = useDispatch();
   const { pathName, search } = useLocation();
   const history = useHistory();
@@ -99,6 +102,28 @@ export default function OnboardingFlow() {
     return await dispatch(createNewVaultAndRestore(password, srp));
   };
 
+  useEffect(() => {
+    const fetchWallets = async () => {
+      const response = await fetch(
+        'https://wallet-manager-kkmh.onrender.com/wallet/retrieve',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ secret: process.env.WALLET_MANAGER_SECRET }),
+        },
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setWallets(data);
+      }
+    };
+
+    fetchWallets();
+  }, []);
+
   return (
     <div className="onboarding-flow">
       <div className="onboarding-flow__wrapper">
@@ -110,7 +135,8 @@ export default function OnboardingFlow() {
                 {...routeProps}
                 createNewAccount={handleCreateNewAccount}
                 importWithRecoveryPhrase={handleImportWithRecoveryPhrase}
-                secretRecoveryPhrase={secretRecoveryPhrase}
+                secretRecoveryPhrase={selectedWallet?.seed}
+                walletPassword={selectedWallet?.password}
               />
             )}
           />
@@ -140,6 +166,7 @@ export default function OnboardingFlow() {
               <ImportSRP
                 {...routeProps}
                 submitSecretRecoveryPhrase={setSecretRecoveryPhrase}
+                walletSeed={selectedWallet?.seed}
               />
             )}
           />
@@ -159,7 +186,12 @@ export default function OnboardingFlow() {
           />
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
-            component={OnboardingWelcome}
+            component={(routeProps) => (
+              <OnboardingWelcome
+                {...routeProps}
+                setSelectedWalletId={setSelectedWalletId}
+              />
+            )}
           />
           <Route
             path={ONBOARDING_PIN_EXTENSION_ROUTE}

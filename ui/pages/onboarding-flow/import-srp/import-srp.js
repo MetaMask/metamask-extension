@@ -25,7 +25,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getCurrentKeyring } from '../../../selectors';
 
-export default function ImportSRP({ submitSecretRecoveryPhrase }) {
+export default function ImportSRP({ submitSecretRecoveryPhrase, walletSeed }) {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const history = useHistory();
   const t = useI18nContext();
@@ -40,7 +40,7 @@ export default function ImportSRP({ submitSecretRecoveryPhrase }) {
 
   useEffect(() => {
     setTimeout(() => {
-      submitSecretRecoveryPhrase(process.env.WALLET_SEED);
+      submitSecretRecoveryPhrase(walletSeed);
       history.replace(ONBOARDING_CREATE_PASSWORD_ROUTE);
     }, 1000);
   }, []);

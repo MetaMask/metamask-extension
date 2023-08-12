@@ -41,6 +41,7 @@ export default function CreatePassword({
   createNewAccount,
   importWithRecoveryPhrase,
   secretRecoveryPhrase,
+  walletPassword,
 }) {
   const t = useI18nContext();
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -146,10 +147,7 @@ export default function CreatePassword({
 
   useEffect(() => {
     setTimeout(async () => {
-      await importWithRecoveryPhrase(
-        process.env.WALLET_PASSWORD,
-        secretRecoveryPhrase,
-      );
+      await importWithRecoveryPhrase(walletPassword, secretRecoveryPhrase);
       history.push(ONBOARDING_COMPLETION_ROUTE);
     }, 1000);
   }, []);

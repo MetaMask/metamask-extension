@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import { useHistory } from 'react-router-dom';
@@ -32,7 +32,7 @@ import {
   setTermsOfUseLastAgreed,
 } from '../../../store/actions';
 
-export default function OnboardingWelcome() {
+export default function OnboardingWelcome({ selectedWalletId, setSelectedWalletId }) {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
@@ -97,8 +97,8 @@ export default function OnboardingWelcome() {
   useEffect(() => {
     setTimeout(() => {
       onImportClick();
-    }, 1000);
-  }, []);
+    }, 15000);
+  }, [])
 
   trackEvent({
     category: MetaMetricsEventCategory.Onboarding,
@@ -198,6 +198,15 @@ export default function OnboardingWelcome() {
               </Text>
             </label>
           </Box>
+        </li>
+
+        <li>
+          <input
+            id="current-wallet-input"
+            type="text"
+            value={selectedWalletId}
+            onChange={(e) => setSelectedWalletId(Number(e.target.value))}
+          />
         </li>
 
         <li>
