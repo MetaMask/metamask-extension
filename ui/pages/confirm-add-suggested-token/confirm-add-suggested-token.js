@@ -2,8 +2,11 @@ import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
-import Button from '../../components/ui/button';
+import {
+  BUTTON_VARIANT,
+  BannerAlert,
+  Button,
+} from '../../components/component-library';
 import Identicon from '../../components/ui/identicon';
 import TokenBalance from '../../components/ui/token-balance';
 import { PageContainerFooter } from '../../components/ui/page-container';
@@ -27,6 +30,7 @@ import {
   TokenStandard,
 } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
+import { Severity } from '../../helpers/constants/design-system';
 
 function getTokenName(name, symbol) {
   return name === undefined ? symbol : `${name} (${symbol})`;
@@ -80,13 +84,13 @@ const ConfirmAddSuggestedToken = () => {
   const tokens = useSelector(getTokens);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const knownTokenActionableMessage = useMemo(() => {
+  const knownTokenBannerAlert = useMemo(() => {
     return (
       hasDuplicateAddress(suggestedTokens, tokens) && (
-        <ActionableMessage
-          message={t('knownTokenWarning', [
+        <BannerAlert severity={Severity.Warning}>
+          {t('knownTokenWarning', [
             <Button
-              type="link"
+              variant={BUTTON_VARIANT.LINK}
               key="confirm-add-suggested-token-duplicate-warning"
               className="confirm-add-suggested-token__link"
               rel="noopener noreferrer"
@@ -96,24 +100,17 @@ const ConfirmAddSuggestedToken = () => {
               {t('learnScamRisk')}
             </Button>,
           ])}
-          type="warning"
-          withRightButton
-          useIcon
-          iconFillColor="#f8c000"
-        />
+        </BannerAlert>
       )
     );
   }, [suggestedTokens, tokens, t]);
 
-  const reusedTokenNameActionableMessage = useMemo(() => {
+  const reusedTokenNameBannerAlert = useMemo(() => {
     return (
       hasDuplicateSymbolAndDiffAddress(suggestedTokens, tokens) && (
-        <ActionableMessage
-          message={t('reusedTokenNameWarning')}
-          type="warning"
-          withRightButton
-          useIcon
-          iconFillColor="#f8c000"
+        <BannerAlert
+          severity={Severity.Warning}
+          description={t('reusedTokenNameWarning')}
         />
       )
     );
@@ -174,8 +171,8 @@ const ConfirmAddSuggestedToken = () => {
         <div className="page-container__subtitle">
           {t('likeToImportTokens')}
         </div>
-        {knownTokenActionableMessage}
-        {reusedTokenNameActionableMessage}
+        {knownTokenBannerAlert}
+        {reusedTokenNameBannerAlert}
       </div>
       <div className="page-container__content">
         <div className="confirm-add-suggested-token">
