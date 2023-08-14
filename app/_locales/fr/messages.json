@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Ajouter un contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Ajouter une passerelle IPFS personnalisée"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "La passerelle IPFS vous permet d’accéder aux données hébergées par des tiers et de les visualiser. Vous pouvez ajouter une passerelle IPFS personnalisée ou continuer à utiliser la passerelle par défaut."
-  },
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
   },
-  "deleteNetworkDescription": {
-    "message": "Souhaitez-vous vraiment supprimer ce réseau ?"
-  },
   "deposit": {
     "message": "Effectuez un dépôt"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Activer l’API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
   "enableToken": {
     "message": "activer $1",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Oups !  Quelque chose a mal tourné. "
   },
-  "source": {
-    "message": "Source"
-  },
   "speedUp": {
     "message": "Accélérer"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Demandes d’informations concernant le solde de plusieurs comptes"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Nous regroupons vos comptes et demandons à Infura de fournir des informations sur le solde de chacun de vos comptes. Si vous désactivez cette fonction, Infura ne fournira que des informations sur le solde des comptes actifs. Certaines applications décentralisées (dapps) ne fonctionneront pas si vous ne connectez pas votre portefeuille."
   },
   "useNftDetection": {
     "message": "Détection automatique des NFT"

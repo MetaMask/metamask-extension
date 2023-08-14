@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Добавить контакт"
   },
-  "addCustomIPFSGateway": {
-    "message": "Добавить пользовательский шлюз IPFS"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Шлюз IPFS позволяет получать доступ к данным, размещенным третьими сторонами, и просматривать их. Вы можете добавить пользовательский шлюз IPFS или продолжить использовать шлюз по умолчанию."
-  },
   "addCustomNetwork": {
     "message": "Добавить пользовательскую сеть"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Удалить сеть?"
   },
-  "deleteNetworkDescription": {
-    "message": "Уверены, что хотите удалить эту сеть?"
-  },
   "deposit": {
     "message": "Внести деньги"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Включите его в Настройках."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Включить API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
   "enableToken": {
     "message": "активирует для $1",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Ой! Что-то пошло не так."
   },
-  "source": {
-    "message": "Источник"
-  },
   "speedUp": {
     "message": "Ускорить"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Пакетные запросы баланса счета"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Мы создаем пакет счетов и запрашиваем Infura, чтобы оперативно отображать ваши остатки. Если вы отключите это, запрос будет отправляться только в отношении активных счетов. Некоторые dapps не будут работать, пока вы не подключите свой кошелек."
   },
   "useNftDetection": {
     "message": "Автообнаружение NFT"

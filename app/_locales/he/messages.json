@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
   },
-  "deleteNetworkDescription": {
-    "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
   "details": {
     "message": "פרטים"
   },

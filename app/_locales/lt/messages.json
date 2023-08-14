@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ar tikrai norite panaikinti šį tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },

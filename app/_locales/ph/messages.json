@@ -409,9 +409,6 @@
   "deleteNetwork": {
     "message": "I-delete ang Network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
   "details": {
     "message": "Mga Detalye"
   },

@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Kontakt hinzufügen"
   },
-  "addCustomIPFSGateway": {
-    "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
-  },
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
-  },
   "deposit": {
     "message": "Einzahlung"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API aktivieren"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
   "enableToken": {
     "message": "$1 aktivieren",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
   },
-  "source": {
-    "message": "Quelle"
-  },
   "speedUp": {
     "message": "Beschleunigen"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Kontoguthaben-Anfragen sammeln"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Wir sammeln Konten und fragen bei Infura an, um Ihr Guthaben anzuzeigen. Wenn Sie dies deaktivieren, werden nur aktive Konten abgefragt. Einige Dapps funktionieren nicht, wenn Sie Ihr Wallet nicht verbinden."
   },
   "useNftDetection": {
     "message": "NFTs automatisch erkennen"

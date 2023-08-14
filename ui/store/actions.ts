@@ -2043,25 +2043,6 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
-export function addTokens(
-  tokens: Token[] | { [address: string]: Token },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    if (Array.isArray(tokens)) {
-      return Promise.all(
-        tokens.map(({ address, symbol, decimals }) =>
-          dispatch(addToken(address, symbol, decimals)),
-        ),
-      );
-    }
-    return Promise.all(
-      Object.entries(tokens).map(([_, { address, symbol, decimals }]) =>
-        dispatch(addToken(address, symbol, decimals)),
-      ),
-    );
-  };
-}
-
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -2427,6 +2408,17 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function showIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_OPEN,
+  };
+}
+
+export function hideIpfsModal(): Action {
+  return {
+    type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
+  };
+}
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2977,18 +2969,47 @@ export function setUseTokenDetection(
   };
 }
 
+export function setOpenSeaEnabled(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setOpenSeaEnabled`);
+    try {
+      await submitRequestToBackground('setOpenSeaEnabled', [val]);
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setUseNftDetection(
   val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
     log.debug(`background.setUseNftDetection`);
-    callBackgroundMethod('setUseNftDetection', [val], (err) => {
+    try {
+      await submitRequestToBackground('setUseNftDetection', [val]);
+    } finally {
       dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+    }
+  };
+}
+
+export function setUse4ByteResolution(
+  val: boolean,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setUse4ByteResolution`);
+    try {
+      await submitRequestToBackground('setUse4ByteResolution', [val]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
   };
 }
 
@@ -2999,21 +3020,6 @@ export function setUseCurrencyRateCheck(
     dispatch(showLoadingIndication());
     log.debug(`background.setUseCurrencyRateCheck`);
     callBackgroundMethod('setUseCurrencyRateCheck', [val], (err) => {
-      dispatch(hideLoadingIndication());
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
-  };
-}
-
-export function setOpenSeaEnabled(
-  val: boolean,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    log.debug(`background.setOpenSeaEnabled`);
-    callBackgroundMethod('setOpenSeaEnabled', [val], (err) => {
       dispatch(hideLoadingIndication());
       if (err) {
         dispatch(displayWarning(err));
@@ -3785,7 +3791,7 @@ export function getContractMethodData(
     if (fourBytePrefix.length < 10) {
       return {};
     }
-    const { knownMethodData } = getState().metamask;
+    const { knownMethodData, use4ByteResolution } = getState().metamask;
     if (
       knownMethodData?.[fourBytePrefix] &&
       Object.keys(knownMethodData[fourBytePrefix]).length !== 0
@@ -3795,7 +3801,10 @@ export function getContractMethodData(
 
     log.debug(`loadingMethodData`);
 
-    const { name, params } = (await getMethodDataAsync(fourBytePrefix)) as {
+    const { name, params } = (await getMethodDataAsync(
+      fourBytePrefix,
+      use4ByteResolution,
+    )) as {
       name: string;
       params: unknown;
     };

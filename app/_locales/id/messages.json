@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Tambah kontak"
   },
-  "addCustomIPFSGateway": {
-    "message": "Tambahkan gerbang IPFS khusus"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Gerbang IPFS memungkinkan untuk mengakses dan melihat data yang diselenggarakan oleh pihak ketiga. Anda dapat menambahkan gerbang IPFS khusus atau melanjutkan menggunakan yang awal."
-  },
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
   "deposit": {
     "message": "Deposit"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Aktifkan API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableToken": {
     "message": "aktifkan $1",
@@ -3261,9 +3246,6 @@
   "somethingWentWrong": {
     "message": "Ups! Ada yang salah."
   },
-  "source": {
-    "message": "Sumber"
-  },
   "speedUp": {
     "message": "Percepat"
   },
@@ -4159,9 +4141,6 @@
   },
   "useMultiAccountBalanceChecker": {
     "message": "Kelompokkan permintaan saldo akun"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Kami mengelompokkan akun dan meminta Infura untuk menunjukkan saldo Anda secara responsif. Jika Anda menonaktifkannya, hanya akun aktif yang akan diminta. Beberapa aplikasi terdesentralisasi (dapp) tidak akan berfungsi kecuali dompet Anda terhubung."
   },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"

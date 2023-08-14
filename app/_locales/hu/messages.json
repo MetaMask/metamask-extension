@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Törli a hálózatot?"
   },
-  "deleteNetworkDescription": {
-    "message": "Biztosan törli ezt a hálózatot?"
-  },
   "details": {
     "message": "Részletek"
   },

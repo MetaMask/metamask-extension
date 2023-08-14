@@ -48,6 +48,7 @@ import {
   getIsFeatureFlagLoaded,
   getCurrentSmartTransactionsError,
   getSmartTransactionFees,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -84,6 +85,7 @@ import {
 
 import {
   resetSwapsPostFetchState,
+  ignoreTokens,
   setBackgroundSwapRouteState,
   clearSwapsQuotes,
   stopPollingForQuotes,
@@ -144,6 +146,7 @@ export default function BuildQuote({
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
   const areQuotesPresent = Object.keys(quotes).length > 0;
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
 
   const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
   const conversionRate = useSelector(getConversionRate);
@@ -347,12 +350,21 @@ export default function BuildQuote({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
+      if (latestAddedTokenTo && token.address !== toAddress) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const hideDropdownItemIf = useCallback(
@@ -563,14 +575,14 @@ export default function BuildQuote({
   return (
     <div className="build-quote">
       <div className="build-quote__content">
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="build-quote__dropdown-input-pair-header">
           <div className="build-quote__input-label">{t('swapSwapFrom')}</div>
           {!isSwapsDefaultTokenSymbol(fromTokenSymbol, chainId) && (
