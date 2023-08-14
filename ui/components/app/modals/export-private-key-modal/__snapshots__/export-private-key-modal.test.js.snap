@@ -120,13 +120,13 @@ exports[`Export PrivateKey Modal should match snapshot 1`] = `
         class="box box--margin-top-3 box--padding-5 box--md:padding-5 box--display-flex box--flex-direction-row box--justify-content-space-between box--width-full"
       >
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-right-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--margin-right-4 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           type="secondary"
         >
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/2 mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           disabled=""
           type="primary"
         >

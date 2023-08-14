@@ -1,0 +1,66 @@
+.token-list {
+  &__title {
+    @include H7;
+  }
+
+  &__tokens-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__token {
+    transition: 200ms ease-in-out;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    padding: 8px;
+    margin-top: 8px;
+    box-sizing: border-box;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    position: relative;
+
+    &:hover,
+    &:focus {
+      border-color: var(--color-primary-muted);
+    }
+
+    &--selected {
+      border-color: var(--color-primary-default) !important;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  &__token-icon {
+    width: 48px;
+    height: 48px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    border-radius: 50%;
+    background-color: var(--color-background-default);
+    box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+    margin-right: 12px;
+    flex: 0 0 auto;
+  }
+
+  &__token-data {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__token-name {
+    /*rtl:ignore*/
+    direction: ltr;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -21,6 +21,8 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
+  [BlockaidReason.failed]: 'blockaidDescriptionFailed',
+
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
   [BlockaidReason.maliciousDomain]: 'blockaidDescriptionMaliciousDomain',
@@ -36,8 +38,11 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.other]: 'blockaidDescriptionMightLoseAssets',
 });
 
-/** List of suspicious reason(s). Other reasons will be deemed as deceptive. */
-const SUSPCIOUS_REASON = [BlockaidReason.rawSignatureFarming];
+/** Reason to title translation key mapping. */
+const REASON_TO_TITLE_TKEY = Object.freeze({
+  [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
+  [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
+});
 
 function BlockaidBannerAlert({ securityAlertResponse }) {
   const t = useContext(I18nContext);
@@ -48,10 +53,7 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
 
   const { reason, result_type: resultType, features } = securityAlertResponse;
 
-  if (
-    resultType === BlockaidResultType.Benign ||
-    resultType === BlockaidResultType.Failed
-  ) {
+  if (resultType === BlockaidResultType.Benign) {
     return null;
   }
 
@@ -69,21 +71,20 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
     </Text>
   );
 
+  const isFailedResultType = resultType === BlockaidResultType.Failed;
+
   const severity =
     resultType === BlockaidResultType.Malicious
       ? Severity.Danger
       : Severity.Warning;
 
-  const title =
-    SUSPCIOUS_REASON.indexOf(reason) > -1
-      ? t('blockaidTitleSuspicious')
-      : t('blockaidTitleDeceptive');
+  const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
   return (
     <SecurityProviderBannerAlert
       description={description}
       details={details}
-      provider={SecurityProvider.Blockaid}
+      provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
     />
