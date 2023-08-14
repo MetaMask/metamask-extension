@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
-import { parseEthCaipChainIdInt } from '@metamask/controller-utils';
+import { toEthChainIdInt } from '@metamask/controller-utils';
 import { CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
@@ -136,8 +136,7 @@ const getBaseUrlForNewSwapsApi = (type, caipChainId) => {
   if (noNetworkSpecificTypes.includes(type)) {
     return v2ApiBaseUrl;
   }
-  const chainIdDecimal =
-    caipChainId && parseEthCaipChainIdInt(caipChainId);
+  const chainIdDecimal = caipChainId && toEthChainIdInt(caipChainId);
   const gasApiTypes = ['gasPrices'];
   if (gasApiTypes.includes(type)) {
     return `${gasApiBaseUrl}/networks/${chainIdDecimal}`; // Gas calculations are in its own repo.

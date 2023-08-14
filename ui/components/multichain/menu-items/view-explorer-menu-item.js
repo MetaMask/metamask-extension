@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import {
   toChecksumHexAddress,
-  parseEthCaipChainIdHex,
+  toEthChainIdHex,
 } from '@metamask/controller-utils';
 import { getAccountLink } from '@metamask/etherscan-link';
 
@@ -40,7 +40,7 @@ export const ViewExplorerMenuItem = ({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const addressLink = getAccountLink(
     toChecksumHexAddress(address),
-    parseEthCaipChainIdHex(caipChainId),
+    toEthChainIdHex(caipChainId),
     rpcPrefs,
   );
 

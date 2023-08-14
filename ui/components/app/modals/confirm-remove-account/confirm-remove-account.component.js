@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import Modal from '../../modal';
 import { addressSummary, getURLHostName } from '../../../../helpers/utils/util';
 import Identicon from '../../../ui/identicon';
@@ -59,7 +59,7 @@ export default class ConfirmRemoveAccount extends Component {
             onClick={() => {
               const accountLink = getAccountLink(
                 identity.address,
-                parseEthCaipChainIdHex(caipChainId),
+                toEthChainIdHex(caipChainId),
                 rpcPrefs,
               );
               this.context.trackEvent({

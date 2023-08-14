@@ -8,7 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { parseEthCaipChainIdInt } from '@metamask/controller-utils';
+import { toEthChainIdInt } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -74,9 +74,7 @@ const CustodyPage = () => {
   const [jwtList, setJwtList] = useState([]);
   const [apiUrl, setApiUrl] = useState('');
   const [addNewTokenClicked, setAddNewTokenClicked] = useState(false);
-  const [chainId, setChainId] = useState(
-    parseEthCaipChainIdInt(currentCaipChainId),
-  );
+  const [chainId, setChainId] = useState(toEthChainIdInt(currentCaipChainId));
   const [connectRequest, setConnectRequest] = useState(undefined);
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
@@ -290,7 +288,7 @@ const CustodyPage = () => {
     }
 
     if (parseInt(chainId, 16) !== chainId) {
-      setChainId(parseEthCaipChainIdInt(currentCaipChainId));
+      setChainId(toEthChainIdInt(currentCaipChainId));
       handleNetworkChange();
     }
 

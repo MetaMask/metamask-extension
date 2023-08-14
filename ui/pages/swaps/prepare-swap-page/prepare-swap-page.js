@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import classnames from 'classnames';
 
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   useTokensToSearch,
@@ -442,7 +442,7 @@ export default function PrepareSwapPage({
 
   const blockExplorerTokenLink = getTokenTrackerLink(
     selectedToToken.address,
-    parseEthCaipChainIdHex(caipChainId),
+    toEthChainIdHex(caipChainId),
     null, // no networkId
     null, // no holderAddress
     {

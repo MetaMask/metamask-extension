@@ -4,7 +4,7 @@ import inspect from 'browser-util-inspect';
 import { forAddress } from '@truffle/decoder';
 import { useSelector } from 'react-redux';
 import * as Codec from '@truffle/codec';
-import { parseEthCaipChainIdInt } from '@metamask/controller-utils';
+import { toEthChainIdInt } from '@metamask/controller-utils';
 import Spinner from '../../ui/spinner';
 import ErrorMessage from '../../ui/error-message';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
@@ -28,9 +28,7 @@ export default function TransactionDecoding({ to = '', inputData: data = '' }) {
   const [sourceFetchedVia, setSourceFetchedVia] = useState('');
 
   const { address: from } = useSelector(getSelectedAccount);
-  const network = parseEthCaipChainIdInt(
-    useSelector(getCurrentCaipChainId),
-  ); // is this named wrong?
+  const network = toEthChainIdInt(useSelector(getCurrentCaipChainId)); // is this named wrong?
 
   const [loading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);

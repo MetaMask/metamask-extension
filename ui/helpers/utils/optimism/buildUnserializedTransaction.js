@@ -2,7 +2,7 @@ import { omit } from 'lodash';
 import { BN } from 'ethereumjs-util';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 
 function buildTxParams(txMeta) {
@@ -18,9 +18,7 @@ function buildTransactionCommon({ caipChainId, metamaskNetworkId }) {
   // genesis points to the mainnet genesis, not the Optimism genesis — but
   // considering that all we want to do is serialize a transaction, this works
   // fine for our use case.
-  const chainId = caipChainId
-    ? parseEthCaipChainIdHex(caipChainId)
-    : '0x0';
+  const chainId = caipChainId ? toEthChainIdHex(caipChainId) : '0x0';
   return Common.custom({
     chainId: new BN(stripHexPrefix(chainId), 16),
     networkId: new BN(metamaskNetworkId, 10),

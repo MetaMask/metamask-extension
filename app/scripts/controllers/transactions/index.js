@@ -5,10 +5,7 @@ import EthQuery from 'ethjs-query';
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
 import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory } from '@ethereumjs/tx';
-import {
-  parseEthCaipChainIdInt,
-  ApprovalType,
-} from '@metamask/controller-utils';
+import { toEthChainIdInt, ApprovalType } from '@metamask/controller-utils';
 import NonceTracker from 'nonce-tracker';
 import log from 'loglevel';
 import BigNumber from 'bignumber.js';
@@ -249,7 +246,7 @@ export default class TransactionController extends EventEmitter {
   getChainId() {
     const networkStatus = this.getNetworkStatus();
     const caipChainId = this._getCurrentCaipChainId();
-    const intChainId = parseEthCaipChainIdInt(caipChainId);
+    const intChainId = toEthChainIdInt(caipChainId);
     if (networkStatus !== NetworkStatus.Available || Number.isNaN(intChainId)) {
       return 0;
     }
@@ -304,7 +301,7 @@ export default class TransactionController extends EventEmitter {
     // `forCustomChain` static method on the Common class.
     // here
     const caipChainId = this._getCurrentCaipChainId();
-    const intChainId = parseEthCaipChainIdInt(caipChainId);
+    const intChainId = toEthChainIdInt(caipChainId);
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 

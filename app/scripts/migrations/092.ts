@@ -1,4 +1,4 @@
-import { buildEthCaipChainId } from '@metamask/controller-utils';
+import { toEthCaipChainId } from '@metamask/controller-utils';
 import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep, mapKeys, mapValues } from 'lodash';
 
@@ -75,7 +75,7 @@ function migrateData(state: Record<string, unknown>): void {
           if (isObject(nftContractsByChainId)) {
             allNftContracts[address] = mapKeys(
               nftContractsByChainId,
-              (_, chainId: string) => buildEthCaipChainId(chainId),
+              (_, chainId: string) => toEthCaipChainId(chainId),
             );
           }
         });
@@ -95,7 +95,7 @@ function migrateData(state: Record<string, unknown>): void {
 
           if (isObject(nftsByChainId)) {
             allNfts[address] = mapKeys(nftsByChainId, (_, chainId: string) =>
-              buildEthCaipChainId(chainId),
+              toEthCaipChainId(chainId),
             );
           }
         });
@@ -118,7 +118,7 @@ function migrateData(state: Record<string, unknown>): void {
     ) {
       tokenListControllerState.tokensChainsCache = mapKeys(
         tokenListControllerState.tokensChainsCache,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
   }
@@ -138,7 +138,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       tokensControllerState.allTokens = mapKeys(
         allTokens,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
 
@@ -151,7 +151,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       tokensControllerState.allIgnoredTokens = mapKeys(
         allIgnoredTokens,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
 
@@ -164,7 +164,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       tokensControllerState.allDetectedTokens = mapKeys(
         allDetectedTokens,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
 
@@ -184,7 +184,7 @@ function migrateData(state: Record<string, unknown>): void {
     ) {
       const { providerConfig } = networkControllerState;
 
-      providerConfig.caipChainId = buildEthCaipChainId(
+      providerConfig.caipChainId = toEthCaipChainId(
         providerConfig.chainId as string,
       ); // is this safe?
       delete providerConfig.chainId;
@@ -200,7 +200,7 @@ function migrateData(state: Record<string, unknown>): void {
       networkControllerState.networkConfigurations = mapValues(
         networkConfigurations,
         (networkConfiguration: Record<string, unknown>) => {
-          networkConfiguration.caipChainId = buildEthCaipChainId(
+          networkConfiguration.caipChainId = toEthCaipChainId(
             networkConfiguration.chainId as string,
           ); // is this safe?
           delete networkConfiguration.chainId;
@@ -228,7 +228,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       cachedBalancesControllerState.cachedBalances = mapKeys(
         cachedBalances,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
 
@@ -251,7 +251,7 @@ function migrateData(state: Record<string, unknown>): void {
       };
 
       addressBook = mapKeys(addressBook, (_, chainId: string) =>
-        buildEthCaipChainId(chainId),
+        toEthCaipChainId(chainId),
       );
 
       addressBookControllerState.addressBook = mapValues(
@@ -264,7 +264,7 @@ function migrateData(state: Record<string, unknown>): void {
           return mapValues(
             addressBookEntries,
             (addressBookEntry: Record<string, unknown>) => {
-              addressBookEntry.caipChainId = buildEthCaipChainId(
+              addressBookEntry.caipChainId = toEthCaipChainId(
                 addressBookEntry.chainId as string,
               );
               delete addressBookEntry.chainId;
@@ -293,7 +293,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       appStateControllerState.usedNetworks = mapKeys(
         usedNetworks,
-        (_, chainId: string) => buildEthCaipChainId(chainId),
+        (_, chainId: string) => toEthCaipChainId(chainId),
       );
     }
 
@@ -320,7 +320,7 @@ function migrateData(state: Record<string, unknown>): void {
       incomingTransactionsControllerState.incomingTransactions = mapValues(
         incomingTransactions,
         (transaction: Record<string, unknown>) => {
-          transaction.caipChainId = buildEthCaipChainId(
+          transaction.caipChainId = toEthCaipChainId(
             transaction.chainId as string,
           ); // is this safe?
           delete transaction.chainId;
@@ -345,7 +345,7 @@ function migrateData(state: Record<string, unknown>): void {
       incomingTransactionsControllerState.incomingTxLastFetchedBlockByChainId =
         mapKeys(
           incomingTxLastFetchedBlockByChainId,
-          (_, chainId: string) => buildEthCaipChainId(chainId), // is this safe?
+          (_, chainId: string) => toEthCaipChainId(chainId), // is this safe?
         );
     }
 
@@ -368,7 +368,7 @@ function migrateData(state: Record<string, unknown>): void {
       transactionControllerState.transactions = mapValues(
         transactions,
         (transaction: Record<string, unknown>) => {
-          transaction.caipChainId = buildEthCaipChainId(
+          transaction.caipChainId = toEthCaipChainId(
             transaction.chainId as string,
           ); // is this safe?
           delete transaction.chainId;
@@ -381,9 +381,7 @@ function migrateData(state: Record<string, unknown>): void {
 
             transaction.history = history.map((entry) => {
               if (isObject(entry) && hasProperty(entry, 'chainId')) {
-                entry.caipChainId = buildEthCaipChainId(
-                  entry.chainId as string,
-                ); // is this safe?
+                entry.caipChainId = toEthCaipChainId(entry.chainId as string); // is this safe?
                 delete entry.chainId;
               }
 
@@ -412,7 +410,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       txControllerState.currentNetworkTxList = currentNetworkTxList.map(
         (transaction: Record<string, unknown>) => {
-          transaction.caipChainId = buildEthCaipChainId(
+          transaction.caipChainId = toEthCaipChainId(
             transaction.chainId as string,
           ); // is this safe?
           delete transaction.chainId;
@@ -425,9 +423,7 @@ function migrateData(state: Record<string, unknown>): void {
 
             transaction.history = history.map((entry) => {
               if (isObject(entry) && hasProperty(entry, 'chainId')) {
-                entry.caipChainId = buildEthCaipChainId(
-                  entry.chainId as string,
-                ); // is this safe?
+                entry.caipChainId = toEthCaipChainId(entry.chainId as string); // is this safe?
                 delete entry.chainId;
               }
 
@@ -450,7 +446,7 @@ function migrateData(state: Record<string, unknown>): void {
       txControllerState.unapprovedTxs = mapValues(
         unapprovedTxs,
         (transaction: Record<string, unknown>) => {
-          transaction.caipChainId = buildEthCaipChainId(
+          transaction.caipChainId = toEthCaipChainId(
             transaction.chainId as string,
           ); // is this safe?
           delete transaction.chainId;
@@ -463,9 +459,7 @@ function migrateData(state: Record<string, unknown>): void {
 
             transaction.history = history.map((entry) => {
               if (isObject(entry) && hasProperty(entry, 'chainId')) {
-                entry.caipChainId = buildEthCaipChainId(
-                  entry.chainId as string,
-                ); // is this safe?
+                entry.caipChainId = toEthCaipChainId(entry.chainId as string); // is this safe?
                 delete entry.chainId;
               }
 
@@ -506,7 +500,7 @@ function migrateData(state: Record<string, unknown>): void {
 
       smartTransactionsControllerState.smartTransactionsState.smartTransactions =
         mapKeys(smartTransactions, (_, chainId: string) =>
-          buildEthCaipChainId(chainId),
+          toEthCaipChainId(chainId),
         );
     }
 

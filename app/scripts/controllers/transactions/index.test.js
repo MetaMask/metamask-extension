@@ -4,10 +4,7 @@ import EventEmitter from 'events';
 import { toBuffer } from 'ethereumjs-util';
 import { TransactionFactory } from '@ethereumjs/tx';
 import { ObservableStore } from '@metamask/obs-store';
-import {
-  ApprovalType,
-  parseEthCaipChainIdInt,
-} from '@metamask/controller-utils';
+import { ApprovalType, toEthChainIdInt } from '@metamask/controller-utils';
 import sinon from 'sinon';
 
 import { errorCodes, ethErrors } from 'eth-rpc-errors';
@@ -83,7 +80,7 @@ describe('Transaction Controller', function () {
     provider = createTestProviderTools({
       scaffold: providerResultStub,
       networkId: currentNetworkId,
-      chainId: parseEthCaipChainIdInt(currentCaipChainId),
+      chainId: toEthChainIdInt(currentCaipChainId),
     }).provider;
 
     networkStatusStore = new ObservableStore(currentNetworkStatus);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import Button from '../../../components/ui/button';
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
@@ -139,7 +139,7 @@ class AccountList extends Component {
                 onClick={() => {
                   const accountLink = getAccountLink(
                     account.address,
-                    parseEthCaipChainIdHex(caipChainId),
+                    toEthChainIdHex(caipChainId),
                     rpcPrefs,
                   );
                   this.context.trackEvent({

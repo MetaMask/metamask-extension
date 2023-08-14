@@ -12,8 +12,8 @@ import log from 'loglevel';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
 import {
-  buildEthCaipChainId,
-  parseEthCaipChainId,
+  toEthCaipChainId,
+  toEthChainId,
   isEthCaipChainId,
 } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -67,9 +67,7 @@ const getDisplayChainId = (chainId) => {
     return parseInt(chainId, 16).toString(10);
   }
 
-  return isEthCaipChainId(chainId)
-    ? parseEthCaipChainId(chainId)
-    : chainId;
+  return isEthCaipChainId(chainId) ? toEthChainId(chainId) : chainId;
 };
 
 const isValidWhenAppended = (url) => {
@@ -93,11 +91,15 @@ const NetworksForm = ({
     label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
-  const [chainId, setChainId] = useState(getDisplayChainId(selectedNetwork?.caipChainId) || '');
-  let caipChainId = ""
+  const [chainId, setChainId] = useState(
+    getDisplayChainId(selectedNetwork?.caipChainId) || '',
+  );
+  let caipChainId = '';
   try {
-    caipChainId = buildEthCaipChainId(chainId)
-  } catch(e) {}
+    caipChainId = toEthCaipChainId(chainId);
+  } catch (error) {
+    // Expected error
+  }
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
@@ -105,11 +107,9 @@ const NetworksForm = ({
   const [errors, setErrors] = useState({});
   const [warnings, setWarnings] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const chainIdMatchesFeaturedRPC =
-    FEATURED_RPCS.some(
-      (featuredRpc) =>
-        featuredRpc.caipChainId === caipChainId
-    );
+  const chainIdMatchesFeaturedRPC = FEATURED_RPCS.some(
+    (featuredRpc) => featuredRpc.caipChainId === caipChainId,
+  );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
@@ -256,10 +256,10 @@ const NetworksForm = ({
         }
       }
 
-      const caipChainId = buildEthCaipChainId(hexChainId);
+      const formCaipChainId = toEthCaipChainId(hexChainId);
 
       const [matchingChainId] = networksToRender.filter(
-        (e) => e.caipChainId === caipChainId && e.rpcUrl !== rpcUrl,
+        (e) => e.caipChainId === formCaipChainId && e.rpcUrl !== rpcUrl,
       );
 
       if (formChainId === '') {
@@ -511,7 +511,7 @@ const NetworksForm = ({
     setIsSubmitting(true);
     try {
       const formChainId = chainId.trim().toLowerCase();
-      const caipChainId = buildEthCaipChainId(formChainId);
+      const formCaipChainId = toEthCaipChainId(formChainId);
       let networkConfigurationId;
       // After this point, isSubmitting will be reset in componentDidUpdate
       if (selectedNetwork.rpcUrl && rpcUrl !== selectedNetwork.rpcUrl) {
@@ -521,7 +521,7 @@ const NetworksForm = ({
               rpcUrl,
               ticker,
               networkConfigurationId: selectedNetwork.networkConfigurationId,
-              caipChainId,
+              caipChainId: formCaipChainId,
               nickname: networkName,
               rpcPrefs: {
                 ...rpcPrefs,

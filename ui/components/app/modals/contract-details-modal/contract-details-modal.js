@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { useSelector } from 'react-redux';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import Box from '../../../ui/box';
 import Button from '../../../ui/button/button.component';
 import Tooltip from '../../../ui/tooltip/tooltip';
@@ -168,7 +168,7 @@ export default function ContractDetailsModal({
                     onClick={() => {
                       const blockExplorerTokenLink = getAccountLink(
                         tokenAddress,
-                        parseEthCaipChainIdHex(caipChainId),
+                        toEthChainIdHex(caipChainId),
                         {
                           blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                         },
@@ -265,7 +265,7 @@ export default function ContractDetailsModal({
                 onClick={() => {
                   const blockExplorerTokenLink = getAccountLink(
                     toAddress,
-                    parseEthCaipChainIdHex(caipChainId),
+                    toEthChainIdHex(caipChainId),
                     {
                       blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
                     },

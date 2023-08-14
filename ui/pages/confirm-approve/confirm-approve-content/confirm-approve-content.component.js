@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -389,7 +389,7 @@ export default class ConfirmApproveContent extends Component {
     if (useBlockExplorer) {
       const blockExplorerLink = getTokenTrackerLink(
         tokenAddress,
-        parseEthCaipChainIdHex(caipChainId),
+        toEthChainIdHex(caipChainId),
         null,
         userAddress,
         {

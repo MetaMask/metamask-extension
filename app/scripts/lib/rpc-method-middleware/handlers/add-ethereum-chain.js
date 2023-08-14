@@ -1,10 +1,7 @@
 import { ethErrors, errorCodes } from 'eth-rpc-errors';
 import validUrl from 'valid-url';
 import { omit } from 'lodash';
-import {
-  ApprovalType,
-  buildEthCaipChainId,
-} from '@metamask/controller-utils';
+import { ApprovalType, toEthCaipChainId } from '@metamask/controller-utils';
 import {
   MESSAGE_TYPE,
   UNKNOWN_TICKER_SYMBOL,
@@ -144,7 +141,7 @@ async function addEthereumChainHandler(
     );
   }
 
-  const caipChainId = buildEthCaipChainId(_chainId);
+  const caipChainId = toEthCaipChainId(_chainId);
 
   const existingNetwork = findNetworkConfigurationBy({ caipChainId });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import Button from '../button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -16,9 +16,7 @@ import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 export default function DeprecatedTestNetworks() {
-  const currentChainID = parseEthCaipChainIdHex(
-    useSelector(getCurrentCaipChainId),
-  );
+  const currentChainID = toEthChainIdHex(useSelector(getCurrentCaipChainId));
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import Box from '../box/box';
 import Tooltip from '../tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -65,7 +65,7 @@ export default function ContractTokenValues({
           onClick={() => {
             const blockExplorerTokenLink = getAccountLink(
               address,
-              parseEthCaipChainIdHex(caipChainId),
+              toEthChainIdHex(caipChainId),
               {
                 blockExplorerUrl: rpcPrefs?.blockExplorerUrl ?? null,
               },

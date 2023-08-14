@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getAccountLink } from '@metamask/etherscan-link';
 
-import { parseEthCaipChainIdHex } from '@metamask/controller-utils';
+import { toEthChainIdHex } from '@metamask/controller-utils';
 import AccountModalContainer from '../account-modal-container';
 import QrView from '../../../ui/qr-code';
 import EditableLabel from '../../../ui/editable-label';
@@ -89,7 +89,7 @@ export default class AccountDetailsModal extends Component {
     const openBlockExplorer = () => {
       const accountLink = getAccountLink(
         address,
-        parseEthCaipChainIdHex(caipChainId),
+        toEthChainIdHex(caipChainId),
         rpcPrefs,
       );
       this.context.trackEvent({

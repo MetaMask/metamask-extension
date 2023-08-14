@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { Web3Provider } from '@ethersproject/providers';
-import { parseEthCaipChainIdInt } from '@metamask/controller-utils';
+import { toEthChainIdInt } from '@metamask/controller-utils';
 import buildUnserializedTransaction from './buildUnserializedTransaction';
 
 // Snippet of the ABI that we need
@@ -25,7 +25,7 @@ export default async function fetchEstimatedL1Fee(
   txMeta,
   ethersProvider,
 ) {
-  const intChainId = parseEthCaipChainIdInt(caipChainId);
+  const intChainId = toEthChainIdInt(caipChainId);
   const provider = global.ethereumProvider
     ? new Web3Provider(global.ethereumProvider, intChainId)
     : ethersProvider;

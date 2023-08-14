@@ -1,4 +1,4 @@
-import { parseEthCaipChainId } from '@metamask/controller-utils';
+import { toEthChainId } from '@metamask/controller-utils';
 import { CaipChainId } from '@metamask/utils';
 import { capitalize, pick } from 'lodash';
 /**
@@ -461,67 +461,67 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
   [CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseEthCaipChainId(CHAIN_IDS.BSC),
+    networkId: toEthChainId(CHAIN_IDS.BSC),
   },
   [CHAIN_IDS.BSC_TESTNET]: {
     domain: 'bscscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.BSC_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.BSC_TESTNET),
   },
   [CHAIN_IDS.OPTIMISM]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-optimistic`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.OPTIMISM),
+    networkId: toEthChainId(CHAIN_IDS.OPTIMISM),
   },
   [CHAIN_IDS.OPTIMISM_TESTNET]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.OPTIMISM_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.OPTIMISM_TESTNET),
   },
   [CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseEthCaipChainId(CHAIN_IDS.POLYGON),
+    networkId: toEthChainId(CHAIN_IDS.POLYGON),
   },
   [CHAIN_IDS.POLYGON_TESTNET]: {
     domain: 'polygonscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.POLYGON_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.POLYGON_TESTNET),
   },
   [CHAIN_IDS.AVALANCHE]: {
     domain: 'snowtrace.io',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseEthCaipChainId(CHAIN_IDS.AVALANCHE),
+    networkId: toEthChainId(CHAIN_IDS.AVALANCHE),
   },
   [CHAIN_IDS.AVALANCHE_TESTNET]: {
     domain: 'snowtrace.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.AVALANCHE_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.AVALANCHE_TESTNET),
   },
   [CHAIN_IDS.FANTOM]: {
     domain: 'ftmscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseEthCaipChainId(CHAIN_IDS.FANTOM),
+    networkId: toEthChainId(CHAIN_IDS.FANTOM),
   },
   [CHAIN_IDS.FANTOM_TESTNET]: {
     domain: 'ftmscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.FANTOM_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.FANTOM_TESTNET),
   },
   [CHAIN_IDS.MOONBEAM]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbeam`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.MOONBEAM),
+    networkId: toEthChainId(CHAIN_IDS.MOONBEAM),
   },
   [CHAIN_IDS.MOONBEAM_TESTNET]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbase`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.MOONBEAM_TESTNET),
+    networkId: toEthChainId(CHAIN_IDS.MOONBEAM_TESTNET),
   },
   [CHAIN_IDS.MOONRIVER]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
-    networkId: parseEthCaipChainId(CHAIN_IDS.MOONRIVER),
+    networkId: toEthChainId(CHAIN_IDS.MOONRIVER),
   },
   [CHAIN_IDS.GNOSIS]: {
     domain: 'gnosisscan.io',
