@@ -22,7 +22,6 @@ import {
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  BlockSize,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
