@@ -77,10 +77,7 @@ async function main() {
 
   let testPaths;
 
-  if (snaps) {
-    const testDir = path.join(__dirname, 'snaps');
-    testPaths = await getTestPathsForTestDir(testDir);
-  } else if (rpc) {
+  if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
@@ -96,6 +93,12 @@ async function main() {
     if (mv3) {
       testPaths.push(
         ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
+      );
+    }
+
+    if (snaps) {
+      testPaths.push(
+        ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
       );
     }
   }
