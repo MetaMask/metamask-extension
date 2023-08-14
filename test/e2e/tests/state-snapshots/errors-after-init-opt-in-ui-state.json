@@ -1,0 +1,71 @@
+{
+  "gas": {
+    "customData": {
+      "price": {},
+      "limit": {}
+    }
+  },
+  "history": {
+    "mostRecentOverviewPage": "/"
+  },
+  "metamask": {
+    "isInitialized": true,
+    "isUnlocked": false,
+    "isAccountMenuOpen": false,
+    "customNonceValue": "",
+    "useBlockie": false,
+    "featureFlags": {
+      "showIncomingTransactions": true
+    },
+    "welcomeScreenSeen": false,
+    "currentLocale": "en",
+    "currentBlockGasLimit": "",
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": false,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "firstTimeFlowType": "import",
+    "completedOnboarding": true,
+    "participateInMetaMetrics": true,
+    "nextNonce": {},
+    "conversionRate": 1300,
+    "nativeCurrency": "ETH",
+    "connectedStatusPopoverHasBeenShown": true,
+    "defaultHomeActiveTabName": {},
+    "networkId": "1337",
+    "providerConfig": {
+      "nickname": "Localhost 8545",
+      "ticker": "ETH",
+      "type": "rpc"
+    },
+    "useNonceField": false,
+    "usePhishDetect": true,
+    "forgottenPassword": false,
+    "ipfsGateway": "dweb.link",
+    "metaMetricsId": "fake-metrics-id",
+    "conversionDate": "number",
+    "currentCurrency": "usd",
+    "alertEnabledness": {
+      "unconnectedAccount": true,
+      "web3ShimUsage": true
+    },
+    "seedPhraseBackedUp": true,
+    "incomingTxLastFetchedBlockByChainId": {
+      "0x1": {},
+      "0xe708": {},
+      "0x5": {},
+      "0xaa36a7": {},
+      "0xe704": {}
+    },
+    "unapprovedDecryptMsgCount": 0,
+    "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessagesCount": 0
+  },
+  "unconnectedAccount": {
+    "state": "CLOSED"
+  }
+}

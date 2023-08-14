@@ -1,7 +1,70 @@
+const { resolve } = require('path');
+const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
+const { transform } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+
+/**
+ * Transform date properties to value types, to ensure that state is
+ * consistent between test runs.
+ *
+ * @param {unknown} data - The data to transform
+ */
+function transformDates(data) {
+  return transform(
+    data,
+    (result, value, key) => {
+      if (key.endsWith('Date')) {
+        // dates are converted to the value type to ensure state is consistent
+        // between runs
+        result[key] = typeof value;
+      } else if (typeof value === 'object') {
+        result[key] = transformDates(value);
+      } else {
+        result[key] = value;
+      }
+      return result;
+    },
+    {},
+  );
+}
+
+/**
+ * Check that the data provided matches the snapshot.
+ *
+ * @param {object }args - Function arguments.
+ * @param {any} args.data - The data to compare with the snapshot.
+ * @param {string} args.snapshot - The name of the snapshot.
+ * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
+ */
+async function matchesSnapshot({
+  data: unprocessedData,
+  snapshot,
+  update = process.env.UPDATE_SNAPSHOTS === 'true',
+}) {
+  const data = transformDates(unprocessedData);
+
+  const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
+  const rawSnapshotData = await fs.readFile(snapshotPath, {
+    encoding: 'utf-8',
+  });
+  const snapshotData = JSON.parse(rawSnapshotData);
+
+  try {
+    assert.deepStrictEqual(data, snapshotData);
+  } catch (error) {
+    if (update && error instanceof assert.AssertionError) {
+      await fs.writeFile(snapshotPath, `${JSON.stringify(data, null, 2)}\n`, {
+        encoding: 'utf-8',
+      });
+      console.log(`Snapshot '${snapshot}' updated`);
+      return;
+    }
+    throw error;
+  }
+}
 
 describe('Sentry errors', function () {
   const migrationError =
@@ -90,8 +153,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -181,7 +242,10 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
-          assert.deepStrictEqual(appState, {});
+          await matchesSnapshot({
+            data: appState,
+            snapshot: 'errors-before-init-opt-in-background-state',
+          });
         },
       );
     });
@@ -202,8 +266,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -246,8 +308,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -265,7 +325,10 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
-          assert.deepStrictEqual(appState, {});
+          await matchesSnapshot({
+            data: appState,
+            snapshot: 'errors-before-init-opt-in-ui-state',
+          });
         },
       );
     });
@@ -288,8 +351,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript(
@@ -322,8 +383,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -356,8 +415,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript(
@@ -400,8 +457,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript(
@@ -432,7 +487,10 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
-          assert.deepStrictEqual(Object.keys(appState?.store), ['metamask']);
+          await matchesSnapshot({
+            data: appState.store,
+            snapshot: 'errors-after-init-opt-in-background-state',
+          });
         },
       );
     });
@@ -453,8 +511,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -495,8 +551,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -525,12 +579,10 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
-          assert.deepStrictEqual(Object.keys(appState?.store), [
-            'unconnectedAccount',
-            'metamask',
-            'history',
-            'gas',
-          ]);
+          await matchesSnapshot({
+            data: appState.store,
+            snapshot: 'errors-after-init-opt-in-ui-state',
+          });
         },
       );
     });
