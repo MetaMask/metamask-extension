@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addCustomToken": {
-    "message": "Thêm token tùy chỉnh"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Thao tác này sẽ cho phép sử dụng mạng này trong MetaMask."
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "Kết quả tìm kiếm"
-  },
-  "searchTokens": {
-    "message": "Tìm kiếm token"
   },
   "secretRecoveryPhrase": {
     "message": "Cụm Mật Khẩu Khôi Phục Bí Mật"

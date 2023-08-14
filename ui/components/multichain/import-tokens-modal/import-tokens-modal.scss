@@ -1,0 +1,67 @@
+.import-tokens-modal {
+  $self: &;
+
+  .tabs {
+    ul {
+      border-bottom: 0;
+    }
+
+    li {
+      width: 50%;
+    }
+  }
+
+  &__autodetect {
+    vertical-align: unset;
+  }
+
+  &__search-list {
+    max-width: 100%;
+    overflow: auto;
+    max-height: 200px;
+  }
+
+  &__custom-token-form {
+    input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type='number']:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+    & #{$self}__decimal-warning {
+      margin-top: 5px;
+    }
+  }
+
+  &__token-name {
+    flex: 1;
+  }
+
+  &__token-balance {
+    flex: 0 0 30%;
+  }
+
+  &__confirm-token-list {
+    flex-flow: column nowrap;
+
+    &-item {
+      flex-flow: row nowrap;
+
+      &-wrapper {
+        flex-grow: 1;
+
+        &__text {
+          max-width: 130px;
+        }
+      }
+    }
+  }
+
+  &__nft-address-error-link {
+    display: contents;
+    font-size: inherit;
+  }
+}
