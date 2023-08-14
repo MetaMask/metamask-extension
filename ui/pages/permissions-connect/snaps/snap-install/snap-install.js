@@ -219,6 +219,7 @@ export default function SnapInstall({
       </Box>
       {isShowingWarning && (
         <SnapInstallWarning
+          isOpen
           onCancel={() => setIsShowingWarning(false)}
           onSubmit={onSubmit}
           warnings={warnings}
