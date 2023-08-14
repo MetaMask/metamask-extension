@@ -2,8 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 import { IconName } from '..';
-import { ButtonSecondary } from './button-secondary';
-import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
+import { ButtonSecondary, ButtonSecondarySize } from '.';
 
 describe('ButtonSecondary', () => {
   it('should render button element correctly', () => {
@@ -45,28 +44,28 @@ describe('ButtonSecondary', () => {
     const { getByTestId } = render(
       <>
         <ButtonSecondary
-          size={BUTTON_SECONDARY_SIZES.SM}
-          data-testid={BUTTON_SECONDARY_SIZES.SM}
+          size={ButtonSecondarySize.Sm}
+          data-testid={ButtonSecondarySize.Sm}
         />
         <ButtonSecondary
-          size={BUTTON_SECONDARY_SIZES.MD}
-          data-testid={BUTTON_SECONDARY_SIZES.MD}
+          size={ButtonSecondarySize.Md}
+          data-testid={ButtonSecondarySize.Md}
         />
         <ButtonSecondary
-          size={BUTTON_SECONDARY_SIZES.LG}
-          data-testid={BUTTON_SECONDARY_SIZES.LG}
+          size={ButtonSecondarySize.Lg}
+          data-testid={ButtonSecondarySize.Lg}
         />
       </>,
     );
 
-    expect(getByTestId(BUTTON_SECONDARY_SIZES.SM)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.SM}`,
+    expect(getByTestId(ButtonSecondarySize.Sm)).toHaveClass(
+      `mm-button-base--size-${ButtonSecondarySize.Sm}`,
     );
-    expect(getByTestId(BUTTON_SECONDARY_SIZES.MD)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.MD}`,
+    expect(getByTestId(ButtonSecondarySize.Md)).toHaveClass(
+      `mm-button-base--size-${ButtonSecondarySize.Md}`,
     );
-    expect(getByTestId(BUTTON_SECONDARY_SIZES.LG)).toHaveClass(
-      `mm-button-base--size-${BUTTON_SECONDARY_SIZES.LG}`,
+    expect(getByTestId(ButtonSecondarySize.Lg)).toHaveClass(
+      `mm-button-base--size-${ButtonSecondarySize.Lg}`,
     );
   });
 
