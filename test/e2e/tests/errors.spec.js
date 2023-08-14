@@ -125,6 +125,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.delay(3000);
@@ -153,6 +154,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -191,6 +193,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -231,6 +234,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -266,6 +270,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -308,6 +313,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
           // Erase `getSentryState` hook, simulating a "before initialization" state
           await driver.executeScript(
             'window.stateHooks.getSentryState = undefined',
@@ -351,6 +357,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript(
@@ -383,6 +390,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -415,6 +423,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript(
@@ -457,6 +466,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript(
@@ -511,6 +521,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
@@ -551,6 +562,7 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
+          await driver.findElement('#password');
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
