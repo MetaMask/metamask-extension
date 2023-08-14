@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
   },
-  "deleteNetworkDescription": {
-    "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
-  },
   "deposit": {
     "message": "जमा करें"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API इनेबल करें"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
   "enableToken": {
     "message": "$1 इनेबल करें",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
-  },
-  "source": {
-    "message": "स्रोत"
   },
   "speedUp": {
     "message": "जल्दी करें"

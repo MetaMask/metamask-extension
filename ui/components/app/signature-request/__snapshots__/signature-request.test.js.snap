@@ -208,7 +208,7 @@ exports[`Signature Request Component render should match snapshot when we are us
       </h6>
       <div>
         <button
-          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="verify-contract-details"
         >
           <span
@@ -766,7 +766,7 @@ exports[`Signature Request Component render should match snapshot when we are us
       </footer>
     </div>
     <button
-      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       data-testid="signature-request-reject-all"
     >
       Reject 2 requests
@@ -983,7 +983,7 @@ exports[`Signature Request Component render should match snapshot when we want t
       </h6>
       <div>
         <button
-          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          class="mm-box mm-text mm-button-base signature-request-content__verify-contract-details mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
           data-testid="verify-contract-details"
         >
           <span
@@ -1541,7 +1541,7 @@ exports[`Signature Request Component render should match snapshot when we want t
       </footer>
     </div>
     <button
-      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+      class="mm-box mm-text mm-button-base signature-request__reject-all-button mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
       data-testid="signature-request-reject-all"
     >
       Reject 2 requests

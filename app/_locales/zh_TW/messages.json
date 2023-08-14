@@ -411,9 +411,6 @@
   "deleteNetwork": {
     "message": "刪除網路？"
   },
-  "deleteNetworkDescription": {
-    "message": "你確定要刪除網路嗎？"
-  },
   "details": {
     "message": "詳情"
   },

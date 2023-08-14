@@ -1120,8 +1120,12 @@
   "deleteNetwork": {
     "message": "Delete network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Are you sure you want to delete this network?"
+  "deleteNetworkIntro": {
+    "message": "If you delete this network, you will need to add it again to view your assets in this network"
+  },
+  "deleteNetworkTitle": {
+    "message": "Delete $1 network?",
+    "description": "$1 represents the name of the network"
   },
   "deposit": {
     "message": "Deposit"
@@ -1269,6 +1273,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "displayNftMedia": {
+    "message": "Display NFT media"
+  },
+  "displayNftMediaDescription": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1391,14 +1401,11 @@
   "enableAutoDetect": {
     "message": " Enable autodetect"
   },
+  "enableForAllNetworks": {
+    "message": "Enable for all networks"
+  },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSmartSwaps": {
     "message": "Enable smart swaps"
@@ -3850,6 +3857,9 @@
     "message": "This relies on $1 which will have access to your Ethereum address and your IP address. $2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
+  "showIncomingTransactionsInformation": {
+    "message": "This relies on each network which will have access to your Ethereum address and your IP address."
+  },
   "showMore": {
     "message": "Show more"
   },
@@ -3903,6 +3913,9 @@
   },
   "skipAccountSecurityDetails": {
     "message": "I understand that until I back up my Secret Recovery Phrase, I may lose my accounts and all of their assets."
+  },
+  "smartContracts": {
+    "message": "Smart contracts"
   },
   "smartSwap": {
     "message": "Smart swap"
@@ -4093,9 +4106,6 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Something went wrong."
-  },
-  "source": {
-    "message": "Source"
   },
   "speedUp": {
     "message": "Speed up"
@@ -5196,6 +5206,12 @@
   },
   "urlExistsErrorMsg": {
     "message": "This URL is currently used by the $1 network."
+  },
+  "use4ByteResolution": {
+    "message": "Decode smart contracts"
+  },
+  "use4ByteResolutionDescription": {
+    "message": "To improve user experience, we customize the activity tab with messages based on the smart contracts you interact with. MetaMask uses a service called 4byte.directory to decode data and show you a version of a smart contact that's easier to read. This helps reduce your chances of approving malicious smart contract actions, but can result in your IP address being shared."
   },
   "useMultiAccountBalanceChecker": {
     "message": "Batch account balance requests"

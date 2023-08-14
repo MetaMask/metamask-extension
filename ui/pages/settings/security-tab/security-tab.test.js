@@ -46,8 +46,8 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('toggles opensea api enabled', async () => {
-    expect(await toggleCheckbox('enableOpenSeaAPI', false)).toBe(true);
+  it('toggles Display NFT media enabled', async () => {
+    expect(await toggleCheckbox('displayNftMedia', false)).toBe(true);
   });
 
   it('toggles nft detection', async () => {
@@ -56,6 +56,10 @@ describe('Security Tab', () => {
 
   it('toggles phishing detection', async () => {
     expect(await toggleCheckbox('usePhishingDetection', true)).toBe(true);
+  });
+
+  it('toggles 4byte resolution', async () => {
+    expect(await toggleCheckbox('4byte-resolution-container', true)).toBe(true);
   });
 
   it('toggles balance and token price checker', async () => {

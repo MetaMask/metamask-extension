@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "删除网络？"
   },
-  "deleteNetworkDescription": {
-    "message": "您确定要删除该网络吗？"
-  },
   "deposit": {
     "message": "存入"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
-  },
-  "enableOpenSeaAPI": {
-    "message": "启用 OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableToken": {
     "message": "启用 $1",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "哎呀！出了点问题。"
-  },
-  "source": {
-    "message": "来源"
   },
   "speedUp": {
     "message": "加速"

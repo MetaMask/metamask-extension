@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "Supprimer le réseau ?"
   },
-  "deleteNetworkDescription": {
-    "message": "Souhaitez-vous vraiment supprimer ce réseau ?"
-  },
   "deposit": {
     "message": "Effectuez un dépôt"
   },
@@ -1177,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Activer l’API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
   },
   "enableToken": {
     "message": "activer $1",
@@ -3254,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Oups !  Quelque chose a mal tourné. "
-  },
-  "source": {
-    "message": "Source"
   },
   "speedUp": {
     "message": "Accélérer"

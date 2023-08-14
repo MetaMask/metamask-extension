@@ -165,6 +165,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
+    sectionMessage: (t) => t('use4ByteResolution'),
+    descriptionMessage: (t) => t('use4ByteResolutionDescription'),
+    route: `${SECURITY_ROUTE}#decode-smart-contracts`,
+    icon: 'fa fa-lock',
+  },
+  {
+    tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('participateInMetaMetrics'),
     descriptionMessage: (t) => t('participateInMetaMetricsDescription'),
     route: `${SECURITY_ROUTE}#metametrics`,
@@ -215,8 +222,8 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('securityAndPrivacy'),
-    sectionMessage: (t) => t('enableOpenSeaAPI'),
-    descriptionMessage: (t) => t('enableOpenSeaAPIDescription'),
+    sectionMessage: (t) => t('displayNftMedia'),
+    descriptionMessage: (t) => t('displayNftMediaDescription'),
     route: `${SECURITY_ROUTE}#opensea-api`,
     icon: 'fa fa-lock',
   },

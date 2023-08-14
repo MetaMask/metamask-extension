@@ -858,6 +858,12 @@
         "ethjs>ethjs-unit": true
       }
     },
+    "@metamask/controller-utils>@metamask/eth-query": {
+      "packages": {
+        "eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
     "@metamask/controller-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -1663,6 +1669,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
@@ -1670,7 +1677,6 @@
         "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker": true,
         "browserify>assert": true,
-        "eth-query": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "uuid": true

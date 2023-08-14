@@ -4,7 +4,8 @@ import { hasProperty, isObject } from '@metamask/utils';
 export const version = 92;
 
 /**
- * Add ticker to the providerConfig object if missing
+ * Delete `stalelistLastFetched` and `hotlistLastFetched` to force a phishing configuration refresh
+ * because the format has changed.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -24,26 +25,11 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (
-    hasProperty(state, 'NetworkController') &&
-    isObject(state.NetworkController) &&
-    hasProperty(state.NetworkController, 'providerConfig') &&
-    isObject(state.NetworkController.providerConfig)
+    hasProperty(state, 'PhishingController') &&
+    isObject(state.PhishingController)
   ) {
-    const { providerConfig } = state.NetworkController;
-
-    if (providerConfig.ticker) {
-      return state;
-    }
-
-    state.NetworkController.providerConfig = {
-      ticker: 'ETH',
-      ...providerConfig,
-    };
-
-    return {
-      ...state,
-      NetworkController: state.NetworkController,
-    };
+    delete state.PhishingController.stalelistLastFetched;
+    delete state.PhishingController.hotlistLastFetched;
   }
   return state;
 }

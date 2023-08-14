@@ -1168,7 +1168,10 @@ export default class MetamaskController extends EventEmitter {
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkId: () => this.networkController.state.networkId,
-      getNetworkStatus: () => this.networkController.state.networkStatus,
+      getNetworkStatus: () =>
+        this.networkController.state.networksMetadata?.[
+          this.networkController.state.selectedNetworkClientId
+        ]?.status,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -2089,8 +2092,10 @@ export default class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
+      const networkStatus =
+        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
       const { chainId } = networkController.state.providerConfig;
-      if (memState.networkStatus === NetworkStatus.Available) {
+      if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
     }
@@ -2223,6 +2228,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
+        preferencesController,
+      ),
+      setUse4ByteResolution: preferencesController.setUse4ByteResolution.bind(
         preferencesController,
       ),
       setUseCurrencyRateCheck:
