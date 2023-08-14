@@ -2,6 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { keccak } from 'ethereumjs-util';
 import { cloneDeep } from 'lodash';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
@@ -58,11 +60,15 @@ const customStore = ({
         networkCongestion: isNetworkBusy ? 1 : 0.1,
       },
       // supportsEIP1559
-      networkDetails: {
-        ...testData?.metamask?.networkDetails,
-        EIPS: {
-          ...testData?.metamask?.networkDetails?.EIPS,
-          1159: Boolean(supportsEIP1559),
+      selectedNetworkClientId: NetworkType.mainnet,
+      networksMetadata: {
+        ...testData?.metamask?.networksMetadata,
+        [NetworkType.mainnet]: {
+          EIPS: {
+            ...testData?.metamask?.networksMetadata?.EIPS,
+            1559: Boolean(supportsEIP1559),
+          },
+          status: NetworkStatus.Available,
         },
       },
       // pendingTransactions

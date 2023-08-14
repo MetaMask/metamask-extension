@@ -51,20 +51,24 @@ describe('Create token, approve token and approve token without gas', function (
           text: 'Custom token',
           tag: 'button',
         });
-        await driver.fill('#custom-address', contractAddress);
-        await driver.waitForSelector('#custom-decimals');
+        await driver.fill(
+          '[data-testid="import-tokens-modal-custom-address"]',
+          contractAddress,
+        );
+        await driver.waitForSelector(
+          '[data-testid="import-tokens-modal-custom-decimals"]',
+        );
         await driver.delay(2000);
 
         await driver.clickElement({
-          text: 'Add custom token',
+          text: 'Next',
           tag: 'button',
         });
 
         await driver.delay(2000);
-        await driver.clickElement({
-          text: 'Import tokens',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         // renders balance for newly created token
         await driver.clickElement('.app-header__logo-container');
@@ -376,7 +380,7 @@ describe('Create token, approve token and approve token without gas', function (
 
         // set max spending cap
         await driver.clickElement({
-          css: '.custom-spending-cap__max',
+          css: '[data-testid="custom-spending-cap-max-button"]',
           text: 'Max',
         });
 

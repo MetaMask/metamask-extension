@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "10.34.1",
+  "version": "10.34.4",
   "private": true,
   "repository": {
     "type": "git",
@@ -205,7 +205,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.18.9",
-    "@blockaid/ppom": "^0.1.2",
+    "@blockaid/ppom": "^1.0.2",
     "@download/blockies": "^1.0.3",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",
@@ -260,7 +260,7 @@
     "@metamask/permission-controller": "^4.0.0",
     "@metamask/phishing-controller": "^6.0.0",
     "@metamask/post-message-stream": "^6.0.0",
-    "@metamask/ppom-validator": "^0.1.2",
+    "@metamask/ppom-validator": "^0.2.0",
     "@metamask/providers": "^11.1.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/rpc-methods": "^1.0.0-prerelease.1",
@@ -360,7 +360,7 @@
     "redux-thunk": "^2.3.0",
     "remove-trailing-slash": "^0.1.1",
     "reselect": "^3.0.1",
-    "ses": "^0.18.4",
+    "ses": "^0.18.7",
     "single-call-balance-checker-abi": "^1.0.0",
     "unicode-confusables": "^0.1.1",
     "uuid": "^8.3.2",

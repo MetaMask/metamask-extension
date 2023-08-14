@@ -141,6 +141,8 @@ export const CHAIN_IDS = {
   BSC_TESTNET: 'eip155:97',
   OPTIMISM: 'eip155:10',
   OPTIMISM_TESTNET: 'eip155:420',
+  BASE: 'eip155:8453',
+  BASE_TESTNET: 'eip155:84531',
   POLYGON: 'eip155:137',
   POLYGON_TESTNET: 'eip155:80001',
   AVALANCHE: 'eip155:43114',
@@ -556,6 +558,8 @@ export const BUYABLE_CHAINS_MAP: {
     CaipChainId,
     | typeof CHAIN_IDS.LOCALHOST
     | typeof CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CHAIN_IDS.BASE_TESTNET
+    | typeof CHAIN_IDS.BASE
     | typeof CHAIN_IDS.BSC_TESTNET
     | typeof CHAIN_IDS.POLYGON_TESTNET
     | typeof CHAIN_IDS.AVALANCHE_TESTNET

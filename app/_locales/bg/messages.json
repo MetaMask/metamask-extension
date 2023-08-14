@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Да се изтрие ли мрежата?"
   },
-  "deleteNetworkDescription": {
-    "message": "Наистина ли искате да изтриете тази мрежа?"
-  },
   "details": {
     "message": "Подробности"
   },
@@ -622,9 +619,6 @@
   },
   "searchResults": {
     "message": "Резултати от търсенето"
-  },
-  "searchTokens": {
-    "message": "Търсене на маркери"
   },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"

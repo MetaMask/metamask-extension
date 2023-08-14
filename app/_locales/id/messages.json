@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addCustomToken": {
-    "message": "Tambahkan token kustom"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan dengan MetaMask."
   },
@@ -908,9 +905,6 @@
   "deleteNetwork": {
     "message": "Hapus jaringan?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda yakin ingin menghapus jaringan ini?"
-  },
   "deposit": {
     "message": "Deposit"
   },
@@ -1177,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Aktifkan API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableToken": {
     "message": "aktifkan $1",
@@ -2989,9 +2977,6 @@
   "searchResults": {
     "message": "Cari hasil"
   },
-  "searchTokens": {
-    "message": "Cari token"
-  },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
   },
@@ -3254,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Ups! Ada yang salah."
-  },
-  "source": {
-    "message": "Sumber"
   },
   "speedUp": {
     "message": "Percepat"
