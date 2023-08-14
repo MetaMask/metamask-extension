@@ -13,9 +13,7 @@
     "useBlockie": false,
     "useNonceField": false,
     "usePhishDetect": true,
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": { "showIncomingTransactions": true },
     "currentLocale": "en",
     "forgottenPassword": false,
     "preferences": {
@@ -31,10 +29,7 @@
     "conversionRate": 1700,
     "nativeCurrency": "ETH",
     "currentCurrency": "usd",
-    "alertEnabledness": {
-      "unconnectedAccount": true,
-      "web3ShimUsage": true
-    },
+    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
