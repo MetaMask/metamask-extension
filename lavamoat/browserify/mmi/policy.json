@@ -1115,13 +1115,26 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/controller-utils>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true
+      }
+    },
+    "@metamask/controller-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/controller-utils>@spruceid/siwe-parser": {
@@ -1758,6 +1771,7 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1942,32 +1956,10 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/phishing-controller>@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -2000,6 +1992,7 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2142,6 +2135,7 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2177,6 +2171,7 @@
         "TextEncoder": true
       },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,

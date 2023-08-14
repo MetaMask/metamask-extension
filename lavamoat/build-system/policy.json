@@ -1124,13 +1124,6 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
-    "@sentry/cli>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
-      }
-    },
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -8158,7 +8151,14 @@
         "path.dirname": true
       },
       "packages": {
-        "@sentry/cli>mkdirp": true
+        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
+      }
+    },
+    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "stylelint>global-modules": {

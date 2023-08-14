@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [10.35.0]
 ### Uncategorized
 - temp
+## [10.34.4]
+### Changed
+- Updated snaps execution environment ([#20420](https://github.com/MetaMask/metamask-extension/pull/20420))
+
+## [10.34.3]
+### Fixed
+- Ensure users phishing warning list is properly updated ([#20381](https://github.com/MetaMask/metamask-extension/pull/20381))
+- Fix inaccurate info in swaps flow for zero-balance tokens ([#20388](https://github.com/MetaMask/metamask-extension/pull/20388))
+- Fix 'Global Menu Explorer / Account Details' What's New notification display ([#20371](https://github.com/MetaMask/metamask-extension/pull/20371))
+
+## [10.34.2]
+### Added
+- Add Address Details and View on Explorer to Global Menu ([#20013](https://github.com/MetaMask/metamask-extension/pull/20013))
+
+## Changed
+- Increase copy clipboard time ([#20008](https://github.com/MetaMask/metamask-extension/pull/20008))
+- Show checksum addresses on account list menu ([#20217](https://github.com/MetaMask/metamask-extension/pull/20217/commits/41bab4a6e14682388f4021f2f51bc74bddcbe80e))
+- Scroll to selected account when opening account list menu ([#20166](https://github.com/MetaMask/metamask-extension/pull/20166))
+- Remove fallback phishing warning configuration ([#20327](https://github.com/MetaMask/metamask-extension/pull/20327))
+  - The phishing warning feature will no longer function if the wallet is unable to receive configuration updates. Previously a fallback config was used in this case, but we found that it was too outdated to be helpful and it caused many problems for users.
+- Improved UI for downloading state logs on Chromium-based browsers ([#19872](https://github.com/MetaMask/metamask-extension/pull/19872))
+  - We now use a file picker to let you select the download location, rather than saving the state logs in your downloads folder.
+
+### Fixed
+- Fixed bug that could cause loss of network or token data for users upgrading from old versions ([#20276](https://github.com/MetaMask/metamask-extension/pull/20276))
+- Fix crash on open of MetaMask for some users that have old network data in state ([#20345](https://github.com/MetaMask/metamask-extension/pull/20345))
+
+## [10.34.1]
+### Fixed
+- Fix bug that could cause a failure in the persistence of network related data ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
+- Fix  ([#20080](https://github.com/MetaMask/metamask-extension/pull/20080))
 
 ## [10.34.0]
 ### Added
@@ -3859,6 +3890,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.35.0...HEAD
 [10.35.0]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...v10.35.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...HEAD
+[10.34.4]: https://github.com/MetaMask/metamask-extension/compare/v10.34.3...v10.34.4
+[10.34.3]: https://github.com/MetaMask/metamask-extension/compare/v10.34.2...v10.34.3
+[10.34.2]: https://github.com/MetaMask/metamask-extension/compare/v10.34.1...v10.34.2
+[10.34.1]: https://github.com/MetaMask/metamask-extension/compare/v10.34.0...v10.34.1
 [10.34.0]: https://github.com/MetaMask/metamask-extension/compare/v10.33.1...v10.34.0
 [10.33.1]: https://github.com/MetaMask/metamask-extension/compare/v10.33.0...v10.33.1
 [10.33.0]: https://github.com/MetaMask/metamask-extension/compare/v10.32.0...v10.33.0

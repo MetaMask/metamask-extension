@@ -1008,6 +1008,7 @@ function getAllowedAnnouncementIds(state) {
     19: false,
     20: currentKeyringIsLedger && isFirefox,
     21: isSwapsChain,
+    22: true,
   };
 }
 

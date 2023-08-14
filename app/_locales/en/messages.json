@@ -2743,6 +2743,15 @@
   "notifications21Title": {
     "message": "Introducing new and refreshed Swaps!"
   },
+  "notifications22ActionText": {
+    "message": "Got it"
+  },
+  "notifications22Description": {
+    "message": "💡 Just click the global menu or account menu to find them!"
+  },
+  "notifications22Title": {
+    "message": "Looking for your account details or the block explorer URL?"
+  },
   "notifications3ActionText": {
     "message": "Read more",
     "description": "The 'call to action' on the button, or link, of the 'Stay secure' notification. Upon clicking, users will be taken to a page about security on the metamask support website."

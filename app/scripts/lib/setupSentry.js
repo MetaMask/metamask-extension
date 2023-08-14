@@ -118,16 +118,20 @@ export default function setupSentry({ release, getState }) {
    * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
    * is enabled, `false` otherwise.
    */
-  function getMetaMetricsEnabled() {
-    if (getState) {
-      const appState = getState();
-      if (!appState?.store?.metamask?.participateInMetaMetrics) {
-        return false;
-      }
-    } else {
+  async function getMetaMetricsEnabled() {
+    const appState = getState();
+    if (Object.keys(appState) > 0) {
+      return Boolean(appState?.store?.metamask?.participateInMetaMetrics);
+    }
+    try {
+      const persistedState = await globalThis.stateHooks.getPersistedState();
+      return Boolean(
+        persistedState?.data?.MetaMetricsController?.participateInMetaMetrics,
+      );
+    } catch (error) {
+      console.error(error);
       return false;
     }
-    return true;
   }
 
   Sentry.init({
@@ -352,6 +356,6 @@ function toMetamaskUrl(origUrl) {
   if (!filePath) {
     return origUrl;
   }
-  const metamaskUrl = `metamask${filePath}`;
+  const metamaskUrl = `/metamask${filePath}`;
   return metamaskUrl;
 }

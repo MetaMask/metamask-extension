@@ -100,6 +100,9 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 21: true });
       history.push(PREPARE_SWAP_ROUTE);
     },
+    22: () => {
+      updateViewedNotifications({ 22: true });
+    },
   };
 
   return actionFunctions[id];
@@ -360,6 +363,7 @@ export default function WhatsNewPopup({
     18: renderFirstNotification,
     19: renderFirstNotification,
     21: renderFirstNotification,
+    22: renderFirstNotification,
   };
 
   return (
