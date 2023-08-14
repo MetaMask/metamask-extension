@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Panaikinti tinklą?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ar tikrai norite panaikinti šį tinklą?"
-  },
   "details": {
     "message": "Išsami informacija"
   },
@@ -559,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "Privatus tinklas"
-  },
-  "queue": {
-    "message": "Eilė"
   },
   "readdToken": {
     "message": "Šį žetoną galite bet kada galite įtraukti ir vėl, tiesiog savo paskyros parinkčių meniu nueikite  į „Įtraukti žetoną“."

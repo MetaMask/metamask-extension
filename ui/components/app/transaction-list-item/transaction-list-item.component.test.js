@@ -10,6 +10,7 @@ import {
   getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
+  getCurrentNetwork,
 } from '../../../selectors';
 import {
   renderWithProvider,
@@ -19,6 +20,12 @@ import {
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -53,7 +60,7 @@ jest.mock('react-redux', () => {
   return {
     ...actual,
     useSelector: jest.fn(),
-    useDispatch: () => jest.fn(),
+    useDispatch: jest.fn(),
   };
 });
 
@@ -97,6 +104,8 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     };
   } else if (selector === getTokenExchangeRates) {
     return opts.tokenExchangeRates ?? {};
+  } else if (selector === getCurrentNetwork) {
+    return { nickname: 'Ethereum Mainnet' };
   } else if (selector === getPreferences) {
     return (
       opts.preferences ?? {
@@ -112,6 +121,53 @@ const generateUseSelectorRouter = (opts) => (selector) => {
 };
 
 describe('TransactionListItem', () => {
+  describe('ActivityListItem interactions', () => {
+    beforeAll(() => {
+      useGasFeeEstimates.mockImplementation(
+        () => FEE_MARKET_ESTIMATE_RETURN_VALUE,
+      );
+    });
+
+    afterAll(() => {
+      useGasFeeEstimates.mockRestore();
+    });
+
+    it('should show the activity details popover and log metrics when the activity list item is clicked', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '0x3',
+        }),
+      );
+
+      const store = mockStore(mockState);
+      const mockTrackEvent = jest.fn();
+      const { queryByTestId } = renderWithProvider(
+        <MetaMetricsContext.Provider value={mockTrackEvent}>
+          <TransactionListItem transactionGroup={transactionGroup} />
+        </MetaMetricsContext.Provider>,
+        store,
+      );
+      const activityListItem = queryByTestId('activity-list-item');
+      fireEvent.click(activityListItem);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.ActivityDetailsOpened,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: 'send',
+        },
+      });
+      const popoverClose = queryByTestId('popover-close');
+      fireEvent.click(popoverClose);
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.ActivityDetailsClosed,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          activity_type: 'send',
+        },
+      });
+    });
+  });
+
   describe('when account has insufficient balance to cover gas', () => {
     beforeAll(() => {
       useGasFeeEstimates.mockImplementation(

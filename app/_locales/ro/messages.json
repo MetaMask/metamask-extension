@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigur vreți să ștergeți această rețea?"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -546,9 +543,6 @@
   },
   "privateNetwork": {
     "message": "Rețea privată"
-  },
-  "queue": {
-    "message": "Coadă"
   },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."

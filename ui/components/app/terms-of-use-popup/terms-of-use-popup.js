@@ -11,11 +11,11 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  Text,
   Button,
   BUTTON_VARIANT,
   ButtonLink,
   Label,
+  Text,
 } from '../../component-library';
 import Box from '../../ui/box';
 import CheckBox from '../../ui/check-box/check-box.component';

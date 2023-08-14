@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Προσθήκη επαφής"
   },
-  "addCustomIPFSGateway": {
-    "message": "Προσθήκη προσαρμοσμένης πύλης IPFS"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Η πύλη IPFS επιτρέπει την πρόσβαση και την προβολή δεδομένων που φιλοξενούνται από τρίτους. Μπορείτε να προσθέσετε μια προσαρμοσμένη πύλη IPFS ή να συνεχίσετε να χρησιμοποιείτε την προεπιλεγμένη."
-  },
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
   },
-  "deleteNetworkDescription": {
-    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
-  },
   "deposit": {
     "message": "Κατάθεση"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Ενεργοποίηση του από τις Ρυθμίσεις."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Ενεργοποίηση OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableToken": {
     "message": "ενεργοποίηση $1",
@@ -2753,9 +2738,6 @@
   "publicAddress": {
     "message": "Δημόσια Διεύθυνση"
   },
-  "queue": {
-    "message": "Ουρά"
-  },
   "queued": {
     "message": "Σε Αναμονή"
   },
@@ -2956,9 +2938,6 @@
   "revealTheSeedPhrase": {
     "message": "Αποκάλυψη φράσης ανάκτησης"
   },
-  "reviewSpendingCap": {
-    "message": "Επανεξετάστε το όριο δαπανών σας"
-  },
   "revokeAllTokensTitle": {
     "message": "Ανάκληση άδειας πρόσβασης σε όλα σας τα $1;",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3137,10 +3116,6 @@
     "message": "Έγκριση $1 χωρίς όριο δαπανών",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "Ορίστε ένα ανώτατο όριο δαπανών για το $1",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "Ρυθμίσεις"
   },
@@ -3267,9 +3242,6 @@
   },
   "somethingWentWrong": {
     "message": "Ουπς! Κάτι πήγε στραβά."
-  },
-  "source": {
-    "message": "Πηγή"
   },
   "speedUp": {
     "message": "Επιτάχυνση"
@@ -4164,14 +4136,8 @@
   "urlExistsErrorMsg": {
     "message": "Αυτό το URL χρησιμοποιείται επί του παρόντος από το δίκτυο $1."
   },
-  "useDefault": {
-    "message": "Χρήση προκαθορισμένου"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Μαζικά αιτήματα υπολοίπου λογαριασμού"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Συγκεντρώνουμε τους λογαριασμούς και ζητάμε από την Infura να εμφανίσει το υπόλοιπό σας. Αν το απενεργοποιήσετε αυτό, θα ζητηθούν μόνο οι ενεργοί λογαριασμοί. Ορισμένες αποκεντρωμένες εφαρμογές δεν θα λειτουργούν αν δεν συνδέσετε το πορτοφόλι σας."
   },
   "useNftDetection": {
     "message": "Αυτόματη Ανίχνευση NFT"

@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
   },
-  "deleteNetworkDescription": {
-    "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -556,9 +553,6 @@
   },
   "privateNetwork": {
     "message": "רשת פרטית"
-  },
-  "queue": {
-    "message": "תור"
   },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."

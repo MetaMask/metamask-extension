@@ -4,9 +4,9 @@ import { useDispatch } from 'react-redux';
 import {
   ButtonPrimary,
   ButtonSecondary,
+  Box,
   BUTTON_SECONDARY_SIZES,
 } from '../../component-library';
-import Box from '../../ui/box/box';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';

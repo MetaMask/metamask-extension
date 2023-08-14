@@ -101,6 +101,7 @@ import {
   setSwapsErrorKey,
   setBackgroundSwapRouteState,
 } from '../../../store/actions';
+import { SET_SMART_TRANSACTIONS_ERROR } from '../../../store/actionConstants';
 import {
   countDecimals,
   fetchTokenPrice,
@@ -117,13 +118,14 @@ import {
   IconSize,
   TextField,
   ButtonLink,
-  Text,
+  ButtonLinkSize,
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
+  BannerAlert,
+  Text,
 } from '../../../components/component-library';
-import { BannerAlert } from '../../../components/component-library/banner-alert';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -568,7 +570,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
+  }, [dispatch]);
 
   const BlockExplorerLink = () => {
     return (
@@ -598,7 +600,10 @@ export default function PrepareSwapPage({
     );
   };
 
-  const swapYourTokenBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenFromBalance = `${t('balance')}: ${fromTokenString || '0'}`;
+  const yourTokenToBalance = `${t('balance')}: ${
+    selectedToToken?.string || '0'
+  }`;
 
   const isDirectWrappingEnabled = shouldEnableDirectWrapping(
     chainId,
@@ -639,6 +644,10 @@ export default function PrepareSwapPage({
       if (!isReviewSwapButtonDisabled) {
         if (isSmartTransaction) {
           clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+          dispatch({
+            type: SET_SMART_TRANSACTIONS_ERROR,
+            payload: null,
+          });
         }
         // Only do quotes prefetching if the Review swap button is enabled.
         prefetchQuotesWithoutRedirecting();
@@ -785,7 +794,7 @@ export default function PrepareSwapPage({
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
         {tokenForImport && isImportTokenModalOpen && (
-          <ImportToken {...importTokenProps} />
+          <ImportToken isOpen {...importTokenProps} />
         )}
         <Modal
           onClose={onSwapToClose}
@@ -855,14 +864,15 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-        {showSmartTransactionsOptInPopover && (
-          <SmartTransactionsPopover
-            onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-            onCloseSmartTransactionsOptInPopover={
-              onCloseSmartTransactionsOptInPopover
-            }
-          />
-        )}
+
+        <SmartTransactionsPopover
+          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
+          onCloseSmartTransactionsOptInPopover={
+            onCloseSmartTransactionsOptInPopover
+          }
+          isOpen={showSmartTransactionsOptInPopover}
+        />
+
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -895,7 +905,7 @@ export default function PrepareSwapPage({
             alignItems={AlignItems.stretch}
           >
             <div className="prepare-swap-page__balance-message">
-              {fromTokenSymbol && swapYourTokenBalance}
+              {fromTokenSymbol && yourTokenFromBalance}
               {showMaxBalanceLink && (
                 <div
                   className="prepare-swap-page__max-balance"
@@ -954,11 +964,7 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           )}
-          <Box
-            display={DISPLAY.FLEX}
-            justifyContent={JustifyContent.center}
-            height={0}
-          >
+          <Box display={DISPLAY.FLEX} justifyContent={JustifyContent.center}>
             <div
               className={classnames('prepare-swap-page__switch-tokens', {
                 'prepare-swap-page__switch-tokens--rotate': rotateSwitchTokens,
@@ -1009,6 +1015,15 @@ export default function PrepareSwapPage({
               </Text>
             </Box>
           </Box>
+          <Box
+            display={DISPLAY.FLEX}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.stretch}
+          >
+            <div className="prepare-swap-page__balance-message">
+              {selectedToToken?.string && yourTokenToBalance}
+            </div>
+          </Box>
         </div>
         {!showReviewQuote && toTokenIsNotDefault && occurrences < 2 && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
@@ -1040,7 +1055,7 @@ export default function PrepareSwapPage({
                 </Text>
                 {!verificationClicked && (
                   <ButtonLink
-                    size={Size.INHERIT}
+                    size={ButtonLinkSize.Inherit}
                     textProps={{
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,

@@ -15,6 +15,7 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -160,9 +161,13 @@ const firstTimeState = {
         id: NETWORK_CONFIGURATION_ID_1,
       },
     },
-    networkDetails: {
-      EIPS: {
-        1559: false,
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: false,
+        },
+        status: 'available',
       },
     },
   },
@@ -326,9 +331,9 @@ describe('MetaMaskController', function () {
         ]);
       });
 
-      it('adds private key to keyrings in KeyringController', async function () {
+      it('adds private key to keyrings in core KeyringController', async function () {
         const simpleKeyrings =
-          metamaskController.keyringController.getKeyringsByType(
+          metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.imported,
           );
         const pubAddressHexArr = await simpleKeyrings[0].getAccounts();
@@ -611,7 +616,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.trezor, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.deepEqual(
@@ -627,7 +632,7 @@ describe('MetaMaskController', function () {
           .connectHardware(HardwareDeviceNames.ledger, 0)
           .catch(() => null);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.ledger,
           );
         assert.deepEqual(
@@ -654,7 +659,7 @@ describe('MetaMaskController', function () {
           mnemonic: uint8ArrayMnemonic,
         };
         sinon
-          .stub(metamaskController.keyringController, 'getKeyringsByType')
+          .stub(metamaskController.coreKeyringController, 'getKeyringsByType')
           .returns([mockHDKeyring]);
 
         const recoveredMnemonic =
@@ -708,7 +713,7 @@ describe('MetaMaskController', function () {
           .catch(() => null);
         await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
 
@@ -771,7 +776,7 @@ describe('MetaMaskController', function () {
 
       it('should set unlockedAccount in the keyring', async function () {
         const keyrings =
-          await metamaskController.keyringController.getKeyringsByType(
+          await metamaskController.coreKeyringController.getKeyringsByType(
             KeyringType.trezor,
           );
         assert.equal(keyrings[0].unlockedAccount, accountToUnlock);
@@ -904,7 +909,10 @@ describe('MetaMaskController', function () {
         sinon.stub(metamaskController.keyringController, 'removeAccount');
         sinon.stub(metamaskController, 'removeAllAccountPermissions');
         sinon
-          .stub(metamaskController.keyringController, 'getKeyringForAccount')
+          .stub(
+            metamaskController.coreKeyringController,
+            'getKeyringForAccount',
+          )
           .returns(Promise.resolve(mockKeyring));
 
         ret = await metamaskController.removeAccount(addressToRemove);
@@ -951,9 +959,9 @@ describe('MetaMaskController', function () {
       it('should return address', async function () {
         assert.equal(ret, '0x1');
       });
-      it('should call keyringController.getKeyringForAccount', async function () {
+      it('should call coreKeyringController.getKeyringForAccount', async function () {
         assert(
-          metamaskController.keyringController.getKeyringForAccount.calledWith(
+          metamaskController.coreKeyringController.getKeyringForAccount.calledWith(
             addressToRemove,
           ),
         );

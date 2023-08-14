@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomIPFSGateway": {
-    "message": "Adicionar gateway IPFS personalizado"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
-  },
   "addCustomNetwork": {
     "message": "Adicionar rede personalizada"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Excluir rede?"
   },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
-  },
   "deposit": {
     "message": "Depositar"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Habilite-a nas configurações."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Habilitar API do OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableToken": {
     "message": "ativar $1",
@@ -2753,9 +2738,6 @@
   "publicAddress": {
     "message": "Endereço público"
   },
-  "queue": {
-    "message": "Fila"
-  },
   "queued": {
     "message": "Na fila"
   },
@@ -2956,9 +2938,6 @@
   "revealTheSeedPhrase": {
     "message": "Revelar a frase de recuperação"
   },
-  "reviewSpendingCap": {
-    "message": "Revise seu limite de gastos"
-  },
   "revokeAllTokensTitle": {
     "message": "Revogar permissão de acesso e transferência de todos os seus $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3140,10 +3119,6 @@
     "message": "Aprovar $1 sem limite de gastos",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "Definir um limite de gastos para seu $1",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "Definições"
   },
@@ -3270,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
-  },
-  "source": {
-    "message": "Origem"
   },
   "speedUp": {
     "message": "Acelerar"
@@ -4167,14 +4139,8 @@
   "urlExistsErrorMsg": {
     "message": "O ID da cadeia está sendo usado pela rede $1."
   },
-  "useDefault": {
-    "message": "Usar padrão"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Agrupar solicitações de saldo de contas"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Agrupamos as contas e consultamos a Infura para exibir seus saldos de forma responsiva. Se isso for desativado, somente contas ativas serão consultadas. Alguns dapps só funcionam se você conecta a sua carteira."
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"

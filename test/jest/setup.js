@@ -127,3 +127,6 @@ expect.extend({
         };
   },
 });
+
+// Setup window.prompt
+global.prompt = () => undefined;

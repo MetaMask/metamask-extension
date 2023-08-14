@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "شبکه حذف شود؟"
   },
-  "deleteNetworkDescription": {
-    "message": "آیا مطمئن هستید که این شبکه حذف شود؟"
-  },
   "details": {
     "message": "جزئیات"
   },
@@ -559,9 +556,6 @@
   },
   "privateNetwork": {
     "message": "شبکه شخصی"
-  },
-  "queue": {
-    "message": "صف"
   },
   "readdToken": {
     "message": "شما میتوانید این رمزیاب را دوباره برای آینده با رفتن به گزینه \"Add token\" در مینوی تنظیمات حساب ها، اضافه نمایید."

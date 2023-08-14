@@ -183,12 +183,6 @@
   "addContact": {
     "message": "Kişi ekle"
   },
-  "addCustomIPFSGateway": {
-    "message": "Özel IPFS ağ geçidi ekle"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS ağ geçidi üçüncü tarafların barındırdığı veriler için erişim ve görüntülemeyi mümkün kılar. Özel bir IPFS ağ geçidi ekleyebilir veya varsayılanı kullanmaya devam edebilirsiniz."
-  },
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "Ağı Sil?"
   },
-  "deleteNetworkDescription": {
-    "message": "Bu ağı silmek istediğinizden emin misiniz?"
-  },
   "deposit": {
     "message": "Para Yatır"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableToken": {
     "message": "şunu etkinleştir: $1",
@@ -2753,9 +2738,6 @@
   "publicAddress": {
     "message": "Genel adres"
   },
-  "queue": {
-    "message": "Kuyruğa al"
-  },
   "queued": {
     "message": "Kuyruğa alındı"
   },
@@ -2956,9 +2938,6 @@
   "revealTheSeedPhrase": {
     "message": "Tohum ifadesini ortaya çıkar"
   },
-  "reviewSpendingCap": {
-    "message": "Harcama üst limitinize göz atın"
-  },
   "revokeAllTokensTitle": {
     "message": "Tüm $1 için izin erişim ve transfer izni geri çekilsin mi?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3140,10 +3119,6 @@
     "message": "$1 için harcama limiti olmadan onay ver",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "$1 için harcama üst limiti belirle",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "Ayarlar"
   },
@@ -3270,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "Eyvah! Bir şeyler ters gitti."
-  },
-  "source": {
-    "message": "Kaynak"
   },
   "speedUp": {
     "message": "Hızlandır"
@@ -4167,14 +4139,8 @@
   "urlExistsErrorMsg": {
     "message": "Bu URL şu anda $1 ağı tarafından kullanılıyor."
   },
-  "useDefault": {
-    "message": "Varsayılanı kullan"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Toplu hesap bakiyesi talepleri"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Hesapları toplarız ve bakiyelerinizi göstermek için Infura'yı sorgularız. Bunu kapattığınız takdirde sadece aktif hesaplar sorgulanır. Bazı merkeziyetsiz uygulamalar siz cüzdanınızı bağlamadığınız sürece çalışmaz."
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"

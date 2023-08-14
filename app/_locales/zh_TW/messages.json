@@ -411,9 +411,6 @@
   "deleteNetwork": {
     "message": "刪除網路？"
   },
-  "deleteNetworkDescription": {
-    "message": "你確定要刪除網路嗎？"
-  },
   "details": {
     "message": "詳情"
   },
@@ -1050,9 +1047,6 @@
   },
   "publicAddress": {
     "message": "公開位址"
-  },
-  "queue": {
-    "message": "佇列"
   },
   "queued": {
     "message": "已排入佇列"

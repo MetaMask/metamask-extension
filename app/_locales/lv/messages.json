@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Dzēst tīklu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },
@@ -555,9 +552,6 @@
   },
   "privateNetwork": {
     "message": "Privātais tīkls"
-  },
-  "queue": {
-    "message": "Rinda"
   },
   "readdToken": {
     "message": "Jūs varat šo marķieri iestatīt atpakaļ nākotnē, konta opciju izvēlnē atverot \"Pievienot marķieri\"."

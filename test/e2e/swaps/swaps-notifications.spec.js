@@ -141,7 +141,7 @@ describe('Swaps - notifications', function () {
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
         });
         await driver.clickElement(
-          '[data-testid="page-container__import-button"]',
+          '[data-testid="import-tokens-import-button"]',
         );
         await checkNotification(driver, {
           title: 'Token added manually',

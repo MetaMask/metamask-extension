@@ -38,6 +38,9 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -50,7 +53,6 @@ export default function SignatureRequestSIWE({ txData }) {
   const t = useContext(I18nContext);
   const allAccounts = useSelector(accountsWithSendEtherInfoSelector);
   const subjectMetadata = useSelector(getSubjectMetadata);
-
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
@@ -134,13 +136,18 @@ export default function SignatureRequestSIWE({ txData }) {
         isSIWEDomainValid={isSIWEDomainValid}
         subjectMetadata={targetSubjectMetadata}
       />
-
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
       {showSecurityProviderBanner && (
         <SecurityProviderBannerMessage
           securityProviderResponse={txData.securityProviderResponse}
         />
       )}
-
       <Message data={formatMessageParams(parsedMessage, t)} />
       {!isMatchingAddress && (
         <BannerAlert
@@ -155,13 +162,11 @@ export default function SignatureRequestSIWE({ txData }) {
           ])}
         </BannerAlert>
       )}
-
       {isLedgerWallet && (
         <div className="confirm-approve-content__ledger-instruction-wrapper">
           <LedgerInstructionField showDataInstruction />
         </div>
       )}
-
       {!isSIWEDomainValid && (
         <BannerAlert
           severity={SEVERITIES.DANGER}

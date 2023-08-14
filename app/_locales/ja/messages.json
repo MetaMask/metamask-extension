@@ -183,12 +183,6 @@
   "addContact": {
     "message": "連絡先を追加"
   },
-  "addCustomIPFSGateway": {
-    "message": "カスタム IPFS ゲートウェイを追加"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS ゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタム IPFS ゲートウェイを追加するか、デフォルトを引き続き使用できます。"
-  },
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
@@ -914,9 +908,6 @@
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },
-  "deleteNetworkDescription": {
-    "message": "このネットワークを削除しますか?"
-  },
   "deposit": {
     "message": "入金"
   },
@@ -1183,12 +1174,6 @@
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea APIを有効にする"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
   "enableToken": {
     "message": "$1を有効にする",
@@ -2753,9 +2738,6 @@
   "publicAddress": {
     "message": "パブリックアドレス"
   },
-  "queue": {
-    "message": "キュー"
-  },
   "queued": {
     "message": "キュー待ち"
   },
@@ -2956,9 +2938,6 @@
   "revealTheSeedPhrase": {
     "message": "シードフレーズを表示"
   },
-  "reviewSpendingCap": {
-    "message": "使用上限を確認してください"
-  },
   "revokeAllTokensTitle": {
     "message": "すべての $1 へのアクセスおよび転送許可を取り消しますか？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3140,10 +3119,6 @@
     "message": "使用限度額なしで $1 を承認",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "$1 の使用上限を設定",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "設定"
   },
@@ -3270,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "申し訳ありません。問題が発生しました。"
-  },
-  "source": {
-    "message": "ソース"
   },
   "speedUp": {
     "message": "スピードアップ"
@@ -4167,14 +4139,8 @@
   "urlExistsErrorMsg": {
     "message": "このURLは現在$1ネットワークで使用されています。"
   },
-  "useDefault": {
-    "message": "既定値を使用"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "アカウント残高の一括リクエスト"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "当社は残高を素早く表示できるよう、アカウントをまとめて Infura にクエリを送ります。この機能をオフにすると、アクティブなアカウントのみクエリの対象となります。Dapps によっては、ウォレットを接続しないと機能しないものもあります。"
   },
   "useNftDetection": {
     "message": "NFTを自動検出"

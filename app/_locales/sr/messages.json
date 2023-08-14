@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Da li želite da obrišete mrežu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Da li ste sigurni da želite da izbrišete ovu mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },
@@ -550,9 +547,6 @@
   },
   "privateNetwork": {
     "message": "Privatna mreža"
-  },
-  "queue": {
-    "message": "Ред"
   },
   "readdToken": {
     "message": "U budućnosti možete vratiti ovaj token tako što ćete otvoriti „Dodaj token“ u meniju opcija vašeg naloga."

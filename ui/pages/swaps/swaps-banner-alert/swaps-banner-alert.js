@@ -8,10 +8,14 @@ import Box from '../../../components/ui/box';
 import {
   AlignItems,
   SEVERITIES,
-  Size,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { ButtonLink, Text } from '../../../components/component-library';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  Text,
+} from '../../../components/component-library';
+
 import {
   QUOTES_EXPIRED_ERROR,
   SWAP_FAILED_ERROR,
@@ -41,7 +45,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
             {t('swapSlippageOverLimitDescription')}
           </Text>
           <ButtonLink
-            size={Size.INHERIT}
+            size={ButtonLinkSize.Inherit}
             textProps={{
               variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
@@ -82,7 +86,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
             {t('swapSlippageNegativeDescription')}
           </Text>
           <ButtonLink
-            size={Size.INHERIT}
+            size={ButtonLinkSize.Inherit}
             textProps={{
               variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
@@ -105,7 +109,7 @@ export default function SwapsBannerAlert({ swapsErrorKey }) {
             {t('swapQuotesNotAvailableDescription')}
           </Text>
           <ButtonLink
-            size={Size.INHERIT}
+            size={ButtonLinkSize.Inherit}
             textProps={{
               variant: TextVariant.bodyMd,
               alignItems: AlignItems.flexStart,
