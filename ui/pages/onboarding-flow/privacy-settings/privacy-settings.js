@@ -22,6 +22,7 @@ import {
 } from '../../../components/component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  BlockSize,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -324,15 +325,16 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
+          <Button
+            variant={BUTTON_VARIANT.PRIMARY}
+            size={BUTTON_SIZES.LG}
+            onClick={handleSubmit}
+            block
+            marginTop={6}
+          >
+            {t('done')}
+          </Button>
         </div>
-        <Button
-          variant={BUTTON_VARIANT.PRIMARY}
-          size={BUTTON_SIZES.LG}
-          block
-          onClick={handleSubmit}
-        >
-          {t('done')}
-        </Button>
       </div>
     </>
   );

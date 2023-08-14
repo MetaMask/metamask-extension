@@ -33,7 +33,9 @@ export const Setting = ({
         <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Bold}>
           {title}
         </Text>
-        <Text variant={TextVariant.bodyMd}>{description}</Text>
+        <Text variant={TextVariant.bodyMd} as="div">
+          {description}
+        </Text>
       </div>
       {showToggle ? (
         <div className="privacy-settings__setting__toggle">
