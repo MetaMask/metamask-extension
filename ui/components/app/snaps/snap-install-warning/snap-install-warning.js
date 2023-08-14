@@ -17,7 +17,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 
 import {
-  AvatarIcon,
+  Icon,
   Text,
   IconName,
   Box,
@@ -82,9 +82,8 @@ export default function SnapInstallWarning({
             gap: 4,
           }}
         >
-          <AvatarIcon
-            iconName={IconName.Danger}
-            backgroundColor={BackgroundColor.warningMuted}
+          <Icon
+            name={IconName.Danger}
             color={IconColor.warningDefault}
             size={Size.XL}
           />
