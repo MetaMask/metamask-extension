@@ -83,7 +83,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
             {t('snapsPrivacyWarningFirstMessage', [
               <ButtonLink
                 key="privacyNoticeTermsOfUseLink"
-                size={BUTTON_LINK_SIZES.INHERIT}
+                size={ButtonLinkSize.Inherit}
                 href={TERMS_OF_USE_LINK}
                 target="_blank"
               >
@@ -126,7 +126,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
         >
           <Button
             variant={BUTTON_VARIANT.SECONDARY}
-            size={BUTTON_PRIMARY_SIZES.LG}
+            size={BUTTON_SIZES.LG}
             width={BlockSize.Full}
             onClick={onCanceled}
           >
@@ -134,7 +134,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled, isOpen }) {
           </Button>
           <Button
             variant={BUTTON_VARIANT.PRIMARY}
-            size={BUTTON_PRIMARY_SIZES.LG}
+            size={BUTTON_SIZES.LG}
             width={BlockSize.Full}
             onClick={onAccepted}
             disabled={!isScrolledToBottom}
