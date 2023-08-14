@@ -3,7 +3,7 @@
 exports[`Security Provider Banner Alert should match snapshot 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-top-4 box--margin-right-4 box--margin-left-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
   >
     <span
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
@@ -59,7 +59,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
         </details>
       </div>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <span
           class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"

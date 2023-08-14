@@ -289,9 +289,6 @@
   "search": {
     "message": "Hledat"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },

@@ -218,9 +218,6 @@
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
   },
-  "deleteNetworkDescription": {
-    "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -623,9 +620,6 @@
   },
   "searchResults": {
     "message": "نتائج البحث"
-  },
-  "searchTokens": {
-    "message": "البحث عن العملات الرمزية"
   },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"

@@ -89,6 +89,7 @@ import {
   ERC20,
   ERC721,
 } from '@metamask/controller-utils';
+import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -656,6 +657,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.store,
       ),
       cdnBaseUrl: process.env.BLOCKAID_FILE_CDN,
+      blockaidPublicKey: process.env.BLOCKAID_PUBLIC_KEY,
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -986,6 +988,7 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:handleRpcRequest',
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
+        'SnapsRegistry:update',
       ],
     });
 
@@ -1166,7 +1169,10 @@ export default class MetamaskController extends EventEmitter {
       getCurrentAccountEIP1559Compatibility:
         this.getCurrentAccountEIP1559Compatibility.bind(this),
       getNetworkId: () => this.networkController.state.networkId,
-      getNetworkStatus: () => this.networkController.state.networkStatus,
+      getNetworkStatus: () =>
+        this.networkController.state.networksMetadata?.[
+          this.networkController.state.selectedNetworkClientId
+        ]?.status,
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -2087,8 +2093,10 @@ export default class MetamaskController extends EventEmitter {
     updatePublicConfigStore(this.getState());
 
     function updatePublicConfigStore(memState) {
+      const networkStatus =
+        memState.networksMetadata[memState.selectedNetworkClientId]?.status;
       const { chainId } = networkController.state.providerConfig;
-      if (memState.networkStatus === NetworkStatus.Available) {
+      if (networkStatus === NetworkStatus.Available) {
         publicConfigStore.putState(selectPublicState(chainId, memState));
       }
     }
@@ -2221,6 +2229,9 @@ export default class MetamaskController extends EventEmitter {
         preferencesController,
       ),
       setUseNftDetection: preferencesController.setUseNftDetection.bind(
+        preferencesController,
+      ),
+      setUse4ByteResolution: preferencesController.setUse4ByteResolution.bind(
         preferencesController,
       ),
       setUseCurrencyRateCheck:
@@ -2895,8 +2906,6 @@ export default class MetamaskController extends EventEmitter {
 
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
-      const { keyringController } = this;
-
       // clear known identities
       this.preferencesController.setAddresses([]);
 
@@ -2920,29 +2929,22 @@ export default class MetamaskController extends EventEmitter {
       this.txController.txStateManager.clearUnapprovedTxs();
 
       // create new vault
-      const vault = await keyringController.createNewVaultAndRestore(
+      const vault = await this.coreKeyringController.createNewVaultAndRestore(
         password,
-        seedPhraseAsBuffer,
+        this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
       const ethQuery = new EthQuery(this.provider);
-      accounts = await keyringController.getAccounts();
+      accounts = await this.coreKeyringController.getAccounts();
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
         ethQuery,
       );
 
-      const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-        KeyringType.hdKeyTree,
-      );
-      if (!primaryKeyring) {
-        throw new Error('MetamaskController - No HD Key Tree found');
-      }
-
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await keyringController.addNewAccount(primaryKeyring);
-        accounts = await keyringController.getAccounts();
+        await this.coreKeyringController.addNewAccount(accounts.length);
+        accounts = await this.coreKeyringController.getAccounts();
         lastBalance = await this.getBalance(
           accounts[accounts.length - 1],
           ethQuery,
@@ -2952,7 +2954,7 @@ export default class MetamaskController extends EventEmitter {
       // remove extra zero balance account potentially created from seeking ahead
       if (accounts.length > 1 && lastBalance === '0x0') {
         await this.removeAccount(accounts[accounts.length - 1]);
-        accounts = await keyringController.getAccounts();
+        accounts = await this.coreKeyringController.getAccounts();
       }
 
       // This must be set as soon as possible to communicate to the
@@ -2963,14 +2965,26 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.getLedgerTransportPreference();
       this.setLedgerTransportPreference(transportPreference);
 
-      // set new identities
-      this.preferencesController.setAddresses(accounts);
       this.selectFirstIdentity();
 
       return vault;
     } finally {
       releaseLock();
     }
+  }
+
+  /**
+   * Encodes a BIP-39 mnemonic as the indices of words in the English BIP-39 wordlist.
+   *
+   * @param {Buffer} mnemonic - The BIP-39 mnemonic.
+   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
+   */
+  _convertMnemonicToWordlistIndices(mnemonic) {
+    const indices = mnemonic
+      .toString()
+      .split(' ')
+      .map((word) => wordlist.indexOf(word));
+    return new Uint8Array(new Uint16Array(indices).buffer);
   }
 
   /**
@@ -4053,7 +4067,9 @@ export default class MetamaskController extends EventEmitter {
     engine.push(this.permissionLogController.createMiddleware());
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    engine.push(createPPOMMiddleware(this.ppomController));
+    engine.push(
+      createPPOMMiddleware(this.ppomController, this.preferencesController),
+    );
     ///: END:ONLY_INCLUDE_IN
 
     engine.push(

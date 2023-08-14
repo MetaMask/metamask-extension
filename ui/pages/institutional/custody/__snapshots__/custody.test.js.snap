@@ -33,7 +33,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
       >
         <button
           aria-label="Back"
-          class="box mm-button-icon mm-button-icon--size-sm box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         >
           <span
             class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
@@ -81,7 +81,7 @@ exports[`CustodyPage renders CustodyPage 2`] = `
               </p>
             </div>
             <button
-              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+              class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
               data-testid="custody-connect-button"
             >
               Select

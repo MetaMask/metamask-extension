@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+import { Box, Text } from '../../../components/component-library';
 import ToggleButton from '../../../components/ui/toggle-button';
 import {
   JustifyContent,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextVariant,
+  AlignItems,
+  Display,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const Setting = ({
   value,
@@ -16,20 +18,31 @@ export const Setting = ({
   description,
   showToggle = true,
 }) => {
+  const t = useI18nContext();
+
   return (
-    <Box justifyContent={JustifyContent.center} margin={3}>
+    <Box
+      display={Display.Flex}
+      justifyContent={JustifyContent.spaceBetween}
+      alignItems={AlignItems.center}
+      marginTop={3}
+      marginBottom={3}
+      className="privacy-settings__setting__wrapper"
+    >
       <div className="privacy-settings__setting">
-        <Typography
-          variant={TypographyVariant.H5}
-          fontWeight={FONT_WEIGHT.BOLD}
-        >
+        <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Bold}>
           {title}
-        </Typography>
-        <Typography variant={TypographyVariant.H6}>{description}</Typography>
+        </Text>
+        <Text variant={TextVariant.bodyMd}>{description}</Text>
       </div>
       {showToggle ? (
         <div className="privacy-settings__setting__toggle">
-          <ToggleButton value={value} onToggle={(val) => setValue(!val)} />
+          <ToggleButton
+            value={value}
+            onToggle={(val) => setValue(!val)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
         </div>
       ) : null}
     </Box>

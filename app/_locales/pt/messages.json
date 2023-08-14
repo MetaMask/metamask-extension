@@ -183,17 +183,8 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomIPFSGateway": {
-    "message": "Adicionar gateway IPFS personalizado"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "O gateway IPFS possibilita acessar e visualizar dados hospedados por terceiros. Você pode adicionar um gateway IPFS personalizado ou continuar usando o padrão."
-  },
   "addCustomNetwork": {
     "message": "Adicionar rede personalizada"
-  },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
@@ -914,9 +905,6 @@
   "deleteNetwork": {
     "message": "Excluir rede?"
   },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
-  },
   "deposit": {
     "message": "Depositar"
   },
@@ -1183,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " Habilite-a nas configurações."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Habilitar API do OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableToken": {
     "message": "ativar $1",
@@ -2995,9 +2977,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchTokens": {
-    "message": "Buscar tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase Secreta de Recuperação"
   },
@@ -3260,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
-  },
-  "source": {
-    "message": "Origem"
   },
   "speedUp": {
     "message": "Acelerar"

@@ -183,17 +183,8 @@
   "addContact": {
     "message": "Kontakt hinzufügen"
   },
-  "addCustomIPFSGateway": {
-    "message": "Benutzerdefiniertes IPFS-Gateway hinzufügen"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
-  },
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
-  },
-  "addCustomToken": {
-    "message": "Kunden-Token hinzufügen"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "Dadurch kann dieses Netzwerk innerhalb MetaMask verwendet werden."
@@ -914,9 +905,6 @@
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
-  },
   "deposit": {
     "message": "Einzahlung"
   },
@@ -1183,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " In den Einstellungen aktivieren."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API aktivieren"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
   "enableToken": {
     "message": "$1 aktivieren",
@@ -2995,9 +2977,6 @@
   "searchResults": {
     "message": "Suchergebnisse"
   },
-  "searchTokens": {
-    "message": "Token suchen"
-  },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
@@ -3260,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
-  },
-  "source": {
-    "message": "Quelle"
   },
   "speedUp": {
     "message": "Beschleunigen"

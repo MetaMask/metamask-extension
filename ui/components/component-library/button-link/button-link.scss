@@ -16,7 +16,7 @@
     }
   }
 
-  &--type-danger {
+  &--type-danger:not(&--disabled) {
     &:hover {
       color: var(--color-error-default);
     }
@@ -48,5 +48,9 @@
   &--size-inherit:hover:not(&--disabled) {
     text-decoration-thickness: auto;
     text-underline-offset: 2px;
+  }
+
+  &--loading:hover:not(&--disabled) {
+    text-decoration: none;
   }
 }

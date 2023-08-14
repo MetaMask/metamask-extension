@@ -15,6 +15,7 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
   Color,
+  Display,
   IconColor,
   Severity,
   Size,
@@ -36,13 +37,7 @@ function SecurityProviderBannerAlert({
   const t = useContext(I18nContext);
 
   return (
-    <BannerAlert
-      title={title}
-      severity={severity}
-      marginTop={4}
-      marginRight={4}
-      marginLeft={4}
-    >
+    <BannerAlert title={title} severity={severity} margin={4}>
       <Text marginTop={2}>{description}</Text>
 
       {details && (
@@ -51,30 +46,33 @@ function SecurityProviderBannerAlert({
         </Disclosure>
       )}
 
-      <Text
-        marginTop={2}
-        alignItems={AlignItems.center}
-        color={Color.textAlternative}
-        variant={TextVariant.bodySm}
-      >
-        <Icon
-          className="disclosure__summary--icon"
-          color={IconColor.primaryDefault}
-          name={IconName.SecurityTick}
-          size={IconSize.Sm}
-          marginInlineEnd={1}
-        />
-        {t('securityProviderAdviceBy', [
-          <ButtonLink
-            key={`security-provider-button-link-${provider}`}
-            size={Size.inherit}
-            href={SECURITY_PROVIDER_CONFIG[provider].url}
-            externalLink
-          >
-            {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
-          </ButtonLink>,
-        ])}
-      </Text>
+      {provider && (
+        <Text
+          marginTop={3}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          color={Color.textAlternative}
+          variant={TextVariant.bodySm}
+        >
+          <Icon
+            className="disclosure__summary--icon"
+            color={IconColor.primaryDefault}
+            name={IconName.SecurityTick}
+            size={IconSize.Sm}
+            marginInlineEnd={1}
+          />
+          {t('securityProviderAdviceBy', [
+            <ButtonLink
+              key={`security-provider-button-link-${provider}`}
+              size={Size.inherit}
+              href={SECURITY_PROVIDER_CONFIG[provider].url}
+              externalLink
+            >
+              {t(SECURITY_PROVIDER_CONFIG[provider].tKeyName)}
+            </ButtonLink>,
+          ])}
+        </Text>
+      )}
     </BannerAlert>
   );
 }
@@ -83,9 +81,6 @@ SecurityProviderBannerAlert.propTypes = {
   /** Description content that may be plain text or contain hyperlinks */
   description: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     .isRequired,
-
-  /** Name of the security provider */
-  provider: PropTypes.oneOfType(Object.values(SecurityProvider)).isRequired,
 
   /** Severity level */
   severity: PropTypes.oneOfType([Severity.Danger, Severity.Warning]).isRequired,
@@ -99,6 +94,9 @@ SecurityProviderBannerAlert.propTypes = {
 
   /** Additional details to be displayed under the description */
   details: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+
+  /** Name of the security provider */
+  provider: PropTypes.oneOfType(Object.values(SecurityProvider)),
 };
 
 export default SecurityProviderBannerAlert;

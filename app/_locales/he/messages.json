@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
   },
-  "deleteNetworkDescription": {
-    "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
-  },
   "details": {
     "message": "פרטים"
   },
@@ -623,9 +620,6 @@
   },
   "searchResults": {
     "message": "תוצאות חיפוש"
-  },
-  "searchTokens": {
-    "message": "חיפוש טוקנים"
   },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
