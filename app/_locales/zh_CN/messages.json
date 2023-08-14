@@ -908,9 +908,6 @@
   "deleteNetwork": {
     "message": "删除网络？"
   },
-  "deleteNetworkDescription": {
-    "message": "您确定要删除该网络吗？"
-  },
   "deposit": {
     "message": "存入"
   },
@@ -3248,9 +3245,6 @@
   },
   "somethingWentWrong": {
     "message": "哎呀！出了点问题。"
-  },
-  "source": {
-    "message": "来源"
   },
   "speedUp": {
     "message": "加速"

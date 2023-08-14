@@ -258,7 +258,7 @@
   }
 
   &__body {
-    padding: 12px 24px;
+    padding: 24px;
 
     @include screen-sm-min {
       padding: 12px;
@@ -266,23 +266,18 @@
   }
 
   &__content-row {
-    display: flex;
-    flex-direction: column;
     padding: 10px 0 20px;
   }
 
   &__content-item {
-    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
     font-size: 16px;
     font-weight: 500;
 
     @include screen-sm-max {
       height: initial;
-      padding: 5px 0;
     }
 
     &--without-height {
@@ -364,10 +359,10 @@
     max-width: 300px;
     display: flex;
     flex-direction: column;
+    margin-top: 8px;
 
     @include screen-sm-max {
       max-width: 100%;
-      width: 100%;
     }
 
     .eth-sign-toggle .toggle-button__status {

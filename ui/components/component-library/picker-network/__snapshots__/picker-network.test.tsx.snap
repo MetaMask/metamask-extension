@@ -3,7 +3,7 @@
 exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
 <div>
   <button
-    class="box mm-picker-network box--padding-right-4 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--align-items-center box--background-color-background-alternative box--rounded-pill"
+    class="mm-box mm-picker-network mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
     data-testid="picker-network"
   >
     <div

@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Dzēst tīklu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Vai tiešām vēlaties dzēst šo tīklu?"
-  },
   "details": {
     "message": "Informācija"
   },

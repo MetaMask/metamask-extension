@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Da li želite da obrišete mrežu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Da li ste sigurni da želite da izbrišete ovu mrežu?"
-  },
   "details": {
     "message": "Детаљи"
   },

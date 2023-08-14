@@ -378,6 +378,23 @@ export default class Home extends PureComponent {
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  onSupportLinkClick = () => {
+    this.context.trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_LINK,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+  };
+  ///: END:ONLY_INCLUDE_IN
+
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
@@ -778,7 +795,7 @@ export default class Home extends PureComponent {
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
     ///: END:ONLY_INCLUDE_IN
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // The style in activity screen for support is different
     const activitySupportDisplayStyle =
       defaultHomeActiveTabName === 'activity'
@@ -884,21 +901,57 @@ export default class Home extends PureComponent {
                         history.push(`${ASSET_ROUTE}/${asset}`)
                       }
                     />
+                    {
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                      <ButtonLink
+                        size={Size.MD}
+                        startIconName={IconName.MessageQuestion}
+                        data-testid="need-help-link"
+                        href={SUPPORT_LINK}
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.flexStart}
+                        paddingLeft={4}
+                        marginBottom={4}
+                        onClick={this.onSupportLinkClick}
+                        externalLink
+                      >
+                        {t('needHelpLinkText')}
+                      </ButtonLink>
+                      ///: END:ONLY_INCLUDE_IN
+                    }
                   </Box>
                 </Tab>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                  <Tab
-                    activeClassName="home__tab--active"
-                    className="home__tab"
-                    data-testid="home__nfts-tab"
-                    name={this.context.t('nfts')}
-                    tabKey="nfts"
-                  >
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                     <NftsTab />
-                  </Tab>
-                  ///: END:ONLY_INCLUDE_IN
-                }
+                    ///: END:ONLY_INCLUDE_IN
+                  }
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      paddingLeft={4}
+                      marginBottom={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IN
+                  }
+                </Tab>
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
@@ -907,42 +960,26 @@ export default class Home extends PureComponent {
                   tabKey="activity"
                 >
                   <TransactionList />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      marginBottom={4}
+                      marginTop={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IN
+                  }
                 </Tab>
               </Tabs>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.MessageQuestion}
-                  data-testid="need-help-link"
-                  href={SUPPORT_LINK}
-                  display={Display.Flex}
-                  justifyContent={activitySupportDisplayStyle.justifyContent}
-                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
-                  marginBottom={activitySupportDisplayStyle.marginBottom}
-                  marginTop={activitySupportDisplayStyle.marginTop}
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                  externalLink
-                >
-                  {t('needHelpLinkText')}
-                </ButtonLink>
-                ///: END:ONLY_INCLUDE_IN
-              }
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
                 <InstitutionalHomeFooter

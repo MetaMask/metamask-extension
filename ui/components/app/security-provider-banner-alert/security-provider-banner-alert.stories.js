@@ -1,6 +1,6 @@
 import React from 'react';
 import { Severity } from '../../../helpers/constants/design-system';
-import { ButtonLink, BUTTON_LINK_SIZES, Text } from '../../component-library';
+import { ButtonLink, ButtonLinkSize, Text } from '../../component-library';
 import { SecurityProvider } from '../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from './security-provider-banner-alert';
 
@@ -11,7 +11,7 @@ const mockPlainText =
 const MockDescriptionWithLinks = () => (
   <>
     Description shouldn’t repeat title. 1-3 lines. Can contain a{' '}
-    <ButtonLink size={BUTTON_LINK_SIZES.INHERIT}>hyperlink</ButtonLink>. It can
+    <ButtonLink size={ButtonLinkSize.Inherit}>hyperlink</ButtonLink>. It can
     also contain a toggle to enable progressive disclosure.
   </>
 );

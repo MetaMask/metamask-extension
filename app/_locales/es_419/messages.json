@@ -584,9 +584,6 @@
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
-  "deleteNetworkDescription": {
-    "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
   "description": {
     "message": "Descripción"
   },
@@ -2064,9 +2061,6 @@
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
-  },
-  "source": {
-    "message": "Fuente"
   },
   "speedUp": {
     "message": "Acelerar"

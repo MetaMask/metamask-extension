@@ -698,9 +698,9 @@ export function getKnownMethodData(state, data) {
   }
   const prefixedData = addHexPrefix(data);
   const fourBytePrefix = prefixedData.slice(0, 10);
-  const { knownMethodData } = state.metamask;
-
-  return knownMethodData && knownMethodData[fourBytePrefix];
+  const { knownMethodData, use4ByteResolution } = state.metamask;
+  // If 4byte setting is off, we do not want to return the knownMethodData
+  return use4ByteResolution && knownMethodData?.[fourBytePrefix];
 }
 
 export function getFeatureFlags(state) {

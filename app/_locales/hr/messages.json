@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Izbrisati mrežu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
   "details": {
     "message": "Detalji"
   },
