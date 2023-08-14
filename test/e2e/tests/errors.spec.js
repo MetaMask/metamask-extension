@@ -3,6 +3,7 @@ const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
 const { transform } = require('lodash');
 const { Browser } = require('selenium-webdriver');
+const { format } = require('prettier');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -56,7 +57,13 @@ async function matchesSnapshot({
     assert.deepStrictEqual(data, snapshotData);
   } catch (error) {
     if (update && error instanceof assert.AssertionError) {
-      await fs.writeFile(snapshotPath, `${JSON.stringify(data, null, 2)}\n`, {
+      const stringifiedData = JSON.stringify(data);
+      // filepath specified so that Prettier can infer which parser to use
+      // from the file extension
+      const formattedData = format(stringifiedData, {
+        filepath: 'something.json',
+      });
+      await fs.writeFile(snapshotPath, formattedData, {
         encoding: 'utf-8',
       });
       console.log(`Snapshot '${snapshot}' updated`);
