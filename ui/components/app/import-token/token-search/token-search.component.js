@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '../../../components/ui/text-field';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import SearchIcon from '../../../components/ui/icon/search-icon';
+import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { TextFieldSearch } from '../../../component-library';
+import { BlockSize } from '../../../../helpers/constants/design-system';
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -57,30 +56,19 @@ export default class TokenSearch extends Component {
     this.props.onSearch({ searchQuery, results });
   }
 
-  renderAdornment() {
-    return (
-      <InputAdornment position="start" style={{ marginRight: '12px' }}>
-        <SearchIcon color="var(--color-icon-muted)" />
-      </InputAdornment>
-    );
-  }
-
   render() {
     const { error } = this.props;
     const { searchQuery } = this.state;
 
     return (
-      <TextField
-        id="search-tokens"
-        placeholder={this.context.t('searchTokens')}
-        type="text"
+      <TextFieldSearch
+        placeholder={this.context.t('search')}
         value={searchQuery}
         onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
-        fullWidth
         autoFocus
-        autoComplete="off"
-        startAdornment={this.renderAdornment()}
+        autoComplete={false}
+        width={BlockSize.Full}
       />
     );
   }
