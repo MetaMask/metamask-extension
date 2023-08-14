@@ -90,6 +90,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
@@ -136,8 +137,6 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 

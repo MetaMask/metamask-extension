@@ -49,9 +49,28 @@ describe('SwapsBannerAlert', () => {
     expect(getByText('Very high slippage')).toBeInTheDocument();
     expect(
       getByText(
-        'The slippage entered is considered very high and may result in a bad rate',
+        'The slippage entered is considered very high and may result in a bad rate.',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('renders the component with the SLIPPAGE_VERY_HIGH_ERROR with the "Edit transaction settings" link', () => {
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_VERY_HIGH_ERROR}
+        showTransactionSettingsLink
+      />,
+      store,
+    );
+    expect(getByText('Very high slippage')).toBeInTheDocument();
+    expect(
+      getByText(
+        'The slippage entered is considered very high and may result in a bad rate.',
+      ),
+    ).toBeInTheDocument();
+    expect(getByText('Edit transaction settings')).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_TOO_LOW_ERROR', () => {
@@ -69,6 +88,27 @@ describe('SwapsBannerAlert', () => {
         'Max slippage is too low which may cause your transaction to fail.',
       ),
     ).toBeInTheDocument();
+  });
+
+  it('renders the component with the SLIPPAGE_TOO_LOW_ERROR with the "Edit transaction settings" link', () => {
+    const mockStore = createSwapsMockStore();
+    const store = configureMockStore(middleware)(mockStore);
+    const { getByText } = renderWithProvider(
+      <SwapsBannerAlert
+        swapsErrorKey={SLIPPAGE_TOO_LOW_ERROR}
+        showTransactionSettingsLink
+      />,
+      store,
+    );
+    expect(
+      getByText('Increase slippage to avoid transaction failure'),
+    ).toBeInTheDocument();
+    expect(
+      getByText(
+        'Max slippage is too low which may cause your transaction to fail.',
+      ),
+    ).toBeInTheDocument();
+    expect(getByText('Edit transaction settings')).toBeInTheDocument();
   });
 
   it('renders the component with the SLIPPAGE_NEGATIVE_ERROR', () => {

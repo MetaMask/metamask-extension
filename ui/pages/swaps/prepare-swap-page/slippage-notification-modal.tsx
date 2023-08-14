@@ -1,0 +1,89 @@
+import React, { useContext } from 'react';
+
+import { I18nContext } from '../../../contexts/i18n';
+import {
+  FlexDirection,
+  Display,
+  JustifyContent,
+  AlignItems,
+} from '../../../helpers/constants/design-system';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Box,
+  ButtonPrimary,
+} from '../../../components/component-library';
+import {
+  SLIPPAGE_VERY_HIGH_ERROR,
+  SLIPPAGE_TOO_LOW_ERROR,
+} from '../../../../shared/constants/swaps';
+import SwapsBannerAlert from '../swaps-banner-alert/swaps-banner-alert';
+
+interface Props {
+  isOpen: boolean;
+  slippageErrorKey: string;
+  setSlippageNotificationModalOpened: (isOpen: boolean) => void;
+  onSwapSubmit: (opts: { acknowledgedSlippage: boolean }) => void;
+}
+
+export default function SlippageNotificationModal({
+  isOpen,
+  slippageErrorKey,
+  setSlippageNotificationModalOpened,
+  onSwapSubmit,
+}: Props) {
+  const t = useContext(I18nContext);
+
+  const getSlippageModalTitle = () => {
+    if (slippageErrorKey === SLIPPAGE_VERY_HIGH_ERROR) {
+      return t('swapHighSlippage');
+    } else if (slippageErrorKey === SLIPPAGE_TOO_LOW_ERROR) {
+      return t('swapLowSlippage');
+    }
+    return '';
+  };
+
+  return (
+    <Modal
+      onClose={() => setSlippageNotificationModalOpened(false)}
+      isOpen={isOpen}
+      isClosedOnOutsideClick
+      isClosedOnEscapeKey
+      className="mm-modal__custom-scrollbar"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onClose={() => setSlippageNotificationModalOpened(false)}>
+          {getSlippageModalTitle()}
+        </ModalHeader>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.stretch}
+          className="high-slippage__content"
+          marginTop={7}
+        >
+          <SwapsBannerAlert
+            swapsErrorKey={slippageErrorKey}
+            showTransactionSettingsLink
+          />
+          <Box marginTop={5}>
+            <ButtonPrimary
+              onClick={() => {
+                setSlippageNotificationModalOpened(false);
+                onSwapSubmit({ acknowledgedSlippage: true });
+              }}
+              block
+              data-testid="high-slippage-continue-anyway"
+            >
+              {t('swapAnyway')}
+            </ButtonPrimary>
+          </Box>
+        </Box>
+      </ModalContent>
+    </Modal>
+  );
+}

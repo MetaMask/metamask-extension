@@ -20,6 +20,8 @@ export const SLIPPAGE_VERY_HIGH_ERROR = 'slippage-very-high';
 export const SLIPPAGE_TOO_LOW_ERROR = 'slippage-too-low';
 export const SLIPPAGE_NEGATIVE_ERROR = 'slippage-negative';
 
+export const MAX_ALLOWED_SLIPPAGE = 15;
+
 // An address that the metaswap-api recognizes as the default token for the current network,
 // in place of the token address that ERC-20 tokens have
 const DEFAULT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000000';
