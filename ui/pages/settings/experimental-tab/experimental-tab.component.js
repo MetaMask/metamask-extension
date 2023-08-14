@@ -152,7 +152,19 @@ export default class ExperimentalTab extends PureComponent {
               >
                 {t('transactionSecurityCheckDescription')}
               </Text>
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+              <Text
+                marginTop={3}
+                marginBottom={1}
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+              >
+                {t('selectProvider')}
+              </Text>
+              <div
+                data-testid="transaction-security-check"
+                className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
+              >
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -163,6 +175,7 @@ export default class ExperimentalTab extends PureComponent {
                   {t('openSea')}
                 </Text>
                 <ToggleButton
+                  data-testid="transaction-security-check-toggle"
                   value={transactionSecurityCheckEnabled}
                   onToggle={(value) => {
                     this.context.trackEvent({
