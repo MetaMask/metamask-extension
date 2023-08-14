@@ -7,7 +7,6 @@ export enum ButtonSecondarySize {
   Lg = 'lg',
 }
 
-export type ValidButtonTagType = 'button' | 'a';
 export interface ButtonSecondaryStyleUtilityProps
   extends Omit<ButtonBaseStyleUtilityProps, 'size'> {
   /**
