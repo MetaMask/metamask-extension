@@ -47,7 +47,7 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
-      # - blockaid
+      - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY

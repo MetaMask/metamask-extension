@@ -9,6 +9,7 @@ import {
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
+  ButtonSecondarySize,
   FormTextField,
   Icon,
   IconName,
@@ -152,7 +153,11 @@ const EthSignModal = ({ hideModal }) => {
         gap={4}
         marginTop={6}
       >
-        <ButtonSecondary onClick={() => hideModal()} size={Size.LG} block>
+        <ButtonSecondary
+          onClick={() => hideModal()}
+          size={ButtonSecondarySize.Lg}
+          block
+        >
           {t('cancel')}
         </ButtonSecondary>
         {showTextField ? (
