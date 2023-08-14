@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Poistetaanko verkko?"
   },
-  "deleteNetworkDescription": {
-    "message": "Haluatko varmasti poistaa tämän verkon?"
-  },
   "details": {
     "message": "Tiedot"
   },

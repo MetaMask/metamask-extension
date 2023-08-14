@@ -6,11 +6,17 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Text } from '../../../components/component-library';
+
+import { Text, Box } from '../../../components/component-library';
 import {
-  FontWeight,
   TextColor,
   TextVariant,
+  FontWeight,
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  Display,
+  FlexDirection,
+  JustifyContent,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
@@ -57,6 +63,7 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     const { securityAlertsEnabled, setSecurityAlertsEnabled } = this.props;
+
     return (
       <>
         <Text
@@ -144,21 +151,24 @@ export default class ExperimentalTab extends PureComponent {
       <>
         <Text
           variant={TextVariant.headingSm}
+          as="h4"
           color={TextColor.textAlternative}
           marginBottom={2}
           fontWeight={FontWeight.Bold}
         >
           {t('privacy')}
         </Text>
-        <div
+        <Box
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
+          marginBottom={3}
         >
           <div className="settings-page__content-item">
             <span>{t('transactionSecurityCheck')}</span>
             <div className="settings-page__content-description">
               <Text
                 variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
               >
                 {t('transactionSecurityCheckDescription')}
@@ -167,6 +177,7 @@ export default class ExperimentalTab extends PureComponent {
                 marginTop={3}
                 marginBottom={1}
                 variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
               >
                 {t('selectProvider')}
@@ -174,6 +185,7 @@ export default class ExperimentalTab extends PureComponent {
               <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
                 <Text
                   variant={TextVariant.bodyMd}
+                  as="h5"
                   color={TextColor.textDefault}
                   fontWeight={FontWeight.Medium}
                   marginBottom={0}
@@ -197,6 +209,7 @@ export default class ExperimentalTab extends PureComponent {
               </div>
               <Text
                 variant={TextVariant.bodySm}
+                as="h6"
                 color={TextColor.textAlternative}
                 marginTop={0}
               >
@@ -213,15 +226,16 @@ export default class ExperimentalTab extends PureComponent {
               </Text>
               <Text
                 variant={TextVariant.bodyMd}
-                color={TextColor.textMuted}
+                as="h5"
                 fontWeight={FontWeight.Medium}
+                color={TextColor.textMuted}
                 marginTop={2}
               >
                 {t('moreComingSoon')}
               </Text>
             </div>
           </div>
-        </div>
+        </Box>
       </>
     );
   }
@@ -231,20 +245,22 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     return (
-      <div
+      <Box
         ref={this.settingsRefs[6]}
         className="settings-page__content-row"
         data-testid="advanced-setting-desktop-pairing"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
       >
         <div className="settings-page__content-item">
           <span>{t('desktopEnableButtonDescription')}</span>
         </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <DesktopEnableButton />
-          </div>
+
+        <div className="settings-page__content-item-col">
+          <DesktopEnableButton />
         </div>
-      </div>
+      </Box>
     );
   }
   ///: END:ONLY_INCLUDE_IN

@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Slet Netværk?"
   },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på, at du vil slette dette netværk?"
-  },
   "details": {
     "message": "Detaljer"
   },
