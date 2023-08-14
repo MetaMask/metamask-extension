@@ -30,11 +30,19 @@ describe('Token Details', function () {
         const tokenAddress = '0x2EFA2Cb29C2341d8E5Ba7D3262C9e9d6f1Bf3711';
         const tokenSymbol = 'AAVE';
 
-        await driver.fill('#custom-address', tokenAddress);
-        await driver.waitForSelector('#custom-symbol-helper-text');
-        await driver.fill('#custom-symbol', tokenSymbol);
-        await driver.clickElement({ text: 'Add custom token', tag: 'button' });
-        await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+        await driver.fill(
+          '[data-testid="import-tokens-modal-custom-address"]',
+          tokenAddress,
+        );
+        await driver.waitForSelector('p.mm-box--color-error-default');
+        await driver.fill(
+          '[data-testid="import-tokens-modal-custom-symbol"]',
+          tokenSymbol,
+        );
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
         await driver.clickElement('[aria-label="Asset options"]');
         await driver.clickElement({ text: 'Token details', tag: 'div' });
 
