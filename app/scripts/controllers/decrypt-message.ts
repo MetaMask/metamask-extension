@@ -45,7 +45,10 @@ export type CoreMessage = AbstractMessage & {
 };
 
 export type StateMessage = Required<
-  Omit<AbstractMessage, 'securityProviderResponse' | 'metadata' | 'error'>
+  Omit<
+    AbstractMessage,
+    'securityAlertResponse' | 'securityProviderResponse' | 'metadata' | 'error'
+  >
 >;
 
 export type DecryptMessageControllerState = {
