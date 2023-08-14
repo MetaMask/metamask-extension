@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ButtonLink, IconName, Box } from '../../component-library';
@@ -10,8 +9,7 @@ import {
   Size,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
-import { detectNewTokens } from '../../../store/actions';
+import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -25,7 +23,6 @@ import {
 export const ImportTokenLink = ({ className, ...props }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
@@ -48,7 +45,7 @@ export const ImportTokenLink = ({ className, ...props }) => {
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
-            history.push(IMPORT_TOKEN_ROUTE);
+            dispatch(showImportTokensModal());
             trackEvent({
               event: MetaMetricsEventName.TokenImportButtonClicked,
               category: MetaMetricsEventCategory.Navigation,
