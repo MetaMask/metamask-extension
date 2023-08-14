@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addCustomToken": {
-    "message": "添加自定义代币"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "这将允许在 MetaMask 中使用此网络。"
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "搜索结果"
-  },
-  "searchTokens": {
-    "message": "搜索代币"
   },
   "secretRecoveryPhrase": {
     "message": "助记词"

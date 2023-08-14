@@ -88,19 +88,6 @@ export default class PageContainer extends PureComponent {
     return null;
   }
 
-  getTabSubmitText() {
-    const { tabsComponent } = this.props;
-    const { activeTabIndex } = this.state;
-    if (tabsComponent) {
-      let { children } = tabsComponent.props;
-      children = children.filter(Boolean);
-      if (children[activeTabIndex]?.key === 'custom-tab') {
-        return this.context.t('addCustomToken');
-      }
-    }
-    return null;
-  }
-
   render() {
     const {
       title,
@@ -118,7 +105,6 @@ export default class PageContainer extends PureComponent {
       headerCloseText,
       hideCancel,
     } = this.props;
-    const tabSubmitText = this.getTabSubmitText();
     return (
       <div className="page-container">
         <PageContainerHeader
@@ -139,7 +125,7 @@ export default class PageContainer extends PureComponent {
             cancelText={cancelText}
             hideCancel={hideCancel}
             onSubmit={onSubmit}
-            submitText={tabSubmitText || submitText}
+            submitText={submitText}
             disabled={disabled}
           />
         </div>

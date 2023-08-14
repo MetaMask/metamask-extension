@@ -1,6 +1,5 @@
 /** Please import your files in alphabetical order **/
 @import 'asset/asset';
-@import 'confirm-import-token/index';
 @import 'confirm-add-suggested-token/index';
 @import 'confirm-add-suggested-nft/index';
 @import 'confirm-approve/index';
@@ -15,7 +14,6 @@
 @import 'desktop-pairing/index';
 @import 'error/index';
 @import 'home/index';
-@import 'import-token/index';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "institutional/connect-custody/index";
 @import "institutional/institutional-entity-done-page/index";
