@@ -86,7 +86,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
           </p>
         </div>
         <div
-          class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full"
+          class="mm-box activity-list-item__right-content mm-box--display-inline-flex mm-box--flex-direction-column mm-box--align-items-flex-end mm-box--width-full mm-box--height-min"
         >
           <p>
             Content rendered to the right
