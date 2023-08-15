@@ -44,6 +44,7 @@ import {
   Modal,
   ButtonPrimary,
   ButtonSecondary,
+  ButtonSecondarySize,
   Box,
   FormTextField,
   Label,
@@ -258,7 +259,7 @@ export const ImportNftsModal = ({ onClose }) => {
           paddingBottom={4}
         >
           <ButtonSecondary
-            size={Size.LG}
+            size={ButtonSecondarySize.Lg}
             onClick={() => onClose()}
             block
             className="import-nfts-modal__cancel-button"
