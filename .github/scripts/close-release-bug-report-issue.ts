@@ -24,8 +24,8 @@ async function main(): Promise<void> {
 
   const bugReportRepo = process.env.BUG_REPORT_REPO;
   if (!bugReportRepo) {
-      core.setFailed('BUG_REPORT_REPO not found');
-      process.exit(1);
+    core.setFailed('BUG_REPORT_REPO not found');
+    process.exit(1);
   }
 
   // Extract branch name from the context
@@ -46,11 +46,11 @@ async function main(): Promise<void> {
 
   const bugReportIssue = await retrieveOpenBugReportIssue(octokit, repoOwner, bugReportRepo, releaseVersionNumber);
 
-  if(!bugReportIssue) {
+  if (!bugReportIssue) {
     throw new Error(`No open bug report issue was found for release ${releaseVersionNumber} on ${repoOwner}/${bugReportRepo} repo`);
   }
 
-  if(bugReportIssue.title?.toLocaleLowerCase() !== `v${releaseVersionNumber} Bug Report`.toLocaleLowerCase()) {
+  if (bugReportIssue.title?.toLocaleLowerCase() !== `v${releaseVersionNumber} Bug Report`.toLocaleLowerCase()) {
     throw new Error(`Unexpected bug report title: "${bugReportIssue.title}" instead of "v${releaseVersionNumber} Bug Report"`);
   }
 
@@ -67,7 +67,7 @@ async function retrieveOpenBugReportIssue(octokit: InstanceType<typeof GitHub>, 
   title: string;
 } | undefined> {
 
-const retrieveOpenBugReportIssueQuery = `
+  const retrieveOpenBugReportIssueQuery = `
   query RetrieveOpenBugReportIssue {
     search(query: "repo:${repoOwner}/${repoName} type:issue is:open in:title v${releaseVersionNumber} Bug Report", type: ISSUE, first: 1) {
       nodes {
@@ -80,25 +80,25 @@ const retrieveOpenBugReportIssueQuery = `
   }
 `;
 
-const retrieveOpenBugReportIssueQueryResult: {
-  search: {
+  const retrieveOpenBugReportIssueQueryResult: {
+    search: {
       nodes: {
-          id: string;
-          title: string;
+        id: string;
+        title: string;
       }[];
-  };
-} = await octokit.graphql(retrieveOpenBugReportIssueQuery);
+    };
+  } = await octokit.graphql(retrieveOpenBugReportIssueQuery);
 
-const bugReportIssues = retrieveOpenBugReportIssueQueryResult?.search?.nodes;
+  const bugReportIssues = retrieveOpenBugReportIssueQueryResult?.search?.nodes;
 
-return bugReportIssues?.length > 0 ? bugReportIssues[0] : undefined;
+  return bugReportIssues?.length > 0 ? bugReportIssues[0] : undefined;
 }
 
 
 // This function closes a Github issue, based on its ID
 async function closeIssue(octokit: InstanceType<typeof GitHub>, issueId: string): Promise<string> {
 
-    const closeIssueMutation = `
+  const closeIssueMutation = `
       mutation CloseIssue($issueId: ID!) {
         updateIssue(input: {id: $issueId, state: CLOSED}) {
           clientMutationId
@@ -106,15 +106,15 @@ async function closeIssue(octokit: InstanceType<typeof GitHub>, issueId: string)
       }
     `;
 
-    const closeIssueMutationResult: {
-      updateIssue: {
-        clientMutationId: string;
-      };
-    } = await octokit.graphql(closeIssueMutation, {
-      issueId,
-    });
+  const closeIssueMutationResult: {
+    updateIssue: {
+      clientMutationId: string;
+    };
+  } = await octokit.graphql(closeIssueMutation, {
+    issueId,
+  });
 
-    const clientMutationId = closeIssueMutationResult?.updateIssue?.clientMutationId;
+  const clientMutationId = closeIssueMutationResult?.updateIssue?.clientMutationId;
 
-    return clientMutationId;
-  }
+  return clientMutationId;
+}
