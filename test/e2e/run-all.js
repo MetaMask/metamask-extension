@@ -89,7 +89,10 @@ async function main() {
 
     if (buildType && buildType !== 'flask') {
       // These tests should only be ran on Flask for now
-      const filteredTests = ['test-snap-manageAccount.spec.js'];
+      const filteredTests = [
+        'test-snap-manageAccount.spec.js',
+        'test-snap-rpc.spec.js',
+      ];
       testPaths = testPaths.filter((p) =>
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
       );
