@@ -100,9 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -1881,9 +1878,6 @@
   },
   "searchResults": {
     "message": "Resultados da busca"
-  },
-  "searchTokens": {
-    "message": "Buscar tokens"
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
