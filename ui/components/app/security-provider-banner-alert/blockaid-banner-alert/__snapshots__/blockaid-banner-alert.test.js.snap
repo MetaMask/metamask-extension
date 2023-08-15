@@ -21,7 +21,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
       If you approve this request, a third party known for scams might take all your assets.
     </p>
     <p
-      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
     >
       <span
         class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
@@ -41,6 +41,30 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
         
          
       </span>
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Failed 1`] = `
+<div
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+>
+  <span
+    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+    style="mask-image: url('./images/icons/warning.svg');"
+  />
+  <div>
+    <h5
+      class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
+      data-testid="mm-banner-base-title"
+    >
+      This is a deceptive request
+    </h5>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+    >
+      If you approve this request, a third party known for scams might take all your assets.
     </p>
   </div>
 </div>
@@ -67,7 +91,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
       If you approve this request, a third party known for scams might take all your assets.
     </p>
     <p
-      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
     >
       <span
         class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
@@ -152,7 +176,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
         </details>
       </div>
       <p
-        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-2 mm-box--align-items-center mm-box--color-text-alternative"
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
       >
         <span
           class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
