@@ -2,6 +2,10 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// This import sets up a global function required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-persisted-state-hook';
+
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
@@ -466,6 +470,9 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -792,6 +799,13 @@ export function setupController(
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);
     });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
+  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+    controller.snapController.updateBlockedSnaps();
   }
   ///: END:ONLY_INCLUDE_IN
 }

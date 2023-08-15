@@ -26,7 +26,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
     <div>
       <button
         aria-label="NFT Options"
-        class="box mm-button-icon mm-button-icon--size-sm nft-options__button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-text-default box--background-color-transparent box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm nft-options__button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="nft-options__button"
       >
         <span
@@ -56,7 +56,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
               alt="MUNK #1 1"
               class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
               data-testid="nft-image"
-              src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
+              src="ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL"
             />
             <div
               class="mm-box mm-badge-wrapper__badge-container"
@@ -73,7 +73,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         </button>
       </div>
       <div
-        class="box nft-details__info box--flex-direction-column box--justify-content-space-between box--display-flex"
+        class="box nft-details__info box--margin-top-4 box--flex-direction-column box--justify-content-space-between box--display-flex"
       >
         <div>
           <h4
@@ -147,27 +147,6 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
         <h6
           class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
         >
-          Source
-        </h6>
-        <h6
-          class="mm-box mm-text nft-details__image-source mm-text--body-sm mm-box--margin-bottom-4 mm-box--color-primary-default"
-        >
-          <a
-            href="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-            rel="noopener noreferrer"
-            target="_blank"
-            title="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
-          >
-            https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link
-          </a>
-        </h6>
-      </div>
-      <div
-        class="box box--display-flex box--flex-direction-row"
-      >
-        <h6
-          class="mm-box mm-text nft-details__link-title mm-text--body-sm-bold mm-box--margin-right-2 mm-box--margin-bottom-4 mm-box--color-text-default"
-        >
           Contract address
         </h6>
         <div
@@ -191,7 +170,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
             >
               <button
                 aria-label="copy"
-                class="box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-alternative box--background-color-transparent box--rounded-lg"
+                class="mm-box mm-button-icon mm-button-icon--size-lg nft-details__contract-copy-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
                 data-testid="nft-address-copy"
               >
                 <span

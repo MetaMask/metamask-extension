@@ -4,21 +4,9 @@ const blacklistedHosts = [
   'mainnet.infura.io',
   'sepolia.infura.io',
 ];
-
-const HOTLIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/hotlist.json';
-const STALELIST_URL =
-  'https://static.metafi.codefi.network/api/v1/lists/stalelist.json';
-
-const emptyHotlist = [];
-const emptyStalelist = {
-  version: 2,
-  tolerance: 2,
-  fuzzylist: [],
-  allowlist: [],
-  blocklist: [],
-  lastUpdated: 0,
-};
+const {
+  mockEmptyStalelistAndHotlist,
+} = require('./tests/phishing-controller/mocks');
 
 /**
  * Setup E2E network mocks.
@@ -385,19 +373,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  await server.forGet(STALELIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: emptyStalelist,
-    };
-  });
-
-  await server.forGet(HOTLIST_URL).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: emptyHotlist,
-    };
-  });
+  await mockEmptyStalelistAndHotlist(server);
 
   await server
     .forPost('https://customnetwork.com/api/customRPC')

@@ -10,7 +10,7 @@ import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
 import {
   Text,
-  Button,
+  ButtonPrimary,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   IconName,
   ///: END:ONLY_INCLUDE_IN
@@ -100,6 +100,15 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ 21: true });
       history.push(PREPARE_SWAP_ROUTE);
     },
+    22: () => {
+      updateViewedNotifications({ 22: true });
+    },
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: () => {
+      updateViewedNotifications({ 23: true });
+      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return actionFunctions[id];
@@ -116,6 +125,7 @@ const renderDescription = (description) => {
         const isLast = index === description.length - 1;
         return (
           <Text
+            data-testid={`whats-new-description-item-${index}`}
             key={`item-${index}`}
             variant={TextVariant.bodyMd}
             marginBottom={isLast ? 0 : 4}
@@ -192,8 +202,7 @@ const renderFirstNotification = ({
       </div>
       {placeImageBelowDescription && imageComponent}
       {actionText && (
-        <Button
-          type="primary"
+        <ButtonPrimary
           className="whats-new-popup__button"
           onClick={() => {
             actionFunction();
@@ -202,14 +211,15 @@ const renderFirstNotification = ({
               event: MetaMetricsEventName.WhatsNewClicked,
             });
           }}
+          block
         >
           {actionText}
-        </Button>
+        </ButtonPrimary>
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         customButton && customButton.name === 'mmi-portfolio' && (
-          <Button
+          <ButtonPrimary
             className="whats-new-popup__button"
             data-testid="view-mmi-portfolio"
             size={Size.SM}
@@ -219,9 +229,10 @@ const renderFirstNotification = ({
               onClose();
               window.open(mmiPortfolioUrl, '_blank');
             }}
+            block
           >
             {customButton.text}
-          </Button>
+          </ButtonPrimary>
         )
         ///: END:ONLY_INCLUDE_IN
       }
@@ -376,6 +387,10 @@ export default function WhatsNewPopup({
     18: renderFirstNotification,
     19: renderFirstNotification,
     21: renderFirstNotification,
+    22: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    23: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   return (

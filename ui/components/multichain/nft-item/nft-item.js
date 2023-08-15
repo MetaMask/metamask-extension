@@ -15,7 +15,10 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { getTestNetworkBackgroundColor } from '../../../selectors';
+import {
+  getIpfsGateway,
+  getTestNetworkBackgroundColor,
+} from '../../../selectors';
 
 export const NftItem = ({
   alt,
@@ -25,9 +28,12 @@ export const NftItem = ({
   networkSrc,
   tokenId,
   onClick,
-  clickable = false,
+  clickable,
+  nftImageURL,
 }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+  const isIpfsEnabled = useSelector(getIpfsGateway);
+  const isIpfsURL = nftImageURL?.includes('ipfs:');
   return (
     <Box
       className="nft-item__container"
@@ -58,7 +64,7 @@ export const NftItem = ({
           />
         }
       >
-        {src ? (
+        {isIpfsEnabled ? (
           <Box
             className="nft-item__item nft-item__item-image"
             data-testid="nft-image"
@@ -69,13 +75,27 @@ export const NftItem = ({
             justifyContent={JustifyContent.center}
           />
         ) : (
-          <NftDefaultImage
-            className="nft-item__default-image"
-            data-testid="nft-default-image"
-            name={name}
-            tokenId={tokenId}
-            clickable={clickable}
-          />
+          <>
+            {isIpfsURL ? (
+              <NftDefaultImage
+                className="nft-item__default-image"
+                data-testid="nft-default-image"
+                name={name}
+                tokenId={tokenId}
+                clickable={clickable}
+              />
+            ) : (
+              <Box
+                className="nft-item__item nft-item__item-image"
+                data-testid="nft-image"
+                as="img"
+                src={src}
+                alt={alt}
+                display={Display.Block}
+                justifyContent={JustifyContent.center}
+              />
+            )}
+          </>
         )}
       </BadgeWrapper>
     </Box>
@@ -91,4 +111,5 @@ NftItem.propTypes = {
   tokenId: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   clickable: PropTypes.bool,
+  nftImageURL: PropTypes.string,
 };

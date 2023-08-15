@@ -4,6 +4,7 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
+import { NetworkType } from '@metamask/controller-utils';
 import {
   CHAIN_IDS,
   NETWORK_IDS,
@@ -102,7 +103,13 @@ function getMockNetworkController() {
   return {
     state: {
       networkId: NETWORK_IDS.GOERLI,
-      networkStatus: NetworkStatus.Available,
+      selectedNetworkClientId: NetworkType.goerli,
+      networksMetadata: {
+        [NetworkType.goerli]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
     },
   };
 }
@@ -224,7 +231,13 @@ describe('SwapsController', function () {
 
       networkController.state = {
         networkId: NETWORK_IDS.MAINNET,
-        networkStatus: NetworkStatus.Available,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          [NetworkType.mainnet]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
       };
       networkStateChangeListener();
 
@@ -256,7 +269,13 @@ describe('SwapsController', function () {
 
       networkController.state = {
         networkId: null,
-        networkStatus: NetworkStatus.Unknown,
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Unknown,
+          },
+        },
       };
       networkStateChangeListener();
 
@@ -288,7 +307,13 @@ describe('SwapsController', function () {
 
       networkController.state = {
         networkId: NETWORK_IDS.GOERLI,
-        networkStatus: NetworkStatus.Available,
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
       };
       networkStateChangeListener();
 

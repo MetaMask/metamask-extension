@@ -56,7 +56,7 @@ describe('Import NFT', function () {
           text: 'TestDappNFTs',
         });
         const importedNftImage = await driver.findElement(
-          '.nft-item__item-image',
+          '.nft-item__container',
         );
         assert.equal(await importedNft.isDisplayed(), true);
         assert.equal(await importedNftImage.isDisplayed(), true);

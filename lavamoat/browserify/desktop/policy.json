@@ -380,7 +380,7 @@
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true,
         "@ethersproject/abi>@ethersproject/properties": true,
-        "ganache>secp256k1>elliptic": true
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "@ethersproject/hdnode>@ethersproject/transactions": {
@@ -858,6 +858,12 @@
         "ethjs>ethjs-unit": true
       }
     },
+    "@metamask/controller-utils>@metamask/eth-query": {
+      "packages": {
+        "eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
     "@metamask/controller-utils>@metamask/utils": {
       "globals": {
         "TextDecoder": true,
@@ -1153,6 +1159,7 @@
     },
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
@@ -1160,8 +1167,7 @@
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>hdkey": {
@@ -1176,11 +1182,11 @@
     "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": {
       "packages": {
         "@metamask/eth-trezor-keyring>hdkey>secp256k1>bip66": true,
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/eth-snap-keyring": {
@@ -1544,11 +1550,11 @@
     "@metamask/eth-trezor-keyring>hdkey>secp256k1": {
       "packages": {
         "@metamask/eth-trezor-keyring>hdkey>secp256k1>bip66": true,
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey>secp256k1>bip66": {
@@ -1814,14 +1820,14 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker": true,
-        "@metamask/utils": true,
         "browserify>assert": true,
-        "eth-query": true,
         "eth-rpc-errors": true,
         "json-rpc-engine": true,
         "uuid": true
@@ -1855,6 +1861,19 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "json-rpc-engine": true
+      }
+    },
+    "@metamask/network-controller>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
@@ -1930,32 +1949,10 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/phishing-controller>@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/base-controller": {
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -2007,6 +2004,33 @@
     "@metamask/post-message-stream>readable-stream>string_decoder": {
       "packages": {
         "@metamask/post-message-stream>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/ppom-validator>elliptic": {
+      "packages": {
+        "@metamask/ppom-validator>elliptic>brorand": true,
+        "@metamask/ppom-validator>elliptic>hmac-drbg": true,
+        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
+        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
+        "bn.js": true,
+        "ethereumjs-util>ethereum-cryptography>hash.js": true,
+        "pumpify>inherits": true
+      }
+    },
+    "@metamask/ppom-validator>elliptic>brorand": {
+      "globals": {
+        "crypto": true,
+        "msCrypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
+    "@metamask/ppom-validator>elliptic>hmac-drbg": {
+      "packages": {
+        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
+        "@metamask/ppom-validator>elliptic>minimalistic-crypto-utils": true,
+        "ethereumjs-util>ethereum-cryptography>hash.js": true
       }
     },
     "@metamask/providers>@metamask/object-multiplex": {
@@ -2067,6 +2091,9 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
@@ -2200,7 +2227,7 @@
         "@metamask/key-tree>@noble/hashes": true,
         "@metamask/permission-controller": true,
         "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": true,
-        "@metamask/snaps-controllers-flask>@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": true,
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
         "eth-rpc-errors": true,
         "superstruct": true
@@ -2209,6 +2236,34 @@
     "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-ui": {
       "packages": {
         "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-controllers-flask>@metamask/rpc-methods>@metamask/snaps-utils": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/key-tree": true,
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-controllers-flask>@metamask/utils": true,
+        "@metamask/snaps-utils-flask>is-svg": true,
+        "@metamask/snaps-utils>cron-parser": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true,
+        "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
+        "semver": true,
         "superstruct": true
       }
     },
@@ -2233,6 +2288,9 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
@@ -2254,7 +2312,9 @@
       "packages": {
         "@metamask/snaps-controllers-flask>concat-stream>readable-stream": true,
         "browserify>buffer": true,
-        "pumpify>inherits": true
+        "browserify>concat-stream>typedarray": true,
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "@metamask/snaps-controllers-flask>concat-stream>readable-stream": {
@@ -2441,6 +2501,9 @@
         "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true,
         "browserify>buffer": true,
+        "browserify>path-browserify": true,
+        "browserify>process": true,
+        "chalk": true,
         "semver": true,
         "superstruct": true
       }
@@ -3352,7 +3415,7 @@
     },
     "browserify>crypto-browserify>browserify-cipher>browserify-des>des.js": {
       "packages": {
-        "ganache>secp256k1>elliptic>minimalistic-assert": true,
+        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -3364,6 +3427,7 @@
     },
     "browserify>crypto-browserify>browserify-sign": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify>create-hmac": true,
@@ -3371,15 +3435,14 @@
         "browserify>crypto-browserify>public-encrypt>parse-asn1": true,
         "browserify>stream-browserify": true,
         "ethereumjs-util>create-hash": true,
-        "ganache>secp256k1>elliptic": true,
         "pumpify>inherits": true
       }
     },
     "browserify>crypto-browserify>create-ecdh": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
-        "browserify>buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "browserify>buffer": true
       }
     },
     "browserify>crypto-browserify>create-hmac": {
@@ -3402,8 +3465,8 @@
     },
     "browserify>crypto-browserify>diffie-hellman>miller-rabin": {
       "packages": {
-        "bn.js": true,
-        "ganache>secp256k1>elliptic>brorand": true
+        "@metamask/ppom-validator>elliptic>brorand": true,
+        "bn.js": true
       }
     },
     "browserify>crypto-browserify>pbkdf2": {
@@ -3450,10 +3513,10 @@
     },
     "browserify>crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
       "packages": {
+        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "bn.js": true,
         "browserify>buffer": true,
         "browserify>vm-browserify": true,
-        "ganache>secp256k1>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -3587,6 +3650,22 @@
         "document.body.appendChild": true,
         "document.body.removeChild": true,
         "document.createElement": true
+      }
+    },
+    "chalk": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "chalk>supports-color": true
+      }
+    },
+    "chalk>ansi-styles": {
+      "packages": {
+        "chalk>ansi-styles>color-convert": true
+      }
+    },
+    "chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest-canvas-mock>moo-color>color-name": true
       }
     },
     "classnames": {
@@ -3814,6 +3893,7 @@
       "packages": {
         "@ethereumjs/common>crc-32": true,
         "@ethersproject/abi": true,
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
@@ -3830,7 +3910,6 @@
         "ethereumjs-util>ethereum-cryptography>hash.js": true,
         "ethereumjs-wallet>aes-js": true,
         "ethereumjs-wallet>bs58check": true,
-        "ganache>secp256k1>elliptic": true,
         "lodash": true
       }
     },
@@ -3954,7 +4033,7 @@
     },
     "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
-        "ganache>secp256k1>elliptic": true
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>uuid": {
@@ -3995,6 +4074,7 @@
     },
     "eth-sig-util>ethereumjs-util": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
@@ -4002,8 +4082,7 @@
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-wallet>safe-buffer": true
       }
     },
     "eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -4041,14 +4120,14 @@
     },
     "ethereumjs-abi>ethereumjs-util": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-util>rlp": true
       }
     },
     "ethereumjs-util": {
@@ -4141,7 +4220,7 @@
     },
     "ethereumjs-util>ethereum-cryptography>hash.js": {
       "packages": {
-        "ganache>secp256k1>elliptic>minimalistic-assert": true,
+        "@metamask/ppom-validator>elliptic>minimalistic-assert": true,
         "pumpify>inherits": true
       }
     },
@@ -4173,7 +4252,7 @@
     },
     "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
-        "ganache>secp256k1>elliptic": true
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -4219,14 +4298,14 @@
     },
     "ethereumjs-wallet>ethereumjs-util": {
       "packages": {
+        "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true,
-        "ganache>secp256k1>elliptic": true
+        "ethereumjs-util>rlp": true
       }
     },
     "ethereumjs-wallet>randombytes": {
@@ -4423,33 +4502,6 @@
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "ganache>secp256k1>elliptic": {
-      "packages": {
-        "bn.js": true,
-        "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "ganache>secp256k1>elliptic>brorand": true,
-        "ganache>secp256k1>elliptic>hmac-drbg": true,
-        "ganache>secp256k1>elliptic>minimalistic-assert": true,
-        "ganache>secp256k1>elliptic>minimalistic-crypto-utils": true,
-        "pumpify>inherits": true
-      }
-    },
-    "ganache>secp256k1>elliptic>brorand": {
-      "globals": {
-        "crypto": true,
-        "msCrypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "ganache>secp256k1>elliptic>hmac-drbg": {
-      "packages": {
-        "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "ganache>secp256k1>elliptic>minimalistic-assert": true,
-        "ganache>secp256k1>elliptic>minimalistic-crypto-utils": true
       }
     },
     "globalthis>define-properties": {
@@ -5191,7 +5243,6 @@
       },
       "packages": {
         "browserify>process": true,
-        "browserify>util": true,
         "semver>lru-cache": true
       }
     },

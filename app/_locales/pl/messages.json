@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Usunąć sieć?"
   },
-  "deleteNetworkDescription": {
-    "message": "Czy na pewno chcesz usunąć tę sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -620,9 +617,6 @@
   },
   "searchResults": {
     "message": "Wyniki wyszukiwania"
-  },
-  "searchTokens": {
-    "message": "Szukaj tokenów"
   },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"

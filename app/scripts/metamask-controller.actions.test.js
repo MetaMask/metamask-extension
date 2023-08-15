@@ -1,7 +1,14 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-
+import {
+  ListNames,
+  METAMASK_STALELIST_URL,
+  METAMASK_HOTLIST_DIFF_URL,
+  PHISHING_CONFIG_BASE_URL,
+  METAMASK_STALELIST_FILE,
+  METAMASK_HOTLIST_DIFF_FILE,
+} from '@metamask/phishing-controller';
 import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
@@ -59,21 +66,28 @@ describe('MetaMaskController', function () {
   });
 
   beforeEach(function () {
-    nock('https://static.metafi.codefi.network')
+    nock(PHISHING_CONFIG_BASE_URL)
       .persist()
-      .get('/api/v1/lists/stalelist.json')
+      .get(METAMASK_STALELIST_FILE)
       .reply(
         200,
         JSON.stringify({
           version: 2,
           tolerance: 2,
-          fuzzylist: [],
-          allowlist: [],
-          blocklist: ['127.0.0.1'],
-          lastUpdated: 0,
+          lastUpdated: 1,
+          eth_phishing_detect_config: {
+            fuzzylist: [],
+            allowlist: [],
+            blocklist: ['127.0.0.1'],
+            name: ListNames.MetaMask,
+          },
+          phishfort_hotlist: {
+            blocklist: [],
+            name: ListNames.Phishfort,
+          },
         }),
       )
-      .get('/api/v1/lists/hotlist.json')
+      .get(METAMASK_HOTLIST_DIFF_FILE)
       .reply(
         200,
         JSON.stringify([
@@ -108,6 +122,20 @@ describe('MetaMaskController', function () {
 
   after(async function () {
     await ganacheServer.quit();
+  });
+
+  describe('Phishing Detection Mock', function () {
+    it('should be updated to use v1 of the API', function () {
+      // Update the fixture above if this test fails
+      assert.equal(
+        METAMASK_STALELIST_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/stalelist',
+      );
+      assert.equal(
+        METAMASK_HOTLIST_DIFF_URL,
+        'https://phishing-detection.metafi.codefi.network/v1/diffsSince',
+      );
+    });
   });
 
   describe('#addNewAccount', function () {

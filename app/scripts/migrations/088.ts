@@ -16,8 +16,11 @@ export const version = 88;
  * by a hex chain ID rather than a decimal chain ID.
  * - Rebuilds `tokensChainsCache` in TokenListController to be keyed by a hex
  * chain ID rather than a decimal chain ID.
- * - Rebuilds `allTokens` and `allIgnoredTokens` in TokensController to be keyed
- * by a hex chain ID rather than a decimal chain ID.
+ * - Rebuilds `allTokens`, `allDetectedTokens`, and `allIgnoredTokens` in
+ * TokensController to be keyed by a hex chain ID rather than a decimal chain ID.
+ * - removes any entries in `allNftContracts`, `allNfts`, `tokensChainsCache`,
+ * `allTokens`, `allIgnoredTokens` or `allDetectedTokens` that are keyed by the
+ * string 'undefined'
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -54,6 +57,12 @@ function migrateData(state: Record<string, unknown>): void {
           const nftContractsByChainId = allNftContracts[address];
 
           if (isObject(nftContractsByChainId)) {
+            for (const chainId of Object.keys(nftContractsByChainId)) {
+              if (chainId === 'undefined' || chainId === undefined) {
+                delete nftContractsByChainId[chainId];
+              }
+            }
+
             allNftContracts[address] = mapKeys(
               nftContractsByChainId,
               (_, chainId: string) => toHex(chainId),
@@ -75,6 +84,12 @@ function migrateData(state: Record<string, unknown>): void {
           const nftsByChainId = allNfts[address];
 
           if (isObject(nftsByChainId)) {
+            for (const chainId of Object.keys(nftsByChainId)) {
+              if (chainId === 'undefined' || chainId === undefined) {
+                delete nftsByChainId[chainId];
+              }
+            }
+
             allNfts[address] = mapKeys(nftsByChainId, (_, chainId: string) =>
               toHex(chainId),
             );
@@ -97,6 +112,14 @@ function migrateData(state: Record<string, unknown>): void {
       hasProperty(tokenListControllerState, 'tokensChainsCache') &&
       isObject(tokenListControllerState.tokensChainsCache)
     ) {
+      for (const chainId of Object.keys(
+        tokenListControllerState.tokensChainsCache,
+      )) {
+        if (chainId === 'undefined' || chainId === undefined) {
+          delete tokenListControllerState.tokensChainsCache[chainId];
+        }
+      }
+
       tokenListControllerState.tokensChainsCache = mapKeys(
         tokenListControllerState.tokensChainsCache,
         (_, chainId: string) => toHex(chainId),
@@ -117,6 +140,12 @@ function migrateData(state: Record<string, unknown>): void {
     ) {
       const { allTokens } = tokensControllerState;
 
+      for (const chainId of Object.keys(allTokens)) {
+        if (chainId === 'undefined' || chainId === undefined) {
+          delete allTokens[chainId];
+        }
+      }
+
       tokensControllerState.allTokens = mapKeys(
         allTokens,
         (_, chainId: string) => toHex(chainId),
@@ -130,6 +159,12 @@ function migrateData(state: Record<string, unknown>): void {
     ) {
       const { allIgnoredTokens } = tokensControllerState;
 
+      for (const chainId of Object.keys(allIgnoredTokens)) {
+        if (chainId === 'undefined' || chainId === undefined) {
+          delete allIgnoredTokens[chainId];
+        }
+      }
+
       tokensControllerState.allIgnoredTokens = mapKeys(
         allIgnoredTokens,
         (_, chainId: string) => toHex(chainId),
@@ -142,6 +177,12 @@ function migrateData(state: Record<string, unknown>): void {
       isObject(tokensControllerState.allDetectedTokens)
     ) {
       const { allDetectedTokens } = tokensControllerState;
+
+      for (const chainId of Object.keys(allDetectedTokens)) {
+        if (chainId === 'undefined' || chainId === undefined) {
+          delete allDetectedTokens[chainId];
+        }
+      }
 
       tokensControllerState.allDetectedTokens = mapKeys(
         allDetectedTokens,

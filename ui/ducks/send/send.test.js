@@ -2,6 +2,8 @@ import sinon from 'sinon';
 import createMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -1272,9 +1274,13 @@ describe('Send Slice', () => {
           metamask: {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
-            networkDetails: {
-              EIPS: {
-                1559: true,
+            selectedNetworkClientId: NetworkType.goerli,
+            networksMetadata: {
+              [NetworkType.goerli]: {
+                EIPS: {
+                  1559: true,
+                },
+                status: NetworkStatus.Available,
               },
             },
             selectedAddress: mockAddress1,
@@ -1298,6 +1304,7 @@ describe('Send Slice', () => {
             },
             providerConfig: {
               chainId: '0x5',
+              ticker: 'ETH',
             },
             useTokenDetection: true,
             tokenList: {
