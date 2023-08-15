@@ -12,7 +12,7 @@
   z-index: 1000;
 
   .metamask-loaded & {
-    animation: fadeOut 0.5s;
+    animation: fadeOut 0.25s;
     opacity: 0;
   }
 
@@ -31,6 +31,15 @@
   }
 }
 
+#app-content {
+  visibility: hidden;
+
+  &.app-content-loaded {
+    animation: fadeIn 0.25s;
+    visibility: visible;
+  }
+}
+
 @keyframes fadeOut {
   0% {
     opacity: 1;
@@ -40,5 +49,17 @@
   100% {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
   }
 }

@@ -116,8 +116,9 @@ async function start() {
 
   // Start the logo animation
   document.documentElement.classList.add('metamask-loaded');
-  document.documentElement.addEventListener('animationend', ({ target }) => {
-    target.style.display = 'none';
+  document.documentElement.addEventListener('animationend', () => {
+    document.querySelector('#app-loader').style.display = 'none';
+    document.querySelector('#app-content').classList.add('app-content-loaded');
   });
 
   // setup stream to background
