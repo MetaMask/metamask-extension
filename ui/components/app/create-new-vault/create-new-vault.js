@@ -2,12 +2,7 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TextField from '../../ui/text-field';
-import {
-  BUTTON_VARIANT,
-  Button,
-  Checkbox,
-  Text,
-} from '../../component-library';
+import { BUTTON_VARIANT, Button, Checkbox } from '../../component-library';
 import SrpInput from '../srp-input';
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 
