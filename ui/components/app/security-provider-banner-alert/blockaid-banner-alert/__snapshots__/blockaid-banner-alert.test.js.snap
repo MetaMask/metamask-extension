@@ -9,12 +9,12 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     style="mask-image: url('./images/icons/danger.svg');"
   />
   <div>
-    <h5
+    <p
       class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
       data-testid="mm-banner-base-title"
     >
       This is a deceptive request
-    </h5>
+    </p>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
     >
@@ -55,12 +55,12 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     style="mask-image: url('./images/icons/warning.svg');"
   />
   <div>
-    <h5
+    <p
       class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
       data-testid="mm-banner-base-title"
     >
       This is a deceptive request
-    </h5>
+    </p>
     <p
       class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
     >
@@ -102,12 +102,12 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
       style="mask-image: url('./images/icons/warning.svg');"
     />
     <div>
-      <h5
+      <p
         class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
         data-testid="mm-banner-base-title"
       >
         This is a deceptive request
-      </h5>
+      </p>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
       >
