@@ -1053,7 +1053,7 @@ describe('MetaMaskController', function () {
         streamTest.end();
       });
 
-      it('adds a tabId and origin to requests', function (done) {
+      it('adds a tabId and origin to requests, as well as networkClientId', function (done) {
         const messageSender = {
           url: 'http://mycrypto.com',
           tab: { id: 456 },
@@ -1085,11 +1085,15 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              assert.deepStrictEqual(loggerMiddlewareMock.requests[0], {
-                ...message,
-                origin: 'http://mycrypto.com',
-                tabId: 456,
-              });
+              assert.equal(loggerMiddlewareMock.requests[0].tabId, 456);
+              assert.equal(
+                loggerMiddlewareMock.requests[0].origin,
+                'http://mycrypto.com',
+              );
+              assert.equal(
+                loggerMiddlewareMock.requests[0].networkClientId,
+                'networkConfigurationId1',
+              );
               done();
             });
           },
@@ -1127,10 +1131,11 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              assert.deepStrictEqual(loggerMiddlewareMock.requests[0], {
-                ...message,
-                origin: 'http://mycrypto.com',
-              });
+              assert.equal(loggerMiddlewareMock.requests[0].tabId, undefined);
+              assert.equal(
+                loggerMiddlewareMock.requests[0].origin,
+                'http://mycrypto.com',
+              );
               done();
             });
           },

@@ -4381,9 +4381,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@metamask/network-controller@npm:12.1.0"
+"@metamask/network-controller@npm:^12.1.1":
+  version: 12.1.1
+  resolution: "@metamask/network-controller@npm:12.1.1"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.0"
     "@metamask/controller-utils": "npm:^4.3.1"
@@ -4399,7 +4399,7 @@ __metadata:
     immer: "npm:^9.0.6"
     json-rpc-engine: "npm:^6.1.0"
     uuid: "npm:^8.3.2"
-  checksum: 9c6c1a2e38a9ffdb408213bfdaf0ad0de01119dd56dac44cde77c6fd89c37bbb5a9a44e32ba359d6bafb6a69f558b7aab2772c6b7ab88ac815c76079bfbb2e1c
+  checksum: fb9d8e44691413471ee4b11f39a84c4efde100f6a5cef5575bb3ab7ddb456306bdad39cb62b98b97339f08fe50979a88b2acf9d647b39253eea0acd44180a794
   languageName: node
   linkType: hard
 
@@ -24225,7 +24225,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.1"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^12.1.0"
+    "@metamask/network-controller": "npm:^12.1.1"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^4.0.0"
