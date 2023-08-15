@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Özel ağ ekle"
   },
-  "addCustomToken": {
-    "message": "Özel token ekle"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Bu, bu ağın MetaMas dahilinde kullanılmasına olanak tanıyacaktır."
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "Ağı Sil?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Bu ağı silmek istediğinizden emin misiniz?"
   },
   "deposit": {
     "message": "Para Yatır"
@@ -2983,9 +2977,6 @@
   "searchResults": {
     "message": "Arama sonuçları"
   },
-  "searchTokens": {
-    "message": "Token ara"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
@@ -3248,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Eyvah! Bir şeyler ters gitti."
-  },
-  "source": {
-    "message": "Kaynak"
   },
   "speedUp": {
     "message": "Hızlandır"

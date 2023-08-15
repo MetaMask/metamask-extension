@@ -100,9 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -583,9 +580,6 @@
   },
   "deleteNetwork": {
     "message": "Excluir rede?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
   },
   "description": {
     "message": "Descrição"
@@ -1885,9 +1879,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchTokens": {
-    "message": "Buscar tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -2064,9 +2055,6 @@
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
-  },
-  "source": {
-    "message": "Fonte"
   },
   "speedUp": {
     "message": "Acelerar"

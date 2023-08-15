@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addCustomToken": {
-    "message": "Προσθήκη Προσαρμοσμένου Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "Διαγραφή Δικτύου;"
-  },
-  "deleteNetworkDescription": {
-    "message": "Θέλετε σίγουρα να διαγράψετε αυτό το δίκτυο;"
   },
   "deposit": {
     "message": "Κατάθεση"
@@ -2980,9 +2974,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση Λογαριασμών"
   },
-  "searchTokens": {
-    "message": "Αναζήτηση Tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
@@ -3245,9 +3236,6 @@
   },
   "somethingWentWrong": {
     "message": "Ουπς! Κάτι πήγε στραβά."
-  },
-  "source": {
-    "message": "Πηγή"
   },
   "speedUp": {
     "message": "Επιτάχυνση"

@@ -36,6 +36,7 @@ import {
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
+  setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
   showModal,
@@ -48,6 +49,7 @@ export default function PrivacySettings() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [usePhishingDetection, setUsePhishingDetection] = useState(true);
+  const [turnOn4ByteResolution, setTurnOn4ByteResolution] = useState(true);
   const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
   const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
   const [showIncomingTransactions, setShowIncomingTransactions] =
@@ -68,6 +70,7 @@ export default function PrivacySettings() {
       setFeatureFlag('showIncomingTransactions', showIncomingTransactions),
     );
     dispatch(setUsePhishDetect(usePhishingDetection));
+    dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
@@ -170,6 +173,12 @@ export default function PrivacySettings() {
                 {t('privacyMsg')}
               </a>,
             ])}
+          />
+          <Setting
+            value={turnOn4ByteResolution}
+            setValue={setTurnOn4ByteResolution}
+            title={t('use4ByteResolution')}
+            description={t('use4ByteResolutionDescription')}
           />
           <Setting
             value={turnOnTokenDetection}

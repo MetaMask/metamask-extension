@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
   },
-  "addCustomToken": {
-    "message": "Kunden-Token hinzufügen"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Dadurch kann dieses Netzwerk innerhalb MetaMask verwendet werden."
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "Netzwerk löschen?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sind Sie sicher, dass Sie dieses Netzwerk löschen möchten?"
   },
   "deposit": {
     "message": "Einzahlung"
@@ -2983,9 +2977,6 @@
   "searchResults": {
     "message": "Suchergebnisse"
   },
-  "searchTokens": {
-    "message": "Token suchen"
-  },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
@@ -3248,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Hoppla! Da hat etwas nicht geklappt."
-  },
-  "source": {
-    "message": "Quelle"
   },
   "speedUp": {
     "message": "Beschleunigen"

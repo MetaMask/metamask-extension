@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Slette nettverk? "
   },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på at du vil slette dette nettverket?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -610,9 +607,6 @@
   },
   "searchResults": {
     "message": "Søkeresultater"
-  },
-  "searchTokens": {
-    "message": "Søk i sjetonger"
   },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"

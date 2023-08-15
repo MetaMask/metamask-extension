@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Izbrisati mrežu?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurno želite izbrisati ovu mrežu?"
-  },
   "details": {
     "message": "Detalji"
   },
@@ -619,9 +616,6 @@
   },
   "searchResults": {
     "message": "Rezultati pretraživanja"
-  },
-  "searchTokens": {
-    "message": "Pretraži tokene"
   },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"

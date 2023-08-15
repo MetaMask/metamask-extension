@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Adicionar rede personalizada"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "Excluir rede?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
   },
   "deposit": {
     "message": "Depositar"
@@ -2983,9 +2977,6 @@
   "searchResults": {
     "message": "Resultados da busca"
   },
-  "searchTokens": {
-    "message": "Buscar tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase Secreta de Recuperação"
   },
@@ -3248,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Ops! Algo deu errado."
-  },
-  "source": {
-    "message": "Origem"
   },
   "speedUp": {
     "message": "Acelerar"

@@ -101,7 +101,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
       Privacy
     </h4>
     <div
-      class="settings-page__content-row settings-page__content-row-experimental"
+      class="mm-box settings-page__content-row settings-page__content-row-experimental mm-box--margin-bottom-3"
     >
       <div
         class="settings-page__content-item"
@@ -112,24 +112,24 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         <div
           class="settings-page__content-description"
         >
-          <p
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             We use third-party APIs to detect and display risks involved in unsigned transaction and signature requests before you sign them. These services will have access to your unsigned transaction and signature requests, your account address,  and your preferred language.
-          </p>
-          <p
+          </h6>
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--margin-bottom-1 mm-box--color-text-alternative"
           >
             Select providers:
-          </p>
+          </h6>
           <div
             class="settings-page__content-item-col settings-page__content-item-col-open-sea"
           >
-            <p
+            <h5
               class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-bottom-0 mm-box--color-text-default"
             >
               OpenSea + Blockaid (Beta)
-            </p>
+            </h5>
             <label
               class="toggle-button toggle-button--off"
               tabindex="0"
@@ -172,7 +172,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               </div>
             </label>
           </div>
-          <p
+          <h6
             class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--color-text-alternative"
           >
             <span>
@@ -188,17 +188,17 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               .
                
             </span>
-          </p>
-          <p
+          </h6>
+          <h5
             class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--color-text-muted"
           >
             More providers coming soon
-          </p>
+          </h5>
         </div>
       </div>
     </div>
     <div
-      class="settings-page__content-row"
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
       data-testid="advanced-setting-desktop-pairing"
     >
       <div
@@ -209,19 +209,15 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         </span>
       </div>
       <div
-        class="settings-page__content-item"
+        class="settings-page__content-item-col"
       >
-        <div
-          class="settings-page__content-item-col"
+        <button
+          class="button btn--rounded btn-primary btn--large"
+          role="button"
+          tabindex="0"
         >
-          <button
-            class="button btn--rounded btn-primary btn--large"
-            role="button"
-            tabindex="0"
-          >
-            Disable Desktop App
-          </button>
-        </div>
+          Disable Desktop App
+        </button>
       </div>
     </div>
   </div>

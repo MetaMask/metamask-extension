@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "添加自定义网络"
   },
-  "addCustomToken": {
-    "message": "添加自定义代币"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "这将允许在 MetaMask 中使用此网络。"
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "删除网络？"
-  },
-  "deleteNetworkDescription": {
-    "message": "您确定要删除该网络吗？"
   },
   "deposit": {
     "message": "存入"
@@ -2983,9 +2977,6 @@
   "searchResults": {
     "message": "搜索结果"
   },
-  "searchTokens": {
-    "message": "搜索代币"
-  },
   "secretRecoveryPhrase": {
     "message": "助记词"
   },
@@ -3248,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "哎呀！出了点问题。"
-  },
-  "source": {
-    "message": "来源"
   },
   "speedUp": {
     "message": "加速"

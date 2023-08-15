@@ -58,6 +58,10 @@ describe('Security Tab', () => {
     expect(await toggleCheckbox('usePhishingDetection', true)).toBe(true);
   });
 
+  it('toggles 4byte resolution', async () => {
+    expect(await toggleCheckbox('4byte-resolution-container', true)).toBe(true);
+  });
+
   it('toggles balance and token price checker', async () => {
     expect(await toggleCheckbox('currencyRateCheckToggle', true)).toBe(true);
   });

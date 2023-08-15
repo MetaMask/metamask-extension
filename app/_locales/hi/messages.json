@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
   },
-  "addCustomToken": {
-    "message": "कस्टम टोकन जोड़ें"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "इससे इस नेटवर्क को MetaMask के अंदर उपयोग करने की अनुमति मिलेगी।"
   },
@@ -907,9 +904,6 @@
   },
   "deleteNetwork": {
     "message": "नेटवर्क हटाएं?"
-  },
-  "deleteNetworkDescription": {
-    "message": "क्या आप वाकई इस नेटवर्क को हटाना चाहते हैं?"
   },
   "deposit": {
     "message": "जमा करें"
@@ -2983,9 +2977,6 @@
   "searchResults": {
     "message": "खोज परिणाम"
   },
-  "searchTokens": {
-    "message": "टोकन खोजें"
-  },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"
   },
@@ -3248,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"
-  },
-  "source": {
-    "message": "स्रोत"
   },
   "speedUp": {
     "message": "जल्दी करें"
