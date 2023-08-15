@@ -791,12 +791,16 @@ export default class TransactionController extends EventEmitter {
     );
   }
 
-  startIncomingTransactionProcessing() {
+  startIncomingTransactionPolling() {
     this.incomingTransactionHelper.start();
   }
 
-  stopIncomingTransactionProcessing() {
+  stopIncomingTransactionPolling() {
     this.incomingTransactionHelper.stop();
+  }
+
+  async updateIncomingTransactions() {
+    await this.incomingTransactionHelper.update();
   }
 
   //

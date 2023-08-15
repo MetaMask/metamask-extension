@@ -25,6 +25,8 @@ export class IncomingTransactionHelper {
 
   #isRunning: boolean;
 
+  #isUpdating: boolean;
+
   #lastFetchedBlockNumbers: Record<string, number>;
 
   #onLatestBlock: (blockNumberHex: Hex) => Promise<void>;
@@ -64,6 +66,7 @@ export class IncomingTransactionHelper {
     this.#getNetworkState = getNetworkState;
     this.#isEnabled = isEnabled ?? (() => true);
     this.#isRunning = false;
+    this.#isUpdating = false;
     this.#lastFetchedBlockNumbers = lastFetchedBlockNumbers ?? {};
     this.#remoteTransactionSource = remoteTransactionSource;
     this.#transactionLimit = transactionLimit;
@@ -72,11 +75,7 @@ export class IncomingTransactionHelper {
     // Using a property instead of a method to provide a listener reference
     // with the correct scope that we can remove later if stopped.
     this.#onLatestBlock = async (blockNumberHex: Hex) => {
-      try {
-        await this.#update(blockNumberHex);
-      } catch (error) {
-        log.error('Error while checking incoming transactions', error);
-      }
+      await this.update(blockNumberHex);
     };
   }
 
@@ -98,67 +97,79 @@ export class IncomingTransactionHelper {
     this.#isRunning = false;
   }
 
-  async #update(latestBlockNumberHex?: Hex): Promise<void> {
-    if (!this.#canStart()) {
+  async update(latestBlockNumberHex?: Hex): Promise<void> {
+    if (this.#isUpdating) {
       return;
     }
 
-    const latestBlockNumber = parseInt(
-      latestBlockNumberHex || (await this.#blockTracker.getLatestBlock()),
-      16,
-    );
-
-    const fromBlock = this.#getFromBlock(latestBlockNumber);
-    const address = this.#getCurrentAccount();
-    const currentChainId = this.#getCurrentChainId();
-    const currentNetworkId = this.#getCurrentNetworkId();
-
-    let remoteTransactions = [];
+    this.#isUpdating = true;
 
     try {
-      remoteTransactions =
-        await this.#remoteTransactionSource.fetchTransactions({
-          address,
-          currentChainId,
-          currentNetworkId,
-          fromBlock,
-          limit: this.#transactionLimit,
-        });
-    } catch (error: any) {
-      return;
-    }
+      if (!this.#canStart()) {
+        return;
+      }
 
-    if (!this.#updateTransactions) {
-      remoteTransactions = remoteTransactions.filter(
-        (tx) => tx.txParams.to?.toLowerCase() === address.toLowerCase(),
+      const latestBlockNumber = parseInt(
+        latestBlockNumberHex || (await this.#blockTracker.getLatestBlock()),
+        16,
       );
+
+      const fromBlock = this.#getFromBlock(latestBlockNumber);
+      const address = this.#getCurrentAccount();
+      const currentChainId = this.#getCurrentChainId();
+      const currentNetworkId = this.#getCurrentNetworkId();
+
+      let remoteTransactions = [];
+
+      try {
+        remoteTransactions =
+          await this.#remoteTransactionSource.fetchTransactions({
+            address,
+            currentChainId,
+            currentNetworkId,
+            fromBlock,
+            limit: this.#transactionLimit,
+          });
+      } catch (error: any) {
+        return;
+      }
+
+      if (!this.#updateTransactions) {
+        remoteTransactions = remoteTransactions.filter(
+          (tx) => tx.txParams.to?.toLowerCase() === address.toLowerCase(),
+        );
+      }
+
+      const localTransactions = this.#updateTransactions
+        ? this.#getLocalTransactions()
+        : [];
+
+      const newTransactions = this.#getNewTransactions(
+        remoteTransactions,
+        localTransactions,
+      );
+
+      const updatedTransactions = this.#getUpdatedTransactions(
+        remoteTransactions,
+        localTransactions,
+      );
+
+      if (newTransactions.length > 0 || updatedTransactions.length > 0) {
+        this.#sortTransactionsByTime(newTransactions);
+        this.#sortTransactionsByTime(updatedTransactions);
+
+        this.hub.emit('transactions', {
+          added: newTransactions,
+          updated: updatedTransactions,
+        });
+      }
+
+      this.#updateLastFetchedBlockNumber(remoteTransactions);
+    } catch (error) {
+      log.error('Error while checking incoming transactions', error);
+    } finally {
+      this.#isUpdating = false;
     }
-
-    const localTransactions = this.#updateTransactions
-      ? this.#getLocalTransactions()
-      : [];
-
-    const newTransactions = this.#getNewTransactions(
-      remoteTransactions,
-      localTransactions,
-    );
-
-    const updatedTransactions = this.#getUpdatedTransactions(
-      remoteTransactions,
-      localTransactions,
-    );
-
-    if (newTransactions.length > 0 || updatedTransactions.length > 0) {
-      this.#sortTransactionsByTime(newTransactions);
-      this.#sortTransactionsByTime(updatedTransactions);
-
-      this.hub.emit('transactions', {
-        added: newTransactions,
-        updated: updatedTransactions,
-      });
-    }
-
-    this.#updateLastFetchedBlockNumber(remoteTransactions);
   }
 
   #sortTransactionsByTime(transactions: TransactionMeta[]) {

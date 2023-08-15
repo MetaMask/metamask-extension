@@ -403,10 +403,6 @@ export default class MetamaskController extends EventEmitter {
       provider: this.provider,
     });
 
-    this.preferencesController.store.subscribe(async ({ currentLocale }) => {
-      await updateCurrentLocale(currentLocale);
-    });
-
     const tokensControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'TokensController',
       allowedActions: ['ApprovalController:addRequest'],
@@ -1217,14 +1213,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    this.preferencesController.store.subscribe((state) => {
-      if (state?.featureFlags?.showIncomingTransactions) {
-        this.txController.startIncomingTransactionProcessing();
-      } else {
-        this.txController.stopIncomingTransactionProcessing();
-      }
-    });
-
     this.txController.on(`tx:status-update`, async (txId, status) => {
       if (
         status === TransactionStatus.confirmed ||
@@ -1776,7 +1764,7 @@ export default class MetamaskController extends EventEmitter {
 
   triggerNetworkrequests() {
     this.accountTracker.start();
-    this.txController.startIncomingTransactionProcessing();
+    this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.start();
     }
@@ -1787,7 +1775,7 @@ export default class MetamaskController extends EventEmitter {
 
   stopNetworkRequests() {
     this.accountTracker.stop();
-    this.txController.stopIncomingTransactionProcessing();
+    this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
       this.currencyRateController.stop();
     }
@@ -1934,40 +1922,22 @@ export default class MetamaskController extends EventEmitter {
    * becomes unlocked are handled in MetaMaskController._onUnlock.
    */
   setupControllerEventSubscriptions() {
-    const handleAccountsChange = async (origin, newAccounts) => {
-      if (this.isUnlocked()) {
-        this.notifyConnections(origin, {
-          method: NOTIFICATION_NAMES.accountsChanged,
-          // This should be the same as the return value of `eth_accounts`,
-          // namely an array of the current / most recently selected Ethereum
-          // account.
-          params:
-            newAccounts.length < 2
-              ? // If the length is 1 or 0, the accounts are sorted by definition.
-                newAccounts
-              : // If the length is 2 or greater, we have to execute
-                // `eth_accounts` vi this method.
-                await this.getPermittedAccounts(origin),
-        });
+    let lastSelectedAddress;
+
+    this.preferencesController.store.subscribe(async (state) => {
+      const { selectedAddress, currentLocale } = state;
+
+      await updateCurrentLocale(currentLocale);
+
+      if (state?.featureFlags?.showIncomingTransactions) {
+        this.txController.startIncomingTransactionPolling();
+      } else {
+        this.txController.stopIncomingTransactionPolling();
       }
 
-      this.permissionLogController.updateAccountsHistory(origin, newAccounts);
-    };
-
-    // This handles account changes whenever the selected address changes.
-    let lastSelectedAddress;
-    this.preferencesController.store.subscribe(async ({ selectedAddress }) => {
       if (selectedAddress && selectedAddress !== lastSelectedAddress) {
         lastSelectedAddress = selectedAddress;
-        const permittedAccountsMap = getPermittedAccountsByOrigin(
-          this.permissionController.state,
-        );
-
-        for (const [origin, accounts] of permittedAccountsMap.entries()) {
-          if (accounts.includes(selectedAddress)) {
-            handleAccountsChange(origin, accounts);
-          }
-        }
+        await this._onAccountChange(selectedAddress);
       }
     });
 
@@ -1979,10 +1949,17 @@ export default class MetamaskController extends EventEmitter {
         const changedAccounts = getChangedAccounts(currentValue, previousValue);
 
         for (const [origin, accounts] of changedAccounts.entries()) {
-          handleAccountsChange(origin, accounts);
+          this._notifyAccountsChange(origin, accounts);
         }
       },
       getPermittedAccountsByOrigin,
+    );
+
+    this.controllerMessenger.subscribe(
+      'NetworkController:networkDidChange',
+      async () => {
+        await this.txController.updateIncomingTransactions();
+      },
     );
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -4776,5 +4753,39 @@ export default class MetamaskController extends EventEmitter {
     }
 
     return null;
+  }
+
+  async _onAccountChange(newAddress) {
+    const permittedAccountsMap = getPermittedAccountsByOrigin(
+      this.permissionController.state,
+    );
+
+    for (const [origin, accounts] of permittedAccountsMap.entries()) {
+      if (accounts.includes(newAddress)) {
+        this._notifyAccountsChange(origin, accounts);
+      }
+    }
+
+    await this.txController.updateIncomingTransactions();
+  }
+
+  async _notifyAccountsChange(origin, newAccounts) {
+    if (this.isUnlocked()) {
+      this.notifyConnections(origin, {
+        method: NOTIFICATION_NAMES.accountsChanged,
+        // This should be the same as the return value of `eth_accounts`,
+        // namely an array of the current / most recently selected Ethereum
+        // account.
+        params:
+          newAccounts.length < 2
+            ? // If the length is 1 or 0, the accounts are sorted by definition.
+              newAccounts
+            : // If the length is 2 or greater, we have to execute
+              // `eth_accounts` vi this method.
+              await this.getPermittedAccounts(origin),
+      });
+    }
+
+    this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 }
