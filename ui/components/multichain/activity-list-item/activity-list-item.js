@@ -114,6 +114,7 @@ export const ActivityListItem = ({
             <Box
               display={Display.InlineFlex}
               width={BlockSize.Full}
+              height={BlockSize.Min}
               flexDirection={FlexDirection.Column}
               alignItems={AlignItems.flexEnd}
               className="activity-list-item__right-content"

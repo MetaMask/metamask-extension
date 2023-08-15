@@ -627,6 +627,7 @@ exports[`Security Tab should match snapshot 1`] = `
       <div
         class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
         data-testid="advanced-setting-gas-fee-estimation"
+        id="advanced-settings-autodetect-tokens"
       >
         <div
           class="settings-page__content-item"
