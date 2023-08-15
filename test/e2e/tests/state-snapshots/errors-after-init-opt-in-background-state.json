@@ -2,7 +2,7 @@
   "metamask": {
     "isInitialized": true,
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": {},
+    "defaultHomeActiveTabName": null,
     "networkId": "1337",
     "providerConfig": {
       "nickname": "Localhost 8545",
@@ -34,11 +34,11 @@
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "incomingTxLastFetchedBlockByChainId": {
-      "0x1": {},
-      "0xe708": {},
-      "0x5": {},
-      "0xaa36a7": {},
-      "0xe704": {}
+      "0x1": null,
+      "0xe708": null,
+      "0x5": null,
+      "0xaa36a7": null,
+      "0xe704": null
     },
     "currentBlockGasLimit": "0x1c9c380",
     "unapprovedDecryptMsgCount": 0,
