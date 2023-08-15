@@ -22,7 +22,7 @@ import {
   Text,
   Box,
   ButtonLink,
-  BUTTON_LINK_SIZES,
+  ButtonLinkSize,
 } from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
@@ -54,7 +54,7 @@ export default function SnapContentFooter({ snapName, snapId }) {
       <Text color={TextColor.textMuted} variant={TextVariant.bodySm} as="h6">
         {t('snapContent', [
           <ButtonLink
-            size={BUTTON_LINK_SIZES.INHERIT}
+            size={ButtonLinkSize.Inherit}
             onClick={handleNameClick}
             key="button"
           >
