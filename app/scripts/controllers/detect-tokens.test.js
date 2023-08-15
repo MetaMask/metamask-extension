@@ -215,8 +215,6 @@ describe('DetectTokensController', function () {
       onNetworkStateChange: sinon.spy(),
       onPreferencesStateChange: sinon.spy(),
       messenger: tokenListMessenger,
-      onTokenListStateChange: (tokenListState) =>
-        console.log('onTokenListStateChange', tokenListState), // this is missing
     });
     await tokenListController.start();
 
@@ -242,6 +240,8 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: (tokenListState) =>
+        console.log('onTokenListStateChange', tokenListState), // this is missing
     });
 
     assetsContractController = new AssetsContractController({
@@ -355,6 +355,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
 
@@ -376,6 +377,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
@@ -410,6 +412,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -428,6 +431,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
@@ -436,6 +440,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });

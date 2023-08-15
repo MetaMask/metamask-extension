@@ -121,8 +121,8 @@ const NETWORK_CONFIGURATION_ID_3 = 'networkConfigurationId3';
 const ETH = 'ETH';
 const MATIC = 'MATIC';
 
-const POLYGON_CHAIN_ID = '0x89';
-const MAINNET_CHAIN_ID = '0x1';
+const POLYGON_CAIP_CHAIN_ID = 'eip155:137';
+const MAINNET_CAIP_CHAIN_ID = 'eip155:1';
 
 const firstTimeState = {
   config: {},
@@ -130,7 +130,7 @@ const firstTimeState = {
     providerConfig: {
       type: NETWORK_TYPES.RPC,
       rpcUrl: ALT_MAINNET_RPC_URL,
-      caipChainId: MAINNET_CHAIN_ID,
+      caipChainId: MAINNET_CAIP_CHAIN_ID,
       ticker: ETH,
       nickname: 'Alt Mainnet',
       id: NETWORK_CONFIGURATION_ID_1,
@@ -139,7 +139,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_1]: {
         rpcUrl: ALT_MAINNET_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        caipChainId: MAINNET_CHAIN_ID,
+        caipChainId: MAINNET_CAIP_CHAIN_ID,
         ticker: ETH,
         nickname: 'Alt Mainnet',
         id: NETWORK_CONFIGURATION_ID_1,
@@ -147,7 +147,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_2]: {
         rpcUrl: POLYGON_RPC_URL,
         type: NETWORK_TYPES.RPC,
-        caipChainId: POLYGON_CHAIN_ID,
+        caipChainId: POLYGON_CAIP_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Polygon',
         id: NETWORK_CONFIGURATION_ID_2,
@@ -155,7 +155,7 @@ const firstTimeState = {
       [NETWORK_CONFIGURATION_ID_3]: {
         rpcUrl: POLYGON_RPC_URL_2,
         type: NETWORK_TYPES.RPC,
-        caipChainId: POLYGON_CHAIN_ID,
+        caipChainId: POLYGON_CAIP_CHAIN_ID,
         ticker: MATIC,
         nickname: 'Alt Polygon',
         id: NETWORK_CONFIGURATION_ID_1,
@@ -1562,10 +1562,10 @@ describe('MetaMaskController', function () {
         it('returns matching networkConfiguration when passed a caipChainId that matches an existing configuration', function () {
           assert.deepStrictEqual(
             metamaskController.findNetworkConfigurationBy({
-              caipChainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CAIP_CHAIN_ID,
             }),
             {
-              caipChainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CAIP_CHAIN_ID,
               nickname: 'Alt Mainnet',
               id: NETWORK_CONFIGURATION_ID_1,
               rpcUrl: ALT_MAINNET_RPC_URL,
@@ -1583,7 +1583,7 @@ describe('MetaMaskController', function () {
             {
               rpcUrl: POLYGON_RPC_URL,
               type: NETWORK_TYPES.RPC,
-              caipChainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CAIP_CHAIN_ID,
               ticker: MATIC,
               nickname: 'Polygon',
               id: NETWORK_CONFIGURATION_ID_2,
@@ -1597,7 +1597,7 @@ describe('MetaMaskController', function () {
               nickname: 'Alt Mainnet',
             }),
             {
-              caipChainId: MAINNET_CHAIN_ID,
+              caipChainId: MAINNET_CAIP_CHAIN_ID,
               nickname: 'Alt Mainnet',
               id: NETWORK_CONFIGURATION_ID_1,
               rpcUrl: ALT_MAINNET_RPC_URL,
@@ -1610,7 +1610,7 @@ describe('MetaMaskController', function () {
         it('returns null if passed an object containing mismatched networkConfiguration key/value combination', function () {
           assert.deepStrictEqual(
             metamaskController.findNetworkConfigurationBy({
-              nickname: MAINNET_CHAIN_ID,
+              nickname: MAINNET_CAIP_CHAIN_ID,
             }),
             null,
           );
@@ -1619,12 +1619,12 @@ describe('MetaMaskController', function () {
         it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', function () {
           assert.deepStrictEqual(
             metamaskController.findNetworkConfigurationBy({
-              caipChainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CAIP_CHAIN_ID,
             }),
             {
               rpcUrl: POLYGON_RPC_URL,
               type: NETWORK_TYPES.RPC,
-              caipChainId: POLYGON_CHAIN_ID,
+              caipChainId: POLYGON_CAIP_CHAIN_ID,
               ticker: MATIC,
               nickname: 'Polygon',
               id: NETWORK_CONFIGURATION_ID_2,
