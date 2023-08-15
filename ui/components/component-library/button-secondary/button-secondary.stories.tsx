@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-  AlignItems,
-  DISPLAY,
-  Size,
-} from '../../../helpers/constants/design-system';
-import Box from '../../ui/box/box';
-import { IconName } from '..';
-import { ButtonSecondary } from './button-secondary';
-import { BUTTON_SECONDARY_SIZES } from './button-secondary.constants';
+import { StoryFn, Meta } from '@storybook/react';
+import { AlignItems, Display } from '../../../helpers/constants/design-system';
+import { IconName, Box } from '..';
 import README from './README.mdx';
+import { ButtonSecondary, ButtonSecondarySize } from '.';
 
 const marginSizeControlOptions = [
   undefined,
@@ -84,7 +79,7 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(BUTTON_SECONDARY_SIZES),
+      options: Object.values(ButtonSecondarySize),
     },
     marginTop: {
       options: marginSizeControlOptions,
@@ -110,29 +105,29 @@ export default {
   args: {
     children: 'Button Secondary',
   },
-};
+} as Meta<typeof ButtonSecondary>;
 
 export const DefaultStory = (args) => <ButtonSecondary {...args} />;
 
 DefaultStory.storyName = 'Default';
 
-export const SizeStory = (args) => (
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.baseline} gap={1}>
-    <ButtonSecondary {...args} size={Size.SM}>
+export const SizeStory: StoryFn<typeof ButtonSecondary> = (args) => (
+  <Box display={Display.Flex} alignItems={AlignItems.baseline} gap={1}>
+    <ButtonSecondary {...args} size={ButtonSecondarySize.Sm}>
       Small Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={Size.MD}>
+    <ButtonSecondary {...args} size={ButtonSecondarySize.Md}>
       Medium (Default) Button
     </ButtonSecondary>
-    <ButtonSecondary {...args} size={Size.LG}>
+    <ButtonSecondary {...args} size={ButtonSecondarySize.Lg}>
       Large Button
     </ButtonSecondary>
   </Box>
 );
 SizeStory.storyName = 'Size';
 
-export const Danger = (args) => (
-  <Box display={DISPLAY.FLEX} gap={1}>
+export const Danger: StoryFn<typeof ButtonSecondary> = (args) => (
+  <Box display={Display.Flex} gap={1}>
     <ButtonSecondary {...args}>Normal</ButtonSecondary>
     {/* Test Anchor tag to match exactly as button */}
     <ButtonSecondary as="a" {...args} href="#" danger>
