@@ -155,9 +155,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addCustomToken": {
-    "message": "Aggiungi token personalizzato"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -1379,9 +1376,6 @@
   },
   "searchResults": {
     "message": "Risultati Ricerca"
-  },
-  "searchTokens": {
-    "message": "Cerca Tokens"
   },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
