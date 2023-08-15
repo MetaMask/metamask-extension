@@ -13,21 +13,21 @@ export interface ButtonPrimaryStyleUtilityProps
   /**
    * Boolean to change button type to Danger when true
    */
-  danger: boolean;
+  danger?: boolean;
   /**
    * Boolean to disable button
    */
-  disabled: boolean;
+  disabled?: boolean;
   /**
    * Boolean to show loading spinner in button
    */
-  loading: boolean;
+  loading?: boolean;
   /**
    * Possible size values: 'ButtonPrimarySize.Sm'(32px),
    * 'ButtonPrimarySize.Md'(40px), 'ButtonPrimarySize.Lg'(48px)
    * Default value is 'ButtonPrimarySize.Auto'.
    */
-  size: ButtonPrimarySize;
+  size?: ButtonPrimarySize;
 }
 
 export type ButtonPrimaryProps<C extends React.ElementType> =
