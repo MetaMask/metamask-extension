@@ -873,7 +873,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug
+              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=main
             fi
           no_output_timeout: 20m
       - run:
@@ -910,7 +910,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2
+              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=main
             fi
           no_output_timeout: 20m
       - run:
@@ -947,7 +947,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2
+              yarn test:e2e:firefox:snaps --retries 2 --debug
             fi
           no_output_timeout: 20m
       - run:
