@@ -4,10 +4,6 @@ import {
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
 import {
-  createEventEmitterProxy,
-  createSwappableProxy,
-} from '@metamask/swappable-obj-proxy';
-import {
   NetworkClientId,
   NetworkControllerStateChangeEvent,
   NetworkState,
