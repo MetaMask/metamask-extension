@@ -5,19 +5,14 @@ import { Tabs, Tab } from '../../../ui/tabs';
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   Button,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
   ///: END:ONLY_INCLUDE_IN
   BannerAlert,
-  Text,
-  BUTTON_VARIANT,
 } from '../../../component-library';
 import { PageContainerFooter } from '../../../ui/page-container';
-import ErrorMessage from '../../../ui/error-message';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import {
-  Severity,
-  TextAlign,
-  TypographyVariant,
-} from '../../../../helpers/constants/design-system';
+import { Severity } from '../../../../helpers/constants/design-system';
 
 import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -263,43 +258,42 @@ export default class ConfirmPageContainerContent extends Component {
         {!supportsEIP1559 &&
           !showInsuffienctFundsError &&
           (errorKey || errorMessage) && (
-            <div className="confirm-page-container-content__error-container">
-              <ErrorMessage errorMessage={errorMessage} errorKey={errorKey} />
-            </div>
+            <BannerAlert
+              severity={Severity.Danger}
+              description={errorKey ? t(errorKey) : errorMessage}
+              marginBottom={4}
+              marginLeft={4}
+              marginRight={4}
+            />
           )}
         {showInsuffienctFundsError && (
-          <div className="confirm-page-container-content__error-container">
-            <BannerAlert
-              className="confirm-page-container-content__banner-alert"
-              severity={Severity.Danger}
-            >
-              {isBuyableChain ? (
-                <Text variant={TypographyVariant.H7} textAlign={TextAlign.Left}>
-                  {t('insufficientCurrencyBuyOrDeposit', [
+          <BannerAlert
+            severity={Severity.Danger}
+            marginBottom={4}
+            marginLeft={4}
+            marginRight={4}
+            description={
+              isBuyableChain
+                ? t('insufficientCurrencyBuyOrDeposit', [
                     nativeCurrency,
                     networkName,
                     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                     <Button
                       variant={BUTTON_VARIANT.LINK}
-                      className="confirm-page-container-content__link"
+                      size={BUTTON_SIZES.INHERIT}
                       onClick={openBuyCryptoInPdapp}
                       key={`${nativeCurrency}-buy-button`}
                     >
                       {t('buyAsset', [nativeCurrency])}
                     </Button>,
                     ///: END:ONLY_INCLUDE_IN
-                  ])}
-                </Text>
-              ) : (
-                <Text variant={TypographyVariant.H7} textAlign={TextAlign.Left}>
-                  {t('insufficientCurrencyDeposit', [
+                  ])
+                : t('insufficientCurrencyDeposit', [
                     nativeCurrency,
                     networkName,
-                  ])}
-                </Text>
-              )}
-            </BannerAlert>
-          </div>
+                  ])
+            }
+          />
         )}
         <PageContainerFooter
           onCancel={onCancel}
