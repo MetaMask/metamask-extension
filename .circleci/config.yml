@@ -930,7 +930,7 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
