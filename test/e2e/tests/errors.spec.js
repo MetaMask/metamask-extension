@@ -1,11 +1,13 @@
 const { resolve } = require('path');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { transform } = require('lodash');
+const { get, has, set } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+
+const dateFields = ['metamask.conversionDate'];
 
 /**
  * Transform date properties to value types, to ensure that state is
@@ -14,22 +16,12 @@ const FixtureBuilder = require('../fixture-builder');
  * @param {unknown} data - The data to transform
  */
 function transformDates(data) {
-  return transform(
-    data,
-    (result, value, key) => {
-      if (key.endsWith('Date')) {
-        // dates are converted to the value type to ensure state is consistent
-        // between runs
-        result[key] = typeof value;
-      } else if (typeof value === 'object') {
-        result[key] = transformDates(value);
-      } else {
-        result[key] = value;
-      }
-      return result;
-    },
-    {},
-  );
+  for (const field of dateFields) {
+    if (has(data, field)) {
+      set(data, field, typeof get(data, field));
+    }
+  }
+  return data;
 }
 
 /**

@@ -1,22 +1,13 @@
 {
-  "gas": {
-    "customData": {
-      "price": {},
-      "limit": {}
-    }
-  },
-  "history": {
-    "mostRecentOverviewPage": "/"
-  },
+  "gas": { "customData": { "price": null, "limit": null } },
+  "history": { "mostRecentOverviewPage": "/" },
   "metamask": {
     "isInitialized": true,
     "isUnlocked": false,
     "isAccountMenuOpen": false,
     "customNonceValue": "",
     "useBlockie": false,
-    "featureFlags": {
-      "showIncomingTransactions": true
-    },
+    "featureFlags": { "showIncomingTransactions": true },
     "welcomeScreenSeen": false,
     "currentLocale": "en",
     "currentBlockGasLimit": "",
@@ -29,11 +20,11 @@
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "participateInMetaMetrics": true,
-    "nextNonce": {},
+    "nextNonce": null,
     "conversionRate": 1300,
     "nativeCurrency": "ETH",
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": {},
+    "defaultHomeActiveTabName": null,
     "networkId": "1337",
     "providerConfig": {
       "nickname": "Localhost 8545",
@@ -47,17 +38,14 @@
     "metaMetricsId": "fake-metrics-id",
     "conversionDate": "number",
     "currentCurrency": "usd",
-    "alertEnabledness": {
-      "unconnectedAccount": true,
-      "web3ShimUsage": true
-    },
+    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "seedPhraseBackedUp": true,
     "incomingTxLastFetchedBlockByChainId": {
-      "0x1": {},
-      "0xe708": {},
-      "0x5": {},
-      "0xaa36a7": {},
-      "0xe704": {}
+      "0x1": null,
+      "0xe708": null,
+      "0x5": null,
+      "0xaa36a7": null,
+      "0xe704": null
     },
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgCount": 0,
@@ -65,7 +53,5 @@
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
-  "unconnectedAccount": {
-    "state": "CLOSED"
-  }
+  "unconnectedAccount": { "state": "CLOSED" }
 }
