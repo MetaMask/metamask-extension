@@ -715,7 +715,7 @@ describe('migration #82', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('should capture an exception if PreferencesController is undefined', async () => {
+  it('should capture an exception if PreferencesController is not an object', async () => {
     const oldStorage = {
       meta: {
         version: 81,
@@ -746,12 +746,13 @@ describe('migration #82', () => {
             type: 'mainnet',
           },
         },
+        PreferencesController: false,
       },
     };
     await migrate(oldStorage);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
     expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
-      new Error(`typeof state.PreferencesController is undefined`),
+      new Error(`typeof state.PreferencesController is boolean`),
     );
   });
 

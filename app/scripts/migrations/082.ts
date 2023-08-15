@@ -25,10 +25,10 @@ export async function migrate(originalVersionedData: {
 }
 
 function transformState(state: Record<string, unknown>) {
-  if (
-    !hasProperty(state, 'PreferencesController') ||
-    !isObject(state.PreferencesController)
-  ) {
+  if (!hasProperty(state, 'PreferencesController')) {
+    return state;
+  }
+  if (!isObject(state.PreferencesController)) {
     global.sentry?.captureException?.(
       new Error(
         `typeof state.PreferencesController is ${typeof state.PreferencesController}`,
