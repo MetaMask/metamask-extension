@@ -137,7 +137,6 @@ export default function CreateNewVault({
             onClick={toggleTermsCheck}
             label={termsOfUse}
           />
-          <Text as="span">{termsOfUse}</Text>
         </div>
       ) : null}
       <Button
