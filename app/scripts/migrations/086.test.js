@@ -2,8 +2,9 @@ import { migrate, version } from './086';
 
 const sentryCaptureExceptionMock = jest.fn();
 
-global.sentry = {};
-global.sentry.captureException = sentryCaptureExceptionMock;
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
 
 jest.mock('uuid', () => {
   const actual = jest.requireActual('uuid');

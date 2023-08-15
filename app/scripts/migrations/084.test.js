@@ -2,8 +2,9 @@ import { migrate } from './084';
 
 const sentryCaptureExceptionMock = jest.fn();
 
-global.sentry = {};
-global.sentry.captureException = sentryCaptureExceptionMock;
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
 
 describe('migration #84', () => {
   afterEach(() => {
