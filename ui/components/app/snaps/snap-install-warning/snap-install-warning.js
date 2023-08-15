@@ -4,7 +4,6 @@ import { produce } from 'immer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
-  BackgroundColor,
   IconColor,
   TextVariant,
   TextAlign,
