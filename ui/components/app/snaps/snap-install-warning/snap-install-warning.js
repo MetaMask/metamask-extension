@@ -4,30 +4,31 @@ import { produce } from 'immer';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import {
-  IconColor,
-  TextVariant,
-  TextAlign,
-  Size,
-  JustifyContent,
-  FontWeight,
+  AlignItems,
+  BackgroundColor,
   Display,
   FlexDirection,
-  AlignItems,
+  FontWeight,
+  IconColor,
+  JustifyContent,
+  TextAlign,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 
 import {
-  Icon,
-  Text,
-  IconName,
+  AvatarIcon,
+  AvatarIconSize,
   Box,
-  Label,
+  BUTTON_SIZES,
   Button,
+  Checkbox,
+  IconName,
+  Label,
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
-  BUTTON_SIZES,
-  Checkbox,
+  ModalOverlay,
+  Text,
 } from '../../../component-library';
 
 /**
@@ -81,10 +82,11 @@ export default function SnapInstallWarning({
             gap: 4,
           }}
         >
-          <Icon
-            name={IconName.Danger}
+          <AvatarIcon
+            iconName={IconName.Danger}
             color={IconColor.warningDefault}
-            size={Size.XL}
+            backgroundColor={BackgroundColor.warningMuted}
+            size={AvatarIconSize.Xl}
           />
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
             {t('snapInstallWarningHeading')}
