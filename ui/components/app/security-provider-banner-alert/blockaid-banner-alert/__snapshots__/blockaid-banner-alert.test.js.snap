@@ -52,7 +52,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
-    style="mask-image: url('./images/icons/warning.svg');"
+    style="mask-image: url('./images/icons/danger.svg');"
   />
   <div>
     <h5
@@ -76,7 +76,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
-    style="mask-image: url('./images/icons/warning.svg');"
+    style="mask-image: url('./images/icons/danger.svg');"
   />
   <div>
     <h5
@@ -123,7 +123,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
   >
     <span
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
-      style="mask-image: url('./images/icons/warning.svg');"
+      style="mask-image: url('./images/icons/danger.svg');"
     />
     <div>
       <h5
