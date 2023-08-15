@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 import pump from 'pump';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
-import { JsonRpcEngine, createAsyncMiddleware } from 'json-rpc-engine';
+import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
@@ -116,7 +116,6 @@ import {
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
-  CHAIN_ID_TO_TYPE_MAP,
 } from '../../shared/constants/network';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
@@ -4181,7 +4180,9 @@ export default class MetamaskController extends EventEmitter {
           this.networkController,
         ),
         findNetworkClientIdByChainId:
-          this.networkController.findNetworkClientIdByChainId.bind(this.networkController),
+          this.networkController.findNetworkClientIdByChainId.bind(
+            this.networkController,
+          ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
