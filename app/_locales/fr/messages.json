@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addCustomToken": {
-    "message": "Ajouter un jeton personnalisé"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Cela permettra d’utiliser ce réseau dans MetaMask."
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "Résultats de la recherche"
-  },
-  "searchTokens": {
-    "message": "Rechercher des jetons"
   },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"

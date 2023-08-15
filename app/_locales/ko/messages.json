@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "커스텀 네트워크 추가"
   },
-  "addCustomToken": {
-    "message": "커스텀 토큰 추가"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "이렇게 하면 MetaMask 내에서 이 네트워크를 사용할 수 있습니다."
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "검색 결과"
-  },
-  "searchTokens": {
-    "message": "토큰 검색"
   },
   "secretRecoveryPhrase": {
     "message": "비밀 복구 구문"
