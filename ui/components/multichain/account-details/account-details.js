@@ -78,12 +78,11 @@ export const AccountDetails = ({ address }) => {
           <ModalHeader
             onClose={onClose}
             onBack={
-              attemptingExport
-                ? () => {
-                    dispatch(hideWarning());
-                    setAttemptingExport(false);
-                  }
-                : null
+              attemptingExport &&
+              (() => {
+                dispatch(hideWarning());
+                setAttemptingExport(false);
+              })
             }
           >
             {attemptingExport ? t('showPrivateKey') : avatar}

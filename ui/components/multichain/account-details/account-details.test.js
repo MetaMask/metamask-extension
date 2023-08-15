@@ -7,6 +7,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
+  clearAccountDetails,
   exportAccount,
   hideWarning,
   setAccountDetailsAddress,
@@ -19,14 +20,16 @@ jest.mock('../../../store/actions.ts');
 
 describe('AccountDetails', () => {
   const address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
-  const mockSetAccountDetailsAddress = jest.fn();
+  const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
+  const mockSetAccountDetailsAddress = jest.fn();
 
   beforeEach(() => {
-    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
+    clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
+    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -100,5 +103,13 @@ describe('AccountDetails', () => {
     );
 
     expect(queryByText(samplePrivateKey)).toBeInTheDocument();
+  });
+
+  it('should call AccountDetails.onClose()', () => {
+    render();
+
+    fireEvent.click(screen.getByLabelText('Close'));
+
+    expect(screen.queryByText('Account 1')).toBeNull();
   });
 });
