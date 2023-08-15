@@ -7,7 +7,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SNAPS_VIEW_ROUTE } from '../../../../helpers/constants/routes';
 import {
   TextVariant,
-  FlexDirection,
   JustifyContent,
   AlignItems,
   TextColor,
@@ -15,14 +14,14 @@ import {
   IconColor,
   Display,
 } from '../../../../helpers/constants/design-system';
-
 import {
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+  Box,
+  Button,
   Icon,
   IconName,
   Text,
-  Box,
-  ButtonLink,
-  ButtonLinkSize,
 } from '../../../component-library';
 
 export default function SnapContentFooter({ snapName, snapId }) {
@@ -37,12 +36,10 @@ export default function SnapContentFooter({ snapName, snapId }) {
   return (
     <Box
       display={Display.Flex}
-      flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
       paddingTop={4}
       paddingBottom={4}
-      gap={2}
       className="snap-content-footer"
     >
       <Icon
@@ -51,15 +48,21 @@ export default function SnapContentFooter({ snapName, snapId }) {
         color={IconColor.iconMuted}
         marginRight={1}
       />
-      <Text color={TextColor.textMuted} variant={TextVariant.bodySm} as="h6">
+      <Text
+        color={TextColor.textMuted}
+        variant={TextVariant.bodyXs}
+        className="snap-content-footer__description"
+      >
         {t('snapContent', [
-          <ButtonLink
-            size={ButtonLinkSize.Inherit}
+          <Button
+            variant={BUTTON_VARIANT.LINK}
+            size={BUTTON_SIZES.INHERIT}
             onClick={handleNameClick}
             key="button"
+            ellipsis
           >
             {snapName}
-          </ButtonLink>,
+          </Button>,
         ])}
       </Text>
     </Box>
