@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import log from 'loglevel';
 
 /**
  * @typedef {object} Migration
@@ -36,7 +37,7 @@ export default class Migrator extends EventEmitter {
     // perform each migration
     for (const migration of pendingMigrations) {
       try {
-        console.log(`Running migration ${migration.version}...`)
+        log.info(`Running migration ${migration.version}...`);
 
         // attempt migration and validate
         const migratedData = await migration.migrate(versionedData);
@@ -55,7 +56,7 @@ export default class Migrator extends EventEmitter {
         // eslint-disable-next-line no-param-reassign
         versionedData = migratedData;
 
-        console.log(`Migration ${migration.version} complete`)
+        log.info(`Migration ${migration.version} complete`);
       } catch (err) {
         // rewrite error message to add context without clobbering stack
         const originalErrorMessage = err.message;
