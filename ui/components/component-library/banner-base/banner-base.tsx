@@ -29,6 +29,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
       description,
       descriptionProps,
       children,
+      childrenWrapperProps,
       actionButtonLabel,
       actionButtonOnClick,
       actionButtonProps,
@@ -58,7 +59,6 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
               className="mm-banner-base__title"
               variant={TextVariant.bodyLgMedium}
               data-testid="mm-banner-base-title"
-              as="h5"
               {...titleProps}
             >
               {title}
@@ -68,7 +68,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
           {children && typeof children === 'object' ? (
             children
           ) : (
-            <Text>{children}</Text>
+            <Text {...childrenWrapperProps}>{children}</Text>
           )}
           {actionButtonLabel && (
             <ButtonLink

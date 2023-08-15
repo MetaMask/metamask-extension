@@ -410,6 +410,12 @@ export interface StyleUtilityProps {
    * Accepts responsive props in the form of an array.
    */
   color?: TextColor | TextColorArray | IconColor | IconColorArray;
+  /**
+   * An optional data-testid to apply to the component.
+   * TypeScript is complaining about data- attributes which means we need to explicitly define this as a prop.
+   * TODO: Allow data- attributes.
+   */
+  'data-testid'?: string;
 }
 /**
  * Box component props.

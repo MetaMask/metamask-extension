@@ -12,24 +12,6 @@ import {
 import { BannerBase } from './banner-base';
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
 export default {
   title: 'Components/ComponentLibrary/BannerBase',
   component: BannerBase,
@@ -37,7 +19,6 @@ export default {
     docs: {
       page: README,
     },
-    backgrounds: { default: 'alternative' },
   },
   argTypes: {
     className: {
@@ -53,13 +34,13 @@ export default {
       control: 'text',
     },
     action: {
-      control: 'func',
+      action: 'action',
     },
     actionButtonLabel: {
       control: 'text',
     },
     actionButtonOnClick: {
-      control: 'func',
+      action: 'actionButtonOnClick',
     },
     actionButtonProps: {
       control: 'object',
@@ -70,33 +51,15 @@ export default {
     onClose: {
       action: 'onClose',
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
 } as Meta<typeof BannerBase>;
 
-export const DefaultStory: StoryFn<typeof BannerBase> = (args) => {
+export const Template: StoryFn<typeof BannerBase> = (args) => {
   const onClose = () => console.log('BannerBase onClose trigger');
   return <BannerBase {...args} onClose={onClose} />;
 };
+
+export const DefaultStory = Template.bind({});
 
 DefaultStory.args = {
   title: 'Title is sentence case no period',
@@ -107,18 +70,14 @@ DefaultStory.args = {
 
 DefaultStory.storyName = 'Default';
 
-export const Title: StoryFn<typeof BannerBase> = (args) => {
-  return <BannerBase {...args} />;
-};
+export const Title = Template.bind({});
 
 Title.args = {
   title: 'Title is sentence case no period',
   children: 'Pass only a string through the title prop',
 };
 
-export const Description: StoryFn<typeof BannerBase> = (args) => {
-  return <BannerBase {...args} />;
-};
+export const Description = Template.bind({});
 
 Description.args = {
   title: 'Description vs children',
@@ -133,7 +92,7 @@ export const Children: StoryFn<typeof BannerBase> = (args) => {
       <ButtonLink
         size={ButtonLinkSize.Inherit}
         href="https://metamask.io/"
-        target="_blank"
+        externalLink
       >
         hyperlink.
       </ButtonLink>
@@ -141,9 +100,7 @@ export const Children: StoryFn<typeof BannerBase> = (args) => {
   );
 };
 
-export const ActionButton: StoryFn<typeof BannerBase> = (args) => {
-  return <BannerBase {...args} />;
-};
+export const ActionButton = Template.bind({});
 
 ActionButton.args = {
   title: 'Action prop demo',
@@ -180,9 +137,7 @@ OnClose.args = {
   children: 'Click the close button icon to hide this notifcation',
 };
 
-export const StartAccessory: StoryFn<typeof BannerBase> = (args) => {
-  return <BannerBase {...args} />;
-};
+export const StartAccessory = Template.bind({});
 
 StartAccessory.args = {
   title: 'Start accessory demo',
