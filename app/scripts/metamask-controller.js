@@ -198,6 +198,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import AppMetadataController from './controllers/app-metadata';
 
 import {
   CaveatMutatorFactories,
@@ -267,6 +268,8 @@ export default class MetamaskController extends EventEmitter {
     // instance of a class that wraps the extension's storage local API.
     this.localStoreApiWrapper = opts.localStore;
 
+    this.currentMigrationVersion = opts.localStore?.meta?.version;
+
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -286,6 +289,11 @@ export default class MetamaskController extends EventEmitter {
         this.platform.openExtensionInBrowser();
       }
     });
+
+    this.appMetadataController = new AppMetadataController({
+      state: initState.AppMetadataController,
+      currentMigrationVersion: this.currentMigrationVersion,
+    })
 
     // next, we will initialize the controllers
     // controller initialization order matters
@@ -1629,6 +1637,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
+      AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
@@ -1676,6 +1685,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
+        AppMetadataController: this.appMetadataController.store,
         NetworkController: this.networkController,
         CachedBalancesController: this.cachedBalancesController.store,
         KeyringController: this.keyringController.memStore,
