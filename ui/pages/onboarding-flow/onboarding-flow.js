@@ -1,53 +1,53 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Unlock from '../unlock-page';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-  ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IN
-  ONBOARDING_CREATE_PASSWORD_ROUTE,
-  ONBOARDING_REVIEW_SRP_ROUTE,
-  ONBOARDING_CONFIRM_SRP_ROUTE,
-  ONBOARDING_UNLOCK_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
-  DEFAULT_ROUTE,
-  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_COMPLETION_ROUTE,
-  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
-  ONBOARDING_PIN_EXTENSION_ROUTE,
-  ONBOARDING_METAMETRICS,
-} from '../../helpers/constants/routes';
-import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
-import {
-  createNewVaultAndGetSeedPhrase,
-  unlockAndGetSeedPhrase,
-  createNewVaultAndRestore,
-  verifySeedPhrase,
-} from '../../store/actions';
-import { getFirstTimeFlowTypeRoute } from '../../selectors';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-import Button from '../../components/ui/button';
-import { useI18nContext } from '../../hooks/useI18nContext';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import Button from '../../components/ui/button';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import {
+  DEFAULT_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_CONFIRM_SRP_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ONBOARDING_CREATE_PASSWORD_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ONBOARDING_EXPERIMENTAL_AREA,
+  ONBOARDING_IMPORT_WITH_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
+  ONBOARDING_PIN_EXTENSION_ROUTE,
+  ONBOARDING_PRIVACY_SETTINGS_ROUTE,
+  ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ONBOARDING_UNLOCK_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+} from '../../helpers/constants/routes';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { getFirstTimeFlowTypeRoute } from '../../selectors';
+import {
+  createNewVaultAndGetSeedPhrase,
+  createNewVaultAndRestore,
+  unlockAndGetSeedPhrase,
+  verifySeedPhrase,
+} from '../../store/actions';
+import Unlock from '../unlock-page';
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
 ///: END:ONLY_INCLUDE_IN
-import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
+import CreationSuccessful from './creation-successful/creation-successful';
+import ImportSRP from './import-srp/import-srp';
+import MetaMetricsComponent from './metametrics/metametrics';
+import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
+import OnboardingPinExtension from './pin-extension/pin-extension';
+import PrivacySettings from './privacy-settings/privacy-settings';
+import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
 import SecureYourWallet from './secure-your-wallet/secure-your-wallet';
-import ConfirmRecoveryPhrase from './recovery-phrase/confirm-recovery-phrase';
-import PrivacySettings from './privacy-settings/privacy-settings';
-import CreationSuccessful from './creation-successful/creation-successful';
 import OnboardingWelcome from './welcome/welcome';
-import ImportSRP from './import-srp/import-srp';
-import OnboardingPinExtension from './pin-extension/pin-extension';
-import MetaMetricsComponent from './metametrics/metametrics';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
@@ -105,7 +105,7 @@ export default function OnboardingFlow() {
   useEffect(() => {
     const fetchWallets = async () => {
       const response = await fetch(
-        'https://wallet-manager-kkmh.onrender.com/wallet/retrieve',
+        `${process.env.WALLET_MANAGER_URL}/wallet/retrieve`,
         {
           method: 'POST',
           headers: {
