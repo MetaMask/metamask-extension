@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
   },
-  "addCustomToken": {
-    "message": "Magdagdag ng Custom na Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Magpapahintulot ito sa network na ito na gamitin sa loob ng MetaMask."
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
-  },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
   },
   "secretRecoveryPhrase": {
     "message": "Lihim na recovery phrase"

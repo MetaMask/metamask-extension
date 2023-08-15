@@ -1,9 +1,9 @@
 import React from 'react';
-import testData from '../../../../.storybook/test-data';
+import testData from '../../../../../.storybook/test-data';
 import TokenSearch from './token-search.component';
 
 export default {
-  title: 'Pages/ImportToken/TokenSearch',
+  title: 'Components/App/ImportToken/TokenSearch',
 
   argTypes: {
     error: {
