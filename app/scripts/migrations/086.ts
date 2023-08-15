@@ -44,9 +44,9 @@ function transformState(state: Record<string, unknown>) {
       ),
     );
   } else if (!hasProperty(state.NetworkController, 'provider')) {
-    const inPost077SupplementFor086state =
-      state.NetworkController.providerConfig !== undefined;
-    if (!inPost077SupplementFor086state) {
+    const thePost077SupplementFor086HasNotModifiedState =
+      state.NetworkController.providerConfig === undefined;
+    if (thePost077SupplementFor086HasNotModifiedState) {
       global.sentry?.captureException?.(
         new Error(
           `typeof state.NetworkController.provider is ${typeof state
