@@ -192,9 +192,6 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
-  "addCustomToken": {
-    "message": "Add custom token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "This will allow this network to be used within MetaMask."
   },
@@ -568,6 +565,9 @@
   "blockaidDescriptionBlurFarming": {
     "message": "If you approve this request, someone can steal your assets listed on Blur."
   },
+  "blockaidDescriptionFailed": {
+    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+  },
   "blockaidDescriptionMaliciousDomain": {
     "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
   },
@@ -582,6 +582,9 @@
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Request may not be safe"
   },
   "blockaidTitleSuspicious": {
     "message": "This is a suspicious request"
@@ -3652,9 +3655,6 @@
   },
   "searchResults": {
     "message": "Search results"
-  },
-  "searchTokens": {
-    "message": "Search tokens"
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"

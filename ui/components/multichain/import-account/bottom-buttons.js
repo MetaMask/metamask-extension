@@ -5,7 +5,7 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   Box,
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
 } from '../../component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -32,7 +32,7 @@ export default function BottomButtons({
           dispatch(actions.hideWarning());
           onActionComplete();
         }}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         block
       >
         {t('cancel')}
@@ -49,7 +49,7 @@ export default function BottomButtons({
           }
         }}
         disabled={isPrimaryDisabled}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         data-testid="import-account-confirm-button"
         block
       >
