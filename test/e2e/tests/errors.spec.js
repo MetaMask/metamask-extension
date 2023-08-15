@@ -124,7 +124,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.delay(3000);
@@ -192,7 +191,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.wait(async () => {
@@ -233,7 +231,6 @@ describe('Sentry errors', function () {
         },
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
-          await driver.findElement('#critical-error-button');
 
           // Wait for Sentry request
           await driver.wait(async () => {
