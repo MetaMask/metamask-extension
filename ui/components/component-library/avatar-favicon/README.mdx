@@ -6,7 +6,7 @@ import { AvatarFavicon } from './avatar-favicon';
 
 # AvatarFavicon
 
-The `AvatarFavicon` is an image component that renders an icon that is provided in the form of a URL.
+The `AvatarFavicon` is an image component that represents a dapp or third party service
 
 <Canvas>
   <Story id="components-componentlibrary-avatarfavicon--default-story" />
@@ -35,7 +35,7 @@ Defaults to `AvatarFaviconSize.MD`
 </Canvas>
 
 ```jsx
-import { AvatarFavicon, AvatarFaviconSize } from '../ui/component-library';
+import { AvatarFavicon, AvatarFaviconSize } from '../../component-library';
 
 <AvatarFavicon size={AvatarFaviconSize.Xs} />
 <AvatarFavicon size={AvatarFaviconSize.Sm} />
@@ -53,7 +53,7 @@ Use the `src` prop to set the image to be rendered of the `AvatarFavicon`.
 </Canvas>
 
 ```jsx
-import { AvatarFavicon } from '../ui/component-library';
+import { AvatarFavicon } from '../../component-library';
 
 <AvatarFavicon src="https://uniswap.org/favicon.ico" />
 <AvatarFavicon src="https://1inch.exchange/assets/favicon/favicon-32x32.png" />
