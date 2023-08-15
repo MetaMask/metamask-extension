@@ -9,8 +9,8 @@ jobs:
       - name: Extract version from branch name if release branch
         id: extract_version
         run: |
-          if [[ $GITHUB_REF == refs/heads/Version-v* ]]; then
-            version=${GITHUB_REF#refs/heads/Version-v}
+          if [[ "$GITHUB_REF" == "refs/heads/Version-v"* ]]; then
+            version="${GITHUB_REF#refs/heads/Version-v}"
             echo "New release branch($version), continue next steps"
             echo "version=$version" >> $GITHUB_ENV
           else
