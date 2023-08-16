@@ -51,7 +51,7 @@ describe('NetworkController', () => {
       );
     });
 
-    it('updates the currentAppVersion state property via a call to maybeUpdateAppVersion if platform.getVersion() does not match the default value', async () => {
+    it('updates the currentAppVersion state property if platform.getVersion() does not match the default value', async () => {
       MOCK_VERSION.version = '1';
       const appMetadataController = new AppMetadataController({
         state: {},
@@ -63,7 +63,7 @@ describe('NetworkController', () => {
       });
     });
 
-    it('updates the currentAppVersion and previousAppVersion state properties via a call to maybeUpdateAppVersion if platform.getVersion(), currentAppVersion and previousAppVersion are all different', async () => {
+    it('updates the currentAppVersion and previousAppVersion state properties if platform.getVersion(), currentAppVersion and previousAppVersion are all different', async () => {
       MOCK_VERSION.version = '3';
       const appMetadataController = new AppMetadataController({
         state: {
@@ -79,7 +79,7 @@ describe('NetworkController', () => {
       });
     });
 
-    it('updates the currentMigrationVersion state property via a call to maybeUpdateMigrationVersion if the currentMigrationVersion param does not match the default value', async () => {
+    it('updates the currentMigrationVersion state property if the currentMigrationVersion param does not match the default value', async () => {
       MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {},
@@ -91,7 +91,7 @@ describe('NetworkController', () => {
       });
     });
 
-    it('updates the currentMigrationVersion and previousMigrationVersion state properties via a call to maybeUpdateMigrationVersion if the currentMigrationVersion param, the currentMigrationVersion state property and the previousMigrationVersion state property are all different', async () => {
+    it('updates the currentMigrationVersion and previousMigrationVersion state properties if the currentMigrationVersion param, the currentMigrationVersion state property and the previousMigrationVersion state property are all different', async () => {
       MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {
