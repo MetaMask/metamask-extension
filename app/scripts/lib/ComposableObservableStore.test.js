@@ -120,6 +120,31 @@ describe('ComposableObservableStore', () => {
     });
   });
 
+  it('should initialize state with all three types of stores', () => {
+    const controllerMessenger = new ControllerMessenger();
+    const exampleStore = new ObservableStore();
+    const exampleController = new ExampleController({
+      messenger: controllerMessenger,
+    });
+    const oldExampleController = new OldExampleController();
+    exampleStore.putState('state');
+    exampleController.updateBar('state');
+    oldExampleController.updateBaz('state');
+    const store = new ComposableObservableStore({ controllerMessenger });
+
+    store.updateStructure({
+      Example: exampleController,
+      OldExample: oldExampleController,
+      Store: exampleStore,
+    });
+
+    expect(store.getState()).toStrictEqual({
+      Example: { bar: 'state' },
+      OldExample: { baz: 'state' },
+      Store: 'state',
+    });
+  });
+
   it('should return flattened state', () => {
     const controllerMessenger = new ControllerMessenger();
     const fooStore = new ObservableStore({ foo: 'foo' });
