@@ -25,8 +25,8 @@ export type AppMetadataControllerOptions = {
 const defaultState: AppMetadataControllerState = {
   currentAppVersion: '',
   previousAppVersion: '',
-  previousMigrationVersion: '',
-  currentMigrationVersion: '',
+  previousMigrationVersion: 0,
+  currentMigrationVersion: 0,
 };
 
 /**
