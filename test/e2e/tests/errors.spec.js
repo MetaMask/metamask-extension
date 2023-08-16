@@ -511,7 +511,7 @@ describe('Sentry errors', function () {
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
           const { participateInMetaMetrics } =
-            extra.appState.store.MetaMetricsController;
+            extra.appState.state.MetaMetricsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
@@ -607,7 +607,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.store.metamask;
+          const { participateInMetaMetrics } = extra.appState.state.metamask;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
