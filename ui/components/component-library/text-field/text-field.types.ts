@@ -50,19 +50,19 @@ export interface TextFieldStyleUtilityProps
    * The the component that is rendered as the input
    * Defaults to the Text component
    */
-  InputComponent: InputComponent;
+  InputComponent?: InputComponent;
   /**
    * Attributes applied to the `input` element.
    */
-  inputProps: InputProps<'span'>;
+  inputProps?: InputProps<'span'>;
   /**
    * Component to appear on the left side of the input
    */
-  startAccessory: React.ReactNode;
+  startAccessory?: React.ReactNode;
   /**
    * Component to appear on the right side of the input
    */
-  endAccessory: React.ReactNode;
+  endAccessory?: React.ReactNode;
   /**
    * Use inputRef to pass a ref to the html input element.
    */
@@ -107,12 +107,12 @@ export interface TextFieldStyleUtilityProps
   required?: boolean;
   /**
    * The size of the text field. Changes the height of the component
-   * Accepts Sm(32px), Md(40px), Lg(48px)
+   * Accepts TextFieldSize.Sm(32px), TextFieldSize.Md(40px), TextFieldSize.Lg(48px)
    */
   size?: TextFieldSize;
   /**
-   * Type of the input element. Can be TEXT_FIELD_TYPES.TEXT, TEXT_FIELD_TYPES.PASSWORD, TEXT_FIELD_TYPES.NUMBER
-   * Defaults to TEXT_FIELD_TYPES.TEXT ('text')
+   * Type of the input element. Can be TextFieldType.Text, TextFieldType.Password, TextFieldType.Number
+   * Defaults to TextFieldType.Text ('text')
    */
   type?: TextFieldType;
   /**

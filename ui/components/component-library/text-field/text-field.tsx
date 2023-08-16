@@ -81,14 +81,14 @@ export const TextField: TextFieldComponent = React.forwardRef(
       onFocus?.(event);
     };
 
-    const handleBlur = (event) => {
+    const handleBlur = (event: KeyboardEvent<HTMLInputElement>) => {
       setFocused(false);
       onBlur?.(event);
     };
 
     const handleInputRef = (ref) => {
       internalInputRef.current = ref;
-      if (inputRef && inputRef.current !== undefined) {
+      if (inputRef?.current !== undefined) {
         inputRef.current = ref;
       } else if (typeof inputRef === 'function') {
         inputRef(ref);

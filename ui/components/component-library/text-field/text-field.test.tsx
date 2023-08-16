@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 import { fireEvent, render } from '@testing-library/react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
-import { Size } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box';
-
+import { Box } from '../box';
 import { TextField } from './text-field';
+import { TextFieldSize, TextFieldType } from './text-field.types';
 
 describe('TextField', () => {
   it('should render correctly', () => {
@@ -87,9 +85,9 @@ describe('TextField', () => {
   it('should render with different size classes', () => {
     const { getByTestId } = render(
       <>
-        <TextField size={Size.SM} data-testid="sm" />
-        <TextField size={Size.MD} data-testid="md" />
-        <TextField size={Size.LG} data-testid="lg" />
+        <TextField size={TextFieldSize.Sm} data-testid="sm" />
+        <TextField size={TextFieldSize.Md} data-testid="md" />
+        <TextField size={TextFieldSize.Lg} data-testid="lg" />
       </>,
     );
     expect(getByTestId('sm')).toHaveClass('mm-text-field--size-sm');
@@ -101,11 +99,11 @@ describe('TextField', () => {
       <>
         <TextField inputProps={{ 'data-testid': 'text-field-text' }} />
         <TextField
-          type="number"
+          type={TextFieldType.Number}
           inputProps={{ 'data-testid': 'text-field-number' }}
         />
         <TextField
-          type="password"
+          type={TextFieldType.Password}
           inputProps={{ 'data-testid': 'text-field-password' }}
         />
       </>,
