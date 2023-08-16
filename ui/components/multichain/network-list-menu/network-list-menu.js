@@ -29,7 +29,7 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
   ButtonSecondary,
   Modal,
   ModalContent,
@@ -74,6 +74,8 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
+  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+
   const showSearch = nonTestNetworks.length > 3;
 
   useEffect(() => {
@@ -111,7 +113,9 @@ export const NetworkListMenu = ({ onClose }) => {
       }
 
       const isCurrentNetwork = currentNetwork.id === network.id;
-      const canDeleteNetwork = !isCurrentNetwork && network.removable;
+
+      const canDeleteNetwork =
+        isUnlocked && !isCurrentNetwork && network.removable;
 
       return (
         <NetworkListItem
@@ -227,7 +231,7 @@ export const NetworkListMenu = ({ onClose }) => {
             <Text>{t('showTestnetNetworks')}</Text>
             <ToggleButton
               value={showTestNetworks}
-              disabled={currentlyOnTestNetwork}
+              disabled={currentlyOnTestNetwork || !isUnlocked}
               onToggle={handleToggle}
             />
           </Box>
@@ -238,7 +242,8 @@ export const NetworkListMenu = ({ onClose }) => {
           ) : null}
           <Box padding={4}>
             <ButtonSecondary
-              size={BUTTON_SECONDARY_SIZES.LG}
+              size={ButtonSecondarySize.Lg}
+              disabled={!isUnlocked}
               block
               onClick={() => {
                 if (isFullScreen) {

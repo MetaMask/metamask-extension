@@ -1,0 +1,34 @@
+{
+  "AccountTracker": { "currentBlockGasLimit": "0x1c9c380" },
+  "AppStateController": {
+    "connectedStatusPopoverHasBeenShown": true,
+    "defaultHomeActiveTabName": null
+  },
+  "CurrencyController": {
+    "conversionDate": "number",
+    "conversionRate": 1700,
+    "nativeCurrency": "ETH",
+    "currentCurrency": "usd"
+  },
+  "DecryptMessageController": { "unapprovedDecryptMsgCount": 0 },
+  "EncryptionPublicKeyController": {
+    "unapprovedEncryptionPublicKeyMsgCount": 0
+  },
+  "MetaMetricsController": {
+    "participateInMetaMetrics": true,
+    "metaMetricsId": "fake-metrics-id"
+  },
+  "NetworkController": {
+    "networkId": "1337",
+    "providerConfig": {
+      "nickname": "Localhost 8545",
+      "ticker": "ETH",
+      "type": "rpc"
+    }
+  },
+  "SignatureController": {
+    "unapprovedMsgCount": 0,
+    "unapprovedPersonalMsgCount": 0,
+    "unapprovedTypedMessagesCount": 0
+  }
+}

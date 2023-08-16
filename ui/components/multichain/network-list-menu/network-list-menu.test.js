@@ -23,10 +23,12 @@ const render = (
   showTestNetworks = false,
   currentChainId = '0x5',
   providerConfigId = 'chain5',
+  isUnlocked = true,
 ) => {
   const state = {
     metamask: {
       ...mockState.metamask,
+      isUnlocked,
       providerConfig: {
         ...mockState.metamask.providerConfig,
         chainId: currentChainId,
@@ -110,5 +112,22 @@ describe('NetworkListMenu', () => {
     fireEvent.change(searchBox, { target: { value: 'Main' } });
 
     expect(queryByText('Chain 5')).not.toBeInTheDocument();
+  });
+
+  it('disables the "Add Network" button when MetaMask is locked', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', false);
+    expect(queryByText('Add network')).toBeDisabled();
+  });
+
+  it('enables the "Add Network" button when MetaMask is true', () => {
+    const { queryByText } = render(false, '0x5', 'chain5', true);
+    expect(queryByText('Add network')).toBeEnabled();
+  });
+
+  it('does not allow deleting networks when locked', () => {
+    render(false, '0x5', 'chain5', false);
+    expect(
+      document.querySelectorAll('multichain-network-list-item__delete'),
+    ).toHaveLength(0);
   });
 });

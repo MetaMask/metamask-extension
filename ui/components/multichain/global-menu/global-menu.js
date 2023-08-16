@@ -173,7 +173,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
               history.push(NOTIFICATIONS_ROUTE);
             }}
           >
-            <Text as="span">{t('notifications')}</Text>
+            {t('notifications')}
             {unreadNotificationsCount > 0 && (
               <Text
                 as="span"

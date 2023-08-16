@@ -18,7 +18,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
         </h3>
         <button
           aria-label="Close"
-          class="box mm-button-icon mm-button-icon--size-sm box--margin-left-auto box--display-inline-flex box--flex-direction-row box--justify-content-center box--align-items-center box--color-icon-default box--background-color-transparent box--rounded-lg"
+          class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-left-auto mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
           data-testid="hardware-connect-close-btn"
         >
           <span
@@ -112,7 +112,7 @@ exports[`ConnectHardwareForm should match snapshot 1`] = `
       </button>
     </div>
     <button
-      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled hw-connect__connect-btn mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+      class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled hw-connect__connect-btn mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
       disabled=""
     >
       Continue

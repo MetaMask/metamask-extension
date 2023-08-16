@@ -54,6 +54,7 @@ import {
   getAggregatorMetadata,
   getTransactionSettingsOpened,
   setTransactionSettingsOpened,
+  getLatestAddedTokenTo,
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
@@ -92,6 +93,7 @@ import {
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
+  ignoreTokens,
   clearSwapsQuotes,
   stopPollingForQuotes,
   setSmartTransactionsOptInStatus,
@@ -116,6 +118,7 @@ import {
   IconSize,
   TextField,
   ButtonLink,
+  ButtonLinkSize,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -183,6 +186,7 @@ export default function PrepareSwapPage({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const tokenList = useSelector(getTokenList, isEqual);
   const quotes = useSelector(getQuotes, isEqual);
+  const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
   const numberOfQuotes = Object.keys(quotes).length;
   const areQuotesPresent = numberOfQuotes > 0;
   const swapsErrorKey = useSelector(getSwapsErrorKey);
@@ -450,12 +454,21 @@ export default function PrepareSwapPage({
     ? getURLHostName(blockExplorerTokenLink)
     : t('etherscan');
 
+  const { address: toAddress } = toToken || {};
   const onToSelect = useCallback(
     (token) => {
+      if (latestAddedTokenTo && token.address !== toAddress) {
+        dispatch(
+          ignoreTokens({
+            tokensToIgnore: toAddress,
+            dontShowLoadingIndicator: true,
+          }),
+        );
+      }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
     },
-    [dispatch],
+    [dispatch, latestAddedTokenTo, toAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
@@ -1042,7 +1055,7 @@ export default function PrepareSwapPage({
                 </Text>
                 {!verificationClicked && (
                   <ButtonLink
-                    size={Size.INHERIT}
+                    size={ButtonLinkSize.Inherit}
                     textProps={{
                       variant: TextVariant.bodyMd,
                       alignItems: AlignItems.flexStart,

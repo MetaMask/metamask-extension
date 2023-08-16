@@ -15,6 +15,7 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -160,9 +161,13 @@ const firstTimeState = {
         id: NETWORK_CONFIGURATION_ID_1,
       },
     },
-    networkDetails: {
-      EIPS: {
-        1559: false,
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: false,
+        },
+        status: 'available',
       },
     },
   },
@@ -302,7 +307,7 @@ describe('MetaMaskController', function () {
         'createNewVaultAndKeychain',
       );
       sandbox.spy(
-        metamaskController.keyringController,
+        metamaskController.coreKeyringController,
         'createNewVaultAndRestore',
       );
     });
@@ -418,7 +423,7 @@ describe('MetaMaskController', function () {
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
 
         assert(
-          metamaskController.keyringController.createNewVaultAndRestore
+          metamaskController.coreKeyringController.createNewVaultAndRestore
             .calledTwice,
         );
       });
@@ -732,7 +737,7 @@ describe('MetaMaskController', function () {
           metamaskController.keyringController,
           'addNewAccount',
         );
-        addNewAccountStub.returns({});
+        addNewAccountStub.returns('0x123');
 
         getAccountsStub = sinon.stub(
           metamaskController.keyringController,
@@ -813,7 +818,7 @@ describe('MetaMaskController', function () {
           await addNewAccount;
           assert.fail('should throw');
         } catch (e) {
-          assert.equal(e.message, 'MetamaskController - No HD Key Tree found');
+          assert.equal(e.message, 'No HD keyring found');
         }
       });
     });

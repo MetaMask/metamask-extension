@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
   },
-  "addCustomToken": {
-    "message": "カスタムトークンを追加"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "これにより、このネットワークはMetaMask内で使用できるようになります。"
   },
@@ -908,9 +905,6 @@
   "deleteNetwork": {
     "message": "ネットワークを削除しますか?"
   },
-  "deleteNetworkDescription": {
-    "message": "このネットワークを削除しますか?"
-  },
   "deposit": {
     "message": "入金"
   },
@@ -1177,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea APIを有効にする"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
   "enableToken": {
     "message": "$1を有効にする",
@@ -2989,9 +2977,6 @@
   "searchResults": {
     "message": "検索結果"
   },
-  "searchTokens": {
-    "message": "トークンを検索"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3254,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "申し訳ありません。問題が発生しました。"
-  },
-  "source": {
-    "message": "ソース"
   },
   "speedUp": {
     "message": "スピードアップ"
