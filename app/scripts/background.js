@@ -876,14 +876,14 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryState = function () {
-    const backgroundState = store.getState();
+    const backgroundState = store.memStore.getState();
     const maskedBackgroundState = maskObject(
       backgroundState,
       SENTRY_BACKGROUND_STATE,
     );
     return {
       browser: window.navigator.userAgent,
-      store: { metamask: maskedBackgroundState },
+      store: maskedBackgroundState,
       version: platform.getVersion(),
     };
   };

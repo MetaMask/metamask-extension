@@ -27,52 +27,86 @@ export const ERROR_URL_ALLOWLIST = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
-  alertEnabledness: true,
-  completedOnboarding: true,
-  connectedStatusPopoverHasBeenShown: true,
-  conversionDate: true,
-  conversionRate: true,
-  currentAppVersion: true,
-  currentBlockGasLimit: true,
-  currentCurrency: true,
-  currentLocale: true,
-  currentMigrationVersion: true,
-  customNonceValue: true,
-  defaultHomeActiveTabName: true,
-  desktopEnabled: true,
-  featureFlags: true,
-  firstTimeFlowType: true,
-  forgottenPassword: true,
-  incomingTxLastFetchedBlockByChainId: true,
-  ipfsGateway: true,
-  isAccountMenuOpen: true,
-  isInitialized: true,
-  isUnlocked: true,
-  metaMetricsId: true,
-  nativeCurrency: true,
-  networkId: true,
-  networkStatus: true,
-  nextNonce: true,
-  participateInMetaMetrics: true,
-  preferences: true,
-  previousAppVersion: true,
-  previousMigrationVersion: true,
-  providerConfig: {
-    nickname: true,
-    ticker: true,
-    type: true,
+  AccountTracker: {
+    currentBlockGasLimit: true,
   },
-  seedPhraseBackedUp: true,
-  unapprovedDecryptMsgCount: true,
-  unapprovedEncryptionPublicKeyMsgCount: true,
-  unapprovedMsgCount: true,
-  unapprovedPersonalMsgCount: true,
-  unapprovedTypedMessagesCount: true,
-  useBlockie: true,
-  useNonceField: true,
-  usePhishDetect: true,
-  welcomeScreenSeen: true,
+  AlertController: {
+    alertEnabledness: true,
+  },
+  AppMetadataController: {
+    currentAppVersion: true,
+    previousAppVersion: true,
+    previousMigrationVersion: true,
+    currentMigrationVersion: true,
+  },
+  AppStateController: {
+    connectedStatusPopoverHasBeenShown: true,
+    defaultHomeActiveTabName: true,
+  },
+  CurrencyController: {
+    conversionDate: true,
+    conversionRate: true,
+    currentCurrency: true,
+    nativeCurrency: true,
+  },
+  DecryptMessageController: {
+    unapprovedDecryptMsgCount: true,
+  },
+  DesktopController: {
+    desktopEnabled: true,
+  },
+  EncryptionPublicKeyController: {
+    unapprovedEncryptionPublicKeyMsgCount: true,
+  },
+  IncomingTransactionsController: {
+    incomingTxLastFetchedBlockByChainId: true,
+  },
+  KeyringController: {
+    isUnlocked: true,
+  },
+  MetaMetricsController: {
+    metaMetricsId: true,
+    participateInMetaMetrics: true,
+  },
+  NetworkController: {
+    networkId: true,
+    networkStatus: true,
+    providerConfig: {
+      nickname: true,
+      ticker: true,
+      type: true,
+    },
+  },
+  OnboardingController: {
+    completedOnboarding: true,
+    firstTimeFlowType: true,
+    seedPhraseBackedUp: true,
+  },
+  PreferencesController: {
+    currentLocale: true,
+    featureFlags: true,
+    forgottenPassword: true,
+    ipfsGateway: true,
+    preferences: true,
+    useBlockie: true,
+    useNonceField: true,
+    usePhishDetect: true,
+  },
+  SignatureController: {
+    unapprovedMsgCount: true,
+    unapprovedPersonalMsgCount: true,
+    unapprovedTypedMessagesCount: true,
+  },
 };
+
+const flattenedBackgroundStateMask = Object.values(
+  SENTRY_BACKGROUND_STATE,
+).reduce((partialBackgroundState, controllerState) => {
+  return {
+    ...partialBackgroundState,
+    ...controllerState,
+  };
+}, {});
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
@@ -80,7 +114,16 @@ export const SENTRY_BACKGROUND_STATE = {
 export const SENTRY_UI_STATE = {
   gas: true,
   history: true,
-  metamask: SENTRY_BACKGROUND_STATE,
+  metamask: {
+    ...flattenedBackgroundStateMask,
+    // This property comes from the background but isn't in controller state
+    isInitialized: true,
+    // These properties are in the `metamask` slice but not in the background state
+    customNonceValue: true,
+    isAccountMenuOpen: true,
+    nextNonce: true,
+    welcomeScreenSeen: true,
+  },
   unconnectedAccount: true,
 };
 
