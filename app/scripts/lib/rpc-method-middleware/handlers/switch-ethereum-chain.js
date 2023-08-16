@@ -19,6 +19,7 @@ const switchEthereumChain = {
   implementation: switchEthereumChainHandler,
   hookNames: {
     getCurrentChainId: true,
+    findNetworkConfigurationBy: true,
     findNetworkClientIdByChainId: true,
     setNetworkClientIdForDomain: true,
     setProviderType: true,
@@ -102,7 +103,6 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-
   const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
   if (requestData) {
     const currentChainId = getCurrentChainId();
