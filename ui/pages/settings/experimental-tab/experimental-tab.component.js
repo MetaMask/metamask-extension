@@ -6,24 +6,38 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
   TextVariant,
-  ///: END:ONLY_INCLUDE_IN
   TextColor,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   Display,
   FlexDirection,
   JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
+
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
+
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { Text, Box } from '../../../components/component-library';
+///: END:ONLY_INCLUDE_IN
+
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+  Box,
+} from '../../../components/component-library';
+
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
 import ToggleButton from '../../../components/ui/toggle-button';
+///: END:ONLY_INCLUDE_IN
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {

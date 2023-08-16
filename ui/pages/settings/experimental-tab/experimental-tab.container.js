@@ -20,7 +20,11 @@ import {
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta,blockaid)
+  state,
+  ///: END:ONLY_INCLUDE_IN
+) => {
   return {
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     transactionSecurityCheckEnabled:
@@ -32,7 +36,11 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  dispatch,
+  ///: END:ONLY_INCLUDE_IN
+) => {
   return {
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     setTransactionSecurityCheckEnabled: (val) =>
