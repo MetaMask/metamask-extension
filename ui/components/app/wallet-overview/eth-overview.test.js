@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
@@ -30,7 +30,7 @@ describe('EthOverview', () => {
     metamask: {
       providerConfig: {
         type: 'test',
-        caipChainId: CHAIN_IDS.MAINNET,
+        caipChainId: CAIP_CHAIN_IDS.MAINNET,
       },
       cachedBalances: {
         'eip155:1': {
@@ -291,7 +291,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', caipChainId: CAIP_CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -311,7 +311,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CAIP_CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -331,7 +331,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          providerConfig: { type: 'test', caipChainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', caipChainId: CAIP_CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(

@@ -1,5 +1,5 @@
 import { head, last } from 'lodash';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
@@ -76,7 +76,7 @@ const getStateTree = ({
   metamask: {
     providerConfig: {
       nickname: 'mainnet',
-      caipChainId: CHAIN_IDS.MAINNET,
+      caipChainId: CAIP_CHAIN_IDS.MAINNET,
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,

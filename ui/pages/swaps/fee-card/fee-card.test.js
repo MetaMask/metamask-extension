@@ -7,7 +7,7 @@ import {
   MOCKS,
   fireEvent,
 } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
   checkNetworkAndAccountSupports1559,
@@ -84,7 +84,7 @@ const createProps = (customProps = {}) => {
     numberOfQuotes: 6,
     onQuotesClick: jest.fn(),
     tokenConversionRate: 0.015,
-    caipChainId: CHAIN_IDS.MAINNET,
+    caipChainId: CAIP_CHAIN_IDS.MAINNET,
     networkAndAccountSupports1559: false,
     ...customProps,
   };

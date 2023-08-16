@@ -12,7 +12,10 @@ import { getSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
-import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
 import {
   toChecksumHexAddress,
   stripHexPrefix,
@@ -61,12 +64,12 @@ export function formatDateWithYearContext(
 export function isDefaultMetaMaskChain(caipChainId) {
   if (
     !caipChainId ||
-    caipChainId === CHAIN_IDS.MAINNET ||
-    caipChainId === CHAIN_IDS.LINEA_MAINNET ||
-    caipChainId === CHAIN_IDS.GOERLI ||
-    caipChainId === CHAIN_IDS.SEPOLIA ||
-    caipChainId === CHAIN_IDS.LINEA_GOERLI ||
-    caipChainId === CHAIN_IDS.LOCALHOST
+    caipChainId === CAIP_CHAIN_IDS.MAINNET ||
+    caipChainId === CAIP_CHAIN_IDS.LINEA_MAINNET ||
+    caipChainId === CAIP_CHAIN_IDS.GOERLI ||
+    caipChainId === CAIP_CHAIN_IDS.SEPOLIA ||
+    caipChainId === CAIP_CHAIN_IDS.LINEA_GOERLI ||
+    caipChainId === CAIP_CHAIN_IDS.LOCALHOST
   ) {
     return true;
   }

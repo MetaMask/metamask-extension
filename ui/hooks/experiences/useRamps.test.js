@@ -9,7 +9,7 @@ jest.mock('./../../selectors', () => ({
 }));
 
 jest.mock('../../../shared/constants/network', () => ({
-  CHAIN_IDS: {
+  CAIP_CHAIN_IDS: {
     GOERLI: '5',
     SEPOLIA: '10',
     MAINNET: '1',

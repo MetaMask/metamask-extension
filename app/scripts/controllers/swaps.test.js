@@ -6,7 +6,7 @@ import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
 import { NetworkType } from '@metamask/controller-utils';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_IDS,
   NetworkStatus,
 } from '../../../shared/constants/network';
@@ -82,7 +82,7 @@ const MOCK_FETCH_METADATA = {
     symbol: 'FOO',
     decimals: 18,
   },
-  caipChainId: CHAIN_IDS.MAINNET,
+  caipChainId: CAIP_CHAIN_IDS.MAINNET,
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
@@ -148,7 +148,7 @@ const EMPTY_INIT_STATE = {
 const sandbox = sinon.createSandbox();
 const fetchTradesInfoStub = sandbox.stub();
 const getCurrentCaipChainIdStub = sandbox.stub();
-getCurrentCaipChainIdStub.returns(CHAIN_IDS.MAINNET);
+getCurrentCaipChainIdStub.returns(CAIP_CHAIN_IDS.MAINNET);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -755,7 +755,7 @@ describe('SwapsController', function () {
         fetchTradesInfoStub.resetHistory();
         const OPTIMISM_MOCK_FETCH_METADATA = {
           ...MOCK_FETCH_METADATA,
-          caipChainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CAIP_CHAIN_IDS.OPTIMISM,
         };
         const optimismProviderResultStub = {
           // 1 gwei
@@ -834,7 +834,7 @@ describe('SwapsController', function () {
           allowanceStub.calledOnceWithExactly(
             MOCK_FETCH_PARAMS.sourceToken,
             MOCK_FETCH_PARAMS.fromAddress,
-            CHAIN_IDS.MAINNET,
+            CAIP_CHAIN_IDS.MAINNET,
           ),
           true,
         );

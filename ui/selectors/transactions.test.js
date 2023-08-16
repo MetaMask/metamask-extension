@@ -1,5 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../shared/constants/network';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
@@ -111,7 +111,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           providerConfig: {
             nickname: 'mainnet',
-            caipChainId: CHAIN_IDS.MAINNET,
+            caipChainId: CAIP_CHAIN_IDS.MAINNET,
           },
           featureFlags: {
             showIncomingTransactions: false,
@@ -175,7 +175,7 @@ describe('Transaction Selectors', () => {
         metamask: {
           providerConfig: {
             nickname: 'mainnet',
-            caipChainId: CHAIN_IDS.MAINNET,
+            caipChainId: CAIP_CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
           featureFlags: {
@@ -259,7 +259,7 @@ describe('Transaction Selectors', () => {
       metamask: {
         providerConfig: {
           nickname: 'mainnet',
-          caipChainId: CHAIN_IDS.MAINNET,
+          caipChainId: CAIP_CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
         featureFlags: {

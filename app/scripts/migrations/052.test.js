@@ -1,6 +1,6 @@
 import migration52 from './052';
 
-const { NETWORK_TYPES, CHAIN_IDS } = migration52;
+const { NETWORK_TYPES, CAIP_CHAIN_IDS } = migration52;
 
 const TOKEN1 = { symbol: 'TST', address: '0x10', decimals: 18 };
 const TOKEN2 = { symbol: 'TXT', address: '0x11', decimals: 18 };
@@ -22,7 +22,7 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${NETWORK_TYPES.MAINNET} tokens and hidden tokens to be keyed by ${CHAIN_IDS.MAINNET} for each address`, async () => {
+  it(`should move ${NETWORK_TYPES.MAINNET} tokens and hidden tokens to be keyed by ${CAIP_CHAIN_IDS.MAINNET} for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -54,18 +54,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [CHAIN_IDS.MAINNET]: [TOKEN1],
+            [CAIP_CHAIN_IDS.MAINNET]: [TOKEN1],
           },
           '0x1112': {
-            [CHAIN_IDS.MAINNET]: [TOKEN3],
+            [CAIP_CHAIN_IDS.MAINNET]: [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN2],
+            [CAIP_CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN3],
+            [CAIP_CHAIN_IDS.MAINNET]: [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',
@@ -178,7 +178,7 @@ describe('migration #52', () => {
     });
   });
 
-  it(`should move ${NETWORK_TYPES.GOERLI} tokens and hidden tokens to be keyed by ${CHAIN_IDS.GOERLI} for each address`, async () => {
+  it(`should move ${NETWORK_TYPES.GOERLI} tokens and hidden tokens to be keyed by ${CAIP_CHAIN_IDS.GOERLI} for each address`, async () => {
     const oldStorage = {
       meta: {},
       data: {
@@ -210,18 +210,18 @@ describe('migration #52', () => {
       PreferencesController: {
         accountHiddenTokens: {
           '0x1111': {
-            [CHAIN_IDS.GOERLI]: [TOKEN1],
+            [CAIP_CHAIN_IDS.GOERLI]: [TOKEN1],
           },
           '0x1112': {
-            [CHAIN_IDS.GOERLI]: [TOKEN3],
+            [CAIP_CHAIN_IDS.GOERLI]: [TOKEN3],
           },
         },
         accountTokens: {
           '0x1111': {
-            [CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN2],
+            [CAIP_CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN2],
           },
           '0x1112': {
-            [CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN3],
+            [CAIP_CHAIN_IDS.GOERLI]: [TOKEN1, TOKEN3],
           },
         },
         bar: 'baz',

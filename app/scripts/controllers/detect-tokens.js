@@ -1,6 +1,6 @@
 import { warn } from 'loglevel';
 import { MINUTE } from '../../../shared/constants/time';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -112,14 +112,14 @@ export default class DetectTokensController {
     }
     if (
       !this.useTokenDetection &&
-      caipChainIdAgainstWhichToDetect !== CHAIN_IDS.MAINNET
+      caipChainIdAgainstWhichToDetect !== CAIP_CHAIN_IDS.MAINNET
     ) {
       return;
     }
 
     const isTokenDetectionInactiveInMainnet =
       !this.useTokenDetection &&
-      caipChainIdAgainstWhichToDetect === CHAIN_IDS.MAINNET;
+      caipChainIdAgainstWhichToDetect === CAIP_CHAIN_IDS.MAINNET;
     const { tokenList } = this._tokenList.state;
 
     const tokenListUsed = isTokenDetectionInactiveInMainnet

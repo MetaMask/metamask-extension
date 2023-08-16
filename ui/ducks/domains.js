@@ -7,7 +7,7 @@ import { Web3Provider } from '@ethersproject/providers';
 
 import { getCurrentCaipChainId } from '../selectors';
 import {
-  CHAIN_ID_TO_NETWORK_ID_MAP,
+  CAIP_CHAIN_ID_TO_NETWORK_ID_MAP,
   NETWORK_IDS,
   NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP,
 } from '../../shared/constants/network';
@@ -119,7 +119,8 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
-      if (action.payload !== state.currentCaipChainId) { // when does this get set in state?
+      if (action.payload !== state.currentCaipChainId) {
+        // when does this get set in state?
         state.stage = 'UNINITIALIZED';
         web3Provider = null;
       }
@@ -143,7 +144,7 @@ export function initializeDomainSlice() {
   return (dispatch, getState) => {
     const state = getState();
     const caipChainId = getCurrentCaipChainId(state);
-    const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
+    const network = CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
     const networkName = NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP[network];
     const ensAddress = networkMap[network];
     const networkIsSupported = Boolean(ensAddress);
@@ -188,7 +189,7 @@ export function lookupEnsName(domainName) {
         error = err;
       }
       const caipChainId = getCurrentCaipChainId(state);
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
+      const network = CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
 
       await dispatch(
         domainLookup({

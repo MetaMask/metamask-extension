@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
 import {
   ETHERSCAN_SUPPORTED_NETWORKS,
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_TYPES,
   NETWORK_IDS,
 } from '../../../shared/constants/network';
@@ -30,9 +30,9 @@ const PREPOPULATED_INCOMING_TXS_BY_HASH = {
   [EXISTING_INCOMING_TX.hash]: EXISTING_INCOMING_TX,
 };
 const PREPOPULATED_BLOCKS_BY_NETWORK = {
-  [CHAIN_IDS.GOERLI]: 1,
-  [CHAIN_IDS.MAINNET]: 3,
-  [CHAIN_IDS.SEPOLIA]: 6,
+  [CAIP_CHAIN_IDS.GOERLI]: 1,
+  [CAIP_CHAIN_IDS.MAINNET]: 3,
+  [CAIP_CHAIN_IDS.SEPOLIA]: 6,
 };
 const EMPTY_BLOCKS_BY_NETWORK = Object.keys(
   ETHERSCAN_SUPPORTED_NETWORKS,
@@ -101,7 +101,7 @@ function getMockBlockTracker() {
 function getDefaultControllerOpts() {
   return {
     blockTracker: getMockBlockTracker(),
-    ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+    ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
     preferencesController: getMockPreferencesController(),
     onboardingController: getMockOnboardingController(),
     initState: getEmptyInitState(),
@@ -236,7 +236,7 @@ describe('IncomingTransactionsController', function () {
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: {},
-          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
         },
       );
 
@@ -256,7 +256,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -264,7 +264,7 @@ describe('IncomingTransactionsController', function () {
       );
       const startBlock =
         getNonEmptyInitState().incomingTxLastFetchedBlockByChainId[
-          CHAIN_IDS.GOERLI
+          CAIP_CHAIN_IDS.GOERLI
         ];
       nock('https://api-goerli.etherscan.io')
         .get(
@@ -317,7 +317,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -334,7 +334,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfakeeip1559',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -351,7 +351,7 @@ describe('IncomingTransactionsController', function () {
           },
           incomingTxLastFetchedBlockByChainId: {
             ...getNonEmptyInitState().incomingTxLastFetchedBlockByChainId,
-            [CHAIN_IDS.GOERLI]: 11,
+            [CAIP_CHAIN_IDS.GOERLI]: 11,
           },
         },
         'State should have been updated after first block was received',
@@ -461,7 +461,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -507,7 +507,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -555,7 +555,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -564,7 +564,7 @@ describe('IncomingTransactionsController', function () {
       const NEW_MOCK_SELECTED_ADDRESS = `${MOCK_SELECTED_ADDRESS}9`;
       const startBlock =
         getNonEmptyInitState().incomingTxLastFetchedBlockByChainId[
-          CHAIN_IDS.GOERLI
+          CAIP_CHAIN_IDS.GOERLI
         ];
       nock('https://api-goerli.etherscan.io')
         .get(
@@ -620,7 +620,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -636,7 +636,7 @@ describe('IncomingTransactionsController', function () {
           },
           incomingTxLastFetchedBlockByChainId: {
             ...getNonEmptyInitState().incomingTxLastFetchedBlockByChainId,
-            [CHAIN_IDS.GOERLI]: 11,
+            [CAIP_CHAIN_IDS.GOERLI]: 11,
           },
         },
         'State should have been updated after first block was received',
@@ -704,7 +704,7 @@ describe('IncomingTransactionsController', function () {
 
     it('should update when switching to a supported network', async function () {
       const mockedNetworkMethods = getMockNetworkControllerMethods(
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
       const incomingTransactionsController = new IncomingTransactionsController(
         {
@@ -717,7 +717,7 @@ describe('IncomingTransactionsController', function () {
       );
       const startBlock =
         getNonEmptyInitState().incomingTxLastFetchedBlockByChainId[
-          CHAIN_IDS.GOERLI
+          CAIP_CHAIN_IDS.GOERLI
         ];
       nock('https://api-goerli.etherscan.io')
         .get(
@@ -741,7 +741,7 @@ describe('IncomingTransactionsController', function () {
 
       const subscription =
         mockedNetworkMethods.onNetworkDidChange.getCall(0).args[0];
-      await subscription(CHAIN_IDS.GOERLI);
+      await subscription(CAIP_CHAIN_IDS.GOERLI);
       await updateStateCalled();
 
       const actualState = incomingTransactionsController.store.getState();
@@ -763,7 +763,7 @@ describe('IncomingTransactionsController', function () {
               blockNumber: '10',
               hash: '0xfake',
               metamaskNetworkId: NETWORK_IDS.GOERLI,
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
               status: TransactionStatus.confirmed,
               time: 16000000000000000,
               type: TransactionType.incoming,
@@ -779,7 +779,7 @@ describe('IncomingTransactionsController', function () {
           },
           incomingTxLastFetchedBlockByChainId: {
             ...getNonEmptyInitState().incomingTxLastFetchedBlockByChainId,
-            [CHAIN_IDS.GOERLI]: 11,
+            [CAIP_CHAIN_IDS.GOERLI]: 11,
           },
         },
         'State should have been updated after first block was received',
@@ -788,7 +788,7 @@ describe('IncomingTransactionsController', function () {
 
     it('should not update when switching to an unsupported network', async function () {
       const mockedNetworkMethods = getMockNetworkControllerMethods(
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
       const incomingTransactionsController = new IncomingTransactionsController(
         {
@@ -918,7 +918,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           ...getDefaultControllerOpts(),
-          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
           onboardingController: getMockOnboardingController({
             completedOnboarding: true,
           }),
@@ -940,11 +940,11 @@ describe('IncomingTransactionsController', function () {
         const incomingTransactionsController =
           new IncomingTransactionsController({
             blockTracker: getMockBlockTracker(),
-            ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+            ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
-            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
           });
         sinon.spy(incomingTransactionsController.store, 'updateState');
 
@@ -959,14 +959,14 @@ describe('IncomingTransactionsController', function () {
         assert.deepStrictEqual(
           incomingTransactionsController._getNewIncomingTransactions.getCall(0)
             .args,
-          ['fakeAddress', 999, CHAIN_IDS.GOERLI],
+          ['fakeAddress', 999, CAIP_CHAIN_IDS.GOERLI],
         );
         assert.deepStrictEqual(
           incomingTransactionsController.store.updateState.getCall(0).args[0],
           {
             incomingTxLastFetchedBlockByChainId: {
               ...EMPTY_BLOCKS_BY_NETWORK,
-              [CHAIN_IDS.GOERLI]: 1000,
+              [CAIP_CHAIN_IDS.GOERLI]: 1000,
             },
             incomingTransactions: {},
           },
@@ -977,11 +977,11 @@ describe('IncomingTransactionsController', function () {
         const incomingTransactionsController =
           new IncomingTransactionsController({
             blockTracker: getMockBlockTracker(),
-            ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+            ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getEmptyInitState(),
-            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
           });
 
         const NEW_TRANSACTION_ONE = {
@@ -1007,7 +1007,7 @@ describe('IncomingTransactionsController', function () {
         assert.deepStrictEqual(
           incomingTransactionsController._getNewIncomingTransactions.getCall(0)
             .args,
-          ['fakeAddress', 10, CHAIN_IDS.GOERLI],
+          ['fakeAddress', 10, CAIP_CHAIN_IDS.GOERLI],
         );
 
         assert.deepStrictEqual(
@@ -1015,7 +1015,7 @@ describe('IncomingTransactionsController', function () {
           {
             incomingTxLastFetchedBlockByChainId: {
               ...EMPTY_BLOCKS_BY_NETWORK,
-              [CHAIN_IDS.GOERLI]: 445,
+              [CAIP_CHAIN_IDS.GOERLI]: 445,
             },
             incomingTransactions: {
               [NEW_TRANSACTION_ONE.hash]: NEW_TRANSACTION_ONE,
@@ -1031,11 +1031,11 @@ describe('IncomingTransactionsController', function () {
         const incomingTransactionsController =
           new IncomingTransactionsController({
             blockTracker: getMockBlockTracker(),
-            ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+            ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
             preferencesController: getMockPreferencesController(),
             onboardingController: getMockOnboardingController(),
             initState: getNonEmptyInitState(),
-            getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+            getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
           });
         sinon.spy(incomingTransactionsController.store, 'updateState');
         incomingTransactionsController._getNewIncomingTransactions = sinon
@@ -1051,7 +1051,7 @@ describe('IncomingTransactionsController', function () {
         assert.deepStrictEqual(
           incomingTransactionsController._getNewIncomingTransactions.getCall(0)
             .args,
-          ['fakeAddress', 1, CHAIN_IDS.GOERLI],
+          ['fakeAddress', 1, CAIP_CHAIN_IDS.GOERLI],
         );
 
         assert.deepStrictEqual(
@@ -1059,8 +1059,8 @@ describe('IncomingTransactionsController', function () {
           {
             incomingTxLastFetchedBlockByChainId: {
               ...PREPOPULATED_BLOCKS_BY_NETWORK,
-              [CHAIN_IDS.GOERLI]:
-                PREPOPULATED_BLOCKS_BY_NETWORK[CHAIN_IDS.GOERLI] + 1,
+              [CAIP_CHAIN_IDS.GOERLI]:
+                PREPOPULATED_BLOCKS_BY_NETWORK[CAIP_CHAIN_IDS.GOERLI] + 1,
             },
             incomingTransactions: PREPOPULATED_INCOMING_TXS_BY_HASH,
           },
@@ -1072,11 +1072,11 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
-          getCurrentCaipChainId: () => CHAIN_IDS.GOERLI,
+          getCurrentCaipChainId: () => CAIP_CHAIN_IDS.GOERLI,
         },
       );
 
@@ -1103,7 +1103,7 @@ describe('IncomingTransactionsController', function () {
       assert.deepStrictEqual(
         incomingTransactionsController._getNewIncomingTransactions.getCall(0)
           .args,
-        ['fakeAddress', 1, CHAIN_IDS.GOERLI],
+        ['fakeAddress', 1, CAIP_CHAIN_IDS.GOERLI],
       );
 
       assert.deepStrictEqual(
@@ -1111,7 +1111,7 @@ describe('IncomingTransactionsController', function () {
         {
           incomingTxLastFetchedBlockByChainId: {
             ...PREPOPULATED_BLOCKS_BY_NETWORK,
-            [CHAIN_IDS.GOERLI]: 445,
+            [CAIP_CHAIN_IDS.GOERLI]: 445,
           },
           incomingTransactions: {
             ...PREPOPULATED_INCOMING_TXS_BY_HASH,
@@ -1148,7 +1148,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1158,7 +1158,7 @@ describe('IncomingTransactionsController', function () {
       await incomingTransactionsController._getNewIncomingTransactions(
         ADDRESS_TO_FETCH_FOR,
         '789',
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
 
       assert(mockFetch.calledOnce);
@@ -1172,7 +1172,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.MAINNET),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.MAINNET),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1182,7 +1182,7 @@ describe('IncomingTransactionsController', function () {
       await incomingTransactionsController._getNewIncomingTransactions(
         ADDRESS_TO_FETCH_FOR,
         '789',
-        CHAIN_IDS.MAINNET,
+        CAIP_CHAIN_IDS.MAINNET,
       );
 
       assert(mockFetch.calledOnce);
@@ -1196,7 +1196,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1206,7 +1206,7 @@ describe('IncomingTransactionsController', function () {
       await incomingTransactionsController._getNewIncomingTransactions(
         ADDRESS_TO_FETCH_FOR,
         null,
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
 
       assert(mockFetch.calledOnce);
@@ -1220,7 +1220,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1231,14 +1231,14 @@ describe('IncomingTransactionsController', function () {
         await incomingTransactionsController._getNewIncomingTransactions(
           ADDRESS_TO_FETCH_FOR,
           '789',
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.GOERLI,
         );
 
       assert(mockFetch.calledOnce);
       assert.deepStrictEqual(result, [
         incomingTransactionsController._normalizeTxFromEtherscan(
           FETCHED_TX,
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.GOERLI,
         ),
       ]);
     });
@@ -1254,7 +1254,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1265,7 +1265,7 @@ describe('IncomingTransactionsController', function () {
         await incomingTransactionsController._getNewIncomingTransactions(
           ADDRESS_TO_FETCH_FOR,
           '789',
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.GOERLI,
         );
       assert.deepStrictEqual(result, []);
       window.fetch = tempFetchStatusZero;
@@ -1283,7 +1283,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1294,7 +1294,7 @@ describe('IncomingTransactionsController', function () {
         await incomingTransactionsController._getNewIncomingTransactions(
           ADDRESS_TO_FETCH_FOR,
           '789',
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.GOERLI,
         );
       assert.deepStrictEqual(result, []);
       window.fetch = tempFetchEmptyResult;
@@ -1307,7 +1307,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1327,14 +1327,14 @@ describe('IncomingTransactionsController', function () {
           value: '15',
           hash: '0xg',
         },
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
 
       assert.deepStrictEqual(result, {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        caipChainId: CHAIN_IDS.GOERLI,
+        caipChainId: CAIP_CHAIN_IDS.GOERLI,
         status: TransactionStatus.failed,
         time: 4444000,
         txParams: {
@@ -1354,7 +1354,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1374,14 +1374,14 @@ describe('IncomingTransactionsController', function () {
           value: '15',
           hash: '0xg',
         },
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
 
       assert.deepStrictEqual(result, {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        caipChainId: CHAIN_IDS.GOERLI,
+        caipChainId: CAIP_CHAIN_IDS.GOERLI,
         status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {
@@ -1401,7 +1401,7 @@ describe('IncomingTransactionsController', function () {
       const incomingTransactionsController = new IncomingTransactionsController(
         {
           blockTracker: getMockBlockTracker(),
-          ...getMockNetworkControllerMethods(CHAIN_IDS.GOERLI),
+          ...getMockNetworkControllerMethods(CAIP_CHAIN_IDS.GOERLI),
           preferencesController: getMockPreferencesController(),
           onboardingController: getMockOnboardingController(),
           initState: getNonEmptyInitState(),
@@ -1422,14 +1422,14 @@ describe('IncomingTransactionsController', function () {
           value: '15',
           hash: '0xg',
         },
-        CHAIN_IDS.GOERLI,
+        CAIP_CHAIN_IDS.GOERLI,
       );
 
       assert.deepStrictEqual(result, {
         blockNumber: 333,
         id: 54321,
         metamaskNetworkId: NETWORK_IDS.GOERLI,
-        caipChainId: CHAIN_IDS.GOERLI,
+        caipChainId: CAIP_CHAIN_IDS.GOERLI,
         status: TransactionStatus.confirmed,
         time: 4444000,
         txParams: {

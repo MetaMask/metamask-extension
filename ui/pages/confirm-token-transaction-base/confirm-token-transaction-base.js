@@ -32,7 +32,7 @@ import {
   hexWEIToDecETH,
 } from '../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 export default function ConfirmTokenTransactionBase({
   image = '',
@@ -65,9 +65,11 @@ export default function ConfirmTokenTransactionBase({
   const getTitleTokenDescription = (renderType) => {
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
-        caipChainId,
-      );
+      [
+        ...TEST_CHAINS,
+        CAIP_CHAIN_IDS.MAINNET,
+        CAIP_CHAIN_IDS.LINEA_MAINNET,
+      ].includes(caipChainId);
 
     const nftCollection = nftCollections.find(
       (collection) =>

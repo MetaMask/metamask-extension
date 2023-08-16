@@ -17,7 +17,10 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  NetworkStatus,
+} from '../../../shared/constants/network';
 import {
   FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
   FALLBACK_SMART_TRANSACTIONS_DEADLINE,
@@ -314,7 +317,7 @@ export default class SwapsController {
     }));
 
     if (
-      caipChainId === CHAIN_IDS.OPTIMISM &&
+      caipChainId === CAIP_CHAIN_IDS.OPTIMISM &&
       Object.values(newQuotes).length > 0
     ) {
       await Promise.all(

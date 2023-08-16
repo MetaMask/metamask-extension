@@ -37,7 +37,7 @@ import {
   setRemoveNftMessage,
   setNewNftAddedMessage,
 } from '../../../store/actions';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NftOptions from '../nft-options/nft-options';
@@ -108,13 +108,13 @@ export default function NftDetails({ nft }) {
 
   const getOpenSeaLink = () => {
     switch (currentNetwork) {
-      case CHAIN_IDS.MAINNET:
+      case CAIP_CHAIN_IDS.MAINNET:
         return `https://opensea.io/assets/ethereum/${address}/${tokenId}`;
-      case CHAIN_IDS.POLYGON:
+      case CAIP_CHAIN_IDS.POLYGON:
         return `https://opensea.io/assets/matic/${address}/${tokenId}`;
-      case CHAIN_IDS.GOERLI:
+      case CAIP_CHAIN_IDS.GOERLI:
         return `https://testnets.opensea.io/assets/goerli/${address}/${tokenId}`;
-      case CHAIN_IDS.SEPOLIA:
+      case CAIP_CHAIN_IDS.SEPOLIA:
         return `https://testnets.opensea.io/assets/sepolia/${address}/${tokenId}`;
       default:
         return null;

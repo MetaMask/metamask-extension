@@ -15,7 +15,7 @@ import {
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 import { getProviderConfig } from '../../../../ducks/metamask/metamask';
@@ -35,9 +35,9 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {caipChainId in CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId]}
+            icon={CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId]}
             name={nickname}
             size={64}
           />
@@ -72,9 +72,11 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {newNetwork.caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {newNetwork.caipChainId in CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.caipChainId]}
+            icon={
+              CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.caipChainId]
+            }
             name={newNetwork.nickname}
             size={64}
           />

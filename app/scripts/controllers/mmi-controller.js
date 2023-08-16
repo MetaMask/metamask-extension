@@ -16,7 +16,7 @@ import {
   setDashboardCookie,
 } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import {
   BUILD_QUOTE_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -549,8 +549,8 @@ export default class MMIController extends EventEmitter {
 
     const networks = [
       ...networkConfigurations,
-      { caipChainId: CHAIN_IDS.MAINNET },
-      { caipChainId: CHAIN_IDS.GOERLI },
+      { caipChainId: CAIP_CHAIN_IDS.MAINNET },
+      { caipChainId: CAIP_CHAIN_IDS.GOERLI },
     ];
 
     return handleMmiPortfolio({

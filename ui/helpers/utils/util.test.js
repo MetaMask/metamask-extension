@@ -1,6 +1,6 @@
 import Bowser from 'bowser';
 import { BN } from 'ethereumjs-util';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
 import * as util from './util';
@@ -911,11 +911,11 @@ describe('util', () => {
 
   describe('isDefaultMetaMaskChain()', () => {
     it('should return true if the provided caipChainId is a default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
+      expect(util.isDefaultMetaMaskChain(CAIP_CHAIN_IDS.GOERLI)).toBeTruthy();
     });
 
     it('should return false if the provided caipChainId is a not default MetaMask chain', () => {
-      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
+      expect(util.isDefaultMetaMaskChain(CAIP_CHAIN_IDS.CELO)).toBeFalsy();
     });
   });
 

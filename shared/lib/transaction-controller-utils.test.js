@@ -1,5 +1,5 @@
 import { EtherDenomination } from '../constants/common';
-import { CHAIN_IDS } from '../constants/network';
+import { CAIP_CHAIN_IDS } from '../constants/network';
 import { TransactionEnvelopeType } from '../constants/transaction';
 import { Numeric } from '../modules/Numeric';
 import {
@@ -30,7 +30,7 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           {},
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
@@ -43,7 +43,7 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           {},
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
@@ -56,7 +56,7 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           {},
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(null);
     });
@@ -75,7 +75,7 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           {},
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe('0x1');
     });
@@ -107,7 +107,7 @@ describe('transaction controller utils', () => {
           '0x00',
           '8',
           {},
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
     });
@@ -153,7 +153,7 @@ describe('transaction controller utils', () => {
               type: TransactionEnvelopeType.feeMarket,
             },
           },
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
     });
@@ -200,7 +200,7 @@ describe('transaction controller utils', () => {
               gasPrice: gasPriceApproval,
             },
           },
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(ethReceived.toString());
     });
@@ -225,7 +225,7 @@ describe('transaction controller utils', () => {
           {
             txReceipt: {},
           },
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
         ),
       ).toBe(calcTokenAmount(logs[0].data, 8).toString(10), 6);
     });

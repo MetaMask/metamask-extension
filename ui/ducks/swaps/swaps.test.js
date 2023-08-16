@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 
 import { MOCKS, createSwapsMockStore } from '../../../test/jest';
 import { setSwapsLiveness, setSwapsFeatureFlags } from '../../store/actions';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { setStorageItem } from '../../../shared/lib/storage-helpers';
 import swapsReducer, * as swaps from './swaps';
 
@@ -427,19 +427,19 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is enabled, not a HW and is Polygon network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.caipChainId = CHAIN_IDS.POLYGON;
+      state.metamask.providerConfig.caipChainId = CAIP_CHAIN_IDS.POLYGON;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns false if feature flag is enabled, not a HW and is BSC network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.caipChainId = CHAIN_IDS.BSC;
+      state.metamask.providerConfig.caipChainId = CAIP_CHAIN_IDS.BSC;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
     it('returns true if feature flag is enabled, not a HW and is Goerli network', () => {
       const state = createSwapsMockStore();
-      state.metamask.providerConfig.caipChainId = CHAIN_IDS.GOERLI;
+      state.metamask.providerConfig.caipChainId = CAIP_CHAIN_IDS.GOERLI;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(true);
     });
 
@@ -690,7 +690,7 @@ describe('Ducks - Swaps', () => {
       const state = createSwapsMockStore();
       expect(swaps.getCurrentSmartTransactions(state)).toMatchObject(
         state.metamask.smartTransactionsState.smartTransactions[
-          CHAIN_IDS.MAINNET
+          CAIP_CHAIN_IDS.MAINNET
         ],
       );
     });

@@ -17,7 +17,7 @@ import {
 } from '../ducks/metamask/metamask';
 import messages from '../../app/_locales/en/messages.json';
 import { ASSET_ROUTE, DEFAULT_ROUTE } from '../helpers/constants/routes';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../shared/constants/network';
 import {
   TransactionType,
   TransactionGroupCategory,
@@ -207,7 +207,7 @@ describe('useTransactionDisplayData', () => {
       } else if (selector === getCurrentCurrency) {
         return 'ETH';
       } else if (selector === getCurrentCaipChainId) {
-        return CHAIN_IDS.MAINNET;
+        return CAIP_CHAIN_IDS.MAINNET;
       } else if (selector === getNfts) {
         return [];
       }

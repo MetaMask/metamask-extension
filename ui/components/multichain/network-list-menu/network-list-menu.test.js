@@ -4,7 +4,7 @@ import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
@@ -71,7 +71,7 @@ describe('NetworkListMenu', () => {
   });
 
   it('disables toggle when on test network', () => {
-    render(false, CHAIN_IDS.GOERLI);
+    render(false, CAIP_CHAIN_IDS.GOERLI);
     expect(document.querySelector('.toggle-button--disabled')).toBeDefined();
   });
 

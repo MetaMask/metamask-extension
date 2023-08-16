@@ -1,6 +1,9 @@
 import nock from 'nock';
 import { MOCKS } from '../../../test/jest';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../../shared/constants/network';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
@@ -53,12 +56,12 @@ describe('Swaps Util', () => {
     });
 
     it('should fetch tokens', async () => {
-      const result = await fetchTokens(CHAIN_IDS.MAINNET);
+      const result = await fetchTokens(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
 
     it('should fetch tokens on prod', async () => {
-      const result = await fetchTokens(CHAIN_IDS.MAINNET);
+      const result = await fetchTokens(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(EXPECTED_TOKENS_RESULT);
     });
   });
@@ -72,12 +75,12 @@ describe('Swaps Util', () => {
     });
 
     it('should fetch aggregator metadata', async () => {
-      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
+      const result = await fetchAggregatorMetadata(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(AGGREGATOR_METADATA);
     });
 
     it('should fetch aggregator metadata on prod', async () => {
-      const result = await fetchAggregatorMetadata(CHAIN_IDS.MAINNET);
+      const result = await fetchAggregatorMetadata(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(AGGREGATOR_METADATA);
     });
   });
@@ -108,12 +111,12 @@ describe('Swaps Util', () => {
       },
     };
     it('should fetch top assets', async () => {
-      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
+      const result = await fetchTopAssets(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(expectedResult);
     });
 
     it('should fetch top assets on prod', async () => {
-      const result = await fetchTopAssets(CHAIN_IDS.MAINNET);
+      const result = await fetchTopAssets(CAIP_CHAIN_IDS.MAINNET);
       expect(result).toStrictEqual(expectedResult);
     });
   });
@@ -134,48 +137,51 @@ describe('Swaps Util', () => {
 
     it('returns true if "to" is WETH contract address', () => {
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is WETH contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0xc02AAA39B223fe8d0a0e5c4f27ead9083c756cc2';
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is ETH mainnet contract address on ETH mainnet', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.MAINNET];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.MAINNET];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.MAINNET),
       ).toBe(true);
     });
 
     it('returns true if "to" is WBNB contract address on BSC mainnet', () => {
       usedTradeTxParams.to = WBNB_CONTRACT_ADDRESS;
-      expect(isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.BSC)).toBe(
-        true,
-      );
+      expect(
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.BSC),
+      ).toBe(true);
     });
 
     it('returns true if "to" is WMATIC contract address on Polygon mainnet', () => {
       usedTradeTxParams.to = WMATIC_CONTRACT_ADDRESS;
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.POLYGON),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.POLYGON),
       ).toBe(true);
     });
 
     it('returns false if "to" is BSC contract address on ETH mainnet', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.BSC];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.MAINNET),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.MAINNET),
       ).toBe(false);
     });
 
     it('returns false if contractAddress is null', () => {
-      expect(isContractAddressValid(null, CHAIN_IDS.LOCALHOST)).toBe(false);
+      expect(isContractAddressValid(null, CAIP_CHAIN_IDS.LOCALHOST)).toBe(
+        false,
+      );
     });
 
     it('returns false if chainId is incorrect', () => {
@@ -185,78 +191,80 @@ describe('Swaps Util', () => {
     });
 
     it('returns true if "to" is BSC contract address on BSC network', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
-      expect(isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.BSC)).toBe(
-        true,
-      );
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.BSC];
+      expect(
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.BSC),
+      ).toBe(true);
     });
 
     it('returns true if "to" is Polygon contract address on Polygon network', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.POLYGON];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.POLYGON];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.POLYGON),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.POLYGON),
       ).toBe(true);
     });
 
     it('returns true if "to" is Goerli contract address on Goerli network', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.GOERLI];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.GOERLI];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.GOERLI),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.GOERLI),
       ).toBe(true);
     });
 
     it('returns true if "to" is testnet contract address', () => {
       usedTradeTxParams.to =
-        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.LOCALHOST];
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.LOCALHOST];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.LOCALHOST),
       ).toBe(true);
     });
 
     it('returns true if "to" is testnet contract address with some uppercase chars', () => {
       usedTradeTxParams.to = '0x881D40237659C251811CEC9c364ef91dC08D300C';
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.LOCALHOST),
       ).toBe(true);
     });
 
     it('returns false if "to" has mismatch with current caipChainId', () => {
-      usedTradeTxParams.to = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CHAIN_IDS.BSC];
+      usedTradeTxParams.to =
+        SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[CAIP_CHAIN_IDS.BSC];
       expect(
-        isContractAddressValid(usedTradeTxParams.to, CHAIN_IDS.LOCALHOST),
+        isContractAddressValid(usedTradeTxParams.to, CAIP_CHAIN_IDS.LOCALHOST),
       ).toBe(false);
     });
   });
 
   describe('getNetworkNameByChainId', () => {
     it('returns "ethereum" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.MAINNET)).toBe(ETHEREUM);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.MAINNET)).toBe(ETHEREUM);
     });
 
     it('returns "bsc" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.BSC)).toBe(BSC);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.BSC)).toBe(BSC);
     });
 
     it('returns "polygon" for mainnet chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.POLYGON)).toBe(POLYGON);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.POLYGON)).toBe(POLYGON);
     });
 
     it('returns "goerli" for Goerli chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.GOERLI)).toBe(GOERLI);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.GOERLI)).toBe(GOERLI);
     });
 
     it('returns "avalanche" for Avalanche chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.AVALANCHE)).toBe(AVALANCHE);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.AVALANCHE)).toBe(AVALANCHE);
     });
 
     it('returns "optimism" for Optimism chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.OPTIMISM)).toBe(OPTIMISM);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.OPTIMISM)).toBe(OPTIMISM);
     });
 
     it('returns "arbitrum" for Arbitrum chain ID', () => {
-      expect(getNetworkNameByChainId(CHAIN_IDS.ARBITRUM)).toBe(ARBITRUM);
+      expect(getNetworkNameByChainId(CAIP_CHAIN_IDS.ARBITRUM)).toBe(ARBITRUM);
     });
   });
 
@@ -267,7 +275,7 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          CHAIN_IDS.LOCALHOST,
+          CAIP_CHAIN_IDS.LOCALHOST,
           MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
@@ -279,7 +287,7 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.GOERLI,
           MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
@@ -291,7 +299,7 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          CHAIN_IDS.SEPOLIA,
+          CAIP_CHAIN_IDS.SEPOLIA,
           MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
@@ -303,7 +311,7 @@ describe('Swaps Util', () => {
       };
       expect(
         getSwapsLivenessForNetwork(
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
           MOCKS.createFeatureFlagsResponse(),
         ),
       ).toMatchObject(expectedSwapsLiveness);
@@ -316,7 +324,7 @@ describe('Swaps Util', () => {
       const swapsFeatureFlags = MOCKS.createFeatureFlagsResponse();
       swapsFeatureFlags[ETHEREUM].extensionActive = false;
       expect(
-        getSwapsLivenessForNetwork(CHAIN_IDS.MAINNET, swapsFeatureFlags),
+        getSwapsLivenessForNetwork(CAIP_CHAIN_IDS.MAINNET, swapsFeatureFlags),
       ).toMatchObject(expectedSwapsLiveness);
     });
   });
@@ -366,7 +374,7 @@ describe('Swaps Util', () => {
         rawEthFee: '0.00323',
       };
       const actual = getFeeForSmartTransaction({
-        caipChainId: CHAIN_IDS.MAINNET,
+        caipChainId: CAIP_CHAIN_IDS.MAINNET,
         currentCurrency: 'usd',
         conversionRate: 5,
         USDConversionRate: 5,
@@ -384,7 +392,7 @@ describe('Swaps Util', () => {
         rawEthFee: '0.00323',
       };
       const actual = getFeeForSmartTransaction({
-        caipChainId: CHAIN_IDS.MAINNET,
+        caipChainId: CAIP_CHAIN_IDS.MAINNET,
         currentCurrency: 'gbp',
         conversionRate: 5,
         USDConversionRate: 5,
@@ -421,7 +429,7 @@ describe('Swaps Util', () => {
         accountAddress: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
         tokenDecimals: 6,
         approvalTxMeta: null,
-        caipChainId: CHAIN_IDS.MAINNET,
+        caipChainId: CAIP_CHAIN_IDS.MAINNET,
       };
     };
 

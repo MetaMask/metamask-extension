@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from '../../../../shared/constants/transaction';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_IDS,
   NetworkStatus,
 } from '../../../../shared/constants/network';
@@ -51,7 +51,7 @@ describe('TransactionStateManager', function () {
   let txStateManager;
   const currentNetworkId = NETWORK_IDS.GOERLI;
   const currentNetworkStatus = NetworkStatus.Available;
-  const currentCaipChainId = CHAIN_IDS.MAINNET;
+  const currentCaipChainId = CAIP_CHAIN_IDS.MAINNET;
   const otherNetworkId = '2';
 
   beforeEach(function () {
@@ -684,9 +684,9 @@ describe('TransactionStateManager', function () {
       const txs = generateTransactions(limit + 5, {
         caipChainId: (i) => {
           if (i === 0 || i === 1) {
-            return CHAIN_IDS.MAINNET;
+            return CAIP_CHAIN_IDS.MAINNET;
           } else if (i === 4 || i === 5) {
-            return CHAIN_IDS.GOERLI;
+            return CAIP_CHAIN_IDS.GOERLI;
           }
           return currentCaipChainId;
         },
@@ -716,7 +716,8 @@ describe('TransactionStateManager', function () {
       assert.equal(
         result.some(
           (tx) =>
-            tx.caipChainId === CHAIN_IDS.MAINNET && tx.txParams.nonce === '0x0',
+            tx.caipChainId === CAIP_CHAIN_IDS.MAINNET &&
+            tx.txParams.nonce === '0x0',
         ),
         false,
         'the mainnet transactions with nonce 0x0 should not be present in the result',

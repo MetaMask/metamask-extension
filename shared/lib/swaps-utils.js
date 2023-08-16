@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import log from 'loglevel';
 import { toEthChainIdInt } from '@metamask/controller-utils';
-import { CHAIN_IDS } from '../constants/network';
+import { CAIP_CHAIN_IDS } from '../constants/network';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -18,7 +18,7 @@ import { addHexPrefix } from '../../app/scripts/lib/util';
 import { decimalToHex } from '../modules/conversion.utils';
 import fetchWithCache from './fetch-with-cache';
 
-const TEST_CHAIN_IDS = [CHAIN_IDS.GOERLI, CHAIN_IDS.LOCALHOST];
+const TEST_CHAIN_IDS = [CAIP_CHAIN_IDS.GOERLI, CAIP_CHAIN_IDS.LOCALHOST];
 
 const clientIdHeader = { 'X-Client-Id': SWAPS_CLIENT_ID };
 
@@ -146,7 +146,7 @@ const getBaseUrlForNewSwapsApi = (type, caipChainId) => {
 
 export const getBaseApi = function (type, caipChainId) {
   const _caipChainId = TEST_CHAIN_IDS.includes(caipChainId)
-    ? CHAIN_IDS.MAINNET
+    ? CAIP_CHAIN_IDS.MAINNET
     : caipChainId;
   const baseUrl = getBaseUrlForNewSwapsApi(type, _caipChainId);
   if (!baseUrl) {

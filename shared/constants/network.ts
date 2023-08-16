@@ -13,7 +13,7 @@ export type NetworkType = (typeof NETWORK_TYPES)[keyof typeof NETWORK_TYPES];
  * exhaustive and cannot be used for typing caipChainId in areas where the user or
  * dapp may specify any caipChainId.
  */
-// export type ChainId = (typeof CHAIN_IDS)[keyof typeof CHAIN_IDS];
+// export type ChainId = (typeof CAIP_CHAIN_IDS)[keyof typeof CAIP_CHAIN_IDS];
 
 /**
  * A type that is a union type of all possible hardcoded currency symbols.
@@ -130,10 +130,10 @@ export const NETWORK_IDS = {
 } as const;
 
 /**
- * An object containing all of the chain ids for networks both built in and
+ * An object containing all of the CAIP chain ids for networks both built in and
  * those that we have added custom code to support our feature set.
  */
-export const CHAIN_IDS = {
+export const CAIP_CHAIN_IDS = {
   MAINNET: 'eip155:1',
   GOERLI: 'eip155:5',
   LOCALHOST: 'eip155:1337',
@@ -267,10 +267,10 @@ export const INFURA_PROVIDER_TYPES = [
 ] as const;
 
 export const TEST_CHAINS = [
-  CHAIN_IDS.GOERLI,
-  CHAIN_IDS.SEPOLIA,
-  CHAIN_IDS.LINEA_GOERLI,
-  CHAIN_IDS.LOCALHOST,
+  CAIP_CHAIN_IDS.GOERLI,
+  CAIP_CHAIN_IDS.SEPOLIA,
+  CAIP_CHAIN_IDS.LINEA_GOERLI,
+  CAIP_CHAIN_IDS.LOCALHOST,
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
@@ -297,35 +297,35 @@ export const TEST_NETWORK_TICKER_MAP: {
 export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.GOERLI]: {
     networkId: NETWORK_IDS.GOERLI,
-    caipChainId: CHAIN_IDS.GOERLI,
+    caipChainId: CAIP_CHAIN_IDS.GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
   },
   [NETWORK_TYPES.SEPOLIA]: {
     networkId: NETWORK_IDS.SEPOLIA,
-    caipChainId: CHAIN_IDS.SEPOLIA,
+    caipChainId: CAIP_CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_GOERLI]: {
     networkId: NETWORK_IDS.LINEA_GOERLI,
-    caipChainId: CHAIN_IDS.LINEA_GOERLI,
+    caipChainId: CAIP_CHAIN_IDS.LINEA_GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
-    caipChainId: CHAIN_IDS.MAINNET,
+    caipChainId: CAIP_CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     networkId: NETWORK_IDS.LINEA_MAINNET,
-    caipChainId: CHAIN_IDS.LINEA_MAINNET,
+    caipChainId: CAIP_CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {
     networkId: NETWORK_IDS.LOCALHOST,
-    caipChainId: CHAIN_IDS.LOCALHOST,
+    caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
   },
 } as const;
 
@@ -351,47 +351,47 @@ export const NETWORK_TO_NAME_MAP = {
   [NETWORK_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
-  [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
-  [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
-  [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
-  [CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_DISPLAY_NAME,
+  [CAIP_CHAIN_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 } as const;
 
-export const CHAIN_ID_TO_TYPE_MAP = {
-  [CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
-  [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
-  [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
-  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
-  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
-  [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
+export const CAIP_CHAIN_ID_TO_TYPE_MAP = {
+  [CAIP_CHAIN_IDS.MAINNET]: NETWORK_TYPES.MAINNET,
+  [CAIP_CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
+  [CAIP_CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
+  [CAIP_CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
 } as const;
 
-export const CHAIN_ID_TO_RPC_URL_MAP = {
-  [CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
-  [CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_RPC_URL,
-  [CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
-  [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
+export const CAIP_CHAIN_ID_TO_RPC_URL_MAP = {
+  [CAIP_CHAIN_IDS.GOERLI]: GOERLI_RPC_URL,
+  [CAIP_CHAIN_IDS.SEPOLIA]: SEPOLIA_RPC_URL,
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_RPC_URL,
+  [CAIP_CHAIN_IDS.MAINNET]: MAINNET_RPC_URL,
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
+  [CAIP_CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
-  [CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.ARBITRUM]: AETH_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+export const CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
+  [CAIP_CHAIN_IDS.MAINNET]: ETH_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: LINEA_GOERLI_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.AVALANCHE]: AVAX_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.BSC]: BNB_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.POLYGON]: MATIC_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.ARBITRUM]: AETH_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
+  [CAIP_CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
 
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -402,13 +402,13 @@ export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
 } as const;
 
-export const CHAIN_ID_TO_NETWORK_ID_MAP = {
-  [CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
-  [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
-  [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
-  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_IDS.LINEA_GOERLI,
-  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_IDS.LINEA_MAINNET,
-  [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
+export const CAIP_CHAIN_ID_TO_NETWORK_ID_MAP = {
+  [CAIP_CHAIN_IDS.MAINNET]: NETWORK_IDS.MAINNET,
+  [CAIP_CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
+  [CAIP_CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: NETWORK_IDS.LINEA_GOERLI,
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: NETWORK_IDS.LINEA_MAINNET,
+  [CAIP_CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
 } as const;
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
@@ -431,110 +431,110 @@ const defaultEtherscanSubdomainPrefix = 'api';
  * Map of all Etherscan supported networks.
  */
 export const ETHERSCAN_SUPPORTED_NETWORKS = {
-  [CHAIN_IDS.GOERLI]: {
+  [CAIP_CHAIN_IDS.GOERLI]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
+      CAIP_CHAIN_ID_TO_TYPE_MAP[CAIP_CHAIN_IDS.GOERLI]
     }`,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.GOERLI],
+    networkId: CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[CAIP_CHAIN_IDS.GOERLI],
   },
-  [CHAIN_IDS.MAINNET]: {
+  [CAIP_CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.MAINNET],
+    networkId: CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[CAIP_CHAIN_IDS.MAINNET],
   },
-  [CHAIN_IDS.SEPOLIA]: {
+  [CAIP_CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-${
-      CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
+      CAIP_CHAIN_ID_TO_TYPE_MAP[CAIP_CHAIN_IDS.SEPOLIA]
     }`,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
+    networkId: CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[CAIP_CHAIN_IDS.SEPOLIA],
   },
-  [CHAIN_IDS.LINEA_GOERLI]: {
+  [CAIP_CHAIN_IDS.LINEA_GOERLI]: {
     domain: 'lineascan.build',
     subdomain: 'goerli',
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_GOERLI],
+    networkId: CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[CAIP_CHAIN_IDS.LINEA_GOERLI],
   },
-  [CHAIN_IDS.LINEA_MAINNET]: {
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: {
     domain: 'lineascan.build',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.LINEA_MAINNET],
+    networkId: CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[CAIP_CHAIN_IDS.LINEA_MAINNET],
   },
-  [CHAIN_IDS.BSC]: {
+  [CAIP_CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: toEthChainId(CHAIN_IDS.BSC),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.BSC),
   },
-  [CHAIN_IDS.BSC_TESTNET]: {
+  [CAIP_CHAIN_IDS.BSC_TESTNET]: {
     domain: 'bscscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: toEthChainId(CHAIN_IDS.BSC_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.BSC_TESTNET),
   },
-  [CHAIN_IDS.OPTIMISM]: {
+  [CAIP_CHAIN_IDS.OPTIMISM]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-optimistic`,
-    networkId: toEthChainId(CHAIN_IDS.OPTIMISM),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.OPTIMISM),
   },
-  [CHAIN_IDS.OPTIMISM_TESTNET]: {
+  [CAIP_CHAIN_IDS.OPTIMISM_TESTNET]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
-    networkId: toEthChainId(CHAIN_IDS.OPTIMISM_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.OPTIMISM_TESTNET),
   },
-  [CHAIN_IDS.POLYGON]: {
+  [CAIP_CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: toEthChainId(CHAIN_IDS.POLYGON),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.POLYGON),
   },
-  [CHAIN_IDS.POLYGON_TESTNET]: {
+  [CAIP_CHAIN_IDS.POLYGON_TESTNET]: {
     domain: 'polygonscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
-    networkId: toEthChainId(CHAIN_IDS.POLYGON_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.POLYGON_TESTNET),
   },
-  [CHAIN_IDS.AVALANCHE]: {
+  [CAIP_CHAIN_IDS.AVALANCHE]: {
     domain: 'snowtrace.io',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: toEthChainId(CHAIN_IDS.AVALANCHE),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.AVALANCHE),
   },
-  [CHAIN_IDS.AVALANCHE_TESTNET]: {
+  [CAIP_CHAIN_IDS.AVALANCHE_TESTNET]: {
     domain: 'snowtrace.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: toEthChainId(CHAIN_IDS.AVALANCHE_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.AVALANCHE_TESTNET),
   },
-  [CHAIN_IDS.FANTOM]: {
+  [CAIP_CHAIN_IDS.FANTOM]: {
     domain: 'ftmscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: toEthChainId(CHAIN_IDS.FANTOM),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.FANTOM),
   },
-  [CHAIN_IDS.FANTOM_TESTNET]: {
+  [CAIP_CHAIN_IDS.FANTOM_TESTNET]: {
     domain: 'ftmscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: toEthChainId(CHAIN_IDS.FANTOM_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.FANTOM_TESTNET),
   },
-  [CHAIN_IDS.MOONBEAM]: {
+  [CAIP_CHAIN_IDS.MOONBEAM]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbeam`,
-    networkId: toEthChainId(CHAIN_IDS.MOONBEAM),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.MOONBEAM),
   },
-  [CHAIN_IDS.MOONBEAM_TESTNET]: {
+  [CAIP_CHAIN_IDS.MOONBEAM_TESTNET]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbase`,
-    networkId: toEthChainId(CHAIN_IDS.MOONBEAM_TESTNET),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.MOONBEAM_TESTNET),
   },
-  [CHAIN_IDS.MOONRIVER]: {
+  [CAIP_CHAIN_IDS.MOONRIVER]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
-    networkId: toEthChainId(CHAIN_IDS.MOONRIVER),
+    networkId: toEthChainId(CAIP_CHAIN_IDS.MOONRIVER),
   },
-  [CHAIN_IDS.GNOSIS]: {
+  [CAIP_CHAIN_IDS.GNOSIS]: {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
-    networkId: parseInt(CHAIN_IDS.GNOSIS, 16).toString(),
+    networkId: parseInt(CAIP_CHAIN_IDS.GNOSIS, 16).toString(),
   },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
-  [CHAIN_IDS.OPTIMISM]: 1,
-  [CHAIN_IDS.OPTIMISM_TESTNET]: 1,
+  [CAIP_CHAIN_IDS.OPTIMISM]: 1,
+  [CAIP_CHAIN_IDS.OPTIMISM_TESTNET]: 1,
 };
 
 /**
@@ -556,81 +556,81 @@ const BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME = 'ethereum';
 export const BUYABLE_CHAINS_MAP: {
   [K in Exclude<
     CaipChainId,
-    | typeof CHAIN_IDS.LOCALHOST
-    | typeof CHAIN_IDS.OPTIMISM_TESTNET
-    | typeof CHAIN_IDS.BASE_TESTNET
-    | typeof CHAIN_IDS.BASE
-    | typeof CHAIN_IDS.BSC_TESTNET
-    | typeof CHAIN_IDS.POLYGON_TESTNET
-    | typeof CHAIN_IDS.AVALANCHE_TESTNET
-    | typeof CHAIN_IDS.FANTOM_TESTNET
-    | typeof CHAIN_IDS.MOONBEAM_TESTNET
-    | typeof CHAIN_IDS.LINEA_GOERLI
-    | typeof CHAIN_IDS.GOERLI
-    | typeof CHAIN_IDS.GNOSIS
+    | typeof CAIP_CHAIN_IDS.LOCALHOST
+    | typeof CAIP_CHAIN_IDS.OPTIMISM_TESTNET
+    | typeof CAIP_CHAIN_IDS.BASE_TESTNET
+    | typeof CAIP_CHAIN_IDS.BASE
+    | typeof CAIP_CHAIN_IDS.BSC_TESTNET
+    | typeof CAIP_CHAIN_IDS.POLYGON_TESTNET
+    | typeof CAIP_CHAIN_IDS.AVALANCHE_TESTNET
+    | typeof CAIP_CHAIN_IDS.FANTOM_TESTNET
+    | typeof CAIP_CHAIN_IDS.MOONBEAM_TESTNET
+    | typeof CAIP_CHAIN_IDS.LINEA_GOERLI
+    | typeof CAIP_CHAIN_IDS.GOERLI
+    | typeof CAIP_CHAIN_IDS.GNOSIS
   >]: BuyableChainSettings;
 } = {
-  [CHAIN_IDS.MAINNET]: {
+  [CAIP_CHAIN_IDS.MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
-  [CHAIN_IDS.SEPOLIA]: {
+  [CAIP_CHAIN_IDS.SEPOLIA]: {
     nativeCurrency: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     network: BUYABLE_CHAIN_ETHEREUM_NETWORK_NAME,
   },
-  [CHAIN_IDS.BSC]: {
+  [CAIP_CHAIN_IDS.BSC]: {
     nativeCurrency: CURRENCY_SYMBOLS.BNB,
     network: 'bsc',
   },
-  [CHAIN_IDS.POLYGON]: {
+  [CAIP_CHAIN_IDS.POLYGON]: {
     nativeCurrency: CURRENCY_SYMBOLS.MATIC,
     network: 'polygon',
   },
-  [CHAIN_IDS.AVALANCHE]: {
+  [CAIP_CHAIN_IDS.AVALANCHE]: {
     nativeCurrency: CURRENCY_SYMBOLS.AVALANCHE,
     network: 'avaxcchain',
   },
-  [CHAIN_IDS.FANTOM]: {
+  [CAIP_CHAIN_IDS.FANTOM]: {
     nativeCurrency: CURRENCY_SYMBOLS.FANTOM,
     network: 'fantom',
   },
-  [CHAIN_IDS.CELO]: {
+  [CAIP_CHAIN_IDS.CELO]: {
     nativeCurrency: CURRENCY_SYMBOLS.CELO,
     network: 'celo',
   },
-  [CHAIN_IDS.OPTIMISM]: {
+  [CAIP_CHAIN_IDS.OPTIMISM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'optimism',
   },
-  [CHAIN_IDS.ARBITRUM]: {
+  [CAIP_CHAIN_IDS.ARBITRUM]: {
     nativeCurrency: CURRENCY_SYMBOLS.ARBITRUM,
     network: 'arbitrum',
   },
-  [CHAIN_IDS.CRONOS]: {
+  [CAIP_CHAIN_IDS.CRONOS]: {
     nativeCurrency: CURRENCY_SYMBOLS.CRONOS,
     network: 'cronos',
   },
-  [CHAIN_IDS.MOONBEAM]: {
+  [CAIP_CHAIN_IDS.MOONBEAM]: {
     nativeCurrency: CURRENCY_SYMBOLS.GLIMMER,
     network: 'moonbeam',
   },
-  [CHAIN_IDS.MOONRIVER]: {
+  [CAIP_CHAIN_IDS.MOONRIVER]: {
     nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
     network: 'moonriver',
   },
-  [CHAIN_IDS.AURORA]: {
+  [CAIP_CHAIN_IDS.AURORA]: {
     nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
     network: 'aurora',
   },
-  [CHAIN_IDS.HARMONY]: {
+  [CAIP_CHAIN_IDS.HARMONY]: {
     nativeCurrency: CURRENCY_SYMBOLS.ONE,
     network: 'harmony',
   },
-  [CHAIN_IDS.PALM]: {
+  [CAIP_CHAIN_IDS.PALM]: {
     nativeCurrency: CURRENCY_SYMBOLS.PALM,
     network: 'palm',
   },
-  [CHAIN_IDS.LINEA_MAINNET]: {
+  [CAIP_CHAIN_IDS.LINEA_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'linea',
   },
@@ -638,7 +638,7 @@ export const BUYABLE_CHAINS_MAP: {
 
 export const FEATURED_RPCS: RPCDefinition[] = [
   {
-    caipChainId: CHAIN_IDS.ARBITRUM,
+    caipChainId: CAIP_CHAIN_IDS.ARBITRUM,
     nickname: ARBITRUM_DISPLAY_NAME,
     rpcUrl: `https://arbitrum-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ARBITRUM,
@@ -648,7 +648,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.AURORA,
+    caipChainId: CAIP_CHAIN_IDS.AURORA,
     nickname: AURORA_DISPLAY_NAME,
     rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AURORA_ETH,
@@ -658,7 +658,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.AVALANCHE,
+    caipChainId: CAIP_CHAIN_IDS.AVALANCHE,
     nickname: AVALANCHE_DISPLAY_NAME,
     rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.AVALANCHE,
@@ -668,7 +668,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.BSC,
+    caipChainId: CAIP_CHAIN_IDS.BSC,
     nickname: BNB_DISPLAY_NAME,
     rpcUrl: 'https://bsc-dataseed.binance.org/',
     ticker: CURRENCY_SYMBOLS.BNB,
@@ -678,7 +678,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.FANTOM,
+    caipChainId: CAIP_CHAIN_IDS.FANTOM,
     nickname: FANTOM_DISPLAY_NAME,
     rpcUrl: 'https://rpc.ftm.tools/',
     ticker: CURRENCY_SYMBOLS.FANTOM,
@@ -688,7 +688,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.HARMONY,
+    caipChainId: CAIP_CHAIN_IDS.HARMONY,
     nickname: HARMONY_DISPLAY_NAME,
     rpcUrl: 'https://api.harmony.one/',
     ticker: CURRENCY_SYMBOLS.HARMONY,
@@ -698,7 +698,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.OPTIMISM,
+    caipChainId: CAIP_CHAIN_IDS.OPTIMISM,
     nickname: OPTIMISM_DISPLAY_NAME,
     rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.ETH,
@@ -708,7 +708,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.PALM,
+    caipChainId: CAIP_CHAIN_IDS.PALM,
     nickname: PALM_DISPLAY_NAME,
     rpcUrl: `https://palm-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.PALM,
@@ -718,7 +718,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.POLYGON,
+    caipChainId: CAIP_CHAIN_IDS.POLYGON,
     nickname: `${POLYGON_DISPLAY_NAME} ${capitalize(NETWORK_TYPES.MAINNET)}`,
     rpcUrl: `https://polygon-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.MATIC,
@@ -728,7 +728,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.CELO,
+    caipChainId: CAIP_CHAIN_IDS.CELO,
     nickname: CELO_DISPLAY_NAME,
     rpcUrl: `https://celo-mainnet.infura.io/v3/${infuraProjectId}`,
     ticker: CURRENCY_SYMBOLS.CELO,
@@ -738,7 +738,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    caipChainId: CHAIN_IDS.GNOSIS,
+    caipChainId: CAIP_CHAIN_IDS.GNOSIS,
     nickname: GNOSIS_DISPLAY_NAME,
     rpcUrl: `https://rpc.gnosischain.com`,
     ticker: CURRENCY_SYMBOLS.GNOSIS,

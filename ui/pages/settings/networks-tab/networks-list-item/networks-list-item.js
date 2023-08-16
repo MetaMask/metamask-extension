@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
-  CHAIN_IDS,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CAIP_CHAIN_IDS,
+  CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
@@ -85,11 +85,11 @@ const NetworksListItem = ({
       ) : (
         <Icon name={IconName.Check} color={IconColor.transparent} />
       )}
-      {network.caipChainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+      {network.caipChainId in CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
           className="networks-tab__content__custom-image"
           diameter={24}
-          image={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.caipChainId]}
+          image={CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.caipChainId]}
           imageBorder
         />
       ) : (
@@ -102,7 +102,7 @@ const NetworksListItem = ({
         )
       )}
       {network.isATestNetwork &&
-        network.caipChainId !== CHAIN_IDS.LINEA_GOERLI && (
+        network.caipChainId !== CAIP_CHAIN_IDS.LINEA_GOERLI && (
           <UrlIcon
             name={label || getNetworkLabelKey(labelKey)}
             fallbackClassName={classnames(

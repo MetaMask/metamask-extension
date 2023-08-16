@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 
-const CHAIN_IDS = {
+const CAIP_CHAIN_IDS = {
   MAINNET: '0x1',
   GOERLI: '0x5',
   LOCALHOST: '0x539',
@@ -47,7 +47,7 @@ const version = 52;
  * chainId.
  */
 export default {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_TYPES,
   version,
   async migrate(originalVersionedData) {
@@ -79,7 +79,7 @@ function transformState(state = {}) {
         for (const providerType of Object.keys(accountTokens[address])) {
           switch (providerType) {
             case NETWORK_TYPES.MAINNET:
-              newAccountTokens[address][CHAIN_IDS.MAINNET] =
+              newAccountTokens[address][CAIP_CHAIN_IDS.MAINNET] =
                 accountTokens[address][NETWORK_TYPES.MAINNET];
               break;
             case 'ropsten':
@@ -89,7 +89,7 @@ function transformState(state = {}) {
               newAccountTokens[address]['0x4'] = accountTokens[address].rinkeby;
               break;
             case NETWORK_TYPES.GOERLI:
-              newAccountTokens[address][CHAIN_IDS.GOERLI] =
+              newAccountTokens[address][CAIP_CHAIN_IDS.GOERLI] =
                 accountTokens[address][NETWORK_TYPES.GOERLI];
               break;
             case 'kovan':
@@ -115,7 +115,7 @@ function transformState(state = {}) {
         for (const providerType of Object.keys(accountHiddenTokens[address])) {
           switch (providerType) {
             case NETWORK_TYPES.MAINNET:
-              newAccountHiddenTokens[address][CHAIN_IDS.MAINNET] =
+              newAccountHiddenTokens[address][CAIP_CHAIN_IDS.MAINNET] =
                 accountHiddenTokens[address][NETWORK_TYPES.MAINNET];
               break;
             case 'ropsten':
@@ -127,7 +127,7 @@ function transformState(state = {}) {
                 accountHiddenTokens[address].rinkeby;
               break;
             case NETWORK_TYPES.GOERLI:
-              newAccountHiddenTokens[address][CHAIN_IDS.GOERLI] =
+              newAccountHiddenTokens[address][CAIP_CHAIN_IDS.GOERLI] =
                 accountHiddenTokens[address][NETWORK_TYPES.GOERLI];
               break;
             case 'kovan':

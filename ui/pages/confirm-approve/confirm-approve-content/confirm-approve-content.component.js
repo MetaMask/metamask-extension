@@ -26,7 +26,10 @@ import LedgerInstructionField from '../../../components/app/ledger-instruction-f
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  TEST_CHAINS,
+} from '../../../../shared/constants/network';
 import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   ButtonIcon,
@@ -379,9 +382,11 @@ export default class ConfirmApproveContent extends Component {
       this.props;
     const useBlockExplorer =
       rpcPrefs?.blockExplorerUrl ||
-      [...TEST_CHAINS, CHAIN_IDS.MAINNET, CHAIN_IDS.LINEA_MAINNET].includes(
-        caipChainId,
-      );
+      [
+        ...TEST_CHAINS,
+        CAIP_CHAIN_IDS.MAINNET,
+        CAIP_CHAIN_IDS.LINEA_MAINNET,
+      ].includes(caipChainId);
 
     const titleTokenDescription = this.getTokenName();
     const tokenIdWrapped = tokenId ? ` (#${tokenId})` : '';

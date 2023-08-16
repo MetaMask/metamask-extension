@@ -1,5 +1,5 @@
 import { CaipChainId } from '@metamask/utils';
-import { CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
+import { CAIP_CHAIN_IDS, MAX_SAFE_CHAIN_ID } from '../constants/network';
 
 /**
  * Checks whether the given number primitive chain ID is safe.
@@ -38,11 +38,11 @@ export function isTokenDetectionEnabledForNetwork(
   caipChainId: CaipChainId | undefined,
 ) {
   switch (caipChainId) {
-    case CHAIN_IDS.MAINNET:
-    case CHAIN_IDS.BSC:
-    case CHAIN_IDS.POLYGON:
-    case CHAIN_IDS.AVALANCHE:
-    case CHAIN_IDS.AURORA:
+    case CAIP_CHAIN_IDS.MAINNET:
+    case CAIP_CHAIN_IDS.BSC:
+    case CAIP_CHAIN_IDS.POLYGON:
+    case CAIP_CHAIN_IDS.AVALANCHE:
+    case CAIP_CHAIN_IDS.AURORA:
       return true;
     default:
       return false;

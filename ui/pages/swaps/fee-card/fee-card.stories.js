@@ -1,5 +1,5 @@
 import React from 'react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import FeeCard from './fee-card';
 
 const containerStyle = {
@@ -90,7 +90,7 @@ export default {
     tokenApprovalSourceTokenSymbol: 'ABC',
     metaMaskFee: '0.875',
     numberOfQuotes: 6,
-    caipChainId: CHAIN_IDS.MAINNET,
+    caipChainId: CAIP_CHAIN_IDS.MAINNET,
   },
 };
 

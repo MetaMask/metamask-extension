@@ -16,7 +16,7 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
 
@@ -260,63 +260,63 @@ export default class AccountTracker {
       await Promise.all(addresses.map(this._updateAccount.bind(this)));
     } else {
       switch (caipChainId) {
-        case CHAIN_IDS.MAINNET:
+        case CAIP_CHAIN_IDS.MAINNET:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS,
           );
           break;
 
-        case CHAIN_IDS.GOERLI:
+        case CAIP_CHAIN_IDS.GOERLI:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
           );
           break;
 
-        case CHAIN_IDS.SEPOLIA:
+        case CAIP_CHAIN_IDS.SEPOLIA:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
           );
           break;
 
-        case CHAIN_IDS.BSC:
+        case CAIP_CHAIN_IDS.BSC:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_BSC,
           );
           break;
 
-        case CHAIN_IDS.OPTIMISM:
+        case CAIP_CHAIN_IDS.OPTIMISM:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
           );
           break;
 
-        case CHAIN_IDS.POLYGON:
+        case CAIP_CHAIN_IDS.POLYGON:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
           );
           break;
 
-        case CHAIN_IDS.AVALANCHE:
+        case CAIP_CHAIN_IDS.AVALANCHE:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
           );
           break;
 
-        case CHAIN_IDS.FANTOM:
+        case CAIP_CHAIN_IDS.FANTOM:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
           );
           break;
 
-        case CHAIN_IDS.ARBITRUM:
+        case CAIP_CHAIN_IDS.ARBITRUM:
           await this._updateAccountsViaBalanceChecker(
             addresses,
             SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,

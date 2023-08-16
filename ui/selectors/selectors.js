@@ -23,8 +23,8 @@ import {
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
   AURORA_DISPLAY_NAME,
-  CHAIN_ID_TO_RPC_URL_MAP,
-  CHAIN_IDS,
+  CAIP_CHAIN_ID_TO_RPC_URL_MAP,
+  CAIP_CHAIN_IDS,
   NETWORK_TYPES,
   NetworkStatus,
   SEPOLIA_DISPLAY_NAME,
@@ -136,7 +136,7 @@ export function isCurrentProviderCustom(state) {
   const provider = getProviderConfig(state);
   return (
     provider.type === NETWORK_TYPES.RPC &&
-    !Object.values(CHAIN_IDS).includes(provider.caipChainId)
+    !Object.values(CAIP_CHAIN_IDS).includes(provider.caipChainId)
   );
 }
 
@@ -591,7 +591,7 @@ export function getSuggestedNfts(state) {
 
 export function getIsMainnet(state) {
   const caipChainId = getCurrentCaipChainId(state);
-  return caipChainId === CHAIN_IDS.MAINNET;
+  return caipChainId === CAIP_CHAIN_IDS.MAINNET;
 }
 
 export function getIsTestnet(state) {
@@ -1219,27 +1219,27 @@ export function getTestNetworks(state) {
 
   return [
     {
-      caipChainId: CHAIN_IDS.GOERLI,
+      caipChainId: CAIP_CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.GOERLI],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[CAIP_CHAIN_IDS.GOERLI],
       providerType: NETWORK_TYPES.GOERLI,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
       id: NETWORK_TYPES.GOERLI,
       removable: false,
     },
     {
-      caipChainId: CHAIN_IDS.SEPOLIA,
+      caipChainId: CAIP_CHAIN_IDS.SEPOLIA,
       nickname: SEPOLIA_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.SEPOLIA],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[CAIP_CHAIN_IDS.SEPOLIA],
       providerType: NETWORK_TYPES.SEPOLIA,
       ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
       id: NETWORK_TYPES.SEPOLIA,
       removable: false,
     },
     {
-      caipChainId: CHAIN_IDS.LINEA_GOERLI,
+      caipChainId: CAIP_CHAIN_IDS.LINEA_GOERLI,
       nickname: LINEA_GOERLI_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_GOERLI],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[CAIP_CHAIN_IDS.LINEA_GOERLI],
       rpcPrefs: {
         imageUrl: LINEA_GOERLI_TOKEN_IMAGE_URL,
       },
@@ -1250,7 +1250,7 @@ export function getTestNetworks(state) {
     },
     // Localhosts
     ...Object.values(networkConfigurations)
-      .filter(({ caipChainId }) => caipChainId === CHAIN_IDS.LOCALHOST)
+      .filter(({ caipChainId }) => caipChainId === CAIP_CHAIN_IDS.LOCALHOST)
       .map((network) => ({ ...network, removable: true })),
   ];
 }
@@ -1261,9 +1261,9 @@ export function getNonTestNetworks(state) {
   return [
     // Mainnet always first
     {
-      caipChainId: CHAIN_IDS.MAINNET,
+      caipChainId: CAIP_CHAIN_IDS.MAINNET,
       nickname: MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.MAINNET],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[CAIP_CHAIN_IDS.MAINNET],
       rpcPrefs: {
         imageUrl: ETH_TOKEN_IMAGE_URL,
       },
@@ -1273,9 +1273,9 @@ export function getNonTestNetworks(state) {
       removable: false,
     },
     {
-      caipChainId: CHAIN_IDS.LINEA_MAINNET,
+      caipChainId: CAIP_CHAIN_IDS.LINEA_MAINNET,
       nickname: LINEA_MAINNET_DISPLAY_NAME,
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[CHAIN_IDS.LINEA_MAINNET],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[CAIP_CHAIN_IDS.LINEA_MAINNET],
       rpcPrefs: {
         imageUrl: LINEA_MAINNET_TOKEN_IMAGE_URL,
       },
@@ -1286,7 +1286,9 @@ export function getNonTestNetworks(state) {
     },
     // Custom networks added by the user
     ...Object.values(networkConfigurations)
-      .filter(({ caipChainId }) => ![CHAIN_IDS.LOCALHOST].includes(caipChainId))
+      .filter(
+        ({ caipChainId }) => ![CAIP_CHAIN_IDS.LOCALHOST].includes(caipChainId),
+      )
       .map((network) => ({ ...network, removable: true })),
   ];
 }
@@ -1304,15 +1306,15 @@ export function getAllNetworks(state) {
 
 export function getIsOptimism(state) {
   return (
-    getCurrentCaipChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentCaipChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
+    getCurrentCaipChainId(state) === CAIP_CHAIN_IDS.OPTIMISM ||
+    getCurrentCaipChainId(state) === CAIP_CHAIN_IDS.OPTIMISM_TESTNET
   );
 }
 
 export function getIsBase(state) {
   return (
-    getCurrentCaipChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentCaipChainId(state) === CHAIN_IDS.BASE_TESTNET
+    getCurrentCaipChainId(state) === CAIP_CHAIN_IDS.BASE ||
+    getCurrentCaipChainId(state) === CAIP_CHAIN_IDS.BASE_TESTNET
   );
 }
 
@@ -1355,15 +1357,15 @@ export function getIsAdvancedGasFeeDefault(state) {
 export const getTokenDetectionSupportNetworkByChainId = (state) => {
   const caipChainId = getCurrentCaipChainId(state);
   switch (caipChainId) {
-    case CHAIN_IDS.MAINNET:
+    case CAIP_CHAIN_IDS.MAINNET:
       return MAINNET_DISPLAY_NAME;
-    case CHAIN_IDS.BSC:
+    case CAIP_CHAIN_IDS.BSC:
       return BSC_DISPLAY_NAME;
-    case CHAIN_IDS.POLYGON:
+    case CAIP_CHAIN_IDS.POLYGON:
       return POLYGON_DISPLAY_NAME;
-    case CHAIN_IDS.AVALANCHE:
+    case CAIP_CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
-    case CHAIN_IDS.AURORA:
+    case CAIP_CHAIN_IDS.AURORA:
       return AURORA_DISPLAY_NAME;
     default:
       return '';
@@ -1379,11 +1381,11 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
 export function getIsDynamicTokenListAvailable(state) {
   const caipChainId = getCurrentCaipChainId(state);
   return [
-    CHAIN_IDS.MAINNET,
-    CHAIN_IDS.BSC,
-    CHAIN_IDS.POLYGON,
-    CHAIN_IDS.AVALANCHE,
-    CHAIN_IDS.AURORA,
+    CAIP_CHAIN_IDS.MAINNET,
+    CAIP_CHAIN_IDS.BSC,
+    CAIP_CHAIN_IDS.POLYGON,
+    CAIP_CHAIN_IDS.AVALANCHE,
+    CAIP_CHAIN_IDS.AURORA,
   ].includes(caipChainId);
 }
 
@@ -1480,7 +1482,7 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsCustomNetwork(state) {
   const caipChainId = getCurrentCaipChainId(state);
 
-  return !CHAIN_ID_TO_RPC_URL_MAP[caipChainId];
+  return !CAIP_CHAIN_ID_TO_RPC_URL_MAP[caipChainId];
 }
 
 export function getBlockExplorerLinkText(

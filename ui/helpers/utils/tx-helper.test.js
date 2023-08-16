@@ -1,10 +1,10 @@
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
 import txHelper from './tx-helper';
 
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {
     const metamaskNetworkId = NETWORK_IDS.MAINNET;
-    const caipChainId = CHAIN_IDS.MAINNET;
+    const caipChainId = CAIP_CHAIN_IDS.MAINNET;
     const mockUnapprovedTxs = {
       a: { metamaskNetworkId, time: 3 },
       b: { metamaskNetworkId, time: 6 },

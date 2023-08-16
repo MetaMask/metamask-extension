@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 
 import mockState from '../../../../../test/data/mock-state.json';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../../test/jest';
 import configureStore from '../../../../store/store';
 
@@ -111,21 +111,21 @@ describe('ConfirmLegacyGasDisplay', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', async () => {
-    mmState.metamask.providerConfig.caipChainId = CHAIN_IDS.OPTIMISM;
-    mmState.confirmTransaction.txData.caipChainId = CHAIN_IDS.OPTIMISM;
+    mmState.metamask.providerConfig.caipChainId = CAIP_CHAIN_IDS.OPTIMISM;
+    mmState.confirmTransaction.txData.caipChainId = CAIP_CHAIN_IDS.OPTIMISM;
     const state = {
       metamask: {
         ...mmState.metamask,
         providerConfig: {
           ...mmState.metamask.providerConfig,
-          caipChainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CAIP_CHAIN_IDS.OPTIMISM,
         },
       },
       confirmTransaction: {
         ...mmState.confirmTransaction,
         txData: {
           ...mmState.confirmTransaction.txData,
-          caipChainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CAIP_CHAIN_IDS.OPTIMISM,
         },
       },
     };

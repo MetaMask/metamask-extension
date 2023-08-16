@@ -8,7 +8,10 @@ import {
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import waitUntilCalled from '../../../test/lib/wait-until-called';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../../shared/constants/network';
 import * as Utils from '../lib/util';
 import MetaMetricsController from './metametrics';
 
@@ -904,8 +907,8 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       const traits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CAIP_CHAIN_IDS.MAINNET]: [{ address: '0x' }],
+          [CAIP_CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allNfts: {
           '0xac706cE8A9BF27Afecf080fB298d0ee13cfb978A': {
@@ -936,11 +939,11 @@ describe('MetaMetricsController', function () {
         allTokens: MOCK_ALL_TOKENS,
         networkConfigurations: {
           'network-configuration-id-1': {
-            caipChainId: CHAIN_IDS.MAINNET,
+            caipChainId: CAIP_CHAIN_IDS.MAINNET,
             ticker: CURRENCY_SYMBOLS.ETH,
           },
           'network-configuration-id-2': {
-            caipChainId: CHAIN_IDS.GOERLI,
+            caipChainId: CAIP_CHAIN_IDS.GOERLI,
             ticker: CURRENCY_SYMBOLS.TEST_ETH,
           },
           'network-configuration-id-3': { caipChainId: 'eip155:175' },
@@ -960,8 +963,8 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.InstallDateExt]: '',
         [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
         [MetaMetricsUserTrait.NetworksAdded]: [
-          CHAIN_IDS.MAINNET,
-          CHAIN_IDS.GOERLI,
+          CAIP_CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.GOERLI,
           'eip155:175',
         ],
         [MetaMetricsUserTrait.NetworksWithoutTicker]: ['eip155:175'],
@@ -988,13 +991,13 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CAIP_CHAIN_IDS.MAINNET]: [{ address: '0x' }],
+          [CAIP_CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CAIP_CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CAIP_CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1007,8 +1010,8 @@ describe('MetaMetricsController', function () {
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }, { address: '0x1' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CAIP_CHAIN_IDS.MAINNET]: [{ address: '0x' }, { address: '0x1' }],
+          [CAIP_CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {
           'eip155:1': {
@@ -1016,8 +1019,8 @@ describe('MetaMetricsController', function () {
           },
         },
         networkConfigurations: {
-          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CAIP_CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CAIP_CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
@@ -1040,13 +1043,13 @@ describe('MetaMetricsController', function () {
       const metaMetricsController = getMetaMetricsController();
       metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CAIP_CHAIN_IDS.MAINNET]: [{ address: '0x' }],
+          [CAIP_CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CAIP_CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CAIP_CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1059,13 +1062,13 @@ describe('MetaMetricsController', function () {
 
       const updatedTraits = metaMetricsController._buildUserTraitsObject({
         addressBook: {
-          [CHAIN_IDS.MAINNET]: [{ address: '0x' }],
-          [CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
+          [CAIP_CHAIN_IDS.MAINNET]: [{ address: '0x' }],
+          [CAIP_CHAIN_IDS.GOERLI]: [{ address: '0x' }, { address: '0x0' }],
         },
         allTokens: {},
         networkConfigurations: {
-          'network-configuration-id-1': { caipChainId: CHAIN_IDS.MAINNET },
-          'network-configuration-id-2': { caipChainId: CHAIN_IDS.GOERLI },
+          'network-configuration-id-1': { caipChainId: CAIP_CHAIN_IDS.MAINNET },
+          'network-configuration-id-2': { caipChainId: CAIP_CHAIN_IDS.GOERLI },
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,

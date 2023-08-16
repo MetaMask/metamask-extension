@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import type { CaipChainId } from '@metamask/utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { getCurrentCaipChainId, getMetaMetricsId } from '../../selectors';
 
 interface IUseRamps {
@@ -17,7 +17,7 @@ const useRamps = (): IUseRamps => {
 
   const getBuyURI = useCallback((_caipChainId: CaipChainId) => {
     switch (_caipChainId) {
-      case CHAIN_IDS.SEPOLIA:
+      case CAIP_CHAIN_IDS.SEPOLIA:
         return 'https://faucet.sepolia.dev/';
       default: {
         const params = new URLSearchParams();

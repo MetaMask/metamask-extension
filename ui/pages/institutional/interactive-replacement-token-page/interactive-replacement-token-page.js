@@ -8,7 +8,7 @@ import CustodyLabels from '../../../components/institutional/custody-labels/cust
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../../components/ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -40,7 +40,8 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const getButtonLinkHref = ({ address }) => {
-  const url = SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CHAIN_IDS.MAINNET];
+  const url =
+    SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[CAIP_CHAIN_IDS.MAINNET];
   return `${url}address/${address}`;
 };
 

@@ -81,7 +81,7 @@ import {
   SWAPS_NOTIFICATION_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   addHexes,
   decGWEIToHexWEI,
@@ -233,21 +233,21 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
     switch (caipChainId) {
-      case CHAIN_IDS.MAINNET:
+      case CAIP_CHAIN_IDS.MAINNET:
         return t('networkNameEthereum');
-      case CHAIN_IDS.BSC:
+      case CAIP_CHAIN_IDS.BSC:
         return t('networkNameBSC');
-      case CHAIN_IDS.POLYGON:
+      case CAIP_CHAIN_IDS.POLYGON:
         return t('networkNamePolygon');
-      case CHAIN_IDS.LOCALHOST:
+      case CAIP_CHAIN_IDS.LOCALHOST:
         return t('networkNameTestnet');
-      case CHAIN_IDS.GOERLI:
+      case CAIP_CHAIN_IDS.GOERLI:
         return t('networkNameGoerli');
-      case CHAIN_IDS.AVALANCHE:
+      case CAIP_CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
-      case CHAIN_IDS.OPTIMISM:
+      case CAIP_CHAIN_IDS.OPTIMISM:
         return t('networkNameOptimism');
-      case CHAIN_IDS.ARBITRUM:
+      case CAIP_CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
       default:
         throw new Error('This network is not supported for token swaps');

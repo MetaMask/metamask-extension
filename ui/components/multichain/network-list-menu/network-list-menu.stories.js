@@ -4,7 +4,7 @@ import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 import {
   OPTIMISM_DISPLAY_NAME,
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   OPTIMISM_TOKEN_IMAGE_URL,
   BSC_DISPLAY_NAME,
   BNB_TOKEN_IMAGE_URL,
@@ -23,13 +23,13 @@ const customNetworkStore = configureStore({
       ...{
         'test-networkConfigurationId-3': {
           rpcUrl: 'https://testrpc.com',
-          caipChainId: CHAIN_IDS.OPTIMISM,
+          caipChainId: CAIP_CHAIN_IDS.OPTIMISM,
           nickname: OPTIMISM_DISPLAY_NAME,
           rpcPrefs: { imageUrl: OPTIMISM_TOKEN_IMAGE_URL },
         },
         'test-networkConfigurationId-4': {
           rpcUrl: 'https://testrpc.com',
-          caipChainId: CHAIN_IDS.BSC,
+          caipChainId: CAIP_CHAIN_IDS.BSC,
           nickname: BSC_DISPLAY_NAME,
           rpcPrefs: { imageUrl: BNB_TOKEN_IMAGE_URL },
         },

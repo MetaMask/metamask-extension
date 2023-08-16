@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import {
   TransactionType,
   TransactionStatus,
@@ -12,7 +12,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   0: {
     type: TransactionType.cancel,
     id: 0,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x0',
     },
@@ -20,7 +20,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   1: {
     type: SENT_ETHER,
     id: 1,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x1',
     },
@@ -52,7 +52,7 @@ const ERRONEOUS_TRANSACTION_STATE = {
   5: {
     type: SENT_ETHER,
     id: 5,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0x5',
     },
@@ -102,7 +102,7 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   10: {
     type: TransactionType.retry,
     id: 10,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xa',
     },
@@ -110,7 +110,7 @@ const ERRONEOUS_TRANSACTION_STATE_MIXED = {
   11: {
     type: TransactionType.retry,
     id: 11,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     txParams: {
       nonce: '0xb',
     },
@@ -164,7 +164,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE['0'],
               id: 11,
-              chainId: CHAIN_IDS.GOERLI,
+              chainId: CAIP_CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },
@@ -245,7 +245,7 @@ describe('migration #59', () => {
             11: {
               ...ERRONEOUS_TRANSACTION_STATE_RETRY['0'],
               id: 11,
-              chainId: CHAIN_IDS.GOERLI,
+              chainId: CAIP_CHAIN_IDS.GOERLI,
               type: SENT_ETHER,
             },
           },

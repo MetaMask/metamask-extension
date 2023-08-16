@@ -2,7 +2,7 @@ import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../shared/constants/network';
@@ -306,7 +306,7 @@ describe('Selectors', () => {
           },
           networkConfigurations: {
             'some-config-name': {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               nickname: LOCALHOST_DISPLAY_NAME,
             },
           },
@@ -324,7 +324,7 @@ describe('Selectors', () => {
           },
           networkConfigurations: {
             'some-config-name': {
-              chainId: CHAIN_IDS.LOCALHOST,
+              chainId: CAIP_CHAIN_IDS.LOCALHOST,
               nickname: LOCALHOST_DISPLAY_NAME,
               id: 'some-config-name',
             },

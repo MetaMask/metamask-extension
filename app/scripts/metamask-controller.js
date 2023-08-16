@@ -108,7 +108,7 @@ import {
   SWAPS_CLIENT_ID,
 } from '../../shared/constants/swaps';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_TYPES,
   TEST_NETWORK_TICKER_MAP,
   NetworkStatus,
@@ -339,7 +339,7 @@ export default class MetamaskController extends EventEmitter {
     } else if (process.env.IN_TEST) {
       initialNetworkControllerState = {
         providerConfig: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
@@ -348,7 +348,7 @@ export default class MetamaskController extends EventEmitter {
         },
         networkConfigurations: {
           networkConfigurationId: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -364,7 +364,7 @@ export default class MetamaskController extends EventEmitter {
       initialNetworkControllerState = {
         providerConfig: {
           type: NETWORK_TYPES.GOERLI,
-          caipChainId: CHAIN_IDS.GOERLI,
+          caipChainId: CAIP_CHAIN_IDS.GOERLI,
           ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
         },
       };
@@ -602,7 +602,7 @@ export default class MetamaskController extends EventEmitter {
       EIP1559APIEndpoint: `${gasApiBaseUrl}/networks/<chain_id>/suggestedGasFees`,
       getCurrentNetworkLegacyGasAPICompatibility: () => {
         const { caipChainId } = this.networkController.state.providerConfig;
-        return caipChainId === CHAIN_IDS.BSC;
+        return caipChainId === CAIP_CHAIN_IDS.BSC;
       },
       getCaipChainId: () =>
         this.networkController.state.providerConfig.caipChainId,
@@ -1481,7 +1481,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       },
       {
-        supportedChainIds: [CHAIN_IDS.MAINNET, CHAIN_IDS.GOERLI],
+        supportedChainIds: [CAIP_CHAIN_IDS.MAINNET, CAIP_CHAIN_IDS.GOERLI],
       },
       initState.SmartTransactionsController,
     );

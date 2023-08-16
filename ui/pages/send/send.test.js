@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import {
   renderWithProvider,
   setBackgroundConnection,
@@ -99,18 +99,18 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     providerConfig: {
-      caipChainId: CHAIN_IDS.GOERLI,
+      caipChainId: CAIP_CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
-      [CHAIN_IDS.GOERLI]: [],
+      [CAIP_CHAIN_IDS.GOERLI]: [],
     },
     currentNetworkTxList: [],
     cachedBalances: {
-      [CHAIN_IDS.GOERLI]: {},
+      [CAIP_CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },

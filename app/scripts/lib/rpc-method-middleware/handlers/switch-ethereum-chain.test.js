@@ -1,6 +1,6 @@
 import { toEthChainIdHex } from '@metamask/controller-utils';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
 import switchEthereumChain from './switch-ethereum-chain';
@@ -13,12 +13,12 @@ const mockRequestUserApproval = ({ requestData }) => {
 
 const MOCK_MAINNET_CONFIGURATION = {
   id: 123,
-  chainId: CHAIN_IDS.MAINNET,
+  chainId: CAIP_CHAIN_IDS.MAINNET,
   type: NETWORK_TYPES.MAINNET,
 };
 const MOCK_LINEA_MAINNET_CONFIGURATION = {
   id: 123,
-  chainId: CHAIN_IDS.LINEA_MAINNET,
+  chainId: CAIP_CHAIN_IDS.LINEA_MAINNET,
   type: NETWORK_TYPES.LINEA_MAINNET,
 };
 
@@ -30,7 +30,7 @@ describe('switchEthereumChainHandler', () => {
     await switchEthereumChainHandler(
       {
         origin: 'example.com',
-        params: [{ chainId: toEthChainIdHex(CHAIN_IDS.MAINNET) }],
+        params: [{ chainId: toEthChainIdHex(CAIP_CHAIN_IDS.MAINNET) }],
       },
       {},
       jest.fn(),
@@ -58,7 +58,9 @@ describe('switchEthereumChainHandler', () => {
         origin: 'example.com',
         params: [
           {
-            chainId: toEthChainIdHex(CHAIN_IDS.LINEA_MAINNET).toLowerCase(),
+            chainId: toEthChainIdHex(
+              CAIP_CHAIN_IDS.LINEA_MAINNET,
+            ).toLowerCase(),
           },
         ],
       },
@@ -88,7 +90,9 @@ describe('switchEthereumChainHandler', () => {
         origin: 'example.com',
         params: [
           {
-            chainId: toEthChainIdHex(CHAIN_IDS.LINEA_MAINNET).toUpperCase(),
+            chainId: toEthChainIdHex(
+              CAIP_CHAIN_IDS.LINEA_MAINNET,
+            ).toUpperCase(),
           },
         ],
       },
@@ -122,7 +126,7 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       jest.fn(),
       {
-        getCurrentCaipChainId: () => CHAIN_IDS.MAINNET,
+        getCurrentCaipChainId: () => CAIP_CHAIN_IDS.MAINNET,
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,

@@ -10,7 +10,7 @@ import { setBackgroundConnection } from '../../../test/jest';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
@@ -100,17 +100,17 @@ const baseStore = {
     },
     currentCurrency: 'USD',
     providerConfig: {
-      caipChainId: CHAIN_IDS.GOERLI,
+      caipChainId: CAIP_CHAIN_IDS.GOERLI,
     },
     nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
-      [CHAIN_IDS.GOERLI]: [],
+      [CAIP_CHAIN_IDS.GOERLI]: [],
     },
     cachedBalances: {
-      [CHAIN_IDS.GOERLI]: {},
+      [CAIP_CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
       [mockTxParamsFromAddress]: {
@@ -203,8 +203,8 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
-    mockedStore.metamask.providerConfig.caipChainId = CHAIN_IDS.OPTIMISM;
-    mockedStore.confirmTransaction.txData.caipChainId = CHAIN_IDS.OPTIMISM;
+    mockedStore.metamask.providerConfig.caipChainId = CAIP_CHAIN_IDS.OPTIMISM;
+    mockedStore.confirmTransaction.txData.caipChainId = CAIP_CHAIN_IDS.OPTIMISM;
     const store = configureMockStore(middleware)(mockedStore);
     const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,

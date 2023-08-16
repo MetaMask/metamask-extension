@@ -4,7 +4,7 @@ const {
 } = require('@metamask/snaps-utils');
 const { merge } = require('lodash');
 const { NetworkStatus } = require('@metamask/network-controller');
-const { CHAIN_IDS } = require('../../shared/constants/network');
+const { CAIP_CHAIN_IDS } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
@@ -172,16 +172,16 @@ function defaultFixture() {
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
+          [CAIP_CHAIN_IDS.MAINNET]: true,
+          [CAIP_CHAIN_IDS.LINEA_MAINNET]: true,
+          [CAIP_CHAIN_IDS.GOERLI]: true,
+          [CAIP_CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
       },
       CachedBalancesController: {
         cachedBalances: {
-          [CHAIN_IDS.LOCALHOST]: {},
+          [CAIP_CHAIN_IDS.LOCALHOST]: {},
         },
       },
       CurrencyController: {
@@ -199,11 +199,11 @@ function defaultFixture() {
       IncomingTransactionsController: {
         incomingTransactions: {},
         incomingTxLastFetchedBlockByChainId: {
-          [CHAIN_IDS.MAINNET]: null,
-          [CHAIN_IDS.LINEA_MAINNET]: null,
-          [CHAIN_IDS.GOERLI]: null,
-          [CHAIN_IDS.SEPOLIA]: null,
-          [CHAIN_IDS.LINEA_GOERLI]: null,
+          [CAIP_CHAIN_IDS.MAINNET]: null,
+          [CAIP_CHAIN_IDS.LINEA_MAINNET]: null,
+          [CAIP_CHAIN_IDS.GOERLI]: null,
+          [CAIP_CHAIN_IDS.SEPOLIA]: null,
+          [CAIP_CHAIN_IDS.LINEA_GOERLI]: null,
         },
       },
       KeyringController: {
@@ -227,17 +227,17 @@ function defaultFixture() {
           },
         },
         providerConfig: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           rpcPrefs: {},
           rpcUrl: 'http://localhost:8545',
           ticker: 'ETH',
-          type: 'rpc',
           id: 'networkConfigurationId',
+          type: 'rpc',
         },
         networkConfigurations: {
           networkConfigurationId: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -298,7 +298,7 @@ function defaultFixture() {
           fees: {},
           liveness: true,
           smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
+            [CAIP_CHAIN_IDS.MAINNET]: [],
           },
         },
       },
@@ -350,10 +350,10 @@ function onboardingFixture() {
         showTestnetMessageInDropdown: true,
         trezorModel: null,
         usedNetworks: {
-          [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.LINEA_MAINNET]: true,
-          [CHAIN_IDS.GOERLI]: true,
-          [CHAIN_IDS.LOCALHOST]: true,
+          [CAIP_CHAIN_IDS.MAINNET]: true,
+          [CAIP_CHAIN_IDS.LINEA_MAINNET]: true,
+          [CAIP_CHAIN_IDS.GOERLI]: true,
+          [CAIP_CHAIN_IDS.LOCALHOST]: true,
         },
         [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
@@ -368,16 +368,15 @@ function onboardingFixture() {
         },
         providerConfig: {
           ticker: 'ETH',
-          type: 'rpc',
           rpcUrl: 'http://localhost:8545',
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           id: 'networkConfigurationId',
           type: 'rpc',
         },
         networkConfigurations: {
           networkConfigurationId: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             nickname: 'Localhost 8545',
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
@@ -422,7 +421,7 @@ function onboardingFixture() {
           fees: {},
           liveness: true,
           smartTransactions: {
-            [CHAIN_IDS.MAINNET]: [],
+            [CAIP_CHAIN_IDS.MAINNET]: [],
           },
         },
       },
@@ -503,7 +502,7 @@ class FixtureBuilder {
       incomingTransactions: {
         '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab': {
           blockNumber: '1',
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
           id: 5748272735958807,
           metamaskNetworkId: '1337',
@@ -795,7 +794,7 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         7911313280012623: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             maxFeePerGas: '0x59682f0c',
@@ -803,7 +802,7 @@ class FixtureBuilder {
           },
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 maxFeePerGas: '0x59682f0c',
@@ -852,7 +851,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012624: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             maxFeePerGas: '0x59682f0c',
@@ -860,7 +859,7 @@ class FixtureBuilder {
           },
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 maxFeePerGas: '0x59682f0c',
@@ -909,7 +908,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012625: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             maxFeePerGas: '0x59682f0c',
@@ -917,7 +916,7 @@ class FixtureBuilder {
           },
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 maxFeePerGas: '0x59682f0c',
@@ -966,7 +965,7 @@ class FixtureBuilder {
           type: 'simpleSend',
         },
         7911313280012626: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           dappSuggestedGasFees: {
             gas: '0x5208',
             maxFeePerGas: '0x59682f0c',
@@ -974,7 +973,7 @@ class FixtureBuilder {
           },
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               dappSuggestedGasFees: {
                 gas: '0x5208',
                 maxFeePerGas: '0x59682f0c',
@@ -1030,10 +1029,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -1064,7 +1063,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -1099,10 +1098,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -1135,7 +1134,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -1174,10 +1173,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         4046084157914634: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               id: 4046084157914634,
               loadingDefaults: true,
               metamaskNetworkId: '1337',
@@ -1246,7 +1245,7 @@ class FixtureBuilder {
           metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
-            caipChainId: CHAIN_IDS.LOCALHOST,
+            caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
             id: 4046084157914634,
             loadingDefaults: true,
             metamaskNetworkId: '1337',
@@ -1285,10 +1284,10 @@ class FixtureBuilder {
     return this.withTransactionController({
       transactions: {
         5748272735958801: {
-          caipChainId: CHAIN_IDS.LOCALHOST,
+          caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
           history: [
             {
-              caipChainId: CHAIN_IDS.LOCALHOST,
+              caipChainId: CAIP_CHAIN_IDS.LOCALHOST,
               id: 5748272735958801,
               loadingDefaults: true,
               metamaskNetworkId: '1337',

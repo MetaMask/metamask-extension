@@ -13,7 +13,7 @@ import {
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
 } from '../../pages/send/send.constants';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import { KeyringType } from '../../../shared/constants/keyring';
 import {
@@ -1586,10 +1586,10 @@ describe('Send Slice', () => {
           blockGasLimit: '',
           selectedAddress: '',
           providerConfig: {
-            caipChainId: CHAIN_IDS.GOERLI,
+            caipChainId: CAIP_CHAIN_IDS.GOERLI,
           },
           cachedBalances: {
-            [CHAIN_IDS.GOERLI]: {
+            [CAIP_CHAIN_IDS.GOERLI]: {
               [mockAddress1]: '0x0',
             },
           },
@@ -2176,7 +2176,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             providerConfig: {
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2225,7 +2225,7 @@ describe('Send Slice', () => {
           },
           metamask: {
             providerConfig: {
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
             },
           },
         };
@@ -2381,11 +2381,11 @@ describe('Send Slice', () => {
             gasEstimateType: GasEstimateTypes.none,
             gasFeeEstimates: {},
             providerConfig: {
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [CHAIN_IDS.GOERLI]: {},
+              [CAIP_CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2395,7 +2395,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [CHAIN_IDS.GOERLI]: {
+              [CAIP_CHAIN_IDS.GOERLI]: {
                 [mockAddress1]: '0x0',
               },
             },
@@ -2516,11 +2516,11 @@ describe('Send Slice', () => {
             blockGasLimit: '0x3a98',
             selectedAddress: '',
             providerConfig: {
-              caipChainId: CHAIN_IDS.GOERLI,
+              caipChainId: CAIP_CHAIN_IDS.GOERLI,
             },
             tokens: [],
             addressBook: {
-              [CHAIN_IDS.GOERLI]: {},
+              [CAIP_CHAIN_IDS.GOERLI]: {},
             },
             identities: {},
             accounts: {
@@ -2530,7 +2530,7 @@ describe('Send Slice', () => {
               },
             },
             cachedBalances: {
-              [CHAIN_IDS.GOERLI]: {
+              [CAIP_CHAIN_IDS.GOERLI]: {
                 [mockAddress1]: '0x0',
               },
             },
@@ -2688,7 +2688,7 @@ describe('Send Slice', () => {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
           providerConfig: {
-            caipChainId: CHAIN_IDS.GOERLI,
+            caipChainId: CAIP_CHAIN_IDS.GOERLI,
           },
           tokens: [
             {
@@ -2703,7 +2703,7 @@ describe('Send Slice', () => {
             },
           },
           addressBook: {
-            [CHAIN_IDS.GOERLI]: {},
+            [CAIP_CHAIN_IDS.GOERLI]: {},
           },
           identities: {},
           accounts: {
@@ -2713,7 +2713,7 @@ describe('Send Slice', () => {
             },
           },
           cachedBalances: {
-            [CHAIN_IDS.GOERLI]: {
+            [CAIP_CHAIN_IDS.GOERLI]: {
               [mockAddress1]: '0x0',
             },
           },
@@ -2918,7 +2918,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CAIP_CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
               },
               send: initialState,
@@ -2944,7 +2944,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CAIP_CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: initialState,
@@ -2956,7 +2956,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CAIP_CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2970,7 +2970,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CAIP_CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: false },
                 gasEstimateType: GasEstimateTypes.ethGasPrice,
               },
@@ -2984,7 +2984,7 @@ describe('Send Slice', () => {
           expect(
             getGasInputMode({
               metamask: {
-                providerConfig: { caipChainId: CHAIN_IDS.MAINNET },
+                providerConfig: { caipChainId: CAIP_CHAIN_IDS.MAINNET },
                 featureFlags: { advancedInlineGas: true },
               },
               send: {

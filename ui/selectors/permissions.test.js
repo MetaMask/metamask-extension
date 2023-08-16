@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../shared/constants/network';
 import {
   getConnectedSubjectsForSelectedAddress,
   getLastConnectedInfo,
@@ -150,7 +150,7 @@ describe('selectors', () => {
       },
       metamask: {
         providerConfig: {
-          caipChainId: CHAIN_IDS.GOERLI,
+          caipChainId: CAIP_CHAIN_IDS.GOERLI,
         },
         accounts: {
           '0x7250739de134d33ec7ab1ee592711e15098c9d2d': {

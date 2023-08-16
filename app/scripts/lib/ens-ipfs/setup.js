@@ -37,7 +37,7 @@ export default function setupEnsIpfsResolver({
     if (
       (tabId === -1 || getCurrentCaipChainId() !== 'eip155:1') &&
       // E2E tests use a chain other than 0x1, so for testing,
-      // allow the reuqest to pass through
+      // allow the request to pass through
       !process.env.IN_TEST
     ) {
       return;

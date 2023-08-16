@@ -1,4 +1,4 @@
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { TransactionType } from '../../../shared/constants/transaction';
 import migration64 from './064';
 
@@ -84,7 +84,7 @@ describe('migration #64', () => {
       1462177651588364: {
         type: TransactionType.cancel,
         id: 0,
-        chainId: CHAIN_IDS.MAINNET,
+        chainId: CAIP_CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x0',
         },
@@ -100,7 +100,7 @@ describe('migration #64', () => {
       1: {
         type: SENT_ETHER,
         id: 1,
-        chainId: CHAIN_IDS.MAINNET,
+        chainId: CAIP_CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x1',
         },
@@ -263,7 +263,7 @@ describe('migration #64', () => {
       1462177651588364: {
         type: TransactionType.cancel,
         id: 0,
-        chainId: CHAIN_IDS.MAINNET,
+        chainId: CAIP_CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x0',
         },
@@ -279,7 +279,7 @@ describe('migration #64', () => {
       1: {
         type: TransactionType.simpleSend,
         id: 1,
-        chainId: CHAIN_IDS.MAINNET,
+        chainId: CAIP_CHAIN_IDS.MAINNET,
         txParams: {
           nonce: '0x1',
         },

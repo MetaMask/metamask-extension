@@ -1,6 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
 const createGetSmartTransactionFeesApiResponse = () => {
@@ -144,11 +144,11 @@ export const createSwapsMockStore = () => {
         },
       },
       providerConfig: {
-        caipChainId: CHAIN_IDS.MAINNET,
+        caipChainId: CAIP_CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
       cachedBalances: {
-        [CHAIN_IDS.MAINNET]: 5,
+        [CAIP_CHAIN_IDS.MAINNET]: 5,
       },
       preferences: {
         showFiatInTestnets: true,
@@ -505,7 +505,7 @@ export const createSwapsMockStore = () => {
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
-          [CHAIN_IDS.MAINNET]: [
+          [CAIP_CHAIN_IDS.MAINNET]: [
             {
               uuid: 'uuid2',
               status: 'success',

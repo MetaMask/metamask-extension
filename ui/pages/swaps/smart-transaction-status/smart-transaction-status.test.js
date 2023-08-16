@@ -8,7 +8,7 @@ import {
   setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import SmartTransactionStatusLabel from '.';
 
 const middleware = [thunk];
@@ -54,7 +54,7 @@ describe('SmartTransactionStatusLabel', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =
       mockStore.metamask.smartTransactionsState.smartTransactions[
-        CHAIN_IDS.MAINNET
+        CAIP_CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = 'success';
     const store = configureMockStore(middleware)(mockStore);
@@ -72,7 +72,7 @@ describe('SmartTransactionStatusLabel', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =
       mockStore.metamask.smartTransactionsState.smartTransactions[
-        CHAIN_IDS.MAINNET
+        CAIP_CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = 'reverted';
     const store = configureMockStore(middleware)(mockStore);
@@ -89,7 +89,7 @@ describe('SmartTransactionStatusLabel', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =
       mockStore.metamask.smartTransactionsState.smartTransactions[
-        CHAIN_IDS.MAINNET
+        CAIP_CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = 'cancelled_user_cancelled';
     const store = configureMockStore(middleware)(mockStore);
@@ -110,7 +110,7 @@ describe('SmartTransactionStatusLabel', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =
       mockStore.metamask.smartTransactionsState.smartTransactions[
-        CHAIN_IDS.MAINNET
+        CAIP_CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = 'deadline_missed';
     const store = configureMockStore(middleware)(mockStore);
@@ -131,7 +131,7 @@ describe('SmartTransactionStatusLabel', () => {
     const mockStore = createSwapsMockStore();
     const latestSmartTransaction =
       mockStore.metamask.smartTransactionsState.smartTransactions[
-        CHAIN_IDS.MAINNET
+        CAIP_CHAIN_IDS.MAINNET
       ][1];
     latestSmartTransaction.status = 'unknown';
     const store = configureMockStore(middleware)(mockStore);

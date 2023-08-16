@@ -3,9 +3,9 @@ import { omit } from 'lodash';
 import { ApprovalType, toEthCaipChainId } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
-  CHAIN_ID_TO_TYPE_MAP,
+  CAIP_CHAIN_ID_TO_TYPE_MAP,
   NETWORK_TO_NAME_MAP,
-  CHAIN_ID_TO_RPC_URL_MAP,
+  CAIP_CHAIN_ID_TO_RPC_URL_MAP,
   CURRENCY_SYMBOLS,
   BUILT_IN_INFURA_NETWORKS,
 } from '../../../../../shared/constants/network';
@@ -37,8 +37,8 @@ function findExistingNetwork(caipChainId, findNetworkConfigurationBy) {
       caipChainId,
       ticker: CURRENCY_SYMBOLS.ETH,
       nickname: NETWORK_TO_NAME_MAP[caipChainId],
-      rpcUrl: CHAIN_ID_TO_RPC_URL_MAP[caipChainId],
-      type: CHAIN_ID_TO_TYPE_MAP[caipChainId],
+      rpcUrl: CAIP_CHAIN_ID_TO_RPC_URL_MAP[caipChainId],
+      type: CAIP_CHAIN_ID_TO_TYPE_MAP[caipChainId],
     };
   }
 

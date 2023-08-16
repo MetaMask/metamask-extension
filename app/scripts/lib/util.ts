@@ -2,7 +2,7 @@ import BN from 'bn.js';
 import { memoize } from 'lodash';
 import { AccessList } from '@ethereumjs/tx';
 import { CaipChainId } from '@metamask/utils';
-import { CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS, TEST_CHAINS } from '../../../shared/constants/network';
 
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -124,7 +124,7 @@ const addHexPrefix = (str: string) => {
 };
 
 function getChainType(caipChainId: CaipChainId) {
-  if (caipChainId === CHAIN_IDS.MAINNET) {
+  if (caipChainId === CAIP_CHAIN_IDS.MAINNET) {
     return 'mainnet';
   } else if ((TEST_CHAINS as string[]).includes(caipChainId)) {
     return 'testnet';

@@ -2,11 +2,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 const createStore = (
-  chainId = CHAIN_IDS.MAINNET,
+  chainId = CAIP_CHAIN_IDS.MAINNET,
   useTokenDetection = true,
   tokenRepetition = 1,
 ) => {
@@ -91,7 +91,7 @@ export const LongValueStory = (args) => (
 );
 LongValueStory.decorators = [
   (Story) => (
-    <Provider store={createStore(CHAIN_IDS.MAINNET, true, 5)}>
+    <Provider store={createStore(CAIP_CHAIN_IDS.MAINNET, true, 5)}>
       <Story />
     </Provider>
   ),

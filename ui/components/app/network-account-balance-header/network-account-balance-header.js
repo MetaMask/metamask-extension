@@ -14,7 +14,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Box from '../../ui/box/box';
 import { I18nContext } from '../../../contexts/i18n';
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import { Text } from '../../component-library';
 
 export default function NetworkAccountBalanceHeader({
@@ -26,7 +26,7 @@ export default function NetworkAccountBalanceHeader({
   caipChainId,
 }) {
   const t = useContext(I18nContext);
-  const networkIcon = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId];
+  const networkIcon = CAIP_CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[caipChainId];
   const networkIconWrapperClass = networkIcon
     ? 'network-account-balance-header__network-account__ident-icon-ethereum'
     : 'network-account-balance-header__network-account__ident-icon-ethereum--gray';

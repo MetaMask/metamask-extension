@@ -9,7 +9,7 @@ const NETWORK_IDS = {
   LINEA_MAINNET: '59144',
 };
 
-const CHAIN_IDS = {
+const CAIP_CHAIN_IDS = {
   MAINNET: '0x1',
   GOERLI: '0x5',
   LOCALHOST: '0x539',
@@ -56,35 +56,35 @@ const TEST_NETWORK_TICKER_MAP = {
 const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.GOERLI]: {
     networkId: NETWORK_IDS.GOERLI,
-    chainId: CHAIN_IDS.GOERLI,
+    chainId: CAIP_CHAIN_IDS.GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
   },
   [NETWORK_TYPES.SEPOLIA]: {
     networkId: NETWORK_IDS.SEPOLIA,
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: CAIP_CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_GOERLI]: {
     networkId: NETWORK_IDS.LINEA_GOERLI,
-    chainId: CHAIN_IDS.LINEA_GOERLI,
+    chainId: CAIP_CHAIN_IDS.LINEA_GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
     blockExplorerUrl: 'https://goerli.lineascan.build',
   },
   [NETWORK_TYPES.MAINNET]: {
     networkId: NETWORK_IDS.MAINNET,
-    chainId: CHAIN_IDS.MAINNET,
+    chainId: CAIP_CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
   },
   [NETWORK_TYPES.LINEA_MAINNET]: {
     networkId: NETWORK_IDS.LINEA_MAINNET,
-    chainId: CHAIN_IDS.LINEA_MAINNET,
+    chainId: CAIP_CHAIN_IDS.LINEA_MAINNET,
     blockExplorerUrl: 'https://lineascan.build',
   },
   [NETWORK_TYPES.LOCALHOST]: {
     networkId: NETWORK_IDS.LOCALHOST,
-    chainId: CHAIN_IDS.LOCALHOST,
+    chainId: CAIP_CHAIN_IDS.LOCALHOST,
   },
 };
 

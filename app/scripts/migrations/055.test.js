@@ -1,6 +1,6 @@
 import migration55 from './055';
 
-const { CHAIN_IDS, NETWORK_TYPES } = migration55;
+const { CAIP_CHAIN_IDS, NETWORK_TYPES } = migration55;
 
 describe('migration #55', () => {
   it('should update the version metadata', async () => {
@@ -48,10 +48,10 @@ describe('migration #55', () => {
         incomingTransactions:
           oldStorage.data.IncomingTransactionsController.incomingTransactions,
         incomingTxLastFetchedBlockByChainId: {
-          [CHAIN_IDS.MAINNET]: 1,
+          [CAIP_CHAIN_IDS.MAINNET]: 1,
           '0x3': 2,
           '0x4': 3,
-          [CHAIN_IDS.GOERLI]: 4,
+          [CAIP_CHAIN_IDS.GOERLI]: 4,
           '0x2a': 5,
         },
       },

@@ -20,7 +20,7 @@ import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
 } from '../../../shared/modules/swaps.utils';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../shared/constants/network';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
@@ -599,19 +599,19 @@ export const isContractAddressValid = (
  */
 export const getNetworkNameByChainId = (caipChainId: CaipChainId): string => {
   switch (caipChainId) {
-    case CHAIN_IDS.MAINNET:
+    case CAIP_CHAIN_IDS.MAINNET:
       return ETHEREUM;
-    case CHAIN_IDS.BSC:
+    case CAIP_CHAIN_IDS.BSC:
       return BSC;
-    case CHAIN_IDS.POLYGON:
+    case CAIP_CHAIN_IDS.POLYGON:
       return POLYGON;
-    case CHAIN_IDS.GOERLI:
+    case CAIP_CHAIN_IDS.GOERLI:
       return GOERLI;
-    case CHAIN_IDS.AVALANCHE:
+    case CAIP_CHAIN_IDS.AVALANCHE:
       return AVALANCHE;
-    case CHAIN_IDS.OPTIMISM:
+    case CAIP_CHAIN_IDS.OPTIMISM:
       return OPTIMISM;
-    case CHAIN_IDS.ARBITRUM:
+    case CAIP_CHAIN_IDS.ARBITRUM:
       return ARBITRUM;
     default:
       return '';
@@ -631,7 +631,7 @@ export const getSwapsLivenessForNetwork = (
 ) => {
   const networkName = getNetworkNameByChainId(caipChainId);
   // Use old APIs for testnet and Goerli.
-  if ([CHAIN_IDS.LOCALHOST, CHAIN_IDS.GOERLI].includes(caipChainId)) {
+  if ([CAIP_CHAIN_IDS.LOCALHOST, CAIP_CHAIN_IDS.GOERLI].includes(caipChainId)) {
     return {
       swapsFeatureIsLive: true,
     };

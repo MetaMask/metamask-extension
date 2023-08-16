@@ -1,7 +1,7 @@
 import punycode from 'punycode/punycode';
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';
-import { CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
+import { CAIP_CHAIN_ID_TO_NETWORK_ID_MAP } from '../../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import Ens from './ens';
 
@@ -22,7 +22,7 @@ export default class EnsController {
     this._ens = ens;
     if (!this._ens) {
       const caipChainId = getCurrentCaipChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
+      const network = CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,
@@ -40,7 +40,7 @@ export default class EnsController {
     onNetworkDidChange(() => {
       this.store.putState(initState);
       const caipChainId = getCurrentCaipChainId();
-      const network = CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
+      const network = CAIP_CHAIN_ID_TO_NETWORK_ID_MAP[caipChainId];
       if (Ens.getNetworkEnsSupport(network)) {
         this._ens = new Ens({
           network,

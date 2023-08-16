@@ -10,7 +10,7 @@ import { tick } from '../../../../../test/lib/tick';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { CAIP_CHAIN_IDS } from '../../../../../shared/constants/network';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 
 import UnconnectedAccountAlert from '.';
@@ -41,7 +41,7 @@ describe('Unconnected Account Alert', () => {
   };
 
   const cachedBalances = {
-    [CHAIN_IDS]: {
+    [CAIP_CHAIN_IDS]: {
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x0',
       '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': '0x0',
     },
@@ -65,7 +65,7 @@ describe('Unconnected Account Alert', () => {
       cachedBalances,
       keyrings,
       providerConfig: {
-        caipChainId: CHAIN_IDS,
+        caipChainId: CAIP_CHAIN_IDS,
       },
       permissionHistory: {
         'https://test.dapp': {

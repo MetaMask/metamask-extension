@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { CHAIN_IDS } from '../constants/network';
+import { CAIP_CHAIN_IDS } from '../constants/network';
 import {
   SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
   WETH_CONTRACT_ADDRESS,
@@ -81,7 +81,7 @@ describe('Swaps Utils', () => {
           sourceTokenInfo: { ...TOKENS[0] },
           destinationTokenInfo: { ...TOKENS[1] },
         },
-        { caipChainId: CHAIN_IDS.MAINNET },
+        { caipChainId: CAIP_CHAIN_IDS.MAINNET },
       );
       expect(result).toStrictEqual(expectedResult2);
     });
@@ -93,8 +93,8 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from ETH to WETH', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
+          CAIP_CHAIN_IDS.MAINNET,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.MAINNET]?.address,
           WETH_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -105,7 +105,7 @@ describe('Swaps Utils', () => {
         '0X0000000000000000000000000000000000000000';
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
           ethAddressWithUpperCaseChars,
           WETH_CONTRACT_ADDRESS,
         ),
@@ -115,9 +115,9 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from WETH to ETH', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
           WETH_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.MAINNET]?.address,
         ),
       ).toBe(true);
     });
@@ -127,9 +127,9 @@ describe('Swaps Utils', () => {
         '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
           wethContractAddressWithUpperCaseChars,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.MAINNET]?.address,
         ),
       ).toBe(true);
     });
@@ -137,8 +137,8 @@ describe('Swaps Utils', () => {
     it('returns false if swapping from ETH to a non-WETH token', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.MAINNET]?.address,
+          CAIP_CHAIN_IDS.MAINNET,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.MAINNET]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -147,8 +147,8 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from BNB to WBNB', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.BSC,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
+          CAIP_CHAIN_IDS.BSC,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.BSC]?.address,
           WBNB_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -157,9 +157,9 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from WBNB to BNB', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.BSC,
+          CAIP_CHAIN_IDS.BSC,
           WBNB_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.BSC]?.address,
         ),
       ).toBe(true);
     });
@@ -167,8 +167,8 @@ describe('Swaps Utils', () => {
     it('returns false if swapping from BNB to a non-WBNB token', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.BSC,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.BSC]?.address,
+          CAIP_CHAIN_IDS.BSC,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.BSC]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -177,8 +177,8 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from MATIC to WMATIC', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.POLYGON,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
+          CAIP_CHAIN_IDS.POLYGON,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.POLYGON]?.address,
           WMATIC_CONTRACT_ADDRESS,
         ),
       ).toBe(true);
@@ -187,9 +187,9 @@ describe('Swaps Utils', () => {
     it('returns true if swapping from WMATIC to MATIC', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.POLYGON,
+          CAIP_CHAIN_IDS.POLYGON,
           WMATIC_CONTRACT_ADDRESS,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.POLYGON]?.address,
         ),
       ).toBe(true);
     });
@@ -197,8 +197,8 @@ describe('Swaps Utils', () => {
     it('returns false if swapping from MATIC to a non-WMATIC token', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.POLYGON,
-          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CHAIN_IDS.POLYGON]?.address,
+          CAIP_CHAIN_IDS.POLYGON,
+          SWAPS_CHAINID_DEFAULT_TOKEN_MAP[CAIP_CHAIN_IDS.POLYGON]?.address,
           randomTokenAddress,
         ),
       ).toBe(false);
@@ -207,7 +207,7 @@ describe('Swaps Utils', () => {
     it('returns false if a source token is undefined', () => {
       expect(
         shouldEnableDirectWrapping(
-          CHAIN_IDS.MAINNET,
+          CAIP_CHAIN_IDS.MAINNET,
           undefined,
           WETH_CONTRACT_ADDRESS,
         ),
@@ -216,12 +216,15 @@ describe('Swaps Utils', () => {
 
     it('returns false if a destination token is undefined', () => {
       expect(
-        shouldEnableDirectWrapping(CHAIN_IDS.MAINNET, WETH_CONTRACT_ADDRESS),
+        shouldEnableDirectWrapping(
+          CAIP_CHAIN_IDS.MAINNET,
+          WETH_CONTRACT_ADDRESS,
+        ),
       ).toBe(false);
     });
 
     it('returns false if source and destination tokens are undefined', () => {
-      expect(shouldEnableDirectWrapping(CHAIN_IDS.MAINNET)).toBe(false);
+      expect(shouldEnableDirectWrapping(CAIP_CHAIN_IDS.MAINNET)).toBe(false);
     });
   });
 });

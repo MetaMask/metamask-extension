@@ -17,7 +17,10 @@ import { getSwapsTokens } from '../ducks/swaps/swaps';
 import { isSwapsDefaultTokenSymbol } from '../../shared/modules/swaps.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { TokenBucketPriority } from '../../shared/constants/swaps';
-import { CHAIN_IDS, CURRENCY_SYMBOLS } from '../../shared/constants/network';
+import {
+  CAIP_CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../shared/constants/network';
 import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
@@ -58,18 +61,25 @@ export function getRenderableTokenData(
     : '';
 
   const caipChainIdForTokenIcons =
-    caipChainId === CHAIN_IDS.GOERLI ? CHAIN_IDS.MAINNET : caipChainId;
+    caipChainId === CAIP_CHAIN_IDS.GOERLI
+      ? CAIP_CHAIN_IDS.MAINNET
+      : caipChainId;
 
   const tokenIconUrl =
-    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.MAINNET) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.GOERLI) ||
-    (symbol === CURRENCY_SYMBOLS.BNB && caipChainId === CHAIN_IDS.BSC) ||
-    (symbol === CURRENCY_SYMBOLS.MATIC && caipChainId === CHAIN_IDS.POLYGON) ||
+    (symbol === CURRENCY_SYMBOLS.ETH &&
+      caipChainId === CAIP_CHAIN_IDS.MAINNET) ||
+    (symbol === CURRENCY_SYMBOLS.ETH &&
+      caipChainId === CAIP_CHAIN_IDS.GOERLI) ||
+    (symbol === CURRENCY_SYMBOLS.BNB && caipChainId === CAIP_CHAIN_IDS.BSC) ||
+    (symbol === CURRENCY_SYMBOLS.MATIC &&
+      caipChainId === CAIP_CHAIN_IDS.POLYGON) ||
     (symbol === CURRENCY_SYMBOLS.AVALANCHE &&
-      caipChainId === CHAIN_IDS.AVALANCHE) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.OPTIMISM) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.AURORA) ||
-    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CHAIN_IDS.ARBITRUM)
+      caipChainId === CAIP_CHAIN_IDS.AVALANCHE) ||
+    (symbol === CURRENCY_SYMBOLS.ETH &&
+      caipChainId === CAIP_CHAIN_IDS.OPTIMISM) ||
+    (symbol === CURRENCY_SYMBOLS.ETH &&
+      caipChainId === CAIP_CHAIN_IDS.AURORA) ||
+    (symbol === CURRENCY_SYMBOLS.ETH && caipChainId === CAIP_CHAIN_IDS.ARBITRUM)
       ? iconUrl
       : formatIconUrlWithProxy({
           caipChainId: caipChainIdForTokenIcons,

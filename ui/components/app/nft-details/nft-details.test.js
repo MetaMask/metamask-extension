@@ -13,7 +13,7 @@ import {
   setRemoveNftMessage,
 } from '../../../store/actions';
 import {
-  CHAIN_IDS,
+  CAIP_CHAIN_IDS,
   CURRENCY_SYMBOLS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
@@ -251,7 +251,7 @@ describe('NFT Details', () => {
         metamask: {
           ...mockState.metamask,
           providerConfig: {
-            caipChainId: CHAIN_IDS.SEPOLIA,
+            caipChainId: CAIP_CHAIN_IDS.SEPOLIA,
             type: NETWORK_TYPES.SEPOLIA,
           },
         },
