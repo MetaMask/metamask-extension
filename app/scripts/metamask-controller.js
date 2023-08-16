@@ -2943,12 +2943,10 @@ export default class MetamaskController extends EventEmitter {
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await this.coreKeyringController.addNewAccount(accounts.length);
+        const { addedAccountAddress } =
+          await this.coreKeyringController.addNewAccount(accounts.length);
         accounts = await this.coreKeyringController.getAccounts();
-        lastBalance = await this.getBalance(
-          accounts[accounts.length - 1],
-          ethQuery,
-        );
+        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
       }
 
       // remove extra zero balance account potentially created from seeking ahead
@@ -3394,7 +3392,7 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param accountCount
-   * @returns {} keyState
+   * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
     const isActionMetricsQueueE2ETest =
@@ -3404,38 +3402,16 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-    const { keyringController } = this;
-    const { identities: oldIdentities } =
-      this.preferencesController.store.getState();
+    const oldAccounts = await this.coreKeyringController.getAccounts();
 
-    if (Object.keys(oldIdentities).length === accountCount) {
-      const oldAccounts = await keyringController.getAccounts();
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
-      const newAccounts = await keyringController.getAccounts();
+    const { addedAccountAddress } =
+      await this.coreKeyringController.addNewAccount(accountCount);
 
-      await this.verifySeedPhrase();
-
-      this.preferencesController.setAddresses(newAccounts);
-      newAccounts.forEach((address) => {
-        if (!oldAccounts.includes(address)) {
-          this.preferencesController.setSelectedAddress(address);
-        }
-      });
-
-      const { identities } = this.preferencesController.store.getState();
-      return { ...keyState, identities };
+    if (!oldAccounts.includes(addedAccountAddress)) {
+      this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
 
-    return {
-      ...keyringController.memStore.getState(),
-      identities: oldIdentities,
-    };
+    return addedAccountAddress;
   }
 
   /**
