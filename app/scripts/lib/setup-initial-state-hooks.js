@@ -6,6 +6,13 @@ export function setupInitialStateHooks({ localStore, platform }) {
     return await localStore.get();
   };
 
+  const persistedStateMask = {
+    data: SENTRY_BACKGROUND_STATE,
+    meta: {
+      version: true,
+    },
+  };
+
   globalThis.stateHooks.getSentryState = function () {
     const sentryState = {
       browser: window.navigator.userAgent,
@@ -16,15 +23,15 @@ export function setupInitialStateHooks({ localStore, platform }) {
         ...sentryState,
         state: globalThis.stateHooks.getSentryAppState(),
       };
+    } else if (localStore.mostRecentRetrievedState) {
+      return {
+        ...sentryState,
+        persistedState: maskObject(
+          localStore.mostRecentRetrievedState,
+          persistedStateMask,
+        ),
+      };
     }
-    return {
-      ...sentryState,
-      persistedState: maskObject(localStore.mostRecentRetrievedState, {
-        data: SENTRY_BACKGROUND_STATE,
-        meta: {
-          version: true,
-        },
-      }),
-    };
+    return sentryState;
   };
 }
