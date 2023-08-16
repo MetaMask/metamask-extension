@@ -2008,6 +2008,7 @@
     },
     "@metamask/ppom-validator": {
       "globals": {
+        "URL": true,
         "clearInterval": true,
         "console.error": true,
         "setInterval": true
