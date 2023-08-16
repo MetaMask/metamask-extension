@@ -52,7 +52,6 @@ import MetamaskController, {
 } from './metamask-controller';
 import rawFirstTimeState from './first-time-state';
 import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
-import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
 
@@ -397,12 +396,7 @@ export async function loadStateFromPersistence() {
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
-    // get vault structure without secrets
-    const vaultStructure = getObjStructure(versionedData);
-    sentry.captureException(err, {
-      // "extra" key is required by Sentry
-      extra: { vaultStructure },
-    });
+    sentry.captureException(err);
   });
 
   // migrate data
