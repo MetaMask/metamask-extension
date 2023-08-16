@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
 import { hasProperty, isObject } from '@metamask/utils';
 import { v4 } from 'uuid';
+import log from 'loglevel';
 
 export const version = 82;
 
@@ -26,6 +27,7 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'PreferencesController')) {
+    log.warn(`state.PreferencesController is undefined`);
     return state;
   }
   if (!isObject(state.PreferencesController)) {
