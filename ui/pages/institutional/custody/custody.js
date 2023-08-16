@@ -84,7 +84,7 @@ const CustodyPage = () => {
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
 
-    const sortedCustodians = custodians.sort(function (a, b) {
+    const sortedCustodians = [...custodians].sort(function (a, b) {
       const nameA = a.name.toLowerCase();
       const nameB = b.name.toLowerCase();
 
@@ -99,17 +99,21 @@ const CustodyPage = () => {
 
     function shouldShowInProduction(custodian) {
       return (
+        custodian &&
+        'production' in custodian &&
         !custodian.production &&
         process.env.METAMASK_ENVIRONMENT === 'production'
       );
     }
 
     function isHidden(custodian) {
-      return custodian.hidden;
+      return custodian && 'hidden' in custodian && custodian.hidden;
     }
 
     function isNotSelectedCustodian(custodian) {
       return (
+        custodian &&
+        'name' in custodian &&
         connectRequest &&
         Object.keys(connectRequest).length &&
         custodian.name !== selectedCustodianName
@@ -153,23 +157,27 @@ const CustodyPage = () => {
             size={BUTTON_SIZES.SM}
             data-testid="custody-connect-button"
             onClick={async () => {
-              const jwtListValue = await dispatch(
-                mmiActions.getCustodianJWTList(custodian.name),
-              );
-              setSelectedCustodianName(custodian.name);
-              setSelectedCustodianType(custodian.type);
-              setSelectedCustodianImage(custodian.iconUrl);
-              setSelectedCustodianDisplayName(custodian.displayName);
-              setApiUrl(custodian.apiUrl);
-              setCurrentJwt(jwtListValue[0] || '');
-              setJwtList(jwtListValue);
-              trackEvent({
-                category: MetaMetricsEventCategory.MMI,
-                event: MetaMetricsEventName.CustodianSelected,
-                properties: {
-                  custodian: custodian.name,
-                },
-              });
+              try {
+                const jwtListValue = await dispatch(
+                  mmiActions.getCustodianJWTList(custodian.name),
+                );
+                setSelectedCustodianName(custodian.name);
+                setSelectedCustodianType(custodian.type);
+                setSelectedCustodianImage(custodian.iconUrl);
+                setSelectedCustodianDisplayName(custodian.displayName);
+                setApiUrl(custodian.apiUrl);
+                setCurrentJwt(jwtListValue[0] || '');
+                setJwtList(jwtListValue);
+                trackEvent({
+                  category: MetaMetricsEventCategory.MMI,
+                  event: MetaMetricsEventName.CustodianSelected,
+                  properties: {
+                    custodian: custodian.name,
+                  },
+                });
+              } catch (error) {
+                console.error('Error:', error);
+              }
             }}
           >
             {t('select')}

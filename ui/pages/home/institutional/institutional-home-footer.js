@@ -50,9 +50,9 @@ const InstitutionalHomeFooter = ({ activitySupportDisplayStyle }) => {
 InstitutionalHomeFooter.propTypes = {
   activitySupportDisplayStyle: PropTypes.shape({
     justifyContent: PropTypes.string.isRequired,
-    paddingLeft: PropTypes.string,
-    marginBottom: PropTypes.string,
-    marginTop: PropTypes.string,
+    paddingLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    marginBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    marginTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
 };
 

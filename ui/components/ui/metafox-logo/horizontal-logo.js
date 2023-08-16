@@ -994,6 +994,6 @@ export default function MetaFoxHorizontalLogo({
 }
 
 MetaFoxHorizontalLogo.propTypes = {
-  theme: PropTypes.oneOf(['light', 'dark']),
+  theme: PropTypes.oneOf(['light', 'dark', 'os']),
   className: PropTypes.string,
 };
