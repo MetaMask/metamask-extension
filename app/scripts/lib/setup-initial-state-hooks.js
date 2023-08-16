@@ -2,6 +2,11 @@ import { maskObject } from '../../../shared/modules/object.utils';
 import { SENTRY_BACKGROUND_STATE } from './setupSentry';
 
 export function setupInitialStateHooks({ localStore, platform }) {
+  /**
+   * Get the persisted wallet state.
+   *
+   * @returns The persisted wallet state.
+   */
   globalThis.stateHooks.getPersistedState = async function () {
     return await localStore.get();
   };
@@ -13,6 +18,13 @@ export function setupInitialStateHooks({ localStore, platform }) {
     },
   };
 
+  /**
+   * Get a state snapshot to include with Sentry error reports. This uses the
+   * persisted state pre-initialization, and the in-memory state post-
+   * initialization. In both cases the state is anonymized.
+   *
+   * @returns A Sentry state snapshot.
+   */
   globalThis.stateHooks.getSentryState = function () {
     const sentryState = {
       browser: window.navigator.userAgent,
