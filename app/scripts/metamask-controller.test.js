@@ -28,6 +28,7 @@ import TransactionController from './controllers/transactions';
 import PreferencesController from './controllers/preferences';
 
 const Ganache = require('../../test/e2e/ganache');
+import {jestExpect as expect} from "@jest/expect";
 
 const ganacheServer = new Ganache();
 
@@ -1085,15 +1086,9 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              assert.equal(loggerMiddlewareMock.requests[0].tabId, 456);
-              assert.equal(
-                loggerMiddlewareMock.requests[0].origin,
-                'http://mycrypto.com',
-              );
-              assert.equal(
-                loggerMiddlewareMock.requests[0].networkClientId,
-                'networkConfigurationId1',
-              );
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('origin', 'http://mycrypto.com');
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('tabId', 456);
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('networkClientId', 'networkConfigurationId1');
               done();
             });
           },
@@ -1131,11 +1126,8 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              assert.equal(loggerMiddlewareMock.requests[0].tabId, undefined);
-              assert.equal(
-                loggerMiddlewareMock.requests[0].origin,
-                'http://mycrypto.com',
-              );
+              expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty('tabId');
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('origin', 'http://mycrypto.com');
               done();
             });
           },
