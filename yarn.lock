@@ -4121,20 +4121,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-sig-util@npm:5.0.2":
-  version: 5.0.2
-  resolution: "@metamask/eth-sig-util@npm:5.0.2"
-  dependencies:
-    "@ethereumjs/util": "npm:^8.0.0"
-    bn.js: "npm:^4.11.8"
-    ethereum-cryptography: "npm:^1.1.2"
-    ethjs-util: "npm:^0.1.6"
-    tweetnacl: "npm:^1.0.3"
-    tweetnacl-util: "npm:^0.15.1"
-  checksum: 37489528d8e987bae00d9c5b2025b86e9ca6914cc9f3b98bae2eb39c3a890959d15cb09fad9c761f88ce0ae49e2a91f0237425f5771b1e3f0be62f2965e46a38
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-sig-util@npm:^5.0.0, @metamask/eth-sig-util@npm:^5.0.1, @metamask/eth-sig-util@npm:^5.0.2, @metamask/eth-sig-util@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/eth-sig-util@npm:5.1.0"
