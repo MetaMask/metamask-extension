@@ -3,6 +3,10 @@
     "isInitialized": true,
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
+    "currentAppVersion": "10.34.4",
+    "previousAppVersion": "",
+    "previousMigrationVersion": 0,
+    "currentMigrationVersion": 94,
     "networkId": "1337",
     "providerConfig": {
       "nickname": "Localhost 8545",
