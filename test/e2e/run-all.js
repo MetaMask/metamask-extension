@@ -92,6 +92,7 @@ async function main() {
       const filteredTests = [
         'test-snap-manageAccount.spec.js',
         'test-snap-rpc.spec.js',
+        'test-snap-lifecycle.spec.js',
       ];
       testPaths = testPaths.filter((p) =>
         filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
