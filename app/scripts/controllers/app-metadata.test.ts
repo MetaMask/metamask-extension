@@ -1,9 +1,5 @@
 import assert from 'assert';
-import { AppMetadataController } from './app-metadata';
-
-const MOCK_VERSION = {
-  version: '',
-};
+import AppMetadataController from './app-metadata';
 
 const EXPECTED_DEFAULT_STATE = {
   currentAppVersion: '',
@@ -12,21 +8,7 @@ const EXPECTED_DEFAULT_STATE = {
   currentMigrationVersion: 0,
 };
 
-jest.mock(
-  '../platforms/extension',
-  () =>
-    class MockExtensionPlatform {
-      getVersion(): string {
-        return MOCK_VERSION.version;
-      }
-    },
-);
-
 describe('AppMetadataController', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-
   describe('constructor', () => {
     it('accepts initial state and does not modify it if currentMigrationVersion and platform.getVersion() match respective values in state', async () => {
       const initState = {
@@ -35,19 +17,17 @@ describe('AppMetadataController', () => {
         previousMigrationVersion: 1,
         currentMigrationVersion: 1,
       };
-      MOCK_VERSION.version = initState.currentAppVersion;
       const appMetadataController = new AppMetadataController({
         state: initState,
         currentMigrationVersion: 1,
+        currentAppVersion: '1',
       });
       assert.deepStrictEqual(appMetadataController.store.getState(), initState);
     });
 
-    it('sets default state and does not modify it if currentMigrationVersion and platform.getVersion() match respective default values', async () => {
-      MOCK_VERSION.version = '';
+    it('sets default state and does not modify it', async () => {
       const appMetadataController = new AppMetadataController({
         state: {},
-        currentMigrationVersion: 0,
       });
       assert.deepStrictEqual(
         appMetadataController.store.getState(),
@@ -55,11 +35,23 @@ describe('AppMetadataController', () => {
       );
     });
 
-    it('updates the currentAppVersion state property if platform.getVersion() does not match the default value', async () => {
-      MOCK_VERSION.version = '1';
+    it('sets default state and does not modify it if options version parameters match respective default values', async () => {
       const appMetadataController = new AppMetadataController({
         state: {},
         currentMigrationVersion: 0,
+        currentAppVersion: '',
+      });
+      assert.deepStrictEqual(
+        appMetadataController.store.getState(),
+        EXPECTED_DEFAULT_STATE,
+      );
+    });
+
+    it('updates the currentAppVersion state property if options.currentAppVersion does not match the default value', async () => {
+      const appMetadataController = new AppMetadataController({
+        state: {},
+        currentMigrationVersion: 0,
+        currentAppVersion: '1',
       });
       assert.deepStrictEqual(appMetadataController.store.getState(), {
         ...EXPECTED_DEFAULT_STATE,
@@ -67,13 +59,13 @@ describe('AppMetadataController', () => {
       });
     });
 
-    it('updates the currentAppVersion and previousAppVersion state properties if platform.getVersion(), currentAppVersion and previousAppVersion are all different', async () => {
-      MOCK_VERSION.version = '3';
+    it('updates the currentAppVersion and previousAppVersion state properties if options.currentAppVersion, currentAppVersion and previousAppVersion are all different', async () => {
       const appMetadataController = new AppMetadataController({
         state: {
           currentAppVersion: '2',
           previousAppVersion: '1',
         },
+        currentAppVersion: '3',
         currentMigrationVersion: 0,
       });
       assert.deepStrictEqual(appMetadataController.store.getState(), {
@@ -84,7 +76,6 @@ describe('AppMetadataController', () => {
     });
 
     it('updates the currentMigrationVersion state property if the currentMigrationVersion param does not match the default value', async () => {
-      MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {},
         currentMigrationVersion: 1,
@@ -96,7 +87,6 @@ describe('AppMetadataController', () => {
     });
 
     it('updates the currentMigrationVersion and previousMigrationVersion state properties if the currentMigrationVersion param, the currentMigrationVersion state property and the previousMigrationVersion state property are all different', async () => {
-      MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {
           currentMigrationVersion: 2,
@@ -114,11 +104,11 @@ describe('AppMetadataController', () => {
 
   describe('maybeUpdateAppVersion', () => {
     it('updates currentAppVersion and previousAppVersion', async () => {
-      MOCK_VERSION.version = '1';
       const appMetadataController = new AppMetadataController({
         state: {
           currentAppVersion: '1',
         },
+        currentAppVersion: '1',
         currentMigrationVersion: 0,
       });
 
@@ -127,8 +117,7 @@ describe('AppMetadataController', () => {
         currentAppVersion: '1',
       });
 
-      MOCK_VERSION.version = '2';
-      appMetadataController.maybeUpdateAppVersion();
+      appMetadataController.maybeUpdateAppVersion('2');
 
       assert.deepStrictEqual(appMetadataController.store.getState(), {
         ...EXPECTED_DEFAULT_STATE,
@@ -137,12 +126,12 @@ describe('AppMetadataController', () => {
       });
     });
 
-    it('does not update currentAppVersion and previousAppVersion if currentAppVersion matches the value returned by platform.getVersion()', async () => {
-      MOCK_VERSION.version = '1';
+    it('does not update currentAppVersion and previousAppVersion if currentAppVersion matches the value passed to maybeUpdateAppVersion', async () => {
       const appMetadataController = new AppMetadataController({
         state: {
           currentAppVersion: '1',
         },
+        currentAppVersion: '1',
         currentMigrationVersion: 0,
       });
 
@@ -151,7 +140,7 @@ describe('AppMetadataController', () => {
         currentAppVersion: '1',
       });
 
-      appMetadataController.maybeUpdateAppVersion();
+      appMetadataController.maybeUpdateAppVersion('1');
 
       assert.deepStrictEqual(appMetadataController.store.getState(), {
         ...EXPECTED_DEFAULT_STATE,
@@ -162,7 +151,6 @@ describe('AppMetadataController', () => {
 
   describe('maybeUpdateMigrationVersion', () => {
     it('updates currentMigrationVersion and previousMigrationVersion', async () => {
-      MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {
           currentMigrationVersion: 1,
@@ -185,7 +173,6 @@ describe('AppMetadataController', () => {
     });
 
     it('does not update currentMigrationVersion and previousMigrationVersion if it is passed a parameter matching currentMigrationVersion', async () => {
-      MOCK_VERSION.version = '';
       const appMetadataController = new AppMetadataController({
         state: {
           currentMigrationVersion: 1,

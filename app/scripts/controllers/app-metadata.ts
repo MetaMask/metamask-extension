@@ -1,8 +1,5 @@
 import EventEmitter from 'events';
 import { ObservableStore } from '@metamask/obs-store';
-import ExtensionPlatform from '../platforms/extension';
-
-const platform = new ExtensionPlatform();
 
 /**
  * The state of the AppMetadataController
@@ -19,6 +16,7 @@ export type AppMetadataControllerState = {
  */
 export type AppMetadataControllerOptions = {
   currentMigrationVersion?: number;
+  currentAppVersion?: string;
   state?: Partial<AppMetadataControllerState>;
 };
 
@@ -47,8 +45,10 @@ export default class AppMetadataController extends EventEmitter {
    * @param options - the controller options
    * @param options.state - Initial controller state.
    * @param options.currentMigrationVersion
+   * @param options.currentAppVersion
    */
   constructor({
+    currentAppVersion = '',
     currentMigrationVersion = 0,
     state = {},
   }: AppMetadataControllerOptions) {
@@ -59,16 +59,17 @@ export default class AppMetadataController extends EventEmitter {
       ...state,
     });
 
-    this.maybeUpdateAppVersion();
+    this.maybeUpdateAppVersion(currentAppVersion);
 
     this.maybeUpdateMigrationVersion(currentMigrationVersion);
   }
 
   /**
    * Updates the currentAppVersion in state, and sets the previousAppVersion to the old currentAppVersion.
+   *
+   * @param maybeNewAppVersion
    */
-  maybeUpdateAppVersion(): void {
-    const maybeNewAppVersion = platform.getVersion();
+  maybeUpdateAppVersion(maybeNewAppVersion: string): void {
     const oldCurrentAppVersion = this.store.getState().currentAppVersion;
 
     if (maybeNewAppVersion !== oldCurrentAppVersion) {
