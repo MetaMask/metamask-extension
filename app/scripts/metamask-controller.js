@@ -293,7 +293,7 @@ export default class MetamaskController extends EventEmitter {
     this.appMetadataController = new AppMetadataController({
       state: initState.AppMetadataController,
       currentMigrationVersion: this.currentMigrationVersion,
-    })
+    });
 
     // next, we will initialize the controllers
     // controller initialization order matters

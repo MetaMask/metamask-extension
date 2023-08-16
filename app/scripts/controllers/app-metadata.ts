@@ -35,7 +35,7 @@ const defaultState: AppMetadataControllerState = {
  * run migration.
  *
  */
-export class AppMetadataController extends EventEmitter {
+export default class AppMetadataController extends EventEmitter {
   /**
    * Observable store containing controller data.
    */
@@ -44,8 +44,9 @@ export class AppMetadataController extends EventEmitter {
   /**
    * Constructs a AppMetadata controller.
    *
+   * @param options - the controller options
    * @param options.state - Initial controller state.
-   * {@link AppMetadataControllerOptions}.
+   * @param options.currentMigrationVersion
    */
   constructor({
     currentMigrationVersion = 0,
@@ -80,9 +81,12 @@ export class AppMetadataController extends EventEmitter {
 
   /**
    * Updates the migrationVersion in state.
+   *
+   * @param maybeNewMigrationVersion
    */
   maybeUpdateMigrationVersion(maybeNewMigrationVersion: number): void {
-    const oldCurrentMigrationVersion = this.store.getState().currentMigrationVersion;
+    const oldCurrentMigrationVersion =
+      this.store.getState().currentMigrationVersion;
 
     if (maybeNewMigrationVersion !== oldCurrentMigrationVersion) {
       this.store.updateState({
@@ -91,4 +95,4 @@ export class AppMetadataController extends EventEmitter {
       });
     }
   }
-};
+}
