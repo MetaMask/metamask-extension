@@ -18,7 +18,7 @@ export type AppMetadataControllerState = {
  * The options that NetworkController takes.
  */
 export type AppMetadataControllerOptions = {
-  currentAppVersion?: string;
+  currentMigrationVersion?: number;
   state?: Partial<AppMetadataControllerState>;
 };
 
@@ -48,7 +48,7 @@ export class AppMetadataController extends EventEmitter {
    * {@link AppMetadataControllerOptions}.
    */
   constructor({
-    currentMigrationVersion = '',
+    currentMigrationVersion = 0,
     state = {},
   }: AppMetadataControllerOptions) {
     super();
@@ -81,7 +81,7 @@ export class AppMetadataController extends EventEmitter {
   /**
    * Updates the migrationVersion in state.
    */
-  maybeUpdateMigrationVersion(maybeNewMigrationVersion: string): void {
+  maybeUpdateMigrationVersion(maybeNewMigrationVersion: number): void {
     const oldCurrentMigrationVersion = this.store.getState().currentMigrationVersion;
 
     if (maybeNewMigrationVersion !== oldCurrentMigrationVersion) {
