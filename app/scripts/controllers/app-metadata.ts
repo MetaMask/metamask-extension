@@ -19,12 +19,7 @@ export type AppMetadataControllerState = {
  */
 export type AppMetadataControllerOptions = {
   currentAppVersion?: string;
-  state?: {
-    currentAppVersion?: string;
-    previousAppVersion?: string;
-    previousMigrationVersion?: string;
-    currentMigrationVersion?: string;
-  };
+  state?: Partial<AppMetadataControllerState>;
 };
 
 const defaultState: AppMetadataControllerState = {
