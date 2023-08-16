@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import {
   ButtonLink,
@@ -10,8 +9,7 @@ import {
 } from '../../component-library';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
-import { detectNewTokens } from '../../../store/actions';
+import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -28,7 +26,6 @@ export const ImportTokenLink: React.FC<{ className: string }> = ({
 }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
@@ -51,7 +48,7 @@ export const ImportTokenLink: React.FC<{ className: string }> = ({
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
-            history.push(IMPORT_TOKEN_ROUTE);
+            dispatch(showImportTokensModal());
             trackEvent(
               {
                 event: MetaMetricsEventName.TokenImportButtonClicked,
