@@ -115,10 +115,16 @@ async function start() {
   let isUIInitialised = false;
 
   // Start the logo animation
+  const loadingNode = document.querySelector('#app-loader');
+  const contentNode = document.querySelector('#app-content');
+
   document.documentElement.classList.add('metamask-loaded');
-  document.documentElement.addEventListener('animationend', () => {
-    document.querySelector('#app-loader').style.display = 'none';
-    document.querySelector('#app-content').classList.add('app-content-loaded');
+
+  loadingNode.addEventListener('animationend', ({ animationName }) => {
+    if (animationName === 'fadeOut') {
+      loadingNode.style.display = 'none';
+      contentNode.classList.add('app-content-loaded');
+    }
   });
 
   // setup stream to background
