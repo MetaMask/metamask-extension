@@ -23,7 +23,6 @@
     "featureFlags": { "showIncomingTransactions": true },
     "welcomeScreenSeen": false,
     "currentLocale": "en",
-    "currentBlockGasLimit": "",
     "preferences": {
       "hideZeroBalanceTokens": false,
       "showFiatInTestnets": false,

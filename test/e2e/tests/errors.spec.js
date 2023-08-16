@@ -1,40 +1,70 @@
 const { resolve } = require('path');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { get, has, set } = require('lodash');
+const { get, has, set, unset } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-const backgroundDateFields = ['CurrencyController.conversionDate'];
-const uiDateFields = ['metamask.conversionDate'];
+const maskedBackgroundFields = [
+  'CurrencyController.conversionDate', // This is a timestamp that changes each run
+];
+const maskedUiFields = [
+  'metamask.conversionDate', // This is a timestamp that changes each run
+];
+
+const removedBackgroundFields = [
+  // This property is timing-dependent
+  'AccountTracker.currentBlockGasLimit',
+  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'AppStateController.currentPopupId',
+  'AppStateController.timeoutMinutes',
+  'TokenListController.tokensChainsCache',
+];
+
+const removedUiFields = [
+  // This property is timing-dependent
+  'metamask.currentBlockGasLimit',
+  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'metamask.currentPopupId',
+  'metamask.timeoutMinutes',
+  'metamask.tokensChainsCache',
+];
 
 /**
- * Transform date properties to value types, to ensure that state is
- * consistent between test runs.
+ * Transform background state to make it consistent between test runs.
  *
  * @param {unknown} data - The data to transform
  */
-function transformBackgroundDates(data) {
-  for (const field of backgroundDateFields) {
+function transformBackgroundState(data) {
+  for (const field of maskedBackgroundFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
+    }
+  }
+  for (const field of removedBackgroundFields) {
+    if (has(data, field)) {
+      unset(data, field);
     }
   }
   return data;
 }
 
 /**
- * Transform date properties to value types, to ensure that state is
- * consistent between test runs.
+ * Transform UI state to make it consistent between test runs.
  *
  * @param {unknown} data - The data to transform
  */
-function transformUiDates(data) {
-  for (const field of uiDateFields) {
+function transformUiState(data) {
+  for (const field of maskedUiFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
+    }
+  }
+  for (const field of removedUiFields) {
+    if (has(data, field)) {
+      unset(data, field);
     }
   }
   return data;
@@ -257,7 +287,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: transformBackgroundDates(appState),
+            data: transformBackgroundState(appState),
             snapshot: 'errors-before-init-opt-in-background-state',
           });
         },
@@ -342,7 +372,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: transformUiDates(appState),
+            data: transformUiState(appState),
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
@@ -509,7 +539,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformBackgroundDates(appState.store),
+            data: transformBackgroundState(appState.store),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -603,7 +633,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: transformUiDates(appState.store),
+            data: transformUiState(appState.store),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },

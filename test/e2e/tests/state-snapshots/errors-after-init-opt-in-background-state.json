@@ -1,10 +1,6 @@
 {
-  "AccountTracker": {
-    "accounts": "object",
-    "currentBlockGasLimit": "0x1c9c380"
-  },
+  "AccountTracker": { "accounts": "object" },
   "AppStateController": {
-    "timeoutMinutes": "undefined",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": "object",
@@ -19,7 +15,6 @@
     "showBetaHeader": "boolean",
     "showProductTour": "boolean",
     "trezorModel": "object",
-    "currentPopupId": "undefined",
     "nftsDropdownState": "object",
     "termsOfUseLastAgreed": "number",
     "qrHardware": "object",
