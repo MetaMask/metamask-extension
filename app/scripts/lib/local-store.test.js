@@ -100,5 +100,17 @@ describe('LocalStore', () => {
         appState: { test: true },
       });
     });
+
+    it('should reset mostRecentRetrievedState to null if storage.local is empty', async () => {
+      const localStore = setup({
+        localMock: {
+          get: jest.fn().mockImplementation(() => Promise.resolve({})),
+        },
+      });
+
+      await localStore.get();
+
+      expect(localStore.mostRecentRetrievedState).toStrictEqual(null);
+    });
   });
 });
