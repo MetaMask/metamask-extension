@@ -242,7 +242,8 @@ function defaultFixture() {
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
+            id: 'networkConfigurationId',
+            type: 'rpc',
           },
         },
       },
@@ -372,6 +373,7 @@ function onboardingFixture() {
           caipChainId: CHAIN_IDS.LOCALHOST,
           nickname: 'Localhost 8545',
           id: 'networkConfigurationId',
+          type: 'rpc',
         },
         networkConfigurations: {
           networkConfigurationId: {
@@ -380,7 +382,7 @@ function onboardingFixture() {
             rpcPrefs: {},
             rpcUrl: 'http://localhost:8545',
             ticker: 'ETH',
-            networkConfigurationId: 'networkConfigurationId',
+            id: 'networkConfigurationId',
             type: 'rpc',
           },
         },
@@ -1482,7 +1484,7 @@ class FixtureBuilder {
 
   build() {
     this.fixture.meta = {
-      version: 74,
+      version: 91,
     };
     return this.fixture;
   }

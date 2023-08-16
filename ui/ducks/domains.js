@@ -119,7 +119,7 @@ const slice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(CHAIN_CHANGED, (state, action) => {
-      if (action.payload !== state.currentChainId) {
+      if (action.payload !== state.currentCaipChainId) { // when does this get set in state?
         state.stage = 'UNINITIALIZED';
         web3Provider = null;
       }

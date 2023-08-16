@@ -828,7 +828,8 @@ export default class TransactionController extends EventEmitter {
     // we only support EVM compatible chains, and then override the
     // name, chainId and networkId properties. This is done using the
     // `forCustomChain` static method on the Common class.
-    const chainId = parseInt(this._getCurrentChainId(), 16);
+    const caipChainId = this._getCurrentCaipChainId();
+    const chainId = toEthChainIdInt(caipChainId);
     const networkStatus = this.getNetworkStatus();
     const networkId = this.getNetworkId();
 

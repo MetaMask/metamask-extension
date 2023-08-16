@@ -46,7 +46,7 @@ describe('MMIController', function () {
         isEthSignEnabled: jest.fn(),
         getAllState: jest.fn(),
         securityProviderRequest: jest.fn(),
-        getCurrentChainId: jest.fn(),
+        getCurrentCaipChainId: jest.fn(),
       }),
       preferencesController: new PreferencesController({
         initState: {},

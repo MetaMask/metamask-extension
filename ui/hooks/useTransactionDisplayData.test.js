@@ -8,7 +8,7 @@ import {
   getPreferences,
   getShouldShowFiat,
   getCurrentCurrency,
-  getCurrentChainId,
+  getCurrentCaipChainId,
 } from '../selectors';
 import {
   getTokens,
@@ -206,7 +206,7 @@ describe('useTransactionDisplayData', () => {
         return 'ETH';
       } else if (selector === getCurrentCurrency) {
         return 'ETH';
-      } else if (selector === getCurrentChainId) {
+      } else if (selector === getCurrentCaipChainId) {
         return CHAIN_IDS.MAINNET;
       } else if (selector === getNfts) {
         return [];

@@ -5,7 +5,7 @@ import useRamps from './useRamps';
 jest.mock('react-redux');
 
 jest.mock('./../../selectors', () => ({
-  getCurrentChainId: jest.fn(),
+  getCurrentCaipChainId: jest.fn(),
 }));
 
 jest.mock('../../../shared/constants/network', () => ({
