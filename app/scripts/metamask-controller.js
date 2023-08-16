@@ -3027,12 +3027,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
    */
   _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
-    return Array.from(
-      Buffer.from(
-        new TextEncoder().encode(
-          wordlistIndices.map((i) => wordlist[i]).join(' '),
-        ),
-      ).values(),
+    return Buffer.from(
+      Array.from(new Uint16Array(wordlistIndices.buffer))
+        .map((i) => wordlist[i])
+        .join(' '),
     );
   }
 
