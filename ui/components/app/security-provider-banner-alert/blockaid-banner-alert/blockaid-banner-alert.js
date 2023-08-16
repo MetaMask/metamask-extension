@@ -82,6 +82,7 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
 
   return (
     <SecurityProviderBannerAlert
+      data-testid="blockaid-banner-alert"
       description={description}
       details={details}
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}

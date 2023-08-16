@@ -1,29 +1,26 @@
-// const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { strict: assert } = require('assert');
+const {
+  withFixtures,
+  unlockWallet,
+  openDapp,
+  defaultGanacheOptions,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Blockaid Settings', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
-  it('should toggle the blockaid settings', async function () {
+  it('should not show blockaid UI when toggle is off', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -32,12 +29,44 @@ describe('Blockaid Settings', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
-        await driver.clickElement('[data-testid="transaction-security-check"]');
+        await openDapp(driver);
+        await driver.clickElement('#signPermit');
+      },
+    );
+  });
 
-        // const toggle = await driver.findVisibleElement(
-        //   '[data-testid="transaction-security-check-toggle"]',
+  it('should show the blockaid UI when the toggle is on', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.title,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
 
-        // );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+
+        await driver.clickElement(
+          '[data-testid="transaction-security-check-blockaid"] .toggle-button > div',
+        );
+
+        await openDapp(driver);
+        await driver.clickElement('#signPermit');
+
+        const blockaidHeader = '[data-testid="blockaid-banner-alert"]';
+
+        const exists = await driver.isElementPresent(blockaidHeader);
+        assert.equal(exists, true, 'Request may not be safe');
       },
     );
   });
