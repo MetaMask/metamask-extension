@@ -3497,12 +3497,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/snow@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@lavamoat/snow@npm:1.5.0"
-  dependencies:
-    is-cross-origin: "npm:^1.0.1"
-  checksum: 151c9454c3c7b0e139cc160a215f22768cb75bec323b1d7ec0b385839c2917d6cbd04510ae22946aa598dab7a5829dcd82cd0d56f86439f9ce0a660c6b49ed18
+"@lavamoat/snow@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@lavamoat/snow@npm:2.0.1"
+  checksum: f48aa87a4691748a48c0b90606119a07bba85f5315245ad3a076b4093eab0c74c0211d34a9b0b5029cb51b16b20704fdca18c1cbe182a82f0052374d61aa2c81
   languageName: node
   linkType: hard
 
@@ -20151,15 +20149,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-cross-origin@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "is-cross-origin@npm:1.0.1"
-  dependencies:
-    is-window: "npm:^1.0.2"
-  checksum: a0df13da238196caabdef8ba52363c416bad5f3d90593cf406b682b5c883d87c1889946592e827c46be9208ba06f29e70ea046dcdda293487f0495352180b29e
-  languageName: node
-  linkType: hard
-
 "is-data-descriptor@npm:^0.1.4":
   version: 0.1.4
   resolution: "is-data-descriptor@npm:0.1.4"
@@ -20799,13 +20788,6 @@ __metadata:
   version: 1.0.3
   resolution: "is-whitespace-character@npm:1.0.3"
   checksum: e10b8f911166a225908fd3c3685b6e675648881ea6787c76a86cebf6a45a7c0516166b3715497155220361ea4fec03fc4aa187688b2a7f255fb307820f8539e3
-  languageName: node
-  linkType: hard
-
-"is-window@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "is-window@npm:1.0.2"
-  checksum: aeaacd2ca816d38d4e2fba4670158fba2190061f28a61c5d84df7c479abf8897b8cb634d22cb76cdf7805035e95bebd430faaab6231ac2ebc814eae02d2c8fd4
   languageName: node
   linkType: hard
 
@@ -24237,7 +24219,7 @@ __metadata:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@lavamoat/allow-scripts": "npm:^2.3.1"
     "@lavamoat/lavapack": "npm:^5.2.0"
-    "@lavamoat/snow": "npm:^1.5.0"
+    "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:0.2.6"
     "@metamask-institutional/custody-keyring": "npm:^0.0.25"
