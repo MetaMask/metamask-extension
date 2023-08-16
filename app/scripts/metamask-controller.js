@@ -3021,7 +3021,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to an array of Unicode code points.
+   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to a buffer of Unicode code points.
    *
    * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
    * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
