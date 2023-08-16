@@ -10,8 +10,8 @@ const platform = new ExtensionPlatform();
 export type AppMetadataControllerState = {
   currentAppVersion: string;
   previousAppVersion: string;
-  previousMigrationVersion: string;
-  currentMigrationVersion: string;
+  previousMigrationVersion: number;
+  currentMigrationVersion: number;
 };
 
 /**
