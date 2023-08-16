@@ -1,18 +1,8 @@
 // Disabled to allow setting up initial state hooks first
-/* eslint-disable import/order,import/first */
 
-import { setupInitialStateHooks } from './lib/setup-initial-state-hooks';
-import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
-
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
-const platform = new ExtensionPlatform();
-
-// This function sets up global functions required for Sentry to function.
+// This import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-setupInitialStateHooks({ localStore, platform });
+import './lib/setup-initial-state-hooks';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
@@ -39,9 +29,18 @@ import {
   registerDesktopErrorActions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
+import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import LocalStore from './lib/local-store';
+import ReadOnlyNetworkStore from './lib/network-store';
+
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
 
 const container = document.getElementById('app-content');
 
@@ -115,8 +114,8 @@ if (isManifestV3) {
 start().catch(log.error);
 
 async function start() {
-  // set platform global
-  global.platform = platform;
+  // create platform global
+  global.platform = new ExtensionPlatform();
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType();
