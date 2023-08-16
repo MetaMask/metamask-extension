@@ -984,7 +984,6 @@
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>are-we-there-yet": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "nyc>yargs>set-blocking": true
       }
@@ -1013,9 +1012,6 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>aproba": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": true,
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": true,
-        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": true,
         "@storybook/react>@storybook/node-logger>npmlog>console-control-strings": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>has-unicode": true,
         "@storybook/react>@storybook/node-logger>npmlog>gauge>wide-align": true,
@@ -1776,7 +1772,20 @@
         "process.platform": true
       },
       "packages": {
-        "brfs>resolve": true
+        "browserify>browser-resolve>resolve": true
+      }
+    },
+    "browserify>browser-resolve>resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path": true
+      },
+      "globals": {
+        "process.nextTick": true,
+        "process.platform": true
       }
     },
     "browserify>cached-path-relative": {
@@ -1885,7 +1894,6 @@
       },
       "packages": {
         "brfs>resolve": true,
-        "browserify>browser-resolve": true,
         "browserify>cached-path-relative": true,
         "browserify>concat-stream": true,
         "browserify>duplexer2": true,
@@ -1893,6 +1901,7 @@
         "browserify>module-deps>stream-combiner2": true,
         "browserify>module-deps>through2": true,
         "browserify>parents": true,
+        "lavamoat-browserify>browser-resolve": true,
         "loose-envify": true,
         "pumpify>inherits": true,
         "readable-stream": true,
@@ -5023,6 +5032,7 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>detect-libc": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": true
       }
@@ -5102,6 +5112,70 @@
         "process.env.TMPDIR": true,
         "process.env.windir": true,
         "process.platform": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util": true
+      },
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true
+      },
+      "packages": {
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": true,
+        "nyc>yargs>set-blocking": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util.inherits": true
+      },
+      "packages": {
+        "koa>delegates": true,
+        "readable-stream": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": {
+      "builtin": {
+        "util.format": true
+      },
+      "globals": {
+        "clearInterval": true,
+        "process": true,
+        "setImmediate": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>console-control-strings": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>has-unicode": true,
+        "@storybook/addon-mdx-gfm>@storybook/node-logger>npmlog>gauge>wide-align": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>aproba": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "nyc>signal-exit": true,
+        "react>object-assign": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "gulp>gulp-cli>yargs>string-width>code-point-at": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": {
+      "packages": {
+        "gulp>gulp-cli>yargs>string-width>is-fullwidth-code-point>number-is-nan": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": {
@@ -6266,8 +6340,8 @@
       },
       "packages": {
         "@lavamoat/lavapack": true,
-        "browserify>browser-resolve": true,
         "duplexify": true,
+        "lavamoat-browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
@@ -6276,16 +6350,29 @@
         "lavamoat>lavamoat-core": true
       }
     },
+    "lavamoat-browserify>browser-resolve": {
+      "builtin": {
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "path": true
+      },
+      "globals": {
+        "__dirname": true,
+        "process.platform": true
+      },
+      "packages": {
+        "brfs>resolve": true
+      }
+    },
     "lavamoat-browserify>concat-stream": {
       "globals": {
         "Buffer.concat": true,
+        "Buffer.from": true,
         "Buffer.isBuffer": true
       },
       "packages": {
-        "browserify>concat-stream>typedarray": true,
         "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
+        "pumpify>inherits": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6583,6 +6670,13 @@
         "process.getgid": true,
         "process.getuid": true,
         "process.platform": true
+      }
+    },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -8192,14 +8286,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {
