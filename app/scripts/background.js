@@ -5,6 +5,7 @@
 // Disabled to allow setting up initial state hooks first
 /* eslint-disable import/order,import/first */
 
+import { setupInitialStateHooks } from './lib/setup-initial-state-hooks';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
@@ -12,8 +13,6 @@ import ReadOnlyNetworkStore from './lib/network-store';
 const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 const platform = new ExtensionPlatform();
-
-import { setupInitialStateHooks } from './lib/setup-initial-state-hooks';
 
 // This function sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
