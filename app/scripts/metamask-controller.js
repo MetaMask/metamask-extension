@@ -3021,13 +3021,12 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Get a Buffer mnemonic from Uint8Array.
-   * Reserializes a BIP-39 seed phrase from indices of words in the wordlist to a buffer of Unicode code points.
+   * Converts a BIP-39 mnemonic stored as indices of words in the English wordlist to an array of Unicode code points.
    *
-   * @param {Uint8Array} wordlistIndices - Indices to words in a BIP-39 wordlist.
-   * @returns {Buffer} The Unicode code points for the seed phrase formed from the words in the wordlist.
+   * @param {Uint8Array} wordlistIndices - Indices to specific words in the BIP-39 English wordlist.
+   * @returns {Buffer} The BIP-39 mnemonic formed from the words in the English wordlist, encoded as a list of Unicode code points.
    */
-  _convertWordlistIndicesToCodepoints(wordlistIndices) {
+  _convertEnglishWordlistIndicesToCodepoints(wordlistIndices) {
     return Array.from(
       Buffer.from(
         new TextEncoder().encode(
@@ -3477,7 +3476,7 @@ export default class MetamaskController extends EventEmitter {
    * encoded as an array of UTF-8 bytes.
    */
   async verifySeedPhrase() {
-    return this._convertWordlistIndicesToCodepoints(
+    return this._convertEnglishWordlistIndicesToCodepoints(
       await this.coreKeyringController.verifySeedPhrase(),
     );
   }
