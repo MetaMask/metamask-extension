@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [10.34.5]
+
 ## [10.34.4]
 ### Changed
 - Updated snaps execution environment ([#20420](https://github.com/MetaMask/metamask-extension/pull/20420))
@@ -3885,7 +3887,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v10.34.5...HEAD
+[10.34.5]: https://github.com/MetaMask/metamask-extension/compare/v10.34.4...v10.34.5
 [10.34.4]: https://github.com/MetaMask/metamask-extension/compare/v10.34.3...v10.34.4
 [10.34.3]: https://github.com/MetaMask/metamask-extension/compare/v10.34.2...v10.34.3
 [10.34.2]: https://github.com/MetaMask/metamask-extension/compare/v10.34.1...v10.34.2
