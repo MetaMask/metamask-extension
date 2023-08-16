@@ -1,52 +1,32 @@
 {
-  "metamask": {
-    "isInitialized": true,
+  "AccountTracker": { "currentBlockGasLimit": "0x1c9c380" },
+  "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": null,
-    "currentAppVersion": "10.34.4",
-    "previousAppVersion": "",
-    "previousMigrationVersion": 0,
-    "currentMigrationVersion": 94,
+    "defaultHomeActiveTabName": null
+  },
+  "CurrencyController": {
+    "conversionDate": "number",
+    "conversionRate": 1700,
+    "nativeCurrency": "ETH",
+    "currentCurrency": "usd"
+  },
+  "DecryptMessageController": { "unapprovedDecryptMsgCount": 0 },
+  "EncryptionPublicKeyController": {
+    "unapprovedEncryptionPublicKeyMsgCount": 0
+  },
+  "MetaMetricsController": {
+    "participateInMetaMetrics": true,
+    "metaMetricsId": "fake-metrics-id"
+  },
+  "NetworkController": {
     "networkId": "1337",
     "providerConfig": {
       "nickname": "Localhost 8545",
       "ticker": "ETH",
       "type": "rpc"
-    },
-    "isUnlocked": false,
-    "useBlockie": false,
-    "useNonceField": false,
-    "usePhishDetect": true,
-    "featureFlags": { "showIncomingTransactions": true },
-    "currentLocale": "en",
-    "forgottenPassword": false,
-    "preferences": {
-      "hideZeroBalanceTokens": false,
-      "showFiatInTestnets": false,
-      "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
-    },
-    "ipfsGateway": "dweb.link",
-    "participateInMetaMetrics": true,
-    "metaMetricsId": "fake-metrics-id",
-    "conversionDate": "number",
-    "conversionRate": 1700,
-    "nativeCurrency": "ETH",
-    "currentCurrency": "usd",
-    "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
-    "seedPhraseBackedUp": true,
-    "firstTimeFlowType": "import",
-    "completedOnboarding": true,
-    "incomingTxLastFetchedBlockByChainId": {
-      "0x1": null,
-      "0xe708": null,
-      "0x5": null,
-      "0xaa36a7": null,
-      "0xe704": null
-    },
-    "currentBlockGasLimit": "0x1c9c380",
-    "unapprovedDecryptMsgCount": 0,
-    "unapprovedEncryptionPublicKeyMsgCount": 0,
+    }
+  },
+  "SignatureController": {
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
