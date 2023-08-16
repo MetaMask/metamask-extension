@@ -70,11 +70,6 @@ const connectRequests = [
     labels,
     origin: 'origin',
     apiUrl: 'apiUrl',
-    token: {
-      projectName: 'projectName',
-      projectId: 'projectId',
-      clientId: 'clientId',
-    },
   },
 ];
 
@@ -109,7 +104,6 @@ const render = ({ newState } = {}) => {
         ],
       },
       institutionalFeatures: {
-        complianceProjectId: '',
         connectRequests,
       },
       ...newState,
@@ -166,8 +160,6 @@ describe('Interactive Replacement Token Page', function () {
   });
 
   it('should call onRemoveAddTokenConnectRequest and navigate to mostRecentOverviewPage when handleReject is called', () => {
-    const mostRecentOverviewPage = '/mostRecentOverviewPage';
-
     const { getByText } = render();
 
     fireEvent.click(getByText('Reject'));
@@ -178,8 +170,6 @@ describe('Interactive Replacement Token Page', function () {
       apiUrl: connectRequests[0].apiUrl,
       token: connectRequests[0].token,
     });
-    expect(props.history.push).toHaveBeenCalled();
-    expect(props.history.push).toHaveBeenCalledWith(mostRecentOverviewPage);
   });
 
   it('should call onRemoveAddTokenConnectRequest, setCustodianNewRefreshToken, and dispatch showInteractiveReplacementTokenBanner when handleApprove is called', async () => {

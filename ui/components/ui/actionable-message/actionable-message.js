@@ -17,29 +17,15 @@ export const typeHash = {
 };
 
 /**
- * @deprecated `<ActionableMessage />` has been deprecated in favour of the `<BannerAlert />`
+ * @deprecated `<ActionableMessage />` has been deprecated in favor of the `<BannerAlert />`
  * component in ./ui/components/component-library/banner-alert/banner-alert.js.
- * See storybook documentation for Text here:
+ * See storybook documentation for BannerAlert here:
  * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--default-story#banneralert}}
  *
- * Help to replace `ActionableMessage` with `BannerAlert` by submitting a PR
- * @param options
- * @param options.message
- * @param options.primaryAction
- * @param options.primaryActionV2
- * @param options.secondaryAction
- * @param options.className
- * @param options.infoTooltipText
- * @param options.withRightButton
- * @param options.type
- * @param options.useIcon
- * @param options.icon
- * @param options.iconFillColor
- * @param options.roundedButtons
- * @param options.dataTestId
- * @param options.autoHideTime
- * @param options.onAutoHide
+ * Help to replace `ActionableMessage` with `BannerAlert` by submitting a PR against
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19528}
  */
+
 export default function ActionableMessage({
   message = '',
   primaryAction = null,

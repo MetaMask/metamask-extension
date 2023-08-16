@@ -165,6 +165,18 @@ export const IN_PROGRESS_TRANSACTION_STATUSES = [
   TransactionStatus.pending,
 ];
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+/**
+ * Status for finalized transactions.
+ */
+export const FINALIZED_TRANSACTION_STATUSES = [
+  TransactionStatus.rejected,
+  TransactionStatus.failed,
+  TransactionStatus.dropped,
+  TransactionStatus.confirmed,
+];
+///: END:ONLY_INCLUDE_IN
+
 /**
  * Transaction Group Status is a MetaMask construct to track the status of groups
  * of transactions.

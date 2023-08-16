@@ -1,5 +1,7 @@
 import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 
 const state = {
   invalidCustomNetwork: {
@@ -16,82 +18,16 @@ const state = {
     protocol: 'https:',
     url: 'https://metamask.github.io/test-dapp/',
   },
-  networkList: [
-    {
-      blockExplorerUrl: 'https://etherscan.io',
-      chainId: '0x1',
-      iconColor: 'var(--mainnet)',
-      isATestNetwork: false,
-      labelKey: 'mainnet',
-      providerType: 'mainnet',
-      rpcUrl: 'https://mainnet.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://goerli.etherscan.io',
-      chainId: '0x5',
-      iconColor: 'var(--color-network-goerli-default)',
-      isATestNetwork: true,
-      labelKey: 'goerli',
-      providerType: 'goerli',
-      rpcUrl: 'https://goerli.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: 'https://sepolia.etherscan.io',
-      chainId: '0xaa36a7',
-      iconColor: 'var(--color-network-sepolia-default)',
-      isATestNetwork: true,
-      labelKey: 'sepolia',
-      providerType: 'sepolia',
-      rpcUrl: 'https://sepolia.infura.io/v3/',
-      ticker: 'ETH',
-      viewOnly: true,
-    },
-    {
-      blockExplorerUrl: '',
-      chainId: '0x539',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: true,
-      label: 'Localhost 8545',
-      providerType: 'rpc',
-      rpcUrl: 'http://localhost:8545',
-      ticker: 'ETH',
-    },
-    {
-      blockExplorerUrl: 'https://bscscan.com',
-      chainId: '0x38',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Binance Smart Chain',
-      providerType: 'rpc',
-      rpcUrl: 'https://bsc-dataseed.binance.org/',
-      ticker: 'BNB',
-    },
-    {
-      blockExplorerUrl: 'https://cchain.explorer.avax.network/',
-      chainId: '0xa86a',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Avalanche',
-      providerType: 'rpc',
-      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-      ticker: 'AVAX',
-    },
-    {
-      blockExplorerUrl: 'https://polygonscan.com',
-      chainId: '0x89',
-      iconColor: 'var(--color-network-localhost-default)',
-      isATestNetwork: false,
-      label: 'Polygon',
-      providerType: 'rpc',
-      rpcUrl: 'https://polygon-rpc.com',
-      ticker: 'MATIC',
-    },
-  ],
   metamask: {
+    announcements: {
+      22: {
+        id: 22,
+        date: null,
+        image: {
+          src: 'images/global-menu-block-explorer.svg',
+        },
+      }
+    },
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -237,6 +173,15 @@ const state = {
     networkDetails: {
       EIPS: {
         1559: true,
+      },
+    },
+    selectedNetworkClientId: NetworkType.mainnet,
+    networksMetadata: {
+      [NetworkType.mainnet]: {
+        EIPS: {
+          1559: true,
+        },
+        status: NetworkStatus.Available,
       },
     },
     gasFeeEstimates: '0x5208',
@@ -1228,7 +1173,6 @@ const state = {
       '0xaD6D458402F60fD3Bd25163575031ACDce07538D': './sai.svg',
     },
     hiddenTokens: [],
-    suggestedAssets: [],
     useNonceField: false,
     usePhishDetect: true,
     useTokenDetection: true,
@@ -1424,23 +1368,6 @@ const state = {
           },
         },
       },
-    },
-    swapsState: {
-      quotes: {},
-      fetchParams: null,
-      tokens: null,
-      tradeTxId: null,
-      approveTxId: null,
-      quotesLastFetched: null,
-      customMaxGas: '',
-      customGasPrice: null,
-      selectedAggId: null,
-      customApproveTxData: '',
-      errorKey: '',
-      topAggId: null,
-      routeState: '',
-      swapsFeatureIsLive: false,
-      swapsQuoteRefreshTime: 60000,
     },
     ensResolutionsByAddress: {},
     pendingApprovals: {},
@@ -1691,5 +1618,81 @@ const state = {
     basicEstimateIsLoading: false,
   },
 };
+
+export const networkList = [
+  {
+    blockExplorerUrl: 'https://etherscan.io',
+    chainId: '0x1',
+    iconColor: 'var(--mainnet)',
+    isATestNetwork: false,
+    labelKey: 'mainnet',
+    providerType: 'mainnet',
+    rpcUrl: 'https://mainnet.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: 'https://goerli.etherscan.io',
+    chainId: '0x5',
+    iconColor: 'var(--color-network-goerli-default)',
+    isATestNetwork: true,
+    labelKey: 'goerli',
+    providerType: 'goerli',
+    rpcUrl: 'https://goerli.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: 'https://sepolia.etherscan.io',
+    chainId: '0xaa36a7',
+    iconColor: 'var(--color-network-sepolia-default)',
+    isATestNetwork: true,
+    labelKey: 'sepolia',
+    providerType: 'sepolia',
+    rpcUrl: 'https://sepolia.infura.io/v3/',
+    ticker: 'ETH',
+    viewOnly: true,
+  },
+  {
+    blockExplorerUrl: '',
+    chainId: '0x539',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: true,
+    label: 'Localhost 8545',
+    providerType: 'rpc',
+    rpcUrl: 'http://localhost:8545',
+    ticker: 'ETH',
+  },
+  {
+    blockExplorerUrl: 'https://bscscan.com',
+    chainId: '0x38',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Binance Smart Chain',
+    providerType: 'rpc',
+    rpcUrl: 'https://bsc-dataseed.binance.org/',
+    ticker: 'BNB',
+  },
+  {
+    blockExplorerUrl: 'https://cchain.explorer.avax.network/',
+    chainId: '0xa86a',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Avalanche',
+    providerType: 'rpc',
+    rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+    ticker: 'AVAX',
+  },
+  {
+    blockExplorerUrl: 'https://polygonscan.com',
+    chainId: '0x89',
+    iconColor: 'var(--color-network-localhost-default)',
+    isATestNetwork: false,
+    label: 'Polygon',
+    providerType: 'rpc',
+    rpcUrl: 'https://polygon-rpc.com',
+    ticker: 'MATIC',
+  },
+];
 
 export default state;

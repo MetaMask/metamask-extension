@@ -176,7 +176,7 @@ export async function determineTransactionType(txParams, query) {
     contractCode = resultCode;
 
     if (isContractAddress) {
-      const hasValue = txParams.value && txParams.value !== '0x0';
+      const hasValue = txParams.value && Number(txParams.value) !== 0;
 
       const tokenMethodName = [
         TransactionType.tokenMethodApprove,

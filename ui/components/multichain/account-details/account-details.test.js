@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -10,6 +11,7 @@ import {
   exportAccount,
   hideWarning,
 } from '../../../store/actions';
+import { shortenAddress } from '../../../helpers/utils/util';
 import { AccountDetails } from '.';
 
 jest.mock('../../../store/actions.ts');
@@ -58,6 +60,10 @@ describe('AccountDetails', () => {
     const exportPrivateKeyButton = queryByText(showPrivateKey.message);
     fireEvent.click(exportPrivateKeyButton);
 
+    expect(
+      queryByText(shortenAddress(toChecksumHexAddress(address))),
+    ).toBeInTheDocument();
+
     expect(queryByText('Show private key')).toBeInTheDocument();
     expect(queryByPlaceholderText('Password')).toBeInTheDocument();
   });
@@ -85,6 +91,10 @@ describe('AccountDetails', () => {
 
     const exportPrivateKeyButton = queryByText(showPrivateKey.message);
     fireEvent.click(exportPrivateKeyButton);
+
+    expect(
+      queryByText(shortenAddress(toChecksumHexAddress(address))),
+    ).toBeInTheDocument();
 
     expect(queryByText(samplePrivateKey)).toBeInTheDocument();
   });

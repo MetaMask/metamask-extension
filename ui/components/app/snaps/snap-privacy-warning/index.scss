@@ -1,0 +1,15 @@
+.snap-privacy-warning {
+  &__content {
+    max-height: 325px;
+    overflow-y: auto;
+
+    &__scroll-button {
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      right: 0;
+      left: 0;
+      bottom: 110px;
+    }
+  }
+}

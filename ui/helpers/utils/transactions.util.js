@@ -1,5 +1,6 @@
 import { MethodRegistry } from 'eth-method-registry';
 import log from 'loglevel';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
@@ -48,14 +49,18 @@ let registry;
  * Attempts to return the method data from the MethodRegistry library, the message registry library and the token abi, in that order of preference
  *
  * @param {string} fourBytePrefix - The prefix from the method code associated with the data
+ * @param {boolean} allow4ByteRequests - Whether or not to allow 4byte.directory requests, toggled by the user in privacy settings
  * @returns {object}
  */
-export async function getMethodDataAsync(fourBytePrefix) {
+export async function getMethodDataAsync(fourBytePrefix, allow4ByteRequests) {
   try {
-    const fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
-      log.error(e);
-      return null;
-    });
+    let fourByteSig = null;
+    if (allow4ByteRequests) {
+      fourByteSig = await getMethodFrom4Byte(fourBytePrefix).catch((e) => {
+        log.error(e);
+        return null;
+      });
+    }
 
     if (!registry) {
       registry = new MethodRegistry({ provider: global.ethereumProvider });
@@ -215,3 +220,12 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     }
   }
 }
+
+/**
+ * Method to check if asset standard passed is NFT
+ *
+ * @param {*} assetStandard - string
+ * @returns boolean
+ */
+export const isNFTAssetStandard = (assetStandard) =>
+  assetStandard === ERC1155 || assetStandard === ERC721;

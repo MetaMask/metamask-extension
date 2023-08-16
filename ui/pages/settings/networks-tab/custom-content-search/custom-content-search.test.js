@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import Fuse from 'fuse.js';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import testData from '../../../../../.storybook/test-data';
+import { networkList } from '../../../../../.storybook/test-data';
 import CustomContentSearch from './custom-content-search';
 
 function renderComponent({ componentProps = {} } = {}) {
@@ -15,7 +15,7 @@ describe('CustomContentSearch', () => {
   it('should render custom content search correctly', () => {
     const onSearch = jest.fn();
     const wrapper = renderComponent({
-      componentProps: { onSearch, networksList: testData.networkList },
+      componentProps: { onSearch, networksList: networkList },
     });
     expect(wrapper.getByTestId('search-networks')).toBeDefined();
   });
@@ -23,7 +23,7 @@ describe('CustomContentSearch', () => {
   it('should check placeholder text in TextField input', () => {
     const onSearch = jest.fn();
     const wrapper = renderComponent({
-      componentProps: { onSearch, networksList: testData.networkList },
+      componentProps: { onSearch, networksList: networkList },
     });
     const { getByPlaceholderText } = wrapper;
     expect(
@@ -68,14 +68,14 @@ describe('CustomContentSearch', () => {
 
   it('should check if error is shown if search does not return any network from the list', () => {
     const onSearch = jest.fn();
-    const networksSearchFuse = new Fuse(testData.networkList, {
+    const networksSearchFuse = new Fuse(networkList, {
       keys: ['label', 'labelKey'],
     });
     const fuseSearchResult = networksSearchFuse.search('Optimism');
     const wrapper = renderComponent({
       componentProps: {
         onSearch,
-        networksList: testData.networkList,
+        networksList: networkList,
         searchQueryInput: 'Optimism',
         error: 'No matching results found.',
       },
@@ -90,14 +90,14 @@ describe('CustomContentSearch', () => {
 
   it('should check if error is not shown if search return some network from the list', () => {
     const onSearch = jest.fn();
-    const networksSearchFuse = new Fuse(testData.networkList, {
+    const networksSearchFuse = new Fuse(networkList, {
       keys: ['label', 'labelKey'],
     });
     const fuseSearchResult = networksSearchFuse.search('goerli');
     const wrapper = renderComponent({
       componentProps: {
         onSearch,
-        networksList: testData.networkList,
+        networksList: networkList,
         searchQueryInput: 'Avalanche',
         error: '',
       },

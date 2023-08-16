@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
-import Box from '../../ui/box/box';
+import { StoryFn, Meta } from '@storybook/react';
+import { Box, Icon, IconName, IconSize, PopoverHeader, Text } from '..';
 import {
   AlignItems,
   BackgroundColor,
   BorderColor,
   Color,
-  DISPLAY,
+  Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
+
 import README from './README.mdx';
 import { Popover, PopoverPosition, PopoverRole } from '.';
 
@@ -41,9 +42,9 @@ export default {
   args: {
     children: 'Popover',
   },
-} as ComponentMeta<typeof Popover>;
+} as Meta<typeof Popover>;
 
-const Template: ComponentStory<typeof Popover> = (args) => {
+const Template: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -78,7 +79,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to toggle popover
@@ -98,7 +99,7 @@ DefaultStory.args = {
   hasArrow: true,
 };
 
-export const ReferenceElement: ComponentStory<typeof Popover> = (args) => {
+export const ReferenceElement: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -125,7 +126,7 @@ export const ReferenceElement: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const Children: ComponentStory<typeof Popover> = (args) => {
+export const Children: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -154,7 +155,7 @@ export const Children: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const Position: ComponentStory<typeof Popover> = (args) => {
+export const Position: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [referenceAutoElement, setReferenceAutoElement] = useState();
 
@@ -176,7 +177,7 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
           minHeight: '400px',
         }}
         borderColor={BorderColor.borderDefault}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         marginBottom={4}
@@ -185,7 +186,7 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
           ref={setBoxRef}
           backgroundColor={BackgroundColor.primaryMuted}
           style={{ width: 400, height: 200 }}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
           textAlign={TextAlign.Center}
@@ -316,7 +317,7 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
             width: '200vw',
             height: '200vh',
           }}
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
@@ -324,7 +325,7 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
             ref={setRefAuto}
             backgroundColor={BackgroundColor.primaryMuted}
             style={{ width: 400, height: 200 }}
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             justifyContent={JustifyContent.center}
             alignItems={AlignItems.center}
             textAlign={TextAlign.Center}
@@ -346,7 +347,7 @@ export const Position: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const IsPortal: ComponentStory<typeof Popover> = (args) => {
+export const IsPortal: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -384,7 +385,7 @@ export const IsPortal: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const HasArrow: ComponentStory<typeof Popover> = (args) => {
+export const HasArrow: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -419,7 +420,7 @@ export const HasArrow: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const IsOpen: ComponentStory<typeof Popover> = (args) => {
+export const IsOpen: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -438,7 +439,7 @@ export const IsOpen: ComponentStory<typeof Popover> = (args) => {
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
         onClick={handleClick}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
       >
@@ -468,7 +469,7 @@ export const IsOpen: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const Flip: ComponentStory<typeof Popover> = (args) => {
+export const Flip: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -478,7 +479,7 @@ export const Flip: ComponentStory<typeof Popover> = (args) => {
   return (
     <Box
       style={{ height: '200vh' }}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
     >
@@ -486,7 +487,7 @@ export const Flip: ComponentStory<typeof Popover> = (args) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
       >
@@ -515,7 +516,7 @@ export const Flip: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const PreventOverflow: ComponentStory<typeof Popover> = (args) => {
+export const PreventOverflow: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -525,7 +526,7 @@ export const PreventOverflow: ComponentStory<typeof Popover> = (args) => {
   return (
     <Box
       style={{ height: '200vh', width: '100vw' }}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
     >
@@ -533,7 +534,7 @@ export const PreventOverflow: ComponentStory<typeof Popover> = (args) => {
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
@@ -563,7 +564,7 @@ export const PreventOverflow: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const ReferenceHidden: ComponentStory<typeof Popover> = (args) => {
+export const ReferenceHidden: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -573,14 +574,14 @@ export const ReferenceHidden: ComponentStory<typeof Popover> = (args) => {
   return (
     <Box
       style={{ height: '200vh', width: '100vw' }}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
     >
       <Box
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
@@ -610,7 +611,7 @@ export const ReferenceHidden: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const MatchWidth: ComponentStory<typeof Popover> = (args) => {
+export const MatchWidth: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -640,7 +641,7 @@ export const MatchWidth: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const Role: ComponentStory<typeof Popover> = (args) => {
+export const Role: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -650,14 +651,14 @@ export const Role: ComponentStory<typeof Popover> = (args) => {
   return (
     <Box
       style={{ height: '100vh', width: '100vw' }}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
     >
       <Box
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
@@ -686,7 +687,7 @@ export const Role: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const Offset: ComponentStory<typeof Popover> = (args) => {
+export const Offset: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
 
   const setBoxRef = (ref) => {
@@ -696,14 +697,14 @@ export const Offset: ComponentStory<typeof Popover> = (args) => {
   return (
     <Box
       style={{ height: '200vh', width: '100vw' }}
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.center}
     >
       <Box
         ref={setBoxRef}
         backgroundColor={BackgroundColor.primaryMuted}
         style={{ width: 200, height: 200 }}
-        display={DISPLAY.FLEX}
+        display={Display.Flex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
         textAlign={TextAlign.Center}
@@ -731,7 +732,7 @@ export const Offset: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const onPressEscKey: ComponentStory<typeof Popover> = (args) => {
+export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -751,7 +752,7 @@ export const onPressEscKey: ComponentStory<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to open
@@ -768,7 +769,7 @@ export const onPressEscKey: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const WithPopoverHeader: ComponentStory<typeof Popover> = (args) => {
+export const WithPopoverHeader: StoryFn<typeof Popover> = (args) => {
   const [refTitleElement, setRefTitleElement] = useState();
   const [isOpen, setIsOpen] = useState(true);
 
@@ -809,7 +810,7 @@ export const WithPopoverHeader: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const MouseEventDemo: ComponentStory<typeof Popover> = (args) => {
+export const MouseEventDemo: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -835,7 +836,7 @@ export const MouseEventDemo: ComponentStory<typeof Popover> = (args) => {
         onMouseLeave={handleMouseLeave}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
       >
         Hover
       </Box>
@@ -846,7 +847,7 @@ export const MouseEventDemo: ComponentStory<typeof Popover> = (args) => {
   );
 };
 
-export const OnFocusBlur: ComponentStory<typeof Popover> = (args) => {
+export const OnFocusBlur: StoryFn<typeof Popover> = (args) => {
   const [referenceElement, setReferenceElement] = useState();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -872,7 +873,7 @@ export const OnFocusBlur: ComponentStory<typeof Popover> = (args) => {
         onBlur={handleClose}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Focus to open

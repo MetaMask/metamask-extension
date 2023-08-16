@@ -4,12 +4,13 @@ import { isComponent } from '@metamask/snaps-ui';
 import { useSelector } from 'react-redux';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
-  TypographyVariant,
-  FONT_WEIGHT,
   DISPLAY,
   FLEX_DIRECTION,
-  OVERFLOW_WRAP,
+  TypographyVariant,
+  OverflowWrap,
+  FontWeight,
   TextVariant,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -37,14 +38,17 @@ export const UI_MAPPING = {
     element: 'Typography',
     children: props.value,
     props: {
-      variant: TypographyVariant.H3,
-      fontWeight: FONT_WEIGHT.BOLD,
-      overflowWrap: OVERFLOW_WRAP.BREAK_WORD,
+      variant: TypographyVariant.H4,
+      fontWeight: FontWeight.Bold,
+      overflowWrap: OverflowWrap.BreakWord,
     },
   }),
   text: (props) => ({
     element: 'SnapUIMarkdown',
     children: props.value,
+    props: {
+      markdown: props.markdown,
+    },
   }),
   spinner: () => ({
     element: 'Spinner',
@@ -53,9 +57,12 @@ export const UI_MAPPING = {
     },
   }),
   divider: () => ({
-    element: 'hr',
+    element: 'Box',
     props: {
       className: 'snap-ui-renderer__divider',
+      backgroundColor: BorderColor.borderDefault,
+      marginTop: 2,
+      marginBottom: 2,
     },
   }),
   copyable: (props) => ({

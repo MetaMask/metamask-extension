@@ -30,7 +30,12 @@ describe('State logs', function () {
       },
     ],
   };
+
   it('should download state logs for the account', async function () {
+    if (process.env.SELENIUM_BROWSER === 'chrome') {
+      // Chrome shows OS level download prompt which can't be dismissed by Selenium
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -45,7 +50,9 @@ describe('State logs', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Download state logs
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({

@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 
-export default function KeyRingLabel({ keyring }) {
+export default function KeyringLabel({ keyring }) {
   const t = useI18nContext();
   let label = null;
 
@@ -31,11 +31,16 @@ export default function KeyRingLabel({ keyring }) {
     case KeyringType.lattice:
       label = HardwareKeyringNames.lattice;
       break;
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    case KeyringType.snap:
+      label = t('snaps');
+      break;
+    ///: END:ONLY_INCLUDE_IN
     default:
       label = null;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
   if (type.startsWith('Custody') && /JSONRPC/u.test(type)) {
     label = type.split(' - ')[1];
     return null;
@@ -51,6 +56,6 @@ export default function KeyRingLabel({ keyring }) {
   );
 }
 
-KeyRingLabel.propTypes = {
+KeyringLabel.propTypes = {
   keyring: PropTypes.object,
 };

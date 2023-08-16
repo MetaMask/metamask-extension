@@ -11,7 +11,6 @@ import {
   updateRecipientUserInput,
   useMyAccountsForRecipientSearch,
   useContactListForRecipientSearch,
-  getIsUsingMyAccountForRecipientSearch,
   getRecipientUserInput,
   getRecipient,
   addHistoryEntry,
@@ -63,8 +62,6 @@ function mapStateToProps(state) {
     domainWarning: getDomainWarning(state),
     nonContacts,
     ownedAccounts,
-    isUsingMyAccountsForRecipientSearch:
-      getIsUsingMyAccountForRecipientSearch(state),
     userInput: getRecipientUserInput(state),
     recipient: getRecipient(state),
   };

@@ -1,0 +1,13 @@
+.notification-page {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+
+  &__content {
+    flex: 1;
+  }
+
+  &__warning-icon {
+    font-size: 54px;
+  }
+}

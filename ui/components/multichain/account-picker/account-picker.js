@@ -13,7 +13,7 @@ import {
   AlignItems,
   BackgroundColor,
   BorderRadius,
-  DISPLAY,
+  Display,
   FontWeight,
   IconColor,
   Size,
@@ -25,12 +25,13 @@ export const AccountPicker = ({ address, name, onClick, disabled }) => {
   return (
     <Button
       className="multichain-account-picker"
+      data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
       borderRadius={BorderRadius.LG}
       ellipsis
       textProps={{
-        display: DISPLAY.FLEX,
+        display: Display.Flex,
         gap: 2,
         alignItems: AlignItems.center,
       }}

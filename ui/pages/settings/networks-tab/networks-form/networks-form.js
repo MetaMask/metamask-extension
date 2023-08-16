@@ -40,6 +40,7 @@ import {
 } from '../../../../../shared/constants/network';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -90,7 +91,8 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  const selectedNetworkName = label || (labelKey && t(labelKey));
+  const selectedNetworkName =
+    label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');

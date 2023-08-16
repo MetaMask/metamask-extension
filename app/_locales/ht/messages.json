@@ -96,9 +96,6 @@
   "connect": {
     "message": "Konekte"
   },
-  "connectHardwareWallet": {
-    "message": "Konekte Materyèl Wallet"
-  },
   "connectingToMainnet": {
     "message": "Konekte ak Prensipal Ethereum Rezo a"
   },
@@ -119,9 +116,6 @@
   },
   "create": {
     "message": "Kreye"
-  },
-  "createAccount": {
-    "message": "Kreye Kont"
   },
   "currentLanguage": {
     "message": "Lang Aktyèl"
@@ -306,9 +300,6 @@
   "mustSelectOne": {
     "message": "Ou dwe chwazi omwen 1 token."
   },
-  "myAccounts": {
-    "message": "Kont mwen"
-  },
   "needImportFile": {
     "message": "Ou dwe chwazi yon dosye pou enpòte.",
     "description": "User is important an account and needs to add a file to continue"
@@ -461,9 +452,6 @@
   "searchResults": {
     "message": "Rezilta rechèch"
   },
-  "searchTokens": {
-    "message": "Rechèch Tokens"
-  },
   "seedPhraseReq": {
     "message": "Seed fraz yo se 12 long mo"
   },
@@ -562,10 +550,6 @@
   },
   "transfer": {
     "message": "Transfè"
-  },
-  "troubleTokenBalances": {
-    "message": "Nou te gen pwoblèm chaje balans token ou. Ou ka wè yo ",
-    "description": "Followed by a link (here) to view token balances"
   },
   "tryAgain": {
     "message": "Eseye anko"

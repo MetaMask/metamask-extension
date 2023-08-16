@@ -35,12 +35,14 @@ describe('Import ERC1155 NFT', function () {
 
         // After login, go to NFTs tab, open the import NFT/ERC1155 form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+        await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter a valid NFT that belongs to user and check success message appears
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '1');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
+        await driver.fill('#address', contractAddress);
+        await driver.fill('#token-id', '1');
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
 
         const newNftNotification = await driver.findVisibleElement({
           text: 'NFT was successfully added!',
@@ -56,7 +58,7 @@ describe('Import ERC1155 NFT', function () {
         assert.equal(await importedERC1155.isDisplayed(), true);
 
         const importedERC1155Image = await driver.findVisibleElement(
-          '.nfts-items__item img',
+          '.nft-item__container',
         );
         assert.equal(await importedERC1155Image.isDisplayed(), true);
       },
@@ -83,17 +85,18 @@ describe('Import ERC1155 NFT', function () {
 
         // After login, go to NFTs tab, open the import NFT form
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement({ text: 'Import NFTs', tag: 'a' });
+        await driver.clickElement({ text: 'Import NFT', tag: 'button' });
 
         // Enter an NFT that not belongs to user with a valid address and an invalid token id
-        await driver.fill('[data-testid="address"]', contractAddress);
-        await driver.fill('[data-testid="token-id"]', '4');
-        await driver.clickElement({ text: 'Add', tag: 'button' });
-
+        await driver.fill('#address', contractAddress);
+        await driver.fill('#token-id', '4');
+        await driver.clickElement(
+          '[data-testid="import-nfts-modal-import-button"]',
+        );
         // Check error message appears
         const invalidNftNotification = await driver.findElement({
           text: 'NFT can’t be added as the ownership details do not match. Make sure you have entered correct information.',
-          tag: 'h6',
+          tag: 'p',
         });
         assert.equal(await invalidNftNotification.isDisplayed(), true);
       },

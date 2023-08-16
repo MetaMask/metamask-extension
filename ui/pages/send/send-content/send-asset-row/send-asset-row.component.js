@@ -12,6 +12,8 @@ import {
   AssetType,
   TokenStandard,
 } from '../../../../../shared/constants/transaction';
+import { Text } from '../../../../components/component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 
 export default class SendAssetRow extends Component {
   static propTypes = {
@@ -154,8 +156,8 @@ export default class SendAssetRow extends Component {
           isEqualCaseInsensitive(address, details.address) &&
           tokenId === details.tokenId,
       );
-      if (nft) {
-        return this.renderNft(nft);
+      if (nft || details) {
+        return this.renderNft(nft ?? details);
       }
     }
     return this.renderNativeCurrency();
@@ -186,7 +188,6 @@ export default class SendAssetRow extends Component {
     const { t } = this.context;
     const { accounts, selectedAddress, nativeCurrency, nativeCurrencyImage } =
       this.props;
-
     const { sendableTokens, sendableNfts } = this.state;
 
     const balanceValue = accounts[selectedAddress]
@@ -266,6 +267,9 @@ export default class SendAssetRow extends Component {
     const nftCollection = this.props.collections.find(
       (collection) => collection.address === address,
     );
+
+    const label = nftCollection?.name || name;
+
     return (
       <div
         key={address}
@@ -276,15 +280,12 @@ export default class SendAssetRow extends Component {
           <Identicon address={address} diameter={36} image={image} />
         </div>
         <div className="send-v2__asset-dropdown__asset-data">
-          <div className="send-v2__asset-dropdown__symbol">
-            {nftCollection.name || name}
+          <div className="send-v2__asset-dropdown__symbol" title={label}>
+            {label}
           </div>
-          <div className="send-v2__asset-dropdown__name">
-            <span className="send-v2__asset-dropdown__name__label">
-              {`${t('tokenId')}:`}
-            </span>
-            {tokenId}
-          </div>
+          <Text variant={TextVariant.bodyXs} ellipsis title={tokenId}>
+            {`${t('tokenId')}: ${tokenId}`}
+          </Text>
         </div>
         {!insideDropdown && (
           <i className="fa fa-caret-down fa-lg send-v2__asset-dropdown__caret" />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -42,13 +42,11 @@ describe('ConfirmSubTitle', () => {
     expect(container.firstChild).toStrictEqual(null);
   });
 
-  it('should not null if showFiatInTestnets preference if false but it is NFT Transfer', async () => {
+  it('should not return null if it is NFT Transfer', async () => {
     mockState.metamask.preferences.showFiatInTestnets = false;
     mockState.metamask.allNftContracts = {
       [mockState.metamask.selectedAddress]: {
-        [hexToDecimal(mockState.metamask.providerConfig.chainId)]: [
-          { address: '0x9' },
-        ],
+        [mockState.metamask.providerConfig.chainId]: [{ address: '0x9' }],
       },
     };
     store = configureStore(mockState);
@@ -60,6 +58,44 @@ describe('ConfirmSubTitle', () => {
             to: '0x9',
           },
         }}
+        hexTransactionAmount="0x9184e72a000"
+      />,
+      store,
+    );
+    expect(await findByText('0.00001')).toBeInTheDocument();
+  });
+
+  it('should not return null if assetStandard is ERC1155', async () => {
+    mockState.metamask.preferences.showFiatInTestnets = false;
+    store = configureStore(mockState);
+
+    const { findByText } = renderWithProvider(
+      <ConfirmSubTitle
+        txData={{
+          txParams: {
+            to: '0x9',
+          },
+        }}
+        assetStandard={ERC1155}
+        hexTransactionAmount="0x9184e72a000"
+      />,
+      store,
+    );
+    expect(await findByText('0.00001')).toBeInTheDocument();
+  });
+
+  it('should not return null if assetStandard is ERC712', async () => {
+    mockState.metamask.preferences.showFiatInTestnets = false;
+    store = configureStore(mockState);
+
+    const { findByText } = renderWithProvider(
+      <ConfirmSubTitle
+        txData={{
+          txParams: {
+            to: '0x9',
+          },
+        }}
+        assetStandard={ERC721}
         hexTransactionAmount="0x9184e72a000"
       />,
       store,

@@ -257,7 +257,7 @@ export default function CreatePassword({
                   <a
                     onClick={(e) => e.stopPropagation()}
                     key="create-password__link-text"
-                    href={ZENDESK_URLS.PASSWORD_ARTICLE}
+                    href={ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

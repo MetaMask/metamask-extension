@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
-import Box from '../../../ui/box';
 import CheckBox from '../../../ui/check-box';
 
 import {
-  DISPLAY,
+  Display,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getUseCurrencyRateCheck } from '../../../../selectors';
-import { Text } from '../../../component-library';
+import { Box, Text } from '../../../component-library';
 
 const DetectedTokenValues = ({
   token,
@@ -44,7 +43,7 @@ const DetectedTokenValues = ({
   };
 
   return (
-    <Box display={DISPLAY.INLINE_FLEX} className="detected-token-values">
+    <Box display={Display.InlineFlex} className="detected-token-values">
       <Box marginBottom={1}>
         <Text variant={TextVariant.bodyLgMedium} as="h4">
           {`${balanceString || '0'} ${token.symbol}`}

@@ -145,12 +145,12 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
             class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
           >
             <h6
-              class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
             >
               Unknown private network
             </h6>
             <h6
-              class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
             >
               Test Account
             </h6>
@@ -160,13 +160,13 @@ exports[`SignatureRequestOriginal should match snapshot 1`] = `
           class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
         >
           <h6
-            class="box mm-text mm-text--body-sm box--flex-direction-row box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
           >
             Balance
           </h6>
           <h6
             align="end"
-            class="box mm-text mm-text--body-sm mm-text--font-weight-bold box--flex-direction-row box--color-text-default"
+            class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
           >
             966.987986
              

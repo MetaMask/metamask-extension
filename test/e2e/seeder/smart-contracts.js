@@ -3,8 +3,8 @@ const {
   hstAbi,
   piggybankBytecode,
   piggybankAbi,
-  collectiblesAbi,
-  collectiblesBytecode,
+  nftsAbi,
+  nftsBytecode,
   erc1155Abi,
   erc1155Bytecode,
   failingContractAbi,
@@ -23,8 +23,8 @@ const hstFactory = {
 };
 
 const nftsFactory = {
-  bytecode: collectiblesBytecode,
-  abi: collectiblesAbi,
+  bytecode: nftsBytecode,
+  abi: nftsAbi,
 };
 
 const erc1155Factory = {

@@ -87,7 +87,7 @@ An example of a form using the `FormTextField` component.
 ```jsx
 import React, { useState, useEffect } from 'react';
 import {
-  DISPLAY,
+  Display,
   TextColor,
   AlignItems,
   TextVariant,
@@ -225,7 +225,7 @@ return (
         error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
         helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
       />
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
+      <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
         <ButtonPrimary type="submit">Submit</ButtonPrimary>
       </Box>
     </Box>
@@ -256,7 +256,7 @@ There will be times when you will want to use a custom `Label` or `HelpText`. Th
 ```jsx
 import {
   Size,
-  DISPLAY,
+  Display,
   IconColor,
   AlignItems,
   JustifyContent,
@@ -279,11 +279,11 @@ import {
   FormTextField component
 </Text>
 <Box
-  display={DISPLAY.FLEX}
+  display={Display.Flex}
   justifyContent={JustifyContent.spaceBetween}
   alignItems={AlignItems.flexEnd}
 >
-  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+  <Box display={Display.Flex} alignItems={AlignItems.center}>
     {/**
       * If you need a custom label
       * or require adding some form of customization
@@ -314,7 +314,7 @@ import {
   type={TEXT_FIELD_TYPES.NUMBER}
 />
 <Box
-  display={DISPLAY.FLEX}
+  display={Display.Flex}
   alignItems={AlignItems.flexStart}
   justifyContent={JustifyContent.spaceBetween}
   marginTop={1}

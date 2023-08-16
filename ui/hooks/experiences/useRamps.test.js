@@ -46,7 +46,7 @@ describe('useRamps', () => {
 
   it('should open the buy crypto URL for MAINNET chain ID', () => {
     const mockChainId = '1';
-    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_button`;
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=ext_buy_button&metametricsId=1`;
 
     useSelector.mockReturnValue(mockChainId);
     const openTabSpy = jest.spyOn(global.platform, 'openTab');

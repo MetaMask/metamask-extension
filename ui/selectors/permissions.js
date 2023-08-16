@@ -346,7 +346,7 @@ export function getPermissionsRequests(state) {
   return getApprovalRequestsByType(
     state,
     ApprovalType.WalletRequestPermissions,
-  ).map(({ requestData }) => requestData);
+  )?.map(({ requestData }) => requestData);
 }
 
 export function getFirstPermissionRequest(state) {

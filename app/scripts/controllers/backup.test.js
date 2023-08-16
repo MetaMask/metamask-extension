@@ -57,18 +57,15 @@ function getMockAddressBookController() {
 }
 
 function getMockNetworkController() {
-  const mcState = {
+  const state = {
     networkConfigurations: {},
-
-    update: (store) => (mcState.store = store),
   };
 
-  mcState.store = {
-    getState: sinon.stub().returns(mcState),
-    updateState: (store) => (mcState.store = store),
+  const loadBackup = ({ networkConfigurations }) => {
+    Object.assign(state, { networkConfigurations });
   };
 
-  return mcState;
+  return { state, loadBackup };
 }
 
 const jsonData = JSON.stringify({
@@ -174,28 +171,28 @@ describe('BackupController', function () {
 
     it('should restore backup', async function () {
       const backupController = getBackupController();
-      backupController.restoreUserData(jsonData);
+      await backupController.restoreUserData(jsonData);
       // check networks backup
       assert.equal(
-        backupController.networkController.store.networkConfigurations[
+        backupController.networkController.state.networkConfigurations[
           'network-configuration-id-1'
         ].chainId,
         '0x539',
       );
       assert.equal(
-        backupController.networkController.store.networkConfigurations[
+        backupController.networkController.state.networkConfigurations[
           'network-configuration-id-2'
         ].chainId,
         '0x38',
       );
       assert.equal(
-        backupController.networkController.store.networkConfigurations[
+        backupController.networkController.state.networkConfigurations[
           'network-configuration-id-3'
         ].chainId,
         '0x61',
       );
       assert.equal(
-        backupController.networkController.store.networkConfigurations[
+        backupController.networkController.state.networkConfigurations[
           'network-configuration-id-4'
         ].chainId,
         '0x89',

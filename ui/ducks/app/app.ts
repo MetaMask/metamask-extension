@@ -26,6 +26,9 @@ interface AppState {
     values?: { address?: string | null };
   } | null;
   networkDropdownOpen: boolean;
+  importNftsModalOpen: boolean;
+  showIpfsModalOpen: boolean;
+  importTokensModalOpen: boolean;
   accountDetail: {
     subview?: string;
     accountExport?: string;
@@ -67,6 +70,9 @@ interface AppState {
   customTokenAmount: string;
   txId: number | null;
   accountDetailsAddress: string;
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: boolean;
+  ///: END:ONLY_INCLUDE_IN
 }
 
 interface AppSliceState {
@@ -91,6 +97,9 @@ const initialState: AppState = {
   alertMessage: null,
   qrCodeData: null,
   networkDropdownOpen: false,
+  importNftsModalOpen: false,
+  showIpfsModalOpen: false,
+  importTokensModalOpen: false,
   accountDetail: {
     privateKey: '',
   },
@@ -132,6 +141,9 @@ const initialState: AppState = {
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  snapsInstallPrivacyWarningShown: false,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default function reduceApp(
@@ -155,6 +167,42 @@ export default function reduceApp(
       return {
         ...appState,
         networkDropdownOpen: false,
+      };
+
+    case actionConstants.IMPORT_NFTS_MODAL_OPEN:
+      return {
+        ...appState,
+        importNftsModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_NFTS_MODAL_CLOSE:
+      return {
+        ...appState,
+        importNftsModalOpen: false,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_OPEN:
+      return {
+        ...appState,
+        showIpfsModalOpen: true,
+      };
+
+    case actionConstants.SHOW_IPFS_MODAL_CLOSE:
+      return {
+        ...appState,
+        showIpfsModalOpen: false,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_OPEN:
+      return {
+        ...appState,
+        importTokensModalOpen: true,
+      };
+
+    case actionConstants.IMPORT_TOKENS_POPOVER_CLOSE:
+      return {
+        ...appState,
+        importTokensModalOpen: false,
       };
 
     // alert methods

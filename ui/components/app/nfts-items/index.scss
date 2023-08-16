@@ -2,6 +2,10 @@
   &__collection {
     margin-bottom: 24px;
 
+    &:last-child {
+      margin-bottom: 0;
+    }
+
     &-accordion-title {
       cursor: pointer;
     }
@@ -46,7 +50,6 @@
     padding: 0;
 
     &-image {
-      border-radius: 4px;
       width: 100%;
       height: 100%;
       cursor: pointer;

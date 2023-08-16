@@ -21,7 +21,7 @@ import {
  * The "keys" of all of permissions recognized by the PermissionController.
  * Permission keys and names have distinct meanings in the permission system.
  */
-const PermissionKeys = Object.freeze({
+const PermissionNames = Object.freeze({
   ...RestrictedMethods,
 });
 
@@ -61,9 +61,7 @@ export const getCaveatSpecifications = ({ getIdentities }) => {
       decorator: (method, caveat) => {
         return async (args) => {
           const result = await method(args);
-          return result
-            .filter((account) => caveat.value.includes(account))
-            .slice(0, 1);
+          return result.filter((account) => caveat.value.includes(account));
         };
       },
 
@@ -101,22 +99,22 @@ export const getPermissionSpecifications = ({
   captureKeyringTypesWithMissingIdentities,
 }) => {
   return {
-    [PermissionKeys.eth_accounts]: {
+    [PermissionNames.eth_accounts]: {
       permissionType: PermissionType.RestrictedMethod,
-      targetKey: PermissionKeys.eth_accounts,
+      targetName: PermissionNames.eth_accounts,
       allowedCaveats: [CaveatTypes.restrictReturnedAccounts],
 
       factory: (permissionOptions, requestData) => {
         if (Array.isArray(permissionOptions.caveats)) {
           throw new Error(
-            `${PermissionKeys.eth_accounts} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
+            `${PermissionNames.eth_accounts} error: Received unexpected caveats. Any permitted caveats will be added automatically.`,
           );
         }
 
         // This value will be further validated as part of the caveat.
         if (!requestData.approvedAccounts) {
           throw new Error(
-            `${PermissionKeys.eth_accounts} error: No approved accounts specified.`,
+            `${PermissionNames.eth_accounts} error: No approved accounts specified.`,
           );
         }
 
@@ -169,7 +167,7 @@ export const getPermissionSpecifications = ({
           caveats[0].type !== CaveatTypes.restrictReturnedAccounts
         ) {
           throw new Error(
-            `${PermissionKeys.eth_accounts} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictReturnedAccounts}".`,
+            `${PermissionNames.eth_accounts} error: Invalid caveats. There must be a single caveat of type "${CaveatTypes.restrictReturnedAccounts}".`,
           );
         }
       },
@@ -189,7 +187,7 @@ export const getPermissionSpecifications = ({
 function validateCaveatAccounts(accounts, getIdentities) {
   if (!Array.isArray(accounts) || accounts.length === 0) {
     throw new Error(
-      `${PermissionKeys.eth_accounts} error: Expected non-empty array of Ethereum addresses.`,
+      `${PermissionNames.eth_accounts} error: Expected non-empty array of Ethereum addresses.`,
     );
   }
 
@@ -197,13 +195,13 @@ function validateCaveatAccounts(accounts, getIdentities) {
   accounts.forEach((address) => {
     if (!address || typeof address !== 'string') {
       throw new Error(
-        `${PermissionKeys.eth_accounts} error: Expected an array of Ethereum addresses. Received: "${address}".`,
+        `${PermissionNames.eth_accounts} error: Expected an array of Ethereum addresses. Received: "${address}".`,
       );
     }
 
     if (!identities[address]) {
       throw new Error(
-        `${PermissionKeys.eth_accounts} error: Received unrecognized address: "${address}".`,
+        `${PermissionNames.eth_accounts} error: Received unrecognized address: "${address}".`,
       );
     }
   });

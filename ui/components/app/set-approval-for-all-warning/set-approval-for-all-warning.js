@@ -16,9 +16,9 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import {
   Icon,
   IconName,
-  Text,
   Button,
   BUTTON_VARIANT,
+  Text,
 } from '../../component-library';
 
 const SetApproveForAllWarning = ({

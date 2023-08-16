@@ -19,7 +19,7 @@ const messageIdMock2 = '456';
 const stateMock = { test: 123 };
 const addressMock = '0xc38bf1ad06ef69f0c04e29dbeb4152b4175f0a8d';
 const publicKeyMock = '32762347862378feb87123781623a=';
-const keyringMock = { type: KeyringType.hdKeyTree };
+const keyringTypeMock = KeyringType.hdKeyTree;
 
 const messageParamsMock = {
   from: addressMock,
@@ -73,11 +73,6 @@ const createEncryptionPublicKeyManagerMock = <T>() =>
     },
   } as any as jest.Mocked<T>);
 
-const createKeyringControllerMock = () => ({
-  getKeyringForAccount: jest.fn(),
-  getEncryptionPublicKey: jest.fn(),
-});
-
 describe('EncryptionPublicKeyController', () => {
   let encryptionPublicKeyController: EncryptionPublicKeyController;
 
@@ -88,7 +83,8 @@ describe('EncryptionPublicKeyController', () => {
   const encryptionPublicKeyManagerMock =
     createEncryptionPublicKeyManagerMock<EncryptionPublicKeyManager>();
   const messengerMock = createMessengerMock();
-  const keyringControllerMock = createKeyringControllerMock();
+  const getEncryptionPublicKeyMock = jest.fn();
+  const getAccountKeyringTypeMock = jest.fn();
   const getStateMock = jest.fn();
   const metricsEventMock = jest.fn();
 
@@ -101,7 +97,8 @@ describe('EncryptionPublicKeyController', () => {
 
     encryptionPublicKeyController = new EncryptionPublicKeyController({
       messenger: messengerMock as any,
-      keyringController: keyringControllerMock as any,
+      getEncryptionPublicKey: getEncryptionPublicKeyMock as any,
+      getAccountKeyringType: getAccountKeyringTypeMock as any,
       getState: getStateMock as any,
       metricsEvent: metricsEventMock as any,
     } as EncryptionPublicKeyControllerOptions);
@@ -203,9 +200,7 @@ describe('EncryptionPublicKeyController', () => {
     ])(
       'throws if keyring is not supported',
       async (keyringName, keyringType) => {
-        keyringControllerMock.getKeyringForAccount.mockResolvedValueOnce({
-          type: keyringType,
-        });
+        getAccountKeyringTypeMock.mockResolvedValueOnce(keyringType);
 
         await expect(
           encryptionPublicKeyController.newRequestEncryptionPublicKey(
@@ -219,9 +214,7 @@ describe('EncryptionPublicKeyController', () => {
     );
 
     it('adds message to message manager', async () => {
-      keyringControllerMock.getKeyringForAccount.mockResolvedValueOnce(
-        keyringMock,
-      );
+      getAccountKeyringTypeMock.mockResolvedValueOnce(keyringTypeMock);
 
       await encryptionPublicKeyController.newRequestEncryptionPublicKey(
         addressMock,
@@ -243,9 +236,7 @@ describe('EncryptionPublicKeyController', () => {
         from: messageParamsMock.data,
       });
 
-      keyringControllerMock.getEncryptionPublicKey.mockResolvedValueOnce(
-        publicKeyMock,
-      );
+      getEncryptionPublicKeyMock.mockResolvedValueOnce(publicKeyMock);
     });
 
     it('approves message and signs', async () => {
@@ -253,10 +244,8 @@ describe('EncryptionPublicKeyController', () => {
         messageParamsMock,
       );
 
-      expect(
-        keyringControllerMock.getEncryptionPublicKey,
-      ).toHaveBeenCalledTimes(1);
-      expect(keyringControllerMock.getEncryptionPublicKey).toHaveBeenCalledWith(
+      expect(getEncryptionPublicKeyMock).toHaveBeenCalledTimes(1);
+      expect(getEncryptionPublicKeyMock).toHaveBeenCalledWith(
         messageParamsMock.data,
       );
 
@@ -294,10 +283,8 @@ describe('EncryptionPublicKeyController', () => {
     });
 
     it('rejects message on error', async () => {
-      keyringControllerMock.getEncryptionPublicKey.mockReset();
-      keyringControllerMock.getEncryptionPublicKey.mockRejectedValue(
-        new Error('Test Error'),
-      );
+      getEncryptionPublicKeyMock.mockReset();
+      getEncryptionPublicKeyMock.mockRejectedValue(new Error('Test Error'));
 
       await expect(
         encryptionPublicKeyController.encryptionPublicKey(messageParamsMock),
@@ -312,10 +299,8 @@ describe('EncryptionPublicKeyController', () => {
     });
 
     it('rejects approval on error', async () => {
-      keyringControllerMock.getEncryptionPublicKey.mockReset();
-      keyringControllerMock.getEncryptionPublicKey.mockRejectedValue(
-        new Error('Test Error'),
-      );
+      getEncryptionPublicKeyMock.mockReset();
+      getEncryptionPublicKeyMock.mockRejectedValue(new Error('Test Error'));
 
       await expect(
         encryptionPublicKeyController.encryptionPublicKey(messageParamsMock),

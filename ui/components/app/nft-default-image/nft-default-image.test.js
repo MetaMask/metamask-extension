@@ -1,75 +1,55 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import mockState from '../../../../test/data/mock-state.json';
 import NftDefaultImage from '.';
 
 describe('NFT Default Image', () => {
+  const mockShowIpfsModal = jest.fn();
+  jest.mock('../../../store/actions.ts', () => ({
+    showIpfsModal: () => mockShowIpfsModal,
+  }));
+
+  const store = configureStore()(mockState);
+
   it('should render with no props', () => {
-    const { container } = renderWithProvider(<NftDefaultImage />);
+    const { container } = renderWithProvider(<NftDefaultImage />, store);
 
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot with all provided props', () => {
     const props = {
-      name: 'NFT Name',
-      tokenId: '123',
-      handleImageClick: jest.fn(),
+      clickable: false,
     };
 
-    const { container } = renderWithProvider(<NftDefaultImage {...props} />);
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should match snapshot with missing image click handler', () => {
-    const props = {
-      name: 'NFT Name',
-      tokenId: '123',
-    };
-
-    const { container } = renderWithProvider(<NftDefaultImage {...props} />);
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it('should render NFT name', () => {
-    const props = {
-      name: 'NFT Name',
-    };
-
-    const { queryByText } = renderWithProvider(<NftDefaultImage {...props} />);
-
-    const nftElement = queryByText(`${props.name} #`);
-
-    expect(nftElement).toBeInTheDocument();
-  });
-
-  it('should render NFT name and tokenId', () => {
-    const props = {
-      name: 'NFT Name',
-      tokenId: '123',
-    };
-
-    const { queryByText } = renderWithProvider(<NftDefaultImage {...props} />);
-
-    const nftElement = queryByText(`${props.name} #${props.tokenId}`);
-
-    expect(nftElement).toBeInTheDocument();
-  });
-
-  it('should handle image click', () => {
-    const props = {
-      handleImageClick: jest.fn(),
-    };
-
-    const { queryByTestId } = renderWithProvider(
+    const { container } = renderWithProvider(
       <NftDefaultImage {...props} />,
+      store,
     );
 
-    const nftImageElement = queryByTestId('nft-default-image');
-    fireEvent.click(nftImageElement);
+    expect(container).toMatchSnapshot();
+  });
 
-    expect(props.handleImageClick).toHaveBeenCalled();
+  it('should match snapshot with missing clickable prop', () => {
+    const { container } = renderWithProvider(<NftDefaultImage />, store);
+
+    expect(container).toMatchSnapshot();
+  });
+
+  it('does not render component with clickable class when clickable is false', () => {
+    const { container } = renderWithProvider(
+      <NftDefaultImage clickable={false} />,
+      store,
+    );
+    expect(container.firstChild).not.toHaveClass('nft-default--clickable');
+  });
+
+  it('renders component with clickable class when clickable is true', () => {
+    const { container } = renderWithProvider(
+      <NftDefaultImage clickable />,
+      store,
+    );
+    expect(container.firstChild).toHaveClass('nft-default--clickable');
   });
 });

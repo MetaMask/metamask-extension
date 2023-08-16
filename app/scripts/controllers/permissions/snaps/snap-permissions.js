@@ -1,12 +1,14 @@
-import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   restrictedMethodPermissionBuilders,
   selectHooks,
 } from '@metamask/rpc-methods';
+import { endowmentPermissionBuilders } from '@metamask/snaps-controllers';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/permissions';
+
+// TODO: Use the exported versions of these functions from the snaps monorepo after stable release.
 
 /**
  * @returns {Record<string, Record<string, unknown>>} All endowment permission
@@ -14,9 +16,9 @@ import {
  */
 export const buildSnapEndowmentSpecifications = () =>
   Object.values(endowmentPermissionBuilders).reduce(
-    (allSpecifications, { targetKey, specificationBuilder }) => {
-      if (!Object.keys(ExcludedSnapEndowments).includes(targetKey)) {
-        allSpecifications[targetKey] = specificationBuilder();
+    (allSpecifications, { targetName, specificationBuilder }) => {
+      if (!Object.keys(ExcludedSnapEndowments).includes(targetName)) {
+        allSpecifications[targetName] = specificationBuilder();
       }
       return allSpecifications;
     },
@@ -29,9 +31,9 @@ export const buildSnapEndowmentSpecifications = () =>
  */
 export const buildSnapRestrictedMethodSpecifications = (hooks) =>
   Object.values(restrictedMethodPermissionBuilders).reduce(
-    (specifications, { targetKey, specificationBuilder, methodHooks }) => {
-      if (!Object.keys(ExcludedSnapPermissions).includes(targetKey)) {
-        specifications[targetKey] = specificationBuilder({
+    (specifications, { targetName, specificationBuilder, methodHooks }) => {
+      if (!Object.keys(ExcludedSnapPermissions).includes(targetName)) {
+        specifications[targetName] = specificationBuilder({
           methodHooks: selectHooks(hooks, methodHooks),
         });
       }

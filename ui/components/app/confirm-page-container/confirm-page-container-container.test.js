@@ -282,6 +282,26 @@ describe('Confirm Page Container Container Test', () => {
     });
   });
 
+  describe('Rendering NetworkAccountBalanceHeader', () => {
+    const store = configureMockStore()(mockState);
+
+    it('should render NetworkAccountBalanceHeader if displayAccountBalanceHeader is true', () => {
+      const { getByText } = renderWithProvider(
+        <ConfirmPageContainer {...props} displayAccountBalanceHeader />,
+        store,
+      );
+      expect(getByText('Balance')).toBeInTheDocument();
+    });
+
+    it('should not render NetworkAccountBalanceHeader if displayAccountBalanceHeader is false', () => {
+      const { queryByText } = renderWithProvider(
+        <ConfirmPageContainer {...props} displayAccountBalanceHeader={false} />,
+        store,
+      );
+      expect(queryByText('Balance')).toBeNull();
+    });
+  });
+
   describe('Contact/AddressBook name should appear in recipient header', () => {
     it('should not show add to address dialog if recipient is in contact list and should display contact name', () => {
       const addressBookName = 'test save name';

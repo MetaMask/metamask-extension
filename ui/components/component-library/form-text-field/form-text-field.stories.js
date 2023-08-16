@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
 import {
-  DISPLAY,
+  Display,
   AlignItems,
   TextVariant,
   JustifyContent,
@@ -369,7 +369,7 @@ export const FormExample = () => {
           error={Boolean(submitted === FORM_STATE.ERROR && errors.chainId)}
           helpText={submitted === FORM_STATE.ERROR ? errors.chainId : null}
         />
-        <Box display={DISPLAY.FLEX} alignItems={AlignItems.center} gap={1}>
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
@@ -396,11 +396,11 @@ export const CustomLabelOrHelpText = () => (
       FormTextField component
     </Text>
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       justifyContent={JustifyContent.spaceBetween}
       alignItems={AlignItems.flexEnd}
     >
-      <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
+      <Box display={Display.Flex} alignItems={AlignItems.center}>
         {/* If you need a custom label
         or require adding some form of customization
         import the Label component separately */}
@@ -427,7 +427,7 @@ export const CustomLabelOrHelpText = () => (
       type={TEXT_FIELD_TYPES.NUMBER}
     />
     <Box
-      display={DISPLAY.FLEX}
+      display={Display.Flex}
       alignItems={AlignItems.flexStart}
       justifyContent={JustifyContent.spaceBetween}
     >

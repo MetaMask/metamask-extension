@@ -30,10 +30,10 @@ describe('Test Snap WASM', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const snapButton = await driver.findElement('#connectWasmSnap');
+        const snapButton = await driver.findElement('#connectwasm');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectWasmSnap');
+        await driver.clickElement('#connectwasm');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -52,17 +52,17 @@ describe('Test Snap WASM', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -71,7 +71,7 @@ describe('Test Snap WASM', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectWasmSnap',
+          css: '#connectwasm',
           text: 'Reconnect to WebAssembly Snap',
         });
 

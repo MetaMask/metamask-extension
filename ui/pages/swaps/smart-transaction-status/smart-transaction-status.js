@@ -277,17 +277,14 @@ export default function SmartTransactionStatusPage() {
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
-    let feeInFiat;
-    if (cancellationFeeWei > 0) {
-      ({ feeInFiat } = getFeeForSmartTransaction({
-        chainId,
-        currentCurrency,
-        conversionRate,
-        USDConversionRate,
-        nativeCurrencySymbol,
-        feeInWeiDec: cancellationFeeWei,
-      }));
-    }
+    const { feeInFiat } = getFeeForSmartTransaction({
+      chainId,
+      currentCurrency,
+      conversionRate,
+      USDConversionRate,
+      nativeCurrencySymbol,
+      feeInWeiDec: cancellationFeeWei || 0,
+    });
     return (
       <Box marginBottom={0}>
         <a
@@ -304,9 +301,7 @@ export default function SmartTransactionStatusPage() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {feeInFiat
-            ? t('cancelSwapForFee', [feeInFiat])
-            : t('cancelSwapForFree')}
+          {t('attemptToCancelSwap', [feeInFiat])}
         </a>
       </Box>
     );

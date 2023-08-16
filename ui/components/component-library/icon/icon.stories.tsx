@@ -13,21 +13,21 @@ import {
   BackgroundColor,
   BorderColor,
   Color,
+  TextColor,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box/box';
 
 import {
   ButtonIcon,
   ButtonLink,
+  ButtonLinkSize,
   Label,
   Text,
   TextField,
   TextFieldSearch,
   TEXT_FIELD_SIZES,
   ButtonIconSize,
-  BUTTON_LINK_SIZES,
+  Box,
 } from '..';
 
 import { Icon } from './icon';
@@ -154,8 +154,8 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
         <Text>
           No matches. Please try again or ask in the{' '}
           <ButtonLink
-            size={BUTTON_LINK_SIZES.INHERIT}
-            color={Color.primaryDefault}
+            size={ButtonLinkSize.Inherit}
+            color={TextColor.primaryDefault}
             href="https://consensys.slack.com/archives/C0354T27M5M"
             target="_blank"
           >
