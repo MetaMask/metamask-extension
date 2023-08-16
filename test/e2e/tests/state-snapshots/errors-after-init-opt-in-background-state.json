@@ -1,34 +1,81 @@
 {
-  "AccountTracker": { "currentBlockGasLimit": "0x1c9c380" },
+  "AccountTracker": { "accounts": "object" },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
-    "defaultHomeActiveTabName": null
+    "defaultHomeActiveTabName": null,
+    "browserEnvironment": "object",
+    "popupGasPollTokens": "object",
+    "notificationGasPollTokens": "object",
+    "fullScreenGasPollTokens": "object",
+    "recoveryPhraseReminderHasBeenShown": "boolean",
+    "recoveryPhraseReminderLastShown": "number",
+    "outdatedBrowserWarningLastShown": "number",
+    "nftsDetectionNoticeDismissed": "boolean",
+    "showTestnetMessageInDropdown": "boolean",
+    "showBetaHeader": "boolean",
+    "showProductTour": "boolean",
+    "trezorModel": "object",
+    "nftsDropdownState": "object",
+    "termsOfUseLastAgreed": "number",
+    "qrHardware": "object",
+    "usedNetworks": "object",
+    "snapsInstallPrivacyWarningShown": "boolean",
+    "serviceWorkerLastActiveTime": "number"
   },
+  "ApprovalController": "object",
+  "CachedBalancesController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
     "nativeCurrency": "ETH",
-    "currentCurrency": "usd"
+    "currentCurrency": "usd",
+    "pendingCurrentCurrency": "object",
+    "pendingNativeCurrency": "object",
+    "usdConversionRate": "number"
   },
-  "DecryptMessageController": { "unapprovedDecryptMsgCount": 0 },
+  "DecryptMessageController": {
+    "unapprovedDecryptMsgs": "object",
+    "unapprovedDecryptMsgCount": 0
+  },
   "EncryptionPublicKeyController": {
+    "unapprovedEncryptionPublicKeyMsgs": "object",
     "unapprovedEncryptionPublicKeyMsgCount": 0
   },
+  "EnsController": "object",
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
-    "metaMetricsId": "fake-metrics-id"
+    "metaMetricsId": "fake-metrics-id",
+    "eventsBeforeMetricsOptIn": "object",
+    "traits": "object",
+    "fragments": "object",
+    "segmentApiCalls": "object",
+    "previousUserTraits": "object"
   },
   "NetworkController": {
+    "selectedNetworkClientId": "string",
     "networkId": "1337",
     "providerConfig": {
+      "chainId": "string",
       "nickname": "Localhost 8545",
+      "rpcPrefs": "object",
+      "rpcUrl": "string",
       "ticker": "ETH",
-      "type": "rpc"
-    }
+      "type": "rpc",
+      "id": "string"
+    },
+    "networksMetadata": "object",
+    "networkConfigurations": "object"
   },
   "SignatureController": {
+    "unapprovedMsgs": "object",
+    "unapprovedPersonalMsgs": "object",
+    "unapprovedTypedMessages": "object",
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
-  }
+  },
+  "SwapsController": "object",
+  "TokenRatesController": "object",
+  "TokensController": "object",
+  "TxController": "object"
 }
