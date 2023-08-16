@@ -41,7 +41,7 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -876,11 +876,14 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
+    const backgroundState = store.getState();
+    const maskedBackgroundState = maskObject(
+      backgroundState,
+      SENTRY_BACKGROUND_STATE,
+    );
     return {
       browser: window.navigator.userAgent,
-      store: debugState,
+      store: { metamask: maskedBackgroundState },
       version: platform.getVersion(),
     };
   };

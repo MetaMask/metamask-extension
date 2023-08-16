@@ -8,7 +8,7 @@ import browser from 'webextension-polyfill';
 import { getEnvironmentType } from '../app/scripts/lib/util';
 import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
-import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
+import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
@@ -234,11 +234,11 @@ function setupStateHooks(store) {
     return state;
   };
   window.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject(fullState, SENTRY_STATE);
+    const reduxState = store.getState();
+    const maskedReduxState = maskObject(reduxState, SENTRY_UI_STATE);
     return {
       browser: window.navigator.userAgent,
-      store: debugState,
+      store: maskedReduxState,
       version: global.platform.getVersion(),
     };
   };
