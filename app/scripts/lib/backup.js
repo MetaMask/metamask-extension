@@ -1,6 +1,6 @@
 import { prependZero } from '../../../shared/modules/string-utils';
 
-export default class BackupController {
+export default class Backup {
   constructor(opts = {}) {
     const {
       preferencesController,

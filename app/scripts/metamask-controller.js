@@ -184,7 +184,7 @@ import AppStateController from './controllers/app-state';
 import CachedBalancesController from './controllers/cached-balances';
 import AlertController from './controllers/alert';
 import OnboardingController from './controllers/onboarding';
-import BackupController from './controllers/backup';
+import Backup from './lib/backup';
 import IncomingTransactionsController from './controllers/incoming-transactions';
 import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
@@ -1148,7 +1148,7 @@ export default class MetamaskController extends EventEmitter {
     });
     ///: END:ONLY_INCLUDE_IN
 
-    this.backupController = new BackupController({
+    this.backup = new Backup({
       preferencesController: this.preferencesController,
       addressBookController: this.addressBookController,
       networkController: this.networkController,
@@ -1643,7 +1643,6 @@ export default class MetamaskController extends EventEmitter {
       PermissionController: this.permissionController,
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
-      BackupController: this.backupController,
       AnnouncementController: this.announcementController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
@@ -1690,7 +1689,6 @@ export default class MetamaskController extends EventEmitter {
         PermissionController: this.permissionController,
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
-        BackupController: this.backupController,
         AnnouncementController: this.announcementController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
@@ -2202,7 +2200,7 @@ export default class MetamaskController extends EventEmitter {
       smartTransactionsController,
       txController,
       assetsContractController,
-      backupController,
+      backup,
       approvalController,
     } = this;
 
@@ -2748,9 +2746,9 @@ export default class MetamaskController extends EventEmitter {
       removePollingTokenFromAppState:
         appStateController.removePollingToken.bind(appStateController),
 
-      // BackupController
-      backupUserData: backupController.backupUserData.bind(backupController),
-      restoreUserData: backupController.restoreUserData.bind(backupController),
+      // Backup
+      backupUserData: backup.backupUserData.bind(backup),
+      restoreUserData: backup.restoreUserData.bind(backup),
 
       // DetectTokenController
       detectNewTokens: detectTokensController.detectNewTokens.bind(
