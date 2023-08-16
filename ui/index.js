@@ -81,7 +81,7 @@ export default function launchMetamaskUi(opts, cb) {
       return;
     }
     startApp(metamaskState, backgroundConnection, opts).then((store) => {
-      setupDebuggingHelpers(store);
+      setupStateHooks(store);
       cb(
         null,
         store,
@@ -191,18 +191,39 @@ async function startApp(metamaskState, backgroundConnection, opts) {
   return store;
 }
 
-function setupDebuggingHelpers(store) {
-  /**
-   * The following stateHook is a method intended to throw an error, used in
-   * our E2E test to ensure that errors are attempted to be sent to sentry.
-   *
-   * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
-   */
-  window.stateHooks.throwTestError = async function (msg = 'Test Error') {
-    const error = new Error(msg);
-    error.name = 'TestError';
-    throw error;
-  };
+/**
+ * Setup functions on `window.stateHooks`. Some of these support
+ * application features, and some are just for debugging or testing.
+ *
+ * @param {object} store - The Redux store.
+ */
+function setupStateHooks(store) {
+  if (process.env.METAMASK_DEBUG || process.env.IN_TEST) {
+    /**
+     * The following stateHook is a method intended to throw an error, used in
+     * our E2E test to ensure that errors are attempted to be sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestError = async function (msg = 'Test Error') {
+      const error = new Error(msg);
+      error.name = 'TestError';
+      throw error;
+    };
+    /**
+     * The following stateHook is a method intended to throw an error in the
+     * background, used in our E2E test to ensure that errors are attempted to be
+     * sent to sentry.
+     *
+     * @param {string} [msg] - The error message to throw, defaults to 'Test Error'
+     */
+    window.stateHooks.throwTestBackgroundError = async function (
+      msg = 'Test Error',
+    ) {
+      store.dispatch(actions.throwTestBackgroundError(msg));
+    };
+  }
+
   window.stateHooks.getCleanAppState = async function () {
     const state = clone(store.getState());
     state.version = global.platform.getVersion();
