@@ -59,9 +59,9 @@ export default class AppMetadataController extends EventEmitter {
       ...state,
     });
 
-    this.maybeUpdateAppVersion(currentAppVersion);
+    this.#maybeUpdateAppVersion(currentAppVersion);
 
-    this.maybeUpdateMigrationVersion(currentMigrationVersion);
+    this.#maybeUpdateMigrationVersion(currentMigrationVersion);
   }
 
   /**
@@ -69,7 +69,7 @@ export default class AppMetadataController extends EventEmitter {
    *
    * @param maybeNewAppVersion
    */
-  maybeUpdateAppVersion(maybeNewAppVersion: string): void {
+  #maybeUpdateAppVersion(maybeNewAppVersion: string): void {
     const oldCurrentAppVersion = this.store.getState().currentAppVersion;
 
     if (maybeNewAppVersion !== oldCurrentAppVersion) {
@@ -85,7 +85,7 @@ export default class AppMetadataController extends EventEmitter {
    *
    * @param maybeNewMigrationVersion
    */
-  maybeUpdateMigrationVersion(maybeNewMigrationVersion: number): void {
+  #maybeUpdateMigrationVersion(maybeNewMigrationVersion: number): void {
     const oldCurrentMigrationVersion =
       this.store.getState().currentMigrationVersion;
 
