@@ -7,7 +7,8 @@ const { format } = require('prettier');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-const dateFields = ['metamask.conversionDate'];
+const backgroundDateFields = ['CurrencyController.conversionDate'];
+const uiDateFields = ['metamask.conversionDate'];
 
 /**
  * Transform date properties to value types, to ensure that state is
@@ -15,8 +16,23 @@ const dateFields = ['metamask.conversionDate'];
  *
  * @param {unknown} data - The data to transform
  */
-function transformDates(data) {
-  for (const field of dateFields) {
+function transformBackgroundDates(data) {
+  for (const field of backgroundDateFields) {
+    if (has(data, field)) {
+      set(data, field, typeof get(data, field));
+    }
+  }
+  return data;
+}
+
+/**
+ * Transform date properties to value types, to ensure that state is
+ * consistent between test runs.
+ *
+ * @param {unknown} data - The data to transform
+ */
+function transformUiDates(data) {
+  for (const field of uiDateFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
     }
@@ -33,12 +49,10 @@ function transformDates(data) {
  * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
  */
 async function matchesSnapshot({
-  data: unprocessedData,
+  data,
   snapshot,
   update = process.env.UPDATE_SNAPSHOTS === 'true',
 }) {
-  const data = transformDates(unprocessedData);
-
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
@@ -243,7 +257,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: appState,
+            data: transformBackgroundDates(appState),
             snapshot: 'errors-before-init-opt-in-background-state',
           });
         },
@@ -328,7 +342,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: appState,
+            data: transformUiDates(appState),
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
@@ -436,7 +450,8 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.store.metamask;
+          const { participateInMetaMetrics } =
+            extra.appState.store.MetaMetricsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
@@ -494,7 +509,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: appState.store,
+            data: transformBackgroundDates(appState.store),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -588,7 +603,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: appState.store,
+            data: transformUiDates(appState.store),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },
