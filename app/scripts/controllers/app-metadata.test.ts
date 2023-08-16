@@ -22,7 +22,11 @@ jest.mock(
     },
 );
 
-describe('NetworkController', () => {
+describe('AppMetadataController', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('constructor', () => {
     it('accepts initial state and does not modify it if currentMigrationVersion and platform.getVersion() match respective values in state', async () => {
       const initState = {
