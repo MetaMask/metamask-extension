@@ -264,7 +264,8 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  */
 async function initialize() {
   try {
-    const initState = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
+    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
     ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -287,6 +288,7 @@ async function initialize() {
       initLangCode,
       {},
       isFirstMetaMaskControllerSetup,
+      initData.meta,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -417,7 +419,7 @@ export async function loadStateFromPersistence() {
   localStore.set(versionedData.data);
 
   // return just the data
-  return versionedData.data;
+  return versionedData;
 }
 
 /**
@@ -430,12 +432,14 @@ export async function loadStateFromPersistence() {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  * @param isFirstMetaMaskControllerSetup
+ * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  */
 export function setupController(
   initState,
   initLangCode,
   overrides,
   isFirstMetaMaskControllerSetup,
+  stateMetadata,
 ) {
   //
   // MetaMask Controller
@@ -462,6 +466,7 @@ export function setupController(
     localStore,
     overrides,
     isFirstMetaMaskControllerSetup,
+    currentMigrationVersion: stateMetadata.version,
   });
 
   setupEnsIpfsResolver({

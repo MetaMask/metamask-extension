@@ -198,6 +198,7 @@ import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
+import AppMetadataController from './controllers/app-metadata';
 
 import {
   CaveatMutatorFactories,
@@ -267,6 +268,8 @@ export default class MetamaskController extends EventEmitter {
     // instance of a class that wraps the extension's storage local API.
     this.localStoreApiWrapper = opts.localStore;
 
+    this.currentMigrationVersion = opts.currentMigrationVersion;
+
     // observable state store
     this.store = new ComposableObservableStore({
       state: initState,
@@ -285,6 +288,12 @@ export default class MetamaskController extends EventEmitter {
       if (details.reason === 'update' && version === '8.1.0') {
         this.platform.openExtensionInBrowser();
       }
+    });
+
+    this.appMetadataController = new AppMetadataController({
+      state: initState.AppMetadataController,
+      currentMigrationVersion: this.currentMigrationVersion,
+      currentAppVersion: version,
     });
 
     // next, we will initialize the controllers
@@ -1640,6 +1649,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.store.updateStructure({
       AppStateController: this.appStateController.store,
+      AppMetadataController: this.appMetadataController.store,
       TransactionController: this.txController.store,
       KeyringController: this.keyringController.store,
       PreferencesController: this.preferencesController.store,
@@ -1687,6 +1697,7 @@ export default class MetamaskController extends EventEmitter {
     this.memStore = new ComposableObservableStore({
       config: {
         AppStateController: this.appStateController.store,
+        AppMetadataController: this.appMetadataController.store,
         NetworkController: this.networkController,
         CachedBalancesController: this.cachedBalancesController.store,
         KeyringController: this.keyringController.memStore,
@@ -2785,6 +2796,9 @@ export default class MetamaskController extends EventEmitter {
         assetsContractController.getBalancesInSingleCall.bind(
           assetsContractController,
         ),
+
+      // E2E testing
+      throwTestError: this.throwTestError.bind(this),
     };
   }
 
@@ -2957,12 +2971,10 @@ export default class MetamaskController extends EventEmitter {
 
       // seek out the first zero balance
       while (lastBalance !== '0x0') {
-        await this.coreKeyringController.addNewAccount(accounts.length);
+        const { addedAccountAddress } =
+          await this.coreKeyringController.addNewAccount(accounts.length);
         accounts = await this.coreKeyringController.getAccounts();
-        lastBalance = await this.getBalance(
-          accounts[accounts.length - 1],
-          ethQuery,
-        );
+        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
       }
 
       // remove extra zero balance account potentially created from seeking ahead
@@ -3408,7 +3420,7 @@ export default class MetamaskController extends EventEmitter {
    * Adds a new account to the default (first) HD seed phrase Keyring.
    *
    * @param accountCount
-   * @returns {} keyState
+   * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
     const isActionMetricsQueueE2ETest =
@@ -3418,38 +3430,16 @@ export default class MetamaskController extends EventEmitter {
       await new Promise((resolve) => setTimeout(resolve, 5_000));
     }
 
-    const [primaryKeyring] = this.coreKeyringController.getKeyringsByType(
-      KeyringType.hdKeyTree,
-    );
-    if (!primaryKeyring) {
-      throw new Error('MetamaskController - No HD Key Tree found');
-    }
-    const { keyringController } = this;
-    const { identities: oldIdentities } =
-      this.preferencesController.store.getState();
+    const oldAccounts = await this.coreKeyringController.getAccounts();
 
-    if (Object.keys(oldIdentities).length === accountCount) {
-      const oldAccounts = await keyringController.getAccounts();
-      const keyState = await keyringController.addNewAccount(primaryKeyring);
-      const newAccounts = await keyringController.getAccounts();
+    const { addedAccountAddress } =
+      await this.coreKeyringController.addNewAccount(accountCount);
 
-      await this.verifySeedPhrase();
-
-      this.preferencesController.setAddresses(newAccounts);
-      newAccounts.forEach((address) => {
-        if (!oldAccounts.includes(address)) {
-          this.preferencesController.setSelectedAddress(address);
-        }
-      });
-
-      const { identities } = this.preferencesController.store.getState();
-      return { ...keyState, identities };
+    if (!oldAccounts.includes(addedAccountAddress)) {
+      this.preferencesController.setSelectedAddress(addedAccountAddress);
     }
 
-    return {
-      ...keyringController.memStore.getState(),
-      identities: oldIdentities,
-    };
+    return addedAccountAddress;
   }
 
   /**
@@ -4551,6 +4541,21 @@ export default class MetamaskController extends EventEmitter {
     );
     nonceLock.releaseLock();
     return nonceLock.nextNonce;
+  }
+
+  /**
+   * Throw an artificial error in a timeout handler for testing purposes.
+   *
+   * @param message - The error message.
+   * @deprecated This is only mean to facilitiate E2E testing. We should not
+   * use this for handling errors.
+   */
+  throwTestError(message) {
+    setTimeout(() => {
+      const error = new Error(message);
+      error.name = 'TestError';
+      throw error;
+    });
   }
 
   //=============================================================================
