@@ -3,6 +3,7 @@ import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
+import { Size } from '../../../helpers/constants/design-system';
 import { InputProps } from '../input';
 import { InputComponent } from '../input/input.types';
 
@@ -12,6 +13,17 @@ export enum TextFieldSize {
   Lg = 'lg',
 }
 
+/**
+ * @deprecated `TEXT_FIELD_SIZES` const has been deprecated in favor of the `TextFieldSize` enum which can still be imported from `ui/components/component-library/index.js`
+ *
+ * Help to replace `TEXT_FIELD_SIZES` with `TextFieldSize`
+ */
+export const TEXT_FIELD_SIZES = {
+  SM: Size.SM,
+  MD: Size.MD,
+  LG: Size.LG,
+};
+
 export enum TextFieldType {
   Text = 'text',
   // eslint-disable-next-line @typescript-eslint/no-shadow
@@ -19,6 +31,17 @@ export enum TextFieldType {
   Password = 'password',
   Search = 'search',
 }
+/**
+ * @deprecated `TEXT_FIELD_TYPES` const has been deprecated in favor of the `TextFieldType` enum which can still be imported from `ui/components/component-library/index.js`
+ *
+ * Help to replace `TEXT_FIELD_TYPES` with `TextFieldType`
+ */
+export const TEXT_FIELD_TYPES = {
+  TEXT: 'text',
+  NUMBER: 'number',
+  PASSWORD: 'password',
+  SEARCH: 'search',
+};
 
 export interface TextFieldStyleUtilityProps
   extends Omit<StyleUtilityProps, 'type'> {
@@ -58,7 +81,7 @@ export interface TextFieldStyleUtilityProps
   /**
    * Attributes applied to the `input` element.
    */
-  inputProps?: InputProps<'span'>;
+  inputProps?: InputProps<'input'>;
   /**
    * Component to appear on the left side of the input
    */

@@ -38,7 +38,13 @@ export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export { Input, InputType } from './input';
-export { TextField, TextFieldType, TextFieldSize } from './text-field';
+export {
+  TextField,
+  TextFieldType,
+  TextFieldSize,
+  TEXT_FIELD_SIZES,
+  TEXT_FIELD_TYPES,
+} from './text-field';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
