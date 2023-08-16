@@ -1,4 +1,4 @@
-// disabled to allow importing initial state hooks first
+// Disabled to allow setting up initial state hooks first
 /* eslint-disable import/order,import/first */
 
 import ExtensionPlatform from './platforms/extension';
@@ -9,10 +9,10 @@ const inTest = process.env.IN_TEST;
 const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 const platform = new ExtensionPlatform();
 
-// This import sets up a global function required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
 import { setupInitialStateHooks } from './lib/setup-initial-state-hooks';
 
+// This function sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
 setupInitialStateHooks({ localStore, platform });
 
 // dev only, "react-devtools" import is skipped in prod builds
