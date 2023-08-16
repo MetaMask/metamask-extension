@@ -1,4 +1,8 @@
-import { PolymorphicComponentPropWithRef, StyleUtilityProps } from '../box';
+import React from 'react';
+import type {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 import { InputProps } from '../input';
 import { InputComponent } from '../input/input.types';
 
