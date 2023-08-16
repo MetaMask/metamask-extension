@@ -17,6 +17,7 @@ import {
 } from '@metamask/phishing-controller';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
+import { jestExpect as expect } from '@jest/expect';
 import { TransactionStatus } from '../../shared/constants/transaction';
 import createTxMeta from '../../test/lib/createTxMeta';
 import { NETWORK_TYPES } from '../../shared/constants/network';
@@ -28,7 +29,6 @@ import TransactionController from './controllers/transactions';
 import PreferencesController from './controllers/preferences';
 
 const Ganache = require('../../test/e2e/ganache');
-import {jestExpect as expect} from "@jest/expect";
 
 const ganacheServer = new Ganache();
 
@@ -1086,9 +1086,18 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('origin', 'http://mycrypto.com');
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('tabId', 456);
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('networkClientId', 'networkConfigurationId1');
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                'origin',
+                'http://mycrypto.com',
+              );
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                'tabId',
+                456,
+              );
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                'networkClientId',
+                'networkConfigurationId1',
+              );
               done();
             });
           },
@@ -1126,8 +1135,13 @@ describe('MetaMaskController', function () {
           null,
           () => {
             setTimeout(() => {
-              expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty('tabId');
-              expect(loggerMiddlewareMock.requests[0]).toHaveProperty('origin', 'http://mycrypto.com');
+              expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                'tabId',
+              );
+              expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                'origin',
+                'http://mycrypto.com',
+              );
               done();
             });
           },
