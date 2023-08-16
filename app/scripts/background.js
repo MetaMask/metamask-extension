@@ -13,6 +13,7 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+import { isObject } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -411,6 +412,19 @@ export async function loadStateFromPersistence() {
   versionedData = await migrator.migrateData(versionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
+  } else if (!isObject(versionedData.meta)) {
+    throw new Error(
+      `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
+    );
+  } else if (typeof versionedData.meta.version !== 'number') {
+    throw new Error(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
+        .meta.version}'`,
+    );
+  } else if (!isObject(versionedData.data)) {
+    throw new Error(
+      `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
+    );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetadata(versionedData.meta);
