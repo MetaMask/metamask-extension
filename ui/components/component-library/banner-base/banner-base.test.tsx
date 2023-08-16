@@ -5,6 +5,7 @@ import React from 'react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { Icon, IconName } from '..';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import { BannerBase } from './banner-base';
 
 describe('BannerBase', () => {
@@ -32,10 +33,17 @@ describe('BannerBase', () => {
   });
 
   it('should render bannerbase title', () => {
-    const { getByText } = render(<BannerBase title="Bannerbase title test" />);
+    const { getByText, getByTestId } = render(
+      <BannerBase
+        title="Bannerbase title test"
+        titleProps={{ 'data-testid': 'title' }}
+      />,
+    );
+
     expect(getByText('Bannerbase title test')).toHaveClass(
       'mm-banner-base__title',
     );
+    expect(getByTestId('title')).toBeDefined();
   });
 
   it('should render bannerbase description', () => {
@@ -45,10 +53,18 @@ describe('BannerBase', () => {
     expect(getByText('Bannerbase description test')).toBeDefined();
   });
 
-  it('should render bannerbase children', () => {
-    const { getByText } = render(
-      <BannerBase>Bannerbase children test</BannerBase>,
+  it('should render bannerbase children with props', () => {
+    const { getByText, getByTestId } = render(
+      <BannerBase
+        childrenWrapperProps={{
+          variant: TextVariant.bodyMd,
+          'data-testid': 'childrenWrapper',
+        }}
+      >
+        Bannerbase children test
+      </BannerBase>,
     );
+    expect(getByTestId('childrenWrapper')).toBeDefined();
     expect(getByText('Bannerbase children test')).toBeDefined();
   });
 

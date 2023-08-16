@@ -106,7 +106,7 @@ describe('Transaction security provider', function () {
         );
         const warningHeader = await driver.isElementPresent({
           text: 'This could be a scam',
-          tag: 'h5',
+          tag: 'p',
         });
         assert.equal(warningHeader, true);
       },
