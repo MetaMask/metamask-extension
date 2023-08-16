@@ -4,6 +4,7 @@ const {
   unlockWallet,
   openDapp,
   defaultGanacheOptions,
+  getWindowHandles,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -62,10 +63,11 @@ describe('Blockaid Settings', function () {
 
         await openDapp(driver);
         await driver.clickElement('#signPermit');
+        const windowHandles = await getWindowHandles(driver, 3);
+        await driver.switchToWindow(windowHandles.popup);
 
-        const blockaidHeader = '[data-testid="blockaid-banner-alert"]';
-
-        const exists = await driver.isElementPresent(blockaidHeader);
+        const blockaidResponseTitle = '[data-testid="mm-banner-base-title"]';
+        const exists = await driver.isElementPresent(blockaidResponseTitle);
         assert.equal(exists, true, 'Request may not be safe');
       },
     );
