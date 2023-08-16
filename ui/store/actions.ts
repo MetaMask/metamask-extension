@@ -4412,7 +4412,7 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 }
 ///: END:ONLY_INCLUDE_IN
 
-export function setFirstTimeUsedNetwork(caipChainId: string) {
+export function setFirstTimeUsedNetwork(caipChainId: CaipChainId) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [caipChainId]);
 }
 

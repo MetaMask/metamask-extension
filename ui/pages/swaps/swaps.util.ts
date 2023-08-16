@@ -114,7 +114,7 @@ const SWAP_GAS_PRICE_VALIDATOR: Validator[] = [
 
 export async function fetchToken(
   contractAddress: string,
-  caipChainId: any,
+  caipChainId: CaipChainId,
 ): Promise<Json> {
   const tokenUrl = getBaseApi('token', caipChainId);
   return await fetchWithCache(
@@ -151,7 +151,7 @@ export async function fetchTokens(
 }
 
 export async function fetchAggregatorMetadata(
-  caipChainId: any,
+  caipChainId: CaipChainId,
 ): Promise<object> {
   const aggregatorMetadataUrl = getBaseApi('aggregatorMetadata', caipChainId);
   const aggregators = await fetchWithCache(
@@ -174,7 +174,9 @@ export async function fetchAggregatorMetadata(
   return filteredAggregators;
 }
 
-export async function fetchTopAssets(caipChainId: any): Promise<object> {
+export async function fetchTopAssets(
+  caipChainId: CaipChainId,
+): Promise<object> {
   const topAssetsUrl = getBaseApi('topAssets', caipChainId);
   const response =
     (await fetchWithCache(
@@ -216,7 +218,7 @@ export async function fetchTokenPrice(address: string): Promise<any> {
   return prices?.[address]?.eth;
 }
 
-export async function fetchSwapsGasPrices(caipChainId: any): Promise<
+export async function fetchSwapsGasPrices(caipChainId: CaipChainId): Promise<
   | any
   | {
       safeLow: string;
@@ -626,12 +628,16 @@ export const getNetworkNameByChainId = (caipChainId: CaipChainId): string => {
  * @returns object with 2 items: "swapsFeatureIsLive"
  */
 export const getSwapsLivenessForNetwork = (
-  caipChainId: any,
+  caipChainId: CaipChainId,
   swapsFeatureFlags: any = {},
 ) => {
   const networkName = getNetworkNameByChainId(caipChainId);
   // Use old APIs for testnet and Goerli.
-  if ([CAIP_CHAIN_IDS.LOCALHOST, CAIP_CHAIN_IDS.GOERLI].includes(caipChainId)) {
+  if (
+    ([CAIP_CHAIN_IDS.LOCALHOST, CAIP_CHAIN_IDS.GOERLI] as const).includes(
+      caipChainId,
+    )
+  ) {
     return {
       swapsFeatureIsLive: true,
     };

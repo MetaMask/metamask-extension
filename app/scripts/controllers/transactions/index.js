@@ -773,10 +773,7 @@ export default class TransactionController extends EventEmitter {
     const networkStatus = this.getNetworkStatus();
     const caipChainId = this._getCurrentCaipChainId();
     const chainId = toEthChainIdInt(caipChainId);
-    if (
-      networkStatus !== NetworkStatus.Available ||
-      Number.isNaN(chainId)
-    ) {
+    if (networkStatus !== NetworkStatus.Available || Number.isNaN(chainId)) {
       return 0;
     }
     return chainId;

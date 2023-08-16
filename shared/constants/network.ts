@@ -133,7 +133,7 @@ export const NETWORK_IDS = {
  * An object containing all of the CAIP chain ids for networks both built in and
  * those that we have added custom code to support our feature set.
  */
-export const CAIP_CHAIN_IDS = {
+export const CAIP_CHAIN_IDS: Record<string, CaipChainId> = {
   MAINNET: 'eip155:1',
   GOERLI: 'eip155:5',
   LOCALHOST: 'eip155:1337',
@@ -162,7 +162,7 @@ export const CAIP_CHAIN_IDS = {
   MOONRIVER: 'eip155:1285',
   CRONOS: 'eip155:25',
   GNOSIS: 'eip155:100',
-} as const;
+};
 
 /**
  * The largest possible chain ID we can handle.
