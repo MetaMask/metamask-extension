@@ -25,9 +25,7 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (!hasProperty(state, 'PhishingController')) {
-    log.warn(
-      `typeof state.PhishingController is undefined`,
-    );
+    log.warn(`typeof state.PhishingController is undefined`);
     return state;
   }
   if (!isObject(state.PhishingController)) {
