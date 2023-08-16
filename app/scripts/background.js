@@ -2,9 +2,22 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// disabled to allow importing initial state hooks first
+/* eslint-disable import/order,import/first */
+
+import ExtensionPlatform from './platforms/extension';
+import LocalStore from './lib/local-store';
+import ReadOnlyNetworkStore from './lib/network-store';
+
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+const platform = new ExtensionPlatform();
+
 // This import sets up a global function required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
-import './lib/setup-persisted-state-hook';
+import { setupInitialStateHooks } from './lib/setup-initial-state-hooks';
+
+setupInitialStateHooks({ localStore, platform });
 
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
@@ -39,9 +52,6 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
-import ExtensionPlatform from './platforms/extension';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
@@ -57,9 +67,6 @@ import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { deferredPromise, getPlatform } from './lib/util';
 
-/* eslint-enable import/first */
-
-/* eslint-disable import/order */
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import {
   CONNECTION_TYPE_EXTERNAL,
@@ -67,7 +74,6 @@ import {
 } from '@metamask/desktop/dist/constants';
 import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
-/* eslint-enable import/order */
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
@@ -82,7 +88,6 @@ const metamaskBlockedPorts = ['trezor-connect'];
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
 
-const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
 
 let popupIsOpen = false;
@@ -93,10 +98,7 @@ const requestAccountTabIds = {};
 let controller;
 
 // state persistence
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
-
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
 }
@@ -899,17 +901,9 @@ browser.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 function setupSentryGetStateGlobal(store) {
-  global.stateHooks.getSentryState = function () {
+  global.stateHooks.getSentryAppState = function () {
     const backgroundState = store.memStore.getState();
-    const maskedBackgroundState = maskObject(
-      backgroundState,
-      SENTRY_BACKGROUND_STATE,
-    );
-    return {
-      browser: window.navigator.userAgent,
-      store: maskedBackgroundState,
-      version: platform.getVersion(),
-    };
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
 
