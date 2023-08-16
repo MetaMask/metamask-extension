@@ -77,7 +77,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
           token_added_type: 'detected',
-          chain_id: caipChainId, // what to do with metrics?
+          chain_id: caipChainId,
         },
       });
     });

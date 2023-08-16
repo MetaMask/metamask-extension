@@ -772,14 +772,14 @@ export default class TransactionController extends EventEmitter {
   _getChainId() {
     const networkStatus = this.getNetworkStatus();
     const caipChainId = this._getCurrentCaipChainId();
-    const integerChainId = toEthChainIdInt(caipChainId);
+    const chainId = toEthChainIdInt(caipChainId);
     if (
       networkStatus !== NetworkStatus.Available ||
-      Number.isNaN(integerChainId)
+      Number.isNaN(chainId)
     ) {
       return 0;
     }
-    return integerChainId;
+    return chainId;
   }
 
   async _getEIP1559Compatibility(fromAddress) {

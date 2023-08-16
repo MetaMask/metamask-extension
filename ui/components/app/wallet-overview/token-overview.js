@@ -112,7 +112,7 @@ const TokenOverview = ({ className, token }) => {
                 properties: {
                   location: 'Token Overview',
                   text: 'Buy',
-                  chain_id: caipChainId, // metrics?
+                  chain_id: caipChainId,
                   token_symbol: token.symbol,
                 },
               });
@@ -173,7 +173,7 @@ const TokenOverview = ({ className, token }) => {
                     token_symbol: token.symbol,
                     location: MetaMetricsSwapsEventSource.TokenView,
                     text: 'Swap',
-                    chain_id: caipChainId, // metrics?
+                    chain_id: caipChainId,
                   },
                 });
                 dispatch(
@@ -219,7 +219,7 @@ const TokenOverview = ({ className, token }) => {
                     location: 'Token Overview',
                     text: 'Bridge',
                     url: portfolioUrl,
-                    chain_id: caipChainId, // metrics?
+                    chain_id: caipChainId,
                     token_symbol: token.symbol,
                   },
                 });

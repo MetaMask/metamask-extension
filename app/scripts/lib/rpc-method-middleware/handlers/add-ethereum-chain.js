@@ -142,7 +142,6 @@ async function addEthereumChainHandler(
   }
 
   const caipChainId = toEthCaipChainId(_chainId);
-
   const existingNetwork = findNetworkConfigurationBy({ caipChainId });
 
   // if the request is to add a network that is already added and configured

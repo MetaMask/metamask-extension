@@ -203,7 +203,7 @@ const EthOverview = ({ className, showAddress }) => {
                   properties: {
                     location: 'Home',
                     text: 'Buy',
-                    chain_id: caipChainId, // what to do with metrics?
+                    chain_id: caipChainId,
                     token_symbol: defaultSwapsToken,
                   },
                 });
@@ -236,7 +236,7 @@ const EthOverview = ({ className, showAddress }) => {
                   token_symbol: 'ETH',
                   location: 'Home',
                   text: 'Send',
-                  chain_id: caipChainId, // what to do with metrics?
+                  chain_id: caipChainId,
                 },
               });
               dispatch(
@@ -272,7 +272,7 @@ const EthOverview = ({ className, showAddress }) => {
                     token_symbol: 'ETH',
                     location: MetaMetricsSwapsEventSource.MainView,
                     text: 'Swap',
-                    chain_id: caipChainId, // metrics?
+                    chain_id: caipChainId,
                   },
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
@@ -326,7 +326,7 @@ const EthOverview = ({ className, showAddress }) => {
                     properties: {
                       location: 'Home',
                       text: 'Bridge',
-                      chain_id: caipChainId, // metrics?
+                      chain_id: caipChainId,
                       token_symbol: 'ETH',
                     },
                   });
@@ -372,7 +372,7 @@ const EthOverview = ({ className, showAddress }) => {
                   properties: {
                     location: 'Home',
                     text: 'Portfolio',
-                    chain_id: caipChainId, // metrics?
+                    chain_id: caipChainId,
                     token_symbol: 'ETH',
                   },
                 });

@@ -25,15 +25,15 @@ export default async function fetchEstimatedL1Fee(
   txMeta,
   ethersProvider,
 ) {
-  const intChainId = toEthChainIdInt(caipChainId);
+  const chainId = toEthChainIdInt(caipChainId);
   const provider = global.ethereumProvider
-    ? new Web3Provider(global.ethereumProvider, intChainId)
+    ? new Web3Provider(global.ethereumProvider, chainId)
     : ethersProvider;
 
   if (process.env.IN_TEST) {
     provider.detectNetwork = async () => ({
       name: 'optimism',
-      chainId: intChainId,
+      chainId,
     });
   }
   const contract = new Contract(

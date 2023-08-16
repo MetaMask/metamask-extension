@@ -141,9 +141,9 @@ async function getAlerts(pendingApproval) {
   const alerts = [];
   const safeChainsList =
     (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const intChainId = toEthChainIdInt(pendingApproval.requestData.caipChainId);
+  const chainId = toEthChainIdInt(pendingApproval.requestData.caipChainId);
   const matchedChain = safeChainsList.find(
-    (chain) => chain.chainId === intChainId,
+    (chain) => chain.chainId === chainId,
   );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';

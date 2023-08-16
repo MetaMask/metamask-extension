@@ -63,7 +63,7 @@ export const AccountDetailsDisplay = ({
             event: MetaMetricsEventName.AccountRenamed,
             properties: {
               location: 'Account Details Modal',
-              chain_id: caipChainId, // metrics?
+              chain_id: caipChainId,
               account_hardware_type: deviceName,
             },
           });

@@ -50,7 +50,7 @@ const DetectedTokenSelectionPopover = ({
       category: MetaMetricsEventCategory.Wallet,
       properties: {
         source_connection_method: MetaMetricsTokenEventSource.Detected,
-        chain_id: caipChainId, // what to do with metrics?
+        chain_id: caipChainId,
         tokens: eventTokensDetails,
       },
     });
