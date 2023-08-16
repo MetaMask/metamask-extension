@@ -1172,7 +1172,7 @@
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>hdkey": {
@@ -1191,7 +1191,7 @@
         "bn.js": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask/eth-snap-keyring": {
@@ -1559,7 +1559,7 @@
         "bn.js": true,
         "browserify>insert-module-globals>is-buffer": true,
         "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@metamask/eth-trezor-keyring>hdkey>secp256k1>bip66": {
@@ -3930,8 +3930,6 @@
         "eth-lattice-keyring>gridplus-sdk>uuid": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
         "lodash": true
       }
     },
@@ -4109,7 +4107,7 @@
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>ethereum-cryptography": true,
         "ethereumjs-util>rlp": true,
-        "ethereumjs-wallet>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -4298,53 +4296,6 @@
       "packages": {
         "bn.js": true,
         "browserify>buffer": true
-      }
-    },
-    "ethereumjs-wallet": {
-      "packages": {
-        "@truffle/codec>utf8": true,
-        "browserify>crypto-browserify": true,
-        "ethereumjs-wallet>aes-js": true,
-        "ethereumjs-wallet>bs58check": true,
-        "ethereumjs-wallet>ethereumjs-util": true,
-        "ethereumjs-wallet>randombytes": true,
-        "ethereumjs-wallet>safe-buffer": true,
-        "ethereumjs-wallet>scryptsy": true,
-        "ethereumjs-wallet>uuid": true
-      }
-    },
-    "ethereumjs-wallet>aes-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "ethereumjs-wallet>bs58check": {
-      "packages": {
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-wallet>bs58check>bs58": true,
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "ethereumjs-wallet>bs58check>bs58": {
-      "packages": {
-        "ethereumjs-wallet>bs58check>bs58>base-x": true
-      }
-    },
-    "ethereumjs-wallet>bs58check>bs58>base-x": {
-      "packages": {
-        "ethereumjs-wallet>safe-buffer": true
-      }
-    },
-    "ethereumjs-wallet>ethereumjs-util": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography": true,
-        "ethereumjs-util>rlp": true
       }
     },
     "ethereumjs-wallet>randombytes": {
