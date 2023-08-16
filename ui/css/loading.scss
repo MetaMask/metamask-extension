@@ -10,6 +10,8 @@
   display: flex;
   flex-direction: column;
   z-index: 1000;
+  opacity: 0;
+  animation: fadeIn 0.25s;
 
   .metamask-loaded & {
     animation: fadeOut 0.25s;
