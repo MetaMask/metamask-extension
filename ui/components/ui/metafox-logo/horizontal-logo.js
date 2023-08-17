@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { ThemeType } from '../../../../shared/constants/preferences';
 
 const LOGO_WIDTH = 162;
 const LOGO_HEIGHT = 30;
@@ -994,6 +995,6 @@ export default function MetaFoxHorizontalLogo({
 }
 
 MetaFoxHorizontalLogo.propTypes = {
-  theme: PropTypes.oneOf(['light', 'dark']),
+  theme: PropTypes.oneOf([ThemeType.light, ThemeType.dark, ThemeType.os]),
   className: PropTypes.string,
 };

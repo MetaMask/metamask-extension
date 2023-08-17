@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
-import BackupController from './backup';
+import Backup from './backup';
 
 function getMockPreferencesController() {
   const mcState = {
@@ -151,9 +151,9 @@ const jsonData = JSON.stringify({
   },
 });
 
-describe('BackupController', function () {
-  const getBackupController = () => {
-    return new BackupController({
+describe('Backup', function () {
+  const getBackup = () => {
+    return new Backup({
       preferencesController: getMockPreferencesController(),
       addressBookController: getMockAddressBookController(),
       networkController: getMockNetworkController(),
@@ -163,85 +163,81 @@ describe('BackupController', function () {
 
   describe('constructor', function () {
     it('should setup correctly', async function () {
-      const backupController = getBackupController();
-      const selectedAddress =
-        backupController.preferencesController.getSelectedAddress();
+      const backup = getBackup();
+      const selectedAddress = backup.preferencesController.getSelectedAddress();
       assert.equal(selectedAddress, '0x01');
     });
 
     it('should restore backup', async function () {
-      const backupController = getBackupController();
-      await backupController.restoreUserData(jsonData);
+      const backup = getBackup();
+      await backup.restoreUserData(jsonData);
       // check networks backup
       assert.equal(
-        backupController.networkController.state.networkConfigurations[
+        backup.networkController.state.networkConfigurations[
           'network-configuration-id-1'
         ].chainId,
         '0x539',
       );
       assert.equal(
-        backupController.networkController.state.networkConfigurations[
+        backup.networkController.state.networkConfigurations[
           'network-configuration-id-2'
         ].chainId,
         '0x38',
       );
       assert.equal(
-        backupController.networkController.state.networkConfigurations[
+        backup.networkController.state.networkConfigurations[
           'network-configuration-id-3'
         ].chainId,
         '0x61',
       );
       assert.equal(
-        backupController.networkController.state.networkConfigurations[
+        backup.networkController.state.networkConfigurations[
           'network-configuration-id-4'
         ].chainId,
         '0x89',
       );
       // make sure identities are not lost after restore
       assert.equal(
-        backupController.preferencesController.store.identities[
+        backup.preferencesController.store.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].lastSelected,
         1655380342907,
       );
       assert.equal(
-        backupController.preferencesController.store.identities[
+        backup.preferencesController.store.identities[
           '0x295e26495CEF6F69dFA69911d9D8e4F3bBadB89B'
         ].name,
         'Account 3',
       );
       assert.equal(
-        backupController.preferencesController.store.lostIdentities[
+        backup.preferencesController.store.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].lastSelected,
         1655379648197,
       );
       assert.equal(
-        backupController.preferencesController.store.lostIdentities[
+        backup.preferencesController.store.lostIdentities[
           '0xfd59bbe569376e3d3e4430297c3c69ea93f77435'
         ].name,
         'Ledger 1',
       );
       // make sure selected address is not lost after restore
-      assert.equal(
-        backupController.preferencesController.store.selectedAddress,
-        '0x01',
-      );
+      assert.equal(backup.preferencesController.store.selectedAddress, '0x01');
       // check address book backup
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].chainId,
         '0x61',
       );
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].address,
         '0x42EB768f2244C8811C63729A21A3569731535f06',
       );
       assert.equal(
-        backupController.addressBookController.store.addressBook['0x61'][
+        backup.addressBookController.store.addressBook['0x61'][
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].isEns,
         false,
