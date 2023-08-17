@@ -1315,9 +1315,7 @@ export function getIsBase(state) {
 }
 
 export function getIsZora(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.ZORA
-  );
+  return getCurrentChainId(state) === CHAIN_IDS.ZORA;
 }
 
 export function getIsOpStack(state) {
