@@ -20,7 +20,6 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
-  'TokenListController.tokensChainsCache',
 ];
 
 const removedUiFields = [
@@ -29,7 +28,6 @@ const removedUiFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'metamask.currentPopupId',
   'metamask.timeoutMinutes',
-  'metamask.tokensChainsCache',
 ];
 
 /**
