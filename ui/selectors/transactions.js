@@ -25,6 +25,51 @@ const INVALID_INITIAL_TRANSACTION_TYPES = [
   TransactionType.retry,
 ];
 
+export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
+
+/**
+ * @param state
+ * @returns {TransactionMeta[]}
+ */
+export const getCurrentNetworkTransactions = (state) => {
+  const { transactions, networkId } = state.metamask;
+
+  if (!transactions?.length) {
+    return [];
+  }
+
+  const { chainId } = getProviderConfig(state);
+
+  return transactions.filter((transaction) =>
+    transactionMatchesNetwork(transaction, chainId, networkId),
+  );
+};
+
+/**
+ * @param state
+ * @returns {{[id: string]: TransactionMeta}}
+ */
+export const getUnapprovedTransactions = (state) => {
+  const { transactions, networkId } = state.metamask;
+
+  if (!transactions?.length) {
+    return {};
+  }
+
+  const { chainId } = getProviderConfig(state);
+
+  return transactions
+    .filter(
+      (transaction) =>
+        transaction.status === TransactionStatus.unapproved &&
+        transactionMatchesNetwork(transaction, chainId, networkId),
+    )
+    .reduce((result, transaction) => {
+      result[transaction.id] = transaction;
+      return result;
+    }, {});
+};
+
 export const incomingTxListSelector = (state) => {
   const { showIncomingTransactions } = state.metamask.featureFlags;
 
@@ -32,20 +77,16 @@ export const incomingTxListSelector = (state) => {
     return [];
   }
 
-  const { networkId } = state.metamask;
-  const { chainId } = getProviderConfig(state);
+  const currentNetworkTransactions = getCurrentNetworkTransactions(state);
   const selectedAddress = getSelectedAddress(state);
 
-  return Object.values(state.metamask.transactions || {}).filter(
+  return currentNetworkTransactions.filter(
     (tx) =>
       tx.type === TransactionType.incoming &&
-      tx.txParams.to === selectedAddress &&
-      transactionMatchesNetwork(tx, chainId, networkId),
+      tx.txParams.to === selectedAddress,
   );
 };
-export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
-export const currentNetworkTxListSelector = (state) =>
-  state.metamask.currentNetworkTxList;
+
 export const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
 export const unapprovedDecryptMsgsSelector = (state) =>
@@ -70,7 +111,7 @@ export const smartTransactionsListSelector = (state) =>
 
 export const selectedAddressTxListSelector = createSelector(
   getSelectedAddress,
-  currentNetworkTxListSelector,
+  getCurrentNetworkTransactions,
   smartTransactionsListSelector,
   (selectedAddress, transactions = [], smTransactions = []) => {
     return transactions
@@ -541,7 +582,7 @@ export const submittedPendingTransactionsSelector = createSelector(
 );
 
 const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
-  const { unapprovedTxs } = state.metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   const unapprovedTxRequests = getApprovalRequestsByType(
     state,
     ApprovalType.Transaction,

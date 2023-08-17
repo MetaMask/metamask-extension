@@ -75,7 +75,6 @@ import * as txUtils from './lib/util';
 import { IncomingTransactionHelper } from './IncomingTransactionHelper';
 import { EtherscanRemoteTransactionSource } from './EtherscanRemoteTransactionSource';
 
-const MAX_MEMSTORE_TX_LIST_SIZE = 100; // Number of transactions (by unique nonces) to keep in memory
 const UPDATE_POST_TX_BALANCE_TIMEOUT = 5000;
 
 const SWAP_TRANSACTION_TYPES = [
@@ -2126,16 +2125,11 @@ export default class TransactionController extends EventEmitter {
    * Updates the memStore in transaction controller
    */
   _updateMemstore() {
-    const { transactions } = this.store.getState();
-    const unapprovedTxs = this.txStateManager.getUnapprovedTxList();
-
-    const currentNetworkTxList = this.txStateManager.getTransactions({
-      limit: MAX_MEMSTORE_TX_LIST_SIZE,
+    const transactions = this.getTransactions({
+      filterToCurrentNetwork: false,
     });
 
     this.memStore.updateState({
-      unapprovedTxs,
-      currentNetworkTxList,
       transactions,
     });
   }

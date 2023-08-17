@@ -4,7 +4,7 @@ import { text } from '@storybook/addon-knobs';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { updateMetamaskState } from '../../store/actions';
-import { currentNetworkTxListSelector } from '../../selectors/transactions';
+import { getCurrentNetworkTransactions } from '../../selectors/transactions';
 import { store, getNewState } from '../../../.storybook/preview';
 
 import { subjectMetadata } from '../../../.storybook/initial-states/approval-screens/token-approval';
@@ -25,7 +25,7 @@ const PageSet = ({ children }) => {
     'https://metamask.github.io/test-dapp/metamask-fox.svg',
   );
   const state = store.getState();
-  const currentNetworkTxList = useSelector(currentNetworkTxListSelector);
+  const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const transaction = currentNetworkTxList.find(({ id }) => id === txId);
 
   useEffect(() => {

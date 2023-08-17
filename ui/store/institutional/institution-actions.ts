@@ -12,6 +12,7 @@ import {
   MessagesIndexedById,
 } from '../store';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
+import { getCurrentNetworkTransactions } from '../../selectors';
 
 export function showInteractiveReplacementTokenModal(): ThunkAction<
   void,
@@ -57,13 +58,19 @@ export function updateCustodyState(
   newState: MetaMaskReduxState['metamask'],
   state: CombinedBackgroundAndReduxState & any,
 ) {
-  if (!newState.currentNetworkTxList || !state.metamask.currentNetworkTxList) {
+  if (!newState.transactions || !state.metamask.transactions) {
     return;
   }
 
-  const differentTxs = newState.currentNetworkTxList.filter(
+  const newCurrentNetworkTxList = getCurrentNetworkTransactions({
+    metamask: newState,
+  });
+
+  const oldCurrentNetworkTxList = getCurrentNetworkTransactions(state);
+
+  const differentTxs = newCurrentNetworkTxList.filter(
     (item) =>
-      state.metamask.currentNetworkTxList.filter(
+      oldCurrentNetworkTxList.filter(
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
           tx.custodyStatus !== item.custodyStatus,

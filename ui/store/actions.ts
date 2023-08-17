@@ -41,6 +41,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
+  getCurrentNetworkTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -2070,7 +2071,8 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -2107,7 +2109,8 @@ export function createSpeedUpTransaction(
           }
 
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }
@@ -2139,7 +2142,8 @@ export function createRetryTransaction(
             return;
           }
           if (newState) {
-            const { currentNetworkTxList } = newState;
+            const currentNetworkTxList =
+              getCurrentNetworkTransactions(newState);
             newTx = currentNetworkTxList[currentNetworkTxList.length - 1];
             resolve(newState);
           }

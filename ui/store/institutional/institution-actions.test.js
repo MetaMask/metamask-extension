@@ -39,7 +39,7 @@ const defaultState = {
         },
       },
     },
-    currentNetworkTxList: [
+    transactions: [
       {
         id: 0,
         time: 0,
@@ -236,7 +236,7 @@ describe('#updateCustodyState', () => {
         showIncomingTransactions: false,
       },
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,
@@ -291,7 +291,7 @@ describe('#updateCustodyState', () => {
         showIncomingTransactions: false,
       },
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,

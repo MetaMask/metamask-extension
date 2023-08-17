@@ -93,8 +93,12 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
+import {
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 
@@ -551,7 +555,7 @@ export function getTotalUnapprovedSignatureRequestCount(state) {
 }
 
 export function getUnapprovedTxCount(state) {
-  const { unapprovedTxs = {} } = state.metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
   return Object.keys(unapprovedTxs).length;
 }
 
@@ -843,16 +847,10 @@ export const getMemoizedMetadataContractName = createDeepEqualSelector(
   },
 );
 
-export const getUnapprovedTransactions = (state) =>
-  state.metamask.unapprovedTxs;
-
-export const getCurrentNetworkTransactionList = (state) =>
-  state.metamask.currentNetworkTxList;
-
 export const getTxData = (state) => state.confirmTransaction.txData;
 
 export const getUnapprovedTransaction = createDeepEqualSelector(
-  getUnapprovedTransactions,
+  (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
@@ -862,7 +860,7 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
 );
 
 export const getTransaction = createDeepEqualSelector(
-  getCurrentNetworkTransactionList,
+  (state) => getCurrentNetworkTransactions(state),
   (_, transactionId) => transactionId,
   (unapprovedTxs, transactionId) => {
     return (
