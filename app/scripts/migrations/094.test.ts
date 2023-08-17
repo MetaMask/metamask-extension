@@ -2,7 +2,20 @@ import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { migrate, version } from './094';
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  startSession: jest.fn(),
+  endSession: jest.fn(),
+  toggleSession: jest.fn(),
+  captureException: sentryCaptureExceptionMock,
+};
+
 describe('migration #94', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should update the version metadata', async () => {
     const oldStorage = {
       meta: {
@@ -32,6 +45,25 @@ describe('migration #94', () => {
     expect(newStorage.data).toStrictEqual(oldData);
   });
 
+  it('should capture an exception if there is no network controller state', async () => {
+    const oldData = {
+      other: 'data',
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController is undefined`),
+    );
+  });
+
   it('should return state unaltered if there is no network controller providerConfig state', async () => {
     const oldData = {
       other: 'data',
@@ -52,6 +84,137 @@ describe('migration #94', () => {
 
     const newStorage = await migrate(oldStorage);
     expect(newStorage.data).toStrictEqual(oldData);
+  });
+
+  it('should capture an exception if there is no network controller providerConfig state', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        networkConfigurations: {
+          id1: {
+            foo: 'bar',
+          },
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.NetworkController.providerConfig is undefined`),
+    );
+  });
+
+  it('should capture an exception if there is no providerConfig.id and no providerConfig.type value in state', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        providerConfig: {
+          ticker: 'NET',
+          chainId: '0x189123',
+          nickname: 'A Network',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `typeof state.NetworkController.providerConfig.id is undefined and state.NetworkController.providerConfig.type is undefined`,
+      ),
+    );
+  });
+
+  it('should not capture an exception if there is a providerConfig.id in state', async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        providerConfig: {
+          ticker: 'NET',
+          chainId: '0x189123',
+          nickname: 'A Network',
+          id: 'foobar',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
+  });
+
+  it(`should capture an exception if there is no providerConfig.id and the providerConfig.type value is ${NetworkType.rpc} in state`, async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        providerConfig: {
+          ticker: 'NET',
+          chainId: '0x189123',
+          nickname: 'A Network',
+          type: NetworkType.rpc,
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(
+        `typeof state.NetworkController.providerConfig.id is undefined and state.NetworkController.providerConfig.type is ${NetworkType.rpc}`,
+      ),
+    );
+  });
+
+  it(`should not capture an exception if there is no providerConfig.id and the providerConfig.type value is not ${NetworkType.rpc} in state`, async () => {
+    const oldData = {
+      other: 'data',
+      NetworkController: {
+        providerConfig: {
+          ticker: 'NET',
+          chainId: '0x189123',
+          nickname: 'A Network',
+          type: 'NOT_AN_RPC_TYPE',
+        },
+      },
+    };
+    const oldStorage = {
+      meta: {
+        version: 93,
+      },
+      data: oldData,
+    };
+
+    await migrate(oldStorage);
+
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(0);
   });
 
   it('should return state unaltered if there is a providerConfig.id value in state but it is not a string', async () => {

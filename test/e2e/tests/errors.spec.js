@@ -1,24 +1,70 @@
 const { resolve } = require('path');
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
-const { get, has, set } = require('lodash');
+const { get, has, set, unset } = require('lodash');
 const { Browser } = require('selenium-webdriver');
 const { format } = require('prettier');
 const { convertToHexValue, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-const dateFields = ['metamask.conversionDate'];
+const maskedBackgroundFields = [
+  'CurrencyController.conversionDate', // This is a timestamp that changes each run
+];
+const maskedUiFields = [
+  'metamask.conversionDate', // This is a timestamp that changes each run
+];
+
+const removedBackgroundFields = [
+  // This property is timing-dependent
+  'AccountTracker.currentBlockGasLimit',
+  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'AppStateController.currentPopupId',
+  'AppStateController.timeoutMinutes',
+  'TokenListController.tokensChainsCache',
+];
+
+const removedUiFields = [
+  // This property is timing-dependent
+  'metamask.currentBlockGasLimit',
+  // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
+  'metamask.currentPopupId',
+  'metamask.timeoutMinutes',
+  'metamask.tokensChainsCache',
+];
 
 /**
- * Transform date properties to value types, to ensure that state is
- * consistent between test runs.
+ * Transform background state to make it consistent between test runs.
  *
  * @param {unknown} data - The data to transform
  */
-function transformDates(data) {
-  for (const field of dateFields) {
+function transformBackgroundState(data) {
+  for (const field of maskedBackgroundFields) {
     if (has(data, field)) {
       set(data, field, typeof get(data, field));
+    }
+  }
+  for (const field of removedBackgroundFields) {
+    if (has(data, field)) {
+      unset(data, field);
+    }
+  }
+  return data;
+}
+
+/**
+ * Transform UI state to make it consistent between test runs.
+ *
+ * @param {unknown} data - The data to transform
+ */
+function transformUiState(data) {
+  for (const field of maskedUiFields) {
+    if (has(data, field)) {
+      set(data, field, typeof get(data, field));
+    }
+  }
+  for (const field of removedUiFields) {
+    if (has(data, field)) {
+      unset(data, field);
     }
   }
   return data;
@@ -33,12 +79,10 @@ function transformDates(data) {
  * @param {boolean} [args.update] - Whether to update the snapshot if it doesn't match.
  */
 async function matchesSnapshot({
-  data: unprocessedData,
+  data,
   snapshot,
   update = process.env.UPDATE_SNAPSHOTS === 'true',
 }) {
-  const data = transformDates(unprocessedData);
-
   const snapshotPath = resolve(__dirname, `./state-snapshots/${snapshot}.json`);
   const rawSnapshotData = await fs.readFile(snapshotPath, {
     encoding: 'utf-8',
@@ -243,7 +287,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: appState,
+            data: transformBackgroundState(appState),
             snapshot: 'errors-before-init-opt-in-background-state',
           });
         },
@@ -328,7 +372,7 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
           await matchesSnapshot({
-            data: appState,
+            data: transformUiState(appState),
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
         },
@@ -436,7 +480,8 @@ describe('Sentry errors', function () {
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
-          const { participateInMetaMetrics } = extra.appState.store.metamask;
+          const { participateInMetaMetrics } =
+            extra.appState.store.MetaMetricsController;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
@@ -494,7 +539,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: appState.store,
+            data: transformBackgroundState(appState.store),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -588,7 +633,7 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           await matchesSnapshot({
-            data: appState.store,
+            data: transformUiState(appState.store),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },
