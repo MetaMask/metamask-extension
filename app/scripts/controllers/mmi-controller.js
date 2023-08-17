@@ -569,7 +569,7 @@ export default class MMIController extends EventEmitter {
         const mmiDashboardData = await this.handleMmiDashboardData();
         const cookieSetUrls =
           this.mmiConfigurationController.store.mmiConfiguration?.portfolio
-            ?.cookieSetUrls;
+            ?.cookieSetUrls || [];
         setDashboardCookie(mmiDashboardData, cookieSetUrls);
       } catch (error) {
         console.error(error);
