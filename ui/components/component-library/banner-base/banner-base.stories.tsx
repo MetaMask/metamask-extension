@@ -43,9 +43,6 @@ export default {
     childrenProps: {
       control: 'object',
     },
-    action: {
-      action: 'action',
-    },
     actionButtonLabel: {
       control: 'text',
     },
