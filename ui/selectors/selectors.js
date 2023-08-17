@@ -1314,8 +1314,14 @@ export function getIsBase(state) {
   );
 }
 
+export function getIsZora(state) {
+  return (
+    getCurrentChainId(state) === CHAIN_IDS.ZORA
+  );
+}
+
 export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state);
+  return getIsOptimism(state) || getIsBase(state) || getIsZora(state);
 }
 
 export function getIsMultiLayerFeeNetwork(state) {

@@ -159,6 +159,7 @@ export const CHAIN_IDS = {
   MOONRIVER: '0x505',
   CRONOS: '0x19',
   GNOSIS: '0x64',
+  ZORA: '0x76adf1',
 } as const;
 
 /**
@@ -565,6 +566,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.LINEA_GOERLI
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.ZORA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
