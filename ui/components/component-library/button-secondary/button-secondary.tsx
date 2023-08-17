@@ -14,8 +14,8 @@ export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',
-      danger,
-      disabled,
+      danger = false,
+      disabled = false,
       size = ButtonSecondarySize.Md,
       ...props
     }: ButtonSecondaryProps<C>,
@@ -28,8 +28,8 @@ export const ButtonSecondary: ButtonSecondaryComponent = React.forwardRef(
         borderColor={buttonColor}
         color={buttonColor}
         className={classnames(className, 'mm-button-secondary', {
-          'mm-button-secondary--type-danger': Boolean(danger),
-          'mm-button-secondary--disabled': Boolean(disabled),
+          'mm-button-secondary--type-danger': danger,
+          'mm-button-secondary--disabled': disabled,
         })}
         size={size}
         ref={ref}
