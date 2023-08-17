@@ -578,7 +578,12 @@ export default class MMIController extends EventEmitter {
   }
 
   async newUnsignedMessage(msgParams, req, version) {
-    const updatedMsgParams = { ...msgParams, deferSetAsSigned: true };
+    // The code path triggered by deferSetAsSigned: true is for custodial accounts
+    const accountDetails = this.custodyController.getAccountDetails(
+      msgParams.from,
+    );
+    const isCustodial = Boolean(accountDetails);
+    const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
     if (req.method.includes('eth_signTypedData')) {
       return await this.signatureController.newUnsignedTypedMessage(
