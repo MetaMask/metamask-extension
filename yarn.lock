@@ -3648,16 +3648,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-controller@npm:^0.2.8":
-  version: 0.2.8
-  resolution: "@metamask-institutional/custody-controller@npm:0.2.8"
+"@metamask-institutional/custody-controller@npm:^0.2.9":
+  version: 0.2.9
+  resolution: "@metamask-institutional/custody-controller@npm:0.2.9"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-keyring": "npm:^0.0.25"
+    "@metamask-institutional/custody-keyring": "npm:^0.0.26"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/types": "npm:^1.0.3"
     "@metamask/obs-store": "npm:^8.0.0"
-  checksum: b10fb2f4f5d23e6f28a3606ba5cdf73e140537e061b5532d61283f4fd85faf334cfa94663d101a6323b8149656b4294d027fc3be0e56c9654738ec6c68c7e461
+  checksum: b59a49b42d51c8b8eced77c06e4398afacb0e6c47b7757b3df7c0cacbb77656f12c0e681cf3e71760363ea95e7d8c167a9146b5573c0bed220a466572e739080
   languageName: node
   linkType: hard
 
@@ -3693,20 +3693,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@metamask-institutional/extension@npm:0.2.1"
+"@metamask-institutional/custody-keyring@npm:^0.0.26":
+  version: 0.0.26
+  resolution: "@metamask-institutional/custody-keyring@npm:0.0.26"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.1.1"
+    "@ethereumjs/util": "npm:^8.0.5"
+    "@metamask-institutional/configuration-client": "npm:^1.0.6"
+    "@metamask-institutional/sdk": "npm:^0.1.18"
+    "@metamask-institutional/types": "npm:^1.0.3"
+    "@metamask/obs-store": "npm:^8.0.0"
+    crypto: "npm:^1.0.1"
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: c2163fc6b83b3c0dd5c5a7c69c71f5a2563a28ffb2df069b4ed16c56692872fb52b40aed911e1af30a0fee733a61d0239677df04d5da945c7f4cf5e003eff8d9
+  languageName: node
+  linkType: hard
+
+"@metamask-institutional/extension@npm:0.3.2":
+  version: 0.3.2
+  resolution: "@metamask-institutional/extension@npm:0.3.2"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
-    "@metamask-institutional/custody-controller": "npm:^0.2.8"
-    "@metamask-institutional/custody-keyring": "npm:^0.0.25"
+    "@metamask-institutional/custody-controller": "npm:^0.2.9"
+    "@metamask-institutional/custody-keyring": "npm:^0.0.26"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/sdk": "npm:^0.1.18"
-    "@metamask-institutional/transaction-update": "npm:^0.1.23"
+    "@metamask-institutional/transaction-update": "npm:^0.1.24"
     "@metamask-institutional/types": "npm:^1.0.3"
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
-  checksum: 28c80a016d49d41b8ad74732637da00f9bbabc64af1ec7b8704a03bfe809f4683502b3552646c49c478613f27f16becd981c68abc37244186688e4c170c3f991
+  checksum: f3fe93a1f2872e2f27b56af3e03b0aba90bb290cb7b800bed086db16e56bd9251e99eb7f46fd142e1ccb588f13d24a9379a23dbd778e8a0e83e5dbf7c11692a7
   languageName: node
   linkType: hard
 
@@ -3756,17 +3772,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/transaction-update@npm:^0.1.21, @metamask-institutional/transaction-update@npm:^0.1.23":
-  version: 0.1.23
-  resolution: "@metamask-institutional/transaction-update@npm:0.1.23"
+"@metamask-institutional/transaction-update@npm:^0.1.21, @metamask-institutional/transaction-update@npm:^0.1.24":
+  version: 0.1.24
+  resolution: "@metamask-institutional/transaction-update@npm:0.1.24"
   dependencies:
-    "@metamask-institutional/custody-keyring": "npm:^0.0.25"
+    "@metamask-institutional/custody-keyring": "npm:^0.0.26"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/types": "npm:^1.0.3"
-    "@metamask-institutional/websocket-client": "npm:^0.1.25"
+    "@metamask-institutional/websocket-client": "npm:^0.1.26"
     "@metamask/obs-store": "npm:^8.0.0"
     ethereumjs-util: "npm:^7.1.5"
-  checksum: 621ff8277fecf73c59e3bde74364f1f4b68c7e086caf20bfb01029c43ff9145c51ca5acd89c10204c56e820837fb7736d2968d3bc1b30f3c215061a162d4d74c
+  checksum: d767d61600101ca3c580e3eeb9133d1a9d0753fd6190a830f798142074ff0e69142c567094dfb46062a299ee53b69db47021014e015db8c0fa55038bcdca7ca1
   languageName: node
   linkType: hard
 
@@ -3777,15 +3793,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/websocket-client@npm:^0.1.25":
-  version: 0.1.25
-  resolution: "@metamask-institutional/websocket-client@npm:0.1.25"
+"@metamask-institutional/websocket-client@npm:^0.1.26":
+  version: 0.1.26
+  resolution: "@metamask-institutional/websocket-client@npm:0.1.26"
   dependencies:
-    "@metamask-institutional/custody-keyring": "npm:^0.0.25"
+    "@metamask-institutional/custody-keyring": "npm:^0.0.26"
     "@metamask-institutional/sdk": "npm:^0.1.18"
     "@metamask-institutional/types": "npm:^1.0.3"
     mock-socket: "npm:^9.2.1"
-  checksum: b0ab0b17974e83b3c13e7a7a687b9dc254606f7120685602a832271ae16c46ce257820f0af8e0f74c8fa2a82bdc20e00534c9f43beae139b6def9df7b7a8063d
+  checksum: ae2b5146c4922a76100d8348a7b22dacc5d43cda3f2be92dda24251082061462dab327059793b7b61b4d7c4270e7b7fd40c0da8feac0bcf7805e18c5f2bc6db9
   languageName: node
   linkType: hard
 
@@ -24224,7 +24240,7 @@ __metadata:
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:0.2.6"
     "@metamask-institutional/custody-keyring": "npm:^0.0.25"
-    "@metamask-institutional/extension": "npm:^0.2.1"
+    "@metamask-institutional/extension": "npm:0.3.2"
     "@metamask-institutional/institutional-features": "npm:^1.1.8"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.1.3"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
