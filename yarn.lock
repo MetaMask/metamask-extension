@@ -31349,14 +31349,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^0.18.1":
-  version: 0.18.4
-  resolution: "ses@npm:0.18.4"
-  checksum: 9afd6edcf390a693926ef728ebb5a435994bbb0f915009ad524c6588cf62e2f66f6d4b4b2694f093b2af2e92c003947ad55404750d756ba75ce70c8636a7ba02
-  languageName: node
-  linkType: hard
-
-"ses@npm:^0.18.7":
+"ses@npm:^0.18.1, ses@npm:^0.18.7":
   version: 0.18.7
   resolution: "ses@npm:0.18.7"
   dependencies:
