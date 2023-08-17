@@ -1861,7 +1861,7 @@ export default class MetamaskController extends EventEmitter {
   _trackSnapExportUsage = throttle(
     (handler) =>
       this.metaMetricsController.trackEvent({
-        event: 'Snap Export Used',
+        event: MetaMetricsEventName.SnapExportUsed,
         category: MetaMetricsEventCategory.Snaps,
         properties: {
           export: handler,
@@ -2059,7 +2059,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Installed',
+          event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
@@ -2073,7 +2073,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapUpdated`,
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Updated',
+          event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
