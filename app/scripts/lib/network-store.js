@@ -15,6 +15,7 @@ export default class ReadOnlyNetworkStore {
     this._initialized = false;
     this._initializing = this._init();
     this._state = undefined;
+    this.mostRecentRetrievedState = null;
   }
 
   /**
@@ -30,6 +31,7 @@ export default class ReadOnlyNetworkStore {
       const response = await fetchWithTimeout(FIXTURE_SERVER_URL);
       if (response.ok) {
         this._state = await response.json();
+        this.mostRecentRetrievedState = this._state;
       }
     } catch (error) {
       log.debug(`Error loading network state: '${error.message}'`);
