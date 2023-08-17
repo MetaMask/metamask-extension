@@ -1,12 +1,14 @@
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
+
 // polyfills
 import '@formatjs/intl-relativetimeformat/polyfill';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
-
-// This import sets up a global function required for Sentry to function.
-// It must be run first in case an error is thrown later during initialization.
-import './lib/setup-persisted-state-hook';
 
 import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
@@ -34,6 +36,14 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
+import LocalStore from './lib/local-store';
+import ReadOnlyNetworkStore from './lib/network-store';
+
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
 
 const container = document.getElementById('app-content');
 

@@ -233,14 +233,9 @@ function setupStateHooks(store) {
     });
     return state;
   };
-  window.stateHooks.getSentryState = function () {
+  window.stateHooks.getSentryAppState = function () {
     const reduxState = store.getState();
-    const maskedReduxState = maskObject(reduxState, SENTRY_UI_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: maskedReduxState,
-      version: global.platform.getVersion(),
-    };
+    return maskObject(reduxState, SENTRY_UI_STATE);
   };
 }
 
