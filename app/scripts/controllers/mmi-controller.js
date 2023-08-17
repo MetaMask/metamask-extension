@@ -22,7 +22,6 @@ import {
   CONNECT_HARDWARE_ROUTE,
 } from '../../../ui/helpers/constants/routes';
 import { previousValueComparator } from '../lib/util';
-import { fetchSwapsLivenessAndFeatureFlags } from '../../../ui/ducks/swaps/swaps';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
