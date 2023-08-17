@@ -872,13 +872,13 @@ export default class MetamaskController extends EventEmitter {
       ),
     });
 
-    keyringControllerMessenger.subscribe('KeyringController:unlock', () =>
+    this.controllerMessenger.subscribe('KeyringController:unlock', () =>
       this._onUnlock(),
     );
-    keyringControllerMessenger.subscribe('KeyringController:lock', () =>
+    this.controllerMessenger.subscribe('KeyringController:lock', () =>
       this._onLock(),
     );
-    keyringControllerMessenger.subscribe(
+    this.controllerMessenger.subscribe(
       'KeyringController:stateChange',
       (state) => {
         this._onKeyringControllerUpdate(state);
