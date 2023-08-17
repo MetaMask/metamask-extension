@@ -26,7 +26,6 @@ export default class AppStateController extends EventEmitter {
       initState,
       onInactiveTimeout,
       preferencesStore,
-      qrHardwareStore,
       messenger,
       extension,
     } = opts;
@@ -76,10 +75,6 @@ export default class AppStateController extends EventEmitter {
       if (currentState.timeoutMinutes !== preferences.autoLockTimeLimit) {
         this._setInactiveTimeout(preferences.autoLockTimeLimit);
       }
-    });
-
-    qrHardwareStore.subscribe((state) => {
-      this.store.updateState({ qrHardware: state });
     });
 
     const { preferences } = preferencesStore.getState();

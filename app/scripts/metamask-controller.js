@@ -635,15 +635,12 @@ export default class MetamaskController extends EventEmitter {
       getChainId: () => this.networkController.state.providerConfig.chainId,
     });
 
-    this.qrHardwareKeyring = new QRHardwareKeyring();
-
     this.appStateController = new AppStateController({
       addUnlockListener: this.on.bind(this, 'unlock'),
       isUnlocked: this.isUnlocked.bind(this),
       initState: initState.AppStateController,
       onInactiveTimeout: () => this.setLocked(),
       preferencesStore: this.preferencesController.store,
-      qrHardwareStore: this.qrHardwareKeyring.getMemStore(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'AppStateController',
         allowedActions: [
@@ -2304,6 +2301,7 @@ export default class MetamaskController extends EventEmitter {
       addressBookController,
       alertController,
       appStateController,
+      coreKeyringController,
       nftController,
       nftDetectionController,
       currencyRateController,
@@ -2316,7 +2314,6 @@ export default class MetamaskController extends EventEmitter {
       onboardingController,
       permissionController,
       preferencesController,
-      qrHardwareKeyring,
       swapsController,
       tokensController,
       smartTransactionsController,
@@ -2423,15 +2420,17 @@ export default class MetamaskController extends EventEmitter {
 
       // qr hardware devices
       submitQRHardwareCryptoHDKey:
-        qrHardwareKeyring.submitCryptoHDKey.bind(qrHardwareKeyring),
+        coreKeyringController.submitQRCryptoHDKey.bind(coreKeyringController),
       submitQRHardwareCryptoAccount:
-        qrHardwareKeyring.submitCryptoAccount.bind(qrHardwareKeyring),
-      cancelSyncQRHardware:
-        qrHardwareKeyring.cancelSync.bind(qrHardwareKeyring),
-      submitQRHardwareSignature:
-        qrHardwareKeyring.submitSignature.bind(qrHardwareKeyring),
+        coreKeyringController.submitQRCryptoAccount.bind(coreKeyringController),
+      cancelSyncQRHardware: coreKeyringController.cancelQRSynchronization.bind(
+        coreKeyringController,
+      ),
+      submitQRHardwareSignature: coreKeyringController.submitQRSignature.bind(
+        coreKeyringController,
+      ),
       cancelQRHardwareSignRequest:
-        qrHardwareKeyring.cancelSignRequest.bind(qrHardwareKeyring),
+        coreKeyringController.cancelQRSignRequest.bind(coreKeyringController),
 
       // vault management
       submitPassword: this.submitPassword.bind(this),
