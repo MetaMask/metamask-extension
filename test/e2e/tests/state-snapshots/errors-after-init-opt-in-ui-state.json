@@ -130,6 +130,7 @@
     "estimatedGasFeeTimeBounds": "object",
     "gasEstimateType": "string",
     "tokenList": "object",
+    "tokensChainsCache": "object",
     "preventPollingOnNetworkRestart": "boolean",
     "tokens": "object",
     "ignoredTokens": "object",
