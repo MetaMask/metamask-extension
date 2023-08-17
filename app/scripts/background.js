@@ -88,7 +88,7 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
