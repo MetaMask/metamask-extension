@@ -1861,7 +1861,7 @@ export default class MetamaskController extends EventEmitter {
   _trackSnapExportUsage = throttle(
     (handler) =>
       this.metaMetricsController.trackEvent({
-        event: 'Snap Export Usage',
+        event: 'Snap Export Used',
         category: MetaMetricsEventCategory.Snaps,
         properties: {
           export: handler,
