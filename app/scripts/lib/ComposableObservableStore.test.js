@@ -145,6 +145,21 @@ describe('ComposableObservableStore', () => {
     });
   });
 
+  it('should initialize falsy state', () => {
+    const controllerMessenger = new ControllerMessenger();
+    const exampleStore = new ObservableStore();
+    exampleStore.putState(false);
+    const store = new ComposableObservableStore({ controllerMessenger });
+
+    store.updateStructure({
+      Example: exampleStore,
+    });
+
+    expect(store.getState()).toStrictEqual({
+      Example: false,
+    });
+  });
+
   it('should return flattened state', () => {
     const controllerMessenger = new ControllerMessenger();
     const fooStore = new ObservableStore({ foo: 'foo' });
