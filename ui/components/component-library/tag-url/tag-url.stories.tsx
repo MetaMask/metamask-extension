@@ -1,10 +1,10 @@
 import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import {
-  DISPLAY,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
-
-import Box from '../../ui/box';
+import { Box } from '..';
 import README from './README.mdx';
 import { TagUrl } from './tag-url';
 
@@ -36,7 +36,7 @@ export default {
     src: 'https://uniswap.org/favicon.ico',
     showLockIcon: true,
   },
-};
+} as Meta<typeof TagUrl>;
 
 const Template = (args) => <TagUrl {...args} />;
 
@@ -47,8 +47,8 @@ DefaultStory.args = {
   actionButtonLabel: 'Permissions',
 };
 
-export const ActionButtonLabel = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const ActionButtonLabel: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl {...args} />
     <TagUrl {...args} actionButtonLabel="Action" />
     <TagUrl {...args} actionButtonLabel="Click" />
@@ -59,8 +59,8 @@ ActionButtonLabel.args = {
   actionButtonLabel: 'Permissions',
 };
 
-export const ShowLockIcon = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const ShowLockIcon: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl
       {...args}
       label="app.uniswap.org"
@@ -76,8 +76,8 @@ export const ShowLockIcon = (args) => (
   </Box>
 );
 
-export const Src = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Src: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl
       {...args}
       label="app.uniswap.org"
@@ -97,8 +97,8 @@ export const Src = (args) => (
   </Box>
 );
 
-export const Label = (args) => (
-  <Box display={DISPLAY.FLEX} flexDirection={FLEX_DIRECTION.COLUMN} gap={2}>
+export const Label: StoryFn<typeof TagUrl> = (args) => (
+  <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
     <TagUrl {...args} />
     <TagUrl
       {...args}
