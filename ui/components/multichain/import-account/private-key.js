@@ -31,7 +31,7 @@ export default function PrivateKeyImportView({
   }
 
   function _importAccountFunc() {
-    importAccountFunc('Private Key', [privateKey]);
+    importAccountFunc('privateKey', [privateKey]);
   }
 
   return (
