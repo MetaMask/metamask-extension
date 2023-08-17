@@ -190,7 +190,6 @@ import DecryptMessageController from './controllers/decrypt-message';
 import TransactionController from './controllers/transactions';
 import DetectTokensController from './controllers/detect-tokens';
 import SwapsController from './controllers/swaps';
-import accountImporter from './account-import-strategies';
 import seedPhraseVerifier from './lib/seed-phrase-verifier';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
@@ -3560,21 +3559,17 @@ export default class MetamaskController extends EventEmitter {
    * These are defined in app/scripts/account-import-strategies
    * Each strategy represents a different way of serializing an Ethereum key pair.
    *
-   * @param {string} strategy - A unique identifier for an account import strategy.
+   * @param {'privateKey' | 'json'} strategy - A unique identifier for an account import strategy.
    * @param {any} args - The data required by that strategy to import an account.
    */
   async importAccountWithStrategy(strategy, args) {
-    const privateKey = await accountImporter.importAccount(strategy, args);
-    const keyring = await this.keyringController.addNewKeyring(
-      KeyringType.imported,
-      [privateKey],
-    );
-    const [firstAccount] = await keyring.getAccounts();
-    // update accounts in preferences controller
-    const allAccounts = await this.keyringController.getAccounts();
-    this.preferencesController.setAddresses(allAccounts);
+    const { importedAccountAddress } =
+      await this.coreKeyringController.importAccountWithStrategy(
+        strategy,
+        args,
+      );
     // set new account as selected
-    this.preferencesController.setSelectedAddress(firstAccount);
+    this.preferencesController.setSelectedAddress(importedAccountAddress);
   }
 
   // ---------------------------------------------------------------------------

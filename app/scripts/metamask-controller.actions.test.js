@@ -172,14 +172,14 @@ describe('MetaMaskController', function () {
 
       await metamaskController.createNewVaultAndKeychain('test@123');
       await Promise.all([
-        metamaskController.importAccountWithStrategy('Private Key', [
+        metamaskController.importAccountWithStrategy('privateKey', [
           importPrivkey,
         ]),
         Promise.resolve(1).then(() => {
           keyringControllerState1 = JSON.stringify(
             metamaskController.keyringController.memStore.getState(),
           );
-          metamaskController.importAccountWithStrategy('Private Key', [
+          metamaskController.importAccountWithStrategy('privateKey', [
             importPrivkey,
           ]);
         }),
