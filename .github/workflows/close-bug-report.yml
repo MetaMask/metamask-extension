@@ -31,4 +31,4 @@ jobs:
         env:
           BUG_REPORT_REPO: MetaMask-planning
           BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
-        run: npm run close-release-bug-report-issue
+        run: yarn run close-release-bug-report-issue
