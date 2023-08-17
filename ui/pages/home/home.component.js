@@ -24,6 +24,7 @@ import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
 import WhatsNewPopup from '../../components/app/whats-new-popup';
+import IconButton from '../../components/ui/icon-button/icon-button';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -36,6 +37,11 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
   JustifyContent,
+  BlockSize,
+  BackgroundColor,
+  FlexDirection,
+  IconColor,
+  AlignItems,
   ///: END:ONLY_INCLUDE_IN
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
@@ -48,6 +54,8 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IN
   Text,
+  Icon,
+  IconSize,
 } from '../../components/component-library';
 
 import {
@@ -987,6 +995,76 @@ export default class Home extends PureComponent {
                 />
                 ///: END:ONLY_INCLUDE_IN
               }
+              <Box
+                width={BlockSize.Full}
+                backgroundColor={BackgroundColor.backgroundDefault}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={2}
+                paddingBottom={2}
+                style={{ position: 'sticky', bottom: '0' }}
+              >
+                <Box
+                  width={BlockSize.OneThird}
+                  // backgroundColor={BackgroundColor.sepolia}
+                  padding={2}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon
+                    color={IconColor.primaryDefault}
+                    size={IconSize.Lg}
+                    name={IconName.Wallet}
+                  />
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.primaryDefault}
+                  >
+                    Wallet
+                  </Text>
+                </Box>
+                <Box
+                  width={BlockSize.OneThird}
+                  // backgroundColor={BackgroundColor.mainnet}
+                  padding={2}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <IconButton
+                    className="bottom-navbar__button"
+                    Icon={
+                      <Icon
+                        color={IconColor.primaryInverse}
+                        name={IconName.SwapVertical}
+                        size={IconSize.Lg}
+                      />
+                    }
+                    data-testid="bottom-navbar-actions-button"
+                    onClick={() => {
+                      console.log('clicked');
+                    }}
+                  />
+                </Box>
+                <Box
+                  width={BlockSize.OneThird}
+                  // backgroundColor={BackgroundColor.sepolia}
+                  padding={2}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <Icon
+                    color={IconColor.iconAlternative}
+                    name={IconName.Global}
+                    size={IconSize.Lg}
+                  />
+                  <Text variant={TextVariant.bodyMd}>Connections</Text>
+                </Box>
+              </Box>
             </Box>
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-beta)

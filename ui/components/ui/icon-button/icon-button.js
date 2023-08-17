@@ -28,8 +28,18 @@ export default function IconButton({
       {renderWrapper(
         <>
           <div className="icon-button__circle">{Icon}</div>
-          {label.length > 9 ? (
-            <Tooltip title={label} position="bottom">
+          {label &&
+            (label.length > 9 ? (
+              <Tooltip title={label} position="bottom">
+                <Text
+                  className="icon-button__label"
+                  ellipsis
+                  variant={TextVariant.bodySm}
+                >
+                  {label}
+                </Text>
+              </Tooltip>
+            ) : (
               <Text
                 className="icon-button__label"
                 ellipsis
@@ -37,16 +47,7 @@ export default function IconButton({
               >
                 {label}
               </Text>
-            </Tooltip>
-          ) : (
-            <Text
-              className="icon-button__label"
-              ellipsis
-              variant={TextVariant.bodySm}
-            >
-              {label}
-            </Text>
-          )}
+            ))}
         </>,
       )}
     </button>
@@ -57,7 +58,7 @@ IconButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   Icon: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   tooltipRender: PropTypes.func,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
