@@ -138,7 +138,7 @@ const EMPTY_INIT_STATE = {
     swapsQuotePrefetchingRefreshTime: 60000,
     swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxGetTransactionsRefreshTime:
-      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+    FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
     swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
     swapsUserFeeLevel: '',
     saveFetchedQuotes: false,
@@ -733,14 +733,14 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.5050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.4338824949494949494949494949495',
+            medianMetaMaskFee: '0.44444444444444444444444444444444',
           },
           ethFee: '0.113536',
           overallValueOfQuote: '49.886464',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.5050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -798,15 +798,15 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.5050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.4338824949494949494949494949495',
+            medianMetaMaskFee: '0.44444444444444444444444444444444',
           },
           ethFee: '0.113822',
           multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
           overallValueOfQuote: '49.886178',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.5050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -943,9 +943,9 @@ describe('SwapsController', function () {
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
           swapsQuotePrefetchingRefreshTime:
-            old.swapsQuotePrefetchingRefreshTime,
+          old.swapsQuotePrefetchingRefreshTime,
           swapsStxGetTransactionsRefreshTime:
-            old.swapsStxGetTransactionsRefreshTime,
+          old.swapsStxGetTransactionsRefreshTime,
           swapsStxBatchStatusRefreshTime: old.swapsStxBatchStatusRefreshTime,
         });
       });

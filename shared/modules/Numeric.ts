@@ -9,6 +9,24 @@ export type NumericValue = string | number | BN | BigNumber;
 export type NumericBase = 10 | 16;
 
 /**
+ * By default, bignumber.js library allows using 20 decimal places.
+ * Due to the fact that some tokens have more decimal places, it's required
+ * to increase the number of decimal places up to 32. This help us to avoid incorrect
+ * calculations in methods like applyConversionRate when invert parameter in true.
+ *
+ * For example:
+ *
+ *  new Numeric(some_value)
+ *    .applyConversionRate(27, true)
+ *
+ * This operation gives us 0, because bignumber.js doesn't allow for enough decimal places to
+ * store the calculated value in the applyConversionRate function (due to the division math operation).
+ */
+BigNumber.config({
+  DECIMAL_PLACES: 32,
+});
+
+/**
  * All variations of isHexString from our own utilities and etherumjs-utils
  * return false for a '-' prefixed hex string. This utility method strips the
  * possible '-' from the string before testing its validity so that negative
