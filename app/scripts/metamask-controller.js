@@ -5,11 +5,16 @@ import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
 import { createEngineStream } from 'json-rpc-middleware-stream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
-import { debounce } from 'lodash';
 import {
   KeyringController,
   keyringBuilderFactory,
 } from '@metamask/eth-keyring-controller';
+import {
+  debounce,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  throttle,
+  ///: END:ONLY_INCLUDE_IN
+} from 'lodash';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
@@ -1783,6 +1788,39 @@ export default class MetamaskController extends EventEmitter {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 
   /**
+   * Tracks snaps export usage. Note: This function is throttled to 1 call per 60 seconds.
+   *
+   * @param {string} handler - The handler to trigger on the snap for the request.
+   */
+  _trackSnapExportUsage = throttle(
+    (handler) =>
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SnapExportUsed,
+        category: MetaMetricsEventCategory.Snaps,
+        properties: {
+          export: handler,
+        },
+      }),
+    SECOND * 60,
+  );
+
+  /**
+   * Passes a JSON-RPC request object to the SnapController for execution.
+   *
+   * @param {object} args - A bag of options.
+   * @param {string} args.snapId - The ID of the recipient snap.
+   * @param {string} args.origin - The origin of the RPC request.
+   * @param {string} args.handler - The handler to trigger on the snap for the request.
+   * @param {object} args.request - The JSON-RPC request object.
+   * @returns The result of the JSON-RPC request.
+   */
+  handleSnapRequest(args) {
+    this._trackSnapExportUsage(args.handler);
+
+    return this.controllerMessenger.call('SnapController:handleRequest', args);
+  }
+
+  /**
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
@@ -1803,10 +1841,7 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        handleSnapRpcRequest: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:handleRequest',
-        ),
+        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
         getSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:getSnapState',
@@ -1958,7 +1993,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Installed',
+          event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
@@ -1972,7 +2007,7 @@ export default class MetamaskController extends EventEmitter {
       `${this.snapController.name}:snapUpdated`,
       (newSnap, oldVersion) => {
         this.metaMetricsController.trackEvent({
-          event: 'Snap Updated',
+          event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: newSnap.id,
@@ -2549,10 +2584,7 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:remove',
       ),
-      handleSnapRequest: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'SnapController:handleRequest',
-      ),
+      handleSnapRequest: this.handleSnapRequest.bind(this),
       revokeDynamicSnapPermissions: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:revokeDynamicPermissions',

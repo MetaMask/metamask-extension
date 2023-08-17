@@ -599,6 +599,11 @@ export enum MetaMetricsEventName {
   ActivityScreenOpened = 'Activity Screen Opened',
   WhatsNewViewed = `What's New Viewed`,
   WhatsNewClicked = `What's New Link Clicked`,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  SnapInstalled = 'Snap Installed',
+  SnapUpdated = 'Snap Updated',
+  SnapExportUsed = 'Snap Export Used',
+  ///: END:ONLY_INCLUDE_IN
 }
 
 export enum MetaMetricsEventAccountType {
