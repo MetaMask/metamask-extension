@@ -1,7 +1,7 @@
 import { InfuraNetworkType, NetworkType } from '@metamask/controller-utils';
 import { migrate, version } from './093';
 
-const PREVIOUS_VERSION = version - 1;
+const PREVIOUS_VERSION = 92.1;
 
 const sentryCaptureExceptionMock = jest.fn();
 
