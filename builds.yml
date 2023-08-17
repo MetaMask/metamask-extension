@@ -16,12 +16,16 @@ buildTypes:
   main:
     features:
       - build-main
+      - snaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/1.0.1/index.html
     # Main build uses the default browser manifest
     manifestOverrides: false
 
