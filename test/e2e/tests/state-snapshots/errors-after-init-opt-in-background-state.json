@@ -37,6 +37,7 @@
   },
   "ApprovalController": "object",
   "CachedBalancesController": "object",
+  "CronjobController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -96,6 +97,7 @@
     "networkConfigurations": "object"
   },
   "NftController": "object",
+  "NotificationController": "object",
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -148,6 +150,8 @@
     "unapprovedTypedMessagesCount": 0
   },
   "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
   "SubjectMetadataController": "object",
   "SwapsController": "object",
   "TokenListController": "object",
