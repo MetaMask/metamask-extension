@@ -21,7 +21,7 @@ export default {
     },
   },
   args: {
-    address: '"0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e"',
+    address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
     name: 'Account 1',
     onClick: () => undefined,
   },
@@ -29,6 +29,12 @@ export default {
 
 export const DefaultStory = (args) => <AccountPicker {...args} />;
 DefaultStory.storyName = 'Default';
+
+export const WithAddressStory = (args) => <AccountPicker {...args} />;
+WithAddressStory.storyName = 'With Address';
+WithAddressStory.args = {
+  showAddress: true,
+};
 
 export const ChaosStory = (args) => (
   <div
