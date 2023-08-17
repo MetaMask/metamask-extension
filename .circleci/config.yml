@@ -967,7 +967,7 @@ jobs:
     executor: node-browsers
     parallelism: 4
     steps:
-      - checkout
+      - run: *shallow-git-clone
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
