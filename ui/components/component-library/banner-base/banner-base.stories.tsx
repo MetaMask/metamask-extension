@@ -19,6 +19,7 @@ export default {
     docs: {
       page: README,
     },
+    backgrounds: { default: 'alternative' },
   },
   argTypes: {
     className: {
@@ -27,11 +28,20 @@ export default {
     title: {
       control: 'text',
     },
+    titleProps: {
+      control: 'object',
+    },
     description: {
       control: 'text',
     },
+    descriptionProps: {
+      control: 'object',
+    },
     children: {
       control: 'text',
+    },
+    childrenProps: {
+      control: 'object',
     },
     action: {
       action: 'action',
@@ -54,10 +64,7 @@ export default {
   },
 } as Meta<typeof BannerBase>;
 
-export const Template: StoryFn<typeof BannerBase> = (args) => {
-  const onClose = () => console.log('BannerBase onClose trigger');
-  return <BannerBase {...args} onClose={onClose} />;
-};
+const Template: StoryFn<typeof BannerBase> = (args) => <BannerBase {...args} />;
 
 export const DefaultStory = Template.bind({});
 
@@ -88,14 +95,15 @@ Description.args = {
 export const Children: StoryFn<typeof BannerBase> = (args) => {
   return (
     <BannerBase {...args}>
-      {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
+      Description shouldn't repeat title. 1-3 lines. Can contain a{' '}
       <ButtonLink
         size={ButtonLinkSize.Inherit}
         href="https://metamask.io/"
         externalLink
       >
-        hyperlink.
+        hyperlink
       </ButtonLink>
+      .
     </BannerBase>
   );
 };
@@ -105,7 +113,6 @@ export const ActionButton = Template.bind({});
 ActionButton.args = {
   title: 'Action prop demo',
   actionButtonLabel: 'Action',
-  actionButtonOnClick: () => console.log('ButtonLink actionButtonOnClick demo'),
   actionButtonProps: {
     endIconName: IconName.Arrow2Right,
   },
@@ -115,12 +122,7 @@ ActionButton.args = {
 
 export const OnClose: StoryFn<typeof BannerBase> = (args) => {
   const [isShown, setShown] = useState(true);
-  const bannerToggle = () => {
-    if (isShown) {
-      console.log('close button clicked');
-    }
-    setShown(!isShown);
-  };
+  const bannerToggle = () => setShown(!isShown);
   return (
     <>
       {isShown ? (

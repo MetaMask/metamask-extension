@@ -17,8 +17,7 @@ exports[`BannerTip should render BannerTip element correctly 1`] = `
     </div>
     <div>
       <p
-        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
-        data-testid="mm-banner-base-title"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
         BannerTip test
       </p>

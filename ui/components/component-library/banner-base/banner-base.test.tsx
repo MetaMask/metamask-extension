@@ -5,14 +5,13 @@ import React from 'react';
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
 
 import { Icon, IconName } from '..';
-import { TextVariant } from '../../../helpers/constants/design-system';
 import { BannerBase } from './banner-base';
 
 describe('BannerBase', () => {
-  it('should render bannerbase element correctly', () => {
+  it('should render BannerBase element correctly', () => {
     const { getByTestId, container } = render(
-      <BannerBase data-testid="banner-base" title="Bannerbase test">
-        should render bannerbase element correctly
+      <BannerBase data-testid="banner-base" title="BannerBase test">
+        should render BannerBase element correctly
       </BannerBase>,
     );
     expect(getByTestId('banner-base')).toHaveClass('mm-banner-base');
@@ -24,51 +23,68 @@ describe('BannerBase', () => {
       <BannerBase
         className="mm-banner-base--test"
         data-testid="banner-base"
-        title="Bannerbase test"
+        title="BannerBase test"
       >
-        should render bannerbase element correctly
+        should render BannerBase element correctly
       </BannerBase>,
     );
     expect(getByTestId('banner-base')).toHaveClass('mm-banner-base--test');
   });
 
-  it('should render bannerbase title', () => {
+  it('should render BannerBase title', () => {
     const { getByText, getByTestId } = render(
       <BannerBase
-        title="Bannerbase title test"
+        title="BannerBase title test"
         titleProps={{ 'data-testid': 'title' }}
       />,
     );
 
-    expect(getByText('Bannerbase title test')).toHaveClass(
-      'mm-banner-base__title',
-    );
+    expect(getByText('BannerBase title test')).toBeDefined();
     expect(getByTestId('title')).toBeDefined();
   });
 
-  it('should render bannerbase description', () => {
-    const { getByText } = render(
-      <BannerBase description="Bannerbase description test" />,
+  it('should render BannerBase description', () => {
+    const { getByText, getByTestId } = render(
+      <BannerBase
+        description="BannerBase description test"
+        descriptionProps={{ 'data-testid': 'description' }}
+      />,
     );
-    expect(getByText('Bannerbase description test')).toBeDefined();
+    expect(getByText('BannerBase description test')).toBeDefined();
+    expect(getByTestId('description')).toBeDefined();
   });
 
-  it('should render bannerbase children with props', () => {
+  it('should render BannerBase children with props', () => {
     const { getByText, getByTestId } = render(
       <BannerBase
         childrenWrapperProps={{
-          variant: TextVariant.bodyMd,
-          'data-testid': 'childrenWrapper',
+          'data-testid': 'children-wrapper',
         }}
       >
-        Bannerbase children test
+        BannerBase children
       </BannerBase>,
     );
-    expect(getByTestId('childrenWrapper')).toBeDefined();
-    expect(getByText('Bannerbase children test')).toBeDefined();
+    expect(getByTestId('children-wrapper')).toBeDefined();
+    expect(getByText('BannerBase children')).toBeDefined();
   });
 
-  it('should render bannerbase action button', () => {
+  it('should render BannerBase children without wrapper when not a string', () => {
+    const { getByText, queryByTestId } = render(
+      <BannerBase
+        childrenWrapperProps={{
+          'data-testid': 'children-wrapper',
+        }}
+      >
+        <div>BannerBase children</div>
+      </BannerBase>,
+    );
+
+    expect(queryByTestId('children-wrapper')).not.toBeInTheDocument();
+    expect(getByText('BannerBase children')).toBeDefined();
+  });
+
+  it('should render BannerBase action button', () => {
+    const fn = jest.fn();
     const { getByTestId } = render(
       <BannerBase
         title="Action prop demo"
@@ -78,19 +94,15 @@ describe('BannerBase', () => {
           'data-testid': 'action',
           className: 'mm-banner-base__action',
         }}
-        actionButtonOnClick={() =>
-          console.log('ButtonLink actionButtonOnClick demo')
-        }
+        actionButtonOnClick={fn}
       >
-        Use actionButtonLabel for action text, actionButtonOnClick for the
-        onClick handler, and actionButtonProps to pass any ButtonLink prop types
-        such as iconName
+        BannerBase children
       </BannerBase>,
     );
     expect(getByTestId('action')).toHaveClass('mm-banner-base__action');
   });
 
-  it('should render bannerbase startAccessory', () => {
+  it('should render BannerBase startAccessory', () => {
     const { getByTestId } = render(
       <BannerBase
         startAccessory={

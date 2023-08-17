@@ -1036,6 +1036,9 @@ export default function PrepareSwapPage({
                   ? t('swapTokenVerifiedOn1SourceTitle')
                   : t('swapTokenAddedManuallyTitle')
               }
+              titleProps={{
+                'data-testid': 'swap-token-verification-banner-title',
+              }}
               width={BLOCK_SIZES.FULL}
             >
               <Box>

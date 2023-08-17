@@ -11,8 +11,7 @@ exports[`Security Provider Banner Alert should match snapshot 1`] = `
     />
     <div>
       <p
-        class="mm-box mm-text mm-banner-base__title mm-text--body-lg-medium mm-box--color-text-default"
-        data-testid="mm-banner-base-title"
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
       >
         Malicious third party detected
       </p>

@@ -1,5 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import {
   BackgroundColor,
@@ -40,6 +41,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
     }: BannerBaseProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
+    const t = useI18nContext();
     return (
       <Box
         className={classnames('mm-banner-base', className)}
@@ -55,12 +57,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
 
         <div>
           {title && (
-            <Text
-              className="mm-banner-base__title"
-              variant={TextVariant.bodyLgMedium}
-              data-testid="mm-banner-base-title"
-              {...titleProps}
-            >
+            <Text variant={TextVariant.bodyLgMedium} {...titleProps}>
               {title}
             </Text>
           )}
@@ -86,7 +83,7 @@ export const BannerBase: BannerBaseComponent = React.forwardRef(
             marginLeft="auto"
             iconName={IconName.Close}
             size={ButtonIconSize.Sm}
-            ariaLabel="Close" // TODO: i18n
+            ariaLabel={t('close')}
             onClick={onClose}
             {...closeButtonProps}
           />
