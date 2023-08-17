@@ -74,12 +74,27 @@ async function main() {
             description:
               'Set how many times the test should be retried upon failure.',
             type: 'number',
+          })
+          .option('update-snapshot', {
+            alias: 'u',
+            default: false,
+            description: 'Update E2E snapshots',
+            type: 'boolean',
           }),
     )
     .strict()
     .help('help');
 
-  const { browser, debug, retries, snaps, mv3, rpc, buildType } = argv;
+  const {
+    browser,
+    debug,
+    retries,
+    snaps,
+    mv3,
+    rpc,
+    buildType,
+    updateSnapshot,
+  } = argv;
 
   let testPaths;
 
@@ -129,6 +144,9 @@ async function main() {
   }
   if (debug) {
     args.push('--debug');
+  }
+  if (updateSnapshot) {
+    args.push('--update-snapshot');
   }
 
   // For running E2Es in parallel in CI
