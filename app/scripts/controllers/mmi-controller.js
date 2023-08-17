@@ -22,8 +22,8 @@ import {
   CONNECT_HARDWARE_ROUTE,
 } from '../../../ui/helpers/constants/routes';
 import { previousValueComparator } from '../lib/util';
-import { getPermissionBackgroundApiMethods } from './permissions';
 import { fetchSwapsLivenessAndFeatureFlags } from '../../../ui/ducks/swaps/swaps';
+import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
   constructor(opts) {
@@ -580,11 +580,10 @@ export default class MMIController extends EventEmitter {
 
   async newUnsignedMessage(msgParams, req, version) {
     // The code path triggered by deferSetAsSigned: true is for custodial accounts
-
-    const accountDetails =  this.custodyController.getAccountDetails(msgParams.from);
-
-    const isCustodial = typeof accountDetails === 'object' ? true : false;
-
+    const accountDetails = this.custodyController.getAccountDetails(
+      msgParams.from,
+    );
+    const isCustodial = Boolean(accountDetails);
     const updatedMsgParams = { ...msgParams, deferSetAsSigned: isCustodial };
 
     if (req.method.includes('eth_signTypedData')) {
