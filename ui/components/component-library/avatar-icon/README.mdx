@@ -13,8 +13,6 @@ The `AvatarIcon` is an avatar component that renders only an icon inside and is 
 
 ## Props
 
-The `AvatarIcon` accepts all props below as well as all [Box](/docs/components-componentlibrary-box--docs#props) component props
-
 <ArgsTable of={AvatarIcon} />
 
 `AvatarIcon` accepts all [AvatarBase](/docs/components-componentlibrary-avatarbase--default-story))
@@ -41,7 +39,7 @@ Defaults to `AvatarIconSize.Md`
 </Canvas>
 
 ```jsx
-import { AvatarIcon, AvatarIconSize } from '../ui/component-library';
+import { AvatarIcon, AvatarIconSize } from '../../component-library';
 
     <AvatarIcon {...args} size={AvatarIconSize.Xs} />
     <AvatarIcon {...args} size={AvatarIconSize.Sm} />
@@ -61,7 +59,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { AvatarIcon, IconName } from '../ui/component-library';
+import { AvatarIcon, IconName } from '../../component-library';
 
 <AvatarIcon iconName={IconName.SwapHorizontal} />
 <AvatarIcon iconName={IconName.Confirmation} />
@@ -83,7 +81,7 @@ Use the `color` and `backgroundColor` props with the `IconColor` and `Background
 
 ```jsx
 import { BackgroundColor, IconColor } from '../../../helpers/constants/design-system';
-import { AvatarIcon } from '../ui/component-library';
+import { AvatarIcon } from '../../component-library';
 
 <AvatarIcon color={IconColor.primaryDefault} backgroundColor={BackgroundColor.primaryMuted} />
 <AvatarIcon color={IconColor.primaryInverse} backgroundColor={BackgroundColor.primaryDefault} />
