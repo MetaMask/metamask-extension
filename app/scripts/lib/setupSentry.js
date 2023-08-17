@@ -362,9 +362,12 @@ export function beforeBreadcrumb(getState) {
     if (!getState) {
       return null;
     }
-    if (!getMetaMetricsEnabledFromAppState(getState())) {
-      return null;
-    } else if (breadcrumb?.category === 'ui.input') {
+    const appState = getState();
+    if (
+      !getMetaMetricsEnabledFromAppState(appState) ||
+      !appState?.store?.metamask?.completedOnboarding ||
+      breadcrumb?.category === 'ui.input'
+    ) {
       return null;
     }
     const newBreadcrumb = removeUrlsFromBreadCrumb(breadcrumb);
