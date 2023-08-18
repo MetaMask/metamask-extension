@@ -169,7 +169,7 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
 /**
  * Returns whether onboarding has completed, given the application state.
  *
- * @param {unknown} appState - Application state
+ * @param {Record<string, unknown>} appState - Application state
  * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
  * is enabled, `false` otherwise.
  */
