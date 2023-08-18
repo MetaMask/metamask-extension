@@ -33,8 +33,6 @@ const TransactionAlerts = ({
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
         <BlockaidBannerAlert
           securityAlertResponse={txData?.securityAlertResponse}
-          // remove margin in next commit
-          margin={0}
         />
         ///: END:ONLY_INCLUDE_IN
       }

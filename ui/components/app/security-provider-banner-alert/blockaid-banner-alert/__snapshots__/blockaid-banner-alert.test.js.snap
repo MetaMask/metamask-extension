@@ -2,7 +2,7 @@
 
 exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertResponse.result_type is 'Malicious 1`] = `
 <div
-  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-error-muted box--rounded-sm"
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
@@ -48,7 +48,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
 
 exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Failed 1`] = `
 <div
-  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
@@ -72,7 +72,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 
 exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResponse.result_type is 'Warning 1`] = `
 <div
-  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+  class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
 >
   <span
     class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
@@ -119,7 +119,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
 exports[`Blockaid Banner Alert should render details when provided 1`] = `
 <div>
   <div
-    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--margin-4 box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
+    class="box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning box--padding-3 box--padding-left-2 box--display-flex box--gap-2 box--flex-direction-row box--background-color-warning-muted box--rounded-sm"
   >
     <span
       class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
