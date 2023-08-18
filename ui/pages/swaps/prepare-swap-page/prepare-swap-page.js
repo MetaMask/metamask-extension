@@ -1037,7 +1037,7 @@ export default function PrepareSwapPage({
                   : t('swapTokenAddedManuallyTitle')
               }
               titleProps={{
-                'data-testid': 'swap-token-verification-banner-title',
+                'data-testid': 'swaps-banner-title',
               }}
               width={BLOCK_SIZES.FULL}
             >
