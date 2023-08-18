@@ -32,7 +32,7 @@ export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
  * @returns {TransactionMeta[]}
  */
 export const getCurrentNetworkTransactions = (state) => {
-  const { transactions, networkId } = state.metamask;
+  const { transactions, networkId } = state.metamask ?? {};
 
   if (!transactions?.length) {
     return [];
@@ -50,19 +50,11 @@ export const getCurrentNetworkTransactions = (state) => {
  * @returns {{[id: string]: TransactionMeta}}
  */
 export const getUnapprovedTransactions = (state) => {
-  const { transactions, networkId } = state.metamask;
+  const currentNetworkTransactions = getCurrentNetworkTransactions(state);
 
-  if (!transactions?.length) {
-    return {};
-  }
-
-  const { chainId } = getProviderConfig(state);
-
-  return transactions
+  return currentNetworkTransactions
     .filter(
-      (transaction) =>
-        transaction.status === TransactionStatus.unapproved &&
-        transactionMatchesNetwork(transaction, chainId, networkId),
+      (transaction) => transaction.status === TransactionStatus.unapproved,
     )
     .reduce((result, transaction) => {
       result[transaction.id] = transaction;
