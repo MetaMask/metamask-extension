@@ -14,8 +14,8 @@ import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
+///: END:ONLY_INCLUDE_IN
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
