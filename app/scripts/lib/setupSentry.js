@@ -177,7 +177,7 @@ function getOnboardingCompleteFromAppState(appState) {
   // during initialization after loading persisted state
   if (appState.persistedState) {
     return Boolean(
-      appState.persistedState.data.OnboardingController?.completedOnboarding,
+      appState.persistedState.data?.OnboardingController?.completedOnboarding,
     );
     // After initialization
   } else if (appState.state) {
