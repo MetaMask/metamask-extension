@@ -98,7 +98,7 @@ async function main() {
     rpc,
     buildType,
     updateSnapshot,
-    blockaid
+    blockaid,
   } = argv;
 
   let testPaths;
