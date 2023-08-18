@@ -220,6 +220,14 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#setLocked', function () {
+    it('should lock the wallet', async function () {
+      const { isUnlocked, keyrings } = await metamaskController.setLocked();
+      assert(!isUnlocked);
+      assert.deepEqual(keyrings, []);
+    });
+  });
+
   describe('#addToken', function () {
     const address = '0x514910771af9ca656af840dff83e8264ecf986ca';
     const symbol = 'LINK';
