@@ -155,9 +155,6 @@
   "addContact": {
     "message": "Aggiungi contatto"
   },
-  "addCustomToken": {
-    "message": "Aggiungi token personalizzato"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Ciò consentirà a questa rete di essere utilizzata all'interno di MetaMask."
   },
@@ -718,9 +715,6 @@
   },
   "deleteNetwork": {
     "message": "Cancella la rete?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sei sicuro di voler eliminare questa rete?"
   },
   "deprecatedTestNetworksLink": {
     "message": "Scopri di più"
@@ -1301,9 +1295,6 @@
   "provide": {
     "message": "Fornisci"
   },
-  "queue": {
-    "message": "Coda"
-  },
   "queued": {
     "message": "In coda"
   },
@@ -1385,9 +1376,6 @@
   },
   "searchResults": {
     "message": "Risultati Ricerca"
-  },
-  "searchTokens": {
-    "message": "Cerca Tokens"
   },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"

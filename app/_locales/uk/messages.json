@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Видалити мережу?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ви впевнені, що хочете видалити цю мережу?"
-  },
   "details": {
     "message": "Деталі"
   },
@@ -560,9 +557,6 @@
   "privateNetwork": {
     "message": "Приватна мережа"
   },
-  "queue": {
-    "message": "Черга"
-  },
   "readdToken": {
     "message": "Ви можете знову додати цей токен у меню облікового запису у розділі “Додати токен”. "
   },
@@ -629,9 +623,6 @@
   },
   "searchResults": {
     "message": "Результати пошуку"
-  },
-  "searchTokens": {
-    "message": "Шукати токени"
   },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"

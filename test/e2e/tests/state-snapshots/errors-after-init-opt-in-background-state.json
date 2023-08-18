@@ -8,10 +8,10 @@
   },
   "AnnouncementController": "object",
   "AppMetadataController": {
-    "currentAppVersion": "10.34.5",
+    "currentAppVersion": "10.34.4",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
-    "currentMigrationVersion": 92.1
+    "currentMigrationVersion": 94
   },
   "AppStateController": {
     "connectedStatusPopoverHasBeenShown": true,
@@ -36,8 +36,8 @@
     "serviceWorkerLastActiveTime": "number"
   },
   "ApprovalController": "object",
-  "BackupController": "undefined",
   "CachedBalancesController": "object",
+  "CronjobController": "object",
   "CurrencyController": {
     "conversionDate": "number",
     "conversionRate": 1700,
@@ -70,8 +70,7 @@
   "KeyringController": {
     "isUnlocked": false,
     "keyringTypes": "object",
-    "keyrings": "object",
-    "encryptionKey": "object"
+    "keyrings": "object"
   },
   "MetaMetricsController": {
     "participateInMetaMetrics": true,
@@ -83,8 +82,8 @@
     "previousUserTraits": "object"
   },
   "NetworkController": {
+    "selectedNetworkClientId": "string",
     "networkId": "1337",
-    "networkStatus": "available",
     "providerConfig": {
       "chainId": "string",
       "nickname": "Localhost 8545",
@@ -94,10 +93,11 @@
       "type": "rpc",
       "id": "string"
     },
-    "networkDetails": "object",
+    "networksMetadata": "object",
     "networkConfigurations": "object"
   },
   "NftController": "object",
+  "NotificationController": "object",
   "OnboardingController": {
     "seedPhraseBackedUp": true,
     "firstTimeFlowType": "import",
@@ -115,6 +115,7 @@
     "useMultiAccountBalanceChecker": "boolean",
     "useTokenDetection": "boolean",
     "useNftDetection": "boolean",
+    "use4ByteResolution": "boolean",
     "useCurrencyRateCheck": "boolean",
     "openSeaEnabled": "boolean",
     "advancedGasFee": "object",
@@ -131,6 +132,7 @@
       "useNativeCurrencyAsPrimaryCurrency": true
     },
     "ipfsGateway": "dweb.link",
+    "useAddressBarEnsResolution": "boolean",
     "infuraBlocked": "boolean",
     "ledgerTransportType": "string",
     "snapRegistryList": "object",
@@ -148,6 +150,8 @@
     "unapprovedTypedMessagesCount": 0
   },
   "SmartTransactionsController": "object",
+  "SnapController": "object",
+  "SnapsRegistry": "object",
   "SubjectMetadataController": "object",
   "SwapsController": "object",
   "TokenListController": "object",

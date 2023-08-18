@@ -78,8 +78,8 @@ describe('Incremental Security', function () {
         const publicAddress = await address.getText();
 
         // wait for account modal to be visible
-        const accountModal = await driver.findVisibleElement('.popover-bg');
-        await driver.clickElement('[data-testid="popover-close"]');
+        const accountModal = await driver.findVisibleElement('.mm-modal');
+        await driver.clickElement('.mm-modal button[aria-label="Close"]');
 
         // wait for account modal to be removed from DOM
         await accountModal.waitForElementState('hidden');

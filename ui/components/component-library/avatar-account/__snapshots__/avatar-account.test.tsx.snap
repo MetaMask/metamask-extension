@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AvatarAccount should render correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+    data-testid="avatar-account"
+  >
+    <div
+      class="mm-avatar-account__jazzicon"
+    >
+      <div
+        style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(249, 108, 1);"
+      >
+        <svg
+          height="32"
+          width="32"
+          x="0"
+          y="0"
+        >
+          <rect
+            fill="#F2CA02"
+            height="32"
+            transform="translate(1.431306801437213 -0.09488555961102602) rotate(529.4 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#FAA200"
+            height="32"
+            transform="translate(10.974858326048588 -13.039888710538095) rotate(336.9 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+          <rect
+            fill="#C8142C"
+            height="32"
+            transform="translate(-22.963750275720685 -20.223166935456838) rotate(276.6 16 16)"
+            width="32"
+            x="0"
+            y="0"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;

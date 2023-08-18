@@ -16,12 +16,16 @@ buildTypes:
   main:
     features:
       - build-main
+      - snaps
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
       - SEGMENT_PROD_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_PROD_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
+      - ALLOW_LOCAL_SNAPS: false
+      - REQUIRE_SNAPS_ALLOWLIST: true
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/1.0.1/index.html
     # Main build uses the default browser manifest
     manifestOverrides: false
 
@@ -47,6 +51,7 @@ buildTypes:
       - desktop
       - build-flask
       - keyring-snaps
+      - blockaid
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -87,9 +92,9 @@ buildTypes:
       - SEGMENT_MMI_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_MMI_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
+      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-      - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v1/configuration/default
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -116,6 +121,10 @@ features:
       - DISABLE_WEB_SOCKET_ENCRYPTION: false
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
+  blockaid:
+    env:
+      - BLOCKAID_FILE_CDN: null
+      - BLOCKAID_PUBLIC_KEY: null
 
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
@@ -224,6 +233,10 @@ env:
   - NODE_DEBUG: ''
   # Used by react-devtools-core
   - EDITOR_URL: ''
+  # CDN for blockaid files
+  - BLOCKAID_FILE_CDN
+  # Blockaid public key for verifying signatures of data files downloaded from CDN
+  - BLOCKAID_PUBLIC_KEY
 
   ###
   # Meta variables

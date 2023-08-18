@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Usunąć sieć?"
   },
-  "deleteNetworkDescription": {
-    "message": "Czy na pewno chcesz usunąć tę sieć?"
-  },
   "details": {
     "message": "Szczegóły"
   },
@@ -554,9 +551,6 @@
   "privateNetwork": {
     "message": "Sieć prywatna"
   },
-  "queue": {
-    "message": "Kolejka"
-  },
   "readdToken": {
     "message": "Możesz później ponownie dodać ten token poprzez \"Dodaj token\" w opcjach menu swojego konta."
   },
@@ -623,9 +617,6 @@
   },
   "searchResults": {
     "message": "Wyniki wyszukiwania"
-  },
-  "searchTokens": {
-    "message": "Szukaj tokenów"
   },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"

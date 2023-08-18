@@ -14,9 +14,9 @@ import {
 import Box from '../../../ui/box';
 import {
   AvatarIcon,
-  Text,
   IconName,
   IconSize,
+  Text,
 } from '../../../component-library';
 import {
   DelineatorType,

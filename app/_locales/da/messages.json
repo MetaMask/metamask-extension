@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Slet Netværk?"
   },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på, at du vil slette dette netværk?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -541,9 +538,6 @@
   "privateNetwork": {
     "message": "Privat netværk"
   },
-  "queue": {
-    "message": "Kø"
-  },
   "readdToken": {
     "message": "Du kan tilføje denne token i fremtiden, ved at gå til \"Tilføj token\" under dine valgmenuen for dine konti."
   },
@@ -610,9 +604,6 @@
   },
   "searchResults": {
     "message": "Søg Resultater"
-  },
-  "searchTokens": {
-    "message": "Søg efter tokens"
   },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"

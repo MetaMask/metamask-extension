@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "ನೆಟ್‌ವರ್ಕ್ ಅಳಿಸುವುದೇ?"
   },
-  "deleteNetworkDescription": {
-    "message": "ನೀವು ಈ ನೆಟ್‌ವರ್ಕ್ ಅನ್ನು ಖಚಿತವಾಗಿ ಅಳಿಸಲು ಬಯಸುತ್ತೀರಾ?"
-  },
   "details": {
     "message": "ವಿವರಗಳು"
   },
@@ -560,9 +557,6 @@
   "privateNetwork": {
     "message": "ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"
   },
-  "queue": {
-    "message": "ಸರತಿ"
-  },
   "readdToken": {
     "message": "ನಿಮ್ಮ ಖಾತೆಗಳ ಆಯ್ಕೆಗಳ ಮೆನುವಿನಲ್ಲಿ \"ಟೋಕನ್ ಸೇರಿಸು\" ಗೆ ಹೋಗುವ ಮೂಲಕ ನೀವು ಈ ಟೋಕನ್ ಅನ್ನು ಭವಿಷ್ಯದಲ್ಲಿ ಮರಳಿ ಸೇರಿಸಬಹುದು."
   },
@@ -629,9 +623,6 @@
   },
   "searchResults": {
     "message": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು"
-  },
-  "searchTokens": {
-    "message": "ಟೋಕನ್‌ಗಳನ್ನು ಹುಡುಕಿ"
   },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"

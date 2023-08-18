@@ -31,10 +31,10 @@ describe('Test Snap Error', function () {
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const snapButton = await driver.findElement('#connectErrorSnap');
+        const snapButton = await driver.findElement('#connecterrors');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectErrorSnap');
+        await driver.clickElement('#connecterrors');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -72,8 +72,8 @@ describe('Test Snap Error', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectErrorSnap',
-          text: 'Reconnect to Error Snap',
+          css: '#connecterrors',
+          text: 'Reconnect to Errors Snap',
         });
 
         // find and click on send error
@@ -90,7 +90,7 @@ describe('Test Snap Error', function () {
         const text = await error.getText();
         assert.equal(
           text.includes(
-            "Snap Error: 'random error inside'. Error Code: '-32603'",
+            "Snap Error: 'Random error inside a promise.'. Error Code: '-32603'",
           ),
           true,
         );

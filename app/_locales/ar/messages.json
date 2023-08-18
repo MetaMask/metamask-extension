@@ -218,9 +218,6 @@
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
   },
-  "deleteNetworkDescription": {
-    "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
-  },
   "details": {
     "message": "التفاصيل"
   },
@@ -557,9 +554,6 @@
   "privateNetwork": {
     "message": "شبكة خاصة"
   },
-  "queue": {
-    "message": "اللائحة"
-  },
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
   },
@@ -626,9 +620,6 @@
   },
   "searchResults": {
     "message": "نتائج البحث"
-  },
-  "searchTokens": {
-    "message": "البحث عن العملات الرمزية"
   },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"

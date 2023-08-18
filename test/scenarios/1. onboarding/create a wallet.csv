@@ -1,0 +1,16 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome screen is shown.,
+2,Agree to the Terms of use.,,,
+3,Proceed to Create a new wallet.,,,
+4,Allow MetaMask to gather usage data.,,,
+5,Create a password for your MetaMask wallet.,password (8 characters min).,,
+6,Watch the secure your wallet video.,,"The video plays.
+The video is audible.
+Subtitles are shown in the video.",
+7,Proceed with the recommended action to secure you wallet.,,,
+8,Reveal your 12-word phrase.,,,Take a note of the 12-word phrase.
+9,Confirm your 12-word phrase.,12-word phrase.,,
+10,Proceed through the onboarding completion screens.,,,
+11,Dismiss the Whats new dialog.,,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",

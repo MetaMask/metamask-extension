@@ -3,12 +3,12 @@ import React, { useContext } from 'react';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import Box from '../../../ui/box';
 import {
-  Text,
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
   ButtonIcon,
   IconName,
+  Text,
 } from '../../../component-library';
 import {
   AlignItems,

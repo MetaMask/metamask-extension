@@ -183,17 +183,8 @@
   "addContact": {
     "message": "添加联系信息"
   },
-  "addCustomIPFSGateway": {
-    "message": "添加自定义IPFS网关"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "IPFS 网关使访问和查看第三方托管的数据成为可能。您可以添加自定义 IPFS 网关或继续使用默认网关。"
-  },
   "addCustomNetwork": {
     "message": "添加自定义网络"
-  },
-  "addCustomToken": {
-    "message": "添加自定义代币"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "这将允许在 MetaMask 中使用此网络。"
@@ -914,9 +905,6 @@
   "deleteNetwork": {
     "message": "删除网络？"
   },
-  "deleteNetworkDescription": {
-    "message": "您确定要删除该网络吗？"
-  },
   "deposit": {
     "message": "存入"
   },
@@ -1183,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " 从设置中启用它。"
-  },
-  "enableOpenSeaAPI": {
-    "message": "启用 OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
   "enableToken": {
     "message": "启用 $1",
@@ -2753,9 +2735,6 @@
   "publicAddress": {
     "message": "公共地址"
   },
-  "queue": {
-    "message": "队列"
-  },
   "queued": {
     "message": "队列中"
   },
@@ -2956,9 +2935,6 @@
   "revealTheSeedPhrase": {
     "message": "显示助记词"
   },
-  "reviewSpendingCap": {
-    "message": "检查您的支出上限"
-  },
   "revokeAllTokensTitle": {
     "message": "撤销访问和转移您的所有 $1 的权限？",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3000,9 +2976,6 @@
   },
   "searchResults": {
     "message": "搜索结果"
-  },
-  "searchTokens": {
-    "message": "搜索代币"
   },
   "secretRecoveryPhrase": {
     "message": "助记词"
@@ -3140,10 +3113,6 @@
     "message": "批准$1，且无消费限制",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "为 $1 设置支出上限",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "设置"
   },
@@ -3270,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "哎呀！出了点问题。"
-  },
-  "source": {
-    "message": "来源"
   },
   "speedUp": {
     "message": "加速"
@@ -4167,14 +4133,8 @@
   "urlExistsErrorMsg": {
     "message": "此 URL 目前已被 $1 网络使用。"
   },
-  "useDefault": {
-    "message": "使用默认值"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "账户余额分批请求"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "我们会将账户分批并向 Infura 查询，以对应地显示您的余额。如果禁用此选项，将仅查询活动账户。必须连接钱包，否则有一些去中心化应用程序（dapp）将无法工作。"
   },
   "useNftDetection": {
     "message": "自动检测NFT"

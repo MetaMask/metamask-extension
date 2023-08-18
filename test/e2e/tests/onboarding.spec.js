@@ -162,12 +162,11 @@ describe('MetaMask onboarding', function () {
         );
 
         // Check that the error message is displayed for the password fields
-        await driver.isElementPresent(
-          // eslint-disable-next-line prettier/prettier
-          { text: "Passwords don't match", tag: 'h6' },
-          true,
-        );
-
+        const passwordErrorIsDisplayed = await driver.isElementPresent({
+          text: "Passwords don't match",
+          css: 'h6',
+        });
+        assert.equal(passwordErrorIsDisplayed, true);
         // Check that the "Confirm Password" button is disabled
         const confirmPasswordButton = await driver.findElement(
           '[data-testid="create-password-wallet"]',

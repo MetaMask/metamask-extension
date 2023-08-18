@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Futa Mtandao?"
   },
-  "deleteNetworkDescription": {
-    "message": "Una uhakika unataka kufuta mtandao huu?"
-  },
   "details": {
     "message": "Maelezo"
   },
@@ -538,9 +535,6 @@
   "privateNetwork": {
     "message": "Mtandao Binafsi"
   },
-  "queue": {
-    "message": "Foleni"
-  },
   "readdToken": {
     "message": "Unaweza kuongeza tena kianzio hiki hapo baadaye kwa kwenda kwenye \"Ongeza kianzio\" kwenye machaguo yako ya menyu ya akaunti."
   },
@@ -607,9 +601,6 @@
   },
   "searchResults": {
     "message": "Matokeo ya Utafutaji"
-  },
-  "searchTokens": {
-    "message": "Tafuta Vianzio"
   },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"

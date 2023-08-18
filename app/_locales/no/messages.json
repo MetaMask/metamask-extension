@@ -211,9 +211,6 @@
   "deleteNetwork": {
     "message": "Slette nettverk? "
   },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på at du vil slette dette nettverket?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -544,9 +541,6 @@
   "privateNetwork": {
     "message": "Privat nettverk "
   },
-  "queue": {
-    "message": "Kø"
-  },
   "readdToken": {
     "message": "Du kan legge til dette tokenet igjen i fremtiden ved å gå til \"Legg til token\" i menyen for kontoalternativer."
   },
@@ -613,9 +607,6 @@
   },
   "searchResults": {
     "message": "Søkeresultater"
-  },
-  "searchTokens": {
-    "message": "Søk i sjetonger"
   },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"

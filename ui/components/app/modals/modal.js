@@ -13,8 +13,6 @@ import { mmiActionsFactory } from '../../../store/institutional/institution-back
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import ComplianceDetailsModal from '../../institutional/compliance-details';
-import ComplianceModal from '../../institutional/compliance-modal';
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
@@ -330,35 +328,6 @@ const MODALS = {
   },
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  COMPLIANCE: {
-    contents: <ComplianceModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
-    },
-  },
-
-  COMPLIANCE_DETAILS: {
-    contents: <ComplianceDetailsModal />,
-    onHide: (props) => props.hideWarning(),
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      padding: '0px',
-      borderRadius: '8px',
-    },
-  },
-
   CONFIRM_REMOVE_JWT: {
     contents: <ConfirmRemoveJWT />,
     mobileModalStyle: {

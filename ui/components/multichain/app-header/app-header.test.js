@@ -5,7 +5,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 import { AppHeader } from '.';
 
-const render = (stateChanges = {}, location = jest.fn()) => {
+const render = (stateChanges = {}, location = {}) => {
   const store = configureStore({
     ...mockState,
     activeTab: {

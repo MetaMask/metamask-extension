@@ -10,6 +10,7 @@ import {
   Button,
   Text,
 } from '../../../component-library';
+
 import AccountModalContainer from '../account-modal-container';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import {

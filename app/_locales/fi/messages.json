@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Poistetaanko verkko?"
   },
-  "deleteNetworkDescription": {
-    "message": "Haluatko varmasti poistaa tämän verkon?"
-  },
   "details": {
     "message": "Tiedot"
   },
@@ -557,9 +554,6 @@
   "privateNetwork": {
     "message": "Yksityinen verkko"
   },
-  "queue": {
-    "message": "Jono"
-  },
   "readdToken": {
     "message": "Voit lisätä tämän tietueen myöhemmin takaisin siirtymällä tilisi vaihtoehtovalikon kohtaan ”Lisää tietue”."
   },
@@ -626,9 +620,6 @@
   },
   "searchResults": {
     "message": "Hakutulokset"
-  },
-  "searchTokens": {
-    "message": "Hae tietueita"
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"

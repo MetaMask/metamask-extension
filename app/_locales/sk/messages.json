@@ -208,9 +208,6 @@
   "deleteNetwork": {
     "message": "Odstrániť sieť?"
   },
-  "deleteNetworkDescription": {
-    "message": "Naozaj chcete túto sieť odstrániť?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -532,9 +529,6 @@
   "privateNetwork": {
     "message": "Soukromá síť"
   },
-  "queue": {
-    "message": "Poradie"
-  },
   "readdToken": {
     "message": "Tento token můžete v budoucnu přidat zpět s „Přidat token“ v nastavení účtu."
   },
@@ -601,9 +595,6 @@
   },
   "searchResults": {
     "message": "Výsledky vyhľadávania"
-  },
-  "searchTokens": {
-    "message": "Hledat tokeny"
   },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"

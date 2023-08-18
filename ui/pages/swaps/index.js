@@ -380,9 +380,12 @@ export default function Swap() {
 
   const redirectToDefaultRoute = async () => {
     clearTemporaryTokenRef.current();
+    history.push({
+      pathname: DEFAULT_ROUTE,
+      state: { stayOnHomePage: true },
+    });
     dispatch(clearSwapsState());
     await dispatch(resetBackgroundSwapsState());
-    history.push(DEFAULT_ROUTE);
   };
 
   return (

@@ -183,17 +183,8 @@
   "addContact": {
     "message": "Magdagdag ng contact"
   },
-  "addCustomIPFSGateway": {
-    "message": "Magdagdag ng custom na IPFS gateway"
-  },
-  "addCustomIPFSGatewayDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
-  },
   "addCustomNetwork": {
     "message": "Magdagdag ng custom na network"
-  },
-  "addCustomToken": {
-    "message": "Magdagdag ng Custom na Token"
   },
   "addEthereumChainConfirmationDescription": {
     "message": "Magpapahintulot ito sa network na ito na gamitin sa loob ng MetaMask."
@@ -914,9 +905,6 @@
   "deleteNetwork": {
     "message": "I-delete ang network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
   "deposit": {
     "message": "Deposito"
   },
@@ -1183,12 +1171,6 @@
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Settings."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Paganahin sa OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
   "enableToken": {
     "message": "paganahin ang $1",
@@ -2753,9 +2735,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Pila"
-  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -2956,9 +2935,6 @@
   "revealTheSeedPhrase": {
     "message": "Ipakita ang seed phrase"
   },
-  "reviewSpendingCap": {
-    "message": "I-review ang iyong limitasyon sa paggastos"
-  },
   "revokeAllTokensTitle": {
     "message": "Bawiin ang pahintulot na i-access at ilipat ang lahat ng iyong $1?",
     "description": "$1 is the symbol of the token for which the user is revoking approval"
@@ -3000,9 +2976,6 @@
   },
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
-  },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
   },
   "secretRecoveryPhrase": {
     "message": "Lihim na recovery phrase"
@@ -3140,10 +3113,6 @@
     "message": "Aprubahan ang $1 nang walang limitasyon sa paggastos",
     "description": "The token symbol that is being approved"
   },
-  "setSpendingCap": {
-    "message": "Magtakda ng limitasyon sa paggastos para sa iyong $1",
-    "description": "$1 is a token symbol"
-  },
   "settings": {
     "message": "Mga Setting"
   },
@@ -3270,9 +3239,6 @@
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."
-  },
-  "source": {
-    "message": "Pinagmulan"
   },
   "speedUp": {
     "message": "Pabilisin"
@@ -4167,14 +4133,8 @@
   "urlExistsErrorMsg": {
     "message": "Nasa kasalukuyang listahan ng mga network na ang URL."
   },
-  "useDefault": {
-    "message": "Gamitin ang default"
-  },
   "useMultiAccountBalanceChecker": {
     "message": "Mga kahilingan sa balanse ng batch account"
-  },
-  "useMultiAccountBalanceCheckerDescription": {
-    "message": "Pinagsasama-sama namin ang mga account at tanong sa Infura para maipakita ang inyong balanse. Kung io-off mo ito, ang mga aktibong account lamang ang makakapagtanong. Ang ilan sa dapps ay hindi gagana maliban kung nakakonekta ang iyongg wallet."
   },
   "useNftDetection": {
     "message": "Awtomatikong tuklasin ang mga NFT"

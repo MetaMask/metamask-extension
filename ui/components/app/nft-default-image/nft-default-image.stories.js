@@ -5,20 +5,9 @@ export default {
   title: 'Components/App/NftDefaultImage',
 
   argTypes: {
-    name: {
-      control: 'text',
-    },
-    tokenId: {
-      control: 'text',
-    },
     clickable: {
       control: 'boolean',
     },
-  },
-  args: {
-    name: null,
-    tokenId: '12345',
-    clickable: true,
   },
 };
 

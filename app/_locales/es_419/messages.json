@@ -100,9 +100,6 @@
   "addContact": {
     "message": "Agregar contacto"
   },
-  "addCustomToken": {
-    "message": "Añadir token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Esto permitirá que la red se utilice en MetaMask."
   },
@@ -584,9 +581,6 @@
   "deleteNetwork": {
     "message": "¿Eliminar red?"
   },
-  "deleteNetworkDescription": {
-    "message": "¿Está seguro de que quiere eliminar esta red?"
-  },
   "description": {
     "message": "Descripción"
   },
@@ -739,12 +733,6 @@
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Activar API de OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
   "enableToken": {
     "message": "activar $1",
@@ -1767,9 +1755,6 @@
   "publicAddress": {
     "message": "Dirección pública"
   },
-  "queue": {
-    "message": "Cola"
-  },
   "queued": {
     "message": "En cola"
   },
@@ -1893,9 +1878,6 @@
   },
   "searchResults": {
     "message": "Resultados de la búsqueda"
-  },
-  "searchTokens": {
-    "message": "Buscar tokens"
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
@@ -2073,9 +2055,6 @@
   },
   "somethingWentWrong": {
     "message": "Lo lamentamos, se produjo un error."
-  },
-  "source": {
-    "message": "Fuente"
   },
   "speedUp": {
     "message": "Acelerar"

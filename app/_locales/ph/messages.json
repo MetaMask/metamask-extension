@@ -409,9 +409,6 @@
   "deleteNetwork": {
     "message": "I-delete ang Network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -1105,9 +1102,6 @@
   "publicAddress": {
     "message": "Pampublikong Address"
   },
-  "queue": {
-    "message": "Queue"
-  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -1216,9 +1210,6 @@
   },
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
-  },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
   },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"

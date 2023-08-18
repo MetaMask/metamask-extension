@@ -38,7 +38,12 @@ export default {
 
 const customNetworkData = {
   ...testData,
-  metamask: { ...testData.metamask, nativeCurrency: '' },
+  metamask: {
+    ...testData.metamask,
+    providerConfig: {
+      chainId: '0x1',
+    },
+  },
 };
 const customNetworkStore = configureStore(customNetworkData);
 
@@ -47,6 +52,13 @@ const Template = (args) => {
 };
 
 export const DefaultStory = Template.bind({});
+DefaultStory.decorators = [
+  (Story) => (
+    <Provider store={customNetworkStore}>
+      <Story />
+    </Provider>
+  ),
+];
 
 export const ChaosStory = (args) => (
   <div
@@ -55,7 +67,13 @@ export const ChaosStory = (args) => (
     <TokenListItem {...args} />
   </div>
 );
-ChaosStory.storyName = 'ChaosStory';
+ChaosStory.decorators = [
+  (Story) => (
+    <Provider store={customNetworkStore}>
+      <Story />
+    </Provider>
+  ),
+];
 
 ChaosStory.args = {
   title: 'Really long, long name',
@@ -64,14 +82,6 @@ ChaosStory.args = {
 };
 
 export const NoImagesStory = Template.bind({});
-
-NoImagesStory.decorators = [
-  (Story) => (
-    <Provider store={customNetworkStore}>
-      <Story />
-    </Provider>
-  ),
-];
 
 NoImagesStory.args = {
   tokenImage: '',

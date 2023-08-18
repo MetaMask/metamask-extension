@@ -42,9 +42,6 @@
   "addContact": {
     "message": "新增合約"
   },
-  "addCustomToken": {
-    "message": "Add Custom Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "這會允許在 MetaMask 內使用這個網路。"
   },
@@ -410,9 +407,6 @@
   },
   "deleteNetwork": {
     "message": "刪除網路？"
-  },
-  "deleteNetworkDescription": {
-    "message": "你確定要刪除網路嗎？"
   },
   "details": {
     "message": "詳情"
@@ -1051,9 +1045,6 @@
   "publicAddress": {
     "message": "公開位址"
   },
-  "queue": {
-    "message": "佇列"
-  },
   "queued": {
     "message": "已排入佇列"
   },
@@ -1138,9 +1129,6 @@
   },
   "searchResults": {
     "message": "搜尋結果"
-  },
-  "searchTokens": {
-    "message": "搜尋代幣"
   },
   "secureWallet": {
     "message": "Secure Wallet"

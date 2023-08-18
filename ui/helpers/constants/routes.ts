@@ -32,9 +32,6 @@ const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
 const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
 const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
-const COMPLIANCE_FEATURE_ROUTE = '/compliance-feature';
-const CONFIRM_INSTITUTIONAL_FEATURE_CONNECT =
-  '/confirm-institutional-feature-connect';
 const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
 const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
   '/interactive-replacement-token-page';
@@ -66,7 +63,6 @@ const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
-const ADD_NFT_ROUTE = '/add-nft';
 
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
@@ -145,9 +141,6 @@ const PATH_NAME_MAP = {
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
   [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
-  [COMPLIANCE_FEATURE_ROUTE]: 'Compliance Feature Page',
-  [CONFIRM_INSTITUTIONAL_FEATURE_CONNECT]:
-    'Confirm Institutional Feature Connect',
   [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
   [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
   ///: END:ONLY_INCLUDE_IN
@@ -238,8 +231,6 @@ export {
   CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
-  COMPLIANCE_FEATURE_ROUTE,
-  CONFIRM_INSTITUTIONAL_FEATURE_CONNECT,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
@@ -273,7 +264,6 @@ export {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,

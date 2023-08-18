@@ -85,8 +85,6 @@ export const SnapDetailHeader = ({
                 labelProps={{
                   color: TextColor.textAlternative,
                 }}
-                className=""
-                height={2}
               />
             )}
           </Box>
@@ -152,7 +150,7 @@ export const SnapDetailHeader = ({
             <Tag
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
+              borderColor={BorderColor.infoMuted}
               label={
                 <Box
                   display={Display.Flex}
@@ -180,7 +178,7 @@ export const SnapDetailHeader = ({
               className=""
               color={TextColor.infoDefault}
               backgroundColor={BackgroundColor.infoMuted}
-              borderColor={BackgroundColor.infoMuted}
+              borderColor={BorderColor.infoMuted}
               label={
                 <Box
                   display={Display.Flex}

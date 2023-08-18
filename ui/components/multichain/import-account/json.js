@@ -5,9 +5,9 @@ import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
   FormTextField,
-  Text,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
+  Text,
 } from '../../component-library';
 import {
   Size,
@@ -46,7 +46,7 @@ export default function JsonImportSubview({
     if (isPrimaryDisabled) {
       displayWarning(t('needImportFile'));
     } else {
-      importAccountFunc('JSON File', [fileContents, password]);
+      importAccountFunc('json', [fileContents, password]);
     }
   }
 

@@ -114,7 +114,7 @@ describe('Export Private Key Modal', () => {
     const holdButton = getByText('Hold to reveal Private Key');
     expect(holdButton).toBeInTheDocument();
 
-    fireEvent.mouseDown(holdButton);
+    fireEvent.pointerDown(holdButton);
 
     const circle = getByLabelText('hold to reveal circle locked');
     fireEvent.transitionEnd(circle);

@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
   },
-  "deleteNetworkDescription": {
-    "message": "Anda pasti anda ingin padamkan rangkaian ini?"
-  },
   "details": {
     "message": "Butiran"
   },
@@ -540,9 +537,6 @@
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
   },
-  "queue": {
-    "message": "Baris Gilir"
-  },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
   },
@@ -609,9 +603,6 @@
   },
   "searchResults": {
     "message": "Hasil Carian"
-  },
-  "searchTokens": {
-    "message": "Cari Token"
   },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"

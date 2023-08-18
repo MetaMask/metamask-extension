@@ -6,8 +6,10 @@ import PermissionCell from '../../permission-cell';
 import Box from '../../../ui/box';
 
 export default function SnapPermissionsList({
+  snapId,
   permissions,
   targetSubjectMetadata,
+  showOptions,
 }) {
   const t = useI18nContext();
 
@@ -17,12 +19,15 @@ export default function SnapPermissionsList({
         (permission, index) => {
           return (
             <PermissionCell
+              snapId={snapId}
+              permissionName={permission.permissionName}
               title={permission.label}
               description={permission.description}
               weight={permission.weight}
               avatarIcon={permission.leftIcon}
               dateApproved={permission?.permissionValue?.date}
               key={`${permission.permissionName}-${index}`}
+              showOptions={showOptions}
             />
           );
         },
@@ -32,6 +37,8 @@ export default function SnapPermissionsList({
 }
 
 SnapPermissionsList.propTypes = {
+  snapId: PropTypes.string.isRequired,
   permissions: PropTypes.object.isRequired,
   targetSubjectMetadata: PropTypes.object.isRequired,
+  showOptions: PropTypes.bool,
 };

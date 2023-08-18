@@ -214,9 +214,6 @@
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -548,9 +545,6 @@
   "privateNetwork": {
     "message": "Zasebno omrežje"
   },
-  "queue": {
-    "message": "Čakalna vrsta"
-  },
   "readdToken": {
     "message": "Ta žeton lahko dodate tudi kasneje z uporabo gumba “Dodaj žeton” v možnostih vašega računa."
   },
@@ -617,9 +611,6 @@
   },
   "searchResults": {
     "message": "Rezultati iskanja"
-  },
-  "searchTokens": {
-    "message": "Iskanje žetonov"
   },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getAccountLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
@@ -12,7 +12,6 @@ import {
   getSelectedAddress,
   getIsCustomNetwork,
 } from '../../../selectors/selectors';
-import { showModal } from '../../../store/actions';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getURLHostName } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -24,7 +23,6 @@ export default function NativeAsset({ nativeCurrency }) {
   const selectedAccountName = useSelector(
     (state) => getSelectedIdentity(state).name,
   );
-  const dispatch = useDispatch();
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
@@ -56,9 +54,6 @@ export default function NativeAsset({ nativeCurrency }) {
               global.platform.openTab({
                 url: accountLink,
               });
-            }}
-            onViewAccountDetails={() => {
-              dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
             }}
             isCustomNetwork={isCustomNetwork}
           />

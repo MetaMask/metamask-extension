@@ -493,6 +493,9 @@ export function setupController(
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -819,6 +822,13 @@ export function setupController(
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);
     });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
+  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+    controller.snapController.updateBlockedSnaps();
   }
   ///: END:ONLY_INCLUDE_IN
 }

@@ -205,9 +205,6 @@
   "deleteNetwork": {
     "message": "አውታረ መረብ ይሰረዝ?"
   },
-  "deleteNetworkDescription": {
-    "message": "ይህን አውታረ መረብ ለመሰረዝ እንደሚፈልጉ እርግጠኛ ነዎት?"
-  },
   "details": {
     "message": "ዝርዝሮች"
   },
@@ -545,9 +542,6 @@
   "privateNetwork": {
     "message": "የግል አውታረ መረብ"
   },
-  "queue": {
-    "message": "ወረፋ"
-  },
   "readdToken": {
     "message": "በመለያ አማራጮችዎ ምናሌ ውስጥ ወደ “ተለዋጭ ስም አክል” በመግባት ለወደፊቱ ይህን ተለዋጭ ስም መልሰው ማከል ይችላሉ።"
   },
@@ -614,9 +608,6 @@
   },
   "searchResults": {
     "message": "ውጤቶችን ፈልግ"
-  },
-  "searchTokens": {
-    "message": "ተለዋጭ ስሞችን ፈልግ"
   },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"

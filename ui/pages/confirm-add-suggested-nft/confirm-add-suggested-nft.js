@@ -24,8 +24,8 @@ import {
   ButtonIconSize,
   ButtonLink,
   IconName,
-  Text,
   Box,
+  Text,
 } from '../../components/component-library';
 import {
   getCurrentChainId,
@@ -69,12 +69,12 @@ const ConfirmAddSuggestedNFT = () => {
           event: MetaMetricsEventName.NftAdded,
           category: MetaMetricsEventCategory.Wallet,
           sensitiveProperties: {
+            token_contract_address: asset.address,
             token_symbol: asset.symbol,
             token_id: asset.tokenId,
-            token_contract_address: asset.address,
-            source_connection_method: MetaMetricsTokenEventSource.Dapp,
             token_standard: asset.standard,
             asset_type: AssetType.NFT,
+            source: MetaMetricsTokenEventSource.Dapp,
           },
         });
       }),
@@ -106,9 +106,12 @@ const ConfirmAddSuggestedNFT = () => {
   }, [history, mostRecentOverviewPage, suggestedNfts]);
 
   let origin;
+  let link;
   if (suggestedNfts.length) {
     try {
-      origin = new URL(suggestedNfts[0].origin)?.host;
+      const url = new URL(suggestedNfts[0].origin);
+      origin = url.host;
+      link = url.href;
     } catch {
       origin = 'dapp';
     }
@@ -138,7 +141,7 @@ const ConfirmAddSuggestedNFT = () => {
               <ButtonLink
                 key={origin}
                 size={BUTTON_SIZES.INHERIT}
-                href={origin}
+                href={link}
                 target="_blank"
               >
                 {origin}
