@@ -4,22 +4,22 @@ import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 import NetworkAccountBalanceHeader from '../../components/app/network-account-balance-header/network-account-balance-header';
-import UrlIcon from '../../components/ui/url-icon/url-icon';
 import {
   AlignItems,
-  BorderStyle,
-  Color,
+  BackgroundColor,
+  BlockSize,
+  BorderColor,
+  BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   JustifyContent,
+  Severity,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
-import Button from '../../components/ui/button';
 import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
@@ -48,7 +48,6 @@ import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ApproveContentCard from '../../components/app/approve-content-card/approve-content-card';
 import CustomSpendingCap from '../../components/app/custom-spending-cap/custom-spending-cap';
-import Dialog from '../../components/ui/dialog';
 import { useGasFeeContext } from '../../contexts/gasFee';
 import { getCustomTxParamsData } from '../confirm-approve/confirm-approve.util';
 import { setCustomTokenAmount } from '../../ducks/app/app';
@@ -67,7 +66,17 @@ import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWar
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import LedgerInstructionField from '../../components/app/ledger-instruction-field/ledger-instruction-field';
 import SecurityProviderBannerMessage from '../../components/app/security-provider-banner-message/security-provider-banner-message';
-import { Icon, IconName, Text, Box } from '../../components/component-library';
+import {
+  BannerAlert,
+  Box,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+  Button,
+  Icon,
+  IconName,
+  TagUrl,
+  Text,
+} from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
 
@@ -309,295 +318,246 @@ export default function TokenAllowance({
   );
 
   return (
-    <Box className="token-allowance-container page-container">
-      <Box>
-        <ConfirmPageContainerNavigation />
-      </Box>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-        <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
-        />
-        ///: END:ONLY_INCLUDE_IN
-      }
-      {isSuspiciousResponse(txData?.securityProviderResponse) && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
+    <Box
+      backgroundColor={[null, BackgroundColor.backgroundAlternative]}
+      padding={[null, 8, 12]}
+    >
       <Box
-        paddingLeft={4}
-        paddingRight={4}
-        alignItems={AlignItems.center}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        className="token-allowance-container"
+        paddingTop={4}
+        paddingBottom={4}
+        marginLeft="auto"
+        marginRight="auto"
+        backgroundColor={BackgroundColor.backgroundDefault}
+        borderColor={[BorderColor.transparent, BorderColor.borderMuted]}
+        borderRadius={[null, BorderRadius.XL]}
       >
-        <Box>
-          {!isFirstPage && (
-            <Button type="inline" onClick={() => handleBackClick()}>
-              <Text
-                variant={TextVariant.bodySm}
-                as="h6"
-                color={TextColor.textMuted}
-                fontWeight={FontWeight.Bold}
-              >
-                {'<'} {t('back')}
-              </Text>
-            </Button>
-          )}
-        </Box>
-        <Box textAlign={TextAlign.End}>
+        <ConfirmPageContainerNavigation />
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          <BlockaidBannerAlert
+            securityAlertResponse={txData?.securityAlertResponse}
+          />
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {isSuspiciousResponse(txData?.securityProviderResponse) && (
+          <SecurityProviderBannerMessage
+            securityProviderResponse={txData.securityProviderResponse}
+          />
+        )}
+        <Box
+          paddingLeft={4}
+          paddingRight={4}
+          paddingBottom={2}
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          {/* {!isFirstPage && ( */}
+          <Button
+            variant={BUTTON_VARIANT.LINK}
+            onClick={() => handleBackClick()}
+            startIconName={IconName.ArrowLeft}
+          >
+            {t('back')}
+          </Button>
+          {/* )} */}
           <Text
-            variant={TextVariant.bodySm}
-            as="h6"
+            variant={TextVariant.bodySmBold}
             color={TextColor.textMuted}
-            fontWeight={FontWeight.Bold}
+            textAlign={TextAlign.End}
           >
             {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
           </Text>
         </Box>
-      </Box>
-      <NetworkAccountBalanceHeader
-        networkName={networkName}
-        accountName={fromAccount.name}
-        accountBalance={currentTokenBalance}
-        tokenName={tokenSymbol}
-        accountAddress={userAddress}
-        chainId={fullTxData.chainId}
-      />
-      {warning && (
-        <Box className="token-allowance-container__custom-nonce-warning">
-          <ConfirmPageContainerWarning warning={warning} />
-        </Box>
-      )}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-      >
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          marginTop={6}
-          marginRight={12}
-          marginBottom={8}
-          marginLeft={12}
-          paddingTop={2}
-          paddingRight={4}
-          paddingBottom={2}
-          paddingLeft={2}
-          borderColor={Color.borderMuted}
-          borderStyle={BorderStyle.solid}
-          borderWidth={1}
-          className="token-allowance-container__icon-display-content"
-        >
-          <UrlIcon
-            className="token-allowance-container__icon-display-content__siteimage-identicon"
-            fallbackClassName="token-allowance-container__icon-display-content__siteimage-identicon"
-            name={origin}
-            url={siteImage}
-          />
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            color={TextColor.textAlternative}
-            marginLeft={1}
-          >
-            {origin}
-          </Text>
-        </Box>
-      </Box>
-      <Box marginLeft={4} marginRight={4}>
-        <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
-          {isFirstPage ? (
-            t('spendingCapRequest', [renderContractTokenValues])
-          ) : (
-            <Box>
-              {customSpendingCap === '0' || isEmpty
-                ? t('revokeSpendingCap', [renderContractTokenValues])
-                : t('spendingCapRequest', [renderContractTokenValues])}
-            </Box>
-          )}
-        </Text>
-      </Box>
-      <Box
-        marginTop={1}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-      >
-        <Button
-          type="link"
-          onClick={() => setShowContractDetails(true)}
-          className="token-allowance-container__verify-link"
-        >
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            color={Color.primaryDefault}
-          >
-            {t('verifyContractDetails')}
-          </Text>
-        </Button>
-      </Box>
-      <Box margin={[4, 4, 3, 4]}>
-        {isFirstPage ? (
-          <CustomSpendingCap
-            txParams={txData?.txParams}
-            tokenName={tokenSymbol}
-            currentTokenBalance={currentTokenBalance}
-            dappProposedValue={dappProposedTokenAmount}
-            siteOrigin={origin}
-            passTheErrorText={(value) => setErrorText(value)}
-            decimals={decimals}
-            setInputChangeInProgress={setInputChangeInProgress}
-            customSpendingCap={customSpendingCap}
-            setCustomSpendingCap={setCustomSpendingCap}
-          />
-        ) : (
-          <ReviewSpendingCap
-            tokenName={tokenSymbol}
-            currentTokenBalance={currentTokenBalance}
-            tokenValue={
-              isNaN(parseFloat(customSpendingCap))
-                ? dappProposedTokenAmount
-                : replaceCommaToDot(customSpendingCap)
-            }
-            onEdit={() => handleBackClick()}
-          />
-        )}
-      </Box>
-      {!isFirstPage && balanceError && (
-        <Dialog type="error" className="send__error-dialog">
-          {t('insufficientFundsForGas')}
-        </Dialog>
-      )}
-      {!isFirstPage && (
-        <Box className="token-allowance-container__card-wrapper">
-          {renderSimulationFailureWarning && (
-            <Box
-              paddingTop={0}
-              paddingRight={4}
-              paddingBottom={4}
-              paddingLeft={4}
-            >
-              <SimulationErrorMessage
-                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-                setUserAcknowledgedGasMissing={() =>
-                  setUserAcknowledgedGasMissing(true)
-                }
-              />
-            </Box>
-          )}
-          <ApproveContentCard
-            symbol={<Icon name={IconName.Tag} />}
-            title={t('transactionFee')}
-            showEdit
-            showAdvanceGasFeeOptions
-            onEditClick={showCustomizeGasModal}
-            renderTransactionDetailsContent
-            noBorder={useNonceField || !showFullTxDetails}
-            supportsEIP1559={supportsEIP1559}
-            isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
-            ethTransactionTotal={ethTransactionTotal}
-            nativeCurrency={nativeCurrency}
-            fullTxData={fullTxData}
-            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-            renderSimulationFailureWarning={renderSimulationFailureWarning}
-            hexTransactionTotal={hexTransactionTotal}
-            hexMinimumTransactionFee={hexMinimumTransactionFee}
-            fiatTransactionTotal={fiatTransactionTotal}
-            currentCurrency={currentCurrency}
-            useCurrencyRateCheck={useCurrencyRateCheck}
-          />
-        </Box>
-      )}
-      {useNonceField && (
-        <Box marginTop={4} marginRight={4} marginLeft={4}>
-          <CustomNonce
-            nextNonce={nextNonce}
-            customNonceValue={customNonceValue}
-            showCustomizeNonceModal={() =>
-              handleCustomizeNonceModal(
-                useNonceField,
-                nextNonce,
-                customNonceValue,
-                handleUpdateCustomNonce,
-                handleNextNonce,
-              )
-            }
-          />
-        </Box>
-      )}
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.center}
-      >
-        <Button
-          type="link"
-          onClick={() => setShowFullTxDetails(!showFullTxDetails)}
-          className="token-allowance-container__view-details"
-        >
-          <Text
-            variant={TextVariant.bodySm}
-            as="h6"
-            color={TextColor.primaryDefault}
-            marginRight={1}
-          >
-            {t('viewDetails')}
-          </Text>
-          {showFullTxDetails ? (
-            <i className="fa fa-sm fa-angle-up" />
-          ) : (
-            <i className="fa fa-sm fa-angle-down" />
-          )}
-        </Button>
-      </Box>
-      {showFullTxDetails ? (
+        <NetworkAccountBalanceHeader
+          networkName={networkName}
+          accountName={fromAccount.name}
+          accountBalance={currentTokenBalance}
+          tokenName={tokenSymbol}
+          accountAddress={userAddress}
+          chainId={fullTxData.chainId}
+        />
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          className="token-allowance-container__full-tx-content"
+          gap={4}
+          paddingTop={4}
+          paddingLeft={4}
+          paddingRight={4}
+          marginBottom={4}
         >
-          <Box className="token-allowance-container__data">
-            <ApproveContentCard
-              symbol={<i className="fa fa-file" />}
-              title={t('data')}
-              renderDataContent
-              noBorder
-              supportsEIP1559={supportsEIP1559}
-              isSetApproveForAll={isSetApproveForAll}
-              fullTxData={fullTxData}
-              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-              renderSimulationFailureWarning={renderSimulationFailureWarning}
-              isApprovalOrRejection={isApprovalOrRejection}
-              data={customTxParamsData || data}
-              useCurrencyRateCheck={useCurrencyRateCheck}
-              hexMinimumTransactionFee={hexMinimumTransactionFee}
-            />
-          </Box>
-        </Box>
-      ) : null}
-      {!isFirstPage && fromAddressIsLedger && (
-        <Box paddingLeft={2} paddingRight={2}>
-          <LedgerInstructionField showDataInstruction />
-        </Box>
-      )}
-      <PageContainerFooter
-        cancelText={t('reject')}
-        submitText={isFirstPage ? t('next') : t('approveButtonText')}
-        onCancel={() => handleReject()}
-        onSubmit={() => (isFirstPage ? handleNextClick() : handleApprove())}
-        disabled={
-          inputChangeInProgress || disableNextButton || disableApproveButton
-        }
-      >
-        {unapprovedTxCount > 1 && (
+          {warning && (
+            <BannerAlert severity={Severity.Warning} description={warning} />
+          )}
+          <TagUrl
+            src={siteImage}
+            label={origin}
+            marginLeft="auto"
+            marginRight="auto"
+            className="token-allowance-container__tag-url"
+          />
+          <Text variant={TextVariant.headingMd} align={TextAlign.Center}>
+            {isFirstPage ? (
+              t('spendingCapRequest', [renderContractTokenValues])
+            ) : (
+              <>
+                {customSpendingCap === '0' || isEmpty
+                  ? t('revokeSpendingCap', [renderContractTokenValues])
+                  : t('spendingCapRequest', [renderContractTokenValues])}
+              </>
+            )}
+          </Text>
           <Button
-            type="link"
+            variant={BUTTON_VARIANT.LINK}
+            onClick={() => setShowContractDetails(true)}
+            className="token-allowance-container__verify-link"
+          >
+            {t('verifyContractDetails')}
+          </Button>
+          {isFirstPage ? (
+            <CustomSpendingCap
+              txParams={txData?.txParams}
+              tokenName={tokenSymbol}
+              currentTokenBalance={currentTokenBalance}
+              dappProposedValue={dappProposedTokenAmount}
+              siteOrigin={origin}
+              passTheErrorText={(value) => setErrorText(value)}
+              decimals={decimals}
+              setInputChangeInProgress={setInputChangeInProgress}
+              customSpendingCap={customSpendingCap}
+              setCustomSpendingCap={setCustomSpendingCap}
+            />
+          ) : (
+            <ReviewSpendingCap
+              tokenName={tokenSymbol}
+              currentTokenBalance={currentTokenBalance}
+              tokenValue={
+                isNaN(parseFloat(customSpendingCap))
+                  ? dappProposedTokenAmount
+                  : replaceCommaToDot(customSpendingCap)
+              }
+              onEdit={() => handleBackClick()}
+            />
+          )}
+          {/* {!isFirstPage && balanceError && ( */}
+          <BannerAlert severity={Severity.Danger}>
+            {t('insufficientFundsForGas')}
+          </BannerAlert>
+          {/* )} */}
+
+          {!isFirstPage && (
+            <>
+              {renderSimulationFailureWarning && (
+                <SimulationErrorMessage
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                  setUserAcknowledgedGasMissing={() =>
+                    setUserAcknowledgedGasMissing(true)
+                  }
+                />
+              )}
+              <ApproveContentCard
+                symbol={<Icon name={IconName.Tag} />}
+                title={t('transactionFee')}
+                showEdit
+                showAdvanceGasFeeOptions
+                onEditClick={showCustomizeGasModal}
+                renderTransactionDetailsContent
+                noBorder={useNonceField || !showFullTxDetails}
+                supportsEIP1559={supportsEIP1559}
+                isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
+                ethTransactionTotal={ethTransactionTotal}
+                nativeCurrency={nativeCurrency}
+                fullTxData={fullTxData}
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                renderSimulationFailureWarning={renderSimulationFailureWarning}
+                hexTransactionTotal={hexTransactionTotal}
+                hexMinimumTransactionFee={hexMinimumTransactionFee}
+                fiatTransactionTotal={fiatTransactionTotal}
+                currentCurrency={currentCurrency}
+                useCurrencyRateCheck={useCurrencyRateCheck}
+              />
+            </>
+          )}
+
+          {useNonceField && (
+            <CustomNonce
+              nextNonce={nextNonce}
+              customNonceValue={customNonceValue}
+              showCustomizeNonceModal={() =>
+                handleCustomizeNonceModal(
+                  useNonceField,
+                  nextNonce,
+                  customNonceValue,
+                  handleUpdateCustomNonce,
+                  handleNextNonce,
+                )
+              }
+            />
+          )}
+          <Button
+            variant={BUTTON_VARIANT.LINK}
+            onClick={() => setShowFullTxDetails(!showFullTxDetails)}
+            endIconName={
+              showFullTxDetails ? IconName.Arrow2Up : IconName.Arrow2Down
+            }
+          >
+            {t('viewDetails')}
+          </Button>
+          {showFullTxDetails ? (
+            <Box width={BlockSize.Full}>
+              <ApproveContentCard
+                symbol={<Icon name={IconName.File} />}
+                title={t('data')}
+                renderDataContent
+                noBorder
+                supportsEIP1559={supportsEIP1559}
+                isSetApproveForAll={isSetApproveForAll}
+                fullTxData={fullTxData}
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                renderSimulationFailureWarning={renderSimulationFailureWarning}
+                isApprovalOrRejection={isApprovalOrRejection}
+                data={customTxParamsData || data}
+                useCurrencyRateCheck={useCurrencyRateCheck}
+                hexMinimumTransactionFee={hexMinimumTransactionFee}
+              />
+            </Box>
+          ) : null}
+          {/* {!isFirstPage && fromAddressIsLedger && ( */}
+          <LedgerInstructionField
+            showDataInstruction
+            paddingTop={0}
+            paddingBottom={0}
+            width={BlockSize.Full}
+          />
+          {/* )} */}
+          <Box display={Display.Flex} gap={4} paddingTop={4} paddingBottom={4}>
+            <Button
+              size={BUTTON_SIZES.LG}
+              block
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => handleReject()}
+            >
+              {t('reject')}
+            </Button>
+            <Button
+              size={BUTTON_SIZES.LG}
+              block
+              onClick={() =>
+                isFirstPage ? handleNextClick() : handleApprove()
+              }
+              disabled={
+                inputChangeInProgress ||
+                disableNextButton ||
+                disableApproveButton
+              }
+            >
+              {isFirstPage ? t('next') : t('approveButtonText')}
+            </Button>
+          </Box>
+          {/* {unapprovedTxCount > 1 && ( */}
+          <Button
+            variant={BUTTON_VARIANT.LINK}
             onClick={(e) => {
               e.preventDefault();
               handleCancelAll();
@@ -605,18 +565,19 @@ export default function TokenAllowance({
           >
             {t('rejectTxsN', [unapprovedTxCount])}
           </Button>
+          {/* )} */}
+        </Box>
+        {showContractDetails && (
+          <ContractDetailsModal
+            tokenName={tokenSymbol}
+            onClose={() => setShowContractDetails(false)}
+            tokenAddress={tokenAddress}
+            toAddress={toAddress}
+            chainId={fullTxData.chainId}
+            rpcPrefs={rpcPrefs}
+          />
         )}
-      </PageContainerFooter>
-      {showContractDetails && (
-        <ContractDetailsModal
-          tokenName={tokenSymbol}
-          onClose={() => setShowContractDetails(false)}
-          tokenAddress={tokenAddress}
-          toAddress={toAddress}
-          chainId={fullTxData.chainId}
-          rpcPrefs={rpcPrefs}
-        />
-      )}
+      </Box>
     </Box>
   );
 }

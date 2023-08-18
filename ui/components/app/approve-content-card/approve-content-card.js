@@ -81,22 +81,14 @@ export default function ApproveContentCard({
                 marginLeft={4}
                 className="approve-content-card-container__card-header__title"
               >
-                <Text variant={TextVariant.bodySmBold} as="h6">
-                  {title}
-                </Text>
+                <Text variant={TextVariant.bodySmBold}>{title}</Text>
               </Box>
             </>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
             <Box width={BlockSize.OneSixth}>
               <Button type="link" onClick={() => onEditClick()}>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.primaryDefault}
-                  as="h6"
-                >
-                  {t('edit')}
-                </Text>
+                <Text color={TextColor.primaryDefault}>{t('edit')}</Text>
               </Button>
             </Box>
           )}
@@ -164,15 +156,9 @@ export default function ApproveContentCard({
                 </Box>
               ) : (
                 <>
-                  <Box>
-                    <Text
-                      variant={TextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                      as="h6"
-                    >
-                      {t('feeAssociatedRequest')}
-                    </Text>
-                  </Box>
+                  <Text color={TextColor.textAlternative}>
+                    {t('feeAssociatedRequest')}
+                  </Text>
                   <Box
                     display={Display.Flex}
                     flexDirection={FlexDirection.Column}
@@ -180,30 +166,22 @@ export default function ApproveContentCard({
                     textAlign={TextAlign.Right}
                   >
                     {useCurrencyRateCheck && (
-                      <Box>
-                        <Text
-                          variant={TextVariant.headingSm}
-                          fontWeight={FontWeight.Bold}
-                          color={TextColor.textDefault}
-                          as="h4"
-                        >
-                          {formatCurrency(
-                            fiatTransactionTotal,
-                            currentCurrency,
-                          )}
-                        </Text>
-                      </Box>
-                    )}
-                    <Box>
                       <Text
-                        variant={TextVariant.bodySm}
-                        fontWeight={FontWeight.Normal}
-                        color={TextColor.textMuted}
-                        as="h6"
+                        variant={TextVariant.headingSm}
+                        fontWeight={FontWeight.Bold}
+                        color={TextColor.textDefault}
+                        as="h4"
                       >
-                        {`${ethTransactionTotal} ${nativeCurrency}`}
+                        {formatCurrency(fiatTransactionTotal, currentCurrency)}
                       </Text>
-                    </Box>
+                    )}
+
+                    <Text
+                      fontWeight={FontWeight.Normal}
+                      color={TextColor.textMuted}
+                    >
+                      {`${ethTransactionTotal} ${nativeCurrency}`}
+                    </Text>
                   </Box>
                 </>
               )}
@@ -212,11 +190,7 @@ export default function ApproveContentCard({
         {renderDataContent && (
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <Box>
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                as="h6"
-              >
+              <Text color={TextColor.textAlternative}>
                 {isSetApproveForAll
                   ? t('functionSetApprovalForAll')
                   : t('functionApprove')}
@@ -224,26 +198,13 @@ export default function ApproveContentCard({
             </Box>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
               <Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                  as="h6"
-                >
+                <Text color={TextColor.textAlternative}>
                   {`${t('parameters')}: ${isApprovalOrRejection}`}
                 </Text>
               </Box>
             ) : null}
-            <Box
-              marginRight={4}
-              className="approve-content-card-container__data__data-block"
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                as="h6"
-              >
-                {data}
-              </Text>
+            <Box className="approve-content-card-container__data__data-block">
+              <Text color={TextColor.textAlternative}>{data}</Text>
             </Box>
           </Box>
         )}

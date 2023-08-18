@@ -72,6 +72,9 @@ export default {
     txData: {
       control: 'object',
     },
+    warning: {
+      control: 'text',
+    },
   },
   args: {
     origin: 'https://metamask.github.io',
@@ -192,6 +195,7 @@ export default {
         maxPriorityFeePerGas: '0x4a817c800',
       },
     },
+    warning: 'warning',
   },
 };
 

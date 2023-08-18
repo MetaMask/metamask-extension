@@ -22,10 +22,12 @@ import {
 import { BannerAlert, ButtonLink, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  SEVERITIES,
+  Severity,
   TextAlign,
   TextColor,
+  Display,
 } from '../../../helpers/constants/design-system';
+import { Box } from '../../component-library';
 import {
   getPlatform,
   getEnvironmentType,
@@ -47,7 +49,10 @@ const renderInstructionStep = (
   );
 };
 
-export default function LedgerInstructionField({ showDataInstruction }) {
+export default function LedgerInstructionField({
+  showDataInstruction,
+  ...props
+}) {
   const t = useI18nContext();
   const dispatch = useDispatch();
 
@@ -127,82 +132,80 @@ export default function LedgerInstructionField({ showDataInstruction }) {
   const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
   return (
-    <div>
-      <div className="confirm-detail-row">
-        <BannerAlert severity={SEVERITIES.INFO}>
-          <div className="ledger-live-dialog">
-            {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepOne')}`,
-              !isFirefox && usingLedgerLive,
-            )}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepTwo')}`,
-              !isFirefox && usingLedgerLive,
-            )}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepThree')}`,
-            )}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepFour')}`,
-              showDataInstruction,
-            )}
-            {renderInstructionStep(
-              <span>
-                <ButtonLink
-                  textAlign={TextAlign.Left}
-                  onClick={async () => {
-                    if (environmentTypeIsFullScreen) {
-                      window.location.reload();
-                    } else {
-                      global.platform.openExtensionInBrowser(null, null, true);
-                    }
-                  }}
-                >
-                  {t('ledgerConnectionInstructionCloseOtherApps')}
-                </ButtonLink>
-              </span>,
-              transportStatus === HardwareTransportStates.deviceOpenFailure,
-            )}
-            {renderInstructionStep(
-              <span>
-                <ButtonLink
-                  textAlign={TextAlign.Left}
-                  onClick={async () => {
-                    if (environmentTypeIsFullScreen) {
-                      const connectedDevices =
-                        await window.navigator.hid.requestDevice({
-                          filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                        });
-                      const webHidIsConnected = connectedDevices.some(
-                        (device) =>
-                          device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-                      );
-                      dispatch(
-                        setLedgerWebHidConnectedStatus({
-                          webHidConnectedStatus: webHidIsConnected
-                            ? WebHIDConnectedStatuses.connected
-                            : WebHIDConnectedStatuses.notConnected,
-                        }),
-                      );
-                    } else {
-                      global.platform.openExtensionInBrowser(null, null, true);
-                    }
-                  }}
-                >
-                  {environmentTypeIsFullScreen
-                    ? t('clickToConnectLedgerViaWebHID')
-                    : t('openFullScreenForLedgerWebHid')}
-                </ButtonLink>
-              </span>,
-              usingWebHID &&
-                webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
-              TextColor.warningDefault,
-            )}
-          </div>
-        </BannerAlert>
-      </div>
-    </div>
+    <Box display={Display.Flex} paddingTop={4} paddingBottom={4} {...props}>
+      <BannerAlert severity={Severity.Info}>
+        <div className="ledger-live-dialog">
+          {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
+          {renderInstructionStep(
+            `• ${t('ledgerConnectionInstructionStepOne')}`,
+            !isFirefox && usingLedgerLive,
+          )}
+          {renderInstructionStep(
+            `• ${t('ledgerConnectionInstructionStepTwo')}`,
+            !isFirefox && usingLedgerLive,
+          )}
+          {renderInstructionStep(
+            `• ${t('ledgerConnectionInstructionStepThree')}`,
+          )}
+          {renderInstructionStep(
+            `• ${t('ledgerConnectionInstructionStepFour')}`,
+            showDataInstruction,
+          )}
+          {renderInstructionStep(
+            <span>
+              <ButtonLink
+                textAlign={TextAlign.Left}
+                onClick={async () => {
+                  if (environmentTypeIsFullScreen) {
+                    window.location.reload();
+                  } else {
+                    global.platform.openExtensionInBrowser(null, null, true);
+                  }
+                }}
+              >
+                {t('ledgerConnectionInstructionCloseOtherApps')}
+              </ButtonLink>
+            </span>,
+            transportStatus === HardwareTransportStates.deviceOpenFailure,
+          )}
+          {renderInstructionStep(
+            <span>
+              <ButtonLink
+                textAlign={TextAlign.Left}
+                onClick={async () => {
+                  if (environmentTypeIsFullScreen) {
+                    const connectedDevices =
+                      await window.navigator.hid.requestDevice({
+                        filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
+                      });
+                    const webHidIsConnected = connectedDevices.some(
+                      (device) =>
+                        device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+                    );
+                    dispatch(
+                      setLedgerWebHidConnectedStatus({
+                        webHidConnectedStatus: webHidIsConnected
+                          ? WebHIDConnectedStatuses.connected
+                          : WebHIDConnectedStatuses.notConnected,
+                      }),
+                    );
+                  } else {
+                    global.platform.openExtensionInBrowser(null, null, true);
+                  }
+                }}
+              >
+                {environmentTypeIsFullScreen
+                  ? t('clickToConnectLedgerViaWebHID')
+                  : t('openFullScreenForLedgerWebHid')}
+              </ButtonLink>
+            </span>,
+            usingWebHID &&
+              webHidConnectedStatus === WebHIDConnectedStatuses.notConnected,
+            TextColor.warningDefault,
+          )}
+        </div>
+      </BannerAlert>
+    </Box>
   );
 }
 
