@@ -36,14 +36,6 @@ import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
 import metaRPCClientFactory from './lib/metaRPCClientFactory';
-import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
-
-// Setup global hook for improved Sentry state snapshots during initialization
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
-global.stateHooks.getMostRecentPersistedState = () =>
-  localStore.mostRecentRetrievedState;
 
 const container = document.getElementById('app-content');
 
