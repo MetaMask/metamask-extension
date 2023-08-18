@@ -529,7 +529,7 @@ export default function TokenAllowance({
               width={BlockSize.Full}
             />
           )}
-          <Box display={Display.Flex} gap={4} paddingTop={4} paddingBottom={4}>
+          <Box display={Display.Flex} gap={4} paddingTop={2}>
             <Button
               size={BUTTON_SIZES.LG}
               block
@@ -560,6 +560,7 @@ export default function TokenAllowance({
                 e.preventDefault();
                 handleCancelAll();
               }}
+              marginTop={2}
             >
               {t('rejectTxsN', [unapprovedTxCount])}
             </Button>
