@@ -124,6 +124,18 @@ describe('Sentry errors', function () {
       });
   }
 
+  async function mockSentryInvariantMigrationError(mockServer) {
+    return await mockServer
+      .forPost('https://sentry.io/api/0000000/envelope/')
+      .withBodyIncluding('typeof state.PreferencesController is number')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {},
+        };
+      });
+  }
+
   async function mockSentryTestError(mockServer) {
     return await mockServer
       .forPost('https://sentry.io/api/0000000/envelope/')
@@ -303,6 +315,54 @@ describe('Sentry errors', function () {
             data: transformBackgroundState(appState.persistedState),
             snapshot: 'errors-before-init-opt-in-background-state',
           });
+        },
+      );
+    });
+
+    it('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+      await withFixtures(
+        {
+          fixtures: {
+            ...new FixtureBuilder()
+              .withMetaMetricsController({
+                metaMetricsId: 'fake-metrics-id',
+                participateInMetaMetrics: true,
+              })
+              .withBadPreferencesControllerState()
+              .build(),
+          },
+          ganacheOptions,
+          title: this.test.title,
+          failOnConsoleError: false,
+          testSpecificMock: mockSentryInvariantMigrationError,
+        },
+        async ({ driver, mockedEndpoint }) => {
+          await driver.navigate();
+
+          // Wait for Sentry request
+          await driver.wait(async () => {
+            const isPending = await mockedEndpoint.isPending();
+            return isPending === false;
+          }, 3000);
+
+          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
+          const mockTextBody = mockedRequest.body.text.split('\n');
+          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
+          const migrationLogBreadcrumbs = breadcrumbs.filter((breadcrumb) => {
+            return breadcrumb.message?.match(/Running migration \d+/u);
+          });
+          const migrationLogMessages = migrationLogBreadcrumbs.map(
+            (breadcrumb) =>
+              breadcrumb.message.match(/(Running migration \d+)/u)[1],
+          );
+          const firstMigrationLog = migrationLogMessages[0];
+          const lastMigrationLog =
+            migrationLogMessages[migrationLogMessages.length - 1];
+
+          assert.equal(migrationLogMessages.length, 8);
+          assert.equal(firstMigrationLog, 'Running migration 75');
+          assert.equal(lastMigrationLog, 'Running migration 82');
         },
       );
     });
