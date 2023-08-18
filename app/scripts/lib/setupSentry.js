@@ -142,7 +142,7 @@ function getMetaMetricsEnabledFromAppState(appState) {
   } else if (appState.state) {
     // UI
     if (appState.state.metamask) {
-      return Boolean(appState.state.metamask?.participateInMetaMetrics);
+      return Boolean(appState.state.metamask.participateInMetaMetrics);
     }
     // background
     return Boolean(
@@ -183,7 +183,7 @@ function getOnboardingCompleteFromAppState(appState) {
   } else if (appState.state) {
     // UI
     if (appState.state.metamask) {
-      return Boolean(appState.state.metamask?.completedOnboarding);
+      return Boolean(appState.state.metamask.completedOnboarding);
     }
     // background
     return Boolean(appState.state.OnboardingController?.completedOnboarding);
