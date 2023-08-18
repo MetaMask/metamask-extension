@@ -63,13 +63,13 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
 
   const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
 
-  const details = Boolean(features?.length) && (
+  const details = features?.length ? (
     <Text as="ul">
       {features.map((feature, i) => (
         <li key={`blockaid-detail-${i}`}>• {feature}</li>
       ))}
     </Text>
-  );
+  ) : null;
 
   const isFailedResultType = resultType === BlockaidResultType.Failed;
 
