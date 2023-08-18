@@ -257,13 +257,18 @@ describe('MetaMask', function () {
       });
       await driver.delay(regularDelayMs);
 
-      await driver.fill('#custom-address', tokenAddress);
+      await driver.fill(
+        '[data-testid="import-tokens-modal-custom-address"]',
+        tokenAddress,
+      );
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Add custom token', tag: 'button' });
+      await driver.clickElement({ text: 'Next', tag: 'button' });
       await driver.delay(regularDelayMs);
 
-      await driver.clickElement({ text: 'Import tokens', tag: 'button' });
+      await driver.clickElement(
+        '[data-testid="import-tokens-modal-import-button"]',
+      );
       await driver.delay(regularDelayMs);
     });
 

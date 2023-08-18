@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
   },
-  "addCustomToken": {
-    "message": "Tambahkan token kustom"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Tindakan ini akan membantu jaringan ini agar dapat digunakan dengan MetaMask."
   },
@@ -2979,9 +2976,6 @@
   },
   "searchResults": {
     "message": "Cari hasil"
-  },
-  "searchTokens": {
-    "message": "Cari token"
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
