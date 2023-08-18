@@ -19,7 +19,9 @@ import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   SEND_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
@@ -27,25 +29,29 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
   getShouldShowFiat,
-  getCurrentKeyring,
-  getSwapsDefaultToken,
   getIsSwapsChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  getSwapsDefaultToken,
+  getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
-import IconButton from '../../ui/icon-button';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
+///: END:ONLY_INCLUDE_IN
+import IconButton from '../../ui/icon-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -68,14 +74,14 @@ const EthOverview = ({ className, showAddress }) => {
   const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
-  ///: END:ONLY_INCLUDE_IN
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+  ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const balance = useSelector(getSelectedAccountCachedBalance);
-  const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const isSwapsChain = useSelector(getIsSwapsChain);
   const chainId = useSelector(getCurrentChainId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
