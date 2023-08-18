@@ -166,6 +166,32 @@ function getMetaMetricsEnabledFromPersistedState(persistedState) {
   );
 }
 
+/**
+ * Returns whether onboarding has completed, given the application state.
+ *
+ * @param {unknown} appState - Application state
+ * @returns `true` if MetaMask's state has been initialized, and MetaMetrics
+ * is enabled, `false` otherwise.
+ */
+function getOnboardingCompleteFromAppState(appState) {
+  // during initialization after loading persisted state
+  if (appState.persistedState) {
+    return Boolean(
+      appState.persistedState.data.OnboardingController?.completedOnboarding,
+    );
+    // After initialization
+  } else if (appState.state) {
+    // UI
+    if (appState.state.metamask) {
+      return Boolean(appState.state.metamask?.completedOnboarding);
+    }
+    // background
+    return Boolean(appState.state.OnboardingController?.completedOnboarding);
+  }
+  // during initialization, before first persisted state is read
+  return false;
+}
+
 export default function setupSentry({ release, getState }) {
   if (!release) {
     throw new Error('Missing release');
@@ -365,7 +391,7 @@ export function beforeBreadcrumb(getState) {
     const appState = getState();
     if (
       !getMetaMetricsEnabledFromAppState(appState) ||
-      !appState?.store?.metamask?.completedOnboarding ||
+      !getOnboardingCompleteFromAppState(appState) ||
       breadcrumb?.category === 'ui.input'
     ) {
       return null;
