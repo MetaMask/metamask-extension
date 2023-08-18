@@ -14,12 +14,6 @@ import { PageContainerFooter } from '../../../ui/page-container';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../helpers/constants/design-system';
 
-import { isSuspiciousResponse } from '../../../../../shared/modules/security-provider.utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import BlockaidBannerAlert from '../../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IN
-import SecurityProviderBannerMessage from '../../security-provider-banner-message/security-provider-banner-message';
-
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 
 export default class ConfirmPageContainerContent extends Component {
@@ -67,7 +61,6 @@ export default class ConfirmPageContainerContent extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     openBuyCryptoInPdapp: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
-    txData: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     noteComponent: PropTypes.node,
     ///: END:ONLY_INCLUDE_IN
@@ -209,7 +202,6 @@ export default class ConfirmPageContainerContent extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
       openBuyCryptoInPdapp,
       ///: END:ONLY_INCLUDE_IN
-      txData,
     } = this.props;
 
     const { t } = this.context;
@@ -226,18 +218,6 @@ export default class ConfirmPageContainerContent extends Component {
         {warning ? <ConfirmPageContainerWarning warning={warning} /> : null}
         {ethGasPriceWarning && (
           <ConfirmPageContainerWarning warning={ethGasPriceWarning} />
-        )}
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-          <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
-          />
-          ///: END:ONLY_INCLUDE_IN
-        }
-        {isSuspiciousResponse(txData?.securityProviderResponse) && (
-          <SecurityProviderBannerMessage
-            securityProviderResponse={txData.securityProviderResponse}
-          />
         )}
         <ConfirmPageContainerSummary
           className={classnames({

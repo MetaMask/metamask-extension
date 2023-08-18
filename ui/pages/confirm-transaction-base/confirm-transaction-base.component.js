@@ -452,6 +452,7 @@ export default class ConfirmTransactionBase extends Component {
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
+          txData={txData}
           setUserAcknowledgedGasMissing={() =>
             this.setUserAcknowledgedGasMissing()
           }
