@@ -21,7 +21,6 @@ import {
 import { I18nContext } from '../../contexts/i18n';
 import ContractTokenValues from '../../components/ui/contract-token-values/contract-token-values';
 import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-spending-cap';
-import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
   getNetworkIdentifier,
@@ -318,12 +317,10 @@ export default function TokenAllowance({
   );
 
   return (
-    <Box
-      backgroundColor={[null, BackgroundColor.backgroundAlternative]}
-      padding={[null, 8, 12]}
-    >
+    <Box width={BlockSize.Full} padding={[null, 8, 12]}>
       <Box
         className="token-allowance-container"
+        width={BlockSize.Full}
         paddingTop={4}
         paddingBottom={4}
         marginLeft="auto"
@@ -353,19 +350,20 @@ export default function TokenAllowance({
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.spaceBetween}
         >
-          {/* {!isFirstPage && ( */}
-          <Button
-            variant={BUTTON_VARIANT.LINK}
-            onClick={() => handleBackClick()}
-            startIconName={IconName.ArrowLeft}
-          >
-            {t('back')}
-          </Button>
-          {/* )} */}
+          {!isFirstPage && (
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              onClick={() => handleBackClick()}
+              startIconName={IconName.ArrowLeft}
+            >
+              {t('back')}
+            </Button>
+          )}
           <Text
             variant={TextVariant.bodySmBold}
             color={TextColor.textMuted}
             textAlign={TextAlign.End}
+            marginLeft="auto"
           >
             {isFirstPage ? 1 : 2} {t('ofTextNofM')} 2
           </Text>
@@ -440,11 +438,11 @@ export default function TokenAllowance({
               onEdit={() => handleBackClick()}
             />
           )}
-          {/* {!isFirstPage && balanceError && ( */}
-          <BannerAlert severity={Severity.Danger}>
-            {t('insufficientFundsForGas')}
-          </BannerAlert>
-          {/* )} */}
+          {!isFirstPage && balanceError && (
+            <BannerAlert severity={Severity.Danger}>
+              {t('insufficientFundsForGas')}
+            </BannerAlert>
+          )}
 
           {!isFirstPage && (
             <>
@@ -499,7 +497,7 @@ export default function TokenAllowance({
             variant={BUTTON_VARIANT.LINK}
             onClick={() => setShowFullTxDetails(!showFullTxDetails)}
             endIconName={
-              showFullTxDetails ? IconName.Arrow2Up : IconName.Arrow2Down
+              showFullTxDetails ? IconName.ArrowUp : IconName.ArrowDown
             }
           >
             {t('viewDetails')}
@@ -523,14 +521,14 @@ export default function TokenAllowance({
               />
             </Box>
           ) : null}
-          {/* {!isFirstPage && fromAddressIsLedger && ( */}
-          <LedgerInstructionField
-            showDataInstruction
-            paddingTop={0}
-            paddingBottom={0}
-            width={BlockSize.Full}
-          />
-          {/* )} */}
+          {!isFirstPage && fromAddressIsLedger && (
+            <LedgerInstructionField
+              showDataInstruction
+              paddingTop={0}
+              paddingBottom={0}
+              width={BlockSize.Full}
+            />
+          )}
           <Box display={Display.Flex} gap={4} paddingTop={4} paddingBottom={4}>
             <Button
               size={BUTTON_SIZES.LG}
@@ -555,17 +553,17 @@ export default function TokenAllowance({
               {isFirstPage ? t('next') : t('approveButtonText')}
             </Button>
           </Box>
-          {/* {unapprovedTxCount > 1 && ( */}
-          <Button
-            variant={BUTTON_VARIANT.LINK}
-            onClick={(e) => {
-              e.preventDefault();
-              handleCancelAll();
-            }}
-          >
-            {t('rejectTxsN', [unapprovedTxCount])}
-          </Button>
-          {/* )} */}
+          {unapprovedTxCount > 1 && (
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              onClick={(e) => {
+                e.preventDefault();
+                handleCancelAll();
+              }}
+            >
+              {t('rejectTxsN', [unapprovedTxCount])}
+            </Button>
+          )}
         </Box>
         {showContractDetails && (
           <ContractDetailsModal

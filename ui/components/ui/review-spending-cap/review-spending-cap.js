@@ -16,6 +16,7 @@ import {
   Display,
   FlexDirection,
   TextVariant,
+  FontWeight,
   TextAlign,
   Size,
   BackgroundColor,
@@ -44,26 +45,23 @@ export default function ReviewSpendingCap({
       paddingRight={4}
       paddingLeft={4}
       display={Display.Flex}
-      alignItems={AlignItems.flexStart}
       flexDirection={FlexDirection.Column}
+      alignItems={AlignItems.flexStart}
       backgroundColor={BackgroundColor.backgroundAlternative}
       gap={1}
     >
       <Box
-        flexDirection={FlexDirection.Row}
         display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         className="review-spending-cap__heading"
       >
         <Box
+          display={Display.Flex}
           flexDirection={FlexDirection.Row}
           className="review-spending-cap__heading-title"
         >
-          <Text
-            variant={TextVariant.bodySmBold}
-            as="h6"
-            display={Display.InlineBlock}
-          >
+          <Text fontWeight={FontWeight.Bold} display={Display.InlineBlock}>
             {t('dappRequestedSpendingCap')}
           </Text>
           <Box marginLeft={2} display={Display.InlineBlock}>
@@ -72,8 +70,7 @@ export default function ReviewSpendingCap({
               position="top"
               html={
                 <Text
-                  variant={TextVariant.bodySmBold}
-                  as="h6"
+                  fontWeight={FontWeight.Bold}
                   color={TextColor.textAlternative}
                   className="review-spending-cap__heading-title__tooltip"
                 >
@@ -81,8 +78,7 @@ export default function ReviewSpendingCap({
                     t('warningTooltipText', [
                       <Text
                         key="tooltip-text"
-                        variant={TextVariant.bodySmBold}
-                        as="h6"
+                        fontWeight={FontWeight.Bold}
                         color={TextColor.errorDefault}
                       >
                         <Icon
@@ -138,8 +134,7 @@ export default function ReviewSpendingCap({
               ? TextColor.errorDefault
               : TextColor.textDefault
           }
-          variant={TextVariant.bodySmBold}
-          as="h6"
+          fontWeight={FontWeight.Bold}
           marginBottom={3}
         >
           {tokenValue} {tokenName}

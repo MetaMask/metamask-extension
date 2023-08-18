@@ -580,11 +580,11 @@ export default class Routes extends Component {
         {isImportTokensModalOpen ? (
           <ImportTokensModal onClose={() => hideImportTokensModal()} />
         ) : null}
-        <Box className="main-container-wrapper">
+        <div className="main-container-wrapper">
           {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
-        </Box>
+        </div>
         {isUnlocked ? <Alerts history={this.props.history} /> : null}
       </div>
     );

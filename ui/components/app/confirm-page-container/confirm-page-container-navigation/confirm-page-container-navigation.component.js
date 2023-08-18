@@ -12,6 +12,19 @@ import {
   SIGNATURE_REQUEST_PATH,
 } from '../../../../helpers/constants/routes';
 import { clearConfirmTransaction } from '../../../../ducks/confirm-transaction/confirm-transaction.duck';
+import {
+  Display,
+  FontWeight,
+  JustifyContent,
+  TextAlign,
+} from '../../../../helpers/constants/design-system';
+import {
+  Box,
+  IconName,
+  ButtonIcon,
+  Text,
+  ButtonIconSize,
+} from '../../../component-library';
 
 const ConfirmPageContainerNavigation = () => {
   const t = useContext(I18nContext);
@@ -62,64 +75,67 @@ const ConfirmPageContainerNavigation = () => {
   };
 
   return (
-    <div
+    <Box
       className="confirm-page-container-navigation"
-      style={{
-        display: showNavigation ? 'flex' : 'none',
-      }}
+      display={showNavigation ? Display.Flex : Display.None}
+      justifyContent={JustifyContent.spaceBetween}
+      paddingRight={4}
+      paddingBottom={2}
+      paddingLeft={4}
     >
-      <div
-        className="confirm-page-container-navigation__container"
+      <Box
+        display={Display.Flex}
         data-testid="navigation-container"
         style={{
           visibility: prevTxId ? 'initial' : 'hidden',
         }}
       >
-        <button
-          className="confirm-page-container-navigation__arrow"
+        <ButtonIcon
+          size={ButtonIconSize.Sm}
+          iconName={IconName.ArrowDoubleLeft}
           data-testid="first-page"
+          ariaLabel="first-page"
           onClick={() => onNextTx(firstTx)}
-        >
-          <i className="fa fa-angle-double-left fa-2x" />
-        </button>
-        <button
-          className="confirm-page-container-navigation__arrow"
+        />
+        <ButtonIcon
+          size={ButtonIconSize.Sm}
+          iconName={IconName.ArrowLeft}
           data-testid="previous-page"
+          ariaLabel="previous page"
           onClick={() => onNextTx(prevTxId)}
-        >
-          <i className="fa fa-angle-left fa-2x" />
-        </button>
-      </div>
-      <div className="confirm-page-container-navigation__textcontainer">
-        <div className="confirm-page-container-navigation__navtext">
+        />
+      </Box>
+      <Box>
+        <Text fontWeight={FontWeight.Bold} textAlign={TextAlign.Center}>
           {positionOfCurrentTx} {t('ofTextNofM')} {totalTx}
-        </div>
-        <div className="confirm-page-container-navigation__longtext">
+        </Text>
+        <Text textAlign={TextAlign.Center}>
           {t('requestsAwaitingAcknowledgement')}
-        </div>
-      </div>
-      <div
-        className="confirm-page-container-navigation__container"
+        </Text>
+      </Box>
+      <Box
+        display={Display.Flex}
+        data-testid="navigation-container"
         style={{
           visibility: nextTxId ? 'initial' : 'hidden',
         }}
       >
-        <button
-          className="confirm-page-container-navigation__arrow"
+        <ButtonIcon
+          size={ButtonIconSize.Sm}
+          iconName={IconName.ArrowRight}
           data-testid="next-page"
+          ariaLabel="next page"
           onClick={() => onNextTx(nextTxId)}
-        >
-          <i className="fa fa-angle-right fa-2x" />
-        </button>
-        <button
-          className="confirm-page-container-navigation__arrow"
+        />
+        <ButtonIcon
+          size={ButtonIconSize.Sm}
+          iconName={IconName.ArrowDoubleRight}
           data-testid="last-page"
+          ariaLabel="last page"
           onClick={() => onNextTx(lastTx)}
-        >
-          <i className="fa fa-angle-double-right fa-2x" />
-        </button>
-      </div>
-    </div>
+        />
+      </Box>
+    </Box>
   );
 };
 

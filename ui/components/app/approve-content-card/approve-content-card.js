@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 
-import Box from '../../ui/box/box';
-import Button from '../../ui/button';
 import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
-import { Text } from '../../component-library';
+import { Text, Box, Button, BUTTON_VARIANT } from '../../component-library';
 import {
   AlignItems,
   BlockSize,
@@ -66,31 +64,25 @@ export default function ApproveContentCard({
     >
       {showHeader && (
         <Box
+          className="approve-content-card-container__card-header"
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexEnd}
-          className="approve-content-card-container__card-header"
         >
           {supportsEIP1559 && title === t('transactionFee') ? null : (
-            <>
-              <Box className="approve-content-card-container__card-header__symbol">
-                {symbol}
-              </Box>
-              <Box
-                marginLeft={4}
-                className="approve-content-card-container__card-header__title"
-              >
-                <Text variant={TextVariant.bodySmBold}>{title}</Text>
-              </Box>
-            </>
+            <Box display={Display.Flex} gap={1}>
+              {symbol}
+              <Text fontWeight={FontWeight.Bold}>{title}</Text>
+            </Box>
           )}
           {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
-            <Box width={BlockSize.OneSixth}>
-              <Button type="link" onClick={() => onEditClick()}>
-                <Text color={TextColor.primaryDefault}>{t('edit')}</Text>
-              </Button>
-            </Box>
+            <Button
+              variant={BUTTON_VARIANT.LINK}
+              onClick={() => onEditClick()}
+              marginLeft="auto"
+            >
+              {t('edit')}
+            </Button>
           )}
           {showEdit &&
             showAdvanceGasFeeOptions &&
@@ -102,11 +94,7 @@ export default function ApproveContentCard({
             )}
         </Box>
       )}
-      <Box
-        marginTop={1}
-        marginBottom={3}
-        className="approve-content-card-container__card-content"
-      >
+      <Box className="approve-content-card-container__card-content">
         {renderTransactionDetailsContent &&
           (!isMultiLayerFeeNetwork &&
           supportsEIP1559 &&
@@ -124,7 +112,7 @@ export default function ApproveContentCard({
                 <Box
                   display={Display.Flex}
                   flexDirection={FlexDirection.Column}
-                  className="approve-content-card-container__transaction-details-extra-content"
+                  width={BlockSize.Full}
                 >
                   <TransactionDetailItem
                     key="approve-content-card-min-tx-fee"
@@ -167,19 +155,14 @@ export default function ApproveContentCard({
                   >
                     {useCurrencyRateCheck && (
                       <Text
-                        variant={TextVariant.headingSm}
-                        fontWeight={FontWeight.Bold}
-                        color={TextColor.textDefault}
                         as="h4"
+                        variant={TextVariant.headingSm}
+                        color={TextColor.textDefault}
                       >
                         {formatCurrency(fiatTransactionTotal, currentCurrency)}
                       </Text>
                     )}
-
-                    <Text
-                      fontWeight={FontWeight.Normal}
-                      color={TextColor.textMuted}
-                    >
+                    <Text color={TextColor.textMuted}>
                       {`${ethTransactionTotal} ${nativeCurrency}`}
                     </Text>
                   </Box>
@@ -188,24 +171,27 @@ export default function ApproveContentCard({
             </Box>
           ))}
         {renderDataContent && (
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            <Box>
-              <Text color={TextColor.textAlternative}>
-                {isSetApproveForAll
-                  ? t('functionSetApprovalForAll')
-                  : t('functionApprove')}
-              </Text>
-            </Box>
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            width={BlockSize.Full}
+          >
+            <Text color={TextColor.textAlternative}>
+              {isSetApproveForAll
+                ? t('functionSetApprovalForAll')
+                : t('functionApprove')}
+            </Text>
             {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
-              <Box>
-                <Text color={TextColor.textAlternative}>
-                  {`${t('parameters')}: ${isApprovalOrRejection}`}
-                </Text>
-              </Box>
+              <Text color={TextColor.textAlternative}>
+                {`${t('parameters')}: ${isApprovalOrRejection}`}
+              </Text>
             ) : null}
-            <Box className="approve-content-card-container__data__data-block">
-              <Text color={TextColor.textAlternative}>{data}</Text>
-            </Box>
+            <Text
+              className="approve-content-card-container__data-block"
+              color={TextColor.textAlternative}
+            >
+              {data}
+            </Text>
           </Box>
         )}
       </Box>
