@@ -10,7 +10,6 @@ import { TagUrl } from './tag-url';
 
 export default {
   title: 'Components/ComponentLibrary/TagUrl',
-
   component: TagUrl,
   parameters: {
     docs: {
@@ -57,6 +56,10 @@ export const ActionButtonLabel: StoryFn<typeof TagUrl> = (args) => (
 
 ActionButtonLabel.args = {
   actionButtonLabel: 'Permissions',
+  actionButtonProps: {
+    externalLink: true,
+    href: 'https://metamask.io',
+  },
 };
 
 export const ShowLockIcon: StoryFn<typeof TagUrl> = (args) => (
@@ -85,8 +88,8 @@ export const Src: StoryFn<typeof TagUrl> = (args) => (
     />
     <TagUrl
       {...args}
-      label="peepeth.com"
-      src="https://peepeth.com/favicon-32x32.png"
+      label="metamask.github.io"
+      src="https://metamask.github.io/test-dapp/metamask-fox.svg"
     />
     <TagUrl
       {...args}
@@ -102,8 +105,8 @@ export const Label: StoryFn<typeof TagUrl> = (args) => (
     <TagUrl {...args} />
     <TagUrl
       {...args}
-      src="https://metamask.io/icons/icon-48x48.png?v=48400a28770e10dd52a8c0e539aeb282"
-      label="metamask.io"
+      label="metamask.github.io"
+      src="https://metamask.github.io/test-dapp/metamask-fox.svg"
     />
     <TagUrl {...args} src="" label="metamask.github.io" />
   </Box>
