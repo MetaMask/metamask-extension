@@ -25,7 +25,6 @@ import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  getAccountType,
   isBalanceCached,
   getShouldShowFiat,
   getCurrentKeyring,
@@ -78,7 +77,6 @@ const EthOverview = ({ className, showAddress }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const chainId = useSelector(getCurrentChainId);
-  const accountType = useSelector(getAccountType);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -256,14 +254,13 @@ const EthOverview = ({ className, showAddress }) => {
               />
             }
             onClick={() => {
-              if (accountType === 'custody') {
-                global.platform.openTab({
-                  url: MMI_SWAPS_URL,
-                });
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              global.platform.openTab({
+                url: MMI_SWAPS_URL,
+              });
+              ///: END:ONLY_INCLUDE_IN
 
-                return;
-              }
-
+              ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
               if (isSwapsChain) {
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
@@ -282,6 +279,7 @@ const EthOverview = ({ className, showAddress }) => {
                   history.push(BUILD_QUOTE_ROUTE);
                 }
               }
+              ///: END:ONLY_INCLUDE_IN
             }}
             label={t('swap')}
             data-testid="token-overview-button-swap"
