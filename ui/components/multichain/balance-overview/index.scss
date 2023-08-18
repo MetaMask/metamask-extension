@@ -1,0 +1,28 @@
+.token-balance-overview {
+  &__primary-balance {
+    @include H2;
+
+    color: var(--color-text-default);
+  }
+
+  &__cached-star {
+    margin-left: 4px;
+  }
+
+  &__cached-balance,
+  &__cached-star {
+    color: var(--color-warning-default);
+  }
+
+  &__cached-secondary-balance {
+    @include Paragraph;
+
+    color: var(--color-warning-muted);
+  }
+
+  &__secondary-balance {
+    @include Paragraph;
+
+    color: var(--color-text-alternative);
+  }
+}

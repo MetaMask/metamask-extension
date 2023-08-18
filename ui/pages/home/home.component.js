@@ -848,7 +848,7 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IN
           }
           <div className="home__main-view">
-            <div className="home__balance-wrapper">
+            {/* <div className="home__balance-wrapper">
               {
                 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                 <EthOverview showAddress />
@@ -863,8 +863,8 @@ export default class Home extends PureComponent {
                 />
                 ///: END:ONLY_INCLUDE_IN
               }
-            </div>
-            <Box style={{ flexGrow: '1' }}>
+            </div> */}
+            <Box style={{ flexGrow: '1' }} paddingTop={4}>
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}
