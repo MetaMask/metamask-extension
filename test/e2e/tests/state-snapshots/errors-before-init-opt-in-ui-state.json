@@ -52,8 +52,7 @@
     },
     "NetworkController": {
       "networkId": "1337",
-      "selectedNetworkClientId": "string",
-      "networksMetadata": "object",
+      "networkStatus": "available",
       "providerConfig": {
         "chainId": "string",
         "nickname": "Localhost 8545",
