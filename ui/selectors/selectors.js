@@ -93,12 +93,13 @@ import {
   hexToDecimal,
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+// eslint-disable-next-line import/order
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 

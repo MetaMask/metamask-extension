@@ -42,10 +42,10 @@ import {
   getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getSelectedAddress,
   getTheme,
-  getUnapprovedTransactions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { GlobalMenu, ProductTour, AccountPicker } from '..';
