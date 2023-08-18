@@ -76,11 +76,11 @@ const EthOverview = ({ className, showAddress }) => {
   const metaMetricsId = useSelector(getMetaMetricsId);
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
+  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
   const balance = useSelector(getSelectedAccountCachedBalance);
-  const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const chainId = useSelector(getCurrentChainId);
 
