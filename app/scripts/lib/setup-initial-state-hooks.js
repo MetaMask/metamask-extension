@@ -28,9 +28,12 @@ const persistedStateMask = {
 };
 
 /**
- * Get a state snapshot to include with Sentry error reports. This uses the
- * persisted state pre-initialization, and the in-memory state post-
- * initialization. In both cases the state is anonymized.
+ * Get a state snapshot for Sentry. This is used to add additional context to
+ * error reports, and it's used when processing errors and breadcrumbs to
+ * determine whether the user has opted into Metametrics.
+ *
+ * This uses the persisted state pre-initialization, and the in-memory state
+ * post-initialization. In both cases the state is anonymized.
  *
  * @returns A Sentry state snapshot.
  */
@@ -47,22 +50,27 @@ globalThis.stateHooks.getSentryState = function () {
     };
   } else if (
     // This is truthy if Sentry has retrieved state at least once already. This
-    // should always be true because Sentry calls `getPersistedState` during
-    // error processing (before this function is called) if `getSentryAppState`
-    // hasn't been set yet.
-    sentryLocalStore.mostRecentRetrievedState
+    // should always be true when getting context for an error report, but can
+    // be unset when Sentry is performing the opt-in check.
+    sentryLocalStore.mostRecentRetrievedState ||
+    // This is only set in the background process.
+    globalThis.stateHooks.getMostRecentPersistedState
   ) {
-    return {
-      ...sentryState,
-      persistedState: maskObject(
-        sentryLocalStore.mostRecentRetrievedState,
-        persistedStateMask,
-      ),
-    };
+    const persistedState =
+      sentryLocalStore.mostRecentRetrievedState ||
+      globalThis.stateHooks.getMostRecentPersistedState();
+    // This can be unset when this method is called in the background for an
+    // opt-in check, but the state hasn't been loaded yet.
+    if (persistedState) {
+      return {
+        ...sentryState,
+        persistedState: maskObject(persistedState, persistedStateMask),
+      };
+    }
   }
   // This branch means that local storage has not yet been read, so we have
   // no choice but to omit the application state.
-  // This should be unreachable, unless an error was encountered during error
-  // processing.
+  // This should be unreachable when getting context for an error report, but
+  // can be false when Sentry is performing the opt-in check.
   return sentryState;
 };
