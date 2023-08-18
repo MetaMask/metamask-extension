@@ -44,7 +44,7 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
-function BlockaidBannerAlert({ securityAlertResponse }) {
+function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
   const t = useContext(I18nContext);
 
   if (!securityAlertResponse) {
@@ -87,6 +87,7 @@ function BlockaidBannerAlert({ securityAlertResponse }) {
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
+      {...props}
     />
   );
 }
