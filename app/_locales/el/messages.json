@@ -186,9 +186,6 @@
   "addCustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addCustomToken": {
-    "message": "Προσθήκη Προσαρμοσμένου Token"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Αυτό θα επιτρέψει σε αυτό το δίκτυο να χρησιμοποιηθεί στο MetaMask."
   },
@@ -2976,9 +2973,6 @@
   },
   "searchAccounts": {
     "message": "Αναζήτηση Λογαριασμών"
-  },
-  "searchTokens": {
-    "message": "Αναζήτηση Tokens"
   },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"

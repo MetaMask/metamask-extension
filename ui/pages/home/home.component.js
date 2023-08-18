@@ -988,20 +988,21 @@ export default class Home extends PureComponent {
                 ///: END:ONLY_INCLUDE_IN
               }
             </Box>
-            <div className="home__support">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+              <div className="home__support">
                 <BetaHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              </div>
+              ///: END:ONLY_INCLUDE_IN
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              <div className="home__support">
                 <FlaskHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
+              </div>
+              ///: END:ONLY_INCLUDE_IN
+            }
           </div>
-
           {this.renderNotifications()}
         </div>
       </div>
