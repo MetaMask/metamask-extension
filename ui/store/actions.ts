@@ -4427,6 +4427,17 @@ export async function getCurrentNetworkEIP1559Compatibility(): Promise<
   return networkEIP1559Compatibility;
 }
 
+/**
+ * Throw an error in the background for testing purposes.
+ *
+ * @param message - The error message.
+ * @deprecated This is only mean to facilitiate E2E testing. We should not use
+ * this for handling errors.
+ */
+export async function throwTestBackgroundError(message: string): Promise<void> {
+  await submitRequestToBackground('throwTestError', [message]);
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Set status of popover warning for the first snap installation.
