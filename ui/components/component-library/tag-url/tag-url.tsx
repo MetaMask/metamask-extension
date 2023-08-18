@@ -31,6 +31,7 @@ export const TagUrl: TagUrlComponent = React.forwardRef(
       actionButtonProps,
       src,
       showLockIcon,
+      children,
       avatarFaviconProps,
       lockIconProps,
       className = '',
@@ -53,7 +54,9 @@ export const TagUrl: TagUrlComponent = React.forwardRef(
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        <AvatarFavicon src={src} name={label} {...avatarFaviconProps} />
+        <AvatarFavicon src={src} name={label} {...avatarFaviconProps}>
+          {children}
+        </AvatarFavicon>
         {showLockIcon && (
           <Icon
             className="mm-tag-url__lock-icon"
